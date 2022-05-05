@@ -12,26 +12,26 @@ use Exception;
 interface LoggerInterface
 {
     /**
-     * @param string|Exception $msg
+     * @param string|Exception $message
      * @return void
      */
-    public function debug(string|Exception $msg): void;
+    public function debug(string|Exception $message): void;
     
     /**
-     * @param string|Exception $msg
+     * @param string|Exception $message
      * @return void
      */
-    public function info(string|Exception $msg): void;
+    public function info(string|Exception $message): void;
 
     /**
-     * @param string|Exception $msg
+     * @param string|Exception $message
      * @return void
      */
-    public function warning(string|Exception $msg): void;
+    public function warning(string|Exception $message): void;
 
     /**
-     * @param string|Exception $msg
+     * @param string|Exception $message
      * @return void
      */
-    public function error(string|Exception $msg): void;
+    public function error(string|Exception $message): void;
 }
