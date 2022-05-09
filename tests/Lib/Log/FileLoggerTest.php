@@ -8,6 +8,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\FormatException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
@@ -217,7 +218,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this->assertSame(expected: ValidationException::class, actual: $className);
+        $this->assertSame(expected: FormatException::class, actual: $className);
     }
 
     /**
@@ -234,7 +235,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this->assertSame(expected: ValidationException::class, actual: $className);
+        $this->assertSame(expected: FormatException::class, actual: $className);
     }
 
     /**
@@ -252,7 +253,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this->assertSame(expected: ValidationException::class, actual: $className);
+        $this->assertSame(expected: FormatException::class, actual: $className);
     }
 
     /**
@@ -276,7 +277,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this->assertSame(expected: ValidationException::class, actual: $className);
+        $this->assertSame(expected: FilesystemException::class, actual: $className);
     }
 
     /**
@@ -300,7 +301,7 @@ final class FileLoggerTest extends TestCase
 
         unlink($filePath);
 
-        $this->assertSame(expected: ValidationException::class, actual: $className);
+        $this->assertSame(expected: FilesystemException::class, actual: $className);
     }
 
     /**
@@ -325,7 +326,7 @@ final class FileLoggerTest extends TestCase
             $this->markTestSkipped(message: 'Failed to change path directory permissions');
         }
 
-        $this->assertSame(expected: ValidationException::class, actual: $className);
+        $this->assertSame(expected: FilesystemException::class, actual: $className);
     }
 
     /**
