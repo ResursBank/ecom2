@@ -9,8 +9,8 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Log\FileLogger;
-use Resursbank\Ecom\Log\LogLevel;
+use Resursbank\Ecom\Lib\Log\FileLogger;
+use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /**
  * Verifies that the FileLogger class works as intended
@@ -51,7 +51,7 @@ final class FileLoggerTest extends TestCase
             $this->markTestSkipped(message: 'Failed to touch log file');
         }
 
-        $this->logger = new FileLogger(path: $this->path);
+        $this->logger = new \Resursbank\Ecom\Lib\Log\FileLogger(path: $this->path);
     }
 
     /**
@@ -116,7 +116,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this->assertEquals(expected: LogLevel::DEBUG->name . ': ' . $this->message . PHP_EOL, actual: $loggedDebug);
+        $this->assertEquals(expected: \Resursbank\Ecom\Lib\Log\LogLevel::DEBUG->name . ': ' . $this->message . PHP_EOL, actual: $loggedDebug);
     }
 
     /**
@@ -149,7 +149,7 @@ final class FileLoggerTest extends TestCase
             offset: 26
         );
         $this->assertEquals(
-            expected: LogLevel::WARNING->name . ': ' . $this->message . PHP_EOL,
+            expected: \Resursbank\Ecom\Lib\Log\LogLevel::WARNING->name . ': ' . $this->message . PHP_EOL,
             actual: $loggedWarning
         );
     }
@@ -167,7 +167,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this->assertEquals(expected: LogLevel::ERROR->name.': '.$this->message . PHP_EOL, actual: $loggedError);
+        $this->assertEquals(expected: \Resursbank\Ecom\Lib\Log\LogLevel::ERROR->name.': '.$this->message . PHP_EOL, actual: $loggedError);
     }
 
     /**
@@ -190,7 +190,7 @@ final class FileLoggerTest extends TestCase
         //$this->expectException(exception: EmptyException::class);
         $className = false;
         try {
-            new FileLogger(path: '');
+            new \Resursbank\Ecom\Lib\Log\FileLogger(path: '');
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }
@@ -224,7 +224,7 @@ final class FileLoggerTest extends TestCase
     {
         $className = false;
         try {
-            new FileLogger(path: ' /tmp');
+            new \Resursbank\Ecom\Lib\Log\FileLogger(path: ' /tmp');
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }
@@ -266,7 +266,7 @@ final class FileLoggerTest extends TestCase
 
         $className = false;
         try {
-            new FileLogger(path: $fakePath);
+            new \Resursbank\Ecom\Lib\Log\FileLogger(path: $fakePath);
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }
@@ -311,7 +311,7 @@ final class FileLoggerTest extends TestCase
 
         $className = false;
         try {
-            new FileLogger($this->path);
+            new \Resursbank\Ecom\Lib\Log\FileLogger($this->path);
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }
