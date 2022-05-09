@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Log;
+namespace Resursbank\Ecom\Lib\Log;
 
-use Exception;
 use DateTime;
+use Exception;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Resursbank\Ecom\Log;
+namespace Resursbank\Ecom\Lib\Log;
 
 /**
  * Defines log levels used by loggers

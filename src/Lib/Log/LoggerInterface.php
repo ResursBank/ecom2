@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Log;
+namespace Resursbank\Ecom\Lib\Log;
 
 use Exception;
 
