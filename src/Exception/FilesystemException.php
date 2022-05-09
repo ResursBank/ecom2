@@ -9,4 +9,6 @@ use Exception;
 /**
  * Specifies a problem relating to the filesystem or a filesystem operation.
  */
-class FilesystemException extends Exception { }
+class FilesystemException extends Exception
+{
+}
