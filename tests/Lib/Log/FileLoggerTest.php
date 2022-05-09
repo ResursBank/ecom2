@@ -61,12 +61,12 @@ final class FileLoggerTest extends TestCase
      */
     protected function tearDown(): void
     {
-        if (file_exists(filename: $this->filename) && !unlink(filename: $this->filename)) {
+        /*if (file_exists(filename: $this->filename) && !unlink(filename: $this->filename)) {
             $this->markTestSkipped(message: 'Failed to delete the test log file');
         }
         if (!rmdir(directory: $this->path)) {
             $this->markTestSkipped(message: 'Failed to delete test directory');
-        }
+        }*/
     }
 
     /**
@@ -177,7 +177,12 @@ final class FileLoggerTest extends TestCase
      */
     public function testLogException(): void
     {
-        // @todo Assert that logging of Exception works
+        $e = new Exception();
+        $this->logger->debug($e);
+        $numLines = count(value: file(filename: $this->filename));
+        $lastLine = $this->getLastLineFromFile(filename: $this->filename);
+        $expectedLastLine = '#' . ($numLines-1) . ' {main}' . PHP_EOL;
+        $this->assertEquals(expected: $expectedLastLine, actual: $lastLine);
     }
 
     /**
