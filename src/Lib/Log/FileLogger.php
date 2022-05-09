@@ -8,6 +8,7 @@ use DateTime;
 use Exception;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\FormatException;
 use Resursbank\Ecom\Exception\ValidationException;
 
 /**
@@ -148,15 +149,15 @@ class FileLogger implements LoggerInterface
         if (empty($this->path)) {
             throw new EmptyException(message: self::PATH_ERR_EMPTY);
         } elseif ($this->path !== trim(string: $this->path)) {
-            throw new ValidationException(message: self::PATH_ERR_WHITESPACE);
+            throw new FormatException(message: self::PATH_ERR_WHITESPACE);
         } elseif (DIRECTORY_SEPARATOR == substr(string: $this->path, offset: -1)) {
-            throw new ValidationException(message: self::PATH_ERR_TRAILING_SEPARATOR);
+            throw new FormatException(message: self::PATH_ERR_TRAILING_SEPARATOR);
         } elseif (!file_exists(filename: $this->path)) {
-            throw new ValidationException(message: self::PATH_ERR_FILE_DOES_NOT_EXIST);
+            throw new FilesystemException(message: self::PATH_ERR_FILE_DOES_NOT_EXIST);
         } elseif (!is_dir(filename: $this->path)) {
-            throw new ValidationException(message: self::PATH_ERR_FILE_NOT_DIRECTORY);
+            throw new FilesystemException(message: self::PATH_ERR_FILE_NOT_DIRECTORY);
         } elseif (!is_writable(filename: $this->path)) {
-            throw new ValidationException(message: self::PATH_ERR_FILE_NOT_WRITABLE);
+            throw new FilesystemException(message: self::PATH_ERR_FILE_NOT_WRITABLE);
         }
 
         return true;
