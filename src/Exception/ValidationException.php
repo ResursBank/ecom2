@@ -9,4 +9,6 @@ use Exception;
 /**
  * Specifies a problem when validating a property.
  */
-class ValidationException extends Exception { }
+class ValidationException extends Exception
+{
+}
