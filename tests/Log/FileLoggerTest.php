@@ -170,6 +170,11 @@ final class FileLoggerTest extends TestCase
         $this->assertEquals(expected: LogLevel::ERROR->name.': '.$this->message . PHP_EOL, actual: $loggedError);
     }
 
+    /**
+     * Verify that Exceptions get logged
+     * 
+     * @return void
+     */
     public function testLogException(): void
     {
         // @todo Assert that logging of Exception works
