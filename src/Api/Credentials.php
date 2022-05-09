@@ -12,6 +12,9 @@ use Resursbank\Ecom\Exception\EmptyException;
 class Credentials
 {
     /**
+     * @param string $username
+     * @param string $password
+     * @param bool $test
      * @throws EmptyException
      */
     public function __construct(
