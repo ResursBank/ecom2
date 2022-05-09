@@ -172,7 +172,7 @@ final class FileLoggerTest extends TestCase
 
     /**
      * Verify that Exceptions get logged
-     * 
+     *
      * @return void
      */
     public function testLogException(): void
