@@ -95,7 +95,15 @@ class FileLogger implements LoggerInterface
      */
     private function log(LogLevel $level, string|Exception $message): void
     {
-        if (is_object(value: $message) && get_class(object: $message) === Exception::class) {
+        /**
+         * @psalm-suppress RedundantCondition
+         */
+        if (is_object(value: $message) &&
+            (
+                get_class(object: $message) === Exception::class ||
+                is_subclass_of(object_or_class: $message, class: Exception::class) // @phpstan-ignore-line
+            )
+        ) {
             $this->logException(e: $message);
         } else {
             $timestamp = new DateTime();
