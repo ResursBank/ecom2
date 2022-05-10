@@ -158,7 +158,7 @@ class FileLogger implements LoggerInterface
             throw new EmptyException(message: self::PATH_ERR_EMPTY);
         } elseif ($this->path !== trim(string: $this->path)) {
             throw new FormatException(message: self::PATH_ERR_WHITESPACE);
-        } elseif (DIRECTORY_SEPARATOR == substr(string: $this->path, offset: -1)) {
+        } elseif (DIRECTORY_SEPARATOR === substr(string: $this->path, offset: -1)) {
             throw new FormatException(message: self::PATH_ERR_TRAILING_SEPARATOR);
         } elseif (!file_exists(filename: $this->path)) {
             throw new FilesystemException(message: self::PATH_ERR_FILE_DOES_NOT_EXIST);
