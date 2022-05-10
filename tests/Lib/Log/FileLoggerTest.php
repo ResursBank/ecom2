@@ -62,12 +62,12 @@ final class FileLoggerTest extends TestCase
      */
     protected function tearDown(): void
     {
-        /*if (file_exists(filename: $this->filename) && !unlink(filename: $this->filename)) {
+        if (file_exists(filename: $this->filename) && !unlink(filename: $this->filename)) {
             $this->markTestSkipped(message: 'Failed to delete the test log file');
         }
         if (!rmdir(directory: $this->path)) {
             $this->markTestSkipped(message: 'Failed to delete test directory');
-        }*/
+        }
     }
 
     /**
