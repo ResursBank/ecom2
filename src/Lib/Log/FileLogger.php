@@ -154,7 +154,7 @@ class FileLogger implements LoggerInterface
      */
     private function validatePath(): bool
     {
-        if (empty($this->path)) {
+        if ($this->path === '') {
             throw new EmptyException(message: self::PATH_ERR_EMPTY);
         } elseif ($this->path !== trim(string: $this->path)) {
             throw new FormatException(message: self::PATH_ERR_WHITESPACE);
