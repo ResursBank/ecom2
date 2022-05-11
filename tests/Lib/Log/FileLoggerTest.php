@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\FormatException;
-use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 
@@ -86,7 +85,6 @@ final class FileLoggerTest extends TestCase
      * Verify that a FilesystemException is thrown if we attempt to write to an unwritable file.
      *
      * @return void
-     * @throws FilesystemException
      */
     public function testLoggingFailure(): void
     {
@@ -175,6 +173,7 @@ final class FileLoggerTest extends TestCase
      * Verify that Exceptions get logged
      *
      * @return void
+     * @throws FilesystemException
      */
     public function testLogException(): void
     {
@@ -284,6 +283,7 @@ final class FileLoggerTest extends TestCase
      * Verify that creating a FileLogger using a path which is not a directory causes a ValidationException
      *
      * @return void
+     * @throws Exception
      */
     public function testValidatePathWhichIsNotDirectory(): void
     {
