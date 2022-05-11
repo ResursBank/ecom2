@@ -9,7 +9,6 @@ use Exception;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\FormatException;
-use Resursbank\Ecom\Exception\ValidationException;
 
 /**
  * Write logfiles to disk.
@@ -29,7 +28,9 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $path
      * @throws EmptyException
-     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws EmptyException
+     * @throws FormatException
      */
     public function __construct(
         private readonly string $path
@@ -149,7 +150,8 @@ class FileLogger implements LoggerInterface
      * Validate logfile storage path.
      *
      * @throws EmptyException
-     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws FormatException
      * @return bool
      */
     private function validatePath(): bool
