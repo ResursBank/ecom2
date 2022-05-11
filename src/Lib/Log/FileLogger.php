@@ -30,12 +30,8 @@ class FileLogger implements LoggerInterface
 
     /**
      * @param string $path
-     * @throws EmptyException
      * @throws FilesystemException
-<<<<<<< HEAD
-=======
      * @throws EmptyException
->>>>>>> origin/master
      * @throws FormatException
      */
     public function __construct(
@@ -158,12 +154,6 @@ class FileLogger implements LoggerInterface
     /**
      * Validate logfile storage path.
      *
-<<<<<<< HEAD
-=======
-     * @throws EmptyException
-     * @throws FilesystemException
-     * @throws FormatException
->>>>>>> origin/master
      * @return bool
      * @throws EmptyException
      * @throws FilesystemException
