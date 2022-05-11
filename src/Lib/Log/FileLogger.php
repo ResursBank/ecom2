@@ -9,7 +9,9 @@ use Exception;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\FormatException;
-use Resursbank\Ecom\Exception\ValidationException;
+
+use function get_class;
+use function is_object;
 
 /**
  * Write logfiles to disk.
@@ -29,7 +31,8 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $path
      * @throws EmptyException
-     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws FormatException
      */
     public function __construct(
         private readonly string $path
@@ -44,7 +47,7 @@ class FileLogger implements LoggerInterface
      * @return void
      * @throws FilesystemException
      */
-    public function debug(string|Exception  $message): void
+    public function debug(string|Exception $message): void
     {
         $this->log(level: LogLevel::DEBUG, message: $message);
     }
@@ -99,14 +102,16 @@ class FileLogger implements LoggerInterface
             $this->logException(e: $message);
         } else {
             $timestamp = new DateTime();
-            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': '. $message;
+            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
 
             if ($this->logIsWritable()) {
-                if (!file_put_contents(
-                    filename: $this->getFilename(),
-                    data: $formattedMessage . PHP_EOL,
-                    flags: FILE_APPEND | LOCK_EX
-                )) {
+                if (
+                    !file_put_contents(
+                        filename: $this->getFilename(),
+                        data: $formattedMessage . PHP_EOL,
+                        flags: FILE_APPEND | LOCK_EX
+                    )
+                ) {
                     throw new FilesystemException(message: self::WRITE_ERROR);
                 }
             } else {
@@ -116,7 +121,7 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Log Exception object by converting it to a string and feeding it to the log method
+     * Log Exception object by converting it to a string and feeding it to the log method.
      *
      * @param Exception $e
      * @return void
@@ -128,7 +133,7 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Returns absolute path to log file
+     * Returns absolute path to log file.
      *
      * @return string
      */
@@ -140,9 +145,10 @@ class FileLogger implements LoggerInterface
     /**
      * Validate logfile storage path.
      *
-     * @throws EmptyException
-     * @throws ValidationException
      * @return bool
+     * @throws EmptyException
+     * @throws FilesystemException
+     * @throws FormatException
      */
     private function validatePath(): bool
     {
@@ -150,7 +156,7 @@ class FileLogger implements LoggerInterface
             throw new EmptyException(message: self::PATH_ERR_EMPTY);
         } elseif ($this->path !== trim(string: $this->path)) {
             throw new FormatException(message: self::PATH_ERR_WHITESPACE);
-        } elseif (DIRECTORY_SEPARATOR == substr(string: $this->path, offset: -1)) {
+        } elseif (DIRECTORY_SEPARATOR === substr(string: $this->path, offset: -1)) {
             throw new FormatException(message: self::PATH_ERR_TRAILING_SEPARATOR);
         } elseif (!file_exists(filename: $this->path)) {
             throw new FilesystemException(message: self::PATH_ERR_FILE_DOES_NOT_EXIST);
@@ -164,7 +170,7 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Checks if the log file is writable
+     * Checks if the log file is writable.
      *
      * @return bool
      */
@@ -173,12 +179,13 @@ class FileLogger implements LoggerInterface
         // Consider file writable if it either exists, isn't a directory and is writable or it doesn't exist but the
         // parent directory passes the validation test
         try {
-            if ((file_exists(filename: $this->getFilename()) && is_writable(filename: $this->getFilename())) ||
+            if (
+                (file_exists(filename: $this->getFilename()) && is_writable(filename: $this->getFilename())) ||
                 (!file_exists(filename: $this->getFilename()) && $this->validatePath())
             ) {
                 return true;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
 
