@@ -63,6 +63,22 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
+     * Clean up the files and directories we created
+     *
+     * @return void
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    protected function tearDown(): void
+    {
+        if (file_exists(filename: $this->filename) && !unlink(filename: $this->filename)) {
+            $this::markTestSkipped(message: 'Failed to delete the test log file');
+        }
+        if (!rmdir(directory: $this->path)) {
+            $this::markTestSkipped(message: 'Failed to delete test directory');
+        }
+    }
+
+    /**
      * Fetches the last line logged to specified file
      *
      * @param string $filename

@@ -32,6 +32,10 @@ class FileLogger implements LoggerInterface
      * @param string $path
      * @throws EmptyException
      * @throws FilesystemException
+<<<<<<< HEAD
+=======
+     * @throws EmptyException
+>>>>>>> origin/master
      * @throws FormatException
      */
     public function __construct(
@@ -98,7 +102,16 @@ class FileLogger implements LoggerInterface
      */
     private function log(LogLevel $level, string|Exception $message): void
     {
-        if (is_object(value: $message) && get_class(object: $message) === Exception::class) {
+        /**
+         * @psalm-suppress RedundantCondition
+         */
+        if (
+            is_object(value: $message) &&
+            (
+                get_class(object: $message) === Exception::class ||
+                is_subclass_of(object_or_class: $message, class: Exception::class) // @phpstan-ignore-line
+            )
+        ) {
             $this->logException(e: $message);
         } else {
             $timestamp = new DateTime();
@@ -145,6 +158,12 @@ class FileLogger implements LoggerInterface
     /**
      * Validate logfile storage path.
      *
+<<<<<<< HEAD
+=======
+     * @throws EmptyException
+     * @throws FilesystemException
+     * @throws FormatException
+>>>>>>> origin/master
      * @return bool
      * @throws EmptyException
      * @throws FilesystemException
@@ -152,7 +171,7 @@ class FileLogger implements LoggerInterface
      */
     private function validatePath(): bool
     {
-        if (empty($this->path)) {
+        if ($this->path === '') {
             throw new EmptyException(message: self::PATH_ERR_EMPTY);
         } elseif ($this->path !== trim(string: $this->path)) {
             throw new FormatException(message: self::PATH_ERR_WHITESPACE);
