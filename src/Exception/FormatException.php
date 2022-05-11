@@ -7,8 +7,8 @@ namespace Resursbank\Ecom\Exception;
 use Exception;
 
 /**
- * Specifies a problem when validating a property.
+ * Specifies a formatting problem.
  */
-class ValidationException extends Exception
+class FormatException extends Exception
 {
 }

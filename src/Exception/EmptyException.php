@@ -9,4 +9,6 @@ use Exception;
 /**
  * Specifies that a property had an empty value and this is illegal.
  */
-class EmptyException extends Exception { }
+class EmptyException extends Exception
+{
+}

@@ -9,4 +9,6 @@ use Exception;
 /**
  * Specifies a problem relating to an event subscriber.
  */
-class EventSubscriberException extends Exception { }
+class EventSubscriberException extends Exception
+{
+}
