@@ -10,6 +10,9 @@ use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\FormatException;
 
+use function get_class;
+use function is_object;
+
 /**
  * Write logfiles to disk.
  */
@@ -27,7 +30,6 @@ class FileLogger implements LoggerInterface
 
     /**
      * @param string $path
-     * @throws EmptyException
      * @throws FilesystemException
      * @throws EmptyException
      * @throws FormatException
@@ -45,7 +47,7 @@ class FileLogger implements LoggerInterface
      * @return void
      * @throws FilesystemException
      */
-    public function debug(string|Exception  $message): void
+    public function debug(string|Exception $message): void
     {
         $this->log(level: LogLevel::DEBUG, message: $message);
     }
@@ -99,7 +101,8 @@ class FileLogger implements LoggerInterface
         /**
          * @psalm-suppress RedundantCondition
          */
-        if (is_object(value: $message) &&
+        if (
+            is_object(value: $message) &&
             (
                 get_class(object: $message) === Exception::class ||
                 is_subclass_of(object_or_class: $message, class: Exception::class) // @phpstan-ignore-line
@@ -108,14 +111,16 @@ class FileLogger implements LoggerInterface
             $this->logException(e: $message);
         } else {
             $timestamp = new DateTime();
-            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': '. $message;
+            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
 
             if ($this->logIsWritable()) {
-                if (!file_put_contents(
-                    filename: $this->getFilename(),
-                    data: $formattedMessage . PHP_EOL,
-                    flags: FILE_APPEND | LOCK_EX
-                )) {
+                if (
+                    !file_put_contents(
+                        filename: $this->getFilename(),
+                        data: $formattedMessage . PHP_EOL,
+                        flags: FILE_APPEND | LOCK_EX
+                    )
+                ) {
                     throw new FilesystemException(message: self::WRITE_ERROR);
                 }
             } else {
@@ -125,7 +130,7 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Log Exception object by converting it to a string and feeding it to the log method
+     * Log Exception object by converting it to a string and feeding it to the log method.
      *
      * @param Exception $e
      * @return void
@@ -137,7 +142,7 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Returns absolute path to log file
+     * Returns absolute path to log file.
      *
      * @return string
      */
@@ -149,10 +154,10 @@ class FileLogger implements LoggerInterface
     /**
      * Validate logfile storage path.
      *
+     * @return bool
      * @throws EmptyException
      * @throws FilesystemException
      * @throws FormatException
-     * @return bool
      */
     private function validatePath(): bool
     {
@@ -174,7 +179,7 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Checks if the log file is writable
+     * Checks if the log file is writable.
      *
      * @return bool
      */
@@ -183,12 +188,13 @@ class FileLogger implements LoggerInterface
         // Consider file writable if it either exists, isn't a directory and is writable or it doesn't exist but the
         // parent directory passes the validation test
         try {
-            if ((file_exists(filename: $this->getFilename()) && is_writable(filename: $this->getFilename())) ||
+            if (
+                (file_exists(filename: $this->getFilename()) && is_writable(filename: $this->getFilename())) ||
                 (!file_exists(filename: $this->getFilename()) && $this->validatePath())
             ) {
                 return true;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
 
