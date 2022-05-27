@@ -4,58 +4,68 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
-use Resursbank\Ecom\Api\Credentials;
-use Resursbank\Ecom\Lib\Event\Event;
-use Resursbank\Ecom\Lib\Event\Hub;
-use Resursbank\Ecom\Lib\Mysql\Config as MysqlConfig;
-use Resursbank\Ecom\Locale\Country;
-use Resursbank\Ecom\Log\LoggerInterface;
-use Resursbank\Ecom\Module\Annuity\Event\SyncSubscriber;
-use Resursbank\Ecom\Simplified\Config as Simplified;
-use Resursbank\Ecom\Aftershop\Config as Aftershop;
+use Resursbank\Ecom\Lib\Api\Credentials;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
 
 /**
  * API communication object.
  */
-class Config
+final class Config
 {
-    /**
-     * Event dispatched after syncing a payment method to local storage.
-     */
-    public const EVENT_SYNC_PAYMENT_METHOD = 'sync_payment_method';
+    private static Config $instance;
 
     /**
      * @param Credentials $credentials
      * @param LoggerInterface $logger
-     * @param Country $country
-     * @param Simplified $simplified
-     * @param Aftershop $aftershop
-     * @param Hub $eventHub
-     * @param MysqlConfig|null $mysqlCredentials | Metadata will be persisted to database if this is supplied.
+     * @param string $logLevel
+     * @todo Create a null cache driver, so there always is one, returns null always
+     * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
         public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
-        public readonly Country $country,
-        public readonly Simplified $simplified,
-        public readonly Aftershop $aftershop,
-        public readonly Hub $eventHub,
-        public readonly null|MysqlConfig $mysqlCredentials = null
+        public readonly string $logLevel = 'info'   // Only log info messages.
     ) {
-        $this->configureEvents();
+
     }
 
     /**
+     * @param Credentials $credentials
+     * @param LoggerInterface $logger
+     * @param string $logLevel
      * @return void
-     * @TODO Consider using attributes to setup events and listeners. This would require a cache implementation though.
      */
-    public function configureEvents(): void
-    {
-        $this->eventHub->addEvent(
-            event: new Event(
-                self::EVENT_SYNC_PAYMENT_METHOD,
-                [new SyncSubscriber()]
-            )
+    public static function setup(
+        Credentials $credentials,
+        LoggerInterface $logger,
+        string $logLevel = 'info'   // Only log info messages.
+    ): void {
+        self::$instance = new Config(
+            $credentials,
+            $logger,
+            $logLevel
         );
+
+//        self::setupEvents();
+//        self::refreshToken();
     }
+
+    public static function getInstance(): Config
+    {
+        return self::$instance;
+    }
+
+    public static function setInstance(
+        Config $instance
+    ): void {
+        self::$instance = $instance;
+    }
+    
+//    private static function setupEvents(): void
+//    {
+//        self::$eventHub = new Hub();
+        // 1. Load all files from src/Module (only Modules may configure events and listners).
+        // 2. Scan all loaded files for Event attributes to setup events in self::eventHub
+        // 3. Scan all loaded files for Listner attributes to setup events in self::eventHub. If the Event for the Listner is not defined in the eventHub we should ignore the listner and log this, but not through an Exception since we probably just forget a listner when we removed an event.
+//    }
 }

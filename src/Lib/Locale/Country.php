@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Locale;
+namespace Resursbank\Ecom\Lib\Locale;
 
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\ValidationException;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Aftershop;
+namespace Resursbank\Ecom\Lib\Aftershop;
 
 /**
  * Configuration directives affecting After Shop methods.

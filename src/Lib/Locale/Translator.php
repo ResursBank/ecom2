@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Locale;
+namespace Resursbank\Ecom\Lib\Locale;
 
 /**
  * Methods to extract locale specific phrases. The intention is to maintain

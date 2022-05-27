@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Simplified;
+namespace Resursbank\Ecom\Lib\Simplified;
 
 /**
  * Configuration directives affecting Simplified Flow methods.

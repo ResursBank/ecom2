@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Api;
+namespace Resursbank\Ecom\Lib\Api;
 
 use Resursbank\Ecom\Exception\EmptyException;
 
