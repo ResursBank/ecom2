@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Resursbank\Ecom\Lib\Collection;
 
 use ArrayAccess;
@@ -89,4 +91,3 @@ class Collection implements ArrayAccess, Iterator, Countable
         return isset($this->data[$this->position]);
     }
 }
-
