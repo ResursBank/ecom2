@@ -6,6 +6,7 @@ namespace Resursbank\Ecom;
 
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /**
  * API communication object.
@@ -17,28 +18,27 @@ final class Config
     /**
      * @param Credentials $credentials
      * @param LoggerInterface $logger
-     * @param string $logLevel
+     * @param LogLevel $logLevel
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
         public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
-        public readonly string $logLevel = 'info'   // Only log info messages.
+        public readonly LogLevel $logLevel = LogLevel::INFO   // Only log info messages.
     ) {
-
     }
 
     /**
      * @param Credentials $credentials
      * @param LoggerInterface $logger
-     * @param string $logLevel
+     * @param LogLevel $logLevel
      * @return void
      */
     public static function setup(
         Credentials $credentials,
         LoggerInterface $logger,
-        string $logLevel = 'info'   // Only log info messages.
+        LogLevel $logLevel = LogLevel::INFO   // Only log info messages.
     ): void {
         self::$instance = new Config(
             $credentials,
