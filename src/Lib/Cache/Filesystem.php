@@ -7,12 +7,14 @@ namespace Resursbank\Ecom\Lib\Cache;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Cache\Model\Data;
+
+use function is_int;
 
 /**
- * Implements business logic to support filesystem based caching.
+ * Basic filesystem caching.
  *
- * @todo If we add a health report as discussed we should add some writ- / readable information about the cache dir / files since read will fail silently.
+ * @todo If we add a health report as discussed we should add some writ- / readable information about the cache dir /
+ * @todo files since read will fail silently.
  */
 class Filesystem extends AbstractCache implements CacheInterface
 {
@@ -21,7 +23,8 @@ class Filesystem extends AbstractCache implements CacheInterface
      */
     public function __construct(
         private readonly string $path
-    ) { }
+    ) {
+    }
 
     /**
      * If there should be any problem with the requested cache file, for example
@@ -33,29 +36,26 @@ class Filesystem extends AbstractCache implements CacheInterface
      * @throws ValidationException
      * @todo Consider adding logs.
      */
-    public function read(string $key): ?Data
+    public function read(string $key): ?string
     {
         $result = null;
 
         // Make sure the key consists of valid characters.
-        $this->validateKey($key);
+        $this->validateKey(key: $key);
 
-        // Read cache file.
-        $file = $this->getFile($key);
+        // Read and parse cache file.
+        $data = $this->getFileContent(file: $this->getFile(key: $key));
+        $split = $this->getSplit(content: $data);
+        $ttl = substr(string: $data, offset: 0, length: $split);
+        $content = substr(string: $data, offset: $split + 1);
 
-        if (file_exists($file) && is_file($file) && is_readable($file)) {
-            /* NOTE: The silencer is required here because there is no safer way
-            to ensure the content of the cache file was in fact a serialized
-            Data object. */
-            /** @noinspection PhpUsageOfSilenceOperatorInspection */
-            $content = @unserialize(
-                file_get_contents($file),
-                ['allowed_classes' => [Data::class]]
-            );
-
-            if (($content instanceof Data) && $content->data !== '') {
-                $result = $content;
-            }
+        // Make sure the content isn't empty and TTL has not expired.
+        if (
+            $content !== '' &&
+            !preg_match(pattern: '/\D/', subject: $ttl) &&
+            time() < (int)$ttl
+        ) {
+            $result = $content;
         }
 
         return $result;
@@ -65,7 +65,6 @@ class Filesystem extends AbstractCache implements CacheInterface
      * @inheritdoc
      * @throws ValidationException
      * @throws FilesystemException
-     * @todo Consider adding logs.
      */
     public function write(string $key, string $data, int $ttl): void
     {
@@ -88,16 +87,35 @@ class Filesystem extends AbstractCache implements CacheInterface
             }
         }
 
-        file_put_contents($filename, serialize(new Data($data, time() + $ttl)));
+        $ttl = time() + ($ttl * 1000);
+
+        file_put_contents(filename: $filename, data: "$ttl|$data");
     }
 
     /**
      * @inheritdoc
-     * @todo Consider adding logs.
+     * @throws FilesystemException
+     * @throws ValidationException
      */
     public function clear(string $key): void
     {
-        $this->write($key, '', 0);
+        // Make sure the key consists of valid characters.
+        $this->validateKey($key);
+
+        // Read cache file.
+        $file = $this->getFile($key);
+
+        if (file_exists($file)) {
+            if (!is_file($file)) {
+                throw new FilesystemException("$file is not a regular file.");
+            }
+
+            if (!is_writable($file)) {
+                throw new FilesystemException("$file is not writable.");
+            }
+
+            unlink($file);
+        }
     }
 
     /**
@@ -110,21 +128,21 @@ class Filesystem extends AbstractCache implements CacheInterface
     private function createPath(): void
     {
         if (file_exists($this->path) && is_file($this->path)) {
-            throw new FilesystemException($this->path . ' is a file.');
+            throw new FilesystemException("$this->path is a file.");
         }
 
         if (
             !file_exists($this->path) &&
-            !mkdir($this->path, 0755, true) &&
+            !mkdir(directory: $this->path, permissions: 0755, recursive: true) &&
             !is_dir($this->path)
         ) {
             throw new FilesystemException(
-                'Failed to create cache dir ' . $this->path
+                "Failed to create cache dir $this->path"
             );
         }
 
         if (!is_writable($this->path)) {
-            throw new FilesystemException($this->path . ' is not writable.');
+            throw new FilesystemException("$this->path is not writable.");
         }
     }
 
@@ -136,6 +154,41 @@ class Filesystem extends AbstractCache implements CacheInterface
      */
     private function getFile(string $key): string
     {
-        return "$this->path/$key";
+        return "$this->path/$key.cache";
+    }
+
+    /**
+     * @param string $file
+     * @return string
+     */
+    private function getFileContent(
+        string $file
+    ): string {
+        $result = '';
+
+        if (file_exists($file) && is_file($file) && is_readable($file)) {
+            $result = file_get_contents($file);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $content
+     * @return int
+     */
+    private function getSplit(
+        string $content
+    ): int {
+        $result = 0;
+
+        $split = strpos(haystack: $content, needle: '|');
+
+        // Make sure we got a split pointer.
+        if (is_int($split) && $split > 1) {
+            $result = $split;
+        }
+
+        return $result;
     }
 }

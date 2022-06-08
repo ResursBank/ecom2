@@ -10,6 +10,8 @@ use Resursbank\Ecom\Lib\Cache\AbstractCache;
 
 /**
  * This class will test general cache methods.
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class AbstractCacheTest extends TestCase
 {
@@ -20,7 +22,10 @@ class AbstractCacheTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->cache = $this->getMockForAbstractClass(AbstractCache::class);
+        $this->cache = $this->getMockForAbstractClass(
+            originalClassName: AbstractCache::class
+        );
+
         parent::setUp();
     }
 
@@ -33,19 +38,31 @@ class AbstractCacheTest extends TestCase
      */
     public function testValidationPass(): void
     {
-        $this->cache->validateKey('yAd4-Ba55_t35ST');
+        $this->cache->validateKey(key: 'yAd4-Ba55_t35ST');
         $this->expectNotToPerformAssertions();
     }
 
     /**
-     * Assert that keys containing an illegal character will cause an Exception.
+     * Assert that keys containing illegal chars will cause ValidationException.
      *
      * @return void
      * @throws ValidationException
      */
-    public function testValidationFails(): void
+    public function testValidationFailsWithIllegalChars(): void
     {
-        $this->expectException(ValidationException::class);
-        $this->cache->validateKey('Yam!');
+        $this->expectException(exception: ValidationException::class);
+        $this->cache->validateKey(key: 'Yam!');
+    }
+
+    /**
+     * Assert that empty keys will cause ValidationException.
+     *
+     * @return void
+     * @throws ValidationException
+     */
+    public function testValidationFailsWithEmpty(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->cache->validateKey(key: '');
     }
 }

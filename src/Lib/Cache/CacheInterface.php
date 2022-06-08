@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Cache;
 
-use Resursbank\Ecom\Lib\Cache\Model\Data;
-
 /**
  * Describes methods required for a cache storage driver.
  */
@@ -15,16 +13,16 @@ interface CacheInterface
      * Read value from cache. NULL means there was no valid value
      *
      * @param string $key
-     * @return Data|null
+     * @return string|null
      */
-    public function read(string $key): ?Data;
+    public function read(string $key): ?string;
 
     /**
      * Write value to cache.
      *
      * @param string $key
      * @param string $data
-     * @param int $ttl
+     * @param int $ttl | Timeout in seconds before cache becomes stale (expire).
      * @return void
      */
     public function write(string $key, string $data, int $ttl): void;
