@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Cache;
 
-use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;
 
