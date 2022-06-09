@@ -1,0 +1,704 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Lib\Cache;
+
+use Exception;
+use JsonException;
+use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Cache\Filesystem;
+use stdClass;
+
+/**
+ * This class will test Filesystem cache methods.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
+class FilesystemTest extends TestCase
+{
+    /**
+     * Base path of the directories and files these tests will create.
+     */
+    private const BASE_PATH = '/tmp/resursbank-test';
+
+    /**
+     * Unique filesystem path for each test method (reset between tests).
+     *
+     * @var string
+     */
+    private string $path;
+
+    /**
+     * Unique FileSystem instance for each test method (reset between tests).
+     *
+     * @var Filesystem
+     */
+    private Filesystem $fs;
+
+    /**
+     * Unique cache key to be utilised in various tests (resets between tests).
+     *
+     * @var string
+     */
+    private string $key;
+
+    /**
+     * Unique filesystem path to expected cache file (resets between tests).
+     *
+     * NOTE: Should be $this->path/$this->key
+     *
+     * @var string
+     */
+    private string $file;
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        // Create directory where all other directories / files will be created
+        // during our tests, to avoid bloating /tmp.
+        if (!is_dir(filename: self::BASE_PATH)) {
+            mkdir(
+                directory: self::BASE_PATH,
+                permissions: 0755,
+                recursive: true
+            );
+        }
+
+        $this->path = $this->getPath();
+        $this->fs = $this->getFilesystem(path: $this->path);
+        $this->key = $this->getKey();
+        $this->file = "$this->path/$this->key.cache";
+
+        parent::setUp();
+    }
+
+    /**
+     * Create new Filesystem instance.
+     *
+     * @param string $path
+     * @return Filesystem
+     */
+    private function getFilesystem(string $path): Filesystem
+    {
+        return new Filesystem(path: $path);
+    }
+
+    /**
+     * Generate unique path name, to ensure various tests which create files and
+     * directories won't interfere with each other.
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function getPath(): string
+    {
+        return (
+            self::BASE_PATH .
+            '/ecom-' .
+            random_int(min: 0, max: 99999) .
+            time() .
+            random_int(min: 0, max: 99999)
+        );
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        return 'test' . random_int(min: 0, max: 999999);
+    }
+
+    /**
+     * Assert that write() creates a writable cache directory if none exist.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteCreatesWritableDir(): void
+    {
+        self::assertDirectoryDoesNotExist(directory: $this->path);
+
+        $this->fs->write(key: $this->key, data: 'something', ttl: 0);
+
+        self::assertDirectoryExists(directory: $this->path);
+        self::assertDirectoryIsWritable(directory: $this->path);
+    }
+
+    /**
+     * Asserts FilesystemException occur from write() when a file exists in the
+     * place of the intended cache directory.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteThrowsOnExistingFileAtPath(): void
+    {
+        touch(filename: $this->path);
+
+        self::assertFileExists(filename: $this->path);
+        $this->expectException(exception: FilesystemException::class);
+
+        $this->fs->write(key: $this->key, data: 'my data set?', ttl: 0);
+    }
+
+    /**
+     * Assert FilesystemException occurs from write() if the existing cache
+     * directory isn't writable.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function tesWriteThrowsWhenCacheDirNotWritable(): void
+    {
+        mkdir(directory: $this->path, permissions: 0500, recursive: true);
+
+        self::assertDirectoryExists(directory: $this->path);
+        self::assertDirectoryIsNotWritable(directory: $this->path);
+        $this->expectException(exception: FilesystemException::class);
+
+        $this->fs->write(key: $this->key, data: 'Epic data set!', ttl: 0);
+    }
+
+    /**
+     * Asserts that write() method accepts existing writable cache directory.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteAcceptsExistingCacheDir(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+
+        self::assertDirectoryExists(directory: $this->path);
+
+        $this->fs->write(key: $this->key, data: '', ttl: 99);
+
+        self::assertFileExists(filename: $this->file);
+    }
+
+    /**
+     * Assert that method write() throws instance of ValidationException if our
+     * key contains illegal characters.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteThrowsWithIllegalKeyCharacter(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->fs->write(key: 'YAd4!', data: 'Flask', ttl: 777);
+    }
+
+    /**
+     * Assert ValidationException occurs when calling write() with an empty key.
+     *
+     * @return void
+     * @throws FilesystemException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testWriteThrowsWithEmptyKey(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->fs->write(key: '', data: 'NoWorries', ttl: 8723847);
+    }
+
+    /**
+     * Assert that method write() creates the cache directory.
+     *
+     * @return void
+     * @throws FilesystemException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testWriteCreatesDirectory(): void
+    {
+        self::assertDirectoryDoesNotExist(directory: $this->path);
+
+        $this->fs->write(key: $this->key, data: 'Some cool data set', ttl: 0);
+
+        self::assertDirectoryExists(directory: $this->path);
+    }
+
+    /**
+     * Assert that when we call the method write() it will generate a cache file
+     * if none already exist.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteCreatesFile(): void
+    {
+        self::assertFileDoesNotExist(filename: $this->file);
+
+        $this->fs->write(key: $this->key, data: 'nada', ttl: 0);
+
+        self::assertFileExists(filename: $this->file);
+    }
+
+    /**
+     * Assert that the method write() will accept an existing file (meaning it
+     * will not attempt to create a file if the file already exists).
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteAcceptsExistingFile(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755);
+        touch(filename: $this->file);
+
+        self::assertFileExists(filename: $this->file);
+
+        $this->fs->write(key: $this->key, data: 'some data', ttl: 99);
+
+        self::assertFileExists(filename: $this->file);
+    }
+
+    /**
+     * Assert that the method write() will throw an instance of
+     * FilesystemException with the message "$file is not writable." if the
+     * existing cache file isn't writable.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testWriteThrowsIfCacheFileIsNotWritable(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755);
+        touch(filename: $this->file);
+        chmod(filename: $this->file, permissions: 0500);
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsNotWritable(file: $this->file);
+        $this->expectException(exception: FilesystemException::class);
+        $this->expectExceptionMessage(message: "$this->file is not writable.");
+
+        $this->fs->write(
+            key: $this->key,
+            data: 'Calm fort condor in de sun ~',
+            ttl: 1233
+        );
+    }
+
+    /**
+     * Assert that the method write() will throw an instance of
+     * FilesystemException with the message "$file is not a file." if a
+     * directory allocates the cache file location.
+     *
+     * @return void
+     * @throws FilesystemException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function testWriteThrowsWithExistingDirectory(): void
+    {
+        mkdir(directory: $this->path, permissions: 0700);
+        mkdir(directory: $this->file, permissions: 0500);
+
+        self::assertDirectoryExists(directory: $this->file);
+        self::assertDirectoryIsNotWritable(directory: $this->file);
+        $this->expectException(exception: FilesystemException::class);
+        $this->expectExceptionMessage(message: "$this->file is not a file.");
+
+        $this->fs->write(
+            key: $this->key,
+            data: json_encode(
+                value: ['Cannon', 4, '{bb}'],
+                flags: JSON_THROW_ON_ERROR
+            ),
+            ttl: 971367
+        );
+    }
+
+    /**
+     * Assert that the method write() creates a file with contents.
+     *
+     * @return void
+     * @throws FilesystemException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testWriteCreatesNoneEmptyFile(): void
+    {
+        $this->fs->write(key: $this->key, data: 'Empty', ttl: 55);
+
+        self::assertFileExists(filename: $this->file);
+        self::assertNotEmpty(actual: file_get_contents(filename: $this->file));
+    }
+
+    /**
+     * Assert that method read() throws instance of ValidationException if our
+     * key contains illegal characters.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testReadThrowsWithIllegalKeyCharacter(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->fs->read(key: 'EpicStuff_!');
+    }
+
+    /**
+     * Assert ValidationException occurs when calling read() with an empty key.
+     *
+     * @return void
+     * @throws ValidationException
+     */
+    public function testReadThrowsWithEmptyKey(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->fs->read(key: '');
+    }
+
+    /**
+     * Assert that method read() will return NULL if there is no cache file
+     * matching the supplied key.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadWithoutCacheFileReturnsNull(): void
+    {
+        self::assertNull(actual: $this->fs->read(key: $this->getKey()));
+    }
+
+    /**
+     * Assert that method read() will return NULL if there is a directory in the
+     * place of the intended cache file.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadWitAllocatedCacheFileReturnsNull(): void
+    {
+        mkdir(directory: $this->file, permissions: 0755, recursive: true);
+
+        self::assertDirectoryExists(directory: $this->file);
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert that method read() will return NULL if the cache file isn't
+     * readable.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadWitUnreadableCacheFileReturnsNull(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        touch(filename: $this->file);
+        chmod(filename: $this->file, permissions: 0000);
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsNotReadable(file: $this->file);
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert method read() will return NULL if the cache file isn't properly
+     * formatted ("ttl|data").
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsNullWithoutTtl(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: 'some data');
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert method read() will return NULL if the cache file is properly
+     * formatted ("ttl|data") but the specified TTL is "0".
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsNullWithZeroTtl(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: '0|whatever');
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert method read() will return NULL if cache file ttl isn't an integer.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsNullWithInvalidTtl(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: '95.4|whatever');
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert that method read() will return NULL if data is an empty string.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsNullWithEmptyData(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: '0|');
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert method read() will return the data if the cache file is properly
+     * formatted ("ttl|data").
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsData(): void
+    {
+        $ttl = time() + 9999;
+
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: "$ttl|data");
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertSame(
+            expected: 'data',
+            actual: $this->fs->read(key: $this->key)
+        );
+    }
+
+    /**
+     * Assert that method read() will return a serialized object.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsSerializedObject(): void
+    {
+        $obj = new stdClass();
+        $obj->mhm = 'asd';
+        $data = serialize(value: $obj);
+
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: $data);
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertStringEqualsFile(
+            expectedFile: $this->file,
+            actualString: $data
+        );
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert method read() will only split on the first available pipe.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadSplitsOnFirstPipe(): void
+    {
+        $ttl = time() + 9999;
+        $data = 'My Epic | Data set | Is great';
+
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: "$ttl|$data");
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertSame(
+            expected: $data,
+            actual: $this->fs->read(key: $this->key)
+        );
+    }
+
+    /**
+     * Assert that method read() will return NULL if the cache has expired.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsNullWithExpiredTtl(): void
+    {
+        $ttl = time() - 10;
+
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(
+            filename: $this->file,
+            data: "$ttl|My big test | success"
+        );
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertStringEqualsFile(
+            expectedFile: $this->file,
+            actualString: "$ttl|My big test | success"
+        );
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert that method read() will return NULL if the file is empty.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadReturnsNullWithEmptyFile(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(filename: $this->file, data: '');
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsReadable(file: $this->file);
+        self::assertStringEqualsFile(
+            expectedFile: $this->file,
+            actualString: ''
+        );
+        self::assertNull(actual: $this->fs->read(key: $this->key));
+    }
+
+    /**
+     * Assert that method clear() throws instance of ValidationException if our
+     * key contains illegal characters.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testClearThrowsWithIllegalKeyCharacter(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->fs->clear(key: 'SomeIllegal key');
+    }
+
+    /**
+     * Assert ValidationException occurs when calling clear() with an empty key.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws FilesystemException
+     */
+    public function testClearThrowsWithEmptyKey(): void
+    {
+        $this->expectException(exception: ValidationException::class);
+        $this->fs->clear(key: '');
+    }
+
+    /**
+     * Assert that clear() method will execute without error when cache file
+     * does not exist (i.e. not cache = already cleared = do nothing).
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws Exception
+     */
+    public function testClearWithoutCacheFile(): void
+    {
+        self::assertFileDoesNotExist(filename: $this->file);
+
+        $this->fs->clear(key: 'some-bamboozle_not-exist');
+    }
+
+    /**
+     * Assert FilesystemException occurs if we attempt to clear a cache file
+     * that is actually a directory.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws Exception
+     */
+    public function testClearThrowsWithDirectory(): void
+    {
+        mkdir(directory: $this->file, permissions: 0755, recursive: true);
+
+        self::assertDirectoryExists(directory: $this->file);
+        $this->expectException(exception: FilesystemException::class);
+
+        $this->fs->clear(key: $this->key);
+    }
+
+    /**
+     * Assert FilesystemException occurs if the cache file isn't writable.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws Exception
+     */
+    public function testClearThrowsWhenFileNotWritable(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        touch(filename: $this->file);
+        chmod(filename: $this->file, permissions: 0500);
+
+        self::assertFileExists(filename: $this->file);
+        self::assertFileIsNotWritable(file: $this->file);
+        $this->expectException(exception: FilesystemException::class);
+
+        $this->fs->clear(key: $this->key);
+    }
+
+    /**
+     * Assert that clear() method will delete file.
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws Exception
+     */
+    public function testClearDeletesFile(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        touch(filename: $this->file);
+
+        self::assertFileExists(filename: $this->file);
+
+        $this->fs->clear(key: $this->key);
+
+        self::assertFileDoesNotExist(filename: $this->file);
+    }
+}

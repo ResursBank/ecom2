@@ -13,7 +13,7 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
  */
 final class Config
 {
-    private static Config $instance;
+    public static Config $instance;
 
     /**
      * @param Credentials $credentials
@@ -50,17 +50,6 @@ final class Config
 //        self::refreshToken();
     }
 
-    public static function getInstance(): Config
-    {
-        return self::$instance;
-    }
-
-    public static function setInstance(
-        Config $instance
-    ): void {
-        self::$instance = $instance;
-    }
-    
 //    private static function setupEvents(): void
 //    {
 //        self::$eventHub = new Hub();
