@@ -1,20 +1,22 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models;
 
 /**
- * Defines a metadata item
+ * Defines a MetaData item
  */
 class MetaData
 {
-    public string $key;
-    public string $value;
-
-    public function __construct(string $key, string $value)
-    {
-        $this->key = $key;
-        $this->value = $value;
+    public function __construct(
+        public string $key,
+        public string $value
+    ) {
     }
 }

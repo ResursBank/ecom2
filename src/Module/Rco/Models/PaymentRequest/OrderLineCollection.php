@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Rco\Models;
+namespace Resursbank\Ecom\Module\Rco\Models\PaymentRequest;
 
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Defines a MetaData collection
+ * Defines OrderLine collections
  */
-class MetaDataCollection extends Collection
+class OrderLineCollection extends Collection
 {
-    protected ?string $type = MetaData::class;
+    protected ?string $type = OrderLine::class;
 }

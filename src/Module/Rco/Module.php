@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco;
 
 use Resursbank\Ecom\Module\Module as CoreModule;
-use Resursbank\Ecom\Module\Rco\Models\PaymentRequest;
+use Resursbank\Ecom\Module\Rco\Models\PaymentRequest\PaymentRequest;
 
 class Module extends CoreModule
 {

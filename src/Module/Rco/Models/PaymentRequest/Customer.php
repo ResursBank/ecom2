@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Rco\Models;
+namespace Resursbank\Ecom\Module\Rco\Models\PaymentRequest;
+
+use Resursbank\Ecom\Module\Rco\Models\Address;
+use Resursbank\Ecom\Module\Rco\Models\CustomerType;
 
 class Customer
 {
@@ -11,7 +14,7 @@ class Customer
     public string $email;
     public ?Address $deliveryAddress;
     public ?Address $invoiceAddress;
-    public ?CustomerType $customerType;
+    public ?string $customerType;
     public ?string $mobileNotValidated;
     public ?string $emailNotValidated;
 }
