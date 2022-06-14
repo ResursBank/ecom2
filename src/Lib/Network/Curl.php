@@ -129,14 +129,14 @@ class Curl
      * Defined as a [fromcode, tocode] list.
      * @var array
      */
-    private $throwableHttpCodes = [
+    private array $throwableHttpCodes = [
         ['400', '599'],
     ];
 
     /**
      * Reset curl on each new curlrequest to make sure old responses is no longer present.
      */
-    private function resetCurlRequest()
+    private function resetCurlRequest(): Curl
     {
         $this->customHeaders = [];
         $this->curlResponseHeaders = [];
@@ -147,7 +147,7 @@ class Curl
     /**
      * @throws CurlException
      */
-    private function initCurlHandle($url)
+    private function initCurlHandle($url): Curl
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new CurlException('Invalid URL requested.');
@@ -163,7 +163,7 @@ class Curl
         $username,
         $password,
         $authType = CURLAUTH_BASIC,
-    ) {
+    ): Curl {
         $this->authData['username'] = $username;
         $this->authData['password'] = $password;
         $this->authData['type'] = $authType;
@@ -175,9 +175,9 @@ class Curl
      * @param string $key
      * @param string $value
      * @param bool $static
-     * @return self
+     * @return Curl
      */
-    public function setHeader(string $key, string $value, bool $static = false)
+    public function setHeader(string $key, string $value, bool $static = false): Curl
     {
         $this->customPreHeaders[$key] = $value;
         if ($static) {
@@ -193,7 +193,7 @@ class Curl
      * @param mixed $value
      * @return bool
      */
-    public function setOptionCurl(CurlHandle $curlHandle, int $key, mixed $value)
+    public function setOptionCurl(CurlHandle $curlHandle, int $key, mixed $value): bool
     {
         return curl_setopt($curlHandle, $key, $value);
     }
@@ -202,7 +202,7 @@ class Curl
      * @param CurlHandle $curlHandle
      * @return Curl
      */
-    private function setCurlAuthentication(CurlHandle $curlHandle)
+    private function setCurlAuthentication(CurlHandle $curlHandle): Curl
     {
         if (!empty($this->authData['usernane']) && !empty($this->authData['password'])) {
             $this->setOptionCurl(
