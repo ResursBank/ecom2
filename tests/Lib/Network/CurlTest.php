@@ -1,6 +1,8 @@
 <?php
 
-namespace Lib\Network;
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Lib\Network;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -21,10 +23,14 @@ class CurlTest extends TestCase
             originalClassName: Curl::class
         );
 
-        Config::setup(
+/*        Config::setup(
             credentials: $credentials
-        );
-
+        );*/
         parent::setUp();
+    }
+
+    public function testGet() {
+        $test = $this->curl->get('https://ipv4.netcurl.org');
+        print_R($test);
     }
 }
