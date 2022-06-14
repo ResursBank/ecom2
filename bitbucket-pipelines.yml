@@ -12,6 +12,7 @@ pipelines:
               - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
               - pecl install redis
               - docker-php-ext-enable redis
+              - echo "127.0.0.1 redis" >>/etc/hosts
               - composer install
               - composer require phpunit/phpunit
               - vendor/bin/phpunit --configuration ./phpunit.xml
