@@ -195,7 +195,7 @@ class Curl
      */
     public function setOptionCurl(CurlHandle $curlHandle, int $key, mixed $value)
     {
-        return curl_setopt($curlHandle, $key, $value)
+        return curl_setopt($curlHandle, $key, $value);
     }
 
     /**
