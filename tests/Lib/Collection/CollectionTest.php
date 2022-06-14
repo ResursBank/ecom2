@@ -76,4 +76,22 @@ final class CollectionTest extends TestCase
         $collection = new Collection(data: $data, type: 'string');
         $this->assertSame(expected: $data, actual: $collection->toArray());
     }
+
+    /**
+     * Verify that type determination called in the Collection constructor works
+     * 
+     * @return void
+     * @throws TypeException
+     */
+    public function testTypeDetermination(): void
+    {
+        $data = [
+            'foo',
+            'bar'
+        ];
+        
+        $collection = new Collection(data: $data);
+        
+        $this->assertEquals(expected: "string", actual: $collection->getType());
+    }
 }
