@@ -110,6 +110,22 @@ class Curl
     private array $customHeaders = [];
 
     /**
+     * Default options for curl. Observe that we always set FOLLOWLOCATION to false since there may be
+     * sites configured to prohibit redirect-links.
+     * @var array
+     */
+    private array $options = [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => 1,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_ENCODING => 1,
+        CURLOPT_USERAGENT => '',
+        CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
+        CURLOPT_FOLLOWLOCATION => false,
+        CURLOPT_HTTPHEADER => ['Accept-Language: en'],
+    ];
+
+    /**
      * @var string Custom content type.
      */
     private string $contentType = '';
@@ -132,6 +148,7 @@ class Curl
     private array $throwableHttpCodes = [
         ['400', '599'],
     ];
+    private string $currentUserAgent = '';
 
     /**
      * Reset curl on each new curlrequest to make sure old responses is no longer present.
@@ -145,6 +162,50 @@ class Curl
     }
 
     /**
+     * @return CurlHandle
+     */
+    public function getCurlHandle()
+    {
+        return $this->curlHandle;
+    }
+
+    /**
+     * Set short user-agent name for your requesting client. This string will be prepended to a longer summarized agent.
+     * @param string $userAgent
+     *
+     * @return $this
+     */
+    public function setUserAgent(string $userAgent): Curl
+    {
+        $this->currentUserAgent = $userAgent;
+
+        return $this;
+    }
+
+    /**
+     * Final user agent string that will be pushed into http-requests.
+     * @return string
+     */
+    public function getUserAgent(): string
+    {
+        $return = [];
+
+        $userAgentArray = [
+            $this->currentUserAgent,
+            sprintf('ECom2-%s', self::class),
+            sprintf('PHP-%s', PHP_VERSION),
+        ];
+
+        foreach ($userAgentArray as $item) {
+            if (!empty($item)) {
+                $return[] = $item;
+            }
+        }
+
+        return implode(' +', $return);
+    }
+
+    /**
      * @throws CurlException
      */
     private function initCurlHandle($url): Curl
@@ -153,8 +214,28 @@ class Curl
             throw new CurlException('Invalid URL requested.');
         }
 
+        // In netcurl, this section is splitted in several methods to make them easier to sort out.
+        // Besides this, netCurl also supported multi-requests, which in our case will be more complex than we
+        // need. Instead of splitting all sections up in smaller bits, we use this init function to set up
+        // the handle instantly.
+
         $curlHandle = curl_init();
         $this->setCurlAuthentication($curlHandle);
+        // Below is the list of the netCurl-methods. They are remarked if the implementation is skipped.
+        // On finalization, such rows can be safely removed.
+
+        // setCurlMultiHeaders - A bulk action that we don't need.
+        $this->setCurlDynamicValues($curlHandle);
+        // SSL should be set after dynamic values as they have higher priority for security, than the user defined data.
+        $this->setCurlStaticValues($curlHandle);
+        // setCurlPostData
+        // setCurlRequestMethod
+
+        // Custom headers setup is where we push data into the request-headers. This is where data like bearers,
+        // user-agent, etc will land. Setting header data is done with setHeader.
+        $this->setCurlCustomHeaders($curlHandle);
+
+        $this->setOptionCurl($curlHandle, CURLOPT_URL, $url);
 
         return $this;
     }
@@ -164,7 +245,7 @@ class Curl
      *
      * @param string $username
      * @param string $password
-        * @param int $authType
+     * @param int $authType
      * @return $this
      */
     public function setAuthentication(
@@ -205,6 +286,37 @@ class Curl
 
     /**
      * @param CurlHandle $curlHandle
+     * @return $this
+     */
+    private function setCurlDynamicValues(CurlHandle $curlHandle)
+    {
+        foreach ($this->options as $curlKey => $curlValue) {
+            $this->setOptionCurl($curlHandle, $curlKey, $curlValue);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Values intended to not be overridden by user input.
+     *
+     * @param mixed $curlHandle
+     * @return $this
+     * @since 6.1.0
+     */
+    private function setCurlStaticValues(CurlHandle $curlHandle): Curl
+    {
+        $this->setOptionCurl($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        $this->setOptionCurl($curlHandle, CURLOPT_HEADER, false);
+        $this->setOptionCurl($curlHandle, CURLOPT_AUTOREFERER, true);
+        $this->setOptionCurl($curlHandle, CURLINFO_HEADER_OUT, true);
+        $this->setOptionCurl($curlHandle, CURLOPT_HEADERFUNCTION, [$this, 'getCurlHeaderRow']);
+
+        return $this;
+    }
+
+    /**
+     * @param CurlHandle $curlHandle
      * @param int $key
      * @param mixed $value
      * @return bool
@@ -235,6 +347,86 @@ class Curl
 
         return $this;
     }
+
+    /**
+     * Custom headers handling.
+     *
+     * @param CurlHandle $curlHandle
+     * @return Curl
+     */
+    private function setCurlCustomHeaders(CurlHandle $curlHandle): Curl
+    {
+        $this->setProperCustomHeader();
+        $this->setupHeaders($curlHandle);
+
+        return $this;
+    }
+
+    /**
+     * Fix problematic header data by converting them to proper outputs.
+     *
+     * @return $this
+     * @since 6.1.0
+     */
+    private function setProperCustomHeader(): Curl
+    {
+        // Merge static header data into customPreHeaders.
+        foreach ($this->customPreHeadersStatic as $headerKey => $headerValue) {
+            $this->customPreHeaders[$headerKey] = $headerValue;
+        }
+
+        foreach ($this->customPreHeaders as $headerKey => $headerValue) {
+            $testHead = explode(":", $headerValue, 2);
+            if (isset($testHead[1])) {
+                $this->customHeaders[] = $headerValue;
+            } elseif (!is_numeric($headerKey)) {
+                $this->customHeaders[] = $headerKey . ": " . $headerValue;
+            }
+            unset($this->customPreHeaders[$headerKey]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $curlHandle
+     * @return $this
+     * @since 6.1.0
+     */
+    private function setupHeaders($curlHandle)
+    {
+        if (count($this->customHeaders)) {
+            $this->setOptionCurl($curlHandle, CURLOPT_HTTPHEADER, $this->customHeaders);
+        }
+
+        return $this;
+    }
+
+    /**
+     * When curl has done its request, also prefetch the server's response header here, so that data
+     * from that part can be handled. Separately. This is where we primarily get out HTTP Response codes.
+     *
+     * @param $curlHandle
+     * @param $header
+     * @return int
+     */
+    private function getCurlHeaderRow($curlHandle, $header): int
+    {
+        $headSplit = explode(':', $header, 2);
+        $spacedSplit = explode(' ', $header, 2);
+
+        if (count($headSplit) < 2) {
+            if (count($spacedSplit) > 1) {
+                $this->curlResponseHeaders[$spacedSplit[0]][] = trim($spacedSplit[1]);
+            }
+            return strlen($header);
+        }
+
+        $this->curlResponseHeaders[$headSplit[0]][] = trim($headSplit[1]);
+
+        return strlen($header);
+    }
+
 
     private function request(string $url, array $data, $method = self::METHOD_GET, $dataType = self::TYPE_DEFAULT)
     {
