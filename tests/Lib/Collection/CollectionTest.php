@@ -74,6 +74,33 @@ final class CollectionTest extends TestCase
     }
 
     /**
+     * Verify that it's impossible to add an item of the wrong type to a collection
+     *
+     * @return void
+     * @throws TypeException
+     */
+    public function testAddWrongTypeData(): void
+    {
+        $collection = new Collection(data: $this->data);
+
+        $className = false;
+        try {
+            $collection[] = 42;
+        } catch (Exception $e) {
+            $className = get_class(object: $e);
+        }
+
+        $this::assertSame(
+            expected: TypeException::class,
+            actual: $className
+        );
+        $this->assertEquals(
+            expected: gettype($this->data[0]),
+            actual: $collection->getType()
+        );
+    }
+
+    /**
      * Verify that the toArray method works
      *
      * @return void
