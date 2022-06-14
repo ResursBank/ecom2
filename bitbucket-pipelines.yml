@@ -8,7 +8,7 @@ pipelines:
             caches:
               - composer
             script:
-              - apt-get update && apt-get install -y unzip git redis0
+              - apt-get update && apt-get install -y unzip git redis
               - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
               - pecl install redis
               - composer install
