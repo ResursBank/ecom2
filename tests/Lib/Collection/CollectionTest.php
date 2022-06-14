@@ -94,8 +94,8 @@ final class CollectionTest extends TestCase
             expected: TypeException::class,
             actual: $className
         );
-        $this->assertEquals(
-            expected: gettype($this->data[0]),
+        $this::assertEquals(
+            expected: gettype(value: $this->data[0]),
             actual: $collection->getType()
         );
     }
@@ -191,7 +191,7 @@ final class CollectionTest extends TestCase
         $collection = new Collection(data: $this->data);
         unset($collection[1]);
 
-        $this::assertEmpty($collection[1]);
+        $this::assertEmpty(actual: $collection[1]);
     }
 
     /**
@@ -295,13 +295,13 @@ final class CollectionTest extends TestCase
     {
         $collection = new Collection(data: $this->data);
         $shouldBeValid = $collection->valid();
-        $maxIndex = count($this->data) - 1;
+        $maxIndex = count(value: $this->data) - 1;
         for ($i = 0; $i <= $maxIndex; $i++) {
             $collection->next();
         }
         $shouldBeInvalid = $collection->valid();
 
-        $this::assertTrue($shouldBeValid);
-        $this::assertNotTrue($shouldBeInvalid);
+        $this::assertTrue(condition: $shouldBeValid);
+        $this::assertNotTrue(condition: $shouldBeInvalid);
     }
 }

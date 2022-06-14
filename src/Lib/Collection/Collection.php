@@ -30,8 +30,8 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     public function __construct(array $data, string $type = null)
     {
-        $type = $this->determineType($data, $type);
-        $this->verifyDataArrayType($data, $type);
+        $type = $this->determineType(data: $data, type: $type);
+        $this->verifyDataArrayType(data: $data, type: $type);
         $this->data = $data;
         $this->type = $type;
         $this->position = 0;
@@ -52,7 +52,7 @@ class Collection implements ArrayAccess, Iterator, Countable
         }
 
         if (!empty($data) && isset($data[0])) {
-            return is_object($data[0]) ? $data[0]::class : gettype($data[0]);
+            return is_object(value: $data[0]) ? $data[0]::class : gettype(value: $data[0]);
         }
 
         throw new TypeException(message: self::TYPE_ERR_NO_DATA);
@@ -70,14 +70,14 @@ class Collection implements ArrayAccess, Iterator, Countable
     {
         foreach ($data as $item) {
             if (
-                (is_object($item) && $item::class !== $type) ||
-                (!is_object($item) && gettype($item) !== $type)
+                (is_object(value: $item) && $item::class !== $type) ||
+                (!is_object(value: $item) && gettype(value: $item) !== $type)
             ) {
                 throw new TypeException(
                     message: sprintf(
                         self::TYPE_ERR,
                         $type,
-                        (is_object($item) ? $item::class : gettype($item))
+                        (is_object(value: $item) ? $item::class : gettype(value: $item))
                     )
                 );
             }
@@ -121,14 +121,14 @@ class Collection implements ArrayAccess, Iterator, Countable
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (
-            (is_object($value) && $value::class !== $this->type) ||
-            (!is_object($value) && gettype($value) !== $this->type)
+            (is_object(value: $value) && $value::class !== $this->type) ||
+            (!is_object(value: $value) && gettype(value: $value) !== $this->type)
         ) {
             throw new TypeException(
                 message: sprintf(
                     self::TYPE_ERR,
                     $this->type,
-                    is_object($value) ? $value::class : gettype($value)
+                    is_object(value: $value) ? $value::class : gettype(value: $value)
                 )
             );
         }
