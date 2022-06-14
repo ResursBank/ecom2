@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Lib\Network;
 
-use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Lib\Network\Curl;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Lib\Network\Curl;
 
 /**
  * This class will test curl methods.
@@ -29,15 +28,15 @@ class CurlTest extends TestCase
         parent::setUp();
     }
 
-    public function testAuth() {
+    public function testAuth()
+    {
         $this->curl->setAuthentication('testuser', 'testpassword');
-        $this->assertTrue(
-            $this->curl->getAuthentication()['username'] === 'testuser' &&
-            $this->curl->getAuthentication()['password'] === 'testpassword'
-        );
+        self::assertSame('testuser', $this->curl->getAuthentication()['username']);
+        self::assertSame('testpassword', $this->curl->getAuthentication()['password']);
     }
 
-    public function testGet() {
+    public function testGet()
+    {
         $test = $this->curl->get('https://ipv4.netcurl.org');
         print_R($test);
     }

@@ -164,7 +164,7 @@ class Curl
      *
      * @param string $username
      * @param string $password
-     * @param int $authType
+        * @param int $authType
      * @return $this
      */
     public function setAuthentication(
@@ -179,7 +179,11 @@ class Curl
         return $this;
     }
 
-    public function getAuthentication() {
+    /**
+     * @return array
+     */
+    public function getAuthentication(): array
+    {
         return $this->authData;
     }
 
