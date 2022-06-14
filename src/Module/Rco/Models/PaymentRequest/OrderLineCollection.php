@@ -20,6 +20,7 @@ class OrderLineCollection extends Collection
     {
         parent::__construct(
             data: $data,
-            type: OrderLine::class);
+            type: OrderLine::class
+        );
     }
 }
