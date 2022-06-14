@@ -8,7 +8,7 @@ pipelines:
           caches:
             - composer
           script:
-            - apt-get update && apt-get install -y unzip git redis php-redis
+            - apt-get update && apt-get install -y unzip git redis php8.1-redis
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
             - composer require phpunit/phpunit
