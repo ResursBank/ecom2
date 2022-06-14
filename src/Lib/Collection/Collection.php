@@ -18,7 +18,6 @@ class Collection implements ArrayAccess, Iterator, Countable
 {
     private const TYPE_ERR = "Collection requires data to be of type %s, received %s";
     private const TYPE_ERR_NO_DATA = "No type or data specified";
-    // @todo: Enforce type when adding data, need to drop this again for presta stuff...
 
     protected string $type;
     private array $data;
@@ -121,8 +120,17 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if (!($value instanceof $this->type)) {
-            throw new TypeException(sprintf(self::TYPE_ERR, $this->type, $value::class));
+        if (
+            (is_object($value) && $value::class !== $this->type) ||
+            (!is_object($value) && gettype($value) !== $this->type)
+        ) {
+            throw new TypeException(
+                message: sprintf(
+                    self::TYPE_ERR,
+                    $this->type,
+                    is_object($value) ? $value::class : gettype($value)
+                )
+            );
         }
 
         if (is_null($offset)) {
