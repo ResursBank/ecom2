@@ -8,8 +8,13 @@ pipelines:
           caches:
             - composer
           script:
-            - apt-get update && apt-get install -y unzip git redis
+            - apt-get update && apt-get install -y unzip git redis php-redis
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
             - composer require phpunit/phpunit
             - vendor/bin/phpunit --configuration ./phpunit.xml
+          services:
+            - redis
+definitions:
+  services:
+    image: redis:5.0-alpine
