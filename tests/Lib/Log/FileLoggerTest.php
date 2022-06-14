@@ -23,6 +23,8 @@ use function is_array;
  */
 final class FileLoggerTest extends TestCase
 {
+    private bool $isPipeline = false;
+
     private const BASE_PATH = '/tmp';
     private const PATH_PREFIX = 'phpunit_FileLoggerTest';
     private const LOG_FILENAME = 'ecom.log';
@@ -41,6 +43,11 @@ final class FileLoggerTest extends TestCase
      */
     protected function setUp(): void
     {
+        // For pipelines.
+        if (isset($_ENV['is_pipeline'])) {
+            $this->isPipeline = (bool)$_ENV['is_pipeline'];
+        }
+
         $this->message = 'This is a test message';
 
         if (!is_writable(filename: self::BASE_PATH)) {
@@ -60,6 +67,16 @@ final class FileLoggerTest extends TestCase
         }
 
         $this->logger = new FileLogger(path: $this->path);
+    }
+
+    /**
+     * Tests are marked with this value if running from Bitbucket Pipelines.
+     *
+     * @return bool
+     */
+    protected function isPipeline(): bool
+    {
+        return $this->isPipeline;
     }
 
     /**
@@ -99,6 +116,11 @@ final class FileLoggerTest extends TestCase
      */
     public function testLoggingFailure(): void
     {
+        if ($this->isPipeline()) {
+            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            return;
+        }
+
         if (!chmod(filename: $this->filename, permissions: 0000)) {
             $this::markTestSkipped('Failed to set file permissions');
         }
@@ -322,6 +344,11 @@ final class FileLoggerTest extends TestCase
      */
     public function testValidatePathWhichIsUnwritable(): void
     {
+        if ($this->isPipeline()) {
+            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            return;
+        }
+
         if (!chmod(filename: $this->path, permissions: 0400)) {
             $this::markTestSkipped(message: 'Failed to change path directory permissions');
         }
