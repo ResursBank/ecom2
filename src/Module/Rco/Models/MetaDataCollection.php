@@ -16,5 +16,11 @@ use Resursbank\Ecom\Lib\Collection\Collection;
  */
 class MetaDataCollection extends Collection
 {
-    protected ?string $type = MetaData::class;
+    public function __construct(array $data)
+    {
+        parent::__construct(
+            data: $data,
+            type: MetaData::class
+        );
+    }
 }

@@ -16,5 +16,10 @@ use Resursbank\Ecom\Lib\Collection\Collection;
  */
 class OrderLineCollection extends Collection
 {
-    protected ?string $type = OrderLine::class;
+    public function __construct(array $data)
+    {
+        parent::__construct(
+            data: $data,
+            type: OrderLine::class);
+    }
 }
