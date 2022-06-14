@@ -159,16 +159,28 @@ class Curl
         return $this;
     }
 
+    /**
+     * Curl based authentication (not token bearers).
+     *
+     * @param string $username
+     * @param string $password
+     * @param int $authType
+     * @return $this
+     */
     public function setAuthentication(
-        $username,
-        $password,
-        $authType = CURLAUTH_BASIC,
+        string $username,
+        string $password,
+        int $authType = CURLAUTH_BASIC,
     ): Curl {
         $this->authData['username'] = $username;
         $this->authData['password'] = $password;
         $this->authData['type'] = $authType;
 
         return $this;
+    }
+
+    public function getAuthentication() {
+        return $this->authData;
     }
 
     /**

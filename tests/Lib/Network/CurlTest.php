@@ -23,10 +23,18 @@ class CurlTest extends TestCase
             originalClassName: Curl::class
         );
 
-/*        Config::setup(
+        /*Config::setup(
             credentials: $credentials
         );*/
         parent::setUp();
+    }
+
+    public function testAuth() {
+        $this->curl->setAuthentication('testuser', 'testpassword');
+        $this->assertTrue(
+            $this->curl->getAuthentication()['username'] === 'testuser' &&
+            $this->curl->getAuthentication()['password'] === 'testpassword'
+        );
     }
 
     public function testGet() {
