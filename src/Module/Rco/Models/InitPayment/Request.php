@@ -19,17 +19,20 @@ class Request
 {
     public function __construct(
         public OrderLineCollection $orderLines,
-        public MetaDataCollection $metaData,
         public Customer $customer,
         public string $successUrl,
         public string $backUrl,
         public string $shopUrl,
-        public ?string $paymentCreatedCallbackUrl = null
+        public ?string $paymentCreatedCallbackUrl = null,
+        public ?MetaDataCollection $metaData = null
     ) {
     }
 
     public static function initPayment(Request $request): Response
     {
         // @todo POST /payments/{orderReference}
+        $response = dummy_request_function($request);
+        
+        return $response;
     }
 }

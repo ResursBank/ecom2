@@ -9,12 +9,15 @@ use Resursbank\Ecom\Module\Rco\Models\CustomerType;
 
 class Customer
 {
-    public string $governmentId;
-    public string $mobile;
-    public string $email;
-    public ?Address $deliveryAddress;
-    public ?Address $invoiceAddress;
-    public ?string $customerType;
-    public ?string $mobileNotValidated;
-    public ?string $emailNotValidated;
+    public function __construct(
+        public string $governmentId,
+        public string $mobile,
+        public string $email,
+        public ?Address $deliveryAddress = null,
+        public ?Address $invoiceAddress = null,
+        public ?string $customerType = null,
+        public ?string $mobileNotValidated = null,
+        public ?string $emailNotValidated = null
+    ) {
+}
 }
