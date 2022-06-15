@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use _PHPStan_c2e813828\Nette\Neon\Exception;
 use CurlHandle;
+use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 
@@ -59,7 +61,7 @@ class Curl
      * Default DataType means that we usually use the standard GET/POST variables like ?var=val&var1=val1
      * @var int
      */
-    const TYPE_DEFAULT = 0;
+    const TYPE_POSTVARS = 0;
 
     /**
      * Using JSON-formatted data.
@@ -75,11 +77,10 @@ class Curl
     private CurlHandle $curlHandle;
 
     /**
-     * The internal $curlResponse is a single response class generated from curl. From PHP 8.0 it is defined as
-     * CurlHandle. Curl-responses gets its handle from curl_exec.
-     * @var CurlHandle
+     * Internal response container. Binary safe (ref: curl).
+     * @var mixed
      */
-    private CurlHandle $curlResponse;
+    private $curlResponse;
 
     /**
      * Initial holder for HTTP Head response codes.
@@ -149,7 +150,6 @@ class Curl
     private array $throwableHttpCodes = [
         ['400', '599'],
     ];
-    private string $currentUserAgent = '';
 
     /**
      * Reset curl on each new curlrequest to make sure old responses is no longer present.
@@ -171,19 +171,6 @@ class Curl
     }
 
     /**
-     * Set short user-agent name for your requesting client. This string will be prepended to a longer summarized agent.
-     * @param string $userAgent
-     *
-     * @return $this
-     */
-    public function setUserAgent(string $userAgent): Curl
-    {
-        $this->currentUserAgent = $userAgent;
-
-        return $this;
-    }
-
-    /**
      * Final user agent string that will be pushed into http-requests.
      * @return string
      */
@@ -192,8 +179,8 @@ class Curl
         $return = [];
 
         $userAgentArray = [
-            $this->currentUserAgent,
-            sprintf('ECom2-%s', self::class),
+            Config::$instance->userAgent,
+            sprintf('ECom2-%s', $this->getNameSpaceClass(self::class)),
             sprintf('PHP-%s', PHP_VERSION),
         ];
 
@@ -207,9 +194,25 @@ class Curl
     }
 
     /**
+     * @param $class
+     * @return mixed|string
+     */
+    private function getNameSpaceClass($class)
+    {
+        $return = '';
+
+        $wrapperClassExplode = explode('\\', $class);
+        if (is_array($wrapperClassExplode) && count($wrapperClassExplode)) {
+            $return = $wrapperClassExplode[count($wrapperClassExplode) - 1];
+        }
+
+        return $return;
+    }
+
+    /**
      * @throws CurlException
      */
-    private function initCurlHandle($url): Curl
+    private function initCurlHandle($url): CurlHandle
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new CurlException('Invalid URL requested.');
@@ -221,6 +224,7 @@ class Curl
         // the handle instantly.
 
         $curlHandle = curl_init();
+        // ECP-18
         $this->setCurlAuthentication($curlHandle);
         // Below is the list of the netCurl-methods. They are remarked if the implementation is skipped.
         // On finalization, such rows can be safely removed.
@@ -235,10 +239,9 @@ class Curl
         // Custom headers setup is where we push data into the request-headers. This is where data like bearers,
         // user-agent, etc will land. Setting header data is done with setHeader.
         $this->setCurlCustomHeaders($curlHandle);
-
         $this->setOptionCurl($curlHandle, CURLOPT_URL, $url);
 
-        return $this;
+        return $curlHandle;
     }
 
     /**
@@ -319,6 +322,7 @@ class Curl
         $this->setOptionCurl($curlHandle, CURLOPT_AUTOREFERER, true);
         $this->setOptionCurl($curlHandle, CURLINFO_HEADER_OUT, true);
         $this->setOptionCurl($curlHandle, CURLOPT_HEADERFUNCTION, [$this, 'getCurlHeaderRow']);
+        $this->setOptionCurl($curlHandle, CURLOPT_USERAGENT, $this->getUserAgent());
 
         return $this;
     }
@@ -340,7 +344,10 @@ class Curl
      */
     private function setCurlAuthentication(CurlHandle $curlHandle): Curl
     {
-        if (!empty($this->authData['usernane']) && !empty($this->authData['password'])) {
+        /**
+         * @todo ECP-18
+         */
+        if (!empty($this->authData['username']) && !empty($this->authData['password'])) {
             $this->setOptionCurl(
                 $curlHandle,
                 CURLOPT_HTTPAUTH,
@@ -435,35 +442,215 @@ class Curl
         return strlen($header);
     }
 
-
-    private function request(string $url, array $data, $method = self::METHOD_GET, $dataType = self::TYPE_DEFAULT)
+    /**
+     * @param string $url
+     * @param array $data
+     * @param int $method
+     * @param int $dataType
+     * @return $this
+     * @throws CurlException
+     * @see https://developer.mozilla.org/en-US/docsfu/Web/HTTP/Methods
+     */
+    private function request(string $url, array $data, $method = self::METHOD_GET, $dataType = self::TYPE_JSON)
     {
         $this->resetCurlRequest();
-        $this->initCurlHandle($url);
+        $this->getCurlRequest(
+            $this->initCurlHandle($url)
+        );
+
+        return $this;
     }
 
-    public function get(string $url, array $data = [], int $dataType = self::TYPE_DEFAULT)
+    /**
+     * @param $curlHandle
+     * @return $this
+     * @throws CurlException
+     * @throws Exception
+     */
+    private function getCurlRequest($curlHandle): Curl
+    {
+        $this->curlResponse = curl_exec($curlHandle);
+        // Friendly anti-backfire support.
+        $this->curlHttpCode = curl_getinfo(
+            $curlHandle,
+            CURLINFO_RESPONSE_CODE
+        );
+        $this->getCurlException($curlHandle, $this->curlHttpCode);
+
+        return $this;
+    }
+
+    /**
+     * @param $curlHandle
+     * @param $httpCode
+     * @return Curl
+     * @throws CurlException
+     * @throws Exception
+     */
+    private function getCurlException($curlHandle, $httpCode): Curl
+    {
+        $errorString = curl_error($curlHandle);
+        $errorCode = curl_errno($curlHandle);
+        if ($errorCode) {
+            throw new CurlException(
+                sprintf(
+                    'curl error (%s): %s',
+                    $errorCode,
+                    $errorString
+                ),
+                $errorCode
+            );
+        }
+
+        $httpHead = $this->getHeader('http');
+        if (empty($errorString) && !empty($httpHead)) {
+            $errorString = $httpHead;
+        }
+        $this->getHttpException($errorString, $httpCode);
+
+        return $this;
+    }
+
+    /**
+     * @param string $specificKey
+     * @return string
+     */
+    public function getHeader(string $specificKey = '')
+    {
+        $return = [];
+
+        $headerRequest = is_array($this->curlResponseHeaders) ? $this->curlResponseHeaders : [];
+
+        if (count($headerRequest)) {
+            foreach ($headerRequest as $headKey => $headArray) {
+                // Something has pushed in duplicates of a header row, so lets pop one.
+                if (count($headArray) > 1) {
+                    $headArray = array_pop($headArray);
+                }
+                if (is_array($headArray) && count($headArray) === 1) {
+                    if (!$specificKey) {
+                        $return[] = sprintf("%s: %s", $headKey, array_pop($headArray));
+                    } elseif (strtolower($specificKey) === strtolower($headKey)) {
+                        $return[] = sprintf("%s", array_pop($headArray));
+                    } elseif (strtolower($specificKey) === 'http') {
+                        if (0 === stripos($headKey, "http")) {
+                            $return[] = sprintf("%s", array_pop($headArray));
+                        }
+                    }
+                }
+            }
+        }
+
+        return implode("\n", $return);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCode(): int
+    {
+        return $this->curlHttpCode;
+    }
+
+    /**
+     * Get parsed response. No longer using IO.
+     *
+     * @return mixed
+     * @throws JsonException
+     */
+    public function getParsed()
+    {
+        $contentType = $this->getHeader('content-type');
+        $return = $content = $this->getBody();
+
+        if (preg_match('/\/json/i', $contentType)) {
+            $return = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return mixed Can be both strings and binary
+     */
+    public function getBody()
+    {
+        return $this->curlResponse;
+    }
+
+    /**
+     * Throw on any code that matches the store throwableHttpCode (use with setThrowableHttpCodes())
+     *
+     * @param string $httpMessageString
+     * @param int $httpCode
+     * @throws CurlException
+     */
+    public function getHttpException(
+        string $httpMessageString = '',
+        int $httpCode = 0
+    ) {
+        if (!is_array($this->throwableHttpCodes)) {
+            $this->throwableHttpCodes = [];
+        }
+        foreach ($this->throwableHttpCodes as $codeListArray => $codeArray) {
+            if ((isset($codeArray[1]) && $httpCode >= (int)$codeArray[0] && $httpCode <= (int)$codeArray[1])) {
+                throw new CurlException(
+                    sprintf(
+                        'Error %d returned from server: "%s".',
+                        $httpCode,
+                        $httpMessageString
+                    ),
+                    $httpCode
+                );
+            }
+        }
+    }
+
+    /**
+     * @param string $url
+     * @param array $data
+     * @param int $dataType
+     * @return $this
+     * @throws CurlException
+     */
+    public function get(string $url, array $data = [], int $dataType = self::TYPE_JSON)
     {
         return $this->request($url, $data, self::METHOD_GET, $dataType);
     }
 
-    public function post(string $url, array $data = [], int $dataType = self::TYPE_DEFAULT)
+    /**
+     * @param string $url
+     * @param array $data
+     * @param int $dataType
+     * @return $this
+     * @throws CurlException
+     */
+    public function post(string $url, array $data = [], int $dataType = self::TYPE_JSON)
     {
         return $this->request($url, $data, self::METHOD_POST, $dataType);
     }
 
-    public function put(string $url, array $data = [], int $dataType = self::TYPE_DEFAULT)
+    /**
+     * @param string $url
+     * @param array $data
+     * @param int $dataType
+     * @return $this
+     * @throws CurlException
+     */
+    public function put(string $url, array $data = [], int $dataType = self::TYPE_JSON)
     {
         return $this->request($url, $data, self::METHOD_PUT, $dataType);
     }
 
-    public function delete(string $url, array $data = [], int $dataType = self::TYPE_DEFAULT)
+    /**
+     * @param string $url
+     * @param array $data
+     * @param int $dataType
+     * @return $this
+     * @throws CurlException
+     */
+    public function delete(string $url, array $data = [], int $dataType = self::TYPE_JSON)
     {
         return $this->request($url, $data, self::METHOD_DELETE, $dataType);
-    }
-
-    public function head(string $url, array $data = [], int $dataType = self::TYPE_DEFAULT)
-    {
-        return $this->request($url, $data, self::METHOD_HEAD, $dataType);
     }
 }

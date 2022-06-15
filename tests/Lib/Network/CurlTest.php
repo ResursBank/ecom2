@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Lib\Network;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -39,6 +41,22 @@ class CurlTest extends TestCase
      */
     private Curl $curl;
 
+    /**
+     * @param $class
+     * @return mixed|string
+     */
+    private function getNamespaceClass($class)
+    {
+        $return = '';
+
+        $wrapperClassExplode = explode('\\', $class);
+        if (is_array($wrapperClassExplode) && count($wrapperClassExplode)) {
+            $return = $wrapperClassExplode[count($wrapperClassExplode) - 1];
+        }
+
+        return $return;
+    }
+
     protected function setUp(): void
     {
         $this->noneCache = $this->createMock(
@@ -51,14 +69,12 @@ class CurlTest extends TestCase
             originalClassName: FileLogger::class
         );
 
-        /*$this->curl = $this->createMock(
-            originalClassName: Curl::class
-        );*/
         $this->curl = new Curl();
 
         Config::setup(
             credentials: $this->credentials,
-            logger: $this->logger
+            logger: $this->logger,
+            userAgent: $this->getNamespaceClass(self::class)
         );
 
         parent::setUp();
@@ -95,9 +111,28 @@ class CurlTest extends TestCase
         self::assertSame($pw, $this->curl->getAuthentication()['password']);
     }
 
-    public function testGet()
+    /**
+     * @param $ip
+     * @return mixed
+     */
+    private function validateRemoteAddr($ip)
     {
-        $test = $this->curl->get('https://ipv4.netcurl.org');
-        print_R($test);
+        return filter_var($ip, FILTER_VALIDATE_IP) === $ip;
+    }
+
+    /**
+     * Test to make sure that remote requests really works.
+     *
+     * @throws JsonException
+     * @throws CurlException
+     */
+    public function testRealGetRequest()
+    {
+        $curlRequest = $this->curl->get('https://ipv4.netcurl.org');
+        self::assertTrue(
+            $this->validateRemoteAddr(
+                $curlRequest->getParsed()->ip
+            ) && $curlRequest->getCode() === 200
+        );
     }
 }
