@@ -22,6 +22,8 @@ use stdClass;
  */
 class FilesystemTest extends TestCase
 {
+    private bool $isPipeline = false;
+
     /**
      * Base path of the directories and files these tests will create.
      */
@@ -63,6 +65,11 @@ class FilesystemTest extends TestCase
      */
     protected function setUp(): void
     {
+        // For pipelines.
+        if (isset($_ENV['is_pipeline'])) {
+            $this->isPipeline = (bool)$_ENV['is_pipeline'];
+        }
+
         // Create directory where all other directories / files will be created
         // during our tests, to avoid bloating /tmp.
         if (!is_dir(filename: self::BASE_PATH)) {
@@ -79,6 +86,16 @@ class FilesystemTest extends TestCase
         $this->file = "$this->path/$this->key.cache";
 
         parent::setUp();
+    }
+
+    /**
+     * Tests are marked with this value if running from Bitbucket Pipelines.
+     *
+     * @return bool
+     */
+    protected function isPipeline(): bool
+    {
+        return $this->isPipeline;
     }
 
     /**
@@ -276,6 +293,10 @@ class FilesystemTest extends TestCase
      */
     public function testWriteThrowsIfCacheFileIsNotWritable(): void
     {
+        if ($this->isPipeline()) {
+            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            return;
+        }
         mkdir(directory: $this->path, permissions: 0755);
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0500);
@@ -305,6 +326,11 @@ class FilesystemTest extends TestCase
      */
     public function testWriteThrowsWithExistingDirectory(): void
     {
+        if ($this->isPipeline()) {
+            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            return;
+        }
+
         mkdir(directory: $this->path, permissions: 0700);
         mkdir(directory: $this->file, permissions: 0500);
 
@@ -385,7 +411,7 @@ class FilesystemTest extends TestCase
      * @throws ValidationException
      * @throws Exception
      */
-    public function testReadWitAllocatedCacheFileReturnsNull(): void
+    public function testReadWithAllocatedCacheFileReturnsNull(): void
     {
         mkdir(directory: $this->file, permissions: 0755, recursive: true);
 
@@ -401,8 +427,13 @@ class FilesystemTest extends TestCase
      * @throws ValidationException
      * @throws Exception
      */
-    public function testReadWitUnreadableCacheFileReturnsNull(): void
+    public function testReadWithUnreadableCacheFileReturnsNull(): void
     {
+        if ($this->isPipeline()) {
+            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            return;
+        }
+
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0000);
@@ -671,6 +702,11 @@ class FilesystemTest extends TestCase
      */
     public function testClearThrowsWhenFileNotWritable(): void
     {
+        if ($this->isPipeline()) {
+            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            return;
+        }
+
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0500);
