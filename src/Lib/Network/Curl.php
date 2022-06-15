@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 use CurlHandle;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 
 /**
@@ -265,6 +266,13 @@ class Curl
      */
     public function getAuthentication(): array
     {
+        if (empty($this->authData['username']) && !empty(Config::$instance->credentials->getUserName())) {
+            $this->setAuthentication(
+                Config::$instance->credentials->getUserName(),
+                Config::$instance->credentials->getPassword(),
+            );
+        }
+
         return $this->authData;
     }
 

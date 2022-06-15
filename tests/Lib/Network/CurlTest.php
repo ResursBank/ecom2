@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Lib\Network;
 
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\EmptyException;
+use Resursbank\Ecom\Lib\Api\Credentials;
+use Resursbank\Ecom\Lib\Cache\None;
+use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Curl;
 
 /**
@@ -14,25 +19,80 @@ use Resursbank\Ecom\Lib\Network\Curl;
  */
 class CurlTest extends TestCase
 {
+    /**
+     * @var None $noneCache
+     */
+    private None $noneCache;
+
+    /**
+     * @var Credentials $credentials
+     */
+    private Credentials $credentials;
+
+    /**
+     * @var FileLogger
+     */
+    private FileLogger $logger;
+
+    /**
+     * @var Curl $curl
+     */
     private Curl $curl;
 
     protected function setUp(): void
     {
-        $this->curl = $this->getMockForAbstractClass(
-            originalClassName: Curl::class
+        $this->noneCache = $this->createMock(
+            originalClassName: None::class
+        );
+        $this->credentials = $this->createMock(
+            originalClassName: Credentials::class
+        );
+        $this->logger = $this->createMock(
+            originalClassName: FileLogger::class
         );
 
-        /*Config::setup(
-            credentials: $credentials
+        /*$this->curl = $this->createMock(
+            originalClassName: Curl::class
         );*/
+        $this->curl = new Curl();
+
+        Config::setup(
+            credentials: $this->credentials,
+            logger: $this->logger
+        );
+
         parent::setUp();
     }
 
-    public function testAuth()
+    public function testNormalAuthentication()
     {
-        $this->curl->setAuthentication('testuser', 'testpassword');
-        self::assertSame('testuser', $this->curl->getAuthentication()['username']);
-        self::assertSame('testpassword', $this->curl->getAuthentication()['password']);
+        $un = 'testuser';
+        $pw = 'testpassword';
+
+        $this->credentials->method('getUsername')->willReturn($un);
+        $this->credentials->method('getPassword')->willReturn($pw);
+        $this->curl->setAuthentication($un, $pw);
+
+        self::assertSame($un, $this->curl->getAuthentication()['username']);
+        self::assertSame($pw, $this->curl->getAuthentication()['password']);
+    }
+
+    /**
+     * Purpose is to make the curl entity to set credentials automatically from test Config-class.
+     * @throws EmptyException
+     */
+    public function testAuthenticationByConfiguration()
+    {
+        $un = 'username_config';
+        $pw = 'password_config';
+
+        Config::setup(
+            credentials: new Credentials(username: $un, password: $pw, test: true),
+            logger: $this->logger
+        );
+
+        self::assertSame($un, $this->curl->getAuthentication()['username']);
+        self::assertSame($pw, $this->curl->getAuthentication()['password']);
     }
 
     public function testGet()
