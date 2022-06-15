@@ -13,6 +13,7 @@ use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 
 /**
  * Defines a payment request object
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 class Request
 {
@@ -22,8 +23,13 @@ class Request
         public Customer $customer,
         public string $successUrl,
         public string $backUrl,
-        public ?string $paymentCreatedCallbackUrl,
-        public string $shopUrl
+        public string $shopUrl,
+        public ?string $paymentCreatedCallbackUrl = null
     ) {
+    }
+
+    public static function initPayment(Request $request): Response
+    {
+
     }
 }
