@@ -19,13 +19,15 @@ final class Config
      * @param Credentials $credentials
      * @param LoggerInterface $logger
      * @param LogLevel $logLevel
+     * @param string $userAgent
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
         public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
-        public readonly LogLevel $logLevel = LogLevel::INFO   // Only log info messages.
+        public readonly string $logLevel = LogLevel::INFO,   // Only log info messages.
+        public readonly string $userAgent
     ) {
     }
 
@@ -33,17 +35,20 @@ final class Config
      * @param Credentials $credentials
      * @param LoggerInterface $logger
      * @param LogLevel $logLevel
+     * @param string $userAgent
      * @return void
      */
     public static function setup(
         Credentials $credentials,
         LoggerInterface $logger,
         LogLevel $logLevel = LogLevel::INFO   // Only log info messages.
+        string $userAgent = ''
     ): void {
         self::$instance = new Config(
             $credentials,
             $logger,
-            $logLevel
+            $logLevel,
+            $userAgent
         );
 
 //        self::setupEvents();

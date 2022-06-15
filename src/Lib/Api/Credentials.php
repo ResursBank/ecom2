@@ -30,4 +30,20 @@ class Credentials
             throw new EmptyException('Password');
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUserName()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
 }
