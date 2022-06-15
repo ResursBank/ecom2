@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Rco\Models\PaymentRequest;
+namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
 use Resursbank\Ecom\Lib\Collection\Collection;
 

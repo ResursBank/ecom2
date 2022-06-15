@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Rco\Models\PaymentRequest;
+namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
 /**
  * Defines an OrderLine object as used when creating a new payment request

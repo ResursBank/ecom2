@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models;
 
-use Resursbank\Ecom\Module\Rco\Models\PaymentRequest\Customer;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Customer;
 
 /**
  * Defines a payment session

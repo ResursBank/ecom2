@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Rco\Models\PaymentRequest;
+namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
 use Resursbank\Ecom\Module\Rco\Models\Address;
 use Resursbank\Ecom\Module\Rco\Models\CustomerType;
