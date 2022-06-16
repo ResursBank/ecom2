@@ -13,6 +13,7 @@ use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Curl;
+use Resursbank\Ecom\Lib\Network\DataType;
 
 /**
  * This class will test curl methods.
@@ -115,7 +116,7 @@ class CurlTest extends TestCase
         $curlRequestPostGet = $this->curl->post(
             'https://ipv4.netcurl.org',
             ['customRow' => 'Present'],
-            Curl::TYPE_POSTVARS
+            DataType::POSTVARS
         );
 
         self::assertSame($customPostRow, $jsonInput);

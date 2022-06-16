@@ -22,18 +22,6 @@ class Curl
     // not be necessary to use.
 
     /**
-     * Default DataType means that we usually use the standard GET/POST variables like ?var=val&var1=val1
-     * @var int
-     */
-    const TYPE_POSTVARS = 0;
-
-    /**
-     * Using JSON-formatted data.
-     * @var int
-     */
-    const TYPE_JSON = 1;
-
-    /**
      * cURL simple handle. For this release, where we go for PHP 8, this is no longer a resource but a CurlHandle.
      * Only older PHP versions use resources.
      * @var CurlHandle
@@ -247,12 +235,12 @@ class Curl
     /**
      * @param string $url
      * @param array $data
-     * @param int $dataType
+     * @param DataType $dataType
      * @return $this
      * @throws CurlException
      * @throws Exception
      */
-    public function get(string $url, array $data = [], int $dataType = self::TYPE_JSON)
+    public function get(string $url, array $data = [], $dataType = DataType::JSON)
     {
         return $this->request($url, $data, RequestMethod::GET, $dataType);
     }
@@ -261,14 +249,18 @@ class Curl
      * @param string $url
      * @param array $data
      * @param int $method
-     * @param int $dataType
+     * @param DataType $dataType
      * @return $this
      * @throws CurlException
      * @throws Exception
      * @see https://developer.mozilla.org/en-US/docsfu/Web/HTTP/Methods
      */
-    private function request(string $url, array $data, $method = RequestMethod::GET, $dataType = self::TYPE_JSON)
-    {
+    private function request(
+        string $url,
+        array $data,
+        $method = RequestMethod::GET,
+        $dataType = DataType::JSON
+    ) {
         $this->resetCurlRequest();
         $this->getCurlRequest(
             $this->initCurlHandle($url, $data, $method, $dataType)
@@ -373,7 +365,7 @@ class Curl
         string $url,
         array $data,
         $method = RequestMethod::GET,
-        $dataType = self::TYPE_JSON
+        $dataType = DataType::JSON
     ): CurlHandle {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new CurlException('Invalid URL requested.');
@@ -515,18 +507,22 @@ class Curl
     /**
      * @param CurlHandle $curlHandle
      * @param array $requestData
-     * @param RequestMethod $requestMethod
-     * @param int $dataType
+     * @param $requestMethod
+     * @param $dataType
      * @return $this
      */
-    private function setCurlPostData(CurlHandle $curlHandle, array $requestData, RequestMethod $requestMethod, int $dataType): Curl
-    {
+    private function setCurlPostData(
+        CurlHandle $curlHandle,
+        array $requestData,
+        $requestMethod,
+        $dataType
+    ): Curl {
         $stringifyData = $this->getRequestData($requestData, $requestMethod, $dataType);
 
         // In the main netcurl library a switch-case was used as it also supported XML content. This slimmed
         // section is intended to just support JSON and regular get-post-data.
 
-        if ($dataType === self::TYPE_JSON) {
+        if ($dataType === DataType::JSON) {
             $jsonContentType = 'application/json; charset=utf-8';
             $this->customPreHeaders['Content-Type'] = $jsonContentType;
             $this->customPreHeaders['Content-Length'] = strlen($stringifyData);
@@ -543,18 +539,18 @@ class Curl
 
     /**
      * @param mixed $requestData
-     * @param RequestMethod $requestMethod
-     * @param int $dataType
+     * @param $requestMethod
+     * @param $dataType
      * @return string
      */
-    private function getRequestData(mixed $requestData, RequestMethod $requestMethod, int $dataType): string
+    private function getRequestData(mixed $requestData, $requestMethod, $dataType): string
     {
         $return = '';
 
         // In the main netcurl library a switch-case was used as it also supported XML content. This slimmed
         // section is intended to just support JSON and regular get-post-data.
 
-        if ($dataType === self::TYPE_JSON) {
+        if ($dataType === DataType::JSON) {
             $return = $this->getJsonData($requestData);
         } else {
             $requestQuery = '';
@@ -615,10 +611,10 @@ class Curl
 
     /**
      * @param CurlHandle $curlHandle
-     * @param RequestMethod $requestMethod
+     * @param $requestMethod
      * @return $this
      */
-    private function setCurlRequestMethod(CurlHandle $curlHandle, RequestMethod $requestMethod)
+    private function setCurlRequestMethod(CurlHandle $curlHandle, $requestMethod)
     {
         // Method REQUEST is removed from this section.
 
@@ -705,13 +701,25 @@ class Curl
     /**
      * @param string $url
      * @param array $data
-     * @param int $dataType
+     * @param DataType $dataType
      * @return $this
      * @throws CurlException
      */
-    public function post(string $url, array $data = [], int $dataType = self::TYPE_JSON)
+    public function post(string $url, array $data = [], $dataType = DataType::JSON)
     {
-        return $this->request($url, $data, self::METHOD_POST, $dataType);
+        return $this->request($url, $data, RequestMethod::POST, $dataType);
+    }
+
+    /**
+     * @param string $url
+     * @param array $data
+     * @param DataType $dataType
+     * @return $this
+     * @throws CurlException
+     */
+    public function put(string $url, array $data = [], $dataType = DataType::JSON)
+    {
+        return $this->request($url, $data, RequestMethod::PUT, $dataType);
     }
 
     /**
@@ -721,21 +729,9 @@ class Curl
      * @return $this
      * @throws CurlException
      */
-    public function put(string $url, array $data = [], int $dataType = self::TYPE_JSON)
+    public function delete(string $url, array $data = [], $dataType = DataType::JSON)
     {
-        return $this->request($url, $data, self::METHOD_PUT, $dataType);
-    }
-
-    /**
-     * @param string $url
-     * @param array $data
-     * @param int $dataType
-     * @return $this
-     * @throws CurlException
-     */
-    public function delete(string $url, array $data = [], int $dataType = self::TYPE_JSON)
-    {
-        return $this->request($url, $data, self::METHOD_DELETE, $dataType);
+        return $this->request($url, $data, RequestMethod::DELETE, $dataType);
     }
 
     /**
@@ -745,6 +741,7 @@ class Curl
      * @param $curlHandle
      * @param $header
      * @return int
+     * @noinspection PhpUnusedParameterInspection
      */
     private function getCurlHeaderRow($curlHandle, $header): int
     {
