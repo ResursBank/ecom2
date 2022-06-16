@@ -9,13 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
+use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
+use Resursbank\Ecom\Lib\Network\Curl;
 
 /**
  * Defines a payment request object
  * @SuppressWarnings(PHPMD.LongVariable)
  */
-class Request
+class Request extends Model
 {
     public function __construct(
         public OrderLineCollection $orderLines,
@@ -26,13 +28,30 @@ class Request
         public ?string $paymentCreatedCallbackUrl = null,
         public ?MetaDataCollection $metaData = null
     ) {
+        parent::__construct();
     }
 
     public static function initPayment(Request $request): Response
     {
-        // @todo POST /payments/{orderReference}
-        $response = dummy_request_function($request);
-        
-        return $response;
+        $curl = new Curl();
+        $curl =  $curl->get(
+            url: 'https://blablabla.example.com/payments/1234',
+            data: $request->toArray()
+        );
+
+        $parsedResp = $curl->getParsed();
+        return new Response(
+            paymentSessionId: $parsedResp->paymentSessionId,
+            iframe: $parsedResp->iframe,
+            script: $parsedResp->script,
+            customer: new Customer(
+                governmentId: $parsedResp->customer->governmentId,
+                mobile: $parsedResp->customer->mobile,
+                email: $parsedResp->customer->email,
+                ...
+            ),
+            baseUrl: $parsedResp->baseUrl,
+            html: $parsedResp->html
+        );
     }
 }
