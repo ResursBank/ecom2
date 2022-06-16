@@ -12,9 +12,7 @@ class Repository extends CoreModule
     public static function initPayment(
         InitPayment\Request $request
     ):InitPayment\Response  {
-        $response = InitPayment\Request::create(request: $request);
-
-        return $response;
+        return  InitPayment\Request::initPayment(request: $request);
     }
 
     public static function updatePayment(
