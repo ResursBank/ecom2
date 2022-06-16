@@ -80,16 +80,6 @@ class Curl
     ];
 
     /**
-     * @var string Custom content type.
-     */
-    private string $contentType = '';
-
-    /**
-     * @var array
-     */
-    private array $defaultOptions = [];
-
-    /**
      * @var array Authentication data (for curlauth/basic only)..
      */
     private $authData = ['username' => '', 'password' => '', 'type' => 1];
@@ -176,7 +166,7 @@ class Curl
      * @return mixed
      * @throws JsonException
      */
-    public function getParsed()
+    public function getParsed(): mixed
     {
         $contentType = $this->getHeader('content-type');
         $return = $content = $this->getBody();
@@ -227,7 +217,7 @@ class Curl
      *
      * @return mixed
      */
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->curlResponse;
     }
@@ -260,7 +250,7 @@ class Curl
         array $data,
         $method = RequestMethod::GET,
         $dataType = DataType::JSON
-    ) {
+    ): Curl {
         $this->resetCurlRequest();
         $this->getCurlRequest(
             $this->initCurlHandle($url, $data, $method, $dataType)
@@ -305,7 +295,7 @@ class Curl
      * @return Curl
      * @throws CurlException
      */
-    private function getCurlException(CurlHandle $curlHandle, $httpCode): Curl
+    private function getCurlException(CurlHandle $curlHandle, int $httpCode): Curl
     {
         $errorString = curl_error($curlHandle);
         $errorCode = curl_errno($curlHandle);
@@ -339,7 +329,7 @@ class Curl
     public function getHttpException(
         string $httpMessageString = '',
         int $httpCode = 0
-    ) {
+    ): void {
         if (!is_array($this->throwableHttpCodes)) {
             $this->throwableHttpCodes = [];
         }
@@ -435,7 +425,7 @@ class Curl
      * @param CurlHandle $curlHandle
      * @return $this
      */
-    private function setCurlDynamicValues(CurlHandle $curlHandle)
+    private function setCurlDynamicValues(CurlHandle $curlHandle): Curl
     {
         foreach ($this->options as $curlKey => $curlValue) {
             $this->setOptionCurl($curlHandle, $curlKey, $curlValue);
@@ -490,7 +480,7 @@ class Curl
      * @param $class
      * @return mixed|string
      */
-    private function getNameSpaceClass($class)
+    private function getNameSpaceClass(string $class)
     {
         $return = '';
 
@@ -592,9 +582,8 @@ class Curl
     /**
      * @param $arrayObject
      * @return bool
-     * @since 6.1.4
      */
-    public function hasData($arrayObject)
+    public function hasData($arrayObject): bool
     {
         $return = false;
 
@@ -612,7 +601,7 @@ class Curl
      * @param $requestMethod
      * @return $this
      */
-    private function setCurlRequestMethod(CurlHandle $curlHandle, $requestMethod)
+    private function setCurlRequestMethod(CurlHandle $curlHandle, $requestMethod): Curl
     {
         // Method REQUEST is removed from this section.
 
@@ -685,9 +674,8 @@ class Curl
     /**
      * @param $curlHandle
      * @return $this
-     * @since 6.1.0
      */
-    private function setupHeaders($curlHandle)
+    private function setupHeaders($curlHandle): Curl
     {
         if (count($this->customHeaders)) {
             $this->setOptionCurl($curlHandle, CURLOPT_HTTPHEADER, $this->customHeaders);
@@ -701,9 +689,9 @@ class Curl
      * @param array $data
      * @param DataType $dataType
      * @return $this
-     * @throws CurlException
+     * @throws CurlException|Exception
      */
-    public function post(string $url, array $data = [], $dataType = DataType::JSON)
+    public function post(string $url, array $data = [], $dataType = DataType::JSON): Curl
     {
         return $this->request($url, $data, RequestMethod::POST, $dataType);
     }
@@ -713,9 +701,9 @@ class Curl
      * @param array $data
      * @param DataType $dataType
      * @return $this
-     * @throws CurlException
+     * @throws CurlException|Exception
      */
-    public function put(string $url, array $data = [], $dataType = DataType::JSON)
+    public function put(string $url, array $data = [], $dataType = DataType::JSON): Curl
     {
         return $this->request($url, $data, RequestMethod::PUT, $dataType);
     }
@@ -725,9 +713,9 @@ class Curl
      * @param array $data
      * @param int $dataType
      * @return $this
-     * @throws CurlException
+     * @throws CurlException|Exception
      */
-    public function delete(string $url, array $data = [], $dataType = DataType::JSON)
+    public function delete(string $url, array $data = [], $dataType = DataType::JSON): Curl
     {
         return $this->request($url, $data, RequestMethod::DELETE, $dataType);
     }
