@@ -38,9 +38,9 @@ class DataConverter
         foreach ($sourceProperties as $sourceProperty) {
             $sourceProperty->setAccessible(accessible: true);
             $name = $sourceProperty->getName();
-            $value = $sourceProperty->getValue($object);
+            $value = $sourceProperty->getValue(object: $object);
 
-            if ($destReflection->hasProperty($name)) {
+            if ($destReflection->hasProperty(name: $name)) {
                 if (is_object($value)) {
                     $destinationProperty = $destReflection->getProperty($name);
 
