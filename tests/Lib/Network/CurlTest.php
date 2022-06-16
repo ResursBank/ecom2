@@ -41,45 +41,6 @@ class CurlTest extends TestCase
      */
     private Curl $curl;
 
-    /**
-     * @param $class
-     * @return mixed|string
-     */
-    private function getNamespaceClass($class)
-    {
-        $return = '';
-
-        $wrapperClassExplode = explode('\\', $class);
-        if (is_array($wrapperClassExplode) && count($wrapperClassExplode)) {
-            $return = $wrapperClassExplode[count($wrapperClassExplode) - 1];
-        }
-
-        return $return;
-    }
-
-    protected function setUp(): void
-    {
-        $this->noneCache = $this->createMock(
-            originalClassName: None::class
-        );
-        $this->credentials = $this->createMock(
-            originalClassName: Credentials::class
-        );
-        $this->logger = $this->createMock(
-            originalClassName: FileLogger::class
-        );
-
-        $this->curl = new Curl();
-
-        Config::setup(
-            credentials: $this->credentials,
-            logger: $this->logger,
-            userAgent: $this->getNamespaceClass(self::class)
-        );
-
-        parent::setUp();
-    }
-
     public function testNormalAuthentication()
     {
         $un = 'testuser';
@@ -112,6 +73,22 @@ class CurlTest extends TestCase
     }
 
     /**
+     * Test to make sure that remote requests really works.
+     *
+     * @throws CurlException
+     * @throws JsonException
+     */
+    public function testRealGetRequest()
+    {
+        $curlRequest = $this->curl->get('https://ipv4.netcurl.org');
+        self::assertTrue(
+            $this->validateRemoteAddr(
+                $curlRequest->getParsed()->ip
+            ) && $curlRequest->getCode() === 200
+        );
+    }
+
+    /**
      * @param $ip
      * @return mixed
      */
@@ -123,16 +100,67 @@ class CurlTest extends TestCase
     /**
      * Test to make sure that remote requests really works.
      *
-     * @throws JsonException
      * @throws CurlException
+     * @throws JsonException
      */
-    public function testRealGetRequest()
+    public function testRealPostRequest()
     {
-        $curlRequest = $this->curl->get('https://ipv4.netcurl.org');
-        self::assertTrue(
-            $this->validateRemoteAddr(
-                $curlRequest->getParsed()->ip
-            ) && $curlRequest->getCode() === 200
+        $customPostRow = '{"customRow":"Present"}';
+        $curlRequestJson = $this->curl->post('https://ipv4.netcurl.org', ['customRow' => 'Present']);
+
+        // As we use the same curl-session here, it is important that we fetch the
+        // input data before making next request.
+        $jsonInput = $curlRequestJson->getParsed()->input;
+
+        $curlRequestPostGet = $this->curl->post(
+            'https://ipv4.netcurl.org',
+            ['customRow' => 'Present'],
+            Curl::TYPE_POSTVARS
         );
+
+        self::assertSame($customPostRow, $jsonInput);
+        self::assertTrue(
+            isset($curlRequestPostGet->getParsed()->PARAMS_REQUEST->customRow) &&
+            $curlRequestPostGet->getParsed()->PARAMS_REQUEST->customRow === 'Present'
+        );
+    }
+
+    protected function setUp(): void
+    {
+        $this->noneCache = $this->createMock(
+            originalClassName: None::class
+        );
+        $this->credentials = $this->createMock(
+            originalClassName: Credentials::class
+        );
+        $this->logger = $this->createMock(
+            originalClassName: FileLogger::class
+        );
+
+        $this->curl = new Curl();
+
+        Config::setup(
+            credentials: $this->credentials,
+            logger: $this->logger,
+            userAgent: $this->getNamespaceClass(self::class)
+        );
+
+        parent::setUp();
+    }
+
+    /**
+     * @param $class
+     * @return mixed|string
+     */
+    private function getNamespaceClass($class)
+    {
+        $return = '';
+
+        $wrapperClassExplode = explode('\\', $class);
+        if (is_array($wrapperClassExplode) && count($wrapperClassExplode)) {
+            $return = $wrapperClassExplode[count($wrapperClassExplode) - 1];
+        }
+
+        return $return;
     }
 }
