@@ -93,4 +93,31 @@ final class DataConverterTest extends TestCase
             actual: $output
         );
     }
+
+    /**
+     * Verify that the stdClass converter doesn't fail when original stdClass object has extra properties but instead
+     * quietly removes them.
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function testConvertObjectWithExtraProperties(): void
+    {
+        $data = new stdClass();
+        $data->int = 42;
+        $data->message = "Foobar";
+        $data->other = "baz";
+
+        $expected = new TestClasses\SimpleDummy(
+            int: 42,
+            message: "Foobar"
+        );
+
+        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
+
+        $this::assertEquals(
+            expected: $expected,
+            actual: $output
+        );
+    }
 }
