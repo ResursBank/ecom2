@@ -116,10 +116,10 @@ class Curl
      */
     public function getAuthentication(): array
     {
-        if (empty($this->authData['username']) && !empty(Config::$instance->credentials->getUserName())) {
+        if (empty($this->authData['username']) && !empty(Config::$instance->credentials->username)) {
             $this->setAuthentication(
-                Config::$instance->credentials->getUserName(),
-                Config::$instance->credentials->getPassword(),
+                Config::$instance->credentials->username,
+                Config::$instance->credentials->password,
             );
         }
 
@@ -281,12 +281,12 @@ class Curl
     }
 
     /**
-     * @param $curlHandle
+     * @param CurlHandle $curlHandle
      * @return $this
      * @throws CurlException
      * @throws Exception
      */
-    private function getCurlRequest($curlHandle): Curl
+    private function getCurlRequest(CurlHandle $curlHandle): Curl
     {
         $this->curlResponse = curl_exec($curlHandle);
         // Friendly anti-backfire support.
@@ -300,13 +300,12 @@ class Curl
     }
 
     /**
-     * @param $curlHandle
-     * @param $httpCode
+     * @param CurlHandle $curlHandle
+     * @param int $httpCode
      * @return Curl
      * @throws CurlException
-     * @throws Exception
      */
-    private function getCurlException($curlHandle, $httpCode): Curl
+    private function getCurlException(CurlHandle $curlHandle, $httpCode): Curl
     {
         $errorString = curl_error($curlHandle);
         $errorCode = curl_errno($curlHandle);
