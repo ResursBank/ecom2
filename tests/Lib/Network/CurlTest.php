@@ -47,8 +47,6 @@ class CurlTest extends TestCase
         $un = 'testuser';
         $pw = 'testpassword';
 
-        $this->credentials->method('getUsername')->willReturn($un);
-        $this->credentials->method('getPassword')->willReturn($pw);
         $this->curl->setAuthentication($un, $pw);
 
         self::assertSame($un, $this->curl->getAuthentication()['username']);
