@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Lib\Utilities;
 
 use ArgumentCountError;
-use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
@@ -14,6 +18,8 @@ use stdClass;
 
 /**
  * Verifies that the DataConverter class works as intended.
+ *
+ *  @psalm-suppress PropertyNotSetInConstructor
  */
 final class DataConverterTest extends TestCase
 {
