@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Lib\Utilities;
 
+use ArgumentCountError;
+use Exception;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
 use stdClass;
@@ -18,7 +21,7 @@ final class DataConverterTest extends TestCase
      * Verify that the stdClass converter is able to convert object containing simple scalar types
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testSimpleConversion(): void
     {
@@ -43,7 +46,7 @@ final class DataConverterTest extends TestCase
      * Verify that the stdClass converter properly converts arrays to arrays
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testConvertWithArrays(): void
     {
@@ -68,7 +71,7 @@ final class DataConverterTest extends TestCase
      * Verify that the stdClass converter can handle conversion of objects within objects
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testConvertObjectContainingObject(): void
     {
@@ -99,7 +102,7 @@ final class DataConverterTest extends TestCase
      * quietly removes them.
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testConvertObjectWithExtraProperties(): void
     {
@@ -119,5 +122,21 @@ final class DataConverterTest extends TestCase
             expected: $expected,
             actual: $output
         );
+    }
+
+    /**
+     * Verify that if there are missing properties the stdClass converter will throw the appropriate exception.
+     *
+     * @return void
+     * @throws ArgumentCountError
+     * @throws ReflectionException
+     */
+    public function testConvertObjectWithMissingProperties(): void
+    {
+        $data = new stdClass();
+        $data->int = 42;
+
+        $this->expectException(ArgumentCountError::class);
+        DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
     }
 }
