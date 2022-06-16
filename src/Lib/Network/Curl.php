@@ -382,7 +382,6 @@ class Curl
         // Below is the list of the netCurl-methods. They are remarked if the implementation is skipped.
         // On finalization, such rows can be safely removed.
 
-        // setCurlMultiHeaders - A bulk action that we don't need.
         $this->setCurlDynamicValues($curlHandle);
         // SSL should be set after dynamic values as they have higher priority for security, than the user defined data.
         $this->setCurlStaticValues($curlHandle);
