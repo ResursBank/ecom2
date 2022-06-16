@@ -17,21 +17,21 @@ class DataConverter
     /**
      * Converts stdClass objects to specified type
      *
-     * @param object $obj
+     * @param object $object
      * @param class-string $type
      * @return object
      * @throws ReflectionException
      */
-    public static function stdClassToType(object $obj, string $type): object
+    public static function stdClassToType(object $object, string $type): object
     {
-        $sourceReflection = new ReflectionObject(object: $obj);
+        $sourceReflection = new ReflectionObject(object: $object);
         $destReflection = new ReflectionClass(objectOrClass: $type);
         $sourceProperties = $sourceReflection->getProperties();
         $arguments = [];
         foreach ($sourceProperties as $sourceProperty) {
             $sourceProperty->setAccessible(accessible: true);
             $name = $sourceProperty->getName();
-            $value = $sourceProperty->getValue($obj);
+            $value = $sourceProperty->getValue($object);
 
             if ($destReflection->hasProperty($name)) {
                 if (is_object($value)) {
@@ -40,7 +40,7 @@ class DataConverter
                     /** @var ReflectionNamedType $destinationType */
                     $destinationType = $destinationProperty->getType();
                     $propertyType = $destinationType->getName();
-                    $arguments[$name] = self::stdClassToType(obj: $value, type: $propertyType);
+                    $arguments[$name] = self::stdClassToType(object: $value, type: $propertyType);
                 } else {
                     $arguments[$name] = $value;
                 }
