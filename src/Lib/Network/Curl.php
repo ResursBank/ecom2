@@ -22,42 +22,6 @@ class Curl
     // not be necessary to use.
 
     /**
-     * HTTP GET Method (default).
-     * @var int
-     */
-    public const METHOD_GET = 0;
-    /**
-     * HTTP POST Method.
-     * @var int
-     */
-    public const METHOD_POST = 1;
-    /**
-     * HTTP PUT Method.
-     * @var int
-     */
-    public const METHOD_PUT = 2;
-    /**
-     * HTTP DELETE Method.
-     * @var int
-     */
-    public const METHOD_DELETE = 3;
-    /**
-     * HTTP HEAD Method.
-     * @var int
-     */
-    public const METHOD_HEAD = 4;
-    /**
-     * HTTP REQUEST Method.
-     * @var int
-     */
-    public const METHOD_REQUEST = 5;
-    /**
-     * HTTP PATCH Method.
-     * @var int
-     */
-    public const METHOD_PATCH = 6;
-
-    /**
      * Default DataType means that we usually use the standard GET/POST variables like ?var=val&var1=val1
      * @var int
      */
@@ -290,7 +254,7 @@ class Curl
      */
     public function get(string $url, array $data = [], int $dataType = self::TYPE_JSON)
     {
-        return $this->request($url, $data, self::METHOD_GET, $dataType);
+        return $this->request($url, $data, RequestMethod::GET, $dataType);
     }
 
     /**
@@ -303,7 +267,7 @@ class Curl
      * @throws Exception
      * @see https://developer.mozilla.org/en-US/docsfu/Web/HTTP/Methods
      */
-    private function request(string $url, array $data, $method = self::METHOD_GET, $dataType = self::TYPE_JSON)
+    private function request(string $url, array $data, $method = RequestMethod::GET, $dataType = self::TYPE_JSON)
     {
         $this->resetCurlRequest();
         $this->getCurlRequest(
@@ -408,7 +372,7 @@ class Curl
     private function initCurlHandle(
         string $url,
         array $data,
-        $method = self::METHOD_GET,
+        $method = RequestMethod::GET,
         $dataType = self::TYPE_JSON
     ): CurlHandle {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
@@ -551,11 +515,11 @@ class Curl
     /**
      * @param CurlHandle $curlHandle
      * @param array $requestData
-     * @param int $requestMethod
+     * @param RequestMethod $requestMethod
      * @param int $dataType
      * @return $this
      */
-    private function setCurlPostData(CurlHandle $curlHandle, array $requestData, int $requestMethod, int $dataType)
+    private function setCurlPostData(CurlHandle $curlHandle, array $requestData, RequestMethod $requestMethod, int $dataType): Curl
     {
         $stringifyData = $this->getRequestData($requestData, $requestMethod, $dataType);
 
@@ -568,7 +532,7 @@ class Curl
             $this->customPreHeaders['Content-Length'] = strlen($stringifyData);
             $this->setOptionCurl($curlHandle, CURLOPT_POSTFIELDS, $stringifyData);
         } else {
-            if ($requestMethod === self::METHOD_POST) {
+            if ($requestMethod === RequestMethod::POST) {
                 $this->setOptionCurl($curlHandle, CURLOPT_POST, true);
             }
             $this->setOptionCurl($curlHandle, CURLOPT_POSTFIELDS, $stringifyData);
@@ -579,11 +543,11 @@ class Curl
 
     /**
      * @param mixed $requestData
-     * @param int $requestMethod
+     * @param RequestMethod $requestMethod
      * @param int $dataType
      * @return string
      */
-    private function getRequestData(mixed $requestData, int $requestMethod, int $dataType): string
+    private function getRequestData(mixed $requestData, RequestMethod $requestMethod, int $dataType): string
     {
         $return = '';
 
@@ -595,7 +559,7 @@ class Curl
         } else {
             $requestQuery = '';
 
-            if ($requestMethod === self::METHOD_GET) {
+            if ($requestMethod === RequestMethod::GET) {
                 $requestQuery = '&';
             }
             if ($this->hasData($requestData)) {
@@ -651,27 +615,27 @@ class Curl
 
     /**
      * @param CurlHandle $curlHandle
-     * @param int $requestMethod
+     * @param RequestMethod $requestMethod
      * @return $this
      */
-    private function setCurlRequestMethod(CurlHandle $curlHandle, int $requestMethod)
+    private function setCurlRequestMethod(CurlHandle $curlHandle, RequestMethod $requestMethod)
     {
         // Method REQUEST is removed from this section.
 
         switch ($requestMethod) {
-            case self::METHOD_POST:
+            case RequestMethod::POST:
                 $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'POST');
                 break;
-            case self::METHOD_DELETE:
+            case RequestMethod::DELETE:
                 $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 break;
-            case self::METHOD_HEAD:
+            case RequestMethod::HEAD:
                 $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'HEAD');
                 break;
-            case self::METHOD_PUT:
+            case RequestMethod::PUT:
                 $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'PUT');
                 break;
-            case self::METHOD_PATCH:
+            case RequestMethod::PATCH:
                 $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'PATCH');
                 break;
             default:
