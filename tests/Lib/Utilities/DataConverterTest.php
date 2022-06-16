@@ -9,8 +9,17 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
 use stdClass;
 
+/**
+ * Verifies that the DataConverter class works as intended.
+ */
 final class DataConverterTest extends TestCase
 {
+    /**
+     * Verify that the stdClass converter is able to convert object containing simple scalar types
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
     public function testSimpleConversion(): void
     {
         $data = new stdClass();
@@ -23,6 +32,61 @@ final class DataConverterTest extends TestCase
         );
 
         $output = DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
+
+        $this::assertEquals(
+            expected: $expected,
+            actual: $output
+        );
+    }
+
+    /**
+     * Verify that the stdClass converter properly converts arrays to arrays
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function testConvertWithArrays(): void
+    {
+        $data = new stdClass();
+        $data->int = 42;
+        $data->arr = [1, 2, 3];
+
+        $expected = new TestClasses\ArrayDummy(
+            int: 42,
+            arr: [1, 2, 3]
+        );
+
+        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ArrayDummy::class);
+
+        $this::assertEquals(
+            expected: $expected,
+            actual: $output
+        );
+    }
+
+    /**
+     * Verify that the stdClass converter can handle conversion of objects within objects
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function testConvertObjectContainingObject(): void
+    {
+        $data = new stdClass();
+        $data->int = 42;
+        $data->simpleDummy = new stdClass();
+        $data->simpleDummy->int = 127;
+        $data->simpleDummy->message = "Foo";
+
+        $expected = new TestClasses\ComplexDummy(
+            int: 42,
+            simpleDummy: new TestClasses\SimpleDummy(
+                int: 127,
+                message: "Foo"
+            )
+        );
+
+        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ComplexDummy::class);
 
         $this::assertEquals(
             expected: $expected,
