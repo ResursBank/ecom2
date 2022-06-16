@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Utilities;
 
+use ArgumentCountError;
 use ReflectionClass;
 use ReflectionObject;
 use ReflectionNamedType;
@@ -21,6 +22,7 @@ class DataConverter
      * @param class-string $type
      * @return object
      * @throws ReflectionException
+     * @throws ArgumentCountError
      */
     public static function stdClassToType(object $object, string $type): object
     {
