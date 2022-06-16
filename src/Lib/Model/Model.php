@@ -23,4 +23,14 @@ class Model
         // @todo Implement loading
         return $this;
     }
+
+    /**
+     * Converts the object to an array suitable for use with the Curl library
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return (array)$this;
+    }
 }
