@@ -26,7 +26,7 @@ final class Config
     public function __construct(
         public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
-        public readonly string $logLevel = LogLevel::INFO,   // Only log info messages.
+        public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         public readonly string $userAgent
     ) {
     }
@@ -41,7 +41,7 @@ final class Config
     public static function setup(
         Credentials $credentials,
         LoggerInterface $logger,
-        LogLevel $logLevel = LogLevel::INFO   // Only log info messages.
+        LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         string $userAgent = ''
     ): void {
         self::$instance = new Config(
