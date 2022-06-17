@@ -663,6 +663,7 @@ class Curl
          */
         foreach ($this->customPreHeaders as $header) {
             // Rendering final header array to hand over to curl.
+            // This is sent over to curl as is.
             $this->customHeaders[] = sprintf('%s: %s', $header->key, $header->value);
         }
         // Empty out preHeaders.
