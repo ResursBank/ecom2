@@ -134,10 +134,11 @@ class Curl
      */
     public function setHeader(string $key, string $value, bool $static = false): Curl
     {
-        $this->customPreHeaders[$key] = $value;
-        if ($static) {
-            $this->customPreHeadersStatic[$key] = $value;
-        }
+        $this->customPreHeaders[] = new Header(
+            key: $key,
+            value: $value,
+            isStatic: $static
+        );
 
         return $this;
     }
@@ -499,8 +500,14 @@ class Curl
 
         if ($dataType === DataType::JSON) {
             $jsonContentType = 'application/json; charset=utf-8';
-            $this->customPreHeaders['Content-Type'] = $jsonContentType;
-            $this->customPreHeaders['Content-Length'] = strlen($stringifyData);
+            $this->customPreHeaders[] = new Header(
+                key: 'Content-Type',
+                value: $jsonContentType
+            );
+            $this->customPreHeaders[] = new Header(
+                key: 'Content-Length',
+                value: strlen($stringifyData)
+            );
             $this->setOptionCurl($curlHandle, CURLOPT_POSTFIELDS, $stringifyData);
         } else {
             if ($requestMethod === RequestMethod::POST) {
@@ -643,17 +650,23 @@ class Curl
         // Merge static header data into customPreHeaders.
         foreach ($this->customPreHeadersStatic as $headerKey => $headerValue) {
             $this->customPreHeaders[$headerKey] = $headerValue;
+            $this->customPreHeaders[] = new Header(
+                key: $headerKey,
+                value: $headerValue,
+                isStatic: true
+            );
         }
 
-        foreach ($this->customPreHeaders as $headerKey => $headerValue) {
-            $testHead = is_string($headerValue) ? explode(":", $headerValue, 2) : $headerValue;
-            if (isset($testHead[1])) {
-                $this->customHeaders[] = $headerValue;
-            } elseif (!is_numeric($headerKey)) {
-                $this->customHeaders[] = $headerKey . ": " . $headerValue;
-            }
-            unset($this->customPreHeaders[$headerKey]);
+        /**
+         * Non associative headers are no longer allowed.
+         * @var Header $header
+         */
+        foreach ($this->customPreHeaders as $header) {
+            // Rendering final header array to hand over to curl.
+            $this->customHeaders[] = sprintf('%s: %s', $header->key, $header->value);
         }
+        // Empty out preHeaders.
+        $this->customPreHeaders = [];
 
         return $this;
     }
