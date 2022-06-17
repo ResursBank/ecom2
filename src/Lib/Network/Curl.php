@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
-use _PHPStan_c2e813828\Nette\Neon\Exception;
 use CurlHandle;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 
 /**
- * Slimmed curl class for Resurs rest API's.
+ * Slimmed curl class for Resurs REST API's.
  */
 class Curl
 {
@@ -22,17 +21,10 @@ class Curl
     // not be necessary to use.
 
     /**
-     * cURL simple handle. For this release, where we go for PHP 8, this is no longer a resource but a CurlHandle.
-     * Only older PHP versions use resources.
-     * @var CurlHandle
-     */
-    private CurlHandle $curlHandle;
-
-    /**
      * Internal response container. Binary safe (ref: curl).
      * @var mixed
      */
-    private $curlResponse;
+    private mixed $curlResponse;
 
     /**
      * Initial holder for HTTP Head response codes.
@@ -42,13 +34,17 @@ class Curl
     private int $curlHttpCode = 0;
 
     /**
+     * Custom headers, before pushing data into the CurlHandle. Usually 'X-HEADER-KEY'-like data but
+     * also Content-Type and Content-Length will be prepared and store until everything is executed.
+     * This is not where User-Agent are stored.
+     *
      * @var array
      * @since 6.1.0
      */
     private array $customPreHeaders = [];
 
     /**
-     * Static headers that will not reset between each request-init.
+     * Same as custom headers but static that makes sure they are stored after a request so that they can be re-used.
      * @var array
      */
     private array $customPreHeadersStatic = [];
@@ -82,7 +78,7 @@ class Curl
     /**
      * @var array Authentication data (for curlauth/basic only)..
      */
-    private $authData = ['username' => '', 'password' => '', 'type' => 1];
+    private array $authData = ['username' => '', 'password' => '', 'type' => 1];
 
     /**
      * Default list of http codes that comes from the HTTP head response which are throwable.
@@ -94,14 +90,8 @@ class Curl
     ];
 
     /**
-     * @return CurlHandle
-     */
-    public function getCurlHandle()
-    {
-        return $this->curlHandle;
-    }
-
-    /**
+     * Temporary feature to prepare user auth data (not MAPI) manually.
+     *
      * @return array
      */
     public function getAuthentication(): array
@@ -168,14 +158,15 @@ class Curl
      */
     public function getParsed(): mixed
     {
-        $contentType = $this->getHeader('content-type');
-        $return = $content = $this->getBody();
-
-        if (preg_match('/\/json/i', $contentType)) {
-            $return = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-        }
-
-        return $return;
+        return preg_match(
+            pattern: '/\/json/i',
+            subject: $this->getHeader('content-type')
+        ) ? json_decode(
+            json: $this->getBody(),
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        ) : $this->getBody();
     }
 
     /**
@@ -187,23 +178,19 @@ class Curl
     {
         $return = [];
 
-        $headerRequest = is_array($this->curlResponseHeaders) ? $this->curlResponseHeaders : [];
-
-        if (count($headerRequest)) {
-            foreach ($headerRequest as $headKey => $headArray) {
-                // Something has pushed in duplicates of a header row, so lets pop one.
-                if (count($headArray) > 1) {
-                    $headArray = array_pop($headArray);
-                }
-                if (is_array($headArray) && count($headArray) === 1) {
-                    if (!$specificKey) {
-                        $return[] = sprintf("%s: %s", $headKey, array_pop($headArray));
-                    } elseif (strtolower($specificKey) === strtolower($headKey)) {
+        foreach ($this->curlResponseHeaders as $headKey => $headArray) {
+            // Something has pushed in duplicates of a header row, so lets pop one.
+            if (is_array($headArray) && count($headArray) > 1) {
+                $headArray = array_pop($headArray);
+            }
+            if (is_array($headArray) && count($headArray) === 1) {
+                if (!$specificKey) {
+                    $return[] = sprintf("%s: %s", $headKey, array_pop($headArray));
+                } elseif (strtolower($specificKey) === strtolower($headKey)) {
+                    $return[] = sprintf("%s", array_pop($headArray));
+                } elseif (strtolower($specificKey) === 'http') {
+                    if (0 === stripos($headKey, "http")) {
                         $return[] = sprintf("%s", array_pop($headArray));
-                    } elseif (strtolower($specificKey) === 'http') {
-                        if (0 === stripos($headKey, "http")) {
-                            $return[] = sprintf("%s", array_pop($headArray));
-                        }
                     }
                 }
             }
