@@ -25,11 +25,11 @@ class DataConverter
      *
      * @param object $object
      * @param class-string $type
-     * @return object
+     * @return mixed
      * @throws ReflectionException
      * @throws ArgumentCountError
      */
-    public static function stdClassToType(object $object, string $type): object
+    public static function stdClassToType(object $object, string $type): mixed
     {
         $sourceReflection = new ReflectionObject(object: $object);
         $destReflection = new ReflectionClass(objectOrClass: $type);
