@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
-use Resursbank\Ecom\Lib\Network\Curl;
 
 /**
  * Defines a payment request object
