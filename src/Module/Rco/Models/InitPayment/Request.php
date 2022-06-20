@@ -30,28 +30,4 @@ class Request extends Model
     ) {
         parent::__construct();
     }
-
-    public static function initPayment(Request $request): Response
-    {
-        $curl = new Curl();
-        $curl =  $curl->get(
-            url: 'https://blablabla.example.com/payments/1234',
-            data: $request->toArray()
-        );
-
-        $parsedResp = $curl->getParsed();
-        return new Response(
-            paymentSessionId: $parsedResp->paymentSessionId,
-            iframe: $parsedResp->iframe,
-            script: $parsedResp->script,
-            customer: new Customer(
-                governmentId: $parsedResp->customer->governmentId,
-                mobile: $parsedResp->customer->mobile,
-                email: $parsedResp->customer->email,
-                ...
-            ),
-            baseUrl: $parsedResp->baseUrl,
-            html: $parsedResp->html
-        );
-    }
 }
