@@ -1,26 +1,51 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco;
 
 use Resursbank\Ecom\Module\Module as CoreModule;
-use Resursbank\Ecom\Module\Rco\Models\InitPayment;
+use Resursbank\Ecom\Module\Rco\Api\InitPayment;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request as InitPaymentRequest;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response as InitPaymentResponse;
 
+/**
+ * Main entrypoint for interfacing with the RCO API programmatically
+ */
 class Repository extends CoreModule
 {
-    public static function initPayment(
-        InitPayment\Request $request
-    ):InitPayment\Response  {
-        return  InitPayment\Request::initPayment(request: $request);
+    /**
+     * Initialize a payment session
+     *
+     * @param InitPaymentRequest $request
+     * @param string $orderReference
+     * @return InitPaymentResponse
+     * @throws \ReflectionException
+     */
+    public function initPayment(
+        InitPaymentRequest $request,
+        string $orderReference
+    ): InitPaymentResponse  {
+        return InitPayment::call(request: $request, orderReference: $orderReference);
     }
 
-    public static function updatePayment(
-        InitPayment\Request
-    ) {
+    /**
+     * Update an existing payment session
+     *
+     * @param UpdatePayment\Request $request
+     * @return void
+     */
+    public function updatePayment(
+        UpdatePayment\Request $request
+    ): void {
     }
-    
-    public static function updatePaymentReference(
-        
-    )
+
+    public function updatePaymentReference(): void
+    {
+    }
 }
