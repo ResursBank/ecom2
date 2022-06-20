@@ -33,11 +33,11 @@ final class DataConverterTest extends TestCase
     {
         $data = new stdClass();
         $data->int = 42;
-        $data->message = "Foobar";
+        $data->message = 'Foobar';
 
         $expected = new TestClasses\SimpleDummy(
             int: 42,
-            message: "Foobar"
+            message: 'Foobar'
         );
 
         $output = DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
@@ -85,13 +85,13 @@ final class DataConverterTest extends TestCase
         $data->int = 42;
         $data->simpleDummy = new stdClass();
         $data->simpleDummy->int = 127;
-        $data->simpleDummy->message = "Foo";
+        $data->simpleDummy->message = 'Foo';
 
         $expected = new TestClasses\ComplexDummy(
             int: 42,
             simpleDummy: new TestClasses\SimpleDummy(
                 int: 127,
-                message: "Foo"
+                message: 'Foo'
             )
         );
 
@@ -114,12 +114,12 @@ final class DataConverterTest extends TestCase
     {
         $data = new stdClass();
         $data->int = 42;
-        $data->message = "Foobar";
-        $data->other = "baz";
+        $data->message = 'Foobar';
+        $data->other = 'baz';
 
         $expected = new TestClasses\SimpleDummy(
             int: 42,
-            message: "Foobar"
+            message: 'Foobar'
         );
 
         $output = DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
@@ -142,7 +142,7 @@ final class DataConverterTest extends TestCase
         $data = new stdClass();
         $data->int = 42;
 
-        $this->expectException(ArgumentCountError::class);
+        $this->expectException(exception: ArgumentCountError::class);
         DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
     }
 }
