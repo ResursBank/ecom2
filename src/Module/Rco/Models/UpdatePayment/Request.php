@@ -19,13 +19,7 @@ use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 class Request extends Model
 {
     public function __construct(
-        public OrderLineCollection $orderLines,
-        public Customer $customer,
-        public string $successUrl,
-        public string $backUrl,
-        public string $shopUrl,
-        public ?string $paymentCreatedCallbackUrl = null,
-        public ?MetaDataCollection $metaData = null
+        public OrderLineCollection $orderLines
     ) {
         parent::__construct();
     }
