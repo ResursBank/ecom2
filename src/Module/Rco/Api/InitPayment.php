@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request;
@@ -21,6 +21,10 @@ use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response;
  */
 class InitPayment
 {
+    public function __construct(private readonly Config $config)
+    {
+    }
+
     /**
      * Makes call to the API
      *
@@ -29,15 +33,16 @@ class InitPayment
      * @return Response
      * @throws \ReflectionException
      */
-    public static function call(Request $request, string $orderReference): Response
+    public function call(Request $request, string $orderReference): Response
     {
         $curl = new Curl();
         try {
             $response = $curl->post(
-                url: self::getApiUrl(orderReference: $orderReference),
+                url: $this->getApiUrl(orderReference: $orderReference),
                 data: $request->toArray()
             );
         } catch (CurlException $exception) {
+            $this->config->logger->error(message: $exception);
         }
 
         return DataConverter::stdClassToType(
@@ -52,7 +57,7 @@ class InitPayment
      * @param string $orderReference
      * @return string
      */
-    private static function getApiUrl(string $orderReference): string
+    private function getApiUrl(string $orderReference): string
     {
         return self::getApiHostname() . '/payments/' . $orderReference;
     }
@@ -62,7 +67,7 @@ class InitPayment
      *
      * @return string
      */
-    private static function getApiHostname(): string
+    private function getApiHostname(): string
     {
         // @todo Check if we're in production or test and return appropriate hostname
         return '';
