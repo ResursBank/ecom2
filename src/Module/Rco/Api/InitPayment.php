@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use ReflectionException;
+use Resursbank\Ecom\Module\Rco\Repository;
+use stdClass;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -21,6 +24,9 @@ use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response;
  */
 class InitPayment
 {
+    /**
+     * @param Config $config
+     */
     public function __construct(private readonly Config $config)
     {
     }
@@ -31,11 +37,12 @@ class InitPayment
      * @param Request $request
      * @param string $orderReference
      * @return Response
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function call(Request $request, string $orderReference): Response
     {
         $curl = new Curl();
+        $response = new stdClass();
         try {
             $response = $curl->post(
                 url: $this->getApiUrl(orderReference: $orderReference),
@@ -59,7 +66,7 @@ class InitPayment
      */
     private function getApiUrl(string $orderReference): string
     {
-        return self::getApiHostname() . '/payments/' . $orderReference;
+        return $this->getApiHostname() . '/checkout/payments/' . $orderReference;
     }
 
     /**
@@ -69,7 +76,10 @@ class InitPayment
      */
     private function getApiHostname(): string
     {
-        // @todo Check if we're in production or test and return appropriate hostname
-        return '';
+        if ($this->config->isProduction) {
+            return Repository::HOSTNAME_PROD;
+        }
+
+        return Repository::HOSTNAME_TEST;
     }
 }

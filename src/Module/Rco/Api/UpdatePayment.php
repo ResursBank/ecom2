@@ -1,9 +1,17 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use ReflectionException;
+use Resursbank\Ecom\Module\Rco\Repository;
+use stdClass;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -11,15 +19,30 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response;
 
+/**
+ * Handles updates of RCO payment sessions
+ */
 class UpdatePayment
 {
+    /**
+     * @param Config $config
+     */
     public function __construct(private readonly Config $config)
     {
     }
 
+    /**
+     * Makes call to the API
+     *
+     * @param Request $request
+     * @param string $orderReference
+     * @return Response
+     * @throws ReflectionException
+     */
     public function call(Request $request, string $orderReference): Response
     {
         $curl = new Curl();
+        $response = new stdClass();
         try {
             $response = $curl->put(
                 url: $this->getApiUrl(orderReference: $orderReference),
@@ -35,14 +58,26 @@ class UpdatePayment
         );
     }
 
+    /**
+     * @param string $orderReference
+     * @return string
+     */
     private function getApiUrl(string $orderReference): string
     {
-        return $this->getApiHostname(). '/payments/' . $orderReference;
+        return $this->getApiHostname(). '/checkout/payments/' . $orderReference;
     }
 
+    /**
+     * Returns API hostname based on currently configured environment
+     *
+     * @return string
+     */
     private function getApiHostname(): string
     {
-        // @todo Check if we're in production or test and return appropriate hostname
-        return '';
+        if ($this->config->isProduction) {
+            return Repository::HOSTNAME_PROD;
+        }
+
+        return Repository::HOSTNAME_TEST;
     }
 }
