@@ -23,6 +23,5 @@ class Request extends Model
     public function __construct(
         public OrderLineCollection $orderLines
     ) {
-        parent::__construct();
     }
 }

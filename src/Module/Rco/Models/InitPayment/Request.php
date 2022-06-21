@@ -27,6 +27,5 @@ class Request extends Model
         public ?string $paymentCreatedCallbackUrl = null,
         public ?MetaDataCollection $metaData = null
     ) {
-        parent::__construct();
     }
 }
