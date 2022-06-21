@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
 namespace Resursbank\Ecom\Lib\Model;
 
 /**
@@ -7,30 +14,27 @@ namespace Resursbank\Ecom\Lib\Model;
  */
 class Model
 {
-    private array $data;
-
-    public function __construct()
-    {
-    }
-
-    public function save(): bool
-    {
-        // @todo Implement saving
-    }
-
-    public function load(int $id): self
-    {
-        // @todo Implement loading
-        return $this;
-    }
-
     /**
      * Converts the object to an array suitable for use with the Curl library
      *
+     * @param mixed $item
      * @return array
      */
-    public function toArray(): array
+    public function toArray(mixed $item = null): array
     {
-        return (array)$this;
+        if (!$item) {
+            $item = $this;
+        }
+
+        $data = [];
+        foreach ((array)$item as $name => $value) {
+            if (is_object($value) || is_array($value)) {
+                $data[$name] = $this->toArray(item: $value);
+            } else {
+                $data[$name] = $value;
+            }
+        }
+
+        return $data;
     }
 }
