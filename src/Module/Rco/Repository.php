@@ -13,10 +13,13 @@ use ReflectionException;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\Rco\Api\InitPayment;
 use Resursbank\Ecom\Module\Rco\Api\UpdatePayment;
+use Resursbank\Ecom\Module\Rco\Api\UpdatePaymentReference;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request as InitPaymentRequest;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response as InitPaymentResponse;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdatePaymentRequest;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response as UpdatePaymentResponse;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Response as UpdatePaymentReferenceResponse;
 
 /**
  * Main entrypoint for interfacing with the RCO API programmatically
@@ -54,8 +57,21 @@ class Repository extends CoreModule
             ->call(request: $request, orderReference: $orderReference);
     }
 
-    public static function updatePaymentReference(): void
+    /**
+     * Update the payment reference for a payment session
+     *
+     * @param UpdatePaymentReferenceRequest $request
+     * @param string $orderReference
+     * @return UpdatePaymentReferenceResponse
+     * @throws ReflectionException
+     */
+    public static function updatePaymentReference(
+        UpdatePaymentReferenceRequest $request,
+        string $orderReference
+    ): UpdatePaymentReferenceResponse
     {
+        return (new UpdatePaymentReference())
+            ->call(request: $request, orderReference: $orderReference);
     }
 
     public static function getPayment(string $orderReference): void
