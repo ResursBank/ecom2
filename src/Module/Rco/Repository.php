@@ -68,8 +68,7 @@ class Repository extends CoreModule
     public static function updatePaymentReference(
         UpdatePaymentReferenceRequest $request,
         string $orderReference
-    ): UpdatePaymentReferenceResponse
-    {
+    ): UpdatePaymentReferenceResponse {
         return (new UpdatePaymentReference())
             ->call(request: $request, orderReference: $orderReference);
     }
