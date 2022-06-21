@@ -20,6 +20,7 @@ final class Config
      * @param LoggerInterface $logger
      * @param LogLevel $logLevel
      * @param string $userAgent
+     * @param bool $isProduction
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -27,7 +28,8 @@ final class Config
         public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        public readonly string $userAgent
+        public readonly string $userAgent,
+        public readonly bool $isProduction
     ) {
     }
 
@@ -36,19 +38,22 @@ final class Config
      * @param LoggerInterface $logger
      * @param LogLevel $logLevel
      * @param string $userAgent
+     * @param bool $isProduction
      * @return void
      */
     public static function setup(
         Credentials $credentials,
         LoggerInterface $logger,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        string $userAgent = ''
+        string $userAgent = '',
+        bool $isProduction = false
     ): void {
         self::$instance = new Config(
             $credentials,
             $logger,
             $logLevel,
-            $userAgent
+            $userAgent,
+            $isProduction
         );
 
 //        self::setupEvents();
