@@ -25,13 +25,6 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response;
 class UpdatePayment
 {
     /**
-     * @param Config $config
-     */
-    public function __construct(private readonly Config $config)
-    {
-    }
-
-    /**
      * Makes call to the API
      *
      * @param Request $request
@@ -49,7 +42,7 @@ class UpdatePayment
                 data: $request->toArray()
             );
         } catch (CurlException $exception) {
-            $this->config->logger->error(message: $exception);
+            Config::$instance->logger->error(message: $exception);
         }
 
         return DataConverter::stdClassToType(
@@ -64,7 +57,7 @@ class UpdatePayment
      */
     private function getApiUrl(string $orderReference): string
     {
-        return $this->getApiHostname(). '/checkout/payments/' . $orderReference;
+        return $this->getApiHostname() . '/checkout/payments/' . $orderReference;
     }
 
     /**
@@ -74,7 +67,7 @@ class UpdatePayment
      */
     private function getApiHostname(): string
     {
-        if ($this->config->isProduction) {
+        if (Config::$instance->isProduction) {
             return Repository::HOSTNAME_PROD;
         }
 

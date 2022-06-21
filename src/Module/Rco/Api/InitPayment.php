@@ -25,13 +25,6 @@ use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response;
 class InitPayment
 {
     /**
-     * @param Config $config
-     */
-    public function __construct(private readonly Config $config)
-    {
-    }
-
-    /**
      * Makes call to the API
      *
      * @param Request $request
@@ -49,7 +42,7 @@ class InitPayment
                 data: $request->toArray()
             );
         } catch (CurlException $exception) {
-            $this->config->logger->error(message: $exception);
+            Config::$instance->logger->error(message: $exception);
         }
 
         return DataConverter::stdClassToType(
@@ -76,7 +69,7 @@ class InitPayment
      */
     private function getApiHostname(): string
     {
-        if ($this->config->isProduction) {
+        if (Config::$instance->isProduction) {
             return Repository::HOSTNAME_PROD;
         }
 

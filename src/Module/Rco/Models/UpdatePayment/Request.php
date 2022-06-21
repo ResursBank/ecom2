@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco\Models\UpdatePayment;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 
 /**
  * Defines a payment request object
@@ -18,6 +17,9 @@ use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
  */
 class Request extends Model
 {
+    /**
+     * @param OrderLineCollection $orderLines
+     */
     public function __construct(
         public OrderLineCollection $orderLines
     ) {

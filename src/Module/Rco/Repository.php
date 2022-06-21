@@ -34,9 +34,9 @@ class Repository extends CoreModule
      * @return InitPaymentResponse
      * @throws ReflectionException
      */
-    public function initPayment(InitPaymentRequest $request, string $orderReference): InitPaymentResponse
+    public static function initPayment(InitPaymentRequest $request, string $orderReference): InitPaymentResponse
     {
-        return (new InitPayment(config: $this->config))
+        return (new InitPayment())
             ->call(request: $request, orderReference: $orderReference);
     }
 
@@ -48,33 +48,33 @@ class Repository extends CoreModule
      * @return UpdatePaymentResponse
      * @throws ReflectionException
      */
-    public function updatePayment(UpdatePaymentRequest $request, string $orderReference): UpdatePaymentResponse
+    public static function updatePayment(UpdatePaymentRequest $request, string $orderReference): UpdatePaymentResponse
     {
-        return (new UpdatePayment(config: $this->config))
+        return (new UpdatePayment())
             ->call(request: $request, orderReference: $orderReference);
     }
 
-    public function updatePaymentReference(): void
+    public static function updatePaymentReference(): void
     {
     }
 
-    public function getPayment(string $orderReference): void
+    public static function getPayment(string $orderReference): void
     {
     }
 
-    public function registerCallback(string $callback, string $uriTemplate): void
+    public static function registerCallback(string $callback, string $uriTemplate): void
     {
     }
 
-    public function getCallbacks(): void
+    public static function getCallbacks(): void
     {
     }
 
-    public function getCallback(string $callback): void
+    public static function getCallback(string $callback): void
     {
     }
 
-    public function unregisterCallback(string $callback): void
+    public static function unregisterCallback(string $callback): void
     {
     }
 }
