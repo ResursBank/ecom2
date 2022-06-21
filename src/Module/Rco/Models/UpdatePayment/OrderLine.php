@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models\UpdatePayment;
 
+use Resursbank\Ecom\Lib\Model\Model;
+
 /**
- * Defines an OrderLine object as used when creating a new payment request
+ * Defines an UpdatePayment order line object
  */
-class OrderLine
+class OrderLine extends Model
 {
     /**
      * @param string $artNo

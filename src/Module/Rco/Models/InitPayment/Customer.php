@@ -1,13 +1,22 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
+use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\Address;
 use Resursbank\Ecom\Module\Rco\Models\CustomerType;
 
-class Customer
+/**
+ * Defines an InitPayment customer object
+ */
+class Customer extends Model
 {
     public function __construct(
         public ?string $governmentId,

@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Models\UpdatePayment;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines a payment request object
+ * Defines an UpdatePayment request object
  * @SuppressWarnings(PHPMD.LongVariable)
  */
 class Request extends Model

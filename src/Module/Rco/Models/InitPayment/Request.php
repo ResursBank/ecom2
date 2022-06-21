@@ -13,7 +13,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 
 /**
- * Defines a payment request object
+ * Defines an InitPayment request object
  * @SuppressWarnings(PHPMD.LongVariable)
  */
 class Request extends Model
