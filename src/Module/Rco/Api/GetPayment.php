@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use ReflectionException;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
 use Resursbank\Ecom\Config;
@@ -21,6 +23,13 @@ use Resursbank\Ecom\Module\Rco\Models\GetPayment\Response;
  */
 class GetPayment
 {
+    /**
+     * Make call to API
+     *
+     * @param string $orderReference
+     * @return Response
+     * @throws ReflectionException
+     */
     public function call(string $orderReference): Response
     {
         $curl = new Curl();
@@ -31,7 +40,10 @@ class GetPayment
             Config::$instance->logger->error(message: $exception);
         }
 
-        return $response;
+        return DataConverter::stdClassToType(
+            object: $response,
+            type: Response::class
+        );
     }
 
     /**

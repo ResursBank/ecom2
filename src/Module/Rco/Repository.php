@@ -12,9 +12,11 @@ namespace Resursbank\Ecom\Module\Rco;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Module\Module as CoreModule;
+use Resursbank\Ecom\Module\Rco\Api\GetPayment;
 use Resursbank\Ecom\Module\Rco\Api\InitPayment;
 use Resursbank\Ecom\Module\Rco\Api\UpdatePayment;
 use Resursbank\Ecom\Module\Rco\Api\UpdatePaymentReference;
+use Resursbank\Ecom\Module\Rco\Models\GetPayment\Response;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request as InitPaymentRequest;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response as InitPaymentResponse;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdatePaymentRequest;
@@ -74,8 +76,17 @@ class Repository extends CoreModule
             ->call(request: $request, orderReference: $orderReference);
     }
 
-    public static function getPayment(string $orderReference): void
+    /**
+     * Get existing payment session
+     *
+     * @param string $orderReference
+     * @return Response
+     * @throws ReflectionException
+     */
+    public static function getPayment(string $orderReference): Response
     {
+        return (new GetPayment())
+            ->call(orderReference: $orderReference);
     }
 
     public static function registerCallback(string $callback, string $uriTemplate): void
