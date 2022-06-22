@@ -413,12 +413,14 @@ class Curl
     }
 
     /**
+     * This option setter is for internal use only, as it requires the active CurlHandle.
+     *
      * @param CurlHandle $curlHandle
      * @param int $key
      * @param mixed $value
      * @return bool
      */
-    public function setOptionCurl(CurlHandle $curlHandle, int $key, mixed $value): bool
+    protected function setOptionCurl(CurlHandle $curlHandle, int $key, mixed $value): bool
     {
         return curl_setopt($curlHandle, $key, $value);
     }
@@ -451,6 +453,51 @@ class Curl
         $this->setOptionCurl($curlHandle, CURLINFO_HEADER_OUT, true);
         $this->setOptionCurl($curlHandle, CURLOPT_HEADERFUNCTION, [$this, 'getCurlHeaderRow']);
         $this->setOptionCurl($curlHandle, CURLOPT_USERAGENT, $this->getUserAgent());
+
+        return $this;
+    }
+
+    /**
+     * @param int $optionKey
+     * @param mixed $optionValue
+     */
+    public function setOption(int $optionKey, mixed $optionValue)
+    {
+        $this->options[$optionKey] = $optionValue;
+
+        return $this;
+    }
+
+    /**
+     * @param int $key
+     * @return $this
+     */
+    public function deleteOption(int $key)
+    {
+        if (isset($this->options[$key])) {
+            unset($this->options[$key]);
+        }
+        return $this;
+    }
+
+    /**
+     * Set and replace timeout values.
+     * @param int $timeout Timeout in secs. On millisec, use second boolean to define this.
+     * @param bool $useMilliseconds
+     */
+    public function setTimeout(int $timeout = 300, bool $useMilliseconds = false): Curl
+    {
+        if ($useMilliseconds) {
+            $this->deleteOption(CURLOPT_CONNECTTIMEOUT);
+            $this->deleteOption(CURLOPT_TIMEOUT);
+            $this->options[CURLOPT_CONNECTTIMEOUT_MS] = ceil($timeout / 2);
+            $this->options[CURLOPT_TIMEOUT_MS] = ceil($timeout);
+        } else {
+            $this->deleteOption(CURLOPT_CONNECTTIMEOUT_MS);
+            $this->deleteOption(CURLOPT_TIMEOUT_MS);
+            $this->options[CURLOPT_CONNECTTIMEOUT] = ceil($timeout / 2);
+            $this->options[CURLOPT_TIMEOUT] = ceil($timeout);
+        }
 
         return $this;
     }

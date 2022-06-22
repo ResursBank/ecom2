@@ -164,6 +164,18 @@ class CurlTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function testTimeout()
+    {
+        self::expectExceptionCode(28);
+        $this->curl->setTimeout(3);
+        // Default for requests to the site below is that it has a response timeout for 10 sec.
+        // We need to move those features "in house" at some point.
+        $this->curl->get('https://timeout.netcurl.org/');
+    }
+
+    /**
      * @param $class
      * @return mixed|string
      */
