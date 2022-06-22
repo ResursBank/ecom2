@@ -148,6 +148,14 @@ class CurlTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function testTimeout() {
+        $g = $this->curl->get('https://timeout.netcurl.org/');
+        print_r($g);
+    }
+
+    /**
      * @param $class
      * @return mixed|string
      */

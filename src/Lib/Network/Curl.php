@@ -441,6 +441,12 @@ class Curl
         return $this;
     }
 
+    public function setTimeout(int $timeout = 300, $useMilliseconds = false) {
+        if ($useMilliseconds) {
+
+        }
+    }
+
     /**
      * Final user agent string that will be pushed into http-requests.
      * @return string
