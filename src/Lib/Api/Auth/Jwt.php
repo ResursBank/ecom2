@@ -8,23 +8,23 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Defines basic API authentication.
+ * Defines JSON Token API authentication.
  */
-class Basic
+class Jwt
 {
     /**
-     * @param string $username
-     * @param string $password
+     * @param string $id
+     * @param string $secret
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
-     * @todo Add charset validation of username and password.
+     * @todo Add charset validation of id and secret.
      */
     public function __construct(
-        public readonly string $username,
-        public readonly string $password,
+        public readonly string $id,
+        public readonly string $secret,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-        $this->stringValidation->notEmpty(value: $this->username);
-        $this->stringValidation->notEmpty(value: $this->password);
+        $this->stringValidation->notEmpty(value: $this->id);
+        $this->stringValidation->notEmpty(value: $this->secret);
     }
 }
