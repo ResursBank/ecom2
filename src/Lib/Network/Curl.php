@@ -107,6 +107,20 @@ class Curl
     }
 
     /**
+     * @param string $jwtTokenString
+     * @return $this
+     */
+    public function setTokenBearer(string $jwtTokenString = ''): Curl
+    {
+        $this->setHeader(
+            'Authorization',
+            sprintf('Bearer %s', $jwtTokenString)
+        );
+
+        return $this;
+    }
+
+    /**
      * Curl based authentication (not token bearers).
      *
      * @param string $username
