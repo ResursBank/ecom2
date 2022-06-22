@@ -148,6 +148,22 @@ class CurlTest extends TestCase
     }
 
     /**
+     * Testing tokens and making sure this is set on remote ends.
+     *
+     * @throws CurlException
+     * @throws JsonException
+     */
+    public function testSetToken()
+    {
+        $tokenString = 'Bearer 4b8b4bfdc6de0033ef5c42ca439b572867229556';
+        $this->curl->setTokenBearer(sha1('this_bearer'));
+        self::assertSame(
+            $tokenString,
+            $this->curl->get('https://ipv4.netcurl.org')->getParsed()->HTTP_AUTHORIZATION
+        );
+    }
+
+    /**
      * @test
      */
     public function testTimeout()
