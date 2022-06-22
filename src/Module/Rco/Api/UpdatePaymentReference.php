@@ -59,20 +59,6 @@ class UpdatePaymentReference
      */
     private function getApiUrl(string $orderReference): string
     {
-        return $this->getApiHostname() . '/checkout/payments/' . $orderReference;
-    }
-
-    /**
-     * Gets API hostname
-     *
-     * @return string
-     */
-    private function getApiHostname(): string
-    {
-        if (Config::$instance->isProduction) {
-            return Repository::HOSTNAME_PROD;
-        }
-
-        return Repository::HOSTNAME_TEST;
+        return Repository::getApiHostname() . '/checkout/payments/' . $orderReference . '/updatePaymentReference';
     }
 }

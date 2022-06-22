@@ -9,49 +9,34 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
-use ReflectionException;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request;
-use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response;
+use Resursbank\Ecom\Module\Rco\Models\GetPayment\Response;
 
 /**
- * Handles updates of RCO payment sessions
+ * Handles fetching of RCO payment sessions
  */
-class UpdatePayment
+class GetPayment
 {
-    /**
-     * Makes call to the API
-     *
-     * @param Request $request
-     * @param string $orderReference
-     * @return Response
-     * @throws ReflectionException
-     */
-    public function call(Request $request, string $orderReference): Response
+    public function call(string $orderReference): Response
     {
         $curl = new Curl();
         $response = new stdClass();
         try {
-            $response = $curl->put(
-                url: $this->getApiUrl(orderReference: $orderReference),
-                data: $request->toArray()
-            );
+            $response = $curl->get(url: $this->getApiUrl(orderReference: $orderReference));
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
         }
 
-        return DataConverter::stdClassToType(
-            object: $response,
-            type: Response::class
-        );
+        return $response;
     }
 
     /**
+     * Gets the API URL to use
+     *
      * @param string $orderReference
      * @return string
      */

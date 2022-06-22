@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco;
 
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\Rco\Api\InitPayment;
 use Resursbank\Ecom\Module\Rco\Api\UpdatePayment;
@@ -91,5 +92,19 @@ class Repository extends CoreModule
 
     public static function unregisterCallback(string $callback): void
     {
+    }
+
+    /**
+     * Gets API hostname
+     *
+     * @return string
+     */
+    public static function getApiHostname(): string
+    {
+        if (Config::$instance->isProduction) {
+            return self::HOSTNAME_PROD;
+        }
+
+        return self::HOSTNAME_TEST;
     }
 }
