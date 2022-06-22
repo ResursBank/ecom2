@@ -89,22 +89,6 @@ class Repository extends CoreModule
             ->call(orderReference: $orderReference);
     }
 
-    public static function registerCallback(string $callback, string $uriTemplate): void
-    {
-    }
-
-    public static function getCallbacks(): void
-    {
-    }
-
-    public static function getCallback(string $callback): void
-    {
-    }
-
-    public static function unregisterCallback(string $callback): void
-    {
-    }
-
     /**
      * Gets API hostname
      *
