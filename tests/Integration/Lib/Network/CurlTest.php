@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Network;
+namespace Resursbank\EcomTest\Integration\Lib\Network;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Utilities;
+namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
 use ArgumentCountError;
 use PHPUnit\Framework\TestCase;
