@@ -374,6 +374,7 @@ class Curl
         // Below is the list of the netCurl-methods. They are remarked if the implementation is skipped.
         // On finalization, such rows can be safely removed.
 
+        $this->setConfiguredTimeout();
         $this->setCurlDynamicValues($curlHandle);
         // SSL should be set after dynamic values as they have higher priority for security, than the user defined data.
         $this->setCurlStaticValues($curlHandle);
@@ -486,19 +487,13 @@ class Curl
      * @param int $timeout Timeout in secs. On millisec, use second boolean to define this.
      * @param bool $useMilliseconds
      */
-    public function setTimeout(int $timeout = 300, bool $useMilliseconds = false): Curl
+    public function setConfiguredTimeout(): Curl
     {
-        if ($useMilliseconds) {
-            $this->deleteOption(CURLOPT_CONNECTTIMEOUT);
-            $this->deleteOption(CURLOPT_TIMEOUT);
-            $this->options[CURLOPT_CONNECTTIMEOUT_MS] = ceil($timeout / 2);
-            $this->options[CURLOPT_TIMEOUT_MS] = ceil($timeout);
-        } else {
-            $this->deleteOption(CURLOPT_CONNECTTIMEOUT_MS);
-            $this->deleteOption(CURLOPT_TIMEOUT_MS);
-            $this->options[CURLOPT_CONNECTTIMEOUT] = ceil($timeout / 2);
-            $this->options[CURLOPT_TIMEOUT] = ceil($timeout);
-        }
+        // No timeout set, defaults to curl internals.
+        $timeout = Config::$instance->timeout < 1 ? 300 : Config::$instance->timeout;
+
+        $this->options[CURLOPT_CONNECTTIMEOUT] = ceil($timeout / 2);
+        $this->options[CURLOPT_TIMEOUT] = ceil($timeout);
 
         return $this;
     }

@@ -26,7 +26,8 @@ final class Config
         public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
         public readonly string $logLevel = 'info',   // Only log info messages.
-        public readonly string $userAgent
+        public readonly string $userAgent,
+        public readonly int $timeout,
     ) {
     }
 
@@ -41,13 +42,15 @@ final class Config
         Credentials $credentials,
         LoggerInterface $logger,
         string $logLevel = 'info',   // Only log info messages.
-        string $userAgent = ''
+        string $userAgent = '',
+        int $timeout = 0
     ): void {
         self::$instance = new Config(
             $credentials,
             $logger,
             $logLevel,
-            $userAgent
+            $userAgent,
+            $timeout
         );
 
 //        self::setupEvents();
