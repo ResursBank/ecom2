@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Cache;
+namespace Resursbank\EcomTest\Unit\Lib\Cache;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\ValidationException;

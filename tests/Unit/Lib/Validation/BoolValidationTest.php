@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Validation;
+namespace Resursbank\EcomTest\Unit\Lib\Validation;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
-use Resursbank\Ecom\Lib\Validation\FloatValidation;
+use Resursbank\Ecom\Lib\Validation\BoolValidation;
 
 /**
- * Test float validation methods.
+ * Test boolean validation methods.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class FloatValidationTest extends TestCase
+final class BoolValidationTest extends TestCase
 {
     /**
-     * @var FloatValidation
+     * @var BoolValidation
      */
-    private FloatValidation $floatValidation;
+    private BoolValidation $boolValidation;
 
     /**
      * @return void
      */
     protected function setUp(): void
     {
-        $this->floatValidation = new FloatValidation();
+        $this->boolValidation = new BoolValidation();
 
         parent::setUp();
     }
@@ -42,12 +42,12 @@ final class FloatValidationTest extends TestCase
     public function testGetKeyThrowsWithMissing(): void
     {
         $this->expectException(exception: MissingKeyException::class);
-        $this->floatValidation->getKey(data: ['Finland', 'Brown'], key: 'win');
+        $this->boolValidation->getKey(data: ['Island', 'Green'], key: 'mega');
     }
 
     /**
      * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not a float.
+     * is not a boolean.
      *
      * @return void
      * @throws IllegalTypeException
@@ -56,23 +56,22 @@ final class FloatValidationTest extends TestCase
     public function testGetKeyThrowsWithIllegalType(): void
     {
         $this->expectException(exception: IllegalTypeException::class);
-        $this->floatValidation->getKey(data: ['mime' => true], key: 'mime');
+        $this->boolValidation->getKey(data: ['epic' => 1], key: 'epic');
     }
 
     /**
-     * Assert getKey() return validated float value.
+     * Assert getKey() return validated boolean value.
      *
      * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
-    public function testGetKeyReturnsFloat(): void
+    public function testGetKeyReturnsBool(): void
     {
-        self::assertSame(
-            expected: 10.55,
-            actual: $this->floatValidation->getKey(
-                data: ['epic' => 10.55],
-                key: 'epic'
+        self::assertTrue(
+            condition: $this->boolValidation->getKey(
+                data: ['epoch' => true],
+                key: 'epoch'
             )
         );
     }
