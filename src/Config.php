@@ -6,6 +6,8 @@ namespace Resursbank\Ecom;
 
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 
 /**
  * API communication object.
@@ -15,7 +17,6 @@ final class Config
     public static Config $instance;
 
     /**
-     * @param Credentials $credentials
      * @param LoggerInterface $logger
      * @param string $logLevel
      * @param string $userAgent
@@ -23,31 +24,35 @@ final class Config
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
-        public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
+        public readonly Basic|null $basicAuth,
+        public readonly Jwt|null $jwtAuth,
         public readonly string $logLevel = 'info',   // Only log info messages.
-        public readonly string $userAgent
+        public readonly string $userAgent = '',
     ) {
     }
 
     /**
-     * @param Credentials $credentials
      * @param LoggerInterface $logger
+     * @param Basic|null $basicAuth
+     * @param Jwt|null $jwtAuth
      * @param string $logLevel
      * @param string $userAgent
      * @return void
      */
     public static function setup(
-        Credentials $credentials,
         LoggerInterface $logger,
+        Basic|null $basicAuth,
+        Jwt|null $jwtAuth,
         string $logLevel = 'info',   // Only log info messages.
         string $userAgent = ''
     ): void {
         self::$instance = new Config(
-            $credentials,
-            $logger,
-            $logLevel,
-            $userAgent
+            logger: $logger,
+            basicAuth: $basicAuth,
+            jwtAuth: $jwtAuth,
+            logLevel: $logLevel,
+            userAgent: $userAgent
         );
 
 //        self::setupEvents();

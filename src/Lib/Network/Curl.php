@@ -1,749 +1,454 @@
 <?php
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
 use CurlHandle;
+use InvalidArgumentException;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Network\Model\Response;
+use Resursbank\Ecom\Lib\Network\Model\Header;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
+
+use stdClass;
+use function is_string;
+use function strlen;
 
 /**
- * Slimmed curl class for Resurs REST API's.
+ * Curl wrapper.
  */
 class Curl
 {
-    // WrapperConfig - Replace with internals.
-
-    // __construct should not be necessary with the current purpose of this class. In its former state
-    // it has only been used to prepare for requests in a backward compatibility sort of way and should
-    // not be necessary to use.
-
     /**
-     * Internal response container. Binary safe (ref: curl).
-     * @var mixed
+     * @var CurlHandle
      */
-    private mixed $curlResponse;
+    public readonly CurlHandle $ch;
 
     /**
-     * Initial holder for HTTP Head response codes.
-     * CURLINFO_RESPONSE_CODE is available from 5.5
-     * @var int
-     */
-    private int $curlHttpCode = 0;
-
-    /**
-     * Custom headers, before pushing data into the CurlHandle. Usually 'X-HEADER-KEY'-like data but
-     * also Content-Type and Content-Length will be prepared and store until everything is executed.
-     * This is not where User-Agent are stored.
-     *
-     * @var array
-     * @since 6.1.0
-     */
-    private array $customPreHeaders = [];
-
-    /**
-     * Same as custom headers but static that makes sure they are stored after a request so that they can be re-used.
-     * @var array
-     */
-    private array $customPreHeadersStatic = [];
-
-    /**
-     * @var array
-     */
-    private array $curlResponseHeaders = [];
-
-    /**
-     * @var array
-     */
-    private array $customHeaders = [];
-
-    /**
-     * Default options for curl. Observe that we always set FOLLOWLOCATION to false since there may be
-     * sites configured to prohibit redirect-links.
-     * @var array
-     */
-    private array $options = [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => 1,
-        CURLOPT_SSL_VERIFYHOST => 2,
-        CURLOPT_ENCODING => 1,
-        CURLOPT_USERAGENT => '',
-        CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
-        CURLOPT_FOLLOWLOCATION => false,
-        CURLOPT_HTTPHEADER => ['Accept-Language: en'],
-    ];
-
-    /**
-     * @var array Authentication data (for curlauth/basic only)..
-     */
-    private array $authData = ['username' => '', 'password' => '', 'type' => 1];
-
-    /**
-     * Default list of http codes that comes from the HTTP head response which are throwable.
-     * Defined as a [fromcode, tocode] list.
-     * @var array
-     */
-    private array $throwableHttpCodes = [
-        ['400', '599'],
-    ];
-
-    /**
-     * Temporary feature to prepare user auth data (not MAPI) manually.
-     *
-     * @return array
-     */
-    public function getAuthentication(): array
-    {
-        if (empty($this->authData['username']) && !empty(Config::$instance->credentials->username)) {
-            $this->setAuthentication(
-                Config::$instance->credentials->username,
-                Config::$instance->credentials->password,
-            );
-        }
-
-        return $this->authData;
-    }
-
-    /**
-     * Curl based authentication (not token bearers).
-     *
-     * @param string $username
-     * @param string $password
-     * @param int $authType
-     * @return $this
-     */
-    public function setAuthentication(
-        string $username,
-        string $password,
-        int $authType = CURLAUTH_BASIC,
-    ): Curl {
-        $this->authData['username'] = $username;
-        $this->authData['password'] = $password;
-        $this->authData['type'] = $authType;
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param string $value
-     * @param bool $static
-     * @return Curl
-     */
-    public function setHeader(string $key, string $value, bool $static = false): Curl
-    {
-        $this->customPreHeaders[] = new Header(
-            key: $key,
-            value: $value,
-            isStatic: $static
-        );
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCode(): int
-    {
-        return $this->curlHttpCode;
-    }
-
-    /**
-     * Get parsed response. No longer using IO.
-     *
-     * @return mixed
+     * @param string $url
+     * @param RequestMethod $requestMethod
+     * @param array $headers
+     * @param array $payload
+     * @param ContentType $contentType
+     * @param AuthType $authType
+     * @param StringValidation $stringValidation
      * @throws JsonException
-     */
-    public function getParsed(): mixed
-    {
-        return preg_match(
-            pattern: '/\/json/i',
-            subject: $this->getHeader('content-type')
-        ) ? json_decode(
-            json: $this->getBody(),
-            associative: false,
-            depth: 512,
-            flags: JSON_THROW_ON_ERROR
-        ) : $this->getBody();
-    }
-
-    /**
-     * Get specific response header data by its keyname.
-     * @param string $specificKey
-     * @return string
-     */
-    public function getHeader(string $specificKey = ''): string
-    {
-        $return = [];
-
-        foreach ($this->curlResponseHeaders as $headKey => $headArray) {
-            // Something has pushed in duplicates of a header row, so lets pop one.
-            if (is_array($headArray) && count($headArray) > 1) {
-                $headArray = array_pop($headArray);
-            }
-            if (is_array($headArray) && count($headArray) === 1) {
-                if (!$specificKey) {
-                    $return[] = sprintf("%s: %s", $headKey, array_pop($headArray));
-                } elseif (strtolower($specificKey) === strtolower($headKey)) {
-                    $return[] = sprintf("%s", array_pop($headArray));
-                } elseif (strtolower($specificKey) === 'http') {
-                    if (0 === stripos($headKey, "http")) {
-                        $return[] = sprintf("%s", array_pop($headArray));
-                    }
-                }
-            }
-        }
-
-        return implode("\n", $return);
-    }
-
-    /**
-     * Return raw body from response. Binary safe (Thanks to curl).
-     *
-     * @return mixed
-     */
-    public function getBody(): mixed
-    {
-        return $this->curlResponse;
-    }
-
-    /**
-     * @param string $url
-     * @param array $data
-     * @param DataType $dataType
-     * @return $this
+     * @throws ValidationException
      * @throws CurlException
-     * @throws Exception
+     * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
-    public function get(string $url, array $data = [], $dataType = DataType::JSON)
-    {
-        return $this->request($url, $data, RequestMethod::GET, $dataType);
-    }
-
-    /**
-     * @param string $url
-     * @param array $data
-     * @param int $method
-     * @param DataType $dataType
-     * @return $this
-     * @throws CurlException
-     * @throws Exception
-     * @see https://developer.mozilla.org/en-US/docsfu/Web/HTTP/Methods
-     */
-    private function request(
+    public function __construct(
         string $url,
-        array $data,
-        $method = RequestMethod::GET,
-        $dataType = DataType::JSON
-    ): Curl {
-        $this->resetCurlRequest();
-        $this->getCurlRequest(
-            $this->initCurlHandle($url, $data, $method, $dataType)
-        );
+        public readonly RequestMethod $requestMethod,
+        array $headers = [],
+        array $payload = [],
+        public readonly ContentType $contentType = ContentType::JSON,
+        public readonly AuthType $authType = AuthType::JWT,
+        private readonly StringValidation $stringValidation = new StringValidation()
+    ) {
+        // Initialize Curl.
+        $ch = $this->init(url: $url, headers: $headers, payload: $payload);
 
-        return $this;
+        // Setup plaintext auth if requested.
+        $this->setAuth(ch: $ch);
+
+        $this->ch = $ch;
     }
 
     /**
-     * Reset curl on each new curlrequest to make sure old responses is no longer present.
-     */
-    private function resetCurlRequest(): Curl
-    {
-        $this->customHeaders = [];
-        $this->curlResponseHeaders = [];
-
-        return $this;
-    }
-
-    /**
-     * @param CurlHandle $curlHandle
-     * @return $this
+     * @return Response
      * @throws CurlException
-     * @throws Exception
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws EmptyValueException
      */
-    private function getCurlRequest(CurlHandle $curlHandle): Curl
+    public function exec(): Response
     {
-        $this->curlResponse = curl_exec($curlHandle);
-        // Friendly anti-backfire support.
-        $this->curlHttpCode = curl_getinfo(
-            $curlHandle,
-            CURLINFO_RESPONSE_CODE
-        );
-        $this->getCurlException($curlHandle, $this->curlHttpCode);
+        $body = curl_exec(handle: $this->ch);
 
-        return $this;
-    }
-
-    /**
-     * @param CurlHandle $curlHandle
-     * @param int $httpCode
-     * @return Curl
-     * @throws CurlException
-     */
-    private function getCurlException(CurlHandle $curlHandle, int $httpCode): Curl
-    {
-        $errorString = curl_error($curlHandle);
-        $errorCode = curl_errno($curlHandle);
-        if ($errorCode) {
-            throw new CurlException(
-                sprintf(
-                    'curl error (%s): %s',
-                    $errorCode,
-                    $errorString
-                ),
-                $errorCode
+        if (!is_string(value: $body)) {
+            throw new IllegalTypeException(
+                message: 'Curl response body is not a string.'
             );
         }
 
-        $httpHead = $this->getHeader('http');
-        if (empty($errorString) && !empty($httpHead)) {
-            $errorString = $httpHead;
-        }
-        $this->getHttpException($errorString, $httpCode);
+        $this->stringValidation->notEmpty(value: $body);
 
-        return $this;
+        $code = (int) curl_getinfo(
+            handle: $this->ch,
+            option: CURLINFO_RESPONSE_CODE
+        );
+
+        if ($this->contentType === ContentType::JSON) {
+            /** @psalm-suppress MixedAssignment */
+            $body = json_decode(
+                json: $body,
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
+        }
+
+        if (!$body instanceof stdClass) {
+            throw new IllegalTypeException(
+                message: 'Curl response body is not an object.'
+            );
+        }
+
+        $this->handleError();
+
+        curl_close(handle: $this->ch);
+
+        return new Response(body: $body, code: $code);
     }
 
     /**
-     * Throw on any code that matches the store throwableHttpCode (use with setThrowableHttpCodes())
-     *
-     * @param string $httpMessageString
-     * @param int $httpCode
-     * @throws CurlException
+     * @param string $url
+     * @param array $headers
+     * @param array $payload
+     * @return CurlHandle
+     * @throws JsonException
+     * @throws ValidationException
+     * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
      */
-    public function getHttpException(
-        string $httpMessageString = '',
-        int $httpCode = 0
-    ): void {
-        if (!is_array($this->throwableHttpCodes)) {
-            $this->throwableHttpCodes = [];
+    private function init(
+        string $url,
+        array $headers,
+        array $payload
+    ): CurlHandle {
+        $ch = curl_init();
+
+        $options = [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_FAILONERROR => true, // Treat HTTP code 400+ as error.
+            CURLOPT_AUTOREFERER => true, // Follow redirects.
+            CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
+            CURLOPT_HEADER => false, // Do not include header in output.
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_USERAGENT => $this->getUserAgent(),
+            CURLOPT_HTTPHEADER => $this->getHeadersData(
+                headers: $this->generateHeaders(
+                    headers: $headers,
+                    payload: $payload
+                )
+            ),
+            CURLOPT_CUSTOMREQUEST => $this->getCustomRequestValue(),
+            CURLOPT_URL => $this->generateUrl(url: $url, payload: $payload),
+            CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
+        ];
+
+        foreach ($options as $key => $value) {
+            curl_setopt(handle: $ch, option: $key, value: $value);
         }
-        foreach ($this->throwableHttpCodes as $codeListArray => $codeArray) {
-            if ((isset($codeArray[1]) && $httpCode >= (int)$codeArray[0] && $httpCode <= (int)$codeArray[1])) {
-                throw new CurlException(
-                    sprintf(
-                        'Error %d returned from server: "%s".',
-                        $httpCode,
-                        $httpMessageString
-                    ),
-                    $httpCode
+
+        $this->setContent(ch: $ch, payload: $payload);
+
+        return $ch;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasBodyData(): bool
+    {
+        return (
+            $this->requestMethod === RequestMethod::POST ||
+            $this->requestMethod === RequestMethod::PUT ||
+            $this->requestMethod === RequestMethod::DELETE
+        );
+    }
+
+    /**
+     * @param string $url
+     * @param array $payload
+     * @return string
+     * @throws JsonException
+     * @throws ValidationException
+     * @todo Add URL prefix based on $this->authType?
+     */
+    public function generateUrl(string $url, array $payload): string
+    {
+        $url .= $this->hasBodyData()
+            ? '' :
+            '?' . $this->getPayloadData(payload: $payload);
+
+        if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
+            throw new ValidationException(message: 'Invalid URL requested.');
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param array $headers
+     * @param array $payload
+     * @return array<Header>
+     * @throws JsonException
+     * @todo See constructor todo. If kept we should maybe change its visibility.
+     */
+    public function generateHeaders(array $headers, array $payload): array
+    {
+        foreach ($headers as $header) {
+            if (!$header instanceof Header) {
+                throw new InvalidArgumentException(
+                    message: 'Header must be an instance of Header.'
                 );
             }
         }
-    }
 
-    /**
-     * @throws CurlException
-     */
-    private function initCurlHandle(
-        string $url,
-        array $data,
-        $method = RequestMethod::GET,
-        $dataType = DataType::JSON
-    ): CurlHandle {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new CurlException('Invalid URL requested.');
-        }
-
-        // In netcurl, this section is splitted in several methods to make them easier to sort out.
-        // Besides this, netCurl also supported multi-requests, which in our case will be more complex than we
-        // need. Instead of splitting all sections up in smaller bits, we use this init function to set up
-        // the handle instantly.
-
-        $curlHandle = curl_init();
-        // ECP-18
-        $this->setCurlAuthentication($curlHandle);
-        // Below is the list of the netCurl-methods. They are remarked if the implementation is skipped.
-        // On finalization, such rows can be safely removed.
-
-        $this->setCurlDynamicValues($curlHandle);
-        // SSL should be set after dynamic values as they have higher priority for security, than the user defined data.
-        $this->setCurlStaticValues($curlHandle);
-        $this->setCurlPostData($curlHandle, $data, $method, $dataType);
-        $this->setCurlRequestMethod($curlHandle, $method);
-
-        // Custom headers setup is where we push data into the request-headers. This is where data like bearers,
-        // user-agent, etc will land. Setting header data is done with setHeader.
-        $this->setCurlCustomHeaders($curlHandle);
-        $this->setOptionCurl($curlHandle, CURLOPT_URL, $url);
-
-        return $curlHandle;
-    }
-
-    /**
-     * @param CurlHandle $curlHandle
-     * @return Curl
-     */
-    private function setCurlAuthentication(CurlHandle $curlHandle): Curl
-    {
-        /**
-         * @todo ECP-18
-         */
-        if (!empty($this->authData['username']) && !empty($this->authData['password'])) {
-            $this->setOptionCurl(
-                $curlHandle,
-                CURLOPT_HTTPAUTH,
-                !$this->authData['type'] ? $this->authData['type'] : HTTP_AUTH_BASIC
-            );
-            $this->setOptionCurl(
-                $curlHandle,
-                CURLOPT_USERPWD,
-                $this->authData['username']
+        if (!$this->hasHeader(headers: $headers, key: 'content-type')) {
+            $headers[] = new Header(
+                key: 'content-type',
+                value: $this->getContentType()
             );
         }
 
-        return $this;
+        if (!$this->hasHeader(headers: $headers, key: 'content-length')) {
+            $headers[] = new Header(
+                key: 'content-length',
+                value: strlen(string: $this->getPayloadData(payload: $payload))
+            );
+        }
+
+        if (!$this->hasHeader(headers: $headers, key: 'accept-language')) {
+            $headers[] = new Header(
+                key: 'accept-language',
+                value: 'en'
+            );
+        }
+
+        return $headers;
     }
 
     /**
-     * @param CurlHandle $curlHandle
-     * @param int $key
-     * @param mixed $value
+     * @param array $headers
+     * @param string $key
      * @return bool
+     * @todo See constructor todo. If kept we should maybe change its visibility.
      */
-    public function setOptionCurl(CurlHandle $curlHandle, int $key, mixed $value): bool
-    {
-        return curl_setopt($curlHandle, $key, $value);
+    public function hasHeader(
+        array $headers,
+        string $key
+    ): bool {
+        return count($this->findHeaders(headers: $headers, key: $key)) > 0;
     }
 
     /**
-     * @param CurlHandle $curlHandle
-     * @return $this
+     * Retrieve list of headers where $key matches.
+     * @todo See constructor todo. If kept we should maybe change its visibility.
+     *
+     * @param array $headers
+     * @param string $key
+     * @return array
      */
-    private function setCurlDynamicValues(CurlHandle $curlHandle): Curl
-    {
-        foreach ($this->options as $curlKey => $curlValue) {
-            $this->setOptionCurl($curlHandle, $curlKey, $curlValue);
+    public function findHeaders(
+        array $headers,
+        string $key
+    ): array {
+        $key = strtolower(string: $key);
+
+        return array_filter(
+            array: $headers,
+            callback: static function ($header) use ($key) {
+                return strtolower(string: $header->key) === $key;
+            }
+        );
+    }
+
+    /**
+     * @return array<Header>
+     */
+    public function getHeadersData(
+        array $headers
+    ): array {
+        $result = [];
+
+        foreach ($headers as $header) {
+            $result[] = $header->key . ': ' . $header->value;
         }
 
-        return $this;
+        return $result;
     }
 
     /**
-     * Values intended to not be overridden by user input.
-     *
-     * @param mixed $curlHandle
-     * @return $this
-     * @since 6.1.0
-     */
-    private function setCurlStaticValues(CurlHandle $curlHandle): Curl
-    {
-        $this->setOptionCurl($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        $this->setOptionCurl($curlHandle, CURLOPT_HEADER, false);
-        $this->setOptionCurl($curlHandle, CURLOPT_AUTOREFERER, true);
-        $this->setOptionCurl($curlHandle, CURLINFO_HEADER_OUT, true);
-        $this->setOptionCurl($curlHandle, CURLOPT_HEADERFUNCTION, [$this, 'getCurlHeaderRow']);
-        $this->setOptionCurl($curlHandle, CURLOPT_USERAGENT, $this->getUserAgent());
-
-        return $this;
-    }
-
-    /**
-     * Final user agent string that will be pushed into http-requests.
      * @return string
+     */
+    private function getCustomRequestValue(): string
+    {
+        return match ($this->requestMethod) {
+            RequestMethod::GET => 'GET',
+            RequestMethod::POST => 'POST',
+            RequestMethod::PUT => 'PUT',
+            RequestMethod::DELETE => 'DELETE'
+        };
+    }
+
+    /**
+     * Append POST | PUT data / options to CURL.
+     *
+     * @param CurlHandle $ch
+     * @param array $payload
+     * @return void
+     * @throws JsonException
+     */
+    private function setContent(CurlHandle $ch, array $payload): void
+    {
+        $data = $this->getPayloadData(payload: $payload);
+
+        if ($data !== '' && $this->hasBodyData()) {
+            curl_setopt(
+                handle: $ch,
+                option: CURLOPT_POSTFIELDS,
+                value: $data
+            );
+        }
+
+        if ($this->requestMethod === RequestMethod::POST) {
+            curl_setopt(
+                handle: $ch,
+                option: CURLOPT_POST,
+                value: true
+            );
+        }
+    }
+
+    /**
+     * @param array $payload
+     * @return string
+     * @throws JsonException
+     * @todo Consider caching this is a local variable on this instance to avoid subsequent calls. NOTE: Generating this
+     * @todo data directly in the constructor harms refactoring.
+     */
+    public function getPayloadData(
+        array $payload
+    ): string {
+        return match ($this->contentType) {
+            ContentType::JSON => json_encode(
+                value: $payload,
+                flags: JSON_THROW_ON_ERROR
+            ),
+            ContentType::URL => http_build_query(data: $payload)
+        };
+    }
+
+    /**
+     * @return string
+     */
+    private function getContentType(): string
+    {
+        return match ($this->contentType) {
+            ContentType::JSON => 'application/json; charset=utf-8',
+            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8'
+        };
+    }
+
+    /**
+     * @return string
+     * @todo Dropped classname from user agent, didn't seem to make sense, we should however include the version
+     * @todo specified in composer.json (see PrestaShop Core psrbcore/src/Traits/Module/Init.php for example).
+     * @todo Add back what module class called Curl.
      */
     public function getUserAgent(): string
     {
-        $return = [];
-
-        $userAgentArray = [
+        return implode(separator: ' +', array: array_filter(array: [
             Config::$instance->userAgent,
-            sprintf('ECom2-%s', $this->getNameSpaceClass(self::class)),
+            'ECom2-', // @todo Put version from composer.json here.
             sprintf('PHP-%s', PHP_VERSION),
-        ];
-
-        foreach ($userAgentArray as $item) {
-            if (!empty($item)) {
-                $return[] = $item;
-            }
-        }
-
-        return implode(' +', $return);
+        ]));
     }
 
     /**
-     * @param $class
-     * @return mixed|string
+     * @param CurlHandle $ch
+     * @return void
+     * @throws CurlException
+     * @throws JsonException
      */
-    private function getNameSpaceClass(string $class)
+    private function setAuth(CurlHandle $ch): void
     {
-        $return = '';
-
-        $wrapperClassExplode = explode('\\', $class);
-        if (is_array($wrapperClassExplode) && count($wrapperClassExplode)) {
-            $return = $wrapperClassExplode[count($wrapperClassExplode) - 1];
-        }
-
-        return $return;
-    }
-
-    /**
-     * @param CurlHandle $curlHandle
-     * @param array $requestData
-     * @param $requestMethod
-     * @param $dataType
-     * @return $this
-     */
-    private function setCurlPostData(
-        CurlHandle $curlHandle,
-        array $requestData,
-        $requestMethod,
-        $dataType
-    ): Curl {
-        $stringifyData = $this->getRequestData($requestData, $requestMethod, $dataType);
-
-        // In the main netcurl library a switch-case was used as it also supported XML content. This slimmed
-        // section is intended to just support JSON and regular get-post-data.
-
-        if ($dataType === DataType::JSON) {
-            $jsonContentType = 'application/json; charset=utf-8';
-            $this->customPreHeaders[] = new Header(
-                key: 'Content-Type',
-                value: $jsonContentType
-            );
-            $this->customPreHeaders[] = new Header(
-                key: 'Content-Length',
-                value: strlen($stringifyData)
-            );
-            $this->setOptionCurl($curlHandle, CURLOPT_POSTFIELDS, $stringifyData);
-        } else {
-            if ($requestMethod === RequestMethod::POST) {
-                $this->setOptionCurl($curlHandle, CURLOPT_POST, true);
-            }
-            $this->setOptionCurl($curlHandle, CURLOPT_POSTFIELDS, $stringifyData);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param mixed $requestData
-     * @param $requestMethod
-     * @param $dataType
-     * @return string
-     */
-    private function getRequestData(mixed $requestData, $requestMethod, $dataType): string
-    {
-        $return = '';
-
-        // In the main netcurl library a switch-case was used as it also supported XML content. This slimmed
-        // section is intended to just support JSON and regular get-post-data.
-
-        if ($dataType === DataType::JSON) {
-            $return = $this->getJsonData($requestData);
-        } else {
-            $requestQuery = '';
-
-            if ($requestMethod === RequestMethod::GET) {
-                $requestQuery = '&';
-            }
-            if ($this->hasData($requestData)) {
-                $httpQuery = http_build_query($requestData);
-                if (!empty($httpQuery)) {
-                    $return = $requestQuery . $httpQuery;
-                }
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * Handle json properly.
-     *
-     * @param $transformData
-     * @return string
-     */
-    private function getJsonData($transformData): string
-    {
-        $return = $transformData;
-
-        if (is_string($transformData)) {
-            $stringTest = json_decode($transformData, false);
-            if (is_object($stringTest) || is_array($stringTest)) {
-                $return = $transformData;
-            }
-        } else {
-            $return = json_encode($transformData);
-        }
-
-        return (string)$return;
-    }
-
-    /**
-     * @param $arrayObject
-     * @return bool
-     */
-    public function hasData($arrayObject): bool
-    {
-        $return = false;
-
-        if (is_object($arrayObject)) {
-            $return = true;
-        } elseif (is_array($arrayObject) && count($arrayObject)) {
-            $return = true;
-        }
-
-        return $return;
-    }
-
-    /**
-     * @param CurlHandle $curlHandle
-     * @param $requestMethod
-     * @return $this
-     */
-    private function setCurlRequestMethod(CurlHandle $curlHandle, $requestMethod): Curl
-    {
-        // Method REQUEST is removed from this section.
-
-        switch ($requestMethod) {
-            case RequestMethod::POST:
-                $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'POST');
+        switch ($this->authType) {
+            case AuthType::BASIC:
+                $this->setBasicAuth(ch: $ch);
                 break;
-            case RequestMethod::DELETE:
-                $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+            case AuthType::JWT:
+                $this->setJwtAuth(ch: $ch);
                 break;
-            case RequestMethod::HEAD:
-                $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'HEAD');
-                break;
-            case RequestMethod::PUT:
-                $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'PUT');
-                break;
-            case RequestMethod::PATCH:
-                $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'PATCH');
-                break;
-            default:
-                // Making sure we send data in proper formatting if there is bad user configuration.
-                // Bad configuration is when both GET+POST data parameters are sent as a GET when the
-                // correct set up in that case is a POST.
-                $this->setOptionCurl($curlHandle, CURLOPT_CUSTOMREQUEST, 'GET');
+        }
+    }
+
+    /**
+     * @param CurlHandle $ch
+     * @return void
+     * @throws CurlException
+     */
+    private function setBasicAuth(CurlHandle $ch): void
+    {
+        $auth = Config::$instance->basicAuth;
+
+        if ($auth === null) {
+            throw new CurlException(message: 'Basic auth not configured.');
         }
 
-        return $this;
+        curl_setopt(
+            handle: $ch,
+            option: CURLOPT_USERPWD,
+            value: "$auth->username:$auth->password"
+        );
     }
 
     /**
-     * Custom headers handling.
-     *
-     * @param CurlHandle $curlHandle
-     * @return Curl
+     * @param CurlHandle $ch
+     * @return void
+     * @throws CurlException
+     * @throws JsonException
      */
-    private function setCurlCustomHeaders(CurlHandle $curlHandle): Curl
+    private function setJwtAuth(CurlHandle $ch): void
     {
-        $this->setProperCustomHeader();
-        $this->setupHeaders($curlHandle);
+        $auth = Config::$instance->jwtAuth;
 
-        return $this;
+        if ($auth === null) {
+            throw new CurlException(message: 'JWT auth not configured.');
+        }
+
+        if ($auth->getToken() === null) {
+            $ch = $this->init();
+        }
+
+        curl_setopt(
+            handle: $ch,
+            option: CURLOPT_HTTPAUTH,
+            value: CURLAUTH_BEARER
+        );
+
+        curl_setopt(
+            handle: $ch,
+            option: CURLOPT_XOAUTH2_BEARER,
+            value: $auth->getToken()->accessToken
+        );
     }
 
     /**
-     * Fix problematic header data by converting them to proper outputs.
-     *
-     * @return $this
-     * @since 6.1.0
+     * @return void
+     * @throws CurlException
      */
-    private function setProperCustomHeader(): Curl
+    private function handleError(): void
     {
-        // Merge static header data into customPreHeaders.
-        foreach ($this->customPreHeadersStatic as $headerKey => $headerValue) {
-            $this->customPreHeaders[$headerKey] = $headerValue;
-            $this->customPreHeaders[] = new Header(
-                key: $headerKey,
-                value: $headerValue,
-                isStatic: true
+        $msg = curl_error(handle: $this->ch);
+        $code = curl_errno(handle: $this->ch);
+
+        if ($code !== 0) {
+            throw new CurlException(
+                message: "CURL error ($code): $msg",
+                code: $code
             );
         }
-
-        /**
-         * Non associative headers are no longer allowed.
-         * @var Header $header
-         */
-        foreach ($this->customPreHeaders as $header) {
-            // Rendering final header array to hand over to curl.
-            // This is sent over to curl as is.
-            $this->customHeaders[] = sprintf('%s: %s', $header->key, $header->value);
-        }
-        // Empty out preHeaders.
-        $this->customPreHeaders = [];
-
-        return $this;
-    }
-
-    /**
-     * @param $curlHandle
-     * @return $this
-     */
-    private function setupHeaders($curlHandle): Curl
-    {
-        if (count($this->customHeaders)) {
-            $this->setOptionCurl($curlHandle, CURLOPT_HTTPHEADER, $this->customHeaders);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $url
-     * @param array $data
-     * @param DataType $dataType
-     * @return $this
-     * @throws CurlException|Exception
-     */
-    public function post(string $url, array $data = [], $dataType = DataType::JSON): Curl
-    {
-        return $this->request($url, $data, RequestMethod::POST, $dataType);
-    }
-
-    /**
-     * @param string $url
-     * @param array $data
-     * @param DataType $dataType
-     * @return $this
-     * @throws CurlException|Exception
-     */
-    public function put(string $url, array $data = [], $dataType = DataType::JSON): Curl
-    {
-        return $this->request($url, $data, RequestMethod::PUT, $dataType);
-    }
-
-    /**
-     * @param string $url
-     * @param array $data
-     * @param int $dataType
-     * @return $this
-     * @throws CurlException|Exception
-     */
-    public function delete(string $url, array $data = [], $dataType = DataType::JSON): Curl
-    {
-        return $this->request($url, $data, RequestMethod::DELETE, $dataType);
-    }
-
-    /**
-     * When curl has done its request, also prefetch the server's response header here, so that data
-     * from that part can be handled. Separately. This is where we primarily get out HTTP Response codes.
-     *
-     * @param $curlHandle
-     * @param $header
-     * @return int
-     * @noinspection PhpUnusedParameterInspection
-     */
-    private function getCurlHeaderRow($curlHandle, $header): int
-    {
-        $headSplit = explode(':', $header, 2);
-        $spacedSplit = explode(' ', $header, 2);
-
-        if (count($headSplit) < 2) {
-            if (count($spacedSplit) > 1) {
-                $this->curlResponseHeaders[$spacedSplit[0]][] = trim($spacedSplit[1]);
-            }
-            return strlen($header);
-        }
-
-        $this->curlResponseHeaders[$headSplit[0]][] = trim($headSplit[1]);
-
-        return strlen($header);
     }
 }

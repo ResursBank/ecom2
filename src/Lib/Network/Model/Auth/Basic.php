@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Api\Auth;
+namespace Resursbank\Ecom\Lib\Network\Model\Auth;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
