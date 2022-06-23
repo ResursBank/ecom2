@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 use CurlHandle;
+use Exception;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
