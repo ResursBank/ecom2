@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\Address;
-use Resursbank\Ecom\Module\Rco\Models\CustomerType;
 
 /**
  * Defines an InitPayment customer object
@@ -28,5 +27,5 @@ class Customer extends Model
         public ?string $mobileNotValidated = null,
         public ?string $emailNotValidated = null
     ) {
-}
+    }
 }
