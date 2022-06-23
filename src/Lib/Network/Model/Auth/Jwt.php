@@ -14,8 +14,8 @@ use Resursbank\Ecom\Lib\Network\Model\JwtToken;
 class Jwt
 {
     /**
-     * @param string $id
-     * @param string $secret
+     * @param string $clientId
+     * @param string $clientSecret
      * @param string $scope
      * @param string $grantType
      * @param JwtToken|null $token
@@ -24,15 +24,15 @@ class Jwt
      * @todo Add charset validation of id and secret.
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $secret,
+        public readonly string $clientId,
+        public readonly string $clientSecret,
         public readonly string $scope,
         public readonly string $grantType,
         private JwtToken|null $token,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-        $this->stringValidation->notEmpty(value: $this->id);
-        $this->stringValidation->notEmpty(value: $this->secret);
+        $this->stringValidation->notEmpty(value: $this->clientId);
+        $this->stringValidation->notEmpty(value: $this->clientSecret);
     }
 
     /**

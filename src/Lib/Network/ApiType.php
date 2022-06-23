@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 /**
- * API authentication types.
+ * API types.
  *
  * @codingStandardsIgnoreStart
  */
-enum AuthType
+enum ApiType
 {
-    case BASIC;
-    case JWT;
-    case NONE;
+    case MERCHANT;
 }

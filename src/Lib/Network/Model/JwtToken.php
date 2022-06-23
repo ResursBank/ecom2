@@ -13,22 +13,14 @@ namespace Resursbank\Ecom\Lib\Network\Model;
 class JwtToken
 {
     /**
-     * @var int
-     */
-    public readonly int $validEndTime;
-
-    /**
      * @param string $accessToken
      * @param string $tokenType
-     * @param int $tokenExpire
-     * @param int $tokenRegisterTime
+     * @param int $expiresIn
      */
     public function __construct(
         public readonly string $accessToken,
         public readonly string $tokenType,
-        public readonly int $tokenExpire,
-        public readonly int $tokenRegisterTime
+        public readonly int $expiresIn,
     ) {
-        $this->validEndTime = $tokenRegisterTime + $this->tokenExpire;
     }
 }
