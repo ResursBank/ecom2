@@ -183,9 +183,12 @@ class CurlTest extends TestCase
         $this->curl->get('https://timeout.netcurl.org/');
     }
 
+    /**
+     * @return bool
+     */
     private function isPipeline(): bool
     {
-        return isset($_ENV['is_pipeline']) ? $_ENV['is_pipeline'] : false;
+        return isset($_ENV['is_pipeline']) ? (bool)$_ENV['is_pipeline'] : false;
     }
 
     /**
