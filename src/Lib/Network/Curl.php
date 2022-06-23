@@ -374,6 +374,9 @@ class Curl
         // Below is the list of the netCurl-methods. They are remarked if the implementation is skipped.
         // On finalization, such rows can be safely removed.
 
+        // All options should be set before setCurlDynamicValues.
+        $this->setConfiguredProxy();
+
         $this->setCurlDynamicValues($curlHandle);
         // SSL should be set after dynamic values as they have higher priority for security, than the user defined data.
         $this->setCurlStaticValues($curlHandle);
@@ -498,6 +501,21 @@ class Curl
             $this->deleteOption(CURLOPT_TIMEOUT_MS);
             $this->options[CURLOPT_CONNECTTIMEOUT] = ceil($timeout / 2);
             $this->options[CURLOPT_TIMEOUT] = ceil($timeout);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $proxyAddress ipAddress:Port
+     * @param int $proxyType Proxytype is based on CURLOPT_PROXYTYPE
+     * @return $this
+     */
+    public function setConfiguredProxy(): Curl
+    {
+        if (!empty(Config::$instance->proxy)) {
+            $this->options[CURLOPT_PROXY] = Config::$instance->proxy;
+            $this->options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
         }
 
         return $this;

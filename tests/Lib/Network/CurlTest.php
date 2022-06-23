@@ -42,6 +42,14 @@ class CurlTest extends TestCase
      */
     private Curl $curl;
 
+    /**
+     * Proxy host to test with proxies. On manual tests, you may want to change this host to something
+     * that accepts the default HTTP-proxy setup.
+     *
+     * @var string $proxyHost
+     */
+    private $proxyHost = '212.63.208.8';
+
     public function testNormalAuthentication()
     {
         $un = 'testuser';
@@ -173,6 +181,38 @@ class CurlTest extends TestCase
         // Default for requests to the site below is that it has a response timeout for 10 sec.
         // We need to move those features "in house" at some point.
         $this->curl->get('https://timeout.netcurl.org/');
+    }
+
+    private function isPipeline(): bool
+    {
+        return isset($_ENV['is_pipeline']) ? $_ENV['is_pipeline'] : false;
+    }
+
+    /**
+     * Strict proxy testing. Requires access to either 212.63.208.8 or another
+     *
+     * @test
+     */
+    public function setProxy()
+    {
+        if ($this->isPipeline()) {
+            self::markTestSkipped('Pipelines does not support proxies.');
+            return;
+        }
+
+        Config::setup(
+            credentials: new Credentials(username: 'no', password: 'no', test: true),
+            logger: $this->logger,
+            proxy: sprintf('%s:80', $this->proxyHost)
+        );
+
+        $request = $this->curl->get('https://ipv4.netcurl.org');
+
+        // Request should reflect the proxy ip, not your own.
+        self::assertSame(
+            $this->proxyHost,
+            $request->getParsed()->ip
+        );
     }
 
     /**
