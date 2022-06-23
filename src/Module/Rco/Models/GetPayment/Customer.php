@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco\Models\GetPayment;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Rco\Models\Address;
 
 /**
  * Defines a GetPayment customer object
