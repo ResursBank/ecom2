@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Network;
+namespace Resursbank\EcomTest\Integration\Lib\Network;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -145,6 +145,34 @@ class CurlTest extends TestCase
         );
 
         parent::setUp();
+    }
+
+    /**
+     * Testing tokens and making sure this is set on remote ends.
+     *
+     * @throws CurlException
+     * @throws JsonException
+     */
+    public function testSetToken()
+    {
+        $tokenString = 'Bearer 4b8b4bfdc6de0033ef5c42ca439b572867229556';
+        $this->curl->setTokenBearer(sha1('this_bearer'));
+        self::assertSame(
+            $tokenString,
+            $this->curl->get('https://ipv4.netcurl.org')->getParsed()->HTTP_AUTHORIZATION
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function testTimeout()
+    {
+        self::expectExceptionCode(28);
+        $this->curl->setTimeout(3);
+        // Default for requests to the site below is that it has a response timeout for 10 sec.
+        // We need to move those features "in house" at some point.
+        $this->curl->get('https://timeout.netcurl.org/');
     }
 
     /**

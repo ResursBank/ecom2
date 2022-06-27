@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Validation;
+namespace Resursbank\EcomTest\Unit\Lib\Validation;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
-use Resursbank\Ecom\Lib\Validation\BoolValidation;
+use Resursbank\Ecom\Lib\Validation\IntValidation;
 
 /**
- * Test boolean validation methods.
+ * Test integer validation methods.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class BoolValidationTest extends TestCase
+final class IntValidationTest extends TestCase
 {
     /**
-     * @var BoolValidation
+     * @var IntValidation
      */
-    private BoolValidation $boolValidation;
+    private IntValidation $intValidation;
 
     /**
      * @return void
      */
     protected function setUp(): void
     {
-        $this->boolValidation = new BoolValidation();
+        $this->intValidation = new IntValidation();
 
         parent::setUp();
     }
@@ -42,12 +42,12 @@ final class BoolValidationTest extends TestCase
     public function testGetKeyThrowsWithMissing(): void
     {
         $this->expectException(exception: MissingKeyException::class);
-        $this->boolValidation->getKey(data: ['Island', 'Green'], key: 'mega');
+        $this->intValidation->getKey(data: ['Sweden', 'Blue'], key: 'bacon');
     }
 
     /**
      * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not a boolean.
+     * is not an integer.
      *
      * @return void
      * @throws IllegalTypeException
@@ -56,22 +56,23 @@ final class BoolValidationTest extends TestCase
     public function testGetKeyThrowsWithIllegalType(): void
     {
         $this->expectException(exception: IllegalTypeException::class);
-        $this->boolValidation->getKey(data: ['epic' => 1], key: 'epic');
+        $this->intValidation->getKey(data: ['epic' => '999'], key: 'epic');
     }
 
     /**
-     * Assert getKey() return validated boolean value.
+     * Assert getKey() return validated integer value.
      *
      * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
-    public function testGetKeyReturnsBool(): void
+    public function testGetKeyReturnsInt(): void
     {
-        self::assertTrue(
-            condition: $this->boolValidation->getKey(
-                data: ['epoch' => true],
-                key: 'epoch'
+        self::assertSame(
+            expected: 123,
+            actual: $this->intValidation->getKey(
+                data: ['epic' => 123],
+                key: 'epic'
             )
         );
     }

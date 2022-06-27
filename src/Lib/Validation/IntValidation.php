@@ -34,7 +34,7 @@ class IntValidation
 
         if (!is_int(value: $data[$key])) {
             throw new IllegalTypeException(
-                message: "$key is not a int."
+                message: "$key is not an int."
             );
         }
 
