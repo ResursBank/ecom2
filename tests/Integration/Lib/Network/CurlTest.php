@@ -14,11 +14,13 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\DataType;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 
 /**
  * This class will test curl methods.
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @version 1.0.0
  */
 class CurlTest extends TestCase
 {
@@ -138,10 +140,12 @@ class CurlTest extends TestCase
 
         $this->curl = new Curl();
 
+        $currentNamespace = $this->getNamespaceClass(self::class);
+        $namespaceVersion = (new Generic())->getVersionByAny(__DIR__, 3, self::class);
         Config::setup(
             credentials: $this->credentials,
             logger: $this->logger,
-            userAgent: $this->getNamespaceClass(self::class)
+            userAgent: sprintf('%s-v%s', $currentNamespace, $namespaceVersion)
         );
 
         parent::setUp();
