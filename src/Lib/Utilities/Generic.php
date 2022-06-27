@@ -21,93 +21,105 @@ class Generic
     /**
      * @var int
      */
-    private $internalExceptionCode;
+    private int $internalExceptionCode;
 
     /**
      * Error message on internal handled errors, if any.
      * @var string
      */
-    private $internalExceptionMessage = '';
+    private string $internalExceptionMessage = '';
 
     /**
      * If open_basedir-warnings has been triggered once, we store that here.
      * @var bool
      */
-    private $openBaseDirExceptionTriggered = false;
+    private bool $openBaseDirExceptionTriggered = false;
 
     /**
      * @var object
      */
-    private $composerData;
+    private object $composerData;
 
     /**
      * @var string
      */
-    private $composerLocation;
+    private string $composerLocation;
 
     /**
-     * @param $composerLocation
-     * @return mixed|string
+     * @var array Name entry from composer.
+     */
+    private array $composerNameEntry;
+
+    /**
+     * @param string $composerLocation
+     * @return string
      * @throws Exception
      */
-    public function getComposerVendor($composerLocation)
+    public function getComposerVendor(string $composerLocation): string
     {
         return $this->getNameEntry('vendor', $composerLocation);
     }
 
     /**
-     * Using both class and composer.json to discover version (in case that composer.json are removed in a "final").
-     *
-     * @param string $composerLocation
-     * @param int $composerDepth
-     * @param string $className
-     * @return string|null
-     * @throws ReflectionException
+     * @param string $part Defines which part of the vendor row you want (name or the vendor itself)
+     * @param string $composerLocation Where composer.json are stored.
+     * @return string
      * @throws Exception
      */
-    public function getVersionByAny($composerLocation = '', $composerDepth = 3, $className = '')
+    private function getNameEntry(string $part, string $composerLocation): string
     {
-        $return = null;
+        $return = '';
+        $this->composerNameEntry = explode('/', $this->getComposerTag($composerLocation, 'name'), 2);
 
-        $byComposer = $this->getVersionByComposer($composerLocation, $composerDepth);
-        $byClass = $this->getVersionByClassDoc($className);
-
-        // Composer always have higher priority.
-        if (!empty($byComposer)) {
-            $return = $byComposer;
-        } elseif (!empty($byClass)) {
-            $return = $byClass;
+        switch ($part) {
+            case 'name':
+                if (isset($this->composerNameEntry[1])) {
+                    $return = $this->composerNameEntry[1];
+                }
+                break;
+            case 'vendor':
+                if (isset($this->composerNameEntry[0])) {
+                    $return = $this->composerNameEntry[0];
+                }
+                break;
+            default:
         }
 
         return $return;
     }
 
     /**
-     * @param $location
-     * @param int $maxDepth Default is 3.
+     * Extract a tag from composer.json.
+     *
+     * @param string $location
+     * @param string $tag
      * @return string
      * @throws Exception
      */
-    public function getVersionByComposer($location, $maxDepth = 3)
+    public function getComposerTag(string $location, string $tag): string
     {
         $return = '';
 
-        if (!empty(($this->getComposerConfig($location, $maxDepth))) && !$this->isOpenBaseDirException()) {
-            $return = $this->getComposerTag($this->composerLocation, 'version');
+        if (empty($this->composerData)) {
+            $this->getComposerConfig($location);
+        }
+
+        if (isset($this->composerData->{$tag})) {
+            $return = $this->composerData->{$tag};
         } elseif ($this->isOpenBaseDirException()) {
             $return = $this->getOpenBaseDirExceptionString();
         }
 
-        return $return;
+        return (string)$return;
     }
 
     /**
-     * @param $location
-     * @param int $maxDepth
-     * @return string|null
+     * @param string $location Location of composer.json.
+     * @param int $maxDepth How deep the search for a composer.json will be. Usually you should not need more than 3.
+     * @return string
      * @throws Exception
      */
-    public function getComposerConfig($location, $maxDepth = 3)
+    public function getComposerConfig(string $location, int $maxDepth = 3): string
     {
         $this->getInternalErrorHandler();
 
@@ -151,7 +163,7 @@ class Generic
     /**
      * @return $this
      */
-    private function getInternalErrorHandler()
+    private function getInternalErrorHandler(): Generic
     {
         if (!is_null($this->internalErrorHandler)) {
             restore_error_handler();
@@ -174,7 +186,7 @@ class Generic
      * Checks internal warnings for open_basedir exceptions during runs.
      * @return bool
      */
-    private function isOpenBaseDirException()
+    private function isOpenBaseDirException(): bool
     {
         // If triggered once, skip checks.
         if ($this->openBaseDirExceptionTriggered) {
@@ -195,7 +207,7 @@ class Generic
     /**
      * @return bool
      */
-    private function hasInternalException()
+    private function hasInternalException(): bool
     {
         return !empty($this->internalExceptionMessage);
     }
@@ -205,7 +217,7 @@ class Generic
      * had problems with open_basedir security.
      * @return string
      */
-    private function getOpenBaseDirExceptionString()
+    private function getOpenBaseDirExceptionString(): string
     {
         return 'open_basedir security active';
     }
@@ -214,7 +226,7 @@ class Generic
      * @param $location
      * @return bool
      */
-    private function hasComposerFile($location)
+    private function hasComposerFile($location): bool
     {
         $return = false;
 
@@ -226,9 +238,9 @@ class Generic
     }
 
     /**
-     * @param $location
+     * @param string $location
      */
-    private function getComposerConfigData($location)
+    private function getComposerConfigData(string $location): void
     {
         $this->composerLocation = $location;
 
@@ -243,26 +255,48 @@ class Generic
     }
 
     /**
-     * @param $location
-     * @param $tag
+     * Using both class and composer.json to discover version (in case that composer.json are removed in a "final").
+     *
+     * @param string $composerLocation
+     * @param int $composerDepth
+     * @param string $className
      * @return string
-     * @throws Exception
+     * @throws ReflectionException
      */
-    public function getComposerTag($location, $tag)
+    public function getVersionByAny($composerLocation = '', $composerDepth = 3, $className = ''): string
     {
         $return = '';
 
-        if (empty($this->composerData)) {
-            $this->getComposerConfig($location);
+        $byComposer = $this->getVersionByComposer($composerLocation, $composerDepth);
+        $byClass = $this->getVersionByClassDoc($className);
+
+        // Composer always have higher priority.
+        if (!empty($byComposer)) {
+            $return = $byComposer;
+        } elseif (!empty($byClass)) {
+            $return = $byClass;
         }
 
-        if (isset($this->composerData->{$tag})) {
-            $return = $this->composerData->{$tag};
+        return $return;
+    }
+
+    /**
+     * @param string $location
+     * @param int $maxDepth Default is 3.
+     * @return string
+     * @throws Exception
+     */
+    public function getVersionByComposer(string $location, $maxDepth = 3): string
+    {
+        $return = '';
+
+        if (!empty(($this->getComposerConfig($location, $maxDepth))) && !$this->isOpenBaseDirException()) {
+            $return = $this->getComposerTag($this->composerLocation, 'version');
         } elseif ($this->isOpenBaseDirException()) {
             $return = $this->getOpenBaseDirExceptionString();
         }
 
-        return (string)$return;
+        return $return;
     }
 
     /**
@@ -270,19 +304,19 @@ class Generic
      * @return string
      * @throws ReflectionException
      */
-    public function getVersionByClassDoc($className = '')
+    public function getVersionByClassDoc(string $className = ''): string
     {
         return $this->getDocBlockItem('@version', '', $className);
     }
 
     /**
-     * @param $item
+     * @param string $item
      * @param string $functionName
      * @param string $className
      * @return string
      * @throws ReflectionException
      */
-    public function getDocBlockItem($item, $functionName = '', $className = '')
+    public function getDocBlockItem(string $item, string $functionName = '', string $className = ''): string
     {
         return (string)$this->getExtractedDocBlockItem(
             $item,
@@ -295,11 +329,11 @@ class Generic
     }
 
     /**
-     * @param $item
-     * @param $doc
+     * @param string $item
+     * @param string $doc
      * @return string
      */
-    private function getExtractedDocBlockItem($item, $doc)
+    private function getExtractedDocBlockItem(string $item, string $doc): string
     {
         $return = '';
 
@@ -321,18 +355,18 @@ class Generic
     }
 
     /**
-     * @param $item
-     * @param $functionName
+     * @param string $item
+     * @param string $functionName
      * @param string $className
      * @return string
      * @throws ReflectionException
      * @noinspection PhpUnusedParameterInspection Called from externals.
      */
     private function getExtractedDocBlock(
-        $item,
-        $functionName,
-        $className = ''
-    ) {
+        string $item,
+        string $functionName,
+        string $className = ''
+    ): string {
         if (empty($className)) {
             $className = __CLASS__;
         }

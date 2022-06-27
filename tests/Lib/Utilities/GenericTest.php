@@ -75,4 +75,16 @@ class GenericTest extends TestCase
             (new Generic())->getComposerTag(__DIR__, 'name')
         );
     }
+
+    /**
+     * @test
+     * @throws Exception
+     */
+    public function getVendorTest()
+    {
+        self::assertSame(
+            'resursbank',
+            (new Generic())->getComposerVendor(__DIR__)
+        );
+    }
 }
