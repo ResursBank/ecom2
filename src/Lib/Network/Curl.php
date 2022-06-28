@@ -81,7 +81,7 @@ class Curl
 
         if (!is_string(value: $body)) {
             throw new IllegalTypeException(
-                message: 'Curl response type is '.gettype($body).', expected string.'
+                message: 'Curl response type is ' . gettype($body) . ', expected string.'
             );
         }
 
@@ -118,17 +118,13 @@ class Curl
     public static function get(
         string $url,
         array $payload = [],
-        ?AuthType $authType = null
+        ?AuthType $authType = AuthType::JWT
     ): Response {
-        if (!$authType) {
-            $authType = AuthType::NONE;
-        }
         $curl = new self(
             url: $url,
             requestMethod: RequestMethod::GET,
             payload: $payload,
             authType: $authType,
-            //contentType: ContentType::URL
         );
 
         return $curl->exec();
@@ -137,14 +133,26 @@ class Curl
     public static function post(
         string $url,
         array $payload = [],
-        ?AuthType $authType = null
-    ) {
-        if (!$authType) {
-            $authType = AuthType::NONE;
-        }
+        ?AuthType $authType = AuthType::JWT
+    ): Response {
         $curl = new self(
             url: $url,
             requestMethod: RequestMethod::POST,
+            payload: $payload,
+            authType: $authType
+        );
+
+        return $curl->exec();
+    }
+
+    public static function put(
+        string $url,
+        array $payload = [],
+        ?AuthType $authType = AuthType::JWT
+    ):Response {
+        $curl = new self(
+            url: $url,
+            requestMethod: RequestMethod::PUT,
             payload: $payload,
             authType: $authType
         );
