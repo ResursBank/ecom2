@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Network\Model\JwtToken;
 use Resursbank\Ecom\Lib\Network\Model\Response;
 use Resursbank\Ecom\Lib\Network\Model\Header;
@@ -76,9 +77,11 @@ class Curl
     {
         $body = curl_exec(handle: $this->ch);
 
+        $this->handleError(); // We want to check for errors immediately after running curl_exec
+
         if (!is_string(value: $body)) {
             throw new IllegalTypeException(
-                message: 'Curl response body is not a string.'
+                message: 'Curl response type is '.gettype($body).', expected string.'
             );
         }
 
@@ -110,6 +113,43 @@ class Curl
         curl_close(handle: $this->ch);
 
         return new Response(body: $body, code: $code);
+    }
+
+    public static function get(
+        string $url,
+        array $payload = [],
+        ?AuthType $authType = null
+    ): Response {
+        if (!$authType) {
+            $authType = AuthType::NONE;
+        }
+        $curl = new self(
+            url: $url,
+            requestMethod: RequestMethod::GET,
+            payload: $payload,
+            authType: $authType,
+            //contentType: ContentType::URL
+        );
+
+        return $curl->exec();
+    }
+
+    public static function post(
+        string $url,
+        array $payload = [],
+        ?AuthType $authType = null
+    ) {
+        if (!$authType) {
+            $authType = AuthType::NONE;
+        }
+        $curl = new self(
+            url: $url,
+            requestMethod: RequestMethod::POST,
+            payload: $payload,
+            authType: $authType
+        );
+
+        return $curl->exec();
     }
 
     /**
@@ -149,9 +189,7 @@ class Curl
             CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
         ];
 
-        foreach ($options as $key => $value) {
-            curl_setopt(handle: $ch, option: $key, value: $value);
-        }
+        curl_setopt_array(handle: $ch, options: $options);
 
         $this->setContent(ch: $ch, payload: $payload);
 
@@ -161,11 +199,26 @@ class Curl
     /**
      * @return bool
      */
-    public function hasBodyData(): bool {
+    public function hasBodyData(): bool
+    {
         return (
             $this->requestMethod === RequestMethod::POST ||
             $this->requestMethod === RequestMethod::PUT ||
             $this->requestMethod === RequestMethod::DELETE
+        );
+    }
+
+    public function setTimeout(int $timeout): void
+    {
+        curl_setopt(
+            handle: $this->ch,
+            option: CURLOPT_CONNECTTIMEOUT,
+            value: $timeout
+        );
+        curl_setopt(
+            handle: $this->ch,
+            option: CURLOPT_TIMEOUT,
+            value: $timeout
         );
     }
 
@@ -214,7 +267,7 @@ class Curl
             );
         }
 
-        if (!$this->hasHeader(headers: $headers, key: 'content-length')) {
+        if (!$this->hasHeader(headers: $headers, key: 'content-length') && $this->hasBodyData()) {
             $headers[] = new Header(
                 key: 'content-length',
                 value: strlen(string: $this->getPayloadData(payload: $payload))
@@ -501,6 +554,25 @@ class Curl
                 message: "CURL error ($code): $msg",
                 code: $code
             );
+        }
+    }
+
+    /**
+     * Returns configured auth credentials as array
+     *
+     * @return array
+     */
+    public function getAuthentication(): array
+    {
+        switch ($this->authType) {
+            case AuthType::BASIC:
+                return (array)Config::$instance->basicAuth;
+                break;
+            case AuthType::JWT:
+                return (array)Config::$instance->jwtAuth;
+                break;
+            default:
+                return [];
         }
     }
 }
