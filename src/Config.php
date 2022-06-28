@@ -42,8 +42,8 @@ final class Config
      */
     public static function setup(
         LoggerInterface $logger,
-        Basic|null $basicAuth,
-        Jwt|null $jwtAuth,
+        Basic|null $basicAuth = null,
+        Jwt|null $jwtAuth = null,
         string $logLevel = 'info',   // Only log info messages.
         string $userAgent = ''
     ): void {
