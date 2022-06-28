@@ -121,9 +121,14 @@ class CurlTest extends TestCase
     public function testRealGetRequest()
     {
         $response = Curl::get(
-            url: 'https://ipv4.netcurl.org'
+            url: 'https://ipv4.netcurl.org',
+            authType: AuthType::NONE
         );
 
+        $this::assertEquals(
+            expected: 'GET',
+            actual: $response->body->REQUEST_METHOD
+        );
         $this->assertSame(
             expected: 200,
             actual: $response->code
@@ -144,16 +149,45 @@ class CurlTest extends TestCase
      *
      * @throws CurlException
      * @throws JsonException
+     * @return void
      */
-    public function testRealPostRequest()
+    public function testRealPostRequest(): void
     {
         $payload = new stdClass();
         $payload->customRow = 'Present';
         $response = Curl::post(
             url: 'https://ipv4.netcurl.org',
-            payload: (array)$payload
+            payload: (array)$payload,
+            authType: AuthType::NONE
         );
 
+        $this::assertEquals(
+            expected: 'POST',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this::assertEquals(
+            expected: $payload,
+            actual: json_decode($response->body->input)
+        );
+    }
+
+    public function testRealPutRequest(): void
+    {
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+        $payload = new stdClass();
+        $payload->customRow = 'Present';
+        $response = Curl::put(
+            url: 'https://ipv4.netcurl.org',
+            payload: (array)$payload,
+            authType: AuthType::NONE
+        );
+
+        $this::assertEquals(
+            expected: 'PUT',
+            actual: $response->body->REQUEST_METHOD
+        );
         $this::assertEquals(
             expected: $payload,
             actual: json_decode($response->body->input)
