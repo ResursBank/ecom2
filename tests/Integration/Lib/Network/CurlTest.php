@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Network;
 
+use stdClass;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -12,9 +13,11 @@ use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
+use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Network\DataType;
-use Resursbank\Ecom\Lib\Utilities\Generic;
+use Resursbank\Ecom\Lib\Network\ContentType;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Network\RequestMethod;
 
 /**
  * This class will test curl methods.
@@ -44,15 +47,39 @@ class CurlTest extends TestCase
      */
     private Curl $curl;
 
-    public function testNormalAuthentication()
+    protected function setUp(): void
     {
-        $un = 'testuser';
-        $pw = 'testpassword';
+        /*$this->noneCache = $this->createMock(
+            originalClassName: None::class
+        );
+        $this->credentials = $this->createMock(
+            originalClassName: Credentials::class
+        );
+        $this->logger = $this->createMock(
+            originalClassName: FileLogger::class
+        );*/
 
-        $this->curl->setAuthentication($un, $pw);
+        parent::setUp();
+    }
 
-        self::assertSame($un, $this->curl->getAuthentication()['username']);
-        self::assertSame($pw, $this->curl->getAuthentication()['password']);
+    public function testNormalAuthentication(): void
+    {
+        $username = 'testuser';
+        $password = 'testpassword';
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            basicAuth: new Basic(username: $username, password: $password)
+        );
+
+        $this::assertSame(
+            expected: $username,
+            actual: Config::$instance->basicAuth->username
+        );
+        $this::assertSame(
+            expected: $password,
+            actual: Config::$instance->basicAuth->password
+        );
     }
 
     /**
@@ -61,16 +88,29 @@ class CurlTest extends TestCase
      */
     public function testAuthenticationByConfiguration()
     {
-        $un = 'username_config';
-        $pw = 'password_config';
+        $username = 'username_config';
+        $password = 'password_config';
 
         Config::setup(
-            credentials: new Credentials(username: $un, password: $pw, test: true),
-            logger: $this->logger
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            basicAuth: new Basic(username: $username, password: $password)
         );
 
-        self::assertSame($un, $this->curl->getAuthentication()['username']);
-        self::assertSame($pw, $this->curl->getAuthentication()['password']);
+        $curl = new Curl(
+            url: 'https://ipv4.netcurl.org',
+            requestMethod: RequestMethod::GET,
+            authType: AuthType::BASIC
+        );
+
+        $this::assertSame(
+            expected: $username,
+            actual: $curl->getAuthentication()['username']
+        );
+
+        $this::assertSame(
+            expected: $password,
+            actual: $curl->getAuthentication()['password']
+        );
     }
 
     /**
@@ -79,23 +119,24 @@ class CurlTest extends TestCase
      * @throws CurlException
      * @throws JsonException
      */
-    public function testRealGetRequest()
+    public function testRealGetRequest() : void
     {
-        $curlRequest = $this->curl->get('https://ipv4.netcurl.org');
-        self::assertTrue(
-            $this->validateRemoteAddr(
-                $curlRequest->getParsed()->ip
-            ) && $curlRequest->getCode() === 200
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
         );
-    }
+        $response = Curl::get(
+            url: 'https://ipv4.netcurl.org',
+            authType: AuthType::NONE
+        );
 
-    /**
-     * @param $ip
-     * @return mixed
-     */
-    private function validateRemoteAddr($ip)
-    {
-        return filter_var($ip, FILTER_VALIDATE_IP) === $ip;
+        $this::assertEquals(
+            expected: 'GET',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this->assertSame(
+            expected: 200,
+            actual: $response->code
+        );
     }
 
     /**
@@ -103,67 +144,87 @@ class CurlTest extends TestCase
      *
      * @throws CurlException
      * @throws JsonException
+     * @return void
      */
-    public function testRealPostRequest()
+    public function testRealPostRequest(): void
     {
-        $customPostRow = '{"customRow":"Present"}';
-        $curlRequestJson = $this->curl->post('https://ipv4.netcurl.org', ['customRow' => 'Present']);
-
-        // As we use the same curl-session here, it is important that we fetch the
-        // input data before making next request.
-        $jsonInput = $curlRequestJson->getParsed()->input;
-
-        $curlRequestPostGet = $this->curl->post(
-            'https://ipv4.netcurl.org',
-            ['customRow' => 'Present'],
-            DataType::POSTVARS
-        );
-
-        self::assertSame($customPostRow, $jsonInput);
-        self::assertTrue(
-            isset($curlRequestPostGet->getParsed()->PARAMS_REQUEST->customRow) &&
-            $curlRequestPostGet->getParsed()->PARAMS_REQUEST->customRow === 'Present'
-        );
-    }
-
-    protected function setUp(): void
-    {
-        $this->noneCache = $this->createMock(
-            originalClassName: None::class
-        );
-        $this->credentials = $this->createMock(
-            originalClassName: Credentials::class
-        );
-        $this->logger = $this->createMock(
-            originalClassName: FileLogger::class
-        );
-
-        $this->curl = new Curl();
-
-        $currentNamespace = $this->getNamespaceClass(self::class);
-        $namespaceVersion = (new Generic())->getVersionByAny(__DIR__, 3, self::class);
         Config::setup(
-            credentials: $this->credentials,
-            logger: $this->logger,
-            userAgent: sprintf('%s-v%s', $currentNamespace, $namespaceVersion)
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+        $payload = new stdClass();
+        $payload->customRow = 'Present';
+        $response = Curl::post(
+            url: 'https://ipv4.netcurl.org',
+            payload: (array)$payload,
+            authType: AuthType::NONE
         );
 
-        parent::setUp();
+        $this::assertEquals(
+            expected: 'POST',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this::assertEquals(
+            expected: $payload,
+            actual: json_decode($response->body->input)
+        );
     }
 
     /**
-     * Testing tokens and making sure this is set on remote ends.
-     *
+     * @return void
      * @throws CurlException
      * @throws JsonException
+     * @throws \Resursbank\Ecom\Exception\ValidationException
+     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
+     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
      */
-    public function testSetToken()
+    public function testRealPutRequest(): void
     {
-        $tokenString = 'Bearer 4b8b4bfdc6de0033ef5c42ca439b572867229556';
-        $this->curl->setTokenBearer(sha1('this_bearer'));
-        self::assertSame(
-            $tokenString,
-            $this->curl->get('https://ipv4.netcurl.org')->getParsed()->HTTP_AUTHORIZATION
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+        $payload = new stdClass();
+        $payload->customRow = 'Present';
+        $response = Curl::put(
+            url: 'https://ipv4.netcurl.org',
+            payload: (array)$payload,
+            authType: AuthType::NONE
+        );
+
+        $this::assertEquals(
+            expected: 'PUT',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this::assertEquals(
+            expected: $payload,
+            actual: json_decode($response->body->input)
+        );
+    }
+
+    /**
+     * @return void
+     * @throws CurlException
+     * @throws JsonException
+     * @throws \Resursbank\Ecom\Exception\ValidationException
+     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
+     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
+     */
+    public function testRealDeleteRequest(): void
+    {
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+        $response = Curl::delete(
+            url: 'https://ipv4.netcurl.org',
+            authType: AuthType::NONE
+        );
+
+        $this::assertEquals(
+            expected: 'DELETE',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this->assertSame(
+            expected: 200,
+            actual: $response->code
         );
     }
 
@@ -173,10 +234,20 @@ class CurlTest extends TestCase
     public function testTimeout()
     {
         self::expectExceptionCode(28);
-        $this->curl->setTimeout(3);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+
+        $curl = new Curl(
+            url: 'https://timeout.netcurl.org',
+            requestMethod: RequestMethod::GET,
+            authType: AuthType::NONE
+        );
+        $curl->setTimeout(1);
         // Default for requests to the site below is that it has a response timeout for 10 sec.
         // We need to move those features "in house" at some point.
-        $this->curl->get('https://timeout.netcurl.org/');
+        $curl->exec();
     }
 
     /**

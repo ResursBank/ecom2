@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 /**
- * Applicable request methods.
+ * API authentication types.
  *
  * @codingStandardsIgnoreStart
  */
-enum RequestMethod
+enum AuthType
 {
-    case GET;
-    case POST;
-    case PUT;
-    case DELETE;
+    case BASIC;
+    case JWT;
+    case NONE;
 }
-
