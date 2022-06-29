@@ -23,6 +23,7 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
  * This class will test curl methods.
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @version 1.0.0
  */
 class CurlTest extends TestCase
 {
