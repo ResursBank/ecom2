@@ -45,7 +45,7 @@ final class Config
         LoggerInterface $logger,
         Basic|null $basicAuth = null,
         Jwt|null $jwtAuth = null,
-        string $logLevel = LogLevel::info,   // Only log info messages.
+        LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         string $userAgent = ''
     ): void {
         self::$instance = new Config(
