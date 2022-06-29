@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model;
 
+use Resursbank\Ecom\Lib\Collection\Collection;
+
 /**
  * Defines the basic structure of an Ecom model
  */
@@ -29,7 +31,11 @@ class Model
         $data = [];
         foreach ((array)$item as $name => $value) {
             if (is_object($value) || is_array($value)) {
-                $data[$name] = $this->toArray(item: $value);
+                if ($value instanceof Collection) {
+                    $data[$name] = $this->toArray(item: $value->toArray());
+                } else {
+                    $data[$name] = $this->toArray(item: $value);
+                }
             } else {
                 $data[$name] = $value;
             }
