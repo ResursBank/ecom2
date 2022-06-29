@@ -251,6 +251,10 @@ class Curl
             CURLOPT_URL => $this->generateUrl(url: $url, payload: $payload),
             CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
         ];
+        if (!empty(Config::$instance->proxy)) {
+            $options[CURLOPT_PROXY] = Config::$instance->proxy;
+            $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
+        }
 
         curl_setopt_array(handle: $ch, options: $options);
 

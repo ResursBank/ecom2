@@ -28,7 +28,9 @@ final class Config
         public readonly Basic|null $basicAuth,
         public readonly Jwt|null $jwtAuth,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        public readonly string $userAgent = '',
+        public readonly string $userAgent,
+        public readonly string $proxy = '',
+        public readonly int $proxyType = 0,
     ) {
     }
 
@@ -38,6 +40,8 @@ final class Config
      * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
      * @param string $userAgent
+     * @param string $proxy
+     * @param int $proxyType
      * @return void
      */
     public static function setup(
@@ -45,14 +49,18 @@ final class Config
         Basic|null $basicAuth = null,
         Jwt|null $jwtAuth = null,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        string $userAgent = ''
+        string $userAgent = '',
+        string $proxy = '',
+        int $proxyType = 0,
     ): void {
         self::$instance = new Config(
             logger: $logger,
             basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
             logLevel: $logLevel,
-            userAgent: $userAgent
+            userAgent: $userAgent,
+            proxy: $proxy,
+            proxyType: $proxyType,
         );
 
 //        self::setupEvents();
@@ -64,6 +72,6 @@ final class Config
 //        self::$eventHub = new Hub();
         // 1. Load all files from src/Module (only Modules may configure events and listners).
         // 2. Scan all loaded files for Event attributes to setup events in self::eventHub
-        // 3. Scan all loaded files for Listner attributes to setup events in self::eventHub. If the Event for the Listner is not defined in the eventHub we should ignore the listner and log this, but not through an Exception since we probably just forget a listner when we removed an event.
+        // 3. Scan all loaded files for Listener attributes to setup events in self::eventHub. If the Event for the Listner is not defined in the eventHub we should ignore the listner and log this, but not through an Exception since we probably just forget a listner when we removed an event.
 //    }
 }

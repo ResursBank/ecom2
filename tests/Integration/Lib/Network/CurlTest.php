@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Network;
 
-use stdClass;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\EmptyException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
+use stdClass;
 
 /**
  * This class will test curl methods.
@@ -46,6 +48,14 @@ class CurlTest extends TestCase
      * @var Curl $curl
      */
     private Curl $curl;
+
+    /**
+     * Proxy host to test with proxies. On manual tests, you may want to change this host to something
+     * that accepts the default HTTP-proxy setup.
+     *
+     * @var string $proxyHost
+     */
+    private $proxyHost = '212.63.208.8';
 
     protected function setUp(): void
     {
@@ -80,6 +90,14 @@ class CurlTest extends TestCase
             expected: $password,
             actual: Config::$instance->basicAuth->password
         );
+    }
+
+    /**
+     * @return bool
+     */
+    private function isPipeline(): bool
+    {
+        return isset($_ENV['is_pipeline']) ? (bool)$_ENV['is_pipeline'] : false;
     }
 
     /**
@@ -119,7 +137,7 @@ class CurlTest extends TestCase
      * @throws CurlException
      * @throws JsonException
      */
-    public function testRealGetRequest() : void
+    public function testRealGetRequest(): void
     {
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class)
@@ -142,9 +160,12 @@ class CurlTest extends TestCase
     /**
      * Test to make sure that remote requests really works.
      *
+     * @return void
      * @throws CurlException
      * @throws JsonException
-     * @return void
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public function testRealPostRequest(): void
     {
@@ -173,9 +194,9 @@ class CurlTest extends TestCase
      * @return void
      * @throws CurlException
      * @throws JsonException
-     * @throws \Resursbank\Ecom\Exception\ValidationException
-     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public function testRealPutRequest(): void
     {
@@ -204,9 +225,9 @@ class CurlTest extends TestCase
      * @return void
      * @throws CurlException
      * @throws JsonException
-     * @throws \Resursbank\Ecom\Exception\ValidationException
-     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public function testRealDeleteRequest(): void
     {
@@ -248,6 +269,38 @@ class CurlTest extends TestCase
         // Default for requests to the site below is that it has a response timeout for 10 sec.
         // We need to move those features "in house" at some point.
         $curl->exec();
+    }
+
+    /**
+     * @test
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     */
+    public function testProxy()
+    {
+        if ($this->isPipeline()) {
+            self::markTestSkipped('Pipelines does not support proxies.');
+            return;
+        }
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            proxy: sprintf('%s:80', $this->proxyHost)
+        );
+
+        $response = Curl::get(
+            url: 'https://ipv4.netcurl.org',
+            authType: AuthType::NONE
+        );
+
+        // Request should reflect the proxy ip, not your own.
+        self::assertSame(
+            $this->proxyHost,
+            $response->body->ip
+        );
     }
 
     /**
