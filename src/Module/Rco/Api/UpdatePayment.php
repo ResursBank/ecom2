@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Api;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
 use Resursbank\Ecom\Config;
@@ -44,7 +45,8 @@ class UpdatePayment
         try {
             $response = Curl::put(
                 url: $this->getApiUrl(orderReference: $orderReference),
-                payload: $request->toArray()
+                payload: $request->toArray(),
+                authType: AuthType::BASIC
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);

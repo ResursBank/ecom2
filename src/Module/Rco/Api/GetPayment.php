@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco\Api;
 
 use ReflectionException;
+use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
@@ -35,7 +36,8 @@ class GetPayment
         $response = new stdClass();
         try {
             $response = Curl::get(
-                url: $this->getApiUrl(orderReference: $orderReference)
+                url: $this->getApiUrl(orderReference: $orderReference),
+                authType: AuthType::BASIC
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
