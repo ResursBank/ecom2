@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Collection;
+namespace Resursbank\EcomTest\Unit\Lib\Collection;
 
 use Exception;
 use PHPUnit\Framework\TestCase;

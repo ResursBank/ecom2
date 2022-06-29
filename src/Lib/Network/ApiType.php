@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 /**
- * Applicable request methods.
+ * API types.
  *
  * @codingStandardsIgnoreStart
  */
-enum RequestMethod
+enum ApiType
 {
-    case GET;
-    case POST;
-    case PUT;
-    case DELETE;
+    case MERCHANT;
 }
-
