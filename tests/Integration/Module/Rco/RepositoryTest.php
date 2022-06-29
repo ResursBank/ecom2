@@ -14,6 +14,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Module\Rco\Models\Address;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Customer;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\OrderLine;
@@ -53,10 +54,10 @@ final class RepositoryTest extends TestCase
             backUrl: 'https://example.com/checkout',
             shopUrl: 'https://example.com'
         );
-        
+
         Config::setup(
-            credentials: new Credentials('mijase', '4bw4ma1eZfT2KzD7wgWdnTExK0kxmFo2', true),
             logger: new FileLogger(path: '/tmp'),
+            basicAuth: new Basic(username: 'mijase', password: '4bw4ma1eZfT2KzD7wgWdnTExK0kxmFo2'),
             logLevel: LogLevel::DEBUG,
             isProduction: false
         );
@@ -64,6 +65,15 @@ final class RepositoryTest extends TestCase
         $response = Repository::initPayment(
             request: $request,
             orderReference: bin2hex(string: random_bytes(length: 8))
+        );
+
+        $this::assertEquals(
+            expected: $request->customer->governmentId,
+            actual: $response->customer->governmentId
+        );
+        $this::assertEquals(
+            expected: '<iframe',
+            actual: substr(string: $response->iframe, offset: 0, length: 7)
         );
     }
 }
