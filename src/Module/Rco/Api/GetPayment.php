@@ -32,10 +32,11 @@ class GetPayment
      */
     public function call(string $orderReference): Response
     {
-        $curl = new Curl();
         $response = new stdClass();
         try {
-            $response = $curl->get(url: $this->getApiUrl(orderReference: $orderReference));
+            $response = Curl::get(
+                url: $this->getApiUrl(orderReference: $orderReference)
+            );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
         }
@@ -54,6 +55,6 @@ class GetPayment
      */
     private function getApiUrl(string $orderReference): string
     {
-        return Repository::getApiHostname() . '/checkout/payments/' . $orderReference;
+        return 'https://' . Repository::getApiHostname() . '/checkout/payments/' . $orderReference;
     }
 }
