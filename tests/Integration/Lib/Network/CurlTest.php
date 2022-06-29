@@ -257,17 +257,18 @@ class CurlTest extends TestCase
         self::expectExceptionCode(28);
 
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            timeout: 1
         );
 
+        // We need to move those features "in house" at some point (like timeout.resurs.com).
         $curl = new Curl(
             url: 'https://timeout.netcurl.org',
             requestMethod: RequestMethod::GET,
             authType: AuthType::NONE
         );
-        $curl->setTimeout(1);
-        // Default for requests to the site below is that it has a response timeout for 10 sec.
-        // We need to move those features "in house" at some point.
+
+        // Default for requests to "timeout.netcurl.org" is that it responds after a timeout of 10 seconds.
         $curl->exec();
     }
 

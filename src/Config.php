@@ -31,6 +31,7 @@ final class Config
         public readonly string $userAgent,
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
+        public readonly int $timeout,
     ) {
     }
 
@@ -52,6 +53,7 @@ final class Config
         string $userAgent = '',
         string $proxy = '',
         int $proxyType = 0,
+        int $timeout = 0
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -61,6 +63,7 @@ final class Config
             userAgent: $userAgent,
             proxy: $proxy,
             proxyType: $proxyType,
+            timeout: $timeout
         );
 
 //        self::setupEvents();
