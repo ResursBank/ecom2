@@ -6,6 +6,7 @@ namespace Resursbank\Ecom;
 
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 
@@ -27,7 +28,7 @@ final class Config
         public readonly LoggerInterface $logger,
         public readonly Basic|null $basicAuth,
         public readonly Jwt|null $jwtAuth,
-        public readonly string $logLevel = 'info',   // Only log info messages.
+        public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         public readonly string $userAgent = '',
     ) {
     }
