@@ -118,7 +118,7 @@ class Curl
     public static function get(
         string $url,
         array $payload = [],
-        ?AuthType $authType = AuthType::JWT
+        AuthType $authType = AuthType::JWT
     ): Response {
         $curl = new self(
             url: $url,
@@ -133,7 +133,7 @@ class Curl
     public static function post(
         string $url,
         array $payload = [],
-        ?AuthType $authType = AuthType::JWT
+        AuthType $authType = AuthType::JWT
     ): Response {
         $curl = new self(
             url: $url,
@@ -148,7 +148,7 @@ class Curl
     public static function put(
         string $url,
         array $payload = [],
-        ?AuthType $authType = AuthType::JWT
+        AuthType $authType = AuthType::JWT
     ): Response {
         $curl = new self(
             url: $url,
