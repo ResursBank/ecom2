@@ -97,7 +97,6 @@ class Curl
             $body = json_decode(
                 json: $body,
                 associative: false,
-                depth: 512,
                 flags: JSON_THROW_ON_ERROR
             );
         }
@@ -272,6 +271,10 @@ class Curl
         );
     }
 
+    /**
+     * @param int $timeout
+     * @return void
+     */
     public function setTimeout(int $timeout): void
     {
         curl_setopt(
@@ -490,7 +493,10 @@ class Curl
      * @param CurlHandle $ch
      * @return void
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
+     * @throws ValidationException
      */
     private function setAuth(CurlHandle $ch): void
     {
