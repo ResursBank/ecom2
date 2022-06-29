@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
-use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
@@ -19,7 +18,7 @@ final class Config
 
     /**
      * @param LoggerInterface $logger
-     * @param string $logLevel
+     * @param LogLevel $logLevel
      * @param string $userAgent
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
