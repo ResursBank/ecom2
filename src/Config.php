@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
-use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 
 /**
  * API communication object.
@@ -16,8 +17,9 @@ final class Config
     public static Config $instance;
 
     /**
-     * @param Credentials $credentials
      * @param LoggerInterface $logger
+     * @param Basic|null $basicAuth
+     * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
      * @param string $userAgent
      * @param bool $isProduction
@@ -25,35 +27,39 @@ final class Config
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
-        public readonly Credentials $credentials,
         public readonly LoggerInterface $logger,
+        public readonly Basic|null $basicAuth,
+        public readonly Jwt|null $jwtAuth,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        public readonly string $userAgent,
-        public readonly bool $isProduction
+        public readonly string $userAgent = '',
+        public readonly bool $isProduction = false
     ) {
     }
 
     /**
-     * @param Credentials $credentials
      * @param LoggerInterface $logger
+     * @param Basic|null $basicAuth
+     * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
      * @param string $userAgent
      * @param bool $isProduction
      * @return void
      */
     public static function setup(
-        Credentials $credentials,
         LoggerInterface $logger,
+        Basic|null $basicAuth = null,
+        Jwt|null $jwtAuth = null,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         string $userAgent = '',
         bool $isProduction = false
     ): void {
         self::$instance = new Config(
-            $credentials,
-            $logger,
-            $logLevel,
-            $userAgent,
-            $isProduction
+            logger: $logger,
+            basicAuth: $basicAuth,
+            jwtAuth: $jwtAuth,
+            logLevel: $logLevel,
+            userAgent: $userAgent,
+            isProduction: $isProduction
         );
 
 //        self::setupEvents();

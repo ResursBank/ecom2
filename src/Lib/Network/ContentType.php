@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 /**
- * Applicable request methods.
+ * Applicable data types for CURL calls.
  *
  * @codingStandardsIgnoreStart
  */
-enum RequestMethod
+enum ContentType
 {
-    case GET;
-    case POST;
-    case PUT;
-    case DELETE;
+    case URL;
+    case JSON;
 }
-
