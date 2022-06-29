@@ -118,8 +118,11 @@ class CurlTest extends TestCase
      * @throws CurlException
      * @throws JsonException
      */
-    public function testRealGetRequest()
+    public function testRealGetRequest() : void
     {
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
         $response = Curl::get(
             url: 'https://ipv4.netcurl.org',
             authType: AuthType::NONE
@@ -136,15 +139,6 @@ class CurlTest extends TestCase
     }
 
     /**
-     * @param $ip
-     * @return mixed
-     */
-    private function validateRemoteAddr($ip)
-    {
-        return filter_var($ip, FILTER_VALIDATE_IP) === $ip;
-    }
-
-    /**
      * Test to make sure that remote requests really works.
      *
      * @throws CurlException
@@ -153,6 +147,9 @@ class CurlTest extends TestCase
      */
     public function testRealPostRequest(): void
     {
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
         $payload = new stdClass();
         $payload->customRow = 'Present';
         $response = Curl::post(
@@ -171,6 +168,14 @@ class CurlTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @throws CurlException
+     * @throws JsonException
+     * @throws \Resursbank\Ecom\Exception\ValidationException
+     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
+     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
+     */
     public function testRealPutRequest(): void
     {
         Config::setup(
@@ -191,6 +196,34 @@ class CurlTest extends TestCase
         $this::assertEquals(
             expected: $payload,
             actual: json_decode($response->body->input)
+        );
+    }
+
+    /**
+     * @return void
+     * @throws CurlException
+     * @throws JsonException
+     * @throws \Resursbank\Ecom\Exception\ValidationException
+     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
+     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
+     */
+    public function testRealDeleteRequest(): void
+    {
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+        $response = Curl::delete(
+            url: 'https://ipv4.netcurl.org',
+            authType: AuthType::NONE
+        );
+
+        $this::assertEquals(
+            expected: 'DELETE',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this->assertSame(
+            expected: 200,
+            actual: $response->code
         );
     }
 
