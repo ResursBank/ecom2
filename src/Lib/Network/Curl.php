@@ -255,7 +255,7 @@ class Curl
             $options[CURLOPT_PROXY] = Config::$instance->proxy;
             $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
         }
-        if ((int)Config::$instance->timeout) {
+        if ((int)Config::$instance->timeout > 1) {
             $options[CURLOPT_CONNECTTIMEOUT] = ceil(Config::$instance->timeout) / 2;
             $options[CURLOPT_TIMEOUT] = ceil(Config::$instance->timeout);
         }
