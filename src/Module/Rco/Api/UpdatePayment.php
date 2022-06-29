@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
-use ReflectionException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
 use Resursbank\Ecom\Config;
@@ -30,16 +32,19 @@ class UpdatePayment
      * @param Request $request
      * @param string $orderReference
      * @return Response
-     * @throws ReflectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public function call(Request $request, string $orderReference): Response
     {
-        $curl = new Curl();
         $response = new stdClass();
         try {
-            $response = $curl->put(
+            $response = Curl::put(
                 url: $this->getApiUrl(orderReference: $orderReference),
-                data: $request->toArray()
+                payload: $request->toArray()
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
