@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco\Api;
 
 use ReflectionException;
+use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
 use Resursbank\Ecom\Config;
@@ -34,19 +35,19 @@ class InitPayment
      */
     public function call(Request $request, string $orderReference): Response
     {
-        $curl = new Curl();
         $response = new stdClass();
         try {
-            $response = $curl->post(
+            $response = Curl::post(
                 url: $this->getApiUrl(orderReference: $orderReference),
-                data: $request->toArray()
+                payload: $request->toArray(),
+                authType: AuthType::BASIC
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
         }
 
         return DataConverter::stdClassToType(
-            object: $response,
+            object: $response->body,
             type: Response::class
         );
     }
@@ -59,6 +60,6 @@ class InitPayment
      */
     private function getApiUrl(string $orderReference): string
     {
-        return Repository::getApiHostname() . '/checkout/payments/' . $orderReference;
+        return 'https://' . Repository::getApiHostname() . '/checkout/payments/' . $orderReference;
     }
 }
