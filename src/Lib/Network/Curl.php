@@ -255,6 +255,10 @@ class Curl
             $options[CURLOPT_PROXY] = Config::$instance->proxy;
             $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
         }
+        if (!empty(Config::$instance->timeout)) {
+            $options[CURLOPT_CONNECTTIMEOUT] = ceil(Config::$instance->timeout) / 2;
+            $options[CURLOPT_TIMEOUT] = ceil(Config::$instance->timeout);
+        }
 
         curl_setopt_array(handle: $ch, options: $options);
 
@@ -272,24 +276,6 @@ class Curl
             $this->requestMethod === RequestMethod::POST ||
             $this->requestMethod === RequestMethod::PUT ||
             $this->requestMethod === RequestMethod::DELETE
-        );
-    }
-
-    /**
-     * @param int $timeout
-     * @return void
-     */
-    public function setTimeout(int $timeout): void
-    {
-        curl_setopt(
-            handle: $this->ch,
-            option: CURLOPT_CONNECTTIMEOUT,
-            value: $timeout
-        );
-        curl_setopt(
-            handle: $this->ch,
-            option: CURLOPT_TIMEOUT,
-            value: $timeout
         );
     }
 
