@@ -149,7 +149,7 @@ class Curl
         string $url,
         array $payload = [],
         ?AuthType $authType = AuthType::JWT
-    ):Response {
+    ): Response {
         $curl = new self(
             url: $url,
             requestMethod: RequestMethod::PUT,
