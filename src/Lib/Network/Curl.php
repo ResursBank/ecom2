@@ -1,10 +1,12 @@
 <?php
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use stdClass;
 use CurlHandle;
 use InvalidArgumentException;
 use JsonException;
@@ -13,13 +15,11 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Network\Model\JwtToken;
 use Resursbank\Ecom\Lib\Network\Model\Response;
 use Resursbank\Ecom\Lib\Network\Model\Header;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
-use stdClass;
 use function is_string;
 use function strlen;
 
@@ -115,6 +115,17 @@ class Curl
         return new Response(body: $body, code: $code);
     }
 
+    /**
+     * @param string $url
+     * @param array $payload
+     * @param AuthType $authType
+     * @return Response
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     */
     public static function get(
         string $url,
         array $payload = [],
@@ -130,6 +141,17 @@ class Curl
         return $curl->exec();
     }
 
+    /**
+     * @param string $url
+     * @param array $payload
+     * @param AuthType $authType
+     * @return Response
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     */
     public static function post(
         string $url,
         array $payload = [],
@@ -145,6 +167,40 @@ class Curl
         return $curl->exec();
     }
 
+    /**
+     * @param string $url
+     * @param AuthType $authType
+     * @return Response
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     */
+    public static function delete(
+        string $url,
+        AuthType $authType = AuthType::JWT
+    ): Response {
+        $curl = new self(
+            url: $url,
+            requestMethod: RequestMethod::DELETE,
+            authType: $authType
+        );
+
+        return $curl->exec();
+    }
+
+    /**
+     * @param string $url
+     * @param array $payload
+     * @param AuthType $authType
+     * @return Response
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     */
     public static function put(
         string $url,
         array $payload = [],
@@ -328,7 +384,8 @@ class Curl
     }
 
     /**
-     * @return array<Header>
+     * @param array $headers
+     * @return array
      */
     public function getHeadersData(
         array $headers
@@ -473,7 +530,10 @@ class Curl
      * @param CurlHandle $ch
      * @return void
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
+     * @throws ValidationException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
@@ -534,7 +594,8 @@ class Curl
 
         // @todo This requires MUCH better validation. We must check the type of each property, validate their values
         // @todo using charsets etc. (there are helper functions prepared in lib/Validation, fully tested).
-        if (!isset($response->body->access_token) ||
+        if (
+            !isset($response->body->access_token) ||
             !isset($response->body->token_type) ||
             !isset($response->body->expires_in)
         ) {
@@ -572,15 +633,10 @@ class Curl
      */
     public function getAuthentication(): array
     {
-        switch ($this->authType) {
-            case AuthType::BASIC:
-                return (array)Config::$instance->basicAuth;
-                break;
-            case AuthType::JWT:
-                return (array)Config::$instance->jwtAuth;
-                break;
-            default:
-                return [];
-        }
+        return match ($this->authType) {
+            AuthType::BASIC => (array)Config::$instance->basicAuth,
+            AuthType::JWT => (array)Config::$instance->jwtAuth,
+            default => [],
+        };
     }
 }
