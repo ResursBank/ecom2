@@ -89,21 +89,6 @@ final class RepositoryTest extends TestCase
         );
     }
 
-    public function testGetPayment(): void
-    {
-        $session = Repository::initPayment(
-            request: $this->request,
-            orderReference: bin2hex(string: random_bytes(length: 8))
-        );
-
-        echo("order reference: ".$this->orderReference);
-        print_r($session);
-
-        $getPaymentResponse = Repository::getPayment(orderReference: $this->orderReference);
-
-        print_r($getPaymentResponse);
-    }
-
     public function testUpdatePayment(): void
     {
     }
