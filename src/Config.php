@@ -32,7 +32,7 @@ final class Config
         public readonly Jwt|null $jwtAuth,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         public readonly string $userAgent = '',
-        public readonly bool $isProduction = false
+        public readonly bool $isProduction = false,
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
         public readonly int $timeout,
@@ -56,7 +56,7 @@ final class Config
         Jwt|null $jwtAuth = null,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         string $userAgent = '',
-        bool $isProduction = false
+        bool $isProduction = false,
         string $proxy = '',
         int $proxyType = 0,
         int $timeout = 0
@@ -67,7 +67,7 @@ final class Config
             jwtAuth: $jwtAuth,
             logLevel: $logLevel,
             userAgent: $userAgent,
-            isProduction: $isProduction
+            isProduction: $isProduction,
             proxy: $proxy,
             proxyType: $proxyType,
             timeout: $timeout
