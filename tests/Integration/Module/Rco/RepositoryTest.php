@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Log\FileLogger;
@@ -24,9 +25,13 @@ use Resursbank\Ecom\Module\Rco\Repository;
 
 final class RepositoryTest extends TestCase
 {
-    public function testInitPayment(): void
+    private string $orderReference;
+    private Request $request;
+
+    protected function setUp(): void
     {
-        $request = new Request(
+        $this->orderReference = bin2hex(string: random_bytes(length: 8));
+        $this->request = new Request(
             orderLines: new OrderLineCollection([
                 new OrderLine(
                     artNo: "sku123",
@@ -61,19 +66,49 @@ final class RepositoryTest extends TestCase
             logLevel: LogLevel::DEBUG,
             isProduction: false
         );
+    }
 
+    /**
+     * @return void
+     * @throws ReflectionException
+     */
+    public function testInitPayment(): void
+    {
         $response = Repository::initPayment(
-            request: $request,
-            orderReference: bin2hex(string: random_bytes(length: 8))
+            request: $this->request,
+            orderReference: $this->orderReference
         );
 
         $this::assertEquals(
-            expected: $request->customer->governmentId,
+            expected: $this->request->customer->governmentId,
             actual: $response->customer->governmentId
         );
         $this::assertEquals(
             expected: '<iframe',
             actual: substr(string: $response->iframe, offset: 0, length: 7)
         );
+    }
+
+    public function testGetPayment(): void
+    {
+        $session = Repository::initPayment(
+            request: $this->request,
+            orderReference: bin2hex(string: random_bytes(length: 8))
+        );
+
+        echo("order reference: ".$this->orderReference);
+        print_r($session);
+
+        $getPaymentResponse = Repository::getPayment(orderReference: $this->orderReference);
+
+        print_r($getPaymentResponse);
+    }
+
+    public function testUpdatePayment(): void
+    {
+    }
+
+    public function testUpdatePaymentReference(): void
+    {
     }
 }
