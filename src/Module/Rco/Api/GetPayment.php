@@ -44,7 +44,7 @@ class GetPayment
         }
 
         return DataConverter::stdClassToType(
-            object: $response,
+            object: $response->body,
             type: Response::class
         );
     }
