@@ -33,6 +33,9 @@ final class Config
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         public readonly string $userAgent = '',
         public readonly bool $isProduction = false
+        public readonly string $proxy = '',
+        public readonly int $proxyType = 0,
+        public readonly int $timeout,
     ) {
     }
 
@@ -43,6 +46,8 @@ final class Config
      * @param LogLevel $logLevel
      * @param string $userAgent
      * @param bool $isProduction
+     * @param string $proxy
+     * @param int $proxyType
      * @return void
      */
     public static function setup(
@@ -52,6 +57,9 @@ final class Config
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         string $userAgent = '',
         bool $isProduction = false
+        string $proxy = '',
+        int $proxyType = 0,
+        int $timeout = 0
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -60,6 +68,9 @@ final class Config
             logLevel: $logLevel,
             userAgent: $userAgent,
             isProduction: $isProduction
+            proxy: $proxy,
+            proxyType: $proxyType,
+            timeout: $timeout
         );
 
 //        self::setupEvents();
@@ -71,6 +82,6 @@ final class Config
 //        self::$eventHub = new Hub();
         // 1. Load all files from src/Module (only Modules may configure events and listners).
         // 2. Scan all loaded files for Event attributes to setup events in self::eventHub
-        // 3. Scan all loaded files for Listner attributes to setup events in self::eventHub. If the Event for the Listner is not defined in the eventHub we should ignore the listner and log this, but not through an Exception since we probably just forget a listner when we removed an event.
+        // 3. Scan all loaded files for Listener attributes to setup events in self::eventHub. If the Event for the Listner is not defined in the eventHub we should ignore the listner and log this, but not through an Exception since we probably just forget a listner when we removed an event.
 //    }
 }
