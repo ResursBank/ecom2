@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
-use PHPUnit\Framework\MockObject\MockClass;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Lib\Api\Credentials;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
@@ -28,11 +28,24 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLine as UpdateOrderLine
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLineCollection as UpdateOrderLineCollection;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
 
+/**
+ * Tests for RCO module Repository class
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
+ */
 final class RepositoryTest extends TestCase
 {
     private string $orderReference;
     private Request $request;
 
+    /**
+     * Set up prerequisites for testing
+     *
+     * @return void
+     * @throws TypeException
+     * @throws Exception
+     */
     protected function setUp(): void
     {
         $this->orderReference = bin2hex(string: random_bytes(length: 8));
@@ -74,6 +87,8 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that InitPayment works
+     *
      * @return void
      * @throws ReflectionException
      */
@@ -94,6 +109,13 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Verify that a valid UpdatePayment request returns http 200 and the payment session id
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TypeException
+     */
     public function testUpdatePayment(): void
     {
         $session = Repository::initPayment(
@@ -131,9 +153,17 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Verify that a 404 response is given when attempting to update a nonexistent order.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TypeException
+     * @throws Exception
+     */
     public function testUpdatePaymentWrongOrderReference(): void
     {
-        $session = Repository::initPayment(
+        Repository::initPayment(
             request: $this->request,
             orderReference: $this->orderReference
         );
@@ -164,9 +194,16 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Verify that a valid UpdatePaymentReference request returns HTTP 200 and the order reference
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testUpdatePaymentReference(): void
     {
-        $session = Repository::initPayment(
+        Repository::initPayment(
             request: $this->request,
             orderReference: $this->orderReference
         );
