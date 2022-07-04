@@ -32,7 +32,7 @@ class OrderLine extends Model
         public string $unitMeasure,
         public float $unitAmountWithoutVat,
         public float $vatPct,
-        public ?string $type
+        public ?string $type = null
     ) {
     }
 }
