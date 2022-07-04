@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
+use PHPUnit\Framework\MockObject\MockClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -22,6 +23,9 @@ use Resursbank\Ecom\Module\Rco\Models\InitPayment\OrderLine;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\OrderLineCollection;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request;
 use Resursbank\Ecom\Module\Rco\Repository;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdateRequest;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLine as UpdateOrderLine;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLineCollection as UpdateOrderLineCollection;
 
 final class RepositoryTest extends TestCase
 {
@@ -61,7 +65,7 @@ final class RepositoryTest extends TestCase
         );
 
         Config::setup(
-            logger: new FileLogger(path: '/tmp'),
+            logger: $this->createMock(originalClassName: FileLogger::class),
             basicAuth: new Basic(username: 'mijase', password: '4bw4ma1eZfT2KzD7wgWdnTExK0kxmFo2'),
             logLevel: LogLevel::DEBUG,
             isProduction: false
@@ -91,9 +95,71 @@ final class RepositoryTest extends TestCase
 
     public function testUpdatePayment(): void
     {
+        $session = Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
+        );
+
+        $request = new UpdateRequest(
+            orderLines: new UpdateOrderLineCollection(
+                data: [
+                    new UpdateOrderLine(
+                        artNo: 'Updated-1234',
+                        description: 'Updated product',
+                        quantity: 2,
+                        unitMeasure: 'pc',
+                        unitAmountWithoutVat: 20,
+                        vatPct: 25,
+                    )
+                ]
+            )
+        );
+
+        $response = Repository::updatePayment(
+            request: $request,
+            orderReference: $this->orderReference
+        );
+
+        $this::assertEquals(
+            expected: 200,
+            actual: $response->code
+        );
+        $this::assertEquals(
+            expected: $session->paymentSessionId,
+            actual: $response->message
+        );
     }
 
-    public function testUpdatePaymentReference(): void
+    public function testUpdatePaymentWrongOrderReference(): void
     {
+        $session = Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
+        );
+
+        $request = new UpdateRequest(
+            orderLines: new UpdateOrderLineCollection(
+                data: [
+                    new UpdateOrderLine(
+                        artNo: 'Updated-1234',
+                        description: 'Updated product',
+                        quantity: 2,
+                        unitMeasure: 'pc',
+                        unitAmountWithoutVat: 20,
+                        vatPct: 25,
+                    )
+                ]
+            )
+        );
+
+        $response = Repository::updatePayment(
+            request: $request,
+            orderReference: $this->orderReference . bin2hex(string: random_bytes(length: 8))
+        );
+
+        $this::assertEquals(
+            expected: 404,
+            actual: $response->code
+        );
     }
 }
