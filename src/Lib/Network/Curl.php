@@ -55,8 +55,13 @@ class Curl
         public readonly ContentType $contentType = ContentType::JSON,
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        private readonly StringValidation $stringValidation = new StringValidation(),
+        public ?ContentType $responseContentType = null
     ) {
+        if (!$this->responseContentType)  {
+            $this->responseContentType = $this->contentType;
+        }
+
         // Initialize Curl.
         $ch = $this->init(url: $url, headers: $headers, payload: $payload);
 
@@ -92,13 +97,17 @@ class Curl
             option: CURLINFO_RESPONSE_CODE
         );
 
-        if ($this->contentType === ContentType::JSON) {
+        if ($this->responseContentType === ContentType::JSON) {
             /** @psalm-suppress MixedAssignment */
             $body = json_decode(
                 json: $body,
                 associative: false,
                 flags: JSON_THROW_ON_ERROR
             );
+        } elseif ($this->responseContentType === ContentType::RAW) {
+            $bodyObj = new stdClass();
+            $bodyObj->message = $body;
+            $body = $bodyObj;
         }
 
         if (!$body instanceof stdClass) {
@@ -193,6 +202,7 @@ class Curl
      * @param string $url
      * @param array $payload
      * @param AuthType $authType
+     * @param ContentType $contentType
      * @return Response
      * @throws CurlException
      * @throws EmptyValueException
@@ -203,13 +213,17 @@ class Curl
     public static function put(
         string $url,
         array $payload = [],
-        AuthType $authType = AuthType::JWT
+        AuthType $authType = AuthType::JWT,
+        ContentType $contentType = ContentType::JSON,
+        ?ContentType $responseContentType = null
     ): Response {
         $curl = new self(
             url: $url,
             requestMethod: RequestMethod::PUT,
             payload: $payload,
-            authType: $authType
+            contentType: $contentType,
+            authType: $authType,
+            responseContentType: $responseContentType
         );
 
         return $curl->exec();
