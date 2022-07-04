@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -26,6 +27,8 @@ use Resursbank\Ecom\Module\Rco\Repository;
 
 /**
  * Handles updates of the RCO payment reference
+ *
+ * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
  */
 class UpdatePaymentReference
 {
@@ -36,7 +39,7 @@ class UpdatePaymentReference
      * @param string $orderReference
      * @return Response
      * @throws ReflectionException
-     * @throws \JsonException
+     * @throws JsonException
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -73,6 +76,7 @@ class UpdatePaymentReference
      */
     private function getApiUrl(string $orderReference): string
     {
-        return 'https://' . Repository::getApiHostname() . '/checkout/payments/' . $orderReference . '/updatePaymentReference';
+        return 'https://' . Repository::getApiHostname() . '/checkout/payments/'
+            . $orderReference . '/updatePaymentReference';
     }
 }

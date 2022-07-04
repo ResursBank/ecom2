@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -25,6 +27,8 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response;
 
 /**
  * Handles updates of RCO payment sessions
+ *
+ * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
  */
 class UpdatePayment
 {
@@ -34,8 +38,8 @@ class UpdatePayment
      * @param Request $request
      * @param string $orderReference
      * @return Response
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -55,11 +59,7 @@ class UpdatePayment
         }
 
         $responseObj = new stdClass();
-        if ($response->code == 200) {
-            $responseObj->message = $response->body->message;
-        } else {
-            $responseObj->message = '';
-        }
+        $responseObj->message = $response->body->message;
         $responseObj->code = $response->code;
 
         return DataConverter::stdClassToType(

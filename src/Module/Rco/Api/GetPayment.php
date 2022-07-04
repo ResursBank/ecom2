@@ -9,7 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Api;
 
+use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -30,6 +34,10 @@ class GetPayment
      * @param string $orderReference
      * @return Response
      * @throws ReflectionException
+     * @throws JsonException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public function call(string $orderReference): Response
     {
