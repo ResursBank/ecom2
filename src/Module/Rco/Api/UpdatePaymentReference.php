@@ -14,6 +14,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
+use Resursbank\Ecom\Lib\Network\ContentType;
 use stdClass;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -47,14 +48,19 @@ class UpdatePaymentReference
             $response = Curl::put(
                 url:  $this->getApiUrl(orderReference: $orderReference),
                 payload: $request->toArray(),
-                authType: AuthType::BASIC
+                authType: AuthType::BASIC,
+                responseContentType: ContentType::RAW
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
         }
 
+        $responseObj = new stdClass();
+        $responseObj->message = $response->body->message;
+        $responseObj->code = $response->code;
+
         return DataConverter::stdClassToType(
-            object: $response,
+            object: $responseObj,
             type: Response::class
         );
     }
@@ -67,6 +73,6 @@ class UpdatePaymentReference
      */
     private function getApiUrl(string $orderReference): string
     {
-        return Repository::getApiHostname() . '/checkout/payments/' . $orderReference . '/updatePaymentReference';
+        return 'https://' . Repository::getApiHostname() . '/checkout/payments/' . $orderReference . '/updatePaymentReference';
     }
 }
