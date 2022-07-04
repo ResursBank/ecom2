@@ -248,7 +248,7 @@ class Curl
         $options = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_FAILONERROR => true, // Treat HTTP code 400+ as error.
+            CURLOPT_FAILONERROR => false, // Don't treat HTTP code 400+ as error.
             CURLOPT_AUTOREFERER => true, // Follow redirects.
             CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
             CURLOPT_HEADER => false, // Do not include header in output.
