@@ -26,6 +26,7 @@ use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdateRequest;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLine as UpdateOrderLine;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLineCollection as UpdateOrderLineCollection;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
 
 final class RepositoryTest extends TestCase
 {
@@ -159,6 +160,28 @@ final class RepositoryTest extends TestCase
 
         $this::assertEquals(
             expected: 404,
+            actual: $response->code
+        );
+    }
+
+    public function testUpdatePaymentReference(): void
+    {
+        $session = Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
+        );
+
+        $newPaymentReference = bin2hex(string: random_bytes(length: 8));
+        $request = new UpdatePaymentReferenceRequest(
+            paymentReference: $newPaymentReference
+        );
+
+        $response = Repository::updatePaymentReference(
+            request: $request,
+            orderReference: $this->orderReference
+        );
+        $this::assertEquals(
+            expected: 200,
             actual: $response->code
         );
     }
