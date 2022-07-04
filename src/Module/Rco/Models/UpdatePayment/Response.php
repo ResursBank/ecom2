@@ -18,6 +18,7 @@ class Response extends Model
 {
     /**
      * @param string $message
+     * @param int $code
      */
     public function __construct(
         public string $message,
