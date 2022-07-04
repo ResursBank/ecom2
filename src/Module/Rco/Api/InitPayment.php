@@ -26,6 +26,8 @@ use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response;
 
 /**
  * Handles creation of RCO payment sessions
+ *
+ * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
  */
 class InitPayment
 {

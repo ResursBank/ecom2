@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models;
 
+/**
+ * Defines an Address object
+ */
 class Address
 {
     public function __construct(
