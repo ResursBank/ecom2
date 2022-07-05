@@ -21,20 +21,20 @@ class Address extends Model
      * @param string $firstName
      * @param string $lastName
      * @param string $addressRow1
-     * @param string|null $addressRow2
      * @param string $postalArea
      * @param string $postalCode
      * @param string $country
+     * @param string|null $addressRow2
      */
     public function __construct(
         public string $fullName,
         public string $firstName,
         public string $lastName,
         public string $addressRow1,
-        public ?string $addressRow2,
         public string $postalArea,
         public string $postalCode,
-        public string $country
+        public string $country,
+        public ?string $addressRow2 = null
     ) {
     }
 }

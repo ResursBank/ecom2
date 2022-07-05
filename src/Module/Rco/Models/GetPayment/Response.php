@@ -20,13 +20,10 @@ class Response extends Model
     /**
      * @param string $id
      * @param float $totalAmount
-     * @param MetaDataCollection $metadata
      * @param float $limit
-     * @param PaymentDiffCollection $paymentDiffs
      * @param Customer $customer
      * @param Address $deliveryAddress
      * @param string $booked
-     * @param string $finalized
      * @param string $paymentMethodId
      * @param string $paymentMethodName
      * @param bool $fraud
@@ -35,17 +32,17 @@ class Response extends Model
      * @param string $storeId
      * @param string $paymentMethodType
      * @param int $totalBonusPoints
+     * @param ?string $finalized
+     * @param ?MetaDataCollection $metadata
+     * @param ?PaymentDiffCollection $paymentDiffs
      */
     public function __construct(
         public string $id,
         public float $totalAmount,
-        public MetaDataCollection $metadata,
         public float $limit,
-        public PaymentDiffCollection $paymentDiffs,
         public Customer $customer,
         public Address $deliveryAddress,
         public string $booked,
-        public string $finalized,
         public string $paymentMethodId,
         public string $paymentMethodName,
         public bool $fraud,
@@ -53,7 +50,10 @@ class Response extends Model
         public array $status,
         public string $storeId,
         public string $paymentMethodType,
-        public int $totalBonusPoints
+        public int $totalBonusPoints,
+        public ?string $finalized = null,
+        public ?MetaDataCollection $metadata = null,
+        public ?PaymentDiffCollection $paymentDiffs = null,
     ) {
     }
 }

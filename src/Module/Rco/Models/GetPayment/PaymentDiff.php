@@ -18,13 +18,13 @@ class PaymentDiff extends Model
 {
     public function __construct(
         public string $type,
-        public ?string $transactionId,
         public string $created,
-        public string $createdBy,
         public PaymentSpec $paymentSpec,
-        public ?string $orderId,
-        public ?string $invoiceId,
-        public array $documentNames
+        public array $documentNames,
+        public ?string $createdBy = null,
+        public ?string $orderId = null,
+        public ?string $invoiceId = null,
+        public ?string $transactionId = null,
     ) {
     }
 }

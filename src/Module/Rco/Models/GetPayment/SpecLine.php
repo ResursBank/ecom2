@@ -20,7 +20,7 @@ class SpecLine extends Model
      * @param string $id
      * @param string $artNo
      * @param string $description
-     * @param int $quantity
+     * @param float $quantity
      * @param string $unitMeasure
      * @param float $unitAmountWithoutVat
      * @param float $vatPct
@@ -31,7 +31,7 @@ class SpecLine extends Model
         public string $id,
         public string $artNo,
         public string $description,
-        public int $quantity,
+        public float $quantity,
         public string $unitMeasure,
         public float $unitAmountWithoutVat,
         public float $vatPct,
