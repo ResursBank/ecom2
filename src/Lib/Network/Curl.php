@@ -634,11 +634,12 @@ class Curl
     {
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
+        $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
 
-        if ($code !== 0) {
+        if ($code !== 0 || $httpCode >= 400) {
             throw new CurlException(
                 message: "CURL error ($code): $msg",
-                code: $code
+                code: ($code !== 0 ? $code : $httpCode)
             );
         }
     }

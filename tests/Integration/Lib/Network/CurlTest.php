@@ -310,6 +310,30 @@ class CurlTest extends TestCase
     }
 
     /**
+     * Verify that CurlException for 404 pages has code set to 404
+     * 
+     * @return void
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     */
+    public function testFileNotFound(): void
+    {
+        $this->expectExceptionCode(code:404);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+
+        Curl::get(
+            url: 'https://ipv4.netcurl.org/http.php?code=404',
+            authType: AuthType::NONE
+        );
+    }
+
+    /**
      * @param $class
      * @return mixed|string
      */
