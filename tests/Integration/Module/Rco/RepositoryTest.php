@@ -78,9 +78,14 @@ final class RepositoryTest extends TestCase
             shopUrl: 'https://example.com'
         );
 
+        $basicAuth = new Basic(
+            username: $_ENV['BASIC_AUTH_USERNAME'],
+            password: $_ENV['BASIC_AUTH_PASSWORD']
+        );
+
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: new Basic(username: 'mijase', password: '4bw4ma1eZfT2KzD7wgWdnTExK0kxmFo2'),
+            basicAuth: $basicAuth,
             logLevel: LogLevel::DEBUG,
             isProduction: false
         );
