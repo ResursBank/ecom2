@@ -143,7 +143,8 @@ class Curl
             url: $url,
             requestMethod: RequestMethod::GET,
             payload: $payload,
-            authType: $authType,
+            contentType: ContentType::URL,
+            authType: $authType
         );
 
         return $curl->exec();
