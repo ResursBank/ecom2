@@ -20,7 +20,8 @@ class ComplexDummy
      */
     public function __construct(
         public int $int,
-        public SimpleDummy $simpleDummy
+        public SimpleDummy $simpleDummy,
+        public SimpleDummyCollection $simpleDummyCollection
     ) {
     }
 }

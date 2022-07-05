@@ -12,6 +12,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 use ArgumentCountError;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
 use stdClass;
@@ -78,6 +79,7 @@ final class DataConverterTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
+     * @throws TypeException
      */
     public function testConvertObjectContainingObject(): void
     {
@@ -86,13 +88,24 @@ final class DataConverterTest extends TestCase
         $data->simpleDummy = new stdClass();
         $data->simpleDummy->int = 127;
         $data->simpleDummy->message = 'Foo';
+        $data->simpleDummyCollection = [
+            (object)[
+                'int' => 31,
+                'message' => 'Bar'
+            ]
+        ];
 
+        $childDummy = new TestClasses\SimpleDummy(
+            int: 31,
+            message: 'Bar'
+        );
         $expected = new TestClasses\ComplexDummy(
             int: 42,
             simpleDummy: new TestClasses\SimpleDummy(
                 int: 127,
                 message: 'Foo'
-            )
+            ),
+            simpleDummyCollection: new TestClasses\SimpleDummyCollection(data: [$childDummy])
         );
 
         $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ComplexDummy::class);
