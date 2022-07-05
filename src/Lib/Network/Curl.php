@@ -42,7 +42,10 @@ class Curl
      * @param AuthType $authType
      * @param ApiType $apiType
      * @param StringValidation $stringValidation
+     * @param ContentType|null $responseContentType
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
      * @todo $headers and associated methods should be moved to a collection model / service layer.
@@ -55,8 +58,13 @@ class Curl
         public readonly ContentType $contentType = ContentType::JSON,
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        private readonly StringValidation $stringValidation = new StringValidation(),
+        public ?ContentType $responseContentType = null
     ) {
+        if (!$this->responseContentType) {
+            $this->responseContentType = $this->contentType;
+        }
+
         // Initialize Curl.
         $ch = $this->init(url: $url, headers: $headers, payload: $payload);
 
@@ -92,13 +100,17 @@ class Curl
             option: CURLINFO_RESPONSE_CODE
         );
 
-        if ($this->contentType === ContentType::JSON) {
+        if ($this->responseContentType === ContentType::JSON) {
             /** @psalm-suppress MixedAssignment */
             $body = json_decode(
                 json: $body,
                 associative: false,
                 flags: JSON_THROW_ON_ERROR
             );
+        } elseif ($this->responseContentType === ContentType::RAW) {
+            $bodyObj = new stdClass();
+            $bodyObj->message = $body;
+            $body = $bodyObj;
         }
 
         if (!$body instanceof stdClass) {
@@ -134,7 +146,8 @@ class Curl
             url: $url,
             requestMethod: RequestMethod::GET,
             payload: $payload,
-            authType: $authType,
+            contentType: ContentType::URL,
+            authType: $authType
         );
 
         return $curl->exec();
@@ -193,6 +206,8 @@ class Curl
      * @param string $url
      * @param array $payload
      * @param AuthType $authType
+     * @param ContentType $contentType
+     * @param ContentType|null $responseContentType
      * @return Response
      * @throws CurlException
      * @throws EmptyValueException
@@ -203,13 +218,17 @@ class Curl
     public static function put(
         string $url,
         array $payload = [],
-        AuthType $authType = AuthType::JWT
+        AuthType $authType = AuthType::JWT,
+        ContentType $contentType = ContentType::JSON,
+        ?ContentType $responseContentType = null
     ): Response {
         $curl = new self(
             url: $url,
             requestMethod: RequestMethod::PUT,
             payload: $payload,
-            authType: $authType
+            contentType: $contentType,
+            authType: $authType,
+            responseContentType: $responseContentType
         );
 
         return $curl->exec();
@@ -234,7 +253,7 @@ class Curl
         $options = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_FAILONERROR => true, // Treat HTTP code 400+ as error.
+            CURLOPT_FAILONERROR => false, // Don't treat HTTP code 400+ as error.
             CURLOPT_AUTOREFERER => true, // Follow redirects.
             CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
             CURLOPT_HEADER => false, // Do not include header in output.
@@ -449,7 +468,8 @@ class Curl
                 value: $payload,
                 flags: JSON_THROW_ON_ERROR
             ),
-            ContentType::URL => http_build_query(data: $payload)
+            ContentType::URL => http_build_query(data: $payload),
+            ContentType::RAW => ''
         };
     }
 
@@ -460,7 +480,8 @@ class Curl
     {
         return match ($this->contentType) {
             ContentType::JSON => 'application/json; charset=utf-8',
-            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8'
+            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
+            ContentType::RAW => 'text/plain; charset=utf-8'
         };
     }
 

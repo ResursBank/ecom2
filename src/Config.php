@@ -18,8 +18,11 @@ final class Config
 
     /**
      * @param LoggerInterface $logger
+     * @param Basic|null $basicAuth
+     * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
      * @param string $userAgent
+     * @param bool $isProduction
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -28,10 +31,11 @@ final class Config
         public readonly Basic|null $basicAuth,
         public readonly Jwt|null $jwtAuth,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        public readonly string $userAgent,
+        public readonly string $userAgent = '',
+        public readonly bool $isProduction = false,
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
-        public readonly int $timeout,
+        public readonly int $timeout = 60,
     ) {
     }
 
@@ -41,6 +45,7 @@ final class Config
      * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
      * @param string $userAgent
+     * @param bool $isProduction
      * @param string $proxy
      * @param int $proxyType
      * @return void
@@ -51,6 +56,7 @@ final class Config
         Jwt|null $jwtAuth = null,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
         string $userAgent = '',
+        bool $isProduction = false,
         string $proxy = '',
         int $proxyType = 0,
         int $timeout = 0
@@ -61,6 +67,7 @@ final class Config
             jwtAuth: $jwtAuth,
             logLevel: $logLevel,
             userAgent: $userAgent,
+            isProduction: $isProduction,
             proxy: $proxy,
             proxyType: $proxyType,
             timeout: $timeout

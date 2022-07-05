@@ -85,6 +85,23 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Set new data array
+     *
+     * @param array $data
+     * @return void
+     * @throws TypeException
+     */
+    public function setData(array $data): void
+    {
+        $this->verifyDataArrayType(
+            data: $data,
+            type: $this->type
+        );
+
+        $this->data = $data;
+    }
+
+    /**
      * @inheritDoc
      */
     public function count(): int

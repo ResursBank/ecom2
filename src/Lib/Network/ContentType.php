@@ -13,4 +13,5 @@ enum ContentType
 {
     case URL;
     case JSON;
+    case RAW;
 }

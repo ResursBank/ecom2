@@ -8,4 +8,8 @@
             <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="BASIC_AUTH_USERNAME" value="REPLACEME" force="true" />
+        <env name="BASIC_AUTH_PASSWORD" value="REPLACEME" force="true" />
+    </php>
 </phpunit>

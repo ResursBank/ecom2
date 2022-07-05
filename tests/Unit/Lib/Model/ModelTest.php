@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Lib\Model;
+
+use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Lib\Model\Model\TestClasses\ArrayPropertyDummy;
+use Resursbank\Ecom\Lib\Model\Model\TestClasses\ObjectPropertyDummy;
+use Resursbank\Ecom\Lib\Model\Model\TestClasses\SimpleDummy;
+
+/**
+ * Verifies that the Model class works as intended
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
+final class ModelTest extends TestCase
+{
+    /**
+     * Verify that simple un-nested conversion to array works
+     *
+     * @return void
+     */
+    public function testSimpleToArray(): void
+    {
+        $object = new SimpleDummy(
+            number: 42,
+            message: 'Foo'
+        );
+
+        $expected = [
+            'number' => 42,
+            'message' => 'Foo'
+        ];
+
+        $this::assertSame(
+            expected:$expected,
+            actual: $object->toArray()
+        );
+    }
+
+    /**
+     * Verify that conversion to array works when object has object properties
+     *
+     * @return void
+     */
+    public function testWithObjectPropertiesToArray(): void
+    {
+        $object = new ObjectPropertyDummy(
+            object: new SimpleDummy(
+                number: 42,
+                message: 'Foo'
+            ),
+            message: 'bar'
+        );
+
+        $expected = [
+            'object' => [
+                'number' => 42,
+                'message' => 'Foo'
+            ],
+            'message' => 'bar'
+        ];
+
+        $this::assertSame(
+            expected: $expected,
+            actual: $object->toArray()
+        );
+    }
+
+    /**
+     * Verify that conversion to array works when object has array properties
+     *
+     * @return void
+     */
+    public function testWithArrayPropertiesToArray(): void
+    {
+        $object = new ArrayPropertyDummy(
+            array: [
+                'object' => new SimpleDummy(
+                    number: 127,
+                    message: 'Foo'
+                ),
+                'number' => 42
+            ],
+            message: 'bar'
+        );
+
+        $expected = [
+            'array' => [
+                'object' => [
+                    'number' => 127,
+                    'message' => 'Foo'
+                ],
+                'number' => 42
+            ],
+            'message' => 'bar'
+        ];
+
+        $this::assertSame(
+            expected: $expected,
+            actual: $object->toArray()
+        );
+    }
+}

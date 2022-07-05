@@ -15,6 +15,8 @@ use ReflectionObject;
 use ReflectionNamedType;
 use ReflectionException;
 
+use Resursbank\Ecom\Lib\Collection\Collection;
+
 use function is_object;
 
 /**
@@ -30,7 +32,7 @@ class DataConverter
      *
      * @param object $object
      * @param class-string $type
-     * @return object
+     * @return mixed
      * @throws ReflectionException
      * @throws ArgumentCountError
      * @psalm-suppress MixedAssignment
@@ -38,7 +40,7 @@ class DataConverter
      * @psalm-suppress ArgumentTypeCoercion
      * @psalm-suppress MixedMethodCall
      */
-    public static function stdClassToType(object $object, string $type): object
+    public static function stdClassToType(object $object, string $type): mixed
     {
         $sourceReflection = new ReflectionObject(object: $object);
         $destReflection = new ReflectionClass(objectOrClass: $type);
@@ -51,14 +53,28 @@ class DataConverter
             $value = $sourceProperty->getValue(object: $object);
 
             if ($destReflection->hasProperty(name: $name)) {
-                if (is_object(value: $value)) {
-                    $destinationProperty = $destReflection->getProperty(
-                        name: $name
-                    );
+                $destinationProperty = $destReflection->getProperty(
+                    name: $name
+                );
+                /** @var ReflectionNamedType $destinationType */
+                $destinationType = $destinationProperty->getType();
+                $propertyType = $destinationType->getName();
 
-                    /** @var ReflectionNamedType $destinationType */
-                    $destinationType = $destinationProperty->getType();
-                    $propertyType = $destinationType->getName();
+                // If our property is a collection we need to take the value array and convert all items individually
+                // before loading our new collection object
+                if (is_subclass_of(object_or_class: $propertyType, class: Collection::class)) {
+                    $converted = [];
+                    $dummyCollection = new $propertyType(data: []);
+                    $dummyCollectionMemberType = $dummyCollection->getType();
+                    foreach ($value as $item) {
+                        $converted[] = self::stdClassToType(
+                            object: $item,
+                            type: $dummyCollectionMemberType
+                        );
+                    }
+                    $dummyCollection->setData(data: $converted);
+                    $arguments[$name] = $dummyCollection;
+                } elseif (is_object(value: $value)) {
                     $arguments[$name] = self::stdClassToType(
                         object: $value,
                         type: $propertyType
