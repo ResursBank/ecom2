@@ -42,7 +42,10 @@ class Curl
      * @param AuthType $authType
      * @param ApiType $apiType
      * @param StringValidation $stringValidation
+     * @param ContentType|null $responseContentType
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
      * @todo $headers and associated methods should be moved to a collection model / service layer.
@@ -58,7 +61,7 @@ class Curl
         private readonly StringValidation $stringValidation = new StringValidation(),
         public ?ContentType $responseContentType = null
     ) {
-        if (!$this->responseContentType)  {
+        if (!$this->responseContentType) {
             $this->responseContentType = $this->contentType;
         }
 
@@ -204,6 +207,7 @@ class Curl
      * @param array $payload
      * @param AuthType $authType
      * @param ContentType $contentType
+     * @param ContentType|null $responseContentType
      * @return Response
      * @throws CurlException
      * @throws EmptyValueException
@@ -464,7 +468,8 @@ class Curl
                 value: $payload,
                 flags: JSON_THROW_ON_ERROR
             ),
-            ContentType::URL => http_build_query(data: $payload)
+            ContentType::URL => http_build_query(data: $payload),
+            ContentType::RAW => ''
         };
     }
 
@@ -475,7 +480,8 @@ class Curl
     {
         return match ($this->contentType) {
             ContentType::JSON => 'application/json; charset=utf-8',
-            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8'
+            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
+            ContentType::RAW => 'text/plain; charset=utf-8'
         };
     }
 
