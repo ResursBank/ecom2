@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Api\Credentials;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\AuthType;
+use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
@@ -142,10 +143,14 @@ class CurlTest extends TestCase
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class)
         );
-        $response = Curl::get(
+        $curl = new Curl(
             url: 'https://ipv4.netcurl.org',
-            authType: AuthType::NONE
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::URL,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::JSON
         );
+        $response = $curl->exec();
 
         $this::assertEquals(
             expected: 'GET',
