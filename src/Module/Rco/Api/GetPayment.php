@@ -15,6 +15,8 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
+use Resursbank\Ecom\Lib\Network\ContentType;
+use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Rco\Repository;
 use stdClass;
@@ -43,10 +45,14 @@ class GetPayment
     {
         $response = new stdClass();
         try {
-            $response = Curl::get(
+            $curl = new Curl(
                 url: $this->getApiUrl(orderReference: $orderReference),
-                authType: AuthType::BASIC
+                requestMethod: RequestMethod::GET,
+                contentType: ContentType::URL,
+                authType: AuthType::BASIC,
+                responseContentType: ContentType::JSON
             );
+            $response = $curl->exec();
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
         }
