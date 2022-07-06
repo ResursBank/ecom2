@@ -40,6 +40,7 @@ class GetPayment
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws CurlException
      */
     public function call(string $orderReference): Response
     {
@@ -55,6 +56,7 @@ class GetPayment
             $response = $curl->exec();
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
+            throw $exception;
         }
 
         return DataConverter::stdClassToType(
