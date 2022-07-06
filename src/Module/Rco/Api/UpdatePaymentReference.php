@@ -43,6 +43,7 @@ class UpdatePaymentReference
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws CurlException
      */
     public function call(Request $request, string $orderReference): Response
     {
@@ -56,6 +57,7 @@ class UpdatePaymentReference
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
+            throw $exception;
         }
 
         $responseObj = new stdClass();

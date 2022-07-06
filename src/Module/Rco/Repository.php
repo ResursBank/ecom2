@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Rco;
 
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\Rco\Api\GetPayment;
 use Resursbank\Ecom\Module\Rco\Api\InitPayment;
@@ -53,6 +54,7 @@ class Repository extends CoreModule
      * @param string $orderReference
      * @return UpdatePaymentResponse
      * @throws ReflectionException
+     * @throws CurlException
      */
     public static function updatePayment(UpdatePaymentRequest $request, string $orderReference): UpdatePaymentResponse
     {
@@ -67,6 +69,7 @@ class Repository extends CoreModule
      * @param string $orderReference
      * @return UpdatePaymentReferenceResponse
      * @throws ReflectionException
+     * @throws CurlException
      */
     public static function updatePaymentReference(
         UpdatePaymentReferenceRequest $request,

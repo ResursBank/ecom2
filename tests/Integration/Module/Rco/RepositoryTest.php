@@ -13,6 +13,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
@@ -120,6 +121,7 @@ final class RepositoryTest extends TestCase
      * @return void
      * @throws ReflectionException
      * @throws TypeException
+     * @throws CurlException
      */
     public function testUpdatePayment(): void
     {
@@ -188,14 +190,11 @@ final class RepositoryTest extends TestCase
             )
         );
 
-        $response = Repository::updatePayment(
+        $this->expectExceptionCode(code: 404);
+
+        Repository::updatePayment(
             request: $request,
             orderReference: $this->orderReference . bin2hex(string: random_bytes(length: 8))
-        );
-
-        $this::assertEquals(
-            expected: 404,
-            actual: $response->code
         );
     }
 
