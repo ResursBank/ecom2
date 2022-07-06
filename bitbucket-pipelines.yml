@@ -13,7 +13,6 @@ pipelines:
               - pecl install redis
               - docker-php-ext-enable redis
               - echo "127.0.0.1 redis" >>/etc/hosts
-              - cp phpunit.xml.example phpunit.xml
               - composer install
               - composer require phpunit/phpunit
               - vendor/bin/phpunit --configuration ./phpunit.xml
