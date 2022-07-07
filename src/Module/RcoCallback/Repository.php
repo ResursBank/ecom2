@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Module\RcoCallback;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\RcoCallback\Models\Callback;
+use Resursbank\Ecom\Module\RcoCallback\Models\CallbackCollection;
 use Resursbank\Ecom\Module\RcoCallback\Api\GetCallback;
 use Resursbank\Ecom\Module\RcoCallback\Api\GetCallbacks;
 use Resursbank\Ecom\Module\RcoCallback\Api\DeleteCallback;
