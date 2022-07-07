@@ -113,9 +113,9 @@ class Curl
             $body = $bodyObj;
         }
 
-        if (!$body instanceof stdClass) {
+        if (!($body instanceof stdClass) && !is_array(value: $body)) {
             throw new IllegalTypeException(
-                message: 'Curl response body is not an object.'
+                message: 'Curl response body is not an object or an array.'
             );
         }
 
