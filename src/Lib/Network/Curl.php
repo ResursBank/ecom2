@@ -93,7 +93,7 @@ class Curl
             );
         }
 
-        $this->stringValidation->notEmpty(value: $body);
+        //$this->stringValidation->notEmpty(value: $body);
 
         $code = (int) curl_getinfo(
             handle: $this->ch,
@@ -434,6 +434,10 @@ class Curl
      */
     private function setContent(CurlHandle $ch, array $payload): void
     {
+        if ($this->contentType === ContentType::EMPTY) {
+            return;
+        }
+
         $data = $this->getPayloadData(payload: $payload);
 
         if ($data !== '' && $this->hasBodyData()) {
@@ -464,6 +468,7 @@ class Curl
         array $payload
     ): string {
         return match ($this->contentType) {
+            ContentType::EMPTY => '',
             ContentType::JSON => json_encode(
                 value: $payload,
                 flags: JSON_THROW_ON_ERROR
@@ -479,6 +484,7 @@ class Curl
     private function getContentType(): string
     {
         return match ($this->contentType) {
+            ContentType::EMPTY => 'application/json; charset=utf-8',
             ContentType::JSON => 'application/json; charset=utf-8',
             ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
             ContentType::RAW => 'text/plain; charset=utf-8'
@@ -638,7 +644,7 @@ class Curl
 
         if ($code !== 0 || $httpCode >= 400) {
             throw new CurlException(
-                message: "CURL error ($code): $msg",
+                message: "CURL error (".($code !== 0 ? $code : $httpCode)."): $msg",
                 code: ($code !== 0 ? $code : $httpCode)
             );
         }
