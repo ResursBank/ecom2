@@ -17,6 +17,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\RcoCallback\Models\Callback;
 use Resursbank\Ecom\Module\RcoCallback\Models\CallbackCollection;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
 
@@ -38,9 +39,9 @@ class GetCallbacks
 
         try {
             $response = $curl->exec();
-            return DataConverter::stdClassToType(
-                object: $response->body,
-                type: CallbackCollection::class
+            return DataConverter::arrayToCollection(
+                data: $response->body,
+                targetType: Callback::class
             );
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
