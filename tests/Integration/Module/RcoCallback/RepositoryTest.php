@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Module\RcoCallback;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\DigestConfiguration;
@@ -32,7 +33,16 @@ class RepositoryTest extends TestCase
         );
 
         // Clear existing callbacks
-        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED'];
+        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
+        foreach ($eventNames as $eventName) {
+            Repository::deleteCallback(eventName: $eventName);
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        // Clear existing callbacks
+        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
         foreach ($eventNames as $eventName) {
             Repository::deleteCallback(eventName: $eventName);
         }
@@ -81,6 +91,11 @@ class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Verify that fetching all registered callbacks works
+     *
+     * @return void
+     */
     public function testGetCallbacks(): void
     {
         $eventNames = ['BOOKED', 'UPDATE'];
@@ -105,10 +120,23 @@ class RepositoryTest extends TestCase
         }
 
         $response = Repository::getCallbacks();
-        
+
         $this->assertCount(
             expectedCount: 2,
             haystack: $response->toArray()
         );
+    }
+
+    /**
+     * Verify that attempting to get an unregistered callback throws an EmptyValueException
+     *
+     * @return void
+     */
+    public function testGetCallbackFailure(): void
+    {
+        $this->expectException(
+            exception: EmptyValueException::class
+        );
+        Repository::getCallback(eventName: 'UPDATE');
     }
 }
