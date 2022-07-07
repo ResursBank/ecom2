@@ -87,4 +87,16 @@ class DataConverter
 
         return new $type(...$arguments);
     }
+
+    public static function arrayToCollection(array $data, string $targetType): mixed
+    {
+        $convertedData = [];
+        foreach ($data as $item) {
+            $convertedData[] = self::stdClassToType(
+                object: $item,
+                type: $targetType
+            );
+        }
+        return new ($targetType.'Collection')(data: $convertedData);
+    }
 }
