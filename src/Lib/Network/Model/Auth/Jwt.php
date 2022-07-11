@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network\Model\Auth;
 
+use Exception;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
@@ -11,7 +12,6 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -64,6 +64,7 @@ class Jwt
      * @throws JsonException
      * @throws ValidationException
      * @throws IllegalTypeException
+     * @throws TypeException
      */
     private function generateJwtToken(): JwtToken
     {
@@ -102,21 +103,34 @@ class Jwt
             throw new AuthException(message: 'Failed to generate JWT token.');
         }
 
+        if (!is_numeric(value: $response->body->expires_in) || !is_int(value: $response->body->expires_in)) {
+            throw new TypeException(
+                message: 'Received invalid expires_in value (' . $response->body->expires_in
+                    . '), was expecting integer'
+            );
+        }
+
         return new JwtToken(
             accessToken: $response->body->access_token,
             tokenType: $response->body->token_type,
-            expiresIn: $response->body->expires_in,
+            validUntil: time() + $response->body->expires_in,
         );
     }
 
     /**
+     * Returns token, if we have no token or the current token is expired we fetch a new one
+     *
      * @return JwtToken
      * @throws AuthException
      */
     public function getToken(): JwtToken
     {
-        if (!$this->token) {
-            $this->token = $this->generateJwtToken();
+        if (!$this->token || $this->token->validUntil < time()) {
+            try {
+                $this->token = $this->generateJwtToken();
+            } catch (Exception $exception) {
+                throw new AuthException(message: $exception->getMessage());
+            }
         }
 
         return $this->token;
