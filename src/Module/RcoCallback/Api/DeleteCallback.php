@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\RcoCallback\Api;
 
+use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -19,8 +22,20 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
 
+/**
+ * Handles deleting of callbacks
+ */
 class DeleteCallback
 {
+    /**
+     * @param string $eventName
+     * @return int
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ValidationException
+     * @throws IllegalTypeException
+     */
     public function call(string $eventName): int
     {
         if (!isset(Config::$instance->basicAuth)) {

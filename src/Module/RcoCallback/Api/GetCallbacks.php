@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\RcoCallback\Api;
 
+use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -21,8 +24,19 @@ use Resursbank\Ecom\Module\RcoCallback\Models\Callback;
 use Resursbank\Ecom\Module\RcoCallback\Models\CallbackCollection;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
 
+/**
+ * Handles fetching of a list of configured callbacks
+ */
 class GetCallbacks
 {
+    /**
+     * @return CallbackCollection
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ValidationException
+     * @throws IllegalTypeException
+     */
     public function call(): CallbackCollection
     {
         if (!isset(Config::$instance->basicAuth)) {
@@ -52,7 +66,6 @@ class GetCallbacks
     /**
      * Gets the API URL to use
      *
-     * @param string $eventName
      * @return string
      */
     private function getApiUrl(): string
