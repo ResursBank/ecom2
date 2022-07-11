@@ -6,11 +6,25 @@ namespace Resursbank\EcomTest\Integration\Lib\Network\Model\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 
+/**
+ * This class tests the features of the Jwt auth class
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class JwtTest extends TestCase
 {
+    /**
+     * Verify that fetching a Jwt token works as expected
+     * 
+     * @return void
+     * @throws AuthException
+     * @throws EmptyValueException
+     */
     public function testGetToken(): void
     {
         Config::setup(
