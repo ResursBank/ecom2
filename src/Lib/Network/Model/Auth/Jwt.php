@@ -75,7 +75,7 @@ class Jwt
         }
 
         $tokenRequest = new Curl(
-            url: 'api/oauth2/token',
+            url: 'https://apigw-integration.test.resurs.loc/api/oauth2/token',
             requestMethod: RequestMethod::POST,
             payload: [
                 'client_id' => $auth->clientId,
@@ -126,11 +126,7 @@ class Jwt
     public function getToken(): JwtToken
     {
         if (!$this->token || $this->token->validUntil < time()) {
-            try {
-                $this->token = $this->generateJwtToken();
-            } catch (Exception $exception) {
-                throw new AuthException(message: $exception->getMessage());
-            }
+            $this->token = $this->generateJwtToken();
         }
 
         return $this->token;
