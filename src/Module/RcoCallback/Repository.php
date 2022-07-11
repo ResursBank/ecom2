@@ -34,6 +34,8 @@ class Repository extends CoreModule
     public const HOSTNAME_TEST = 'omnitest.resurs.com';
 
     /**
+     * Registers a new callback
+     *
      * @param string $eventName
      * @param Request $request
      * @return void
@@ -50,6 +52,8 @@ class Repository extends CoreModule
     }
 
     /**
+     * Gets a named callback
+     *
      * @param string $eventName
      * @return Callback
      * @throws CurlException
@@ -66,6 +70,8 @@ class Repository extends CoreModule
     }
 
     /**
+     * Gets all registered callbacks
+     *
      * @return CallbackCollection
      * @throws CurlException
      * @throws EmptyValueException
@@ -80,6 +86,8 @@ class Repository extends CoreModule
     }
 
     /**
+     * Deletes a callback
+     *
      * @param string $eventName
      * @return int
      * @throws CurlException
