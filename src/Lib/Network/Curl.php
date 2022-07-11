@@ -275,7 +275,7 @@ class Curl
             $options[CURLOPT_PROXY] = Config::$instance->proxy;
             $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
         }
-        if ((int)Config::$instance->timeout) {
+        if (Config::$instance->timeout) {
             $options[CURLOPT_CONNECTTIMEOUT] = ceil(Config::$instance->timeout) / 2;
             $options[CURLOPT_TIMEOUT] = ceil(Config::$instance->timeout);
         }
@@ -469,13 +469,12 @@ class Curl
         array $payload
     ): string {
         return match ($this->contentType) {
-            ContentType::EMPTY => '',
+            ContentType::EMPTY, ContentType::RAW => '',
             ContentType::JSON => json_encode(
                 value: $payload,
                 flags: JSON_THROW_ON_ERROR
             ),
-            ContentType::URL => http_build_query(data: $payload),
-            ContentType::RAW => ''
+            ContentType::URL => http_build_query(data: $payload)
         };
     }
 
@@ -485,8 +484,7 @@ class Curl
     private function getContentType(): string
     {
         return match ($this->contentType) {
-            ContentType::EMPTY => 'application/json; charset=utf-8',
-            ContentType::JSON => 'application/json; charset=utf-8',
+            ContentType::EMPTY, ContentType::JSON => 'application/json; charset=utf-8',
             ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
             ContentType::RAW => 'text/plain; charset=utf-8'
         };
@@ -623,7 +621,7 @@ class Curl
                 message: 'Response body property not set'
             );
         }
-        
+
         if (
             !isset($response->body->access_token) ||
             !isset($response->body->token_type) ||
@@ -651,7 +649,7 @@ class Curl
 
         if ($code !== 0 || $httpCode >= 400) {
             throw new CurlException(
-                message: "CURL error (".($code !== 0 ? $code : $httpCode)."): $msg",
+                message: "CURL error (" . ($code !== 0 ? $code : $httpCode) . "): $msg",
                 code: ($code !== 0 ? $code : $httpCode)
             );
         }
