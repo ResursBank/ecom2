@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use stdClass;
 use CurlHandle;
@@ -556,6 +557,7 @@ class Curl
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
+     * @throws AuthException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
@@ -563,10 +565,6 @@ class Curl
 
         if ($auth === null) {
             throw new CurlException(message: 'JWT auth not configured.');
-        }
-
-        if ($auth->getToken() === null) {
-            $auth->setToken($this->generateJwtToken());
         }
 
         curl_setopt(
@@ -579,61 +577,6 @@ class Curl
             handle: $ch,
             option: CURLOPT_XOAUTH2_BEARER,
             value: $auth->getToken()->accessToken
-        );
-    }
-
-    /**
-     * @return JwtToken
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
-     * @todo Needs to be completed, a lot data validation is missing. This should be refactored to a separate class
-     * @todo to integrate separate methods to test individual values etc.
-     */
-    public function generateJwtToken(): JwtToken
-    {
-        $auth = Config::$instance->jwtAuth;
-
-        if ($auth === null) {
-            throw new CurlException(message: 'JWT auth not configured.');
-        }
-
-        $tokenRequest = new Curl(
-            url: 'api/oauth2/token',
-            requestMethod: RequestMethod::POST,
-            payload: [
-                'client_id' => $auth->clientId,
-                'client_secret' => $auth->clientSecret,
-                'grant_type' => $auth->grantType,
-                'scope' => $auth->scope,
-            ],
-            authType: AuthType::NONE
-        );
-
-        $response = $tokenRequest->exec();
-
-        // @todo This requires MUCH better validation. We must check the type of each property, validate their values
-        // @todo using charsets etc. (there are helper functions prepared in lib/Validation, fully tested).
-        if (!isset($response->body)) {
-            throw new MissingKeyException(
-                message: 'Response body property not set'
-            );
-        }
-
-        if (
-            !isset($response->body->access_token) ||
-            !isset($response->body->token_type) ||
-            !isset($response->body->expires_in)
-        ) {
-            throw new CurlException(message: 'Failed to generate JWT token.');
-        }
-
-        return new JwtToken(
-            accessToken: $response->body->access_token,
-            tokenType: $response->body->token_type,
-            expiresIn: $response->body->expires_in,
         );
     }
 
