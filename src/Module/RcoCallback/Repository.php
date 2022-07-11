@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\RcoCallback;
 
 use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -53,6 +54,10 @@ class Repository extends CoreModule
      * @return Callback
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     * @throws ReflectionException
      */
     public static function getCallback(string $eventName): Callback
     {
@@ -64,6 +69,9 @@ class Repository extends CoreModule
      * @return CallbackCollection
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
      */
     public static function getCallbacks(): CallbackCollection
     {
@@ -76,6 +84,9 @@ class Repository extends CoreModule
      * @return int
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
      */
     public static function deleteCallback(string $eventName): int
     {
