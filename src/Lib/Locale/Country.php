@@ -37,7 +37,7 @@ class Country
 
     /**
      * Check whether supplied $country is declared within this class.
-     * 
+     *
      * @param string $country
      * @return bool
      */
