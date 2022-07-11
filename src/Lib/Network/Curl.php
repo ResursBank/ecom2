@@ -93,8 +93,6 @@ class Curl
             );
         }
 
-        //$this->stringValidation->notEmpty(value: $body);
-
         $code = (int) curl_getinfo(
             handle: $this->ch,
             option: CURLINFO_RESPONSE_CODE
