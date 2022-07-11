@@ -19,7 +19,6 @@ use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
 
 /**
@@ -50,8 +49,7 @@ class DeleteCallback
         );
 
         try {
-            $response = $curl->exec();
-            return $response->code;
+            return $curl->exec()->code;
         } catch (CurlException $exception) {
             Config::$instance->logger->error(message: $exception);
             throw $exception;
