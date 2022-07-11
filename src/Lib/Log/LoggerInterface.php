@@ -16,7 +16,7 @@ interface LoggerInterface
      * @return void
      */
     public function debug(string|Exception $message): void;
-    
+
     /**
      * @param string|Exception $message
      * @return void
