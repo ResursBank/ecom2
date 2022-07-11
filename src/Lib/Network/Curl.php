@@ -315,7 +315,7 @@ class Curl
             '?' . $this->getPayloadData(payload: $payload);
 
         if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
-            throw new ValidationException(message: 'Invalid URL requested.');
+            throw new ValidationException(message: 'Invalid URL requested (' . $url .').');
         }
 
         return $url;
