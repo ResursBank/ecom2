@@ -12,11 +12,11 @@ use stdClass;
 class Response
 {
     /**
-     * @param stdClass $body
+     * @param stdClass|array $body
      * @param int $code
      */
     public function __construct(
-        public readonly stdClass $body,
+        public readonly stdClass|array $body,
         public readonly int $code
     ) {
     }
