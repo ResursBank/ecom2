@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use stdClass;
 use CurlHandle;
 use InvalidArgumentException;
@@ -104,6 +105,7 @@ class Curl
             $body = json_decode(
                 json: $body,
                 associative: false,
+                depth: 768,
                 flags: JSON_THROW_ON_ERROR
             );
         } elseif ($this->responseContentType === ContentType::RAW) {
@@ -616,6 +618,12 @@ class Curl
 
         // @todo This requires MUCH better validation. We must check the type of each property, validate their values
         // @todo using charsets etc. (there are helper functions prepared in lib/Validation, fully tested).
+        if (!isset($response->body)) {
+            throw new MissingKeyException(
+                message: 'Response body property not set'
+            );
+        }
+        
         if (
             !isset($response->body->access_token) ||
             !isset($response->body->token_type) ||
