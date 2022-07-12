@@ -7,23 +7,20 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network;
 
 use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\Validation\MissingKeyException;
+use Resursbank\Ecom\Exception\TypeException;
 use stdClass;
 use CurlHandle;
-use InvalidArgumentException;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Network\Model\JwtToken;
 use Resursbank\Ecom\Lib\Network\Model\Response;
-use Resursbank\Ecom\Lib\Network\Model\Header;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Network\Curl\Header;
 
 use function is_string;
-use function strlen;
 
 /**
  * Curl wrapper.
@@ -45,10 +42,10 @@ class Curl
      * @param ApiType $apiType
      * @param StringValidation $stringValidation
      * @param ContentType|null $responseContentType
+     * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
@@ -133,10 +130,12 @@ class Curl
      * @param array $payload
      * @param AuthType $authType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function get(
@@ -160,10 +159,12 @@ class Curl
      * @param array $payload
      * @param AuthType $authType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function post(
@@ -185,10 +186,12 @@ class Curl
      * @param string $url
      * @param AuthType $authType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function delete(
@@ -211,10 +214,12 @@ class Curl
      * @param ContentType $contentType
      * @param ContentType|null $responseContentType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function put(
@@ -261,11 +266,13 @@ class Curl
             CURLOPT_HEADER => false, // Do not include header in output.
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_USERAGENT => $this->getUserAgent(),
-            CURLOPT_HTTPHEADER => $this->getHeadersData(
-                headers: $this->generateHeaders(
+            CURLOPT_USERAGENT => Header::getUserAgent(),
+            CURLOPT_HTTPHEADER => Header::getHeadersData(
+                headers: Header::generateHeaders(
                     headers: $headers,
-                    payload: $payload
+                    payloadData: $this->getPayloadData(payload: $payload),
+                    contentType: $this->contentType,
+                    hasBodyData: $this->hasBodyData()
                 )
             ),
             CURLOPT_CUSTOMREQUEST => $this->getCustomRequestValue(),
@@ -315,102 +322,10 @@ class Curl
             '?' . $this->getPayloadData(payload: $payload);
 
         if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
-            throw new ValidationException(message: 'Invalid URL requested (' . $url .').');
+            throw new ValidationException(message: 'Invalid URL requested (' . $url . ').');
         }
 
         return $url;
-    }
-
-    /**
-     * @param array $headers
-     * @param array $payload
-     * @return array<Header>
-     * @throws JsonException
-     * @todo See constructor todo. If kept we should maybe change its visibility.
-     */
-    public function generateHeaders(array $headers, array $payload): array
-    {
-        foreach ($headers as $header) {
-            if (!$header instanceof Header) {
-                throw new InvalidArgumentException(
-                    message: 'Header must be an instance of Header.'
-                );
-            }
-        }
-
-        if (!$this->hasHeader(headers: $headers, key: 'content-type')) {
-            $headers[] = new Header(
-                key: 'content-type',
-                value: $this->getContentType()
-            );
-        }
-
-        if (!$this->hasHeader(headers: $headers, key: 'content-length') && $this->hasBodyData()) {
-            $headers[] = new Header(
-                key: 'content-length',
-                value: strlen(string: $this->getPayloadData(payload: $payload))
-            );
-        }
-
-        if (!$this->hasHeader(headers: $headers, key: 'accept-language')) {
-            $headers[] = new Header(
-                key: 'accept-language',
-                value: 'en'
-            );
-        }
-
-        return $headers;
-    }
-
-    /**
-     * @param array $headers
-     * @param string $key
-     * @return bool
-     * @todo See constructor todo. If kept we should maybe change its visibility.
-     */
-    public function hasHeader(
-        array $headers,
-        string $key
-    ): bool {
-        return count($this->findHeaders(headers: $headers, key: $key)) > 0;
-    }
-
-    /**
-     * Retrieve list of headers where $key matches.
-     * @todo See constructor todo. If kept we should maybe change its visibility.
-     *
-     * @param array $headers
-     * @param string $key
-     * @return array
-     */
-    public function findHeaders(
-        array $headers,
-        string $key
-    ): array {
-        $key = strtolower(string: $key);
-
-        return array_filter(
-            array: $headers,
-            callback: static function ($header) use ($key) {
-                return strtolower(string: $header->key) === $key;
-            }
-        );
-    }
-
-    /**
-     * @param array $headers
-     * @return array
-     */
-    public function getHeadersData(
-        array $headers
-    ): array {
-        $result = [];
-
-        foreach ($headers as $header) {
-            $result[] = $header->key . ': ' . $header->value;
-        }
-
-        return $result;
     }
 
     /**
@@ -481,18 +396,6 @@ class Curl
 
     /**
      * @return string
-     */
-    private function getContentType(): string
-    {
-        return match ($this->contentType) {
-            ContentType::EMPTY, ContentType::JSON => 'application/json; charset=utf-8',
-            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
-            ContentType::RAW => 'text/plain; charset=utf-8'
-        };
-    }
-
-    /**
-     * @return string
      * @todo Dropped classname from user agent, didn't seem to make sense, we should however include the version
      * @todo specified in composer.json (see PrestaShop Core psrbcore/src/Traits/Module/Init.php for example).
      * @todo Add back what module class called Curl.
@@ -510,10 +413,8 @@ class Curl
      * @param CurlHandle $ch
      * @return void
      * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
+     * @throws AuthException
+     * @throws TypeException
      */
     private function setAuth(CurlHandle $ch): void
     {
@@ -553,11 +454,8 @@ class Curl
      * @param CurlHandle $ch
      * @return void
      * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
      * @throws AuthException
+     * @throws TypeException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
