@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network\Model\Auth;
 
 use Exception;
-use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\TypeException;
