@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Network\Model\Auth;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
@@ -20,7 +21,7 @@ class JwtTest extends TestCase
 {
     /**
      * Verify that fetching a Jwt token works as expected
-     * 
+     *
      * @return void
      * @throws AuthException
      * @throws EmptyValueException
@@ -48,5 +49,29 @@ class JwtTest extends TestCase
             expected: $currentTime,
             actual: $token->validUntil
         );
+    }
+
+    /**
+     * Verify that using invalid credentials will result in an exception being thrown
+     *
+     * @return void
+     * @throws AuthException
+     * @throws EmptyValueException
+     */
+    public function testInvalidCredentials(): void
+    {
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            jwtAuth: new Jwt(
+                clientId: 'foo',
+                clientSecret: 'bar',
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->expectException(exception: Exception::class);
+
+        Config::$instance->jwtAuth->getToken();
     }
 }
