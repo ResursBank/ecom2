@@ -67,10 +67,6 @@ class Jwt
     /**
      * @return JwtToken
      * @throws AuthException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws ValidationException
-     * @throws IllegalTypeException
      * @throws TypeException
      */
     private function generateToken(): JwtToken
@@ -105,12 +101,7 @@ class Jwt
 
         try {
             $response = $tokenRequest->exec();
-        } catch (CurlException $exception) {
-            Config::$instance->logger->error(message: $exception);
-            Config::$instance->logger->debug(
-                message: 'CurlException request body contents: '
-                . $exception->getRequestBody()
-            );
+        } catch (Exception $exception) {
             throw new AuthException(
                 message: $exception->getMessage(),
                 code: $exception->getCode()
@@ -151,7 +142,7 @@ class Jwt
      *
      * @return JwtToken
      * @throws AuthException
-     * @throws CurlException
+     * @throws TypeException
      */
     public function getToken(): JwtToken
     {
