@@ -87,7 +87,7 @@ class Curl
     {
         $body = curl_exec(handle: $this->ch);
 
-        $this->handleError(); // We want to check for errors immediately after running curl_exec
+        $this->handleError(body: $body); // We want to check for errors immediately after running curl_exec
 
         if (!is_string(value: $body)) {
             throw new IllegalTypeException(
@@ -581,10 +581,11 @@ class Curl
     }
 
     /**
+     * @param mixed $body
      * @return void
      * @throws CurlException
      */
-    private function handleError(): void
+    private function handleError(mixed $body = null): void
     {
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
@@ -593,7 +594,8 @@ class Curl
         if ($code !== 0 || $httpCode >= 400) {
             throw new CurlException(
                 message: "CURL error (" . ($code !== 0 ? $code : $httpCode) . "): $msg",
-                code: ($code !== 0 ? $code : $httpCode)
+                code: ($code !== 0 ? $code : $httpCode),
+                requestBody: is_string($body) ? $body : null
             );
         }
     }
