@@ -8,24 +8,19 @@ namespace Resursbank\Ecom\Lib\Network;
 
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use stdClass;
 use CurlHandle;
-use InvalidArgumentException;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Network\Model\JwtToken;
 use Resursbank\Ecom\Lib\Network\Model\Response;
-use Resursbank\Ecom\Lib\Network\Model\Header as HeaderModel;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Lib\Network\Curl\Header;
 
 use function is_string;
-use function strlen;
 
 /**
  * Curl wrapper.
@@ -47,10 +42,10 @@ class Curl
      * @param ApiType $apiType
      * @param StringValidation $stringValidation
      * @param ContentType|null $responseContentType
+     * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
@@ -135,10 +130,12 @@ class Curl
      * @param array $payload
      * @param AuthType $authType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function get(
@@ -162,10 +159,12 @@ class Curl
      * @param array $payload
      * @param AuthType $authType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function post(
@@ -187,10 +186,12 @@ class Curl
      * @param string $url
      * @param AuthType $authType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function delete(
@@ -213,10 +214,12 @@ class Curl
      * @param ContentType $contentType
      * @param ContentType|null $responseContentType
      * @return Response
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function put(
@@ -410,10 +413,8 @@ class Curl
      * @param CurlHandle $ch
      * @return void
      * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
+     * @throws AuthException
+     * @throws TypeException
      */
     private function setAuth(CurlHandle $ch): void
     {
