@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use stdClass;
 use CurlHandle;
 use InvalidArgumentException;
@@ -85,7 +87,7 @@ class Curl
     {
         $body = curl_exec(handle: $this->ch);
 
-        $this->handleError(); // We want to check for errors immediately after running curl_exec
+        $this->handleError(body: $body); // We want to check for errors immediately after running curl_exec
 
         if (!is_string(value: $body)) {
             throw new IllegalTypeException(
@@ -104,6 +106,7 @@ class Curl
             $body = json_decode(
                 json: $body,
                 associative: false,
+                depth: 768,
                 flags: JSON_THROW_ON_ERROR
             );
         } elseif ($this->responseContentType === ContentType::RAW) {
@@ -273,7 +276,7 @@ class Curl
             $options[CURLOPT_PROXY] = Config::$instance->proxy;
             $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
         }
-        if ((int)Config::$instance->timeout) {
+        if (Config::$instance->timeout) {
             $options[CURLOPT_CONNECTTIMEOUT] = ceil(Config::$instance->timeout) / 2;
             $options[CURLOPT_TIMEOUT] = ceil(Config::$instance->timeout);
         }
@@ -312,7 +315,7 @@ class Curl
             '?' . $this->getPayloadData(payload: $payload);
 
         if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
-            throw new ValidationException(message: 'Invalid URL requested.');
+            throw new ValidationException(message: 'Invalid URL requested (' . $url .').');
         }
 
         return $url;
@@ -467,13 +470,12 @@ class Curl
         array $payload
     ): string {
         return match ($this->contentType) {
-            ContentType::EMPTY => '',
+            ContentType::EMPTY, ContentType::RAW => '',
             ContentType::JSON => json_encode(
                 value: $payload,
                 flags: JSON_THROW_ON_ERROR
             ),
-            ContentType::URL => http_build_query(data: $payload),
-            ContentType::RAW => ''
+            ContentType::URL => http_build_query(data: $payload)
         };
     }
 
@@ -483,8 +485,7 @@ class Curl
     private function getContentType(): string
     {
         return match ($this->contentType) {
-            ContentType::EMPTY => 'application/json; charset=utf-8',
-            ContentType::JSON => 'application/json; charset=utf-8',
+            ContentType::EMPTY, ContentType::JSON => 'application/json; charset=utf-8',
             ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
             ContentType::RAW => 'text/plain; charset=utf-8'
         };
@@ -556,6 +557,7 @@ class Curl
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
+     * @throws AuthException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
@@ -563,10 +565,6 @@ class Curl
 
         if ($auth === null) {
             throw new CurlException(message: 'JWT auth not configured.');
-        }
-
-        if ($auth->getToken() === null) {
-            $auth->setToken($this->generateJwtToken());
         }
 
         curl_setopt(
@@ -583,59 +581,11 @@ class Curl
     }
 
     /**
-     * @return JwtToken
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
-     * @todo Needs to be completed, a lot data validation is missing. This should be refactored to a separate class
-     * @todo to integrate separate methods to test individual values etc.
-     */
-    public function generateJwtToken(): JwtToken
-    {
-        $auth = Config::$instance->jwtAuth;
-
-        if ($auth === null) {
-            throw new CurlException(message: 'JWT auth not configured.');
-        }
-
-        $tokenRequest = new Curl(
-            url: 'api/oauth2/token',
-            requestMethod: RequestMethod::POST,
-            payload: [
-                'client_id' => $auth->clientId,
-                'client_secret' => $auth->clientSecret,
-                'grant_type' => $auth->grantType,
-                'scope' => $auth->scope,
-            ],
-            authType: AuthType::NONE
-        );
-
-        $response = $tokenRequest->exec();
-
-        // @todo This requires MUCH better validation. We must check the type of each property, validate their values
-        // @todo using charsets etc. (there are helper functions prepared in lib/Validation, fully tested).
-        if (
-            !isset($response->body->access_token) ||
-            !isset($response->body->token_type) ||
-            !isset($response->body->expires_in)
-        ) {
-            throw new CurlException(message: 'Failed to generate JWT token.');
-        }
-
-        return new JwtToken(
-            accessToken: $response->body->access_token,
-            tokenType: $response->body->token_type,
-            expiresIn: $response->body->expires_in,
-        );
-    }
-
-    /**
+     * @param mixed $body
      * @return void
      * @throws CurlException
      */
-    private function handleError(): void
+    private function handleError(mixed $body = null): void
     {
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
@@ -643,8 +593,9 @@ class Curl
 
         if ($code !== 0 || $httpCode >= 400) {
             throw new CurlException(
-                message: "CURL error (".($code !== 0 ? $code : $httpCode)."): $msg",
-                code: ($code !== 0 ? $code : $httpCode)
+                message: "CURL error (" . ($code !== 0 ? $code : $httpCode) . "): $msg",
+                code: ($code !== 0 ? $code : $httpCode),
+                requestBody: is_string($body) ? $body : null
             );
         }
     }
