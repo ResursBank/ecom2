@@ -30,6 +30,9 @@ use stdClass;
  */
 class Jwt
 {
+    private const HOSTNAME_PROD = '';
+    private const HOSTNAME_TEST = 'apigw-integration.test.resurs.loc';
+
     /**
      * @param string $clientId
      * @param string $clientSecret
@@ -64,14 +67,13 @@ class Jwt
     /**
      * @return JwtToken
      * @throws AuthException
-     * @throws CurlException
      * @throws EmptyValueException
      * @throws JsonException
      * @throws ValidationException
      * @throws IllegalTypeException
      * @throws TypeException
      */
-    private function generateJwtToken(): JwtToken
+    private function generateToken(): JwtToken
     {
         $auth = Config::$instance->jwtAuth;
 
@@ -79,19 +81,41 @@ class Jwt
             throw new AuthException(message: 'JWT auth not configured.');
         }
 
-        $tokenRequest = new Curl(
-            url: 'https://apigw-integration.test.resurs.loc/api/oauth2/token',
-            requestMethod: RequestMethod::POST,
-            payload: [
-                'client_id' => $auth->clientId,
-                'client_secret' => $auth->clientSecret,
-                'grant_type' => $auth->grantType,
-                'scope' => $auth->scope,
-            ],
-            authType: AuthType::NONE
-        );
+        $url = 'https://' . (Config::$instance->isProduction ? self::HOSTNAME_PROD : self::HOSTNAME_TEST)
+            . '/api/oauth2/token';
 
-        $response = $tokenRequest->exec();
+        try {
+            $tokenRequest = new Curl(
+                url: $url,
+                requestMethod: RequestMethod::POST,
+                payload: [
+                    'client_id' => $auth->clientId,
+                    'client_secret' => $auth->clientSecret,
+                    'grant_type' => $auth->grantType,
+                    'scope' => $auth->scope,
+                ],
+                authType: AuthType::NONE
+            );
+        } catch (Exception $exception) {
+            throw new AuthException(
+                message: 'Unable to create Curl instance: ' . $exception->getMessage(),
+                previous: $exception
+            );
+        }
+
+        try {
+            $response = $tokenRequest->exec();
+        } catch (CurlException $exception) {
+            Config::$instance->logger->error(message: $exception);
+            Config::$instance->logger->debug(
+                message: 'CurlException request body contents: '
+                . $exception->getRequestBody()
+            );
+            throw new AuthException(
+                message: $exception->getMessage(),
+                code: $exception->getCode()
+            );
+        }
 
         // @todo This requires MUCH better validation. We must check the type of each property, validate their values
         // @todo using charsets etc. (there are helper functions prepared in lib/Validation, fully tested).
@@ -127,11 +151,12 @@ class Jwt
      *
      * @return JwtToken
      * @throws AuthException
+     * @throws CurlException
      */
     public function getToken(): JwtToken
     {
         if (!$this->token || $this->token->validUntil < time()) {
-            $this->token = $this->generateJwtToken();
+            $this->token = $this->generateToken();
         }
 
         return $this->token;

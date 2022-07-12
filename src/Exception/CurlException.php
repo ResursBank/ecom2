@@ -28,4 +28,12 @@ class CurlException extends Exception
         $this->requestBody = $requestBody;
         parent::__construct($message, $code, $previous);
     }
+
+    /**
+     * @return string|null
+     */
+    public function getRequestBody(): ?string
+    {
+        return $this->requestBody;
+    }
 }

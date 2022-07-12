@@ -25,6 +25,7 @@ class JwtTest extends TestCase
      * @return void
      * @throws AuthException
      * @throws EmptyValueException
+     * @throws CurlException
      */
     public function testGetToken(): void
     {
@@ -70,7 +71,7 @@ class JwtTest extends TestCase
             )
         );
 
-        $this->expectException(exception: CurlException::class);
+        $this->expectException(exception: AuthException::class);
 
         Config::$instance->jwtAuth->getToken();
     }
