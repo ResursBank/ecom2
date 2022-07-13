@@ -50,7 +50,6 @@ class InitPayment
      */
     public function call(Request $request, string $orderReference): Response
     {
-        $response = new stdClass();
         try {
             $response = Curl::post(
                 url: $this->getApiUrl(orderReference: $orderReference),

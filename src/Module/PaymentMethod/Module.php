@@ -48,6 +48,14 @@ class Module extends CoreModule
         // Drop data from cache.
     }
 
+    private static function writeToDb($data): void
+    {
+    }
+
+    private static function writeCache($data): void
+    {
+    }
+
     private static function readCache(): ?array
     {
         $data = null;
@@ -72,7 +80,7 @@ class Module extends CoreModule
 
     private static function readApi(): ?array
     {
-
+        return [];
     }
 
     /**

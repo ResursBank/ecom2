@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Locale;
 
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\ValidationException;
+
 use function in_array;
 
 /**

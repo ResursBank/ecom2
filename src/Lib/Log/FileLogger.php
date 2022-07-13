@@ -113,7 +113,7 @@ class FileLogger implements LoggerInterface
                 is_subclass_of(object_or_class: $message, class: Exception::class) // @phpstan-ignore-line
             )
         ) {
-            $this->logException(e: $message);
+            $this->logException(exception: $message);
         } else {
             $timestamp = new DateTime();
             $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
@@ -137,13 +137,13 @@ class FileLogger implements LoggerInterface
     /**
      * Log Exception object by converting it to a string and feeding it to the log method.
      *
-     * @param Exception $e
+     * @param Exception $exception
      * @return void
      * @throws FilesystemException
      */
-    private function logException(Exception $e): void
+    private function logException(Exception $exception): void
     {
-        $this->log(level: LogLevel::EXCEPTION, message: $e->getTraceAsString());
+        $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
     }
 
     /**
@@ -198,6 +198,7 @@ class FileLogger implements LoggerInterface
         // Consider file writable if it either exists, isn't a directory and is writable or it doesn't exist but the
         // parent directory passes the validation test
         try {
+            /** @noinspection NotOptimalIfConditionsInspection */
             if (
                 (file_exists(filename: $this->getFilename()) && is_writable(filename: $this->getFilename())) ||
                 (!file_exists(filename: $this->getFilename()) && $this->validatePath())

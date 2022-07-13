@@ -244,6 +244,7 @@ class Generic
     /**
      * @param string $location
      * @throws JsonException
+     * @noinspection PhpMultipleClassDeclarationsInspection
      */
     private function getComposerConfigData(string $location): void
     {
@@ -272,8 +273,11 @@ class Generic
      * @throws ReflectionException
      * @throws Exception
      */
-    public function getVersionByAny(string $composerLocation = '', int $composerDepth = 3, string $className = ''): string
-    {
+    public function getVersionByAny(
+        string $composerLocation = '',
+        int $composerDepth = 3,
+        string $className = ''
+    ): string {
         $return = '';
 
         $byComposer = $this->getVersionByComposer($composerLocation, $composerDepth);

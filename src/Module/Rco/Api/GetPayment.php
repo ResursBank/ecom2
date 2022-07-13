@@ -48,7 +48,6 @@ class GetPayment
      */
     public function call(string $orderReference): Response
     {
-        $response = new stdClass();
         try {
             $curl = new Curl(
                 url: $this->getApiUrl(orderReference: $orderReference),

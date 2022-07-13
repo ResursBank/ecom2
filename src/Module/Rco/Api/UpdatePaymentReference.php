@@ -51,7 +51,6 @@ class UpdatePaymentReference
      */
     public function call(Request $request, string $orderReference): Response
     {
-        $response = new stdClass();
         try {
             $response = Curl::put(
                 url:  $this->getApiUrl(orderReference: $orderReference),
