@@ -19,6 +19,7 @@ use Redis as Server;
  * Assert the Redis cache implementation works as expected.
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class RedisTest extends TestCase
 {
