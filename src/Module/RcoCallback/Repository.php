@@ -12,7 +12,9 @@ namespace Resursbank\Ecom\Module\RcoCallback;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -39,11 +41,13 @@ class Repository extends CoreModule
      * @param string $eventName
      * @param Request $request
      * @return void
-     * @throws JsonException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws TypeException
      */
     public static function registerCallback(string $eventName, Request $request): void
     {
@@ -56,12 +60,14 @@ class Repository extends CoreModule
      *
      * @param string $eventName
      * @return Callback
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ValidationException
      * @throws ReflectionException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public static function getCallback(string $eventName): Callback
     {
@@ -73,10 +79,13 @@ class Repository extends CoreModule
      * Gets all registered callbacks
      *
      * @return CallbackCollection
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws ReflectionException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function getCallbacks(): CallbackCollection
@@ -90,10 +99,12 @@ class Repository extends CoreModule
      *
      * @param string $eventName
      * @return int
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public static function deleteCallback(string $eventName): int

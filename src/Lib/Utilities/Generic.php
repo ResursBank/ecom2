@@ -1,10 +1,19 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
 namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
+use JsonException;
 use ReflectionClass;
 use ReflectionException;
+use Resursbank\Ecom\Exception\FilesystemException;
 
 /**
  * Generic Utils Class for things that is good to have.
@@ -46,11 +55,6 @@ class Generic
     private string $composerLocation;
 
     /**
-     * @var array Name entry from composer.
-     */
-    private array $composerNameEntry;
-
-    /**
      * @param string $composerLocation
      * @return string
      * @throws Exception
@@ -69,17 +73,17 @@ class Generic
     private function getNameEntry(string $part, string $composerLocation): string
     {
         $return = '';
-        $this->composerNameEntry = explode('/', $this->getComposerTag($composerLocation, 'name'), 2);
+        $composerNameEntry = explode('/', $this->getComposerTag($composerLocation, 'name'), 2);
 
         switch ($part) {
             case 'name':
-                if (isset($this->composerNameEntry[1])) {
-                    $return = $this->composerNameEntry[1];
+                if (isset($composerNameEntry[1])) {
+                    $return = $composerNameEntry[1];
                 }
                 break;
             case 'vendor':
-                if (isset($this->composerNameEntry[0])) {
-                    $return = $this->composerNameEntry[0];
+                if (isset($composerNameEntry[0])) {
+                    $return = $composerNameEntry[0];
                 }
                 break;
             default:
@@ -110,7 +114,7 @@ class Generic
             $return = $this->getOpenBaseDirExceptionString();
         }
 
-        return (string)$return;
+        return $return;
     }
 
     /**
@@ -132,7 +136,7 @@ class Generic
         $this->isOpenBaseDirException();
 
         if (!$this->openBaseDirExceptionTriggered && !$locationCheck) {
-            throw new Exception('Invalid path', 1013);
+            throw new FilesystemException(message: 'Invalid path', code: 1013);
         }
         if ($this->isOpenBaseDirException()) {
             return $this->getOpenBaseDirExceptionString();
@@ -176,7 +180,7 @@ class Generic
                 $this->internalExceptionMessage = $errStr;
             }
             restore_error_handler();
-            return $errNo === 2 && (bool)preg_match('/open_basedir/', $errStr) ? true : false;
+            return $errNo === 2 && str_contains($errStr, 'open_basedir');
         }, E_WARNING);
 
         return $this;
@@ -195,7 +199,7 @@ class Generic
 
         $return = $this->hasInternalException() &&
             $this->internalExceptionCode === 2 &&
-            (bool)preg_match('/open_basedir/', $this->internalExceptionMessage);
+            str_contains($this->internalExceptionMessage, 'open_basedir');
 
         if ($return) {
             $this->openBaseDirExceptionTriggered = true;
@@ -239,6 +243,7 @@ class Generic
 
     /**
      * @param string $location
+     * @throws JsonException
      */
     private function getComposerConfigData(string $location): void
     {
@@ -247,9 +252,12 @@ class Generic
         $getFrom = sprintf('%s/composer.json', $location);
         if (file_exists($getFrom)) {
             $this->composerData = json_decode(
-                file_get_contents(
+                json: file_get_contents(
                     $getFrom
-                )
+                ),
+                associative: false,
+                depth: 768,
+                flags: JSON_THROW_ON_ERROR
             );
         }
     }
@@ -262,8 +270,9 @@ class Generic
      * @param string $className
      * @return string
      * @throws ReflectionException
+     * @throws Exception
      */
-    public function getVersionByAny($composerLocation = '', $composerDepth = 3, $className = ''): string
+    public function getVersionByAny(string $composerLocation = '', int $composerDepth = 3, string $className = ''): string
     {
         $return = '';
 
@@ -286,7 +295,7 @@ class Generic
      * @return string
      * @throws Exception
      */
-    public function getVersionByComposer(string $location, $maxDepth = 3): string
+    public function getVersionByComposer(string $location, int $maxDepth = 3): string
     {
         $return = '';
 
@@ -318,7 +327,7 @@ class Generic
      */
     public function getDocBlockItem(string $item, string $functionName = '', string $className = ''): string
     {
-        return (string)$this->getExtractedDocBlockItem(
+        return $this->getExtractedDocBlockItem(
             $item,
             $this->getExtractedDocBlock(
                 $item,
@@ -340,13 +349,13 @@ class Generic
         if (!empty($doc)) {
             preg_match_all(sprintf('/%s\s(\w.+)\n/s', $item), $doc, $docBlock);
 
-            if (isset($docBlock[1]) && isset($docBlock[1][0])) {
+            if (isset($docBlock[1], $docBlock[1][0])) {
                 $return = $docBlock[1][0];
 
                 // Strip stuff after line breaks
                 if (preg_match('/[\n\r]/', $return)) {
                     $multiRowData = preg_split('/[\n\r]/', $return);
-                    $return = isset($multiRowData[0]) ? $multiRowData[0] : '';
+                    $return = $multiRowData[0] ?? '';
                 }
             }
         }

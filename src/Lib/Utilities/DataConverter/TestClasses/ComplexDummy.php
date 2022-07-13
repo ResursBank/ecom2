@@ -17,6 +17,7 @@ class ComplexDummy
     /**
      * @param int $int
      * @param SimpleDummy $simpleDummy
+     * @param SimpleDummyCollection $simpleDummyCollection
      */
     public function __construct(
         public int $int,

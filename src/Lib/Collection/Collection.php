@@ -203,6 +203,7 @@ class Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * @inheritDoc
+     * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
     public function key(): mixed
     {

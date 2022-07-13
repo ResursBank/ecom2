@@ -10,8 +10,11 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\RcoCallback\Api;
 
 use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -33,9 +36,12 @@ class GetCallbacks
      * @return CallbackCollection
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
-     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws TypeException
      */
     public function call(): CallbackCollection
     {

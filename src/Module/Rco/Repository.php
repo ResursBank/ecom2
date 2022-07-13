@@ -9,9 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco;
 
+use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\Rco\Api\GetPayment;
 use Resursbank\Ecom\Module\Rco\Api\InitPayment;
@@ -39,7 +45,14 @@ class Repository extends CoreModule
      * @param InitPaymentRequest $request
      * @param string $orderReference
      * @return InitPaymentResponse
+     * @throws CurlException
      * @throws ReflectionException
+     * @throws JsonException
+     * @throws AuthException
+     * @throws TypeException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public static function initPayment(InitPaymentRequest $request, string $orderReference): InitPaymentResponse
     {
@@ -53,8 +66,14 @@ class Repository extends CoreModule
      * @param UpdatePaymentRequest $request
      * @param string $orderReference
      * @return UpdatePaymentResponse
-     * @throws ReflectionException
+     * @throws AuthException
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public static function updatePayment(UpdatePaymentRequest $request, string $orderReference): UpdatePaymentResponse
     {
@@ -68,8 +87,14 @@ class Repository extends CoreModule
      * @param UpdatePaymentReferenceRequest $request
      * @param string $orderReference
      * @return UpdatePaymentReferenceResponse
-     * @throws ReflectionException
+     * @throws AuthException
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public static function updatePaymentReference(
         UpdatePaymentReferenceRequest $request,
@@ -84,7 +109,14 @@ class Repository extends CoreModule
      *
      * @param string $orderReference
      * @return Response
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
      * @throws ReflectionException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public static function getPayment(string $orderReference): Response
     {

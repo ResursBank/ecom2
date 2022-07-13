@@ -62,7 +62,7 @@ class Redis extends AbstractCache implements CacheInterface
     public function write(string $key, string $data, int $ttl): void
     {
         $this->validateKey(key: $key);
-        $this->connect()->setex(key: $key, expire: $ttl, value: $data);
+        $this->connect()->setex(key: $key, ttl: $ttl, value: $data);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\DataStorage\Mysql;
+namespace Resursbank\Ecom\Lib\DataStorage;
 
 /**
  * Describes data required to access a MySQL database.
