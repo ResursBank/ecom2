@@ -16,6 +16,9 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class GenericTest extends TestCase
 {
     /**

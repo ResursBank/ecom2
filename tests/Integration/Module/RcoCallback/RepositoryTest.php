@@ -25,6 +25,10 @@ use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\DigestConfigurati
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
 
+/**
+ * Tests for RCO callback module Repository class
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class RepositoryTest extends TestCase
 {
     /**
