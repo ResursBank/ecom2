@@ -123,7 +123,6 @@ final class FileLoggerTest extends TestCase
     {
         if ($this->isPipeline()) {
             $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
-            return;
         }
 
         if (!chmod(filename: $this->filename, permissions: 0000)) {
@@ -215,8 +214,8 @@ final class FileLoggerTest extends TestCase
      */
     public function testLogException(): void
     {
-        $e = new Exception();
-        $this->logger->debug($e);
+        $exception = new Exception();
+        $this->logger->debug($exception);
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
@@ -351,7 +350,6 @@ final class FileLoggerTest extends TestCase
     {
         if ($this->isPipeline()) {
             $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
-            return;
         }
 
         if (!chmod(filename: $this->path, permissions: 0400)) {

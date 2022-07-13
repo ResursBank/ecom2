@@ -52,7 +52,7 @@ final class BoolValidationTest extends TestCase
 
     /**
      * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not a boolean.
+     * is not boolean.
      *
      * @return void
      * @throws IllegalTypeException

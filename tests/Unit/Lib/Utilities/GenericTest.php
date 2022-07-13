@@ -1,9 +1,13 @@
 <?php
 
+/** @noinspection PsalmGlobal */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
+
+declare(strict_types=1);
 
 namespace Integration\Lib\Utilities;
 
@@ -18,7 +22,7 @@ class GenericTest extends TestCase
      * @test
      * @throws ReflectionException
      */
-    public function getVersionByDocBlockTest()
+    public function getVersionByDocBlockTest(): void
     {
         self::assertTrue(
             version_compare(
@@ -33,7 +37,7 @@ class GenericTest extends TestCase
      * @test
      * @throws Exception
      */
-    public function getVersionByComposerTest()
+    public function getVersionByComposerTest(): void
     {
         $generic = $this->createMock(
             originalClassName: Generic::class
@@ -53,7 +57,7 @@ class GenericTest extends TestCase
      * @test
      * @throws ReflectionException
      */
-    public function getVersionByAnythingFound()
+    public function getVersionByAnythingFound(): void
     {
         $generic = $this->createMock(
             originalClassName: Generic::class
@@ -69,9 +73,10 @@ class GenericTest extends TestCase
     }
 
     /**
-     * @test
+     * @return void
+     * @throws Exception
      */
-    public function getAnotherComposerTag()
+    public function getAnotherComposerTag(): void
     {
         $willReturn = 'resursbank/ecom';
 
@@ -85,7 +90,7 @@ class GenericTest extends TestCase
      * @test
      * @throws Exception
      */
-    public function getVendorTest()
+    public function getVendorTest(): void
     {
         self::assertSame(
             'resursbank',

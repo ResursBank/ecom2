@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PsalmGlobal */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -12,13 +14,12 @@ namespace Resursbank\EcomTest\Integration\Lib\Network;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\EmptyException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Credentials;
-use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -36,52 +37,23 @@ use stdClass;
 class CurlTest extends TestCase
 {
     /**
-     * @var None $noneCache
-     */
-    private None $noneCache;
-
-    /**
-     * @var Credentials $credentials
-     */
-    private Credentials $credentials;
-
-    /**
-     * @var FileLogger
-     */
-    private FileLogger $logger;
-
-    /**
-     * @var Curl $curl
-     */
-    private Curl $curl;
-
-    /**
      * Proxy host to test with proxies. On manual tests, you may want to change this host to something
      * that accepts the default HTTP-proxy setup.
      *
      * @var string $proxyHost
      */
-    private $proxyHost = '212.63.208.8';
+    private string $proxyHost = '212.63.208.8';
 
-    protected function setUp(): void
-    {
-        /*$this->noneCache = $this->createMock(
-            originalClassName: None::class
-        );
-        $this->credentials = $this->createMock(
-            originalClassName: Credentials::class
-        );
-        $this->logger = $this->createMock(
-            originalClassName: FileLogger::class
-        );*/
-
-        parent::setUp();
-    }
-
+    /**
+     * Verify that Basic auth properties are set when creating a Basic auth instance
+     *
+     * @return void
+     * @throws EmptyValueException
+     */
     public function testNormalAuthentication(): void
     {
-        $username = 'testuser';
-        $password = 'testpassword';
+        $username = 'user';
+        $password = 'password';
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
@@ -103,14 +75,14 @@ class CurlTest extends TestCase
      */
     private function isPipeline(): bool
     {
-        return isset($_ENV['is_pipeline']) ? (bool)$_ENV['is_pipeline'] : false;
+        return isset($_ENV['is_pipeline']) && $_ENV['is_pipeline'];
     }
 
     /**
      * Purpose is to make the curl entity to set credentials automatically from test Config-class.
-     * @throws EmptyException
+     * @throws EmptyValueException
      */
-    public function testAuthenticationByConfiguration()
+    public function testAuthenticationByConfiguration(): void
     {
         $username = 'username_config';
         $password = 'password_config';
@@ -141,6 +113,8 @@ class CurlTest extends TestCase
      * Test to make sure that remote requests really works.
      *
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
      */
     public function testRealGetRequest(): void
@@ -171,11 +145,13 @@ class CurlTest extends TestCase
      * Test to make sure that remote requests really works.
      *
      * @return void
+     * @throws AuthException
      * @throws CurlException
-     * @throws JsonException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public function testRealPostRequest(): void
     {
@@ -196,17 +172,24 @@ class CurlTest extends TestCase
         );
         $this::assertEquals(
             expected: $payload,
-            actual: json_decode($response->body->input)
+            actual: json_decode(
+                json: $response->body->input,
+                associative: false,
+                depth: 32,
+                flags: JSON_THROW_ON_ERROR
+            )
         );
     }
 
     /**
      * @return void
+     * @throws AuthException
      * @throws CurlException
-     * @throws JsonException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public function testRealPutRequest(): void
     {
@@ -227,17 +210,24 @@ class CurlTest extends TestCase
         );
         $this::assertEquals(
             expected: $payload,
-            actual: json_decode($response->body->input)
+            actual: json_decode(
+                json: $response->body->input,
+                associative: false,
+                depth: 16,
+                flags: JSON_THROW_ON_ERROR
+            )
         );
     }
 
     /**
      * @return void
+     * @throws AuthException
      * @throws CurlException
-     * @throws JsonException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public function testRealDeleteRequest(): void
     {
@@ -260,11 +250,16 @@ class CurlTest extends TestCase
     }
 
     /**
-     * @test
+     * @return void
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @noinspection SpellCheckingInspection
      */
-    public function testTimeout()
+    public function testTimeout(): void
     {
-        self::expectExceptionCode(28);
+        $this->expectExceptionCode(28);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
@@ -283,18 +278,20 @@ class CurlTest extends TestCase
     }
 
     /**
-     * @test
+     * Verify that proxy connections work
+     *
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
+     * @throws AuthException
+     * @throws TypeException
      */
-    public function testProxy()
+    public function testProxy(): void
     {
         if ($this->isPipeline()) {
             self::markTestSkipped('Pipelines does not support proxies.');
-            return;
         }
 
         Config::setup(
@@ -316,12 +313,14 @@ class CurlTest extends TestCase
 
     /**
      * Verify that CurlException for 404 pages has code set to 404
-     * 
+     *
      * @return void
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws TypeException
      * @throws ValidationException
      */
     public function testFileNotFound(): void
@@ -336,21 +335,5 @@ class CurlTest extends TestCase
             url: 'https://ipv4.netcurl.org/http.php?code=404',
             authType: AuthType::NONE
         );
-    }
-
-    /**
-     * @param $class
-     * @return mixed|string
-     */
-    private function getNamespaceClass($class)
-    {
-        $return = '';
-
-        $wrapperClassExplode = explode('\\', $class);
-        if (is_array($wrapperClassExplode) && count($wrapperClassExplode)) {
-            $return = $wrapperClassExplode[count($wrapperClassExplode) - 1];
-        }
-
-        return $return;
     }
 }

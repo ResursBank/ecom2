@@ -9,9 +9,16 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\RcoCallback;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\DigestConfiguration;
@@ -22,7 +29,13 @@ class RepositoryTest extends TestCase
 {
     /**
      * @return void
-     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws TypeException
+     * @throws ValidationException
+     * @throws IllegalTypeException
      */
     protected function setUp(): void
     {
@@ -39,6 +52,16 @@ class RepositoryTest extends TestCase
         }
     }
 
+    /**
+     * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
+     */
     protected function tearDown(): void
     {
         // Clear existing callbacks
@@ -52,6 +75,14 @@ class RepositoryTest extends TestCase
      * Verify that we can register, fetch and delete callbacks
      *
      * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
+     * @throws ReflectionException
      */
     public function testRegisterGetAndDeleteCallback(): void
     {
@@ -95,6 +126,14 @@ class RepositoryTest extends TestCase
      * Verify that fetching all registered callbacks works
      *
      * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public function testGetCallbacks(): void
     {
@@ -131,6 +170,14 @@ class RepositoryTest extends TestCase
      * Verify that attempting to get an unregistered callback throws an EmptyValueException
      *
      * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TypeException
+     * @throws ValidationException
      */
     public function testGetCallbackFailure(): void
     {
