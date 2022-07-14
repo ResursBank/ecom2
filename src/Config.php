@@ -86,13 +86,13 @@ final class Config
 //        self::refreshToken();
     }
 
-/*    private static function setupEvents(): void
+    /*private static function setupEvents(): void
     {
         self::$eventHub = new Hub();
         // 1. Load all files from src/Module (only Modules may configure events and listeners).
         // 2. Scan all loaded files for Event attributes to set up events in self::eventHub
         // 3. Scan all loaded files for Listener attributes to set up events in self::eventHub. If the Event for the
-        // Listner is not defined in the eventHub we should ignore the listner and log this, but not through an
-        // Exception since we probably just forget a listner when we removed an event.
+        // Listener is not defined in the eventHub we should ignore the listener and log this, but not through an
+        // Exception since we probably just forget a listener when we removed an event.
     }*/
 }
