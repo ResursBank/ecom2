@@ -26,8 +26,8 @@ use stdClass;
  */
 class Jwt
 {
-    private const HOSTNAME_PROD = '';
-    private const HOSTNAME_TEST = 'apigw-integration.test.resurs.loc';
+    private const HOSTNAME_PROD = 'apigw.resurs.com';
+    private const HOSTNAME_TEST = 'apigw.integration.resurs.com';
 
     /**
      * @param string $clientId
