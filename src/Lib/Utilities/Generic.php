@@ -125,7 +125,7 @@ class Generic
      */
     public function getComposerConfig(string $location, int $maxDepth = 3): string
     {
-        $this->getInternalErrorHandler();
+        $this->setTemporaryInternalErrorHandler();
 
         if ($maxDepth > 3 || $maxDepth < 1) {
             $maxDepth = 3;
@@ -165,13 +165,12 @@ class Generic
     }
 
     /**
-     * @return $this
+     * Temporarily sets an error handler in an attempt to catch notice-level errors related to open_basedir
      */
-    private function getInternalErrorHandler(): Generic
+    private function setTemporaryInternalErrorHandler(): void
     {
         if (!is_null($this->internalErrorHandler)) {
             restore_error_handler();
-            $this->internalErrorHandler = null;
         }
 
         $this->internalErrorHandler = set_error_handler(function ($errNo, $errStr) {
@@ -182,8 +181,6 @@ class Generic
             restore_error_handler();
             return $errNo === 2 && str_contains($errStr, 'open_basedir');
         }, E_WARNING);
-
-        return $this;
     }
 
     /**
