@@ -14,7 +14,6 @@ use ReflectionClass;
 use ReflectionObject;
 use ReflectionNamedType;
 use ReflectionException;
-
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_object;
