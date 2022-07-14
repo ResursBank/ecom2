@@ -61,7 +61,10 @@ class Generic
      */
     public function getComposerVendor(string $composerLocation): string
     {
-        return $this->getNameEntry('vendor', $composerLocation);
+        return $this->getNameEntry(
+            part: 'vendor',
+            composerLocation: $composerLocation
+        );
     }
 
     /**
@@ -73,7 +76,11 @@ class Generic
     private function getNameEntry(string $part, string $composerLocation): string
     {
         $return = '';
-        $composerNameEntry = explode('/', $this->getComposerTag($composerLocation, 'name'), 2);
+        $composerNameEntry = explode(
+            separator: '/',
+            string: $this->getComposerTag(location: $composerLocation, tag: 'name'),
+            limit: 2
+        );
 
         switch ($part) {
             case 'name':
@@ -105,7 +112,7 @@ class Generic
         $return = '';
 
         if (empty($this->composerData)) {
-            $this->getComposerConfig($location);
+            $this->getComposerConfig(location: $location);
         }
 
         if (isset($this->composerData->{$tag})) {
@@ -132,7 +139,7 @@ class Generic
         }
 
         // Pre-check if file exists, to also make sure that open_basedir is not a problem.
-        $locationCheck = file_exists($location);
+        $locationCheck = file_exists(filename: $location);
         $this->isOpenBaseDirException();
 
         if (!$this->openBaseDirExceptionTriggered && !$locationCheck) {
@@ -153,13 +160,13 @@ class Generic
         $composerLocation = null;
         while ($maxDepth--) {
             $startAt .= '/..';
-            if ($this->hasComposerFile($startAt)) {
+            if ($this->hasComposerFile(location: $startAt)) {
                 $composerLocation = $startAt;
                 break;
             }
         }
 
-        $this->getComposerConfigData($composerLocation);
+        $this->getComposerConfigData(location: $composerLocation);
 
         return $this->composerLocation;
     }
@@ -173,14 +180,17 @@ class Generic
             restore_error_handler();
         }
 
-        $this->internalErrorHandler = set_error_handler(function ($errNo, $errStr) {
-            if (empty($this->internalExceptionMessage)) {
-                $this->internalExceptionCode = $errNo;
-                $this->internalExceptionMessage = $errStr;
-            }
-            restore_error_handler();
-            return $errNo === 2 && str_contains($errStr, 'open_basedir');
-        }, E_WARNING);
+        $this->internalErrorHandler = set_error_handler(
+            callback: function ($errNo, $errStr) {
+                if (empty($this->internalExceptionMessage)) {
+                    $this->internalExceptionCode = $errNo;
+                    $this->internalExceptionMessage = $errStr;
+                }
+                restore_error_handler();
+                return $errNo === 2 && str_contains($errStr, 'open_basedir');
+            },
+            error_levels: E_WARNING
+        );
     }
 
     /**
@@ -224,10 +234,10 @@ class Generic
     }
 
     /**
-     * @param $location
+     * @param string $location
      * @return bool
      */
-    private function hasComposerFile($location): bool
+    private function hasComposerFile(string $location): bool
     {
         $return = false;
 
@@ -277,8 +287,11 @@ class Generic
     ): string {
         $return = '';
 
-        $byComposer = $this->getVersionByComposer($composerLocation, $composerDepth);
-        $byClass = $this->getVersionByClassDoc($className);
+        $byComposer = $this->getVersionByComposer(
+            location: $composerLocation,
+            maxDepth: $composerDepth
+        );
+        $byClass = $this->getVersionByClassDoc(className: $className);
 
         // Composer always have higher priority.
         if (!empty($byComposer)) {
@@ -300,8 +313,11 @@ class Generic
     {
         $return = '';
 
-        if (!empty(($this->getComposerConfig($location, $maxDepth))) && !$this->isOpenBaseDirException()) {
-            $return = $this->getComposerTag($this->composerLocation, 'version');
+        if (
+            !empty(($this->getComposerConfig(location: $location, maxDepth: $maxDepth)))
+            && !$this->isOpenBaseDirException()
+        ) {
+            $return = $this->getComposerTag(location: $this->composerLocation, tag: 'version');
         } elseif ($this->isOpenBaseDirException()) {
             $return = $this->getOpenBaseDirExceptionString();
         }
@@ -316,7 +332,10 @@ class Generic
      */
     public function getVersionByClassDoc(string $className = ''): string
     {
-        return $this->getDocBlockItem('@version', '', $className);
+        return $this->getDocBlockItem(
+            item: '@version',
+            className: $className
+        );
     }
 
     /**
@@ -329,11 +348,10 @@ class Generic
     public function getDocBlockItem(string $item, string $functionName = '', string $className = ''): string
     {
         return $this->getExtractedDocBlockItem(
-            $item,
-            $this->getExtractedDocBlock(
-                $item,
-                $functionName,
-                $className
+            item: $item,
+            doc: $this->getExtractedDocBlock(
+                functionName: $functionName,
+                className: $className
             )
         );
     }
@@ -348,14 +366,18 @@ class Generic
         $return = '';
 
         if (!empty($doc)) {
-            preg_match_all(sprintf('/%s\s(\w.+)\n/s', $item), $doc, $docBlock);
+            preg_match_all(
+                pattern: sprintf('/%s\s(\w.+)\n/s', $item),
+                subject: $doc,
+                matches: $docBlock
+            );
 
-            if (isset($docBlock[1], $docBlock[1][0])) {
+            if (isset($docBlock[1][0])) {
                 $return = $docBlock[1][0];
 
                 // Strip stuff after line breaks
-                if (preg_match('/[\n\r]/', $return)) {
-                    $multiRowData = preg_split('/[\n\r]/', $return);
+                if (preg_match(pattern: '/[\n\r]/', subject: $return)) {
+                    $multiRowData = preg_split(pattern: '/[\n\r]/', subject: $return);
                     $return = $multiRowData[0] ?? '';
                 }
             }
@@ -365,31 +387,28 @@ class Generic
     }
 
     /**
-     * @param string $item
      * @param string $functionName
      * @param string $className
      * @return string
      * @throws ReflectionException
-     * @noinspection PhpUnusedParameterInspection Called from externals.
      */
     private function getExtractedDocBlock(
-        string $item,
         string $functionName,
         string $className = ''
     ): string {
         if (empty($className)) {
             $className = __CLASS__;
         }
-        if (!class_exists($className)) {
+        if (!class_exists(class: $className)) {
             return '';
         }
 
-        $doc = new ReflectionClass($className);
+        $doc = new ReflectionClass(objectOrClass: $className);
 
         if (empty($functionName)) {
             $return = $doc->getDocComment();
         } else {
-            $return = $doc->getMethod($functionName)->getDocComment();
+            $return = $doc->getMethod(name: $functionName)->getDocComment();
         }
 
         return (string)$return;
