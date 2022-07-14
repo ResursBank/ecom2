@@ -14,7 +14,6 @@ use ReflectionClass;
 use ReflectionObject;
 use ReflectionNamedType;
 use ReflectionException;
-
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_object;
@@ -88,6 +87,12 @@ class DataConverter
         return new $type(...$arguments);
     }
 
+    /**
+     * @param array $data
+     * @param class-string $targetType
+     * @return mixed
+     * @throws ReflectionException
+     */
     public static function arrayToCollection(array $data, string $targetType): mixed
     {
         $convertedData = [];
@@ -97,6 +102,6 @@ class DataConverter
                 type: $targetType
             );
         }
-        return new ($targetType.'Collection')(data: $convertedData);
+        return new ($targetType . 'Collection')(data: $convertedData);
     }
 }

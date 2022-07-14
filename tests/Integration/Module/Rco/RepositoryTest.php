@@ -10,11 +10,16 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
@@ -96,7 +101,14 @@ final class RepositoryTest extends TestCase
      * Verify that InitPayment works
      *
      * @return void
+     * @throws CurlException
      * @throws ReflectionException
+     * @throws TypeException
+     * @throws JsonException
+     * @throws AuthException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      */
     public function testInitPayment(): void
     {
@@ -119,9 +131,14 @@ final class RepositoryTest extends TestCase
      * Verify that a valid UpdatePayment request returns http 200 and the payment session id
      *
      * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
      * @throws ReflectionException
      * @throws TypeException
-     * @throws CurlException
+     * @throws ValidationException
      */
     public function testUpdatePayment(): void
     {

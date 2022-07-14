@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
@@ -30,7 +35,7 @@ class Url
      */
     public function getBaseUrl(ApiType $apiType, bool $test): string
     {
-        return match($apiType) {
+        return match ($apiType) {
             ApiType::MERCHANT => $test ?
                 'https://apigw.integration.resurs.com/api/mock_merchant_api_service' :
                 'https://apigw.resurs.com'

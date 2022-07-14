@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Validation;
@@ -47,7 +52,7 @@ final class BoolValidationTest extends TestCase
 
     /**
      * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not a boolean.
+     * is not boolean.
      *
      * @return void
      * @throws IllegalTypeException

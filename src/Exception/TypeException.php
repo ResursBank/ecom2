@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Exception;
 use Exception;
 
 /**
- * Specifies a problem with the type of an object
+ * Specifies a problem with the object type
  */
 class TypeException extends Exception
 {

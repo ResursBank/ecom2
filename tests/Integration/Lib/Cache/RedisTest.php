@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Cache;
@@ -14,6 +19,7 @@ use Redis as Server;
  * Assert the Redis cache implementation works as expected.
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class RedisTest extends TestCase
 {

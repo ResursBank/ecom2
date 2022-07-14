@@ -11,7 +11,9 @@ namespace Resursbank\Ecom\Module\RcoCallback\Api;
 
 use JsonException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -36,6 +38,8 @@ class RegisterCallback
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
+     * @throws AuthException
+     * @throws TypeException
      */
     public function call(string $eventName, Request $request): void
     {

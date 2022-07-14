@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Network\Model\Auth;
@@ -8,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
@@ -25,7 +31,7 @@ class JwtTest extends TestCase
      * @return void
      * @throws AuthException
      * @throws EmptyValueException
-     * @throws CurlException
+     * @throws TypeException
      */
     public function testGetToken(): void
     {
@@ -58,6 +64,7 @@ class JwtTest extends TestCase
      * @return void
      * @throws AuthException
      * @throws EmptyValueException
+     * @throws TypeException
      */
     public function testInvalidCredentials(): void
     {

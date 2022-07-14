@@ -1,5 +1,12 @@
 <?php
 
+/** @noinspection MessDetectorValidationInspection */
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Validation;
@@ -16,7 +23,7 @@ class BoolValidation
 {
     /**
      * Validates the supplied array contains an element named $key and that
-     * element contains a boolean. Returns the validated boolean.
+     * element contains a boolean value. Returns the validated boolean.
      *
      * @param array $data
      * @param string $key

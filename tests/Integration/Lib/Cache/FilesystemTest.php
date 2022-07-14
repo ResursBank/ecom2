@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Cache;
@@ -41,7 +46,7 @@ class FilesystemTest extends TestCase
      *
      * @var Filesystem
      */
-    private Filesystem $fs;
+    private Filesystem $fileSystem;
 
     /**
      * Unique cache key to be utilised in various tests (resets between tests).
@@ -81,7 +86,7 @@ class FilesystemTest extends TestCase
         }
 
         $this->path = $this->getPath();
-        $this->fs = $this->getFilesystem(path: $this->path);
+        $this->fileSystem = $this->getFilesystem(path: $this->path);
         $this->key = $this->getKey();
         $this->file = "$this->path/$this->key.cache";
 
@@ -146,7 +151,7 @@ class FilesystemTest extends TestCase
     {
         self::assertDirectoryDoesNotExist(directory: $this->path);
 
-        $this->fs->write(key: $this->key, data: 'something', ttl: 0);
+        $this->fileSystem->write(key: $this->key, data: 'something', ttl: 0);
 
         self::assertDirectoryExists(directory: $this->path);
         self::assertDirectoryIsWritable(directory: $this->path);
@@ -166,7 +171,7 @@ class FilesystemTest extends TestCase
         self::assertFileExists(filename: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fs->write(key: $this->key, data: 'my data set?', ttl: 0);
+        $this->fileSystem->write(key: $this->key, data: 'my data set?', ttl: 0);
     }
 
     /**
@@ -184,7 +189,7 @@ class FilesystemTest extends TestCase
         self::assertDirectoryIsNotWritable(directory: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fs->write(key: $this->key, data: 'Epic data set!', ttl: 0);
+        $this->fileSystem->write(key: $this->key, data: 'Epic data set!', ttl: 0);
     }
 
     /**
@@ -199,7 +204,7 @@ class FilesystemTest extends TestCase
 
         self::assertDirectoryExists(directory: $this->path);
 
-        $this->fs->write(key: $this->key, data: '', ttl: 99);
+        $this->fileSystem->write(key: $this->key, data: '', ttl: 99);
 
         self::assertFileExists(filename: $this->file);
     }
@@ -214,7 +219,7 @@ class FilesystemTest extends TestCase
     public function testWriteThrowsWithIllegalKeyCharacter(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->fs->write(key: 'YAd4!', data: 'Flask', ttl: 777);
+        $this->fileSystem->write(key: 'YAd4!', data: 'Flask', ttl: 777);
     }
 
     /**
@@ -228,7 +233,7 @@ class FilesystemTest extends TestCase
     public function testWriteThrowsWithEmptyKey(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->fs->write(key: '', data: 'NoWorries', ttl: 8723847);
+        $this->fileSystem->write(key: '', data: 'NoWorries', ttl: 8723847);
     }
 
     /**
@@ -243,7 +248,7 @@ class FilesystemTest extends TestCase
     {
         self::assertDirectoryDoesNotExist(directory: $this->path);
 
-        $this->fs->write(key: $this->key, data: 'Some cool data set', ttl: 0);
+        $this->fileSystem->write(key: $this->key, data: 'Some cool data set', ttl: 0);
 
         self::assertDirectoryExists(directory: $this->path);
     }
@@ -259,7 +264,7 @@ class FilesystemTest extends TestCase
     {
         self::assertFileDoesNotExist(filename: $this->file);
 
-        $this->fs->write(key: $this->key, data: 'nada', ttl: 0);
+        $this->fileSystem->write(key: $this->key, data: 'nada', ttl: 0);
 
         self::assertFileExists(filename: $this->file);
     }
@@ -278,7 +283,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
 
-        $this->fs->write(key: $this->key, data: 'some data', ttl: 99);
+        $this->fileSystem->write(key: $this->key, data: 'some data', ttl: 99);
 
         self::assertFileExists(filename: $this->file);
     }
@@ -295,7 +300,6 @@ class FilesystemTest extends TestCase
     {
         if ($this->isPipeline()) {
             $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
-            return;
         }
         mkdir(directory: $this->path, permissions: 0755);
         touch(filename: $this->file);
@@ -306,7 +310,7 @@ class FilesystemTest extends TestCase
         $this->expectException(exception: FilesystemException::class);
         $this->expectExceptionMessage(message: "$this->file is not writable.");
 
-        $this->fs->write(
+        $this->fileSystem->write(
             key: $this->key,
             data: 'Calm fort condor in de sun ~',
             ttl: 1233
@@ -328,7 +332,6 @@ class FilesystemTest extends TestCase
     {
         if ($this->isPipeline()) {
             $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
-            return;
         }
 
         mkdir(directory: $this->path, permissions: 0700);
@@ -339,7 +342,7 @@ class FilesystemTest extends TestCase
         $this->expectException(exception: FilesystemException::class);
         $this->expectExceptionMessage(message: "$this->file is not a file.");
 
-        $this->fs->write(
+        $this->fileSystem->write(
             key: $this->key,
             data: json_encode(
                 value: ['Cannon', 4, '{bb}'],
@@ -359,7 +362,7 @@ class FilesystemTest extends TestCase
      */
     public function testWriteCreatesNoneEmptyFile(): void
     {
-        $this->fs->write(key: $this->key, data: 'Empty', ttl: 55);
+        $this->fileSystem->write(key: $this->key, data: 'Empty', ttl: 55);
 
         self::assertFileExists(filename: $this->file);
         self::assertNotEmpty(actual: file_get_contents(filename: $this->file));
@@ -375,7 +378,7 @@ class FilesystemTest extends TestCase
     public function testReadThrowsWithIllegalKeyCharacter(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->fs->read(key: 'EpicStuff_!');
+        $this->fileSystem->read(key: 'EpicStuff_!');
     }
 
     /**
@@ -387,7 +390,7 @@ class FilesystemTest extends TestCase
     public function testReadThrowsWithEmptyKey(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->fs->read(key: '');
+        $this->fileSystem->read(key: '');
     }
 
     /**
@@ -400,7 +403,7 @@ class FilesystemTest extends TestCase
      */
     public function testReadWithoutCacheFileReturnsNull(): void
     {
-        self::assertNull(actual: $this->fs->read(key: $this->getKey()));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->getKey()));
     }
 
     /**
@@ -416,7 +419,7 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->file, permissions: 0755, recursive: true);
 
         self::assertDirectoryExists(directory: $this->file);
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -431,7 +434,6 @@ class FilesystemTest extends TestCase
     {
         if ($this->isPipeline()) {
             $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
-            return;
         }
 
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
@@ -440,7 +442,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
         self::assertFileIsNotReadable(file: $this->file);
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -458,7 +460,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
         self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -476,7 +478,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
         self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -493,7 +495,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
         self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -510,7 +512,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
         self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -532,7 +534,7 @@ class FilesystemTest extends TestCase
         self::assertFileIsReadable(file: $this->file);
         self::assertSame(
             expected: 'data',
-            actual: $this->fs->read(key: $this->key)
+            actual: $this->fileSystem->read(key: $this->key)
         );
     }
 
@@ -558,7 +560,7 @@ class FilesystemTest extends TestCase
             expectedFile: $this->file,
             actualString: $data
         );
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -580,7 +582,7 @@ class FilesystemTest extends TestCase
         self::assertFileIsReadable(file: $this->file);
         self::assertSame(
             expected: $data,
-            actual: $this->fs->read(key: $this->key)
+            actual: $this->fileSystem->read(key: $this->key)
         );
     }
 
@@ -607,7 +609,7 @@ class FilesystemTest extends TestCase
             expectedFile: $this->file,
             actualString: "$ttl|My big test | success"
         );
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -628,7 +630,7 @@ class FilesystemTest extends TestCase
             expectedFile: $this->file,
             actualString: ''
         );
-        self::assertNull(actual: $this->fs->read(key: $this->key));
+        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -641,7 +643,7 @@ class FilesystemTest extends TestCase
     public function testClearThrowsWithIllegalKeyCharacter(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->fs->clear(key: 'SomeIllegal key');
+        $this->fileSystem->clear(key: 'SomeIllegal key');
     }
 
     /**
@@ -654,7 +656,7 @@ class FilesystemTest extends TestCase
     public function testClearThrowsWithEmptyKey(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->fs->clear(key: '');
+        $this->fileSystem->clear(key: '');
     }
 
     /**
@@ -670,7 +672,7 @@ class FilesystemTest extends TestCase
     {
         self::assertFileDoesNotExist(filename: $this->file);
 
-        $this->fs->clear(key: 'some-bamboozle_not-exist');
+        $this->fileSystem->clear(key: 'some-bamboozle_not-exist');
     }
 
     /**
@@ -689,7 +691,7 @@ class FilesystemTest extends TestCase
         self::assertDirectoryExists(directory: $this->file);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fs->clear(key: $this->key);
+        $this->fileSystem->clear(key: $this->key);
     }
 
     /**
@@ -704,7 +706,6 @@ class FilesystemTest extends TestCase
     {
         if ($this->isPipeline()) {
             $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
-            return;
         }
 
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
@@ -715,7 +716,7 @@ class FilesystemTest extends TestCase
         self::assertFileIsNotWritable(file: $this->file);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fs->clear(key: $this->key);
+        $this->fileSystem->clear(key: $this->key);
     }
 
     /**
@@ -733,7 +734,7 @@ class FilesystemTest extends TestCase
 
         self::assertFileExists(filename: $this->file);
 
-        $this->fs->clear(key: $this->key);
+        $this->fileSystem->clear(key: $this->key);
 
         self::assertFileDoesNotExist(filename: $this->file);
     }

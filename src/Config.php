@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom;
@@ -23,6 +28,9 @@ final class Config
      * @param LogLevel $logLevel
      * @param string $userAgent
      * @param bool $isProduction
+     * @param string $proxy
+     * @param int $proxyType
+     * @param int $timeout
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -48,6 +56,7 @@ final class Config
      * @param bool $isProduction
      * @param string $proxy
      * @param int $proxyType
+     * @param int $timeout
      * @return void
      */
     public static function setup(
@@ -77,11 +86,13 @@ final class Config
 //        self::refreshToken();
     }
 
-//    private static function setupEvents(): void
-//    {
-//        self::$eventHub = new Hub();
-        // 1. Load all files from src/Module (only Modules may configure events and listners).
-        // 2. Scan all loaded files for Event attributes to setup events in self::eventHub
-        // 3. Scan all loaded files for Listener attributes to setup events in self::eventHub. If the Event for the Listner is not defined in the eventHub we should ignore the listner and log this, but not through an Exception since we probably just forget a listner when we removed an event.
-//    }
+    /*private static function setupEvents(): void
+    {
+        self::$eventHub = new Hub();
+        // 1. Load all files from src/Module (only Modules may configure events and listeners).
+        // 2. Scan all loaded files for Event attributes to set up events in self::eventHub
+        // 3. Scan all loaded files for Listener attributes to set up events in self::eventHub. If the Event for the
+        // Listener is not defined in the eventHub we should ignore the listener and log this, but not through an
+        // Exception since we probably just forget a listener when we removed an event.
+    }*/
 }

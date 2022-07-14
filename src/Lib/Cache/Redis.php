@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Cache;
@@ -62,7 +67,7 @@ class Redis extends AbstractCache implements CacheInterface
     public function write(string $key, string $data, int $ttl): void
     {
         $this->validateKey(key: $key);
-        $this->connect()->setex(key: $key, expire: $ttl, value: $data);
+        $this->connect()->setex(key: $key, ttl: $ttl, value: $data);
     }
 
     /**

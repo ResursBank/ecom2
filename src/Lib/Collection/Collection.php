@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Collection;
@@ -203,6 +208,7 @@ class Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * @inheritDoc
+     * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
     public function key(): mixed
     {

@@ -1,4 +1,9 @@
-<?php 
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
@@ -43,6 +48,14 @@ class Module extends CoreModule
         // Drop data from cache.
     }
 
+    private static function writeToDb($data): void
+    {
+    }
+
+    private static function writeCache($data): void
+    {
+    }
+
     private static function readCache(): ?array
     {
         $data = null;
@@ -67,7 +80,7 @@ class Module extends CoreModule
 
     private static function readApi(): ?array
     {
-
+        return [];
     }
 
     /**

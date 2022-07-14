@@ -17,6 +17,8 @@ class ComplexDummy
     /**
      * @param int $int
      * @param SimpleDummy $simpleDummy
+     * @param SimpleDummyCollection $simpleDummyCollection
+     * @noinspection MessDetectorValidationInspection
      */
     public function __construct(
         public int $int,
