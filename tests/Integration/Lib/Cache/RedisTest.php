@@ -175,7 +175,7 @@ class RedisTest extends TestCase
 
         $conn->setex(
             key: $this->key,
-            ttl: 5,
+            expire: 5,
             value: $data
         );
 
