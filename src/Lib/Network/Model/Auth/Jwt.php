@@ -49,6 +49,8 @@ class Jwt
     ) {
         $this->stringValidation->notEmpty(value: $this->clientId);
         $this->stringValidation->notEmpty(value: $this->clientSecret);
+        $this->stringValidation->notEmpty(value: $this->scope);
+        $this->stringValidation->notEmpty(value: $this->grantType);
     }
 
     /**
@@ -67,12 +69,6 @@ class Jwt
      */
     private function generateToken(): JwtToken
     {
-        $auth = Config::$instance->jwtAuth;
-
-        if ($auth === null) {
-            throw new AuthException(message: 'JWT auth not configured.');
-        }
-
         $url = 'https://' . (Config::$instance->isProduction ? self::HOSTNAME_PROD : self::HOSTNAME_TEST)
             . '/api/oauth2/token';
 
@@ -81,10 +77,10 @@ class Jwt
                 url: $url,
                 requestMethod: RequestMethod::POST,
                 payload: [
-                    'client_id' => $auth->clientId,
-                    'client_secret' => $auth->clientSecret,
-                    'grant_type' => $auth->grantType,
-                    'scope' => $auth->scope,
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret,
+                    'grant_type' => $this->grantType,
+                    'scope' => $this->scope,
                 ],
                 authType: AuthType::NONE
             );
