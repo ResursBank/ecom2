@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Log;
 
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Lib\Log\StdoutLogger;
 
 /**
  * Verifies that the
