@@ -37,7 +37,6 @@ final class FileLoggerTest extends TestCase
 
     private string $path;
     private string $filename;
-    private FileLogger $logger;
     private string $message;
 
     /**
@@ -143,7 +142,15 @@ final class FileLoggerTest extends TestCase
         $this::assertSame(expected: FilesystemException::class, actual: $className);
     }
 
-
+    /**
+     * Verify that attempting to log a message with a log level below the one configured results in no message
+     * being logged.
+     *
+     * @return void
+     * @throws EmptyException
+     * @throws FilesystemException
+     * @throws FormatException
+     */
     public function testTooLowLogLevel(): void
     {
         $first = 'first';
@@ -157,7 +164,7 @@ final class FileLoggerTest extends TestCase
         );
 
         Config::$instance->logger->debug(message: $second);
-        
+
         $logged = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -172,7 +179,6 @@ final class FileLoggerTest extends TestCase
      * Verify that debug logging works
      *
      * @return void
-     * @throws FilesystemException
      */
     public function testLogDebug(): void
     {
@@ -188,7 +194,6 @@ final class FileLoggerTest extends TestCase
      * Verify that info logging works
      *
      * @return void
-     * @throws FilesystemException
      */
     public function testLogInfo(): void
     {
@@ -204,7 +209,6 @@ final class FileLoggerTest extends TestCase
      * Verify that warning logging works
      *
      * @return void
-     * @throws FilesystemException
      */
     public function testLogWarning(): void
     {
@@ -223,7 +227,6 @@ final class FileLoggerTest extends TestCase
      * Verify that error logging works
      *
      * @return void
-     * @throws FilesystemException
      */
     public function testLogError(): void
     {
@@ -239,7 +242,6 @@ final class FileLoggerTest extends TestCase
      * Verify that Exceptions get logged
      *
      * @return void
-     * @throws FilesystemException
      */
     public function testLogException(): void
     {
