@@ -114,7 +114,7 @@ class FileLogger implements LoggerInterface
             )
         ) {
             $this->logException(exception: $message);
-        } else {
+        } elseif (LogLevel::loggable(level: $level)) {
             $timestamp = new DateTime();
             $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
 

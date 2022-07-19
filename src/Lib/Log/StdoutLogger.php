@@ -77,13 +77,15 @@ class StdoutLogger implements LoggerInterface
             )
         ) {
             $this->logException(exception: $message);
-        } elseif ($fileHandle = $this->getFileHandle(level: $level)) {
-            $timestamp = new DateTime();
-            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
-            fwrite(stream: $fileHandle, data: $formattedMessage);
-            fclose($fileHandle);
-        } else {
-            throw new IOException(message: self::ERR_GENERAL_WRITE);
+        } elseif (LogLevel::loggable(level: $level)) {
+            if ($fileHandle = $this->getFileHandle(level: $level)) {
+                $timestamp = new DateTime();
+                $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
+                fwrite(stream: $fileHandle, data: $formattedMessage);
+                fclose($fileHandle);
+            } else {
+                throw new IOException(message: self::ERR_GENERAL_WRITE);
+            }
         }
     }
 
