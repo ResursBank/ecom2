@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Lib\Log;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\FormatException;
@@ -71,7 +72,10 @@ final class FileLoggerTest extends TestCase
             $this::markTestSkipped(message: 'Failed to touch log file');
         }
 
-        $this->logger = new FileLogger(path: $this->path);
+        Config::setup(
+            logger: new FileLogger(path: $this->path),
+            logLevel: LogLevel::DEBUG
+        );
     }
 
     /**
@@ -131,12 +135,37 @@ final class FileLoggerTest extends TestCase
 
         $className = false;
         try {
-            $this->logger->debug(message: $this->message);
+            Config::$instance->logger->debug(message: $this->message);
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }
 
         $this::assertSame(expected: FilesystemException::class, actual: $className);
+    }
+
+
+    public function testTooLowLogLevel(): void
+    {
+        $first = 'first';
+        $second = 'second';
+
+        Config::$instance->logger->debug(message: $first);
+
+        Config::setup(
+            logger: new FileLogger(path: $this->path),
+            logLevel: LogLevel::WARNING
+        );
+
+        Config::$instance->logger->debug(message: $second);
+        
+        $logged = substr(
+            string: $this->getLastLineFromFile(filename: $this->filename),
+            offset: 26
+        );
+        $this->assertEquals(
+            expected: LogLevel::DEBUG->name . ': ' . $first . PHP_EOL,
+            actual: $logged
+        );
     }
 
     /**
@@ -147,7 +176,7 @@ final class FileLoggerTest extends TestCase
      */
     public function testLogDebug(): void
     {
-        $this->logger->debug(message: $this->message);
+        Config::$instance->logger->debug(message: $this->message);
         $loggedDebug = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -163,7 +192,7 @@ final class FileLoggerTest extends TestCase
      */
     public function testLogInfo(): void
     {
-        $this->logger->info(message: $this->message);
+        Config::$instance->logger->info(message: $this->message);
         $loggedInfo = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -179,7 +208,7 @@ final class FileLoggerTest extends TestCase
      */
     public function testLogWarning(): void
     {
-        $this->logger->warning(message: $this->message);
+        Config::$instance->logger->warning(message: $this->message);
         $loggedWarning = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -198,7 +227,7 @@ final class FileLoggerTest extends TestCase
      */
     public function testLogError(): void
     {
-        $this->logger->error(message: $this->message);
+        Config::$instance->logger->error(message: $this->message);
         $loggedError = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -215,7 +244,7 @@ final class FileLoggerTest extends TestCase
     public function testLogException(): void
     {
         $exception = new Exception();
-        $this->logger->debug($exception);
+        Config::$instance->logger->debug($exception);
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
