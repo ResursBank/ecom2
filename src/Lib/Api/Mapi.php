@@ -10,9 +10,8 @@ namespace Resursbank\Ecom\Lib\Api;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use function is_string;
 
@@ -32,11 +31,9 @@ class Mapi
     public const HOST_TEST = 'omnitest.resurs.com';
 
     /**
-     * @param ArrayValidation $arrayValidation
      * @param StringValidation $stringValidation
      */
     public function __construct(
-        private readonly ArrayValidation $arrayValidation,
         private readonly StringValidation $stringValidation
     ) {
     }
@@ -47,7 +44,6 @@ class Mapi
      * @return string
      * @throws ValidationException
      * @throws EmptyValueException
-     * @throws IllegalValueException
      */
     public function getUrl(
         string $route,
@@ -55,25 +51,25 @@ class Mapi
     ): string {
         $this->stringValidation->notEmpty(value: $route);
 
-        if (count($params)) {
-            $this->arrayValidation->isAssoc(data: $params);
-
-            foreach ($params as $param) {
-                if (!is_string(value: $param)) {
-                    throw new ValidationException(
-                        message: 'Param values must be strings.'
+        $paramList = implode(separator: '/', array: array_map(
+            static function($v, $k): string {
+                if (!is_string($v)) {
+                    throw new IllegalTypeException(
+                        message: "Param $k must be string."
                     );
                 }
 
-                $this->stringValidation->notEmpty(value: $param);
-            }
-        }
+                return is_string($k) ? "$k/$v" : $v;
+            },
+            $params,
+            array_keys($params)
+        ));
 
         return (
             'https://' .
-            Config::$instance->isProduction ? self::HOST_TEST : self::HOST_PROD .
-            "/$route/" .
-            implode(separator: '/', array: $params)
+            (Config::$instance->isProduction ? self::HOST_TEST : self::HOST_PROD) .
+            "/$route" .
+            ($paramList !== '' ? "/$paramList" : '')
         );
     }
 }
