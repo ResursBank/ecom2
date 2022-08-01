@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Api;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -58,13 +57,7 @@ class Mapi
         );
 
         $paramList = implode(separator: '/', array: array_map(
-            static function ($v, $k): string {
-                if (!is_string(value: $v)) {
-                    throw new IllegalTypeException(
-                        message: "Param $k must be string."
-                    );
-                }
-
+            static function (string $v, mixed $k): string {
                 return is_string(value: $k) ? "$k/$v" : $v;
             },
             $params,

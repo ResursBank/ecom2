@@ -14,11 +14,11 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use stdClass;
+
 use function is_string;
 use function strlen;
 
@@ -95,7 +95,7 @@ class MapiTest extends TestCase
         array $params = []
     ): string {
         $paramList = implode(separator: '/', array: array_map(
-            static function ($v, $k): string {
+            static function (string $v, mixed $k): string {
                 return is_string(value: $k) ? "$k/$v" : $v;
             },
             $params,
@@ -207,8 +207,7 @@ class MapiTest extends TestCase
     }
 
     /**
-     * Assert getUrl() throws IllegalTypeException when $params include a
-     * non-string value.
+     * Assert getUrl() result in an error if $params include a non-string value.
      *
      * @return void
      * @throws EmptyValueException
@@ -216,7 +215,7 @@ class MapiTest extends TestCase
      */
     public function testGetUrlThrowsWithIllegalParamType(): void
     {
-        $this->expectException(exception: IllegalTypeException::class);
+        $this->expectError();
         $this->mapi->getUrl(route: 'test', params: ['test' => new stdClass()]);
     }
 }
