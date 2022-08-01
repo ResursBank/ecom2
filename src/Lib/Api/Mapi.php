@@ -34,7 +34,7 @@ class Mapi
      * @param StringValidation $stringValidation
      */
     public function __construct(
-        private readonly StringValidation $stringValidation
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
     }
 
@@ -50,24 +50,28 @@ class Mapi
         array  $params = []
     ): string {
         $this->stringValidation->notEmpty(value: $route);
+        $this->stringValidation->matchRegex(
+            value: $route,
+            pattern: '/^[a-z\d]+$/i'
+        );
 
         $paramList = implode(separator: '/', array: array_map(
             static function($v, $k): string {
-                if (!is_string($v)) {
+                if (!is_string(value: $v)) {
                     throw new IllegalTypeException(
                         message: "Param $k must be string."
                     );
                 }
 
-                return is_string($k) ? "$k/$v" : $v;
+                return is_string(value: $k) ? "$k/$v" : $v;
             },
             $params,
-            array_keys($params)
+            array_keys(array: $params)
         ));
 
         return (
             'https://' .
-            (Config::$instance->isProduction ? self::HOST_TEST : self::HOST_PROD) .
+            (Config::$instance->isProduction ? self::HOST_PROD : self::HOST_TEST) .
             "/$route" .
             ($paramList !== '' ? "/$paramList" : '')
         );
