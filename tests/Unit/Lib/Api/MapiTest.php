@@ -23,8 +23,6 @@ use function is_string;
 use function strlen;
 
 /**
- * Assert the None cache driver works as expected.
- *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class MapiTest extends TestCase
