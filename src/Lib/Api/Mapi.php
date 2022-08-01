@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -13,6 +14,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+
 use function is_string;
 
 /**
@@ -47,7 +49,7 @@ class Mapi
      */
     public function getUrl(
         string $route,
-        array  $params = []
+        array $params = []
     ): string {
         $this->stringValidation->notEmpty(value: $route);
         $this->stringValidation->matchRegex(
@@ -56,7 +58,7 @@ class Mapi
         );
 
         $paramList = implode(separator: '/', array: array_map(
-            static function($v, $k): string {
+            static function ($v, $k): string {
                 if (!is_string(value: $v)) {
                     throw new IllegalTypeException(
                         message: "Param $k must be string."

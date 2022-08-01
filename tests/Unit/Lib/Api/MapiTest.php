@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Api;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -17,7 +18,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use stdClass;
 use function is_string;
+use function strlen;
 
 /**
  * Assert the None cache driver works as expected.
@@ -56,29 +59,50 @@ class MapiTest extends TestCase
         );
     }
 
+    /**
+     * Resolve a random route name.
+     */
     private function getRoute(): string
     {
-        $charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $length = random_int(1, 50);
-        
+        $route = '';
 
+        try {
+            $charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $length = random_int(min: 1, max: 50);
+
+            for ($i = 0; $i < $length; $i++) {
+                $route .= $charset[random_int(
+                    min: 0,
+                    max: strlen(string: $charset) - 1
+                )];
+            }
+        } catch (Exception) {
+            self::fail(message: 'Failed to generate route.');
+        }
+
+        return $route;
     }
 
     /**
+     * @param string $route
+     * @param string $host
      * @param array $params
      * @return string
      */
     private function getExpectedUrl(
+        string $route = '',
         string $host = Mapi::HOST_TEST,
         array $params = []
     ): string {
-        return implode(separator: '/', array: array_map(
-            static function($v, $k): string {
+        $paramList = implode(separator: '/', array: array_map(
+            static function ($v, $k): string {
                 return is_string(value: $k) ? "$k/$v" : $v;
             },
             $params,
             array_keys(array: $params)
         ));
+
+        return "https://$host/$route" . (count($params) ? "/$paramList" : '');
     }
 
     /**
@@ -116,10 +140,10 @@ class MapiTest extends TestCase
      */
     public function testGetUrlReturnsTestUrl(): void
     {
-        $route = 'TesTing';
+        $route = $this->getRoute();
 
         self::assertSame(
-            expected: 'https://' . Mapi::HOST_TEST . "/$route",
+            expected: $this->getExpectedUrl(route: $route),
             actual: $this->mapi->getUrl(route: $route)
         );
     }
@@ -135,20 +159,64 @@ class MapiTest extends TestCase
     {
         $this->setupConfig(prod: true);
 
-        $route = 'mighty';
+        $route = $this->getRoute();
 
         self::assertSame(
-            expected: 'https://' . Mapi::HOST_PROD . "/$route",
+            expected: $this->getExpectedUrl(
+                route: $route,
+                host: Mapi::HOST_PROD
+            ),
             actual: $this->mapi->getUrl(route: $route)
         );
     }
 
+    /**
+     * Assert getUrl() accepts sequential route segments.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws ValidationException
+     */
     public function testGetUrlAcceptsSequentialParams(): void
     {
         $params = ['param1', 'param2', 'param3'];
+        $route = $this->getRoute();
 
         self::assertSame(
-            exepected: ''
+            expected: $this->getExpectedUrl(route: $route, params: $params),
+            actual: $this->mapi->getUrl(route: $route, params: $params)
         );
+    }
+
+    /**
+     * Assert getUrl() accepts associative route segments.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws ValidationException
+     */
+    public function testGetUrlAcceptsAssocParams(): void
+    {
+        $params = ['test' => 'param1', 'test2' => 'param2', 'bada' => 'param3'];
+        $route = $this->getRoute();
+
+        self::assertSame(
+            expected: $this->getExpectedUrl(route: $route, params: $params),
+            actual: $this->mapi->getUrl(route: $route, params: $params)
+        );
+    }
+
+    /**
+     * Assert getUrl() throws IllegalTypeException when $params include a
+     * non-string value.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws ValidationException
+     */
+    public function testGetUrlThrowsWithIllegalParamType(): void
+    {
+        $this->expectException(exception: IllegalTypeException::class);
+        $this->mapi->getUrl(route: 'test', params: ['test' => new stdClass()]);
     }
 }
