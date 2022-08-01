@@ -18,9 +18,9 @@ use Resursbank\Ecom\Module\Rco\Models\Address;
 class Customer extends Model
 {
     public function __construct(
-        public ?string $governmentId,
-        public ?string $mobile,
-        public ?string $email,
+        public ?string $governmentId = null,
+        public ?string $mobile = null,
+        public ?string $email = null,
         public ?Address $deliveryAddress = null,
         public ?Address $invoiceAddress = null,
         public ?string $customerType = null,
