@@ -17,12 +17,12 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Response extends Model
 {
     public function __construct(
-        public readonly string $paymentSessionId,
-        public readonly string $iframe,
-        public readonly string $script,
-        public readonly Customer $customer,
-        public readonly string $baseUrl,
-        public readonly string $html
+        public readonly ?string $paymentSessionId = null,
+        public readonly ?string $iframe = null,
+        public readonly ?string $script = null,
+        public readonly ?Customer $customer = null,
+        public readonly ?string $baseUrl = null,
+        public readonly ?string $html = null
     ) {
     }
 }
