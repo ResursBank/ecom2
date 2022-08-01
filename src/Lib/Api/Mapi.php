@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -10,9 +11,9 @@ namespace Resursbank\Ecom\Lib\Api;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+
 use function is_string;
 
 /**
@@ -34,7 +35,7 @@ class Mapi
      * @param StringValidation $stringValidation
      */
     public function __construct(
-        private readonly StringValidation $stringValidation
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
     }
 
@@ -47,27 +48,25 @@ class Mapi
      */
     public function getUrl(
         string $route,
-        array  $params = []
+        array $params = []
     ): string {
         $this->stringValidation->notEmpty(value: $route);
+        $this->stringValidation->matchRegex(
+            value: $route,
+            pattern: '/^[a-z\d]+$/i'
+        );
 
         $paramList = implode(separator: '/', array: array_map(
-            static function($v, $k): string {
-                if (!is_string($v)) {
-                    throw new IllegalTypeException(
-                        message: "Param $k must be string."
-                    );
-                }
-
-                return is_string($k) ? "$k/$v" : $v;
+            static function (string $v, mixed $k): string {
+                return is_string(value: $k) ? "$k/$v" : $v;
             },
             $params,
-            array_keys($params)
+            array_keys(array: $params)
         ));
 
         return (
             'https://' .
-            (Config::$instance->isProduction ? self::HOST_TEST : self::HOST_PROD) .
+            (Config::$instance->isProduction ? self::HOST_PROD : self::HOST_TEST) .
             "/$route" .
             ($paramList !== '' ? "/$paramList" : '')
         );
