@@ -24,7 +24,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Request;
 use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Response;
 use Resursbank\Ecom\Module\PaymentMethod\Model\Store;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\EcomTest\Data\ApiResponse\GetPaymentMethods;
+use Resursbank\EcomTest\Data\ApiResponse\GetStores;
 use stdClass;
 use function is_array;
 use function json_encode;

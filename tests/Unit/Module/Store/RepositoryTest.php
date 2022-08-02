@@ -19,7 +19,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Request;
 use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Response;
 use Resursbank\Ecom\Module\PaymentMethod\Model\Store;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\EcomTest\Data\ApiResponse\GetPaymentMethods;
+use Resursbank\EcomTest\Data\ApiResponse\GetStores;
 use stdClass;
 use function is_array;
 use function json_encode;
@@ -250,7 +250,7 @@ class RepositoryTest extends TestCase
      */
     public function testReadReturnsCache(): void
     {
-        $this->setCacheReadReturn(data: GetPaymentMethods::$data)
+        $this->setCacheReadReturn(data: GetStores::$data)
             ->expectReadCache()
             ->expectDebugLogNever()
             ->expectRequestNever()
@@ -290,7 +290,7 @@ class RepositoryTest extends TestCase
             ->expectReadCache()
             ->expectDebugLogNever()
             ->expectRequest()
-            ->setRequestReturn(data: GetPaymentMethods::getMethods())
+            ->setRequestReturn(data: GetStores::getMethods())
             ->validateAcceptedData(
                 data: Repository::read(request: $this->request)
             );
@@ -401,7 +401,7 @@ class RepositoryTest extends TestCase
     public function testReadCacheReturnsNullWithInvalidElements(): void
     {
         $this->setCacheReadReturn(
-            data: array_merge(GetPaymentMethods::getMethods(), ['test', 'tes'])
+            data: array_merge(GetStores::getMethods(), ['test', 'tes'])
         )
             ->expectReadCache()
             ->expectDebugLog();
@@ -464,7 +464,7 @@ class RepositoryTest extends TestCase
      */
     public function testReadCacheReturnsArray(): void
     {
-        $this->setCacheReadReturn(data: GetPaymentMethods::$data)
+        $this->setCacheReadReturn(data: GetStores::$data)
             ->expectReadCache()
             ->expectDebugLogNever()
             ->validateAcceptedData(data: Repository::readCache());
