@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
+use Resursbank\Ecom\Lib\Cache\CacheInterface;
+use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
@@ -23,6 +25,7 @@ final class Config
 
     /**
      * @param LoggerInterface $logger
+     * @param CacheInterface $cache
      * @param Basic|null $basicAuth
      * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
@@ -36,6 +39,7 @@ final class Config
      */
     public function __construct(
         public readonly LoggerInterface $logger,
+        public readonly CacheInterface $cache,
         public readonly Basic|null $basicAuth,
         public readonly Jwt|null $jwtAuth,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
@@ -49,6 +53,7 @@ final class Config
 
     /**
      * @param LoggerInterface $logger
+     * @param CacheInterface $cache
      * @param Basic|null $basicAuth
      * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
@@ -58,9 +63,11 @@ final class Config
      * @param int $proxyType
      * @param int $timeout
      * @return void
+     * @noinspection PhpTooManyParametersInspection
      */
     public static function setup(
         LoggerInterface $logger,
+        CacheInterface $cache = new None(),
         Basic|null $basicAuth = null,
         Jwt|null $jwtAuth = null,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
@@ -72,6 +79,7 @@ final class Config
     ): void {
         self::$instance = new Config(
             logger: $logger,
+            cache: $cache,
             basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
             logLevel: $logLevel,
@@ -81,18 +89,5 @@ final class Config
             proxyType: $proxyType,
             timeout: $timeout
         );
-
-//        self::setupEvents();
-//        self::refreshToken();
     }
-
-    /*private static function setupEvents(): void
-    {
-        self::$eventHub = new Hub();
-        // 1. Load all files from src/Module (only Modules may configure events and listeners).
-        // 2. Scan all loaded files for Event attributes to set up events in self::eventHub
-        // 3. Scan all loaded files for Listener attributes to set up events in self::eventHub. If the Event for the
-        // Listener is not defined in the eventHub we should ignore the listener and log this, but not through an
-        // Exception since we probably just forget a listener when we removed an event.
-    }*/
 }

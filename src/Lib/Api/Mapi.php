@@ -51,24 +51,14 @@ class Mapi
         array $params = []
     ): string {
         $this->stringValidation->notEmpty(value: $route);
-        $this->stringValidation->matchRegex(
-            value: $route,
-            pattern: '/^[a-z\d]+$/i'
-        );
 
-        $paramList = implode(separator: '/', array: array_map(
-            static function (string $v, mixed $k): string {
-                return is_string(value: $k) ? "$k/$v" : $v;
-            },
-            $params,
-            array_keys(array: $params)
-        ));
+        $paramList = http_build_query(data: $params);
 
         return (
             'https://' .
             (Config::$instance->isProduction ? self::HOST_PROD : self::HOST_TEST) .
             "/$route" .
-            ($paramList !== '' ? "/$paramList" : '')
+            ($paramList !== '' ? "?$paramList" : '')
         );
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Store\Api;
 
-
 use JetBrains\PhpStorm\ArrayShape;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
@@ -31,33 +30,13 @@ class GetStores
         private readonly Mapi $mapi = new Mapi(),
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-
-        // 2. Make CURL request.
-        // 3. Apply response in $this->response
-        // 4. Profit
     }
-
-//    /**
-//     * @return array
-//     */
-//    #[ArrayShape(shape: ['language' => 'string', 'customerType' => 'string', 'purchaseAmount' => 'float'])]
-//    public function getPayload(): array
-//    {
-//        return [
-//            'language' => $this->language,
-//            'customerType' => $this->customerType,
-//            'purchaseAmount' => $this->purchaseAmount,
-//        ];
-//    }
 
     /**
      * Perform API request and assign response to this object.
      *
-     * @param string $store
-     * @param string $methodId
      * @return void
      * @throws CurlException
-     * @throws \JsonException
      * @throws AuthException
      * @throws TypeException
      * @throws ValidationException
@@ -66,22 +45,21 @@ class GetStores
      * @todo Charset validation for $store and $methodId
      */
     public function exec(
-        string $store,
-        string $methodId = ''
+        float|null $amount = null,
     ): void {
         $data = null;
-
-        $this->stringValidation->notEmpty(value: $store);
-
+        
+        $url = $this->mapi->getUrl(
+            route: 'stores',
+            params: ['amount' => $amount]
+        );
+        die(var_dump($url));
+        
         try {
-            $url = $this->mapi->getUrl(
-                route: "stores/$store",
-                params: ['payment_methods' => $methodId]
-            );
             $curl = new Curl(
                 url: $this->mapi->getUrl(
-                    route: "stores/$store",
-                    params: ['payment_methods' => $methodId]
+                    route: 'stores',
+                    params: ['amount' => $amount]
                 ),
                 requestMethod: RequestMethod::GET,
                 contentType: ContentType::URL,
@@ -96,50 +74,4 @@ class GetStores
 
         die(var_dump($data));
     }
-//
-//    public function getResponse(): ?array
-//    {
-//        return $this->response;
-//    }
-//
-//    /**
-//     * @return bool
-//     * @throws IllegalValueException
-//     */
-//    public function validateLanguage(): bool
-//    {
-//        $this->stringValidation->oneOf(
-//            value: $this->language,
-//            set: ['sv', 'no', 'da', 'fi', ''],
-//        );
-//
-//        return true;
-//    }
-//
-//    /**
-//     * @return bool
-//     * @throws IllegalValueException
-//     */
-//    public function validateCustomerType(): bool
-//    {
-//        $this->stringValidation->oneOf(
-//            value: $this->customerType,
-//            set: ['NATURAL', 'COMPANY', ''],
-//        );
-//
-//        return true;
-//    }
-//
-//
-//
-//    /**
-//     * Gets the API URL to use
-//     *
-//     * @param string $orderReference
-//     * @return string
-//     */
-//    private function getApiUrl(string $orderReference): string
-//    {
-//        return 'https://' . Repository::getApiHostname() . '/checkout/payments/' . $orderReference;
-//    }
 }

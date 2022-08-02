@@ -13,13 +13,12 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use stdClass;
 
-use function is_string;
 use function strlen;
 
 /**
@@ -53,6 +52,7 @@ class MapiTest extends TestCase
     ): void {
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
             isProduction: $prod
         );
     }
@@ -92,15 +92,9 @@ class MapiTest extends TestCase
         string $host = Mapi::HOST_TEST,
         array $params = []
     ): string {
-        $paramList = implode(separator: '/', array: array_map(
-            static function (string $v, mixed $k): string {
-                return is_string(value: $k) ? "$k/$v" : $v;
-            },
-            $params,
-            array_keys(array: $params)
-        ));
+        $paramList = http_build_query(data: $params);
 
-        return "https://$host/$route" . (count($params) ? "/$paramList" : '');
+        return "https://$host/$route" . ($paramList !== '' ? "?$paramList" : '');
     }
 
     /**
@@ -113,20 +107,6 @@ class MapiTest extends TestCase
     {
         $this->expectException(exception: EmptyValueException::class);
         $this->mapi->getUrl(route: '');
-    }
-
-    /**
-     * Assert getUrl() throws IllegalCharsetException when $route includes
-     * illegal characters.
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlThrowsWithIllegalRoute(): void
-    {
-        $this->expectException(exception: IllegalCharsetException::class);
-        $this->mapi->getUrl(route: 'test?');
     }
 
     /**
@@ -205,15 +185,45 @@ class MapiTest extends TestCase
     }
 
     /**
-     * Assert getUrl() result in an error if $params include a non-string value.
+     * Assert getUrl() strips illegal params (objects, null, arrays).
      *
      * @return void
      * @throws EmptyValueException
      * @throws ValidationException
      */
-    public function testGetUrlThrowsWithIllegalParamType(): void
+    public function testGetUrlStripsIllegalParams(): void
     {
-        $this->expectError();
-        $this->mapi->getUrl(route: 'test', params: ['test' => new stdClass()]);
+        $route = $this->getRoute();
+
+        self::assertSame(
+            expected: $this->getExpectedUrl(route: $route),
+            actual: $this->mapi->getUrl(
+                route: $route,
+                params: ['test' => new stdClass(), 'null' => null, 'omf' => []]
+            )
+        );
+    }
+
+    /**
+     * Assert getUrl() strips converts bool params to 0/1.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws ValidationException
+     */
+    public function testGetUrlConvertsBool(): void
+    {
+        $route = $this->getRoute();
+
+        self::assertSame(
+            expected: $this->getExpectedUrl(
+                route: $route,
+                params: ['param1' => 0, 'param2' => 1]
+            ),
+            actual: $this->mapi->getUrl(
+                route: $route,
+                params: ['param1' => false, 'param2' => true]
+            )
+        );
     }
 }
