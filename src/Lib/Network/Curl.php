@@ -341,7 +341,7 @@ class Curl
      */
     private function getCustomRequestValue(): string
     {
-        return match($this->requestMethod) {
+        return match ($this->requestMethod) {
             RequestMethod::GET => 'GET',
             RequestMethod::POST => 'POST',
             RequestMethod::PUT => 'PUT',
@@ -392,7 +392,7 @@ class Curl
     public function getPayloadData(
         array $payload
     ): string {
-        return match($this->contentType) {
+        return match ($this->contentType) {
             ContentType::EMPTY, ContentType::RAW => '',
             ContentType::JSON => json_encode(
                 value: $payload,
@@ -498,10 +498,10 @@ class Curl
      */
     public function getAuthentication(): array
     {
-        return match($this->authType) {
+        return match ($this->authType) {
             AuthType::BASIC => (array)Config::$instance->basicAuth,
             AuthType::JWT => (array)Config::$instance->jwtAuth,
-        default => [],
+            default => [],
         };
     }
 }
