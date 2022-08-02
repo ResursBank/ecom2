@@ -65,7 +65,7 @@ class Curl
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        public ?ContentType $responseContentType = null,
+        public ?ContentType $responseContentType = null
     ) {
         if (!$this->responseContentType) {
             $this->responseContentType = $this->contentType;

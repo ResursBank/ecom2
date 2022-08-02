@@ -33,8 +33,7 @@ class Header
         array $headers,
         string $payloadData,
         ContentType $contentType,
-        bool $hasBodyData,
-
+        bool $hasBodyData
     ): array {
         foreach ($headers as $header) {
             if (!$header instanceof HeaderModel) {
@@ -83,11 +82,11 @@ class Header
 
     /**
      * Retrieve list of headers where $key matches.
-     * @todo See constructor todo. If kept we should maybe change its visibility.
-     *
      * @param array $headers
      * @param string $key
      * @return array
+     * @todo See constructor todo. If kept we should maybe change its visibility.
+     *
      */
     public static function findHeaders(
         array $headers,
