@@ -299,10 +299,15 @@ class CurlTest extends TestCase
             proxy: sprintf('%s:80', $this->proxyHost)
         );
 
-        $response = Curl::get(
+        // We need to move those features "in house" at some point (like timeout.resurs.com).
+        $curl = new Curl(
             url: 'https://ipv4.netcurl.org',
-            authType: AuthType::NONE
+            requestMethod: RequestMethod::GET,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::JSON
         );
+
+        $response = $curl->exec();
 
         // Request should reflect the proxy ip, not your own.
         self::assertSame(
