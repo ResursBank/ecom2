@@ -97,13 +97,14 @@ final class Config
      */
     private static function setupUserAgent(?string $userAgent = ''): string
     {
+        // Making it possible to utilize a shortened classname as part of the user agent, where we collect version
+        // data automatically from a @version-docblock if it exists..
         if (class_exists($userAgent)) {
-            // If user agent string is a class, we try to extract proper data automatically from the class short
-            // name and docblock version.
             $genericAgent = new Generic();
             $classVersion = $genericAgent->getVersionByClassDoc($userAgent);
+            // Try to extract proper data automatically from the class (shortened) and docblock version.
             $userAgentClass = explode('\\', $userAgent);
-            $userAgentShortName = $userAgentClass[count($userAgentClass) - 1];
+            $userAgentShortName = count($userAgentClass) ? $userAgentClass[count($userAgentClass) - 1] : $userAgent;
 
             // Version number will only be added to the class name if it can be found in the docblock.
             $userAgent = sprintf(
