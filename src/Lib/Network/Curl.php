@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use Exception;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Utilities\Generic;
@@ -98,7 +99,7 @@ class Curl
             );
         }
 
-        $code = (int) curl_getinfo(
+        $code = (int)curl_getinfo(
             handle: $this->ch,
             option: CURLINFO_RESPONSE_CODE
         );
@@ -254,7 +255,7 @@ class Curl
      * @return CurlHandle
      * @throws JsonException
      * @throws ValidationException
-     * @throws \Exception
+     * @throws Exception
      * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
      */
     private function init(
@@ -340,7 +341,7 @@ class Curl
      */
     private function getCustomRequestValue(): string
     {
-        return match ($this->requestMethod) {
+        return match($this->requestMethod) {
             RequestMethod::GET => 'GET',
             RequestMethod::POST => 'POST',
             RequestMethod::PUT => 'PUT',
@@ -391,7 +392,7 @@ class Curl
     public function getPayloadData(
         array $payload
     ): string {
-        return match ($this->contentType) {
+        return match($this->contentType) {
             ContentType::EMPTY, ContentType::RAW => '',
             ContentType::JSON => json_encode(
                 value: $payload,
@@ -497,10 +498,10 @@ class Curl
      */
     public function getAuthentication(): array
     {
-        return match ($this->authType) {
+        return match($this->authType) {
             AuthType::BASIC => (array)Config::$instance->basicAuth,
             AuthType::JWT => (array)Config::$instance->jwtAuth,
-            default => [],
+        default => [],
         };
     }
 }

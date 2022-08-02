@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
+use ReflectionException;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
@@ -87,6 +88,13 @@ final class Config
 //        self::refreshToken();
     }
 
+    /**
+     * Prepare user agent data.
+     *
+     * @param string|null $userAgent
+     * @return string
+     * @throws ReflectionException
+     */
     private static function setupUserAgent(?string $userAgent = ''): string
     {
         if (class_exists($userAgent)) {
