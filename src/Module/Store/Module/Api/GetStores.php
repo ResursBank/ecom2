@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Api;
+namespace Resursbank\Ecom\Module\Store\Api;
 
 
 use JetBrains\PhpStorm\ArrayShape;
@@ -23,7 +23,7 @@ use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Rco\Repository;
 
-class GetPaymentMethods
+class GetStores
 {
     private readonly array $methods;
     

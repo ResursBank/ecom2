@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\PaymentMethod\Model;
+namespace Resursbank\EcomTest\Unit\Module\Store\Model;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -15,13 +15,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\PaymentMethod\Model\Item\Status;
-use Resursbank\Ecom\Module\PaymentMethod\Model\Method;
-use Resursbank\EcomTest\Data\ApiResponse\GetPaymentMethods;
+use Resursbank\Ecom\Module\Store\Model\Store;
 use stdClass;
 
 /**
- * Test data integrity of payment method entity model.
+ * Test data integrity of store entity model.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -30,9 +28,9 @@ use stdClass;
 class ItemTest extends TestCase
 {
     /**
-     * @var Method
+     * @var Store
      */
-    private Method $item;
+    private Store $item;
 
     /**
      * @var stdClass
@@ -67,10 +65,10 @@ class ItemTest extends TestCase
 
         $item = DataConverter::stdClassToType(
             object: $this->data,
-            type: Method::class
+            type: Store::class
         );
 
-        if (!$item instanceof Method) {
+        if (!$item instanceof Store) {
             throw new TestException(
                 message: 'Conversion succeeded but did not return Method instance.'
             );

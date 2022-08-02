@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Request;
 use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Response;
-use Resursbank\Ecom\Module\PaymentMethod\Model\Method;
+use Resursbank\Ecom\Module\PaymentMethod\Model\Store;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\EcomTest\Data\ApiResponse\GetPaymentMethods;
 use stdClass;
@@ -236,7 +236,7 @@ class RepositoryTest extends TestCase
         self::assertNotEmpty(actual: $data);
 
         foreach ($data as $item) {
-            self::assertInstanceOf(expected: Method::class, actual: $item);
+            self::assertInstanceOf(expected: Store::class, actual: $item);
         }
     }
 
