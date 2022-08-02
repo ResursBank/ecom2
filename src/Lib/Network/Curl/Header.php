@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network\Curl;
 
+use Exception;
 use InvalidArgumentException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Model\Header as HeaderModel;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 
 /**
  * Handles construction and parsing of header data
@@ -31,7 +33,8 @@ class Header
         array $headers,
         string $payloadData,
         ContentType $contentType,
-        bool $hasBodyData
+        bool $hasBodyData,
+
     ): array {
         foreach ($headers as $header) {
             if (!$header instanceof HeaderModel) {
@@ -131,15 +134,20 @@ class Header
 
     /**
      * @return string
-     * @todo Dropped classname from user agent, didn't seem to make sense, we should however include the version
-     * @todo specified in composer.json (see PrestaShop Core psrbcore/src/Traits/Module/Init.php for example).
+     * @throws Exception
      * @todo Add back what module class called Curl.
      */
     public static function getUserAgent(): string
     {
+        try {
+            $version = (new Generic())->getVersionByComposer(__DIR__);
+        } catch (Exception $e) {
+            $version = 'composer.version.not.found';
+        }
+
         return implode(separator: ' +', array: array_filter(array: [
             Config::$instance->userAgent,
-            'ECom2-', // @todo Put version from composer.json here.
+            sprintf('ECom2-%s', $version),
             sprintf('PHP-%s', PHP_VERSION),
         ]));
     }

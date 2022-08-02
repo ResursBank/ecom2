@@ -13,6 +13,7 @@ namespace Resursbank\Ecom\Lib\Network;
 
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
 use CurlHandle;
 use JsonException;
@@ -63,7 +64,7 @@ class Curl
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        public ?ContentType $responseContentType = null
+        public ?ContentType $responseContentType = null,
     ) {
         if (!$this->responseContentType) {
             $this->responseContentType = $this->contentType;
@@ -253,6 +254,7 @@ class Curl
      * @return CurlHandle
      * @throws JsonException
      * @throws ValidationException
+     * @throws \Exception
      * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
      */
     private function init(
@@ -397,21 +399,6 @@ class Curl
             ),
             ContentType::URL => http_build_query(data: $payload)
         };
-    }
-
-    /**
-     * @return string
-     * @todo Dropped classname from user agent, didn't seem to make sense, we should however include the version
-     * @todo specified in composer.json (see PrestaShop Core psrbcore/src/Traits/Module/Init.php for example).
-     * @todo Add back what module class called Curl.
-     */
-    public function getUserAgent(): string
-    {
-        return implode(separator: ' +', array: array_filter(array: [
-            Config::$instance->userAgent,
-            'ECom2-', // @todo Put version from composer.json here.
-            sprintf('PHP-%s', PHP_VERSION),
-        ]));
     }
 
     /**

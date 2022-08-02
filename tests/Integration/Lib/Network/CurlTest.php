@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Integration\Lib\Network;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -26,6 +27,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
 
 /**
@@ -120,14 +122,53 @@ class CurlTest extends TestCase
     public function testRealGetRequest(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            userAgent: self::class
         );
+
         $curl = new Curl(
             url: 'https://ipv4.netcurl.org',
             requestMethod: RequestMethod::GET,
             contentType: ContentType::URL,
             authType: AuthType::NONE,
-            responseContentType: ContentType::JSON
+            responseContentType: ContentType::JSON,
+        );
+        $response = $curl->exec();
+
+        $this::assertEquals(
+            expected: 'GET',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this->assertSame(
+            expected: 200,
+            actual: $response->code
+        );
+    }
+
+    /**
+     * Test to make sure that remote requests really works.
+     *
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testRealGetRequestWithCustomUserAgent(): void
+    {
+        $expectRemoteVersion = 'EComTest-Custom-' . (new Generic())->getVersionByClassDoc(self::class);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            userAgent: $expectRemoteVersion
+        );
+
+        $curl = new Curl(
+            url: 'https://ipv4.netcurl.org',
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::URL,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::JSON,
         );
         $response = $curl->exec();
 
