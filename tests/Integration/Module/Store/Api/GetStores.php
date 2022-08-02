@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\PaymentMethod\Api;
+namespace Resursbank\EcomTest\Integration\Module\Store\Api;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -19,25 +19,21 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\PaymentMethod\Api\GetStores as Api;
-use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Request;
-use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods\Response;
-use Resursbank\Ecom\Module\PaymentMethod\Model\Store;
-use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Store\Api\GetStores as Api;
 use Resursbank\EcomTest\Data\ApiResponse\GetStores;
 use stdClass;
 use function is_array;
 use function json_encode;
 
 /**
- * Test business logic of payment methods Repository class.
+ * Test API call to get stores.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @todo We cannot test that readCache() converts ReflectionException because we cannot mock DataConverter.
  */
-class GetPaymentMethodsTest extends TestCase
+class GetStores extends TestCase
 {
     private Api $api;
 

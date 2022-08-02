@@ -6,11 +6,14 @@ namespace Resursbank\EcomTest\Data\ApiResponse;
 
 use JsonException;
 use Resursbank\Ecom\Exception\TestException;
-
 use stdClass;
+
 use function is_array;
 use function is_int;
 
+/**
+ * Retrieve mock data for tests relating to Store module.
+ */
 class GetStores
 {
     /**
