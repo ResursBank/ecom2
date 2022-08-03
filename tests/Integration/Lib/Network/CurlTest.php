@@ -307,7 +307,14 @@ class CurlTest extends TestCase
             responseContentType: ContentType::JSON
         );
 
-        $response = $curl->exec();
+        try {
+            $response = $curl->exec();
+        } catch (CurlException $e) {
+            $this->markTestIncomplete(
+                sprintf('Can not run proxy test: caught error from remote server: %s.', $e->getMessage())
+            );
+            return;
+        }
 
         // Request should reflect the proxy ip, not your own.
         self::assertSame(
