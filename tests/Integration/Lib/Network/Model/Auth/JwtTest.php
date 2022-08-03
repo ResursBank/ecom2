@@ -35,27 +35,31 @@ class JwtTest extends TestCase
      */
     public function testGetToken(): void
     {
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            jwtAuth: new Jwt(
-                clientId: isset($_ENV['JWT_AUTH_CLIENT_ID']) ? $_ENV['JWT_AUTH_CLIENT_ID'] : '',
-                clientSecret: isset($_ENV['JWT_AUTH_CLIENT_SECRET']) ? $_ENV['JWT_AUTH_CLIENT_SECRET'] : '',
-                scope: isset($_ENV['JWT_AUTH_SCOPE']) ? $_ENV['JWT_AUTH_SCOPE'] : '',
-                grantType: isset($_ENV['JWT_AUTH_GRANT_TYPE']) ? $_ENV['JWT_AUTH_GRANT_TYPE'] : ''
-            )
-        );
+        if (isset($_ENV['JWT_AUTH_CLIENT_ID']) && isset($_ENV['JWT_AUTH_CLIENT_SECRET'])) {
+            Config::setup(
+                logger: $this->createMock(originalClassName: FileLogger::class),
+                jwtAuth: new Jwt(
+                    clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                    clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                    scope: $_ENV['JWT_AUTH_SCOPE'],
+                    grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                )
+            );
 
-        $token = Config::$instance->jwtAuth->getToken();
-        $currentTime = time();
+            $token = Config::$instance->jwtAuth->getToken();
+            $currentTime = time();
 
-        $this->assertEquals(
-            expected: 'Bearer',
-            actual: $token->tokenType
-        );
-        $this->assertGreaterThan(
-            expected: $currentTime,
-            actual: $token->validUntil
-        );
+            $this->assertEquals(
+                expected: 'Bearer',
+                actual: $token->tokenType
+            );
+            $this->assertGreaterThan(
+                expected: $currentTime,
+                actual: $token->validUntil
+            );
+        } else {
+            $this->markTestSkipped('No JWT_AUTH_CLIENT_ID or JWT_AUTH_CLIENT_SECRET environment variables set');
+        }
     }
 
     /**
@@ -68,18 +72,22 @@ class JwtTest extends TestCase
      */
     public function testInvalidCredentials(): void
     {
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            jwtAuth: new Jwt(
-                clientId: 'foo',
-                clientSecret: 'bar',
-                scope: isset($_ENV['JWT_AUTH_SCOPE']) ? $_ENV['JWT_AUTH_SCOPE'] : '',
-                grantType: isset($_ENV['JWT_AUTH_GRANT_TYPE']) ? $_ENV['JWT_AUTH_GRANT_TYPE'] : ''
-            )
-        );
+        if (isset($_ENV['JWT_AUTH_SCOPE']) && isset($_ENV['JWT_AUTH_GRANT_TYPE'])) {
+            Config::setup(
+                logger: $this->createMock(originalClassName: FileLogger::class),
+                jwtAuth: new Jwt(
+                    clientId: 'foo',
+                    clientSecret: 'bar',
+                    scope: $_ENV['JWT_AUTH_SCOPE'],
+                    grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                )
+            );
 
-        $this->expectException(exception: AuthException::class);
+            $this->expectException(exception: AuthException::class);
 
-        Config::$instance->jwtAuth->getToken();
+            Config::$instance->jwtAuth->getToken();
+        } else {
+            $this->markTestSkipped('No JWT_AUTH_SCOPE or JWT_AUTH_GRANT_TYPE environment variables set');
+        }
     }
 }
