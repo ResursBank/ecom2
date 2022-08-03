@@ -38,10 +38,10 @@ class JwtTest extends TestCase
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
             jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: isset($_ENV['JWT_AUTH_CLIENT_ID']) ? $_ENV['JWT_AUTH_CLIENT_ID'] : '',
+                clientSecret: isset($_ENV['JWT_AUTH_CLIENT_SECRET']) ? $_ENV['JWT_AUTH_CLIENT_SECRET'] : '',
+                scope: isset($_ENV['JWT_AUTH_SCOPE']) ? $_ENV['JWT_AUTH_SCOPE'] : '',
+                grantType: isset($_ENV['JWT_AUTH_GRANT_TYPE']) ? $_ENV['JWT_AUTH_GRANT_TYPE'] : ''
             )
         );
 
@@ -73,8 +73,8 @@ class JwtTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: 'foo',
                 clientSecret: 'bar',
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                scope: isset($_ENV['JWT_AUTH_SCOPE']) ? $_ENV['JWT_AUTH_SCOPE'] : '',
+                grantType: isset($_ENV['JWT_AUTH_GRANT_TYPE']) ? $_ENV['JWT_AUTH_GRANT_TYPE'] : ''
             )
         );
 
