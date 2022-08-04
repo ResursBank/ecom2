@@ -481,11 +481,24 @@ class Curl
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
         $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
+        $connectCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CONNECTCODE);
 
         if ($code !== 0 || $httpCode >= 400) {
+            // Some exceptions that curl are throwing as CURLE_RECV_ERROR may falsely state that data could
+            // not be received from the remote. However, in some cases, the remote server is actually telling
+            // why curl can not receive data. Those errors are based on HTTP >= 400 responses and should, in
+            // cases where the remote end actually have a proper answer, be returned correctly instead of the generic
+            // CURLE_RECV_ERROR. Among a few examples, this could happen when integrations are using proxy layers
+            // for which the proxy remote end won't allow. Usually the remote proxy may throw 400 or permission
+            // denied errors, which should be used instead of CURLE_RECV_ERROR.
+            $throwCode = $code !== 0 ? $code : $httpCode;
+            if ($connectCode >= 400 && $code === CURLE_RECV_ERROR) {
+                $throwCode = $connectCode;
+            }
+
             throw new CurlException(
-                message: "CURL error (" . ($code !== 0 ? $code : $httpCode) . "): $msg",
-                code: ($code !== 0 ? $code : $httpCode),
+                message: "CURL error (" . $throwCode . "): $msg",
+                code: ($code !== 0 ? $throwCode : $httpCode),
                 requestBody: is_string($body) ? $body : null
             );
         }
