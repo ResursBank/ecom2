@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
+use ReflectionException;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 
 /**
  * API communication object.
@@ -39,7 +41,7 @@ final class Config
         public readonly Basic|null $basicAuth,
         public readonly Jwt|null $jwtAuth,
         public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        public readonly string $userAgent = '',
+        public readonly ?string $userAgent = '',
         public readonly bool $isProduction = false,
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
@@ -52,7 +54,7 @@ final class Config
      * @param Basic|null $basicAuth
      * @param Jwt|null $jwtAuth
      * @param LogLevel $logLevel
-     * @param string $userAgent
+     * @param string|null $userAgent
      * @param bool $isProduction
      * @param string $proxy
      * @param int $proxyType
@@ -64,7 +66,7 @@ final class Config
         Basic|null $basicAuth = null,
         Jwt|null $jwtAuth = null,
         LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
-        string $userAgent = '',
+        ?string $userAgent = '',
         bool $isProduction = false,
         string $proxy = '',
         int $proxyType = 0,
