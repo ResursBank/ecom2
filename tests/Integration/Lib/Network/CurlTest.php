@@ -379,7 +379,7 @@ class CurlTest extends TestCase
         } catch (CurlException $e) {
             $this->markTestSkipped(
                 sprintf(
-                    'Can not run proxy test: caught error (%d) from remote server %s.',
+                    'Can not run proxy test! Caught error (%d) from remote server: %s.',
                     $e->getCode(),
                     $e->getMessage()
                 )
