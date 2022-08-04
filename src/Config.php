@@ -77,7 +77,7 @@ final class Config
             basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
             logLevel: $logLevel,
-            userAgent: self::setupUserAgent($userAgent),
+            userAgent: $userAgent,
             isProduction: $isProduction,
             proxy: $proxy,
             proxyType: $proxyType,
@@ -86,35 +86,6 @@ final class Config
 
 //        self::setupEvents();
 //        self::refreshToken();
-    }
-
-    /**
-     * Prepare user agent data.
-     *
-     * @param string|null $userAgent
-     * @return string
-     * @throws ReflectionException
-     */
-    private static function setupUserAgent(?string $userAgent = ''): string
-    {
-        // Making it possible to utilize a shortened classname as part of the user agent, where we collect version
-        // data automatically from a @version-docblock if it exists..
-        if (class_exists($userAgent)) {
-            $genericAgent = new Generic();
-            $classVersion = $genericAgent->getVersionByClassDoc($userAgent);
-            // Try to extract proper data automatically from the class (shortened) and docblock version.
-            $userAgentClass = explode('\\', $userAgent);
-            $userAgentShortName = count($userAgentClass) ? $userAgentClass[count($userAgentClass) - 1] : $userAgent;
-
-            // Version number will only be added to the class name if it can be found in the docblock.
-            $userAgent = sprintf(
-                '%s%s',
-                $userAgentShortName,
-                !empty($classVersion) ? '-' . $classVersion : ''
-            );
-        }
-
-        return $userAgent;
     }
 
     /*private static function setupEvents(): void

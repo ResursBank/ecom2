@@ -135,6 +135,10 @@ class CurlTest extends TestCase
         );
         $response = $curl->exec();
 
+        $this->assertTrue(
+            strpos($response->body->HTTP_USER_AGENT, self::class) === 0
+        );
+
         $this::assertEquals(
             expected: 'GET',
             actual: $response->body->REQUEST_METHOD
@@ -171,6 +175,10 @@ class CurlTest extends TestCase
             responseContentType: ContentType::JSON,
         );
         $response = $curl->exec();
+
+        $this->assertTrue(
+            strpos($response->body->HTTP_USER_AGENT, $expectRemoteVersion) === 0
+        );
 
         $this::assertEquals(
             expected: 'GET',
