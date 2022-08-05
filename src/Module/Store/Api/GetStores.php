@@ -53,6 +53,7 @@ class GetStores
      * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
+     * @todo Implement $sort and related tests after we have confirm of its structure.
      */
     public function exec(
         int $size = 999999,
