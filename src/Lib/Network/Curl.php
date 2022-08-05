@@ -65,7 +65,7 @@ class Curl
         private readonly StringValidation $stringValidation = new StringValidation(),
         public ?ContentType $responseContentType = null
     ) {
-        if (!$this->responseContentType) {
+        if ($this->responseContentType === null) {
             $this->responseContentType = $this->contentType;
         }
 
@@ -475,7 +475,7 @@ class Curl
             option: CURLOPT_HTTPAUTH,
             value: CURLAUTH_BEARER
         );
-
+        
         curl_setopt(
             handle: $ch,
             option: CURLOPT_XOAUTH2_BEARER,

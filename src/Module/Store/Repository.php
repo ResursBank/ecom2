@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Module\Store\Api\GetStores;
 use Exception;
-use Resursbank\Ecom\Module\Store\Model\Store;
+use Resursbank\Ecom\Module\Store\Models\Store;
 use stdClass;
 
 use function is_array;

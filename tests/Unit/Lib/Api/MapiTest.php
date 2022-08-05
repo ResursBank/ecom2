@@ -84,17 +84,13 @@ class MapiTest extends TestCase
     /**
      * @param string $route
      * @param string $host
-     * @param array $params
      * @return string
      */
     private function getExpectedUrl(
         string $route = '',
-        string $host = Mapi::HOST_TEST,
-        array $params = []
+        string $host = Mapi::URL_TEST
     ): string {
-        $paramList = http_build_query(data: $params);
-
-        return "https://$host/$route" . ($paramList !== '' ? "?$paramList" : '');
+        return "$host$route";
     }
 
     /**
@@ -142,88 +138,9 @@ class MapiTest extends TestCase
         self::assertSame(
             expected: $this->getExpectedUrl(
                 route: $route,
-                host: Mapi::HOST_PROD
+                host: Mapi::URL_PROD
             ),
             actual: $this->mapi->getUrl(route: $route)
-        );
-    }
-
-    /**
-     * Assert getUrl() accepts sequential route segments.
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlAcceptsSequentialParams(): void
-    {
-        $params = ['param1', 'param2', 'param3'];
-        $route = $this->getRoute();
-
-        self::assertSame(
-            expected: $this->getExpectedUrl(route: $route, params: $params),
-            actual: $this->mapi->getUrl(route: $route, params: $params)
-        );
-    }
-
-    /**
-     * Assert getUrl() accepts associative route segments.
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlAcceptsAssocParams(): void
-    {
-        $params = ['test' => 'param1', 'test2' => 'param2', 'bada' => 'param3'];
-        $route = $this->getRoute();
-
-        self::assertSame(
-            expected: $this->getExpectedUrl(route: $route, params: $params),
-            actual: $this->mapi->getUrl(route: $route, params: $params)
-        );
-    }
-
-    /**
-     * Assert getUrl() strips illegal params (objects, null, arrays).
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlStripsIllegalParams(): void
-    {
-        $route = $this->getRoute();
-
-        self::assertSame(
-            expected: $this->getExpectedUrl(route: $route),
-            actual: $this->mapi->getUrl(
-                route: $route,
-                params: ['test' => new stdClass(), 'null' => null, 'omf' => []]
-            )
-        );
-    }
-
-    /**
-     * Assert getUrl() strips converts bool params to 0/1.
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlConvertsBool(): void
-    {
-        $route = $this->getRoute();
-
-        self::assertSame(
-            expected: $this->getExpectedUrl(
-                route: $route,
-                params: ['param1' => 0, 'param2' => 1]
-            ),
-            actual: $this->mapi->getUrl(
-                route: $route,
-                params: ['param1' => false, 'param2' => true]
-            )
         );
     }
 }
