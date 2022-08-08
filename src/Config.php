@@ -88,6 +88,26 @@ final class Config
 //        self::refreshToken();
     }
 
+    /**
+     * Checks if Basic auth is configured
+     *
+     * @return bool
+     */
+    public static function hasBasicAuth(): bool
+    {
+        return isset(self::$instance->basicAuth);
+    }
+
+    /**
+     * Checks if JWT auth is configured
+     *
+     * @return bool
+     */
+    public static function hasJwtAuth(): bool
+    {
+        return isset(self::$instance->jwtAuth);
+    }
+
     /*private static function setupEvents(): void
     {
         self::$eventHub = new Hub();
