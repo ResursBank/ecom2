@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
@@ -19,8 +24,8 @@ use Resursbank\Ecom\Module\Store\Api\GetStores;
 use Exception;
 use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\Ecom\Module\Store\Models\StoreCollection;
-
 use TypeError;
+
 use function is_array;
 use function json_decode;
 

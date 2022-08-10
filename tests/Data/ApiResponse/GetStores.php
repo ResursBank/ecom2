@@ -1,5 +1,12 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Data\ApiResponse;
@@ -18,6 +25,8 @@ use function is_int;
 
 /**
  * Retrieve mock data for tests relating to Store module.
+ * 
+ * @todo Add more data to this class.
  */
 class GetStores
 {
@@ -44,6 +53,46 @@ class GetStores
     }
 ]
 EOD;
+
+    /**
+     * Get a single, random, store from list of stores.
+     *
+     * @return stdClass
+     * @throws JsonException
+     * @throws TestException
+     */
+    public static function getRandomStoreData(): stdClass
+    {
+        $data = json_decode(
+            json: self::$data,
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        if (!is_array(value: $data)) {
+            throw new TestException(
+                message: 'Failed to decode JSON data to array.'
+            );
+        }
+
+        /** @phpstan-ignore-next-line */
+        $item = array_rand(array: $data);
+
+        if (!is_int(value: $item)) {
+            throw new TestException(
+                message: 'Failed to resolve random data index.'
+            );
+        }
+
+        if (!$data[$item] instanceof stdClass) {
+            throw new TestException(
+                message: 'Random data index is not an anonymous object.'
+            );
+        }
+
+        return $data[$item];
+    }
 
     /**
      * Get all stores.

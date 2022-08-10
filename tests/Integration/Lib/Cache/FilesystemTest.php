@@ -142,7 +142,10 @@ class FilesystemTest extends TestCase
      */
     private function getKey(): string
     {
-        return AbstractCache::getKey(key: (string) time());
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'fs-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
     }
 
     /**
@@ -193,7 +196,11 @@ class FilesystemTest extends TestCase
         self::assertDirectoryIsNotWritable(directory: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fileSystem->write(key: $this->key, data: 'Epic data set!', ttl: 0);
+        $this->fileSystem->write(
+            key: $this->key,
+            data: 'Epic data set!',
+            ttl: 0
+        );
     }
 
     /**
@@ -252,7 +259,11 @@ class FilesystemTest extends TestCase
     {
         self::assertDirectoryDoesNotExist(directory: $this->path);
 
-        $this->fileSystem->write(key: $this->key, data: 'Some cool data set', ttl: 0);
+        $this->fileSystem->write(
+            key: $this->key,
+            data: 'Some cool data set',
+            ttl: 0
+        );
 
         self::assertDirectoryExists(directory: $this->path);
     }
@@ -683,7 +694,9 @@ class FilesystemTest extends TestCase
     {
         self::assertFileDoesNotExist(filename: $this->file);
 
-        $this->fileSystem->clear(key: AbstractCache::getKey(key: 'some-bamboozle_not-exist'));
+        $this->fileSystem->clear(
+            key: AbstractCache::getKey(key: 'some-bamboozle_not-exist')
+        );
     }
 
     /**
