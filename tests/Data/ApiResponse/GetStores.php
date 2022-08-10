@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Data\ApiResponse;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
@@ -24,8 +23,8 @@ use function is_array;
 use function is_int;
 
 /**
- * Retrieve mock data for tests relating to Store module.
- * 
+ * Mock data for tests relating to Store module.
+ *
  * @todo Add more data to this class.
  */
 class GetStores
