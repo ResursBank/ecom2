@@ -87,7 +87,7 @@ class StdoutLogger implements LoggerInterface
                 is_subclass_of(object_or_class: $message, class: Error::class)
             )
         ) {
-            $this->logException(exception: $message);
+            $this->logError(error: $message);
         } elseif (LogLevel::loggable(level: $level)) {
             if ($fileHandle = $this->getFileHandle(level: $level)) {
                 $timestamp = new DateTime();
@@ -124,5 +124,17 @@ class StdoutLogger implements LoggerInterface
     private function logException(Exception $exception): void
     {
         $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
+    }
+
+    /**
+     * Log Error object by converting it to a string and feeding it to the log method.
+     *
+     * @param Error $error
+     * @return void
+     * @throws IOException
+     */
+    private function logError(Error $error): void
+    {
+        $this->log(level: LogLevel::ERROR, message: $error->getTraceAsString());
     }
 }
