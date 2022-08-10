@@ -124,13 +124,11 @@ class Header
      */
     private static function getContentType(ContentType $contentType): string
     {
-        $test = match ($contentType) {
+        return match ($contentType) {
             ContentType::EMPTY, ContentType::JSON => 'application/json; charset=utf-8',
             ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
             ContentType::RAW => 'text/plain; charset=utf-8'
         };
-        
-        return $test;
     }
 
     /**
