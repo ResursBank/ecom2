@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Data\ApiResponse;
 
+use Exception;
 use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\Store\Models\Store;
+use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 use stdClass;
 
 use function is_array;
@@ -41,42 +46,15 @@ class GetStores
 EOD;
 
     /**
-     * Get a single, random, store from list of stores.
-     *
-     * @return stdClass
-     * @throws TestException
-     * @throws JsonException
-     */
-    public static function getRandomStoreData(): stdClass
-    {
-        $data = self::getStores();
-
-        /** @phpstan-ignore-next-line */
-        $item = array_rand(array: $data);
-
-        if (!is_int(value: $item)) {
-            throw new TestException(
-                message: 'Failed to resolve random data index.'
-            );
-        }
-
-        if (!$data[$item] instanceof stdClass) {
-            throw new TestException(
-                message: 'Random data index is not an anonymous object.'
-            );
-        }
-
-        return $data[$item];
-    }
-
-    /**
      * Get all stores.
      *
-     * @return array
+     * @return StoreCollection
      * @throws JsonException
      * @throws TestException
+     * @throws ReflectionException
+     * @psalm-suppress MixedInferredReturnType
      */
-    public static function getStores(): array
+    public static function getStores(): StoreCollection
     {
         /** @noinspection PhpRedundantOptionalArgumentInspection */
         $data = json_decode(
@@ -90,6 +68,10 @@ EOD;
             throw new TestException(message: 'Test data corrupt.');
         }
 
-        return $data;
+        /** @psalm-suppress MixedReturnStatement */
+        return DataConverter::arrayToCollection(
+            data: $data,
+            targetType: Store::class
+        );
     }
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Log;
 
+use Error;
 use Exception;
 
 /**
@@ -17,10 +18,10 @@ use Exception;
 interface LoggerInterface
 {
     /**
-     * @param string|Exception $message
+     * @param string|Exception|Error $message
      * @return void
      */
-    public function debug(string|Exception $message): void;
+    public function debug(string|Exception|Error $message): void;
 
     /**
      * @param string|Exception $message

@@ -6,20 +6,21 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Store;
 
+use Error;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\CacheException;
-use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Module\Store\Api\GetStores;
 use Exception;
 use Resursbank\Ecom\Module\Store\Models\Store;
-use stdClass;
+use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 
+use TypeError;
 use function is_array;
 use function json_decode;
 
@@ -39,42 +40,34 @@ class Repository
     public const CACHE_TTL = 3600;
 
     /**
-     * @param bool $silent | Write Exceptions to debug log then suppress them.
-     * @return null|array
-     * @throws CacheException
+     * NOTE: GetStores DI to support testing.
+     *
+     * @param GetStores $api
+     * @return StoreCollection
      * @throws ApiException
+     * @throws CacheException
      */
     public static function read(
-        bool $silent = true
-    ): ?array {
-        $result = null;
+        GetStores $api = new GetStores()
+    ): StoreCollection {
+        $result = self::readCache();
 
-        try {
-            $result = self::readCache(silent: $silent);
+        if ($result === null) {
+            $result = self::readApi(api: $api);
 
-            if ($result === null) {
-                $result = self::readApi(silent: $silent);
-            }
-        } catch (CacheException | ApiException $e) {
-            if (!$silent) {
-                throw $e;
-            }
+            self::writeCache(data: $result->toArray());
         }
 
         return $result;
     }
 
     /**
-     * NOTE: Exceptions can only occur if $silent is assigned false.
-     *
-     * @param bool $silent | Do not throw Exceptions upstream after logging.
-     * @return array|null
+     * @return StoreCollection|null
      * @throws CacheException
      */
-    public static function readCache(
-        bool $silent = true
-    ): ?array {
-        $result = [];
+    public static function readCache(): ?StoreCollection
+    {
+        $result = null;
 
         $data = Config::$instance->cache->read(
             key: AbstractCache::getKey(key: self::CACHE_KEY)
@@ -92,100 +85,73 @@ class Repository
                     depth: 512,
                     flags: JSON_THROW_ON_ERROR
                 );
+
+                if (!is_array(value: $data)) {
+                    throw new IllegalTypeException(
+                        message: 'Expected array got ' . gettype(value: $data)
+                    );
+                }
             }
 
             if (is_array(value: $data)) {
-                $result = self::parseData(data: $data);
+                /** @psalm-suppress MixedAssignment */
+                $cache = DataConverter::arrayToCollection(
+                    data: $data,
+                    targetType: Store::class
+                );
+
+                if ($cache instanceof StoreCollection && count($cache) > 0) {
+                    $result = $cache;
+                }
             }
-        } catch (JsonException | ValidationException | ReflectionException $e) {
+        } catch (TypeError | JsonException | ReflectionException | IllegalTypeException $e) {
             self::debug(
                 cause: 'Corrupt cache data.',
                 exception: $e,
                 data: serialize(value: $data)
             );
 
-            if (!$silent) {
-                throw new CacheException(
-                    message: 'A problem occurred while reading data from ' .
-                        'cache. Please see the debug log for more info.'
-                );
-            }
-        }
-
-        return count($result) > 0 ? $result : null;
-    }
-
-    /**
-     * NOTE: Exceptions can only occur if $silent is assigned false.
-     *
-     * @param Request $request
-     * @param bool $silent | Do not throw Exceptions upstream after logging.
-     * @return array|null
-     * @throws ApiException
-     * @todo At the time of writing stubs cannot be initialized
-     */
-    public static function readApi(
-        GetPaymentMethods $api = new GetPaymentMethods(),
-        bool $silent = true
-    ): ?array {
-        $result = null;
-
-        try {
-            $result = $api->exec();
-            ///$result = $request->execute()->getData();
-
-            die(var_dump($result));
-
-            if ($result !== null && count($result)) {
-                self::writeCache(data: $result, silent: $silent);
-                $result = self::parseData(data: $result);
-            }
-        } catch (Exception $e) {
-            self::debug(
-                cause: 'There was a problem reading data from Api.',
-                exception: $e,
-                data: serialize(value: $result)
+            throw new CacheException(
+                message: 'A problem occurred while reading data from ' .
+                    'cache. Please see the debug log for more info.'
             );
-
-            if (!$silent) {
-                throw new ApiException(
-                    message: 'Error while fetching payment methods from the ' .
-                        'API. Please see debug log for mor info.'
-                );
-            }
         }
 
         return $result;
     }
 
     /**
-     * Write information to debug log.
+     * NOTE: This method ends either with a valid dataset or an exception.
+     * NOTE: $api is supplied through dependency injection to support testing.
      *
-     * @param string $cause
-     * @param Exception $exception
-     * @param string $data
-     * @return void
+     * @param GetStores $api
+     * @return StoreCollection
+     * @throws ApiException
      */
-    private static function debug(
-        string $cause,
-        Exception $exception,
-        string $data
-    ): void {
-        Config::$instance->logger->debug(message: '--------------------------');
-        Config::$instance->logger->debug(message: $cause);
-        Config::$instance->logger->debug(message: $exception);
-        Config::$instance->logger->debug(message: serialize(value: $data));
-        Config::$instance->logger->debug(message: '--------------------------');
+    public static function readApi(
+        GetStores $api = new GetStores()
+    ): StoreCollection {
+        try {
+            return $api->exec();
+        } catch (Exception $e) {
+            self::debug(
+                cause: 'There was a problem reading data from Api.',
+                exception: $e
+            );
+
+            throw new ApiException(
+                message: 'Error while fetching stores from the API. Please ' .
+                    'see debug log for more info.'
+            );
+        }
     }
 
     /**
      * @param array $data
-     * @param bool $silent | Do not throw Exceptions upstream after logging.
      * @throws CacheException
      */
     private static function writeCache(
         array $data,
-        bool $silent = true
     ): void {
         try {
             Config::$instance->cache->write(
@@ -199,9 +165,7 @@ class Repository
                 exception: $e,
                 data: serialize(value: $data)
             );
-        }
 
-        if (!$silent) {
             throw new CacheException(
                 message: 'Failed writing to cache. See debug log for more info.'
             );
@@ -209,35 +173,22 @@ class Repository
     }
 
     /**
-     * Parse data from cache / API request to entity collection.
+     * Write information to debug log.
      *
-     * @param array $data
-     * @param ArrayValidation $arrayValidation
-     * @return array
-     * @throws ValidationException
-     * @throws ReflectionException
-     * @todo When the Collection base class is completed we should utilize that instead of an array.
+     * @param string $cause
+     * @param Exception|Error $exception
+     * @param string $data
+     * @return void
      */
-    private static function parseData(
-        array $data,
-        ArrayValidation $arrayValidation = new ArrayValidation()
-    ): array {
-        $result = [];
-
-        // Make sure array is sequential.
-        $arrayValidation->isSequential(data: $data);
-
-        // Make sure array consists of arrays.
-        $arrayValidation->isStdClassCollection(data: $data);
-
-        /** @var stdClass $item */
-        foreach ($data as $item) {
-            $result[] = DataConverter::stdClassToType(
-                object: $item,
-                type: Method::class
-            );
-        }
-
-        return $result;
+    private static function debug(
+        string $cause,
+        Exception|Error $exception,
+        string $data = ''
+    ): void {
+        Config::$instance->logger->debug(message: '--------------------------');
+        Config::$instance->logger->debug(message: $cause);
+        Config::$instance->logger->debug(message: $exception);
+        Config::$instance->logger->debug(message: serialize(value: $data));
+        Config::$instance->logger->debug(message: '--------------------------');
     }
 }
