@@ -25,13 +25,11 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Module\Rco\Models\Address;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Customer;
-use Resursbank\Ecom\Module\Rco\Models\InitPayment\OrderLine;
-use Resursbank\Ecom\Module\Rco\Models\InitPayment\OrderLineCollection;
+use Resursbank\Ecom\Module\Rco\Models\OrderLine;
+use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdateRequest;
-use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLine as UpdateOrderLine;
-use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\OrderLineCollection as UpdateOrderLineCollection;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
 
 /**
@@ -148,9 +146,9 @@ final class RepositoryTest extends TestCase
         );
 
         $request = new UpdateRequest(
-            orderLines: new UpdateOrderLineCollection(
+            orderLines: new OrderLineCollection(
                 data: [
-                    new UpdateOrderLine(
+                    new OrderLine(
                         artNo: 'Updated-1234',
                         description: 'Updated product',
                         quantity: 2,
@@ -193,9 +191,9 @@ final class RepositoryTest extends TestCase
         );
 
         $request = new UpdateRequest(
-            orderLines: new UpdateOrderLineCollection(
+            orderLines: new OrderLineCollection(
                 data: [
-                    new UpdateOrderLine(
+                    new OrderLine(
                         artNo: 'Updated-1234',
                         description: 'Updated product',
                         quantity: 2,
