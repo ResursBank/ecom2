@@ -147,6 +147,16 @@ class Repository
     }
 
     /**
+     * @return void
+     */
+    public static function clearCache(): void
+    {
+        Config::$instance->cache->clear(
+            key: AbstractCache::getKey(key: self::CACHE_KEY)
+        );
+    }
+
+    /**
      * @param array $data
      * @throws CacheException
      */
