@@ -14,5 +14,6 @@
         <env name="JWT_AUTH_CLIENT_ID" value="REPLACEME" force="true" />
         <env name="JWT_AUTH_CLIENT_SECRET" value="REPLACEME" force="true" />
         <env name="JWT_AUTH_SCOPE" value="mock-merchant-api" force="true" />
-        <env name="JWT_AUTH_GRANT_TYPE" value="client_credentials" force="true" />    </php>
+        <env name="JWT_AUTH_GRANT_TYPE" value="client_credentials" force="true" />
+    </php>
 </phpunit>
