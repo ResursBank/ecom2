@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Rco\Models\InitPayment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
+use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
 
 /**
  * Defines an InitPayment request object

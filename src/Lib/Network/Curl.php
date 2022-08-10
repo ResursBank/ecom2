@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network;
 
+use Exception;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
 use CurlHandle;
 use JsonException;
@@ -97,7 +99,7 @@ class Curl
             );
         }
 
-        $code = (int) curl_getinfo(
+        $code = (int)curl_getinfo(
             handle: $this->ch,
             option: CURLINFO_RESPONSE_CODE
         );
@@ -253,6 +255,7 @@ class Curl
      * @return CurlHandle
      * @throws JsonException
      * @throws ValidationException
+     * @throws Exception
      * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
      */
     private function init(
@@ -400,21 +403,6 @@ class Curl
     }
 
     /**
-     * @return string
-     * @todo Dropped classname from user agent, didn't seem to make sense, we should however include the version
-     * @todo specified in composer.json (see PrestaShop Core psrbcore/src/Traits/Module/Init.php for example).
-     * @todo Add back what module class called Curl.
-     */
-    public function getUserAgent(): string
-    {
-        return implode(separator: ' +', array: array_filter(array: [
-            Config::$instance->userAgent,
-            'ECom2-', // @todo Put version from composer.json here.
-            sprintf('PHP-%s', PHP_VERSION),
-        ]));
-    }
-
-    /**
      * @param CurlHandle $ch
      * @return void
      * @throws CurlException
@@ -493,11 +481,24 @@ class Curl
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
         $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
+        $connectCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CONNECTCODE);
 
         if ($code !== 0 || $httpCode >= 400) {
+            // Some exceptions that curl are throwing as CURLE_RECV_ERROR may falsely state that data could
+            // not be received from the remote. However, in some cases, the remote server is actually telling
+            // why curl can not receive data. Those errors are based on HTTP >= 400 responses and should, in
+            // cases where the remote end actually have a proper answer, be returned correctly instead of the generic
+            // CURLE_RECV_ERROR. Among a few examples, this could happen when integrations are using proxy layers
+            // for which the proxy remote end won't allow. Usually the remote proxy may throw 400 or permission
+            // denied errors, which should be used instead of CURLE_RECV_ERROR.
+            $throwCode = $code !== 0 ? $code : $httpCode;
+            if ($connectCode >= 400 && $code === CURLE_RECV_ERROR) {
+                $throwCode = $connectCode;
+            }
+
             throw new CurlException(
-                message: "CURL error (" . ($code !== 0 ? $code : $httpCode) . "): $msg",
-                code: ($code !== 0 ? $code : $httpCode),
+                message: "CURL error (" . $throwCode . "): $msg",
+                code: ($code !== 0 ? $throwCode : $httpCode),
                 requestBody: is_string($body) ? $body : null
             );
         }

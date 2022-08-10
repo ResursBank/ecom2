@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Integration\Lib\Network;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -26,6 +27,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
 
 /**
@@ -43,6 +45,22 @@ class CurlTest extends TestCase
      * @var string $proxyHost
      */
     private string $proxyHost = '212.63.208.8';
+
+    /**
+     * Almost-random proxy ip to test prohibited requests.
+     *
+     * @var string $badProxyHost
+     */
+    private string $badProxyHost = '95.216.170.246';
+
+    /**
+     * The server at 95.216.170.246 throws a HTTP 400 rather than 403 since the remote is a non-proxy nginx setup.
+     * If you ever change the $badProxyHost, make sure you match the errors returned from the server by changing
+     * this value.
+     *
+     * @var int $expectBadProxyStatusCode
+     */
+    private int $expectBadProxyStatusCode = 400;
 
     /**
      * Verify that Basic auth properties are set when creating a Basic auth instance
@@ -120,16 +138,63 @@ class CurlTest extends TestCase
     public function testRealGetRequest(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            userAgent: self::class
         );
+
         $curl = new Curl(
             url: 'https://ipv4.netcurl.org',
             requestMethod: RequestMethod::GET,
             contentType: ContentType::URL,
             authType: AuthType::NONE,
-            responseContentType: ContentType::JSON
+            responseContentType: ContentType::JSON,
         );
         $response = $curl->exec();
+
+        $this->assertTrue(
+            strpos($response->body->HTTP_USER_AGENT, self::class) === 0
+        );
+
+        $this::assertEquals(
+            expected: 'GET',
+            actual: $response->body->REQUEST_METHOD
+        );
+        $this->assertSame(
+            expected: 200,
+            actual: $response->code
+        );
+    }
+
+    /**
+     * Test to make sure that remote requests really works.
+     *
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testRealGetRequestWithCustomUserAgent(): void
+    {
+        $expectRemoteVersion = 'EComTest-Custom-' . (new Generic())->getVersionByClassDoc(self::class);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            userAgent: $expectRemoteVersion
+        );
+
+        $curl = new Curl(
+            url: 'https://ipv4.netcurl.org',
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::URL,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::JSON,
+        );
+        $response = $curl->exec();
+
+        $this->assertTrue(
+            strpos($response->body->HTTP_USER_AGENT, $expectRemoteVersion) === 0
+        );
 
         $this::assertEquals(
             expected: 'GET',
@@ -280,13 +345,9 @@ class CurlTest extends TestCase
     /**
      * Verify that proxy connections work
      *
-     * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws TypeException
      */
     public function testProxy(): void
     {
@@ -307,12 +368,48 @@ class CurlTest extends TestCase
             responseContentType: ContentType::JSON
         );
 
-        $response = $curl->exec();
+        try {
+            $response = $curl->exec();
 
-        // Request should reflect the proxy ip, not your own.
-        self::assertSame(
-            $this->proxyHost,
-            $response->body->ip
+            // Request should reflect the proxy ip, not your own.
+            self::assertSame(
+                $this->proxyHost,
+                $response->body->ip
+            );
+        } catch (CurlException $e) {
+            $this->markTestSkipped(
+                sprintf(
+                    'Can not run proxy test! Caught error (%d) from remote server: %s.',
+                    $e->getCode(),
+                    $e->getMessage()
+                )
+            );
+        }
+    }
+
+    /**
+     * Verify that proxy connections work
+     *
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
+     */
+    public function testBadProxy(): void
+    {
+        $this->expectExceptionCode(code: $this->expectBadProxyStatusCode);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            proxy: sprintf('%s:80', $this->badProxyHost)
+        );
+
+        Curl::get(
+            url: 'https://ipv4.netcurl.org',
+            authType: AuthType::NONE
         );
     }
 
@@ -330,7 +427,7 @@ class CurlTest extends TestCase
      */
     public function testFileNotFound(): void
     {
-        $this->expectExceptionCode(code:404);
+        $this->expectExceptionCode(code: 404);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class)
@@ -338,6 +435,30 @@ class CurlTest extends TestCase
 
         Curl::get(
             url: 'https://ipv4.netcurl.org/http.php?code=404',
+            authType: AuthType::NONE
+        );
+    }
+
+    /**
+     * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws TypeException
+     * @throws ValidationException
+     */
+    public function testPermissionDenied(): void
+    {
+        $this->expectExceptionCode(code: 403);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class)
+        );
+
+        Curl::get(
+            url: 'https://ipv4.netcurl.org/http.php?code=403',
             authType: AuthType::NONE
         );
     }

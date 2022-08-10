@@ -90,4 +90,24 @@ final class Config
             timeout: $timeout
         );
     }
+
+    /**
+     * Checks if Basic auth is configured
+     *
+     * @return bool
+     */
+    public static function hasBasicAuth(): bool
+    {
+        return isset(self::$instance->basicAuth);
+    }
+
+    /**
+     * Checks if JWT auth is configured
+     *
+     * @return bool
+     */
+    public static function hasJwtAuth(): bool
+    {
+        return isset(self::$instance->jwtAuth);
+    }
 }

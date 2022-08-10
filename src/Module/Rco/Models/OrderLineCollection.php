@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Rco\Models\UpdatePayment;
+namespace Resursbank\Ecom\Module\Rco\Models;
 
 use Resursbank\Ecom\Lib\Collection\Collection;
 
