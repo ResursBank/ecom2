@@ -92,10 +92,7 @@ class GetStoresTest extends TestCase
      */
     public function testExecFetchAll(): void
     {
-        self::assertNotCount(
-            expectedCount: 0,
-            haystack: $this->api->exec()
-        );
+        self::assertNotEmpty(actual: $this->api->exec());
     }
 
     /**
