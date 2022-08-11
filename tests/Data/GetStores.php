@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Data\ApiResponse;
+namespace Resursbank\EcomTest\Data;
 
 use JsonException;
 use ReflectionException;

@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Store\Models\Store;
-use Resursbank\EcomTest\Data\ApiResponse\GetStores;
+use Resursbank\EcomTest\Data\GetStores;
 use stdClass;
 
 /**

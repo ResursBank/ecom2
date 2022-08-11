@@ -24,7 +24,7 @@ use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Module\Store\Api\GetStores as Api;
 use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 use Resursbank\Ecom\Module\Store\Repository;
-use Resursbank\EcomTest\Data\ApiResponse\GetStores;
+use Resursbank\EcomTest\Data\GetStores;
 use TypeError;
 
 use function is_array;
