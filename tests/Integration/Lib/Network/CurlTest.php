@@ -407,10 +407,20 @@ class CurlTest extends TestCase
             proxy: sprintf('%s:80', $this->badProxyHost)
         );
 
-        Curl::get(
-            url: 'https://ipv4.netcurl.org',
-            authType: AuthType::NONE
-        );
+        try {
+            Curl::get(
+                url: 'https://ipv4.netcurl.org',
+                authType: AuthType::NONE
+            );
+        } catch (CurlException $e) {
+            $this->markTestSkipped(
+                sprintf(
+                    'Can not run proxy test! Caught error (%d) from remote server: %s.',
+                    $e->getCode(),
+                    $e->getMessage()
+                )
+            );
+        }
     }
 
     /**
