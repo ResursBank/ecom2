@@ -12,8 +12,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Resursbank\\Ecom\\": "src/",
-      "Resursbank\\EcomTest\\Data\\": "tests/Data"
+      "Resursbank\\Ecom\\": "src/"
     }
   },
     "require": {
