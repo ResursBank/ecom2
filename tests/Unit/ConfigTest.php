@@ -19,6 +19,8 @@ use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
  * Tests Config class functionality
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * 
+ * @todo Improve test coverage.
  */
 class ConfigTest extends TestCase
 {

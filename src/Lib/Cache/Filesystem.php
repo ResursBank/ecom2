@@ -73,21 +73,25 @@ class Filesystem extends AbstractCache implements CacheInterface
     public function write(string $key, string $data, int $ttl): void
     {
         // Make sure the key consists of valid characters.
-        $this->validateKey($key);
+        $this->validateKey(key: $key);
 
         // Create the cache directory, if it's missing.
         $this->createPath();
 
         // Create the cache file.
-        $filename = $this->getFile($key);
+        $filename = $this->getFile(key: $key);
 
-        if (file_exists($filename)) {
-            if (!is_file($filename)) {
-                throw new FilesystemException("$filename is not a file.");
+        if (file_exists(filename: $filename)) {
+            if (!is_file(filename: $filename)) {
+                throw new FilesystemException(
+                    message: "$filename is not a file."
+                );
             }
 
-            if (!is_writable($filename)) {
-                throw new FilesystemException("$filename is not writable.");
+            if (!is_writable(filename: $filename)) {
+                throw new FilesystemException(
+                    message: "$filename is not writable."
+                );
             }
         }
 
@@ -104,21 +108,25 @@ class Filesystem extends AbstractCache implements CacheInterface
     public function clear(string $key): void
     {
         // Make sure the key consists of valid characters.
-        $this->validateKey($key);
+        $this->validateKey(key: $key);
 
         // Read cache file.
-        $file = $this->getFile($key);
+        $file = $this->getFile(key: $key);
 
-        if (file_exists($file)) {
-            if (!is_file($file)) {
-                throw new FilesystemException("$file is not a regular file.");
+        if (file_exists(filename: $file)) {
+            if (!is_file(filename: $file)) {
+                throw new FilesystemException(
+                    message: "$file is not a regular file."
+                );
             }
 
-            if (!is_writable($file)) {
-                throw new FilesystemException("$file is not writable.");
+            if (!is_writable(filename: $file)) {
+                throw new FilesystemException(
+                    message: "$file is not writable."
+                );
             }
 
-            unlink($file);
+            unlink(filename: $file);
         }
     }
 
@@ -131,22 +139,31 @@ class Filesystem extends AbstractCache implements CacheInterface
      */
     private function createPath(): void
     {
-        if (file_exists($this->path) && is_file($this->path)) {
-            throw new FilesystemException("$this->path is a file.");
+        if (
+            file_exists(filename: $this->path) &&
+            is_file(filename: $this->path)
+        ) {
+            throw new FilesystemException(message: "$this->path is a file.");
         }
 
         if (
-            !file_exists($this->path) &&
-            !mkdir(directory: $this->path, permissions: 0755, recursive: true) &&
-            !is_dir($this->path)
+            !file_exists(filename: $this->path) &&
+            !mkdir(
+                directory: $this->path,
+                permissions: 0755,
+                recursive: true
+            ) &&
+            !is_dir(filename: $this->path)
         ) {
             throw new FilesystemException(
-                "Failed to create cache dir $this->path"
+                message: "Failed to create cache dir $this->path"
             );
         }
 
-        if (!is_writable($this->path)) {
-            throw new FilesystemException("$this->path is not writable.");
+        if (!is_writable(filename: $this->path)) {
+            throw new FilesystemException(
+                message: "$this->path is not writable."
+            );
         }
     }
 
@@ -170,8 +187,12 @@ class Filesystem extends AbstractCache implements CacheInterface
     ): string {
         $result = '';
 
-        if (file_exists($file) && is_file($file) && is_readable($file)) {
-            $result = file_get_contents($file);
+        if (
+            file_exists(filename: $file) &&
+            is_file(filename: $file) &&
+            is_readable(filename: $file)
+        ) {
+            $result = file_get_contents(filename: $file);
         }
 
         return $result;
@@ -189,7 +210,7 @@ class Filesystem extends AbstractCache implements CacheInterface
         $split = strpos(haystack: $content, needle: '|');
 
         // Make sure we got a split pointer.
-        if (is_int($split) && $split > 1) {
+        if (is_int(value: $split) && $split > 1) {
             $result = $split;
         }
 

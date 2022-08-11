@@ -14,8 +14,6 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
-use function is_string;
-
 /**
  * API credentials configuration object.
  */
@@ -24,12 +22,17 @@ class Mapi
     /**
      * Production endpoint.
      */
-    public const HOST_PROD = 'checkout.resurs.com';
+    public const URL_PROD = 'https://apigw.resurs.com/api/';
 
     /**
      * Test endpoint.
      */
-    public const HOST_TEST = 'omnitest.resurs.com';
+    public const URL_TEST = 'https://apigw.integration.resurs.com/api/';
+
+    /**
+     * Common prefix route name for all API calls.
+     */
+    public const COMMON_ROUTE = 'mock_merchant_api_service';
 
     /**
      * @param StringValidation $stringValidation
@@ -51,24 +54,10 @@ class Mapi
         array $params = []
     ): string {
         $this->stringValidation->notEmpty(value: $route);
-        $this->stringValidation->matchRegex(
-            value: $route,
-            pattern: '/^[a-z\d]+$/i'
-        );
-
-        $paramList = implode(separator: '/', array: array_map(
-            static function (string $v, mixed $k): string {
-                return is_string(value: $k) ? "$k/$v" : $v;
-            },
-            $params,
-            array_keys(array: $params)
-        ));
 
         return (
-            'https://' .
-            (Config::$instance->isProduction ? self::HOST_PROD : self::HOST_TEST) .
-            "/$route" .
-            ($paramList !== '' ? "/$paramList" : '')
+            (Config::$instance->isProduction ? self::URL_PROD : self::URL_TEST) .
+            $route 
         );
     }
 }

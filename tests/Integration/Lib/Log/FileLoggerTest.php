@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Log;
 
+use Error;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -114,7 +115,7 @@ final class FileLoggerTest extends TestCase
         $lines = file(filename: $filename);
 
         /** @noinspection OffsetOperationsInspection */
-        return is_array($lines) && count($lines) >= 1 ? $lines[count($lines) - 1] : '';
+        return is_array(value: $lines) && count($lines) >= 1 ? $lines[count($lines) - 1] : '';
     }
 
     /**
@@ -125,11 +126,11 @@ final class FileLoggerTest extends TestCase
     public function testLoggingFailure(): void
     {
         if ($this->isPipeline()) {
-            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            $this->markTestSkipped(message: 'This test is running from a pipeline project and probably as root.');
         }
 
         if (!chmod(filename: $this->filename, permissions: 0000)) {
-            $this::markTestSkipped('Failed to set file permissions');
+            $this::markTestSkipped(message: 'Failed to set file permissions');
         }
 
         $className = false;
@@ -246,7 +247,22 @@ final class FileLoggerTest extends TestCase
     public function testLogException(): void
     {
         $exception = new Exception();
-        Config::$instance->logger->debug($exception);
+        Config::$instance->logger->debug(message: $exception);
+        $numLines = count(value: file(filename: $this->filename));
+        $lastLine = $this->getLastLineFromFile(filename: $this->filename);
+        $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
+        $this::assertEquals(expected: $expectedLastLine, actual: $lastLine);
+    }
+
+    /**
+     * Assert log() will log Error objects.
+     *
+     * @return void
+     */
+    public function testDebugLogsError(): void
+    {
+        $error = new Error();
+        Config::$instance->logger->debug(message: $error);
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
@@ -333,7 +349,7 @@ final class FileLoggerTest extends TestCase
     {
         $fakePath = $this->path . bin2hex(string: random_bytes(length: 8));
 
-        if (file_exists($fakePath)) {
+        if (file_exists(filename: $fakePath)) {
             $this::markTestSkipped(message: "Path exists when it shouldn't, skipping");
         }
 
@@ -367,7 +383,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        unlink($filePath);
+        unlink(filename: $filePath);
 
         $this::assertSame(expected: FilesystemException::class, actual: $className);
     }
@@ -380,7 +396,7 @@ final class FileLoggerTest extends TestCase
     public function testValidatePathWhichIsUnwritable(): void
     {
         if ($this->isPipeline()) {
-            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            $this->markTestSkipped(message: 'This test is running from a pipeline project and probably as root.');
         }
 
         if (!chmod(filename: $this->path, permissions: 0400)) {
@@ -389,7 +405,7 @@ final class FileLoggerTest extends TestCase
 
         $className = false;
         try {
-            new FileLogger($this->path);
+            new FileLogger(path: $this->path);
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }

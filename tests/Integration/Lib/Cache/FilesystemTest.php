@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Cache;
@@ -14,6 +16,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use stdClass;
 
@@ -67,12 +70,13 @@ class FilesystemTest extends TestCase
     /**
      * @return void
      * @throws Exception
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
-        // For pipelines.
+        // Whether tests are executed from a pipeline, specified in phpunit.xml
         if (isset($_ENV['is_pipeline'])) {
-            $this->isPipeline = (bool)$_ENV['is_pipeline'];
+            $this->isPipeline = (bool) $_ENV['is_pipeline'];
         }
 
         // Create directory where all other directories / files will be created
@@ -138,7 +142,10 @@ class FilesystemTest extends TestCase
      */
     private function getKey(): string
     {
-        return 'test' . random_int(min: 0, max: 999999);
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'fs-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
     }
 
     /**
@@ -189,7 +196,11 @@ class FilesystemTest extends TestCase
         self::assertDirectoryIsNotWritable(directory: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fileSystem->write(key: $this->key, data: 'Epic data set!', ttl: 0);
+        $this->fileSystem->write(
+            key: $this->key,
+            data: 'Epic data set!',
+            ttl: 0
+        );
     }
 
     /**
@@ -248,7 +259,11 @@ class FilesystemTest extends TestCase
     {
         self::assertDirectoryDoesNotExist(directory: $this->path);
 
-        $this->fileSystem->write(key: $this->key, data: 'Some cool data set', ttl: 0);
+        $this->fileSystem->write(
+            key: $this->key,
+            data: 'Some cool data set',
+            ttl: 0
+        );
 
         self::assertDirectoryExists(directory: $this->path);
     }
@@ -299,8 +314,11 @@ class FilesystemTest extends TestCase
     public function testWriteThrowsIfCacheFileIsNotWritable(): void
     {
         if ($this->isPipeline()) {
-            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            self::markTestSkipped(
+                message: 'Pipeline runs as root, privileges breaks this tests.'
+            );
         }
+
         mkdir(directory: $this->path, permissions: 0755);
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0500);
@@ -331,7 +349,9 @@ class FilesystemTest extends TestCase
     public function testWriteThrowsWithExistingDirectory(): void
     {
         if ($this->isPipeline()) {
-            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            self::markTestSkipped(
+                message: 'Pipeline runs as root, privileges breaks this tests.'
+            );
         }
 
         mkdir(directory: $this->path, permissions: 0700);
@@ -433,7 +453,9 @@ class FilesystemTest extends TestCase
     public function testReadWithUnreadableCacheFileReturnsNull(): void
     {
         if ($this->isPipeline()) {
-            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            self::markTestSkipped(
+                message: 'Pipeline runs as root, privileges breaks this tests.'
+            );
         }
 
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
@@ -672,7 +694,9 @@ class FilesystemTest extends TestCase
     {
         self::assertFileDoesNotExist(filename: $this->file);
 
-        $this->fileSystem->clear(key: 'some-bamboozle_not-exist');
+        $this->fileSystem->clear(
+            key: AbstractCache::getKey(key: 'some-bamboozle_not-exist')
+        );
     }
 
     /**
@@ -705,7 +729,9 @@ class FilesystemTest extends TestCase
     public function testClearThrowsWhenFileNotWritable(): void
     {
         if ($this->isPipeline()) {
-            $this->markTestSkipped('This test is running from a pipeline project and probably as root.');
+            self::markTestSkipped(
+                message: 'Pipeline runs as root, privileges breaks this tests.'
+            );
         }
 
         mkdir(directory: $this->path, permissions: 0755, recursive: true);

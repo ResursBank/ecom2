@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Log;
 
 use DateTime;
+use Error;
 use Exception;
 use Resursbank\Ecom\Exception\EmptyException;
 use Resursbank\Ecom\Exception\FilesystemException;
@@ -48,11 +49,11 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level DEBUG
      *
-     * @param string|Exception $message
+     * @param string|Exception|Error $message
      * @return void
      * @throws FilesystemException
      */
-    public function debug(string|Exception $message): void
+    public function debug(string|Exception|Error $message): void
     {
         $this->log(level: LogLevel::DEBUG, message: $message);
     }
@@ -97,11 +98,11 @@ class FileLogger implements LoggerInterface
      * Write log entry to file on disk.
      *
      * @param LogLevel $level
-     * @param string|Exception $message
+     * @param string|Exception|Error $message
      * @return void
      * @throws FilesystemException
      */
-    private function log(LogLevel $level, string|Exception $message): void
+    private function log(LogLevel $level, string|Exception|Error $message): void
     {
         /**
          * @psalm-suppress RedundantCondition
@@ -110,10 +111,18 @@ class FileLogger implements LoggerInterface
             is_object(value: $message) &&
             (
                 get_class(object: $message) === Exception::class ||
-                is_subclass_of(object_or_class: $message, class: Exception::class) // @phpstan-ignore-line
+                is_subclass_of(object_or_class: $message, class: Exception::class)
             )
         ) {
             $this->logException(exception: $message);
+        } elseif (
+            is_object(value: $message) &&
+            (
+                get_class(object: $message) === Error::class ||
+                is_subclass_of(object_or_class: $message, class: Error::class)
+            )
+        ) {
+            $this->logError(error: $message);
         } elseif (LogLevel::loggable(level: $level)) {
             $timestamp = new DateTime();
             $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
@@ -144,6 +153,18 @@ class FileLogger implements LoggerInterface
     private function logException(Exception $exception): void
     {
         $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
+    }
+
+    /**
+     * Log Error object by converting it to a string and feeding it to the log method.
+     *
+     * @param Error $error
+     * @return void
+     * @throws FilesystemException
+     */
+    private function logError(Error $error): void
+    {
+        $this->log(level: LogLevel::ERROR, message: $error->getTraceAsString());
     }
 
     /**

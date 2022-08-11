@@ -67,7 +67,7 @@ class Curl
         private readonly StringValidation $stringValidation = new StringValidation(),
         public ?ContentType $responseContentType = null
     ) {
-        if (!$this->responseContentType) {
+        if ($this->responseContentType === null) {
             $this->responseContentType = $this->contentType;
         }
 

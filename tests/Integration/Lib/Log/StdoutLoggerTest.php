@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Verifies that the
  * @psalm-suppress PropertyNotSetInConstructor
+ * @todo Completed test coverage.
  */
 class StdoutLoggerTest extends TestCase
 {

@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Lib\Cache;
 
 use PHPUnit\Framework\TestCase;
+use RedisException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Cache\Redis;
 use Exception;
 use Redis as Server;
@@ -25,8 +27,14 @@ class RedisTest extends TestCase
 {
     private const REDIS_HOST = 'redis';
 
+    /**
+     * @var Redis
+     */
     private Redis $redis;
 
+    /**
+     * @var string
+     */
     private string $key;
 
     /**
@@ -39,22 +47,17 @@ class RedisTest extends TestCase
     {
         $this->redis = new Redis(host: self::REDIS_HOST);
 
-        $this->key = $this->getKey();
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        $this->key = AbstractCache::getKey(
+            key: 'redis-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
 
         parent::setUp();
     }
 
     /**
-     * @return string
-     * @throws Exception
-     */
-    private function getKey(): string
-    {
-        return 'test' . random_int(min: 0, max: 999999);
-    }
-
-    /**
      * @return Server
+     * @throws RedisException
      */
     private function getRedisConnection(): Server
     {
@@ -96,6 +99,7 @@ class RedisTest extends TestCase
      *
      * @return void
      * @throws ValidationException
+     * @throws RedisException
      */
     public function testWrite(): void
     {
@@ -148,6 +152,7 @@ class RedisTest extends TestCase
      *
      * @return void
      * @throws ValidationException
+     * @throws RedisException
      */
     public function testRead(): void
     {
@@ -165,6 +170,7 @@ class RedisTest extends TestCase
      * Assert that read() returns NULL when cached data has expired.
      *
      * @return void
+     * @throws RedisException
      * @throws ValidationException
      */
     public function testReadReturnsNullForStaleData(): void
@@ -175,13 +181,13 @@ class RedisTest extends TestCase
 
         $conn->setex(
             key: $this->key,
-            expire: 5,
+            expire: 2,
             value: $data
         );
 
         self::assertSame(expected: $data, actual: $conn->get(key: $this->key));
 
-        sleep(seconds: 5);
+        sleep(seconds: 3);
 
         self::assertNull(actual: $this->redis->read(key: $this->key));
     }
@@ -214,6 +220,7 @@ class RedisTest extends TestCase
      *
      * @return void
      * @throws ValidationException
+     * @throws RedisException
      */
     public function testClear(): void
     {

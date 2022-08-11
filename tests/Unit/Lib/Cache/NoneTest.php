@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Cache;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Cache\None;
 
 /**
@@ -26,13 +28,32 @@ class NoneTest extends TestCase
     private None $cache;
 
     /**
+     * @var string
+     */
+    private string $key;
+
+    /**
      * @return void
+     * @throws Exception
      */
     protected function setUp(): void
     {
         $this->cache = new None();
+        $this->key = $this->getKey();
 
         parent::setUp();
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'none-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
     }
 
     /**
@@ -44,7 +65,7 @@ class NoneTest extends TestCase
     public function testReadThrowsWithIllegalKeyCharacter(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->cache->read(key: 'Wonky?');
+        $this->cache->read(key: $this->key . '#');
     }
 
     /**
@@ -66,7 +87,7 @@ class NoneTest extends TestCase
      */
     public function testReadReturnsNull(): void
     {
-        self::assertNull(actual: $this->cache->read(key: 'whatever'));
+        self::assertNull(actual: $this->cache->read(key: $this->key));
     }
 
     /**
@@ -79,7 +100,7 @@ class NoneTest extends TestCase
     {
         $this->expectException(exception: ValidationException::class);
         $this->cache->write(
-            key: 'Illegal?',
+            key: $this->key . '?',
             data: 'Potato plats grow in June',
             ttl: 12556
         );
@@ -104,7 +125,7 @@ class NoneTest extends TestCase
      */
     public function testWriteDoesNothing(): void
     {
-        $this->cache->write(key: 'ThatKey', data: 'anything', ttl: 9999);
+        $this->cache->write(key: $this->key, data: 'anything', ttl: 9999);
         $this->expectNotToPerformAssertions();
     }
 
@@ -117,7 +138,7 @@ class NoneTest extends TestCase
     public function testClearThrowsWithIllegalKeyCharacter(): void
     {
         $this->expectException(exception: ValidationException::class);
-        $this->cache->clear(key: 'Rad!');
+        $this->cache->clear(key: $this->key . '$');
     }
 
     /**
@@ -139,7 +160,7 @@ class NoneTest extends TestCase
      */
     public function testClearDoesNothing(): void
     {
-        $this->cache->clear(key: 'SomeKey');
+        $this->cache->clear(key: $this->key);
         $this->expectNotToPerformAssertions();
     }
 }

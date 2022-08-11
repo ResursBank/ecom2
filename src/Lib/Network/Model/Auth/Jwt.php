@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Network\Model\Auth;
 
 use Exception;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
@@ -21,14 +21,13 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Lib\Network\Model\JwtToken;
 use stdClass;
 
+use function is_int;
+
 /**
  * Defines JSON Token API authentication.
  */
 class Jwt
 {
-    private const HOSTNAME_PROD = 'apigw.resurs.com';
-    private const HOSTNAME_TEST = 'apigw.integration.resurs.com';
-
     /**
      * @param string $clientId
      * @param string $clientSecret
@@ -36,6 +35,7 @@ class Jwt
      * @param string $grantType
      * @param JwtToken|null $token
      * @param StringValidation $stringValidation
+     * @param Mapi $mapi
      * @throws EmptyValueException
      * @todo Add charset validation of id and secret.
      */
@@ -45,7 +45,8 @@ class Jwt
         public readonly string $scope,
         public readonly string $grantType,
         private JwtToken|null $token = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly Mapi $mapi = new Mapi(),
     ) {
         $this->stringValidation->notEmpty(value: $this->clientId);
         $this->stringValidation->notEmpty(value: $this->clientSecret);
@@ -69,12 +70,11 @@ class Jwt
      */
     private function generateToken(): JwtToken
     {
-        $url = 'https://' . (Config::$instance->isProduction ? self::HOSTNAME_PROD : self::HOSTNAME_TEST)
-            . '/api/oauth2/token';
-
         try {
             $tokenRequest = new Curl(
-                url: $url,
+                url: $this->mapi->getUrl(
+                    route: 'oauth2/token'
+                ),
                 requestMethod: RequestMethod::POST,
                 payload: [
                     'client_id' => $this->clientId,
@@ -103,22 +103,31 @@ class Jwt
         // @todo This requires MUCH better validation. We must check the type of each property, validate their values
         // @todo using charsets etc. (there are helper functions prepared in lib/Validation, fully tested).
         if (!$response->body instanceof stdClass) {
-            throw new AuthException(message: 'Response body type is ' . gettype(value: $response->body)
-                . 'expected stdClass');
+            throw new AuthException(
+                message: 'Response body type is ' .
+                gettype(value: $response->body) .
+                'expected stdClass'
+            );
         }
 
         if (
-            !isset($response->body->access_token) ||
-            !isset($response->body->token_type) ||
-            !isset($response->body->expires_in)
+            !isset(
+                $response->body->access_token,
+                $response->body->token_type,
+                $response->body->expires_in
+            )
         ) {
             throw new AuthException(message: 'Failed to generate JWT token.');
         }
 
-        if (!is_numeric(value: $response->body->expires_in) || !is_int(value: $response->body->expires_in)) {
+        if (
+            !is_numeric(value: $response->body->expires_in) ||
+            !is_int(value: $response->body->expires_in)
+        ) {
             throw new TypeException(
-                message: 'Received invalid expires_in value (' . $response->body->expires_in
-                    . '), was expecting integer'
+                message: 'Received invalid expires_in value (' .
+                    $response->body->expires_in .
+                    '), was expecting integer'
             );
         }
 
@@ -130,7 +139,8 @@ class Jwt
     }
 
     /**
-     * Returns token, if we have no token or the current token is expired we fetch a new one
+     * Returns token, if we have no token or the current token is expired we
+     * fetch a new one
      *
      * @return JwtToken
      * @throws AuthException
