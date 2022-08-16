@@ -17,9 +17,8 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
@@ -62,46 +61,44 @@ class GetStoresTest extends TestCase
     }
 
     /**
-     * Assert exec() retrieves as many stores as we request.
+     * Assert call() retrieves as many stores as we request.
      *
      * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
-    public function testExecSize(): void
+    public function testCallSize(): void
     {
         self::assertCount(
             expectedCount: 10,
-            haystack: $this->api->exec(size: 10)
+            haystack: $this->api->call(size: 10)
         );
     }
 
     /**
-     * Assert exec() retrieves all stores by default.
+     * Assert call() retrieves all stores by default.
      *
      * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
-    public function testExecFetchAll(): void
+    public function testCallFetchAll(): void
     {
-        self::assertNotEmpty(actual: $this->api->exec());
+        self::assertNotEmpty(actual: $this->api->call());
     }
 
     /**
-     * Assert exec() can retrieve individual sections using the page argument.
+     * Assert call() can retrieve individual sections using the page argument.
      *
      * @return void
      * @throws AuthException
@@ -110,13 +107,12 @@ class GetStoresTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
      * @throws ValidationException
      */
-    public function testExecPagination(): void
+    public function testCallPagination(): void
     {
-        $page1 = $this->api->exec(size: 5, page: 0);
-        $page2 = $this->api->exec(size: 5, page: 1);
+        $page1 = $this->api->call(size: 5, page: 0);
+        $page2 = $this->api->call(size: 5, page: 1);
 
         self::assertCount(expectedCount: 5, haystack: $page1);
         self::assertCount(expectedCount: 5, haystack: $page2);

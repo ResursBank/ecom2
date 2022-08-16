@@ -134,6 +134,8 @@ class ArrayValidation
     }
 
     /**
+     * Ensure array only defines keys in $allowed.
+     *
      * @param array $data
      * @param array $allowed
      * @return bool

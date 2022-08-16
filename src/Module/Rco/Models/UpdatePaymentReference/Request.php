@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines an UpdatePaymentReference request object
+ * Defines an UpdatePaymentReference request object.
  */
 class Request extends Model
 {

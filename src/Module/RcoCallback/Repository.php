@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -14,9 +16,8 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\RcoCallback\Models\Callback;
@@ -43,11 +44,10 @@ class Repository extends CoreModule
      * @return void
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
      * @throws AuthException
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public static function registerCallback(string $eventName, Request $request): void
     {
@@ -63,10 +63,9 @@ class Repository extends CoreModule
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public static function getCallback(string $eventName): Callback
@@ -82,10 +81,9 @@ class Repository extends CoreModule
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public static function getCallbacks(): CallbackCollection
@@ -102,9 +100,8 @@ class Repository extends CoreModule
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public static function deleteCallback(string $eventName): int

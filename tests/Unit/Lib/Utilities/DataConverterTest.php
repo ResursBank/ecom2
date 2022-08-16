@@ -12,7 +12,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 use ArgumentCountError;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
-use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
 use stdClass;
@@ -79,7 +79,7 @@ final class DataConverterTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testConvertObjectContainingObject(): void
     {

@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Exception;
+namespace Resursbank\Ecom\Exception\Validation;
 
-use Exception;
+use Resursbank\Ecom\Exception\ValidationException;
 
 /**
  * Specifies a formatting problem.
  */
-class FormatException extends Exception
+class FormatException extends ValidationException
 {
 }

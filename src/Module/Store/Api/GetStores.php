@@ -15,7 +15,6 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -56,13 +55,12 @@ class GetStores
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws TypeException
      * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
      * @todo Implement $sort and related tests after we have confirm of its structure.
      */
-    public function exec(
+    public function call(
         int $size = 999999,
         ?int $page = null,
         array $sort = []
@@ -91,7 +89,7 @@ class GetStores
         );
 
         if (!$result instanceof StoreCollection) {
-            throw new TypeException(message: 'Expected StoreCollection.');
+            throw new IllegalTypeException(message: 'Expected StoreCollection.');
         }
 
         return $result;
