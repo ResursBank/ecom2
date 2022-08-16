@@ -17,16 +17,30 @@ use Throwable;
  */
 class CurlException extends Exception
 {
-    protected ?string $requestBody;
+    /**
+     * @var string|null The curl error message.
+     */
+    private ?string $requestBody;
 
+    /**
+     * @param string $message
+     * @param int $code
+     * @param Throwable|null $previous
+     * @param string|null $requestBody
+     */
     public function __construct(
-        string $message = "",
+        string $message = '',
         int $code = 0,
         ?Throwable $previous = null,
         ?string $requestBody = null
     ) {
         $this->requestBody = $requestBody;
-        parent::__construct($message, $code, $previous);
+        
+        parent::__construct(
+            message: $message,
+            code: $code,
+            previous: $previous
+        );
     }
 
     /**

@@ -52,8 +52,8 @@ class Repository
      * @throws ApiException
      * @throws CacheException
      */
-    public static function read(
-        GetPaymentMethods $api = new GetPaymentMethods()
+    public static function getStores(
+        GetStores $api = new GetStores()
     ): StoreCollection {
         $result = self::readCache();
 
@@ -137,7 +137,7 @@ class Repository
         GetPaymentMethods $api = new GetPaymentMethods()
     ): StoreCollection {
         try {
-            return $api->exec();
+            return $api->call();
         } catch (Exception $e) {
             self::debug(
                 cause: 'There was a problem reading data from Api.',

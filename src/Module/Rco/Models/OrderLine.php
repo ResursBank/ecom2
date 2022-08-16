@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Models;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines an UpdatePayment order line object
+ * Defines an UpdatePayment order line object.
  */
 class OrderLine extends Model
 {

@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -14,9 +16,8 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -36,12 +37,11 @@ class GetCallbacks
      * @return CallbackCollection
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ValidationException
      * @throws ReflectionException
      * @throws AuthException
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function call(): CallbackCollection
     {

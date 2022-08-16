@@ -11,8 +11,10 @@ namespace Resursbank\EcomTest\Unit\Lib\Collection;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+
+use function get_class;
 
 /**
  * Verifies that the Collection class works as intended.
@@ -37,19 +39,21 @@ final class CollectionTest extends TestCase
             'baz',
             'baf'
         ];
+
+        parent::setUp();
     }
 
     /**
      * Verify that creation of Collection works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testCreateCollection(): void
     {
-        $collection = new Collection(data: $this->data, type: "string");
+        $collection = new Collection(data: $this->data, type: 'string');
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: Collection::class,
             actual: $collection::class
         );
@@ -70,19 +74,19 @@ final class CollectionTest extends TestCase
 
         $className = false;
         try {
-            new Collection(data: $data, type: "string");
+            new Collection(data: $data, type: 'string');
         } catch (Exception $e) {
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: TypeException::class, actual: $className);
+        $this::assertSame(expected: IllegalTypeException::class, actual: $className);
     }
 
     /**
      * Verify that it's impossible to add an item of the wrong type to a collection
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testAddWrongTypeData(): void
     {
@@ -96,10 +100,10 @@ final class CollectionTest extends TestCase
         }
 
         $this::assertSame(
-            expected: TypeException::class,
+            expected: IllegalTypeException::class,
             actual: $className
         );
-        $this::assertEquals(
+        $this::assertSame(
             expected: gettype(value: $this->data[0]),
             actual: $collection->getType()
         );
@@ -109,7 +113,7 @@ final class CollectionTest extends TestCase
      * Verify that the toArray method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testToArray(): void
     {
@@ -124,14 +128,14 @@ final class CollectionTest extends TestCase
      * Verify that type determination called in the Collection constructor works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testTypeDetermination(): void
     {
         $collection = new Collection(data: $this->data);
         $type = gettype($this->data[0]);
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: $type,
             actual: $collection->getType()
         );
@@ -141,13 +145,13 @@ final class CollectionTest extends TestCase
      * Verify that the count method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testCount(): void
     {
         $collection = new Collection(data: $this->data);
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: count($this->data),
             actual: $collection->count()
         );
@@ -157,17 +161,17 @@ final class CollectionTest extends TestCase
      * Verify that the offsetSet method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testOffsetSet(): void
     {
         $data = ['foo'];
 
         $collection = new Collection(data: $data);
-        $collection[1] = "bar";
+        $collection[1] = 'bar';
 
-        $this::assertEquals(
-            expected: "bar",
+        $this::assertSame(
+            expected: 'bar',
             actual: $collection[1]
         );
     }
@@ -176,7 +180,7 @@ final class CollectionTest extends TestCase
      * Verify that the offsetExists method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testOffsetExists(): void
     {
@@ -189,7 +193,7 @@ final class CollectionTest extends TestCase
      * Verify that the offsetUnset method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testOffsetUnset(): void
     {
@@ -203,13 +207,13 @@ final class CollectionTest extends TestCase
      * Verify that the offsetGet method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testOffsetGet(): void
     {
         $collection = new Collection(data: $this->data);
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: $this->data[1],
             actual: $collection->offsetGet(offset: 1)
         );
@@ -219,7 +223,7 @@ final class CollectionTest extends TestCase
      * Verify that the rewind method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testRewind(): void
     {
@@ -228,7 +232,7 @@ final class CollectionTest extends TestCase
         $collection->next();
         $collection->rewind();
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: 0,
             actual: $collection->key()
         );
@@ -238,14 +242,14 @@ final class CollectionTest extends TestCase
      * Verify that the current method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testCurrent(): void
     {
         $collection = new Collection(data: $this->data);
         $collection->next();
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: $this->data[1],
             actual: $collection->current()
         );
@@ -255,14 +259,14 @@ final class CollectionTest extends TestCase
      * Verify that the key method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testKey(): void
     {
         $collection = new Collection(data: $this->data);
         $collection->next();
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: 1,
             actual: $collection->key()
         );
@@ -272,19 +276,21 @@ final class CollectionTest extends TestCase
      * Verify that the next method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testNext(): void
     {
         $collection = new Collection(data: $this->data);
+
+        /** @psalm-suppress MixedAssignment */
         $originalKey = $collection->key();
         $collection->next();
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: 0,
             actual: $originalKey
         );
-        $this::assertEquals(
+        $this::assertSame(
             expected: 1,
             actual: $collection->key()
         );
@@ -294,7 +300,7 @@ final class CollectionTest extends TestCase
      * Verify that the valid method works
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function testValid(): void
     {

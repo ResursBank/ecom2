@@ -11,7 +11,7 @@ namespace Resursbank\Ecom\Lib\Network\Model\Auth;
 
 use Exception;
 use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -66,7 +66,7 @@ class Jwt
     /**
      * @return JwtToken
      * @throws AuthException
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     private function generateToken(): JwtToken
     {
@@ -124,7 +124,7 @@ class Jwt
             !is_numeric(value: $response->body->expires_in) ||
             !is_int(value: $response->body->expires_in)
         ) {
-            throw new TypeException(
+            throw new IllegalTypeException(
                 message: 'Received invalid expires_in value (' .
                     $response->body->expires_in .
                     '), was expecting integer'
@@ -144,7 +144,7 @@ class Jwt
      *
      * @return JwtToken
      * @throws AuthException
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function getToken(): JwtToken
     {

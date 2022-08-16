@@ -10,10 +10,14 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco\Models;
 
 /**
- * Defines a MetaData item
+ * Defines a MetaData item.
  */
 class MetaData
 {
+    /**
+     * @param string $key
+     * @param string $value
+     */
     public function __construct(
         public string $key,
         public string $value

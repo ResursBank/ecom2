@@ -13,9 +13,9 @@ use Error;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\EmptyException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\FormatException;
+use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 
@@ -148,7 +148,7 @@ final class FileLoggerTest extends TestCase
      * being logged.
      *
      * @return void
-     * @throws EmptyException
+     * @throws EmptyValueException
      * @throws FilesystemException
      * @throws FormatException
      */
@@ -188,7 +188,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertEquals(expected: LogLevel::DEBUG->name . ': ' . $this->message . PHP_EOL, actual: $loggedDebug);
+        $this::assertSame(expected: LogLevel::DEBUG->name . ': ' . $this->message . PHP_EOL, actual: $loggedDebug);
     }
 
     /**
@@ -203,7 +203,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertEquals(expected: LogLevel::INFO->name . ': ' . $this->message . PHP_EOL, actual: $loggedInfo);
+        $this::assertSame(expected: LogLevel::INFO->name . ': ' . $this->message . PHP_EOL, actual: $loggedInfo);
     }
 
     /**
@@ -218,7 +218,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertEquals(
+        $this::assertSame(
             expected: LogLevel::WARNING->name . ': ' . $this->message . PHP_EOL,
             actual: $loggedWarning
         );
@@ -236,7 +236,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertEquals(expected: LogLevel::ERROR->name . ': ' . $this->message . PHP_EOL, actual: $loggedError);
+        $this::assertSame(expected: LogLevel::ERROR->name . ': ' . $this->message . PHP_EOL, actual: $loggedError);
     }
 
     /**
@@ -251,7 +251,7 @@ final class FileLoggerTest extends TestCase
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
-        $this::assertEquals(expected: $expectedLastLine, actual: $lastLine);
+        $this::assertSame(expected: $expectedLastLine, actual: $lastLine);
     }
 
     /**
@@ -266,17 +266,18 @@ final class FileLoggerTest extends TestCase
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
-        $this::assertEquals(expected: $expectedLastLine, actual: $lastLine);
+        $this::assertSame(expected: $expectedLastLine, actual: $lastLine);
     }
 
     /**
-     * Verify that creating a FileLogger with an empty path throws an EmptyException
+     * Verify that creating a FileLogger with an empty path throws an
+     * EmptyValueException
      *
      * @return void
      */
     public function testValidatePathWithEmptyPath(): void
     {
-        //$this->expectException(exception: EmptyException::class);
+        //$this->expectException(exception: EmptyValueException::class);
         $className = false;
         try {
             new FileLogger(path: '');
@@ -284,7 +285,10 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: EmptyException::class, actual: $className);
+        $this::assertSame(
+            expected: EmptyValueException::class,
+            actual: $className
+        );
     }
 
     /**

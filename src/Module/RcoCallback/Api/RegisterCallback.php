@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -13,9 +15,8 @@ use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -25,7 +26,9 @@ use Resursbank\Ecom\Module\RcoCallback\Repository;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 
 /**
- * Handles callback registration
+ * Handles callback registration.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RegisterCallback
 {
@@ -39,7 +42,6 @@ class RegisterCallback
      * @throws JsonException
      * @throws ValidationException
      * @throws AuthException
-     * @throws TypeException
      */
     public function call(string $eventName, Request $request): void
     {

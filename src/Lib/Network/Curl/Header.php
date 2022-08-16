@@ -16,8 +16,10 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Model\Header as HeaderModel;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
+use function strlen;
+
 /**
- * Handles construction and parsing of header data
+ * Handles construction and parsing of header data.
  */
 class Header
 {
@@ -26,8 +28,9 @@ class Header
      * @param string $payloadData
      * @param ContentType $contentType
      * @param bool $hasBodyData
-     * @return array<HeaderModel>
+     * @return array<array-key,HeaderModel>
      * @todo See constructor todo. If kept we should maybe change its visibility.
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function generateHeaders(
         array $headers,
@@ -35,13 +38,7 @@ class Header
         ContentType $contentType,
         bool $hasBodyData
     ): array {
-        foreach ($headers as $header) {
-            if (!$header instanceof HeaderModel) {
-                throw new InvalidArgumentException(
-                    message: 'Header must be an instance of Header.'
-                );
-            }
-        }
+        self::validateHeaderArray(headers: $headers);
 
         if (!self::hasHeader(headers: $headers, key: 'content-type')) {
             $headers[] = new HeaderModel(
@@ -82,16 +79,23 @@ class Header
 
     /**
      * Retrieve list of headers where $key matches.
+     *
+     * NOTE: Psalm errors are suppressed because the array content is confirmed
+     * using validateHeaderArray(), but Psalm does not see it.
+     *
      * @param array $headers
      * @param string $key
      * @return array
      * @todo See constructor todo. If kept we should maybe change its visibility.
-     *
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress MixedPropertyFetch
      */
     public static function findHeaders(
         array $headers,
         string $key
     ): array {
+        self::validateHeaderArray(headers: $headers);
+
         $key = strtolower(string: $key);
 
         return array_filter(
@@ -103,14 +107,22 @@ class Header
     }
 
     /**
+     * NOTE: Psalm errors are suppressed because the array content is confirmed
+     * using validateHeaderArray(), but Psalm does not see it.
+     *
      * @param array $headers
      * @return array
+     * @psalm-suppress MixedOperand
+     * @psalm-suppress MixedPropertyFetch
      */
     public static function getHeadersData(
         array $headers
     ): array {
+        self::validateHeaderArray(headers: $headers);
+
         $result = [];
 
+        /** @var HeaderModel $header | Confirmed by validateHeaderArray */
         foreach ($headers as $header) {
             $result[] = $header->key . ': ' . $header->value;
         }
@@ -139,8 +151,8 @@ class Header
     public static function getUserAgent(): string
     {
         try {
-            $version = (new Generic())->getVersionByComposer(__DIR__);
-        } catch (Exception $e) {
+            $version = (new Generic())->getVersionByComposer(location: __DIR__);
+        } catch (Exception) {
             $version = 'composer.version.not.found';
         }
 
@@ -149,5 +161,21 @@ class Header
             sprintf('ECom2-%s', $version),
             sprintf('PHP-%s', PHP_VERSION),
         ]));
+    }
+
+    /**
+     * @param array $headers
+     * @return void
+     */
+    private static function validateHeaderArray(
+        array $headers
+    ): void {
+        foreach ($headers as $header) {
+            if (!$header instanceof HeaderModel) {
+                throw new InvalidArgumentException(
+                    message: 'Header must be an instance of Header.'
+                );
+            }
+        }
     }
 }

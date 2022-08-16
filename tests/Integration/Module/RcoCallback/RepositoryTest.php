@@ -15,7 +15,6 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -26,8 +25,10 @@ use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
 
 /**
- * Tests for RCO callback module Repository class
+ * Tests for RCO callback module Repository class.
+ *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RepositoryTest extends TestCase
 {
@@ -37,16 +38,19 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws AuthException
      * @throws CurlException
-     * @throws TypeException
      * @throws ValidationException
      * @throws IllegalTypeException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
         // Set up Config object
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: new Basic(username: $_ENV['BASIC_AUTH_USERNAME'], password: $_ENV['BASIC_AUTH_PASSWORD'])
+            basicAuth: new Basic(
+                username: (string)$_ENV['BASIC_AUTH_USERNAME'],
+                password: (string) $_ENV['BASIC_AUTH_PASSWORD']
+            )
         );
 
         // Clear existing callbacks
@@ -54,6 +58,8 @@ class RepositoryTest extends TestCase
         foreach ($eventNames as $eventName) {
             Repository::deleteCallback(eventName: $eventName);
         }
+
+        parent::setUp();
     }
 
     /**
@@ -61,9 +67,8 @@ class RepositoryTest extends TestCase
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     protected function tearDown(): void
@@ -73,6 +78,8 @@ class RepositoryTest extends TestCase
         foreach ($eventNames as $eventName) {
             Repository::deleteCallback(eventName: $eventName);
         }
+
+        parent::tearDown();
     }
 
     /**
@@ -82,14 +89,17 @@ class RepositoryTest extends TestCase
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      * @throws ReflectionException
      */
     public function testRegisterGetAndDeleteCallback(): void
     {
+        if (Config::$instance->basicAuth === null) {
+            self::fail(message: 'Basic auth is not configured.');
+        }
+
         $eventName = 'BOOKED';
         $request = new Request(
             uriTemplate: 'https://example.com/dummy?id={paymentId}&amp;hash={digest}',
@@ -113,14 +123,14 @@ class RepositoryTest extends TestCase
 
         $deleteResponse = Repository::deleteCallback(eventName: $eventName);
 
-        $this->assertEquals(
+        self::assertSame(
             expected: $eventName,
             actual: $registeredCallback->eventType
         );
-        $this->assertNotEmpty(
+        self::assertNotEmpty(
             actual: $registeredCallback->uriTemplate
         );
-        $this->assertEquals(
+        self::assertSame(
             expected: 200,
             actual: $deleteResponse
         );
@@ -133,14 +143,17 @@ class RepositoryTest extends TestCase
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public function testGetCallbacks(): void
     {
+        if (Config::$instance->basicAuth === null) {
+            self::fail(message: 'Basic auth is not configured.');
+        }
+
         $eventNames = ['BOOKED', 'UPDATE'];
         $request = new Request(
             uriTemplate: 'https://example.com/dummy?id={paymentId}&amp;hash={digest}',
@@ -164,7 +177,7 @@ class RepositoryTest extends TestCase
 
         $response = Repository::getCallbacks();
 
-        $this->assertCount(
+        self::assertCount(
             expectedCount: 2,
             haystack: $response->toArray()
         );
@@ -177,10 +190,9 @@ class RepositoryTest extends TestCase
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public function testGetCallbackFailure(): void

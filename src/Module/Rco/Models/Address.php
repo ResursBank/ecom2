@@ -10,10 +10,19 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Rco\Models;
 
 /**
- * Defines an Address object
+ * Defines customer address information.
  */
 class Address
 {
+    /**
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param string|null $addressRow1
+     * @param string|null $addressRow2
+     * @param string|null $postalArea
+     * @param string|null $postalCode
+     * @param string|null $countryCode
+     */
     public function __construct(
         public ?string $firstName = null,
         public ?string $lastName = null,
