@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Models\GetPayment;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines a GetPayment payment spec object
+ * Defines a payment.
  */
 class PaymentSpec extends Model
 {

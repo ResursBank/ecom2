@@ -14,11 +14,21 @@ use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
 
 /**
- * Defines an InitPayment request object
+ * Defines an InitPayment request object.
+ * 
  * @SuppressWarnings(PHPMD.LongVariable)
  */
 class Request extends Model
 {
+    /**
+     * @param OrderLineCollection $orderLines
+     * @param Customer $customer
+     * @param string $successUrl
+     * @param string $backUrl
+     * @param string $shopUrl
+     * @param string|null $paymentCreatedCallbackUrl
+     * @param MetaDataCollection|null $metaData
+     */
     public function __construct(
         public OrderLineCollection $orderLines,
         public Customer $customer,

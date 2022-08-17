@@ -12,7 +12,8 @@ namespace Resursbank\Ecom\Module\Rco\Models\GetPayment;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines a GetPayment spec line object
+ * Defines an item in a payment. Items can be products, services (such
+ * as shipping), etc.
  */
 class SpecLine extends Model
 {

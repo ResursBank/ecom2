@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -14,9 +16,8 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Module\Module as CoreModule;
 use Resursbank\Ecom\Module\Rco\Api\GetPayment;
@@ -32,7 +33,9 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePa
 use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Response as UpdatePaymentReferenceResponse;
 
 /**
- * Main entrypoint for interfacing with the RCO API programmatically
+ * Main entrypoint for interfacing with the RCO API programmatically.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository extends CoreModule
 {
@@ -40,7 +43,7 @@ class Repository extends CoreModule
     public const HOSTNAME_TEST = 'omnitest.resurs.com';
 
     /**
-     * Initialize a payment session
+     * Initialize a payment session.
      *
      * @param InitPaymentRequest $request
      * @param string $orderReference
@@ -49,10 +52,9 @@ class Repository extends CoreModule
      * @throws ReflectionException
      * @throws JsonException
      * @throws AuthException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      */
     public static function initPayment(InitPaymentRequest $request, string $orderReference): InitPaymentResponse
     {
@@ -61,7 +63,7 @@ class Repository extends CoreModule
     }
 
     /**
-     * Update an existing payment session
+     * Update an existing payment session.
      *
      * @param UpdatePaymentRequest $request
      * @param string $orderReference
@@ -72,7 +74,6 @@ class Repository extends CoreModule
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
      * @throws ValidationException
      */
     public static function updatePayment(UpdatePaymentRequest $request, string $orderReference): UpdatePaymentResponse
@@ -82,7 +83,7 @@ class Repository extends CoreModule
     }
 
     /**
-     * Update the payment reference for a payment session
+     * Update the payment reference for a payment session.
      *
      * @param UpdatePaymentReferenceRequest $request
      * @param string $orderReference
@@ -93,7 +94,6 @@ class Repository extends CoreModule
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
      * @throws ValidationException
      */
     public static function updatePaymentReference(
@@ -105,7 +105,7 @@ class Repository extends CoreModule
     }
 
     /**
-     * Get existing payment session
+     * Get existing payment session.
      *
      * @param string $orderReference
      * @return Response
@@ -115,8 +115,8 @@ class Repository extends CoreModule
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
      * @throws ValidationException
+     * @noinspection PhpUnused
      */
     public static function getPayment(string $orderReference): Response
     {
@@ -125,7 +125,7 @@ class Repository extends CoreModule
     }
 
     /**
-     * Gets API hostname
+     * Gets API hostname.
      *
      * @return string
      */

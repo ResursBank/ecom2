@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -12,9 +14,8 @@ namespace Resursbank\Ecom\Module\Rco\Api;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -42,12 +43,12 @@ class UpdatePaymentReference
      * @return Response
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
      * @throws AuthException
-     * @throws TypeException
+     * @throws IllegalTypeException
+     * @psalm-suppress MixedInferredReturnType
      */
     public function call(Request $request, string $orderReference): Response
     {
@@ -67,6 +68,7 @@ class UpdatePaymentReference
         $responseObj->message = $response->body->message;
         $responseObj->code = $response->code;
 
+        /** @psalm-suppress MixedReturnStatement */
         return DataConverter::stdClassToType(
             object: $responseObj,
             type: Response::class

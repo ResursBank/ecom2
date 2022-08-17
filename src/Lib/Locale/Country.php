@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Locale;
 
-use Resursbank\Ecom\Exception\EmptyException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 
 use function in_array;
@@ -26,18 +26,20 @@ class Country
 
     /**
      * @param string $country
-     * @throws EmptyException
+     * @throws EmptyValueException
      * @throws ValidationException
      */
     public function __construct(
         public readonly string $country
     ) {
         if ($this->country === '') {
-            throw new EmptyException('Country');
+            throw new EmptyValueException(message: 'Country');
         }
 
-        if (!self::isAvailable($this->country)) {
-            throw new ValidationException('Supplied country is not available.');
+        if (!self::isAvailable(country: $this->country)) {
+            throw new ValidationException(
+                message: 'Supplied country is not available.'
+            );
         }
     }
 
@@ -49,7 +51,11 @@ class Country
      */
     public static function isAvailable(string $country): bool
     {
-        return in_array($country, self::getList(), true);
+        return in_array(
+            needle: $country,
+            haystack: self::getList(),
+            strict: true
+        );
     }
 
     /**
