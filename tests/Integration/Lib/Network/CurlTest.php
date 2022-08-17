@@ -434,7 +434,7 @@ class CurlTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            timeout: 1
+            timeout: 2
         );
 
         // We need to move those features "in house" at some point (like timeout.resurs.com).
