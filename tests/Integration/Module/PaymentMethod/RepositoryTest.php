@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Store;
+namespace Resursbank\EcomTest\Integration\Module\PaymentMethod;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -18,10 +18,12 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\Store\Repository;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Store\Models\Store;
+use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 
 /**
- * Integration tests for Stores repository.
+ * Integration tests for PaymentMethods repository.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -40,7 +42,7 @@ class RepositoryTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/stores/' . time()),
+            cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
             jwtAuth: new Jwt(
                 clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -55,6 +57,19 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * @return Store
+     * @throws ApiException
+     * @throws CacheException
+     */
+    private function getRandomStore(): Store
+    {
+        $stores = StoreRepository::getStores()->toArray();
+
+        /** @psalm-suppress MixedReturnType */
+        return $stores[(int) array_rand(array: $stores)];
+    }
+
+    /**
      * Assert clearCache() clears cache.
      *
      * @return void
@@ -63,7 +78,7 @@ class RepositoryTest extends TestCase
      */
     public function testClearCache(): void
     {
-        Repository::getStores();
+        Repository::getPaymentMethods(storeId: $this->getRandomStore()->id);
 
         self::assertNotNull(actual: Repository::readCache());
 
@@ -82,12 +97,16 @@ class RepositoryTest extends TestCase
     public function testReadReturnsWithoutCache(): void
     {
         self::assertNull(actual: Repository::readCache());
-        self::assertNotEmpty(actual: Repository::getStores());
+        self::assertNotEmpty(
+            actual: Repository::getPaymentMethods(
+                storeId: $this->getRandomStore()->id
+            )
+        );
     }
 
     /**
-     * Assert read() retrieves stores, store them in cache, and will later
-     * return the same stores from cache.
+     * Assert read() retrieves payment methods, paymentMethod them in cache, and
+     * will later return the same paymentMethods from cache.
      *
      * @return void
      * @throws ApiException
@@ -97,7 +116,9 @@ class RepositoryTest extends TestCase
     {
         self::assertEmpty(actual: Repository::readCache());
 
-        $data = Repository::getStores();
+        $data = Repository::getPaymentMethods(
+            storeId: $this->getRandomStore()->id
+        );
 
         self::assertNotEmpty(actual: $data);
 

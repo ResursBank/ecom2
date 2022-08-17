@@ -7,25 +7,25 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Store\Models;
+namespace Resursbank\Ecom\Module\PaymentMethod\Models;
 
-use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Defines a Store collection.
+ * Defines a PaymentMethod collection.
  */
-class StoreCollection extends Collection
+class PaymentMethodCollection extends Collection
 {
     /**
      * @param array $data
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function __construct(array $data)
     {
         parent::__construct(
             data: $data,
-            type: Store::class
+            type: PaymentMethod::class
         );
     }
 }

@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Store;
+namespace Resursbank\Ecom\Module\PaymentMethod;
 
 use Error;
 use JsonException;
@@ -20,45 +20,45 @@ use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Store\Api\GetPaymentMethods;
+use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods;
 use Exception;
-use Resursbank\Ecom\Module\Store\Models\Store;
-use Resursbank\Ecom\Module\Store\Models\StoreCollection;
+use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
+use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
 use TypeError;
 
 use function is_array;
 use function json_decode;
 
 /**
- * Business logic to interact with Store entities and related functionality.
+ * Interaction with Payment Method entities and related functionality.
  */
 class Repository
 {
     /**
-     * Stores JSON encoded API response with stores.
+     * Cache key for GetPaymentMethods response.
      */
-    public const CACHE_KEY = 'stores';
+    public const CACHE_KEY = 'payment-methods';
 
     /**
-     * Refresh cached store data hourly.
+     * Refresh cached data hourly.
      */
     public const CACHE_TTL = 3600;
 
     /**
-     * NOTE: GetStores DI to support testing.
-     *
-     * @param GetPaymentMethods $api
-     * @return StoreCollection
+     * @param string $storeId
+     * @param GetPaymentMethods $api | DI to support testing.
+     * @return PaymentMethodCollection
      * @throws ApiException
      * @throws CacheException
      */
-    public static function read(
+    public static function getPaymentMethods(
+        string $storeId,
         GetPaymentMethods $api = new GetPaymentMethods()
-    ): StoreCollection {
+    ): PaymentMethodCollection {
         $result = self::readCache();
 
         if ($result === null) {
-            $result = self::readApi(api: $api);
+            $result = self::readApi(storeId: $storeId, api: $api);
 
             self::writeCache(data: $result->toArray());
         }
@@ -67,10 +67,10 @@ class Repository
     }
 
     /**
-     * @return StoreCollection|null
+     * @return PaymentMethodCollection|null
      * @throws CacheException
      */
-    public static function readCache(): ?StoreCollection
+    public static function readCache(): ?PaymentMethodCollection
     {
         $result = null;
 
@@ -102,10 +102,13 @@ class Repository
                 /** @psalm-suppress MixedAssignment */
                 $cache = DataConverter::arrayToCollection(
                     data: $data,
-                    targetType: Store::class
+                    targetType: PaymentMethod::class
                 );
 
-                if ($cache instanceof StoreCollection && count($cache) > 0) {
+                if (
+                    $cache instanceof PaymentMethodCollection &&
+                    count($cache) > 0
+                ) {
                     $result = $cache;
                 }
             }
@@ -129,15 +132,17 @@ class Repository
      * NOTE: This method ends either with a valid dataset or an exception.
      * NOTE: $api is supplied through dependency injection to support testing.
      *
+     * @param string $storeId
      * @param GetPaymentMethods $api
-     * @return StoreCollection
+     * @return PaymentMethodCollection
      * @throws ApiException
      */
     public static function readApi(
+        string $storeId,
         GetPaymentMethods $api = new GetPaymentMethods()
-    ): StoreCollection {
+    ): PaymentMethodCollection {
         try {
-            return $api->exec();
+            return $api->call(storeId: $storeId);
         } catch (Exception $e) {
             self::debug(
                 cause: 'There was a problem reading data from Api.',
@@ -145,8 +150,8 @@ class Repository
             );
 
             throw new ApiException(
-                message: 'Error while fetching stores from the API. Please ' .
-                    'see debug log for more info.'
+                message: 'Error while fetching payment methods from the API. ' .
+                    'Please see debug log for more info.'
             );
         }
     }
