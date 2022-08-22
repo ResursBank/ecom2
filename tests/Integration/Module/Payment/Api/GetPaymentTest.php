@@ -23,6 +23,8 @@ class GetPaymentTest extends TestCase
 {
     protected function setUp(): void
     {
+        parent::setUp();
+
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
@@ -37,6 +39,6 @@ class GetPaymentTest extends TestCase
 
     public function testGetPayment()
     {
-        $this->api = new GetPayment();
+        $this->api = (new GetPayment())->exec('20220816073146-1557096130');
     }
 }
