@@ -31,9 +31,4 @@ class GetPayment
 
         $body = $curl->exec()->body;
     }
-
-    private function getUrl()
-    {
-        $ruwte = $this->mapi->getUrl('/payment');
-    }
 }
