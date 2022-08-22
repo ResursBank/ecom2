@@ -35,6 +35,11 @@ class Mapi
     public const COMMON_ROUTE = 'mock_merchant_api_service';
 
     /**
+     * Prefix route name for payment based API calls.
+     */
+    public const PAYMENT_ROUTE = 'mock_merchant_payments_v2';
+
+    /**
      * @param StringValidation $stringValidation
      */
     public function __construct(
@@ -57,7 +62,7 @@ class Mapi
 
         return (
             (Config::$instance->isProduction ? self::URL_PROD : self::URL_TEST) .
-            $route 
+            $route
         );
     }
 }
