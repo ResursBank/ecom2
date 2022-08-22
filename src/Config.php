@@ -47,7 +47,7 @@ final class Config
         public readonly bool $isProduction = false,
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
-        public readonly int $timeout = 60,
+        public readonly int $timeout = 60
     ) {
     }
 
