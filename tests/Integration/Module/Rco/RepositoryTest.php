@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -16,7 +18,6 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -36,7 +37,7 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePa
  * Tests for RCO module Repository class
  *
  * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 final class RepositoryTest extends TestCase
 {
@@ -47,19 +48,20 @@ final class RepositoryTest extends TestCase
      * Set up prerequisites for testing
      *
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
         $this->orderReference = bin2hex(string: random_bytes(length: 8));
         $this->request = new Request(
-            orderLines: new OrderLineCollection([
+            orderLines: new OrderLineCollection(data: [
                 new OrderLine(
-                    artNo: "sku123",
-                    description: "My product",
+                    artNo: 'sku123',
+                    description: 'My product',
                     quantity: 1,
-                    unitMeasure: "pc",
+                    unitMeasure: 'pc',
                     unitAmountWithoutVat: 20,
                     vatPct: 25
                 )
@@ -83,8 +85,8 @@ final class RepositoryTest extends TestCase
         );
 
         $basicAuth = new Basic(
-            username: $_ENV['BASIC_AUTH_USERNAME'],
-            password: $_ENV['BASIC_AUTH_PASSWORD']
+            username: (string) $_ENV['BASIC_AUTH_USERNAME'],
+            password: (string) $_ENV['BASIC_AUTH_PASSWORD']
         );
 
         Config::setup(
@@ -93,6 +95,8 @@ final class RepositoryTest extends TestCase
             logLevel: LogLevel::DEBUG,
             isProduction: false
         );
+
+        parent::setUp();
     }
 
     /**
@@ -101,12 +105,11 @@ final class RepositoryTest extends TestCase
      * @return void
      * @throws CurlException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws JsonException
      * @throws AuthException
      * @throws ValidationException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      */
     public function testInitPayment(): void
     {
@@ -115,11 +118,18 @@ final class RepositoryTest extends TestCase
             orderReference: $this->orderReference
         );
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: $this->request->customer->governmentId,
-            actual: $response->customer->governmentId
+            actual: ($response->customer !== null) ?
+                $response->customer->governmentId :
+                ''
         );
-        $this::assertEquals(
+
+        if ($response->iframe === null) {
+            self::fail(message: 'No iframe found in response.');
+        }
+
+        $this::assertSame(
             expected: '<iframe',
             actual: substr(string: $response->iframe, offset: 0, length: 7)
         );
@@ -135,7 +145,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public function testUpdatePayment(): void
@@ -165,11 +175,11 @@ final class RepositoryTest extends TestCase
             orderReference: $this->orderReference
         );
 
-        $this::assertEquals(
+        $this::assertSame(
             expected: 200,
             actual: $response->code
         );
-        $this::assertEquals(
+        $this::assertSame(
             expected: $session->paymentSessionId,
             actual: $response->message
         );
@@ -180,7 +190,7 @@ final class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TypeException
+     * @throws IllegalTypeException
      * @throws Exception
      */
     public function testUpdatePaymentWrongOrderReference(): void
@@ -236,7 +246,7 @@ final class RepositoryTest extends TestCase
             request: $request,
             orderReference: $this->orderReference
         );
-        $this::assertEquals(
+        $this::assertSame(
             expected: 200,
             actual: $response->code
         );

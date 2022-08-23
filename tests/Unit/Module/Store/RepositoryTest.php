@@ -57,7 +57,7 @@ class RepositoryTest extends TestCase
     private Api $api;
 
     /**
-     * We execute the actual Config::setup() method to initiate mocked objects
+     * We call the actual Config::setup() method to initiate mocked objects
      * to be utilised in tests against the static methods available on our
      * subject class. The methods on our subject class (such as readCache())
      * will make calls to object such as Config::$instance->cache, and we wish
@@ -112,12 +112,12 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Helper method to assign result from $this->api->exec()
+     * Helper method to assign result from $this->api->call()
      *
      * @param StoreCollection $stores
      * @return self
      */
-    private function setApiExecReturn(
+    private function setApiCallReturn(
         StoreCollection $stores
     ): self {
         /**
@@ -125,7 +125,7 @@ class RepositoryTest extends TestCase
          * @psalm-suppress MixedMethodCall
          * @phpstan-ignore-next-line
          */
-        $this->api->method('exec')->willReturn(value: $stores);
+        $this->api->method('call')->willReturn(value: $stores);
 
         return $this;
     }
@@ -156,14 +156,14 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Helper method to assert number of times $this->api->exec() is called.
+     * Helper method to assert number of times $this->api->call() is called.
      *
      * @param int $calls | -1 = any number of calls.
      * @return self
      * @noinspection PhpReturnValueOfMethodIsNeverUsedInspection
      * @noinspection PhpSameParameterValueInspection
      */
-    private function expectApiExec(
+    private function expectApiCall(
         int $calls
     ): self {
         /**
@@ -174,7 +174,7 @@ class RepositoryTest extends TestCase
          */
         $this->api
             ->expects($calls === -1 ? self::any() : self::exactly($calls))
-            ->method(constraint: 'exec');
+            ->method(constraint: 'call');
 
         return $this;
     }
@@ -206,7 +206,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert Repository::read() returns cached data without calling the API
+     * Assert Repository::getStores() returns cached data without calling the API
      * or calling the debug logger.
      *
      * @return void
@@ -218,10 +218,10 @@ class RepositoryTest extends TestCase
     {
         $this->setCacheReadReturn(data: GetStores::$data)
             ->expectReadCache(calls: 1)
-            ->expectApiExec(calls: 0)
+            ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: 0);
 
-        $data = Repository::read();
+        $data = Repository::getStores();
 
         self::assertNotEmpty(actual: $data);
     }
@@ -242,10 +242,10 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: CacheException::class);
         $this->setCacheReadReturn(data: ['5', '6'])
             ->expectReadCache(calls: 1)
-            ->expectApiExec(calls: 0)
+            ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::read();
+        Repository::getStores();
     }
 
     /**
@@ -263,10 +263,10 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: CacheException::class);
         $this->setCacheReadReturn(data: 'big data')
             ->expectReadCache(calls: 1)
-            ->expectApiExec(calls: 0)
+            ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::read();
+        Repository::getStores();
     }
 
     /**
@@ -284,10 +284,10 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: CacheException::class);
         $this->setCacheReadReturn(data: ['5', '6'])
             ->expectReadCache(calls: 1)
-            ->expectApiExec(calls: 0)
+            ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::read();
+        Repository::getStores();
     }
 
     /**
@@ -304,11 +304,11 @@ class RepositoryTest extends TestCase
     {
         $this->setCacheReadReturn(data: [])
             ->expectReadCache(calls: 1)
-            ->setApiExecReturn(stores: GetStores::getStores())
-            ->expectApiExec(calls: 1)
+            ->setApiCallReturn(stores: GetStores::getStores())
+            ->expectApiCall(calls: 1)
             ->expectDebugLog(calls: -1);
 
-        Repository::read(api: $this->api);
+        Repository::getStores(api: $this->api);
     }
 
     /**
@@ -331,9 +331,9 @@ class RepositoryTest extends TestCase
         $this->noneCache->method('read')->willReturn(value: '27');
 
         $this->expectReadCache(calls: 1)
-            ->expectApiExec(calls: 0)
+            ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::read(api: $this->api);
+        Repository::getStores(api: $this->api);
     }
 }

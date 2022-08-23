@@ -20,10 +20,10 @@ use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Store\Api\GetStores;
 use Exception;
 use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\Ecom\Module\Store\Models\StoreCollection;
+use Resursbank\Ecom\Module\Store\Api\GetStores;
 use TypeError;
 
 use function is_array;
@@ -35,24 +35,24 @@ use function json_decode;
 class Repository
 {
     /**
-     * Stores JSON encoded API response with stores.
+     * Cache key for GetStores response.
      */
     public const CACHE_KEY = 'stores';
 
     /**
-     * Refresh cached store data hourly.
+     * Refresh cached data hourly.
      */
     public const CACHE_TTL = 3600;
 
     /**
      * NOTE: GetStores DI to support testing.
      *
-     * @param GetStores $api
+     * @param getStores $api
      * @return StoreCollection
      * @throws ApiException
      * @throws CacheException
      */
-    public static function read(
+    public static function getStores(
         GetStores $api = new GetStores()
     ): StoreCollection {
         $result = self::readCache();
@@ -137,7 +137,7 @@ class Repository
         GetStores $api = new GetStores()
     ): StoreCollection {
         try {
-            return $api->exec();
+            return $api->call();
         } catch (Exception $e) {
             self::debug(
                 cause: 'There was a problem reading data from Api.',

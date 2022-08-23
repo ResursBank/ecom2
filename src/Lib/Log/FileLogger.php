@@ -12,9 +12,9 @@ namespace Resursbank\Ecom\Lib\Log;
 use DateTime;
 use Error;
 use Exception;
-use Resursbank\Ecom\Exception\EmptyException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\FormatException;
+use Resursbank\Ecom\Exception\Validation\FormatException;
 
 use function get_class;
 use function is_object;
@@ -37,7 +37,7 @@ class FileLogger implements LoggerInterface
     /**
      * @param string $path
      * @throws FilesystemException
-     * @throws EmptyException
+     * @throws EmptyValueException
      * @throws FormatException
      */
     public function __construct(
@@ -181,14 +181,14 @@ class FileLogger implements LoggerInterface
      * Validate logfile storage path.
      *
      * @return bool
-     * @throws EmptyException
+     * @throws EmptyValueException
      * @throws FilesystemException
      * @throws FormatException
      */
     private function validatePath(): bool
     {
         if ($this->path === '') {
-            throw new EmptyException(message: self::PATH_ERR_EMPTY);
+            throw new EmptyValueException(message: self::PATH_ERR_EMPTY);
         }
         if ($this->path !== trim(string: $this->path)) {
             throw new FormatException(message: self::PATH_ERR_WHITESPACE);

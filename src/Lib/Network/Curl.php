@@ -13,24 +13,27 @@ namespace Resursbank\Ecom\Lib\Network;
 
 use Exception;
 use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Lib\Utilities\Generic;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use stdClass;
 use CurlHandle;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\Model\Response;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Lib\Network\Curl\Header;
 
+use function is_array;
 use function is_string;
 
 /**
  * Curl wrapper.
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @noinspection PhpClassHasTooManyDeclaredMembersInspection
+ * @noinspection PhpComplexClassInspection
  */
 class Curl
 {
@@ -52,8 +55,8 @@ class Curl
      * @throws AuthException
      * @throws CurlException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
+     * @throws IllegalTypeException
      * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
     public function __construct(
@@ -142,7 +145,6 @@ class Curl
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public static function get(
@@ -171,7 +173,6 @@ class Curl
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public static function post(
@@ -198,7 +199,6 @@ class Curl
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public static function delete(
@@ -226,7 +226,6 @@ class Curl
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public static function put(
@@ -292,8 +291,8 @@ class Curl
             $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
         }
         if (Config::$instance->timeout) {
-            $options[CURLOPT_CONNECTTIMEOUT] = ceil(Config::$instance->timeout) / 2;
-            $options[CURLOPT_TIMEOUT] = ceil(Config::$instance->timeout);
+            $options[CURLOPT_CONNECTTIMEOUT] = ceil(num: Config::$instance->timeout) / 2;
+            $options[CURLOPT_TIMEOUT] = ceil(num: Config::$instance->timeout);
         }
 
         curl_setopt_array(handle: $ch, options: $options);
@@ -407,7 +406,6 @@ class Curl
      * @return void
      * @throws CurlException
      * @throws AuthException
-     * @throws TypeException
      */
     private function setAuth(CurlHandle $ch): void
     {
@@ -448,7 +446,6 @@ class Curl
      * @return void
      * @throws CurlException
      * @throws AuthException
-     * @throws TypeException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {

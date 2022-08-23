@@ -49,14 +49,12 @@ class Mapi
 
     /**
      * @param string $route
-     * @param array $params
      * @return string
      * @throws ValidationException
      * @throws EmptyValueException
      */
     public function getUrl(
-        string $route,
-        array $params = []
+        string $route
     ): string {
         $this->stringValidation->notEmpty(value: $route);
 

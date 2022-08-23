@@ -12,7 +12,9 @@ namespace Resursbank\Ecom\Lib\Collection;
 use ArrayAccess;
 use Iterator;
 use Countable;
-use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+
+use function is_object;
 
 /**
  * Base collection class
@@ -21,8 +23,8 @@ use Resursbank\Ecom\Exception\TypeException;
  */
 class Collection implements ArrayAccess, Iterator, Countable
 {
-    private const TYPE_ERR = "Collection requires data to be of type %s, received %s";
-    private const TYPE_ERR_NO_DATA = "No type or data specified";
+    private const TYPE_ERR = 'Collection requires data to be of type %s, received %s';
+    private const TYPE_ERR_NO_DATA = 'No type or data specified';
 
     protected string $type;
     private array $data;
@@ -31,7 +33,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * @param array $data
      * @param string|null $type
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function __construct(array $data, string $type = null)
     {
@@ -48,7 +50,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      * @param array $data
      * @param string|null $type
      * @return string
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     private function determineType(array $data, string $type = null): string
     {
@@ -60,7 +62,7 @@ class Collection implements ArrayAccess, Iterator, Countable
             return is_object(value: $data[0]) ? $data[0]::class : gettype(value: $data[0]);
         }
 
-        throw new TypeException(message: self::TYPE_ERR_NO_DATA);
+        throw new IllegalTypeException(message: self::TYPE_ERR_NO_DATA);
     }
 
     /**
@@ -69,16 +71,17 @@ class Collection implements ArrayAccess, Iterator, Countable
      * @param array $data
      * @param string $type
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     private function verifyDataArrayType(array $data, string $type): void
     {
+        /** @psalm-suppress MixedAssignment */
         foreach ($data as $item) {
             if (
                 (is_object(value: $item) && $item::class !== $type) ||
                 (!is_object(value: $item) && gettype(value: $item) !== $type)
             ) {
-                throw new TypeException(
+                throw new IllegalTypeException(
                     message: sprintf(
                         self::TYPE_ERR,
                         $type,
@@ -94,7 +97,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      *
      * @param array $data
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function setData(array $data): void
     {
@@ -138,7 +141,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      * @param mixed $offset
      * @param mixed $value
      * @return void
-     * @throws TypeException
+     * @throws IllegalTypeException
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -146,7 +149,7 @@ class Collection implements ArrayAccess, Iterator, Countable
             (is_object(value: $value) && $value::class !== $this->type) ||
             (!is_object(value: $value) && gettype(value: $value) !== $this->type)
         ) {
-            throw new TypeException(
+            throw new IllegalTypeException(
                 message: sprintf(
                     self::TYPE_ERR,
                     $this->type,
@@ -155,9 +158,10 @@ class Collection implements ArrayAccess, Iterator, Countable
             );
         }
 
-        if (is_null($offset)) {
+        if ($offset === null) {
             $this->data[] = $value;
         } else {
+            /** @psalm-suppress MixedArrayOffset */
             $this->data[$offset] = $value;
         }
     }
@@ -165,23 +169,27 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * @inheritDoc
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
+        /** @psalm-suppress MixedArrayOffset */
         return isset($this->data[$offset]);
     }
 
     /**
      * @inheritDoc
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
+        /** @psalm-suppress MixedArrayOffset */
         unset($this->data[$offset]);
     }
 
     /**
      * @inheritDoc
+     * @psalm-suppress MixedArrayOffset
+     * @psalm-suppress MixedReturnStatement
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet(mixed $offset): mixed
     {
         if (!isset($this->data[$offset])) {
             $this->data[$offset] = null;

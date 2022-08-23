@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Models\GetPayment;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines a GetPayment customer object
+ * Defines customer data associated with payment session.
  */
 class Customer extends Model
 {

@@ -61,9 +61,9 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws CacheException
      */
-    public static function testClearCache(): void
+    public function testClearCache(): void
     {
-        Repository::read();
+        Repository::getStores();
 
         self::assertNotNull(actual: Repository::readCache());
 
@@ -82,7 +82,7 @@ class RepositoryTest extends TestCase
     public function testReadReturnsWithoutCache(): void
     {
         self::assertNull(actual: Repository::readCache());
-        self::assertNotEmpty(actual: Repository::read());
+        self::assertNotEmpty(actual: Repository::getStores());
     }
 
     /**
@@ -97,7 +97,7 @@ class RepositoryTest extends TestCase
     {
         self::assertEmpty(actual: Repository::readCache());
 
-        $data = Repository::read();
+        $data = Repository::getStores();
 
         self::assertNotEmpty(actual: $data);
 

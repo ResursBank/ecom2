@@ -13,7 +13,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
 
 /**
- * Defines an UpdatePayment request object
+ * Defines an UpdatePayment request object.
+ * 
  * @SuppressWarnings(PHPMD.LongVariable)
  */
 class Request extends Model

@@ -17,24 +17,28 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Network\Model\Response;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
+
+use function is_string;
 
 /**
  * This class will test curl methods.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @version 1.0.0
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CurlTest extends TestCase
 {
@@ -54,13 +58,121 @@ class CurlTest extends TestCase
     private string $badProxyHost = '95.216.170.246';
 
     /**
-     * The server at 95.216.170.246 throws a HTTP 400 rather than 403 since the remote is a non-proxy nginx setup.
+     * The server at 95.216.170.246 throws an HTTP 400 rather than 403 since the remote is a non-proxy nginx setup.
      * If you ever change the $badProxyHost, make sure you match the errors returned from the server by changing
      * this value.
      *
      * @var int $expectBadProxyStatusCode
      */
     private int $expectBadProxyStatusCode = 400;
+
+    /**
+     * @param Response $response
+     * @return stdClass
+     */
+    private function getRequestBodyObject(
+        Response $response
+    ): stdClass {
+        if (!($response->body instanceof stdClass)) {
+            self::fail(message: 'Response body is not an object.');
+        }
+
+        return $response->body;
+    }
+
+    /**
+     * @param Response $response
+     * @param string $expected
+     * @return void
+     */
+    private function validateRequestMethod(
+        Response $response,
+        string $expected
+    ): void {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->REQUEST_METHOD)) {
+            self::fail(message: 'No REQUEST_METHOD found in response body.');
+        }
+
+        self::assertSame(
+            expected: $expected,
+            actual: $body->REQUEST_METHOD
+        );
+    }
+
+    /**
+     * @param Response $response
+     * @param string $startsWith
+     * @return void
+     */
+    private function validateUserAgent(
+        Response $response,
+        string $startsWith
+    ): void {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->HTTP_USER_AGENT)) {
+            self::fail(message: 'No HTTP_USER_AGENT found in response body.');
+        }
+
+        if (!is_string(value: $body->HTTP_USER_AGENT)) {
+            self::fail(
+                message: 'HTTP_USER_AGENT in response body is not a string.'
+            );
+        }
+
+        self::assertTrue(
+            condition: str_starts_with(
+                haystack: $body->HTTP_USER_AGENT,
+                needle: $startsWith
+            )
+        );
+    }
+
+    /**
+     * @param Response $response
+     * @return string
+     */
+    private function getInput(
+        Response $response
+    ): string {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->input)) {
+            self::fail(message: 'No input found in response body.');
+        }
+
+        if (!is_string(value: $body->input)) {
+            self::fail(
+                message: 'input in response body is not a string.'
+            );
+        }
+
+        return $body->input;
+    }
+
+    /**
+     * @param Response $response
+     * @return string
+     */
+    private function getIp(
+        Response $response
+    ): string {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->ip)) {
+            self::fail(message: 'No ip found in response body.');
+        }
+
+        if (!is_string(value: $body->ip)) {
+            self::fail(
+                message: 'ip in response body is not a string.'
+            );
+        }
+
+        return $body->ip;
+    }
 
     /**
      * Verify that Basic auth properties are set when creating a Basic auth instance
@@ -78,6 +190,10 @@ class CurlTest extends TestCase
             basicAuth: new Basic(username: $username, password: $password)
         );
 
+        if (Config::$instance->basicAuth === null) {
+            self::fail(message: 'Basic auth is not set.');
+        }
+
         $this::assertSame(
             expected: $username,
             actual: Config::$instance->basicAuth->username
@@ -90,10 +206,14 @@ class CurlTest extends TestCase
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function isPipeline(): bool
     {
-        return isset($_ENV['is_pipeline']) && $_ENV['is_pipeline'];
+        return (
+            isset($_ENV['is_pipeline']) &&
+            (bool) $_ENV['is_pipeline'] === true
+        );
     }
 
     /**
@@ -151,15 +271,10 @@ class CurlTest extends TestCase
         );
         $response = $curl->exec();
 
-        $this->assertTrue(
-            strpos($response->body->HTTP_USER_AGENT, self::class) === 0
-        );
+        $this->validateUserAgent(response: $response, startsWith: self::class);
+        $this->validateRequestMethod(response: $response, expected: 'GET');
 
-        $this::assertEquals(
-            expected: 'GET',
-            actual: $response->body->REQUEST_METHOD
-        );
-        $this->assertSame(
+        self::assertSame(
             expected: 200,
             actual: $response->code
         );
@@ -176,7 +291,8 @@ class CurlTest extends TestCase
      */
     public function testRealGetRequestWithCustomUserAgent(): void
     {
-        $expectRemoteVersion = 'EComTest-Custom-' . (new Generic())->getVersionByClassDoc(self::class);
+        $expectRemoteVersion = 'EComTest-Custom-' .
+            (new Generic())->getVersionByClassDoc(className: self::class);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
@@ -192,15 +308,13 @@ class CurlTest extends TestCase
         );
         $response = $curl->exec();
 
-        $this->assertTrue(
-            strpos($response->body->HTTP_USER_AGENT, $expectRemoteVersion) === 0
+        $this->validateUserAgent(
+            response: $response,
+            startsWith: $expectRemoteVersion
         );
+        $this->validateRequestMethod(response: $response, expected: 'GET');
 
-        $this::assertEquals(
-            expected: 'GET',
-            actual: $response->body->REQUEST_METHOD
-        );
-        $this->assertSame(
+        self::assertSame(
             expected: 200,
             actual: $response->code
         );
@@ -215,7 +329,6 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public function testRealPostRequest(): void
@@ -231,14 +344,12 @@ class CurlTest extends TestCase
             authType: AuthType::NONE
         );
 
-        $this::assertEquals(
-            expected: 'POST',
-            actual: $response->body->REQUEST_METHOD
-        );
-        $this::assertEquals(
+        $this->validateRequestMethod(response: $response, expected: 'POST');
+
+        self::assertEquals(
             expected: $payload,
             actual: json_decode(
-                json: $response->body->input,
+                json: $this->getInput(response: $response),
                 associative: false,
                 depth: 32,
                 flags: JSON_THROW_ON_ERROR
@@ -253,7 +364,6 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public function testRealPutRequest(): void
@@ -269,14 +379,12 @@ class CurlTest extends TestCase
             authType: AuthType::NONE
         );
 
-        $this::assertEquals(
-            expected: 'PUT',
-            actual: $response->body->REQUEST_METHOD
-        );
-        $this::assertEquals(
+        $this->validateRequestMethod(response: $response, expected: 'PUT');
+
+        self::assertEquals(
             expected: $payload,
             actual: json_decode(
-                json: $response->body->input,
+                json: $this->getInput(response: $response),
                 associative: false,
                 depth: 16,
                 flags: JSON_THROW_ON_ERROR
@@ -291,7 +399,6 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public function testRealDeleteRequest(): void
@@ -299,16 +406,15 @@ class CurlTest extends TestCase
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class)
         );
+
         $response = Curl::delete(
             url: 'https://ipv4.netcurl.org',
             authType: AuthType::NONE
         );
 
-        $this::assertEquals(
-            expected: 'DELETE',
-            actual: $response->body->REQUEST_METHOD
-        );
-        $this->assertSame(
+        $this->validateRequestMethod(response: $response, expected: 'DELETE');
+
+        self::assertSame(
             expected: 200,
             actual: $response->code
         );
@@ -324,11 +430,11 @@ class CurlTest extends TestCase
      */
     public function testTimeout(): void
     {
-        $this->expectExceptionCode(28);
+        $this->expectExceptionCode(code: 28);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            timeout: 1
+            timeout: 2
         );
 
         // We need to move those features "in house" at some point (like timeout.resurs.com).
@@ -352,7 +458,9 @@ class CurlTest extends TestCase
     public function testProxy(): void
     {
         if ($this->isPipeline()) {
-            self::markTestSkipped('Pipelines does not support proxies.');
+            self::markTestSkipped(
+                message: 'Pipelines does not support proxies.'
+            );
         }
 
         Config::setup(
@@ -373,12 +481,12 @@ class CurlTest extends TestCase
 
             // Request should reflect the proxy ip, not your own.
             self::assertSame(
-                $this->proxyHost,
-                $response->body->ip
+                expected: $this->proxyHost,
+                actual: $this->getIp(response: $response),
             );
         } catch (CurlException $e) {
-            $this->markTestSkipped(
-                sprintf(
+            self::markTestSkipped(
+                message: sprintf(
                     'Can not run proxy test! Caught error (%d) from remote server: %s.',
                     $e->getCode(),
                     $e->getMessage()
@@ -391,11 +499,9 @@ class CurlTest extends TestCase
      * Verify that proxy connections work
      *
      * @throws AuthException
-     * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public function testBadProxy(): void
@@ -413,8 +519,8 @@ class CurlTest extends TestCase
                 authType: AuthType::NONE
             );
         } catch (CurlException $e) {
-            $this->markTestSkipped(
-                sprintf(
+            self::markTestSkipped(
+                message: sprintf(
                     'Can not run proxy test! Caught error (%d) from remote server: %s.',
                     $e->getCode(),
                     $e->getMessage()
@@ -432,7 +538,6 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public function testFileNotFound(): void
@@ -456,7 +561,6 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
      * @throws ValidationException
      */
     public function testPermissionDenied(): void

@@ -13,7 +13,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 
 /**
- * Defines a GetPayment response object
+ * Defines a response from the GetPayment API call.
  */
 class Response extends Model
 {

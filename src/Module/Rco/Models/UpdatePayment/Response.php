@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Models\UpdatePayment;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Response to UpdatePayment calls
+ * Response to UpdatePayment calls.
  */
 class Response extends Model
 {
