@@ -68,7 +68,7 @@ class FindPaymentTest extends TestCase
     {
         $reference = '20220816073146-1557096130';
 
-        (new FindPayment())->exec(
+        $payment = (new FindPayment())->exec(
             $this->getStoreId(),
             $reference
         );

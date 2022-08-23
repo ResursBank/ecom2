@@ -3,11 +3,17 @@
 namespace Resursbank\Ecom\Module\Payment\Api;
 
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\Payment\Models\FindPaymentCollection;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
+use stdClass;
 
 class GetPayment
 {
@@ -30,15 +36,19 @@ class GetPayment
             responseContentType: ContentType::JSON
         );
 
-        try {
-            $body = $curl->exec()->body;
-        } catch (CurlException $e) {
-            if ($e->getCode() === 400) {
-                // @todo It is most likely that we get a 400-code here, on very various problems.
-                // @todo We need to figure out how to handle errors better.
+        $body = $curl->exec()->body;
+        $content = (
+            $body instanceof stdClass
+        ) ? $body : new stdClass();
+        $result = DataConverter::stdClassToType(
+            $content,
+            type: Payment::class
+        );
 
-
-            }
+        if (!$result instanceof Payment) {
+            throw new TypeException(message: 'Expected PaymentCollection.');
         }
+
+        return $result;
     }
 }

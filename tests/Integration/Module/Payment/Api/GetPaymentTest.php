@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
@@ -52,10 +53,13 @@ class GetPaymentTest extends TestCase
     /**
      * This feature will be fixed after findPayments as we need proper payment ids as seen from MAPI.
      * @return void
+     * @throws TypeException
      */
     public function testGetPayment()
     {
         // 20220816073146-1557096130 => 9e744903-b9be-431a-a11d-a210f92ecbc3
-        $this->api = (new GetPayment())->exec('9e744903-b9be-431a-a11d-a210f92ecbc3');
+        $payment = (new GetPayment())->exec('9e744903-b9be-431a-a11d-a210f92ecbc3');
+
+        print_R($payment);
     }
 }

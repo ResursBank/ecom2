@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Models\FindPaymentCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
@@ -75,8 +76,8 @@ class FindPayment
             targetType: Payment::class
         );
 
-        if (!$result instanceof PaymentCollection) {
-            throw new TypeException(message: 'Expected PaymentCollection.');
+        if (!$result instanceof FindPaymentCollection) {
+            throw new TypeException(message: 'Expected FindPaymentCollection.');
         }
 
         return $result;

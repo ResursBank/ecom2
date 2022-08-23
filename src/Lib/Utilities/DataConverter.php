@@ -14,6 +14,7 @@ use ReflectionClass;
 use ReflectionObject;
 use ReflectionNamedType;
 use ReflectionException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_object;
@@ -33,7 +34,7 @@ class DataConverter
      * @param class-string $type
      * @return mixed
      * @throws ReflectionException
-     * @throws ArgumentCountError
+     * @throws TypeException
      * @psalm-suppress MixedAssignment
      * @psalm-suppress InvalidNamedArgument
      * @psalm-suppress ArgumentTypeCoercion
@@ -92,6 +93,7 @@ class DataConverter
      * @param class-string $targetType
      * @return mixed
      * @throws ReflectionException
+     * @throws TypeException
      */
     public static function arrayToCollection(array $data, string $targetType): mixed
     {
