@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Store;
+namespace Resursbank\EcomTest\Unit\Module\PaymentMethod;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -21,17 +21,17 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
-use Resursbank\Ecom\Module\Store\Api\GetStores as Api;
-use Resursbank\Ecom\Module\Store\Models\StoreCollection;
-use Resursbank\Ecom\Module\Store\Repository;
-use Resursbank\EcomTest\Data\GetStores;
+use Resursbank\Ecom\Module\PaymentMethod\Api\GetPaymentMethods as Api;
+use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\EcomTest\Data\GetPaymentMethods;
 use TypeError;
 
 use function is_array;
 use function json_encode;
 
 /**
- * Test business logic of payment methods Repository class.
+ * Test business logic of payment methods repository class.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -114,18 +114,18 @@ class RepositoryTest extends TestCase
     /**
      * Helper method to assign result from $this->api->call()
      *
-     * @param StoreCollection $stores
+     * @param PaymentMethodCollection $paymentMethods
      * @return self
      */
     private function setApiCallReturn(
-        StoreCollection $stores
+        PaymentMethodCollection $paymentMethods
     ): self {
         /**
          * @psalm-suppress UndefinedMethod
          * @psalm-suppress MixedMethodCall
          * @phpstan-ignore-next-line
          */
-        $this->api->method('call')->willReturn(value: $stores);
+        $this->api->method('call')->willReturn(value: $paymentMethods);
 
         return $this;
     }
@@ -206,7 +206,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert Repository::getStores() returns cached data without calling the API
+     * Assert Repository::getPaymentMethods() returns cached data without calling the API
      * or calling the debug logger.
      *
      * @return void
@@ -216,12 +216,12 @@ class RepositoryTest extends TestCase
      */
     public function testReadReturnsCache(): void
     {
-        $this->setCacheReadReturn(data: GetStores::$data)
+        $this->setCacheReadReturn(data: GetPaymentMethods::$data)
             ->expectReadCache(calls: 1)
             ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: 0);
 
-        $data = Repository::getStores();
+        $data = Repository::getPaymentMethods(storeId: 'mocked');
 
         self::assertNotEmpty(actual: $data);
     }
@@ -229,7 +229,7 @@ class RepositoryTest extends TestCase
     /**
      * Assert readCache() logs, converts and forwards TypeError as
      * CacheException when cache->read() throws TypeError (e.g. when cache is
-     * not an array consisting of Store transmutable data).
+     * not an array consisting of PaymentMethod transmutable data).
      *
      * @return void
      * @throws ApiException
@@ -245,7 +245,7 @@ class RepositoryTest extends TestCase
             ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::getStores();
+        Repository::getPaymentMethods(storeId: 'unknown');
     }
 
     /**
@@ -266,7 +266,7 @@ class RepositoryTest extends TestCase
             ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::getStores();
+        Repository::getPaymentMethods(storeId: 'some-uuid');
     }
 
     /**
@@ -287,7 +287,7 @@ class RepositoryTest extends TestCase
             ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::getStores();
+        Repository::getPaymentMethods(storeId: 'basic');
     }
 
     /**
@@ -304,11 +304,11 @@ class RepositoryTest extends TestCase
     {
         $this->setCacheReadReturn(data: [])
             ->expectReadCache(calls: 1)
-            ->setApiCallReturn(stores: GetStores::getStores())
+            ->setApiCallReturn(paymentMethods: GetPaymentMethods::getPaymentMethods())
             ->expectApiCall(calls: 1)
             ->expectDebugLog(calls: -1);
 
-        Repository::getStores(api: $this->api);
+        Repository::getPaymentMethods(storeId: 'python', api: $this->api);
     }
 
     /**
@@ -334,6 +334,6 @@ class RepositoryTest extends TestCase
             ->expectApiCall(calls: 0)
             ->expectDebugLog(calls: -1);
 
-        Repository::getStores(api: $this->api);
+        Repository::getPaymentMethods(storeId: 'elixir', api: $this->api);
     }
 }
