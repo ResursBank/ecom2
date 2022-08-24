@@ -24,7 +24,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\Payment\Api\FindPayment;
+use Resursbank\Ecom\Module\Payment\Repository;
 
 class FindPaymentTest extends TestCase
 {
@@ -63,16 +63,31 @@ class FindPaymentTest extends TestCase
      * @throws TypeException
      * @throws ValidationException
      * @throws ReflectionException
+     * @todo Reference is currently required to have if we want to run live tests.
+     * @todo Reported: findPayments should be able to find at least the last payments rendered for the current store.
      */
-    public function testFindPayment()
+    public function testFindPaymentLive()
     {
-        $reference = '20220816073146-1557096130';
+        if (isset($_ENV['JWT_AUTH_CLIENT_ID']) && $_ENV['JWT_AUTH_CLIENT_ID'] === 'tomas_t') {
+            $orderReference = '20220816073146-1557096130';
+            $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
+            if (!empty($orderReference)) {
+                $paymentCollection = Repository::findPayment(
+                    $this->getStoreId(),
+                    $orderReference
+                );
 
-        $payment = (new FindPayment())->exec(
-            $this->getStoreId(),
-            $reference
+                $payment = $paymentCollection->current();
+                static::assertSame($expectedId, $payment->id);
+                return;
+            }
+        }
+        static::markTestSkipped(
+            sprintf(
+                'Can not run live test for %s since we can not do a proper search for random orders. Current ' .
+                'search is restricted to specific orders only.',
+                __FUNCTION__
+            )
         );
-
-        $test = true;
     }
 }

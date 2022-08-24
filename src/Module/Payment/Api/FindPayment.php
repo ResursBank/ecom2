@@ -3,6 +3,7 @@
 namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
@@ -17,8 +18,6 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\FindPaymentCollection;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
-use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
 
 class FindPayment
@@ -37,21 +36,22 @@ class FindPayment
      * @param string $storeId
      * @param string $orderReference
      * @param string $governmentId
-     * @return void
-     * @throws JsonException
+     * @return FindPaymentCollection
      * @throws AuthException
      * @throws CurlException
-     * @throws TypeException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
-    public function exec(string $storeId, string $orderReference, string $governmentId = '')
+    public function exec(string $storeId, string $orderReference = '', string $governmentId = '')
     {
-        $payload = ['orderReference' => $orderReference];
         if (trim($governmentId) !== '') {
             $payload['governmentId'] = $governmentId;
+        }
+        if (trim($orderReference) !== '') {
+            $payload['orderReference'] = $orderReference;
         }
 
         $curl = new Curl(
@@ -59,21 +59,23 @@ class FindPayment
                 route: sprintf('%s/payments/find_payment/%s', Mapi::PAYMENT_ROUTE, $storeId)
             ),
             requestMethod: RequestMethod::POST,
-            payload: $payload,
+            payload: isset($payload) ? $payload : [],
             contentType: ContentType::JSON,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON
         );
 
         $body = $curl->exec()->body;
+
         $content = (
             $body instanceof stdClass &&
             isset($body->results) &&
             is_array(value: $body->results)
         ) ? $body->results : [];
+
         $result = DataConverter::arrayToCollection(
             data: $content,
-            targetType: Payment::class
+            targetType: \Resursbank\Ecom\Module\Payment\Models\FindPayment::class
         );
 
         if (!$result instanceof FindPaymentCollection) {

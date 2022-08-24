@@ -11,6 +11,12 @@ namespace Resursbank\Ecom\Module\Payment;
 use Error;
 use Exception;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Module\Payment\Api\FindPayment;
 
 class Repository
 {
@@ -32,5 +38,32 @@ class Repository
         Config::$instance->logger->debug(message: $exception);
         Config::$instance->logger->debug(message: serialize(value: $data));
         Config::$instance->logger->debug(message: '--------------------------');
+    }
+
+    /**
+     * @param string $storeId
+     * @param string $orderReference
+     * @param string $governmentId
+     * @param FindPayment $api
+     * @return void
+     * @throws \JsonException
+     * @throws \ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public static function findPayment(
+        string $storeId,
+        string $orderReference = '',
+        string $governmentId = '',
+        FindPayment $api = new FindPayment()
+    ) {
+        return $api->exec(
+            $storeId,
+            $orderReference,
+            $governmentId
+        );
     }
 }

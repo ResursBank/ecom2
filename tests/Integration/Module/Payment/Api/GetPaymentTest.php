@@ -18,10 +18,6 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
-use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\Store\Api\GetStores;
-use Resursbank\Ecom\Module\Store\Models\Store;
-use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 
 class GetPaymentTest extends TestCase
 {
@@ -46,7 +42,8 @@ class GetPaymentTest extends TestCase
      * Set a store id if phpunit.xml has one (for find_payments).
      * @return string
      */
-    private function getStoreId() {
+    private function getStoreId()
+    {
         return (string)($_ENV['MERCHANT_STORE_ID'] ?? '');
     }
 
@@ -55,11 +52,23 @@ class GetPaymentTest extends TestCase
      * @return void
      * @throws TypeException
      */
-    public function testGetPayment()
+    public function testGetPaymentLive()
     {
-        // 20220816073146-1557096130 => 9e744903-b9be-431a-a11d-a210f92ecbc3
-        $payment = (new GetPayment())->exec('9e744903-b9be-431a-a11d-a210f92ecbc3');
+        if (isset($_ENV['JWT_AUTH_CLIENT_ID']) && $_ENV['JWT_AUTH_CLIENT_ID'] === 'tomas_t') {
+            // Temporary solution.
+            $orderReference = '9e744903-b9be-431a-a11d-a210f92ecbc3';
+            // 20220816073146-1557096130 => 9e744903-b9be-431a-a11d-a210f92ecbc3
+            $payment = (new GetPayment())->exec($orderReference);
 
-        print_R($payment);
+            static::assertEquals($orderReference, $payment->id);
+            return;
+        }
+        static::markTestSkipped(
+            sprintf(
+                'Can not run live test for %s since we can not do lookups for orders. They have to be created ' .
+                'first. This can be solved with findPayment when/if problem with searching is solved.',
+                __FUNCTION__
+            )
+        );
     }
 }

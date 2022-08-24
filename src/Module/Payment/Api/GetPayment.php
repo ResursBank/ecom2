@@ -2,7 +2,6 @@
 
 namespace Resursbank\Ecom\Module\Payment\Api;
 
-use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -10,7 +9,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\FindPaymentCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
@@ -37,9 +35,11 @@ class GetPayment
         );
 
         $body = $curl->exec()->body;
+
         $content = (
             $body instanceof stdClass
         ) ? $body : new stdClass();
+
         $result = DataConverter::stdClassToType(
             $content,
             type: Payment::class
