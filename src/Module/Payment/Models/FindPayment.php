@@ -2,12 +2,12 @@
 
 namespace Resursbank\Ecom\Module\Payment\Models;
 
-class FindPayment
+use Resursbank\Ecom\Module\Rco\Models\MetaData;
+
+class FindPayment extends Payment
 {
     public function __construct(
-        public readonly string $id,
-        public readonly string $created,
-        public readonly string $storeId,
+        public readonly string $countryCode = '',
     ) {
     }
 }
