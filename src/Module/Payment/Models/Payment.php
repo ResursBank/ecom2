@@ -11,10 +11,9 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 
 class Payment
 {
-
     /**
      * @param string $id
-     * @param string $created
+     * @param string $created Timestamp.
      * @param string $storeId
      * @param string $paymentMethodId
      * @param Customer $customer

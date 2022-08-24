@@ -45,7 +45,7 @@ class FindPayment
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function exec(string $storeId, string $orderReference = '', string $governmentId = '')
+    public function call(string $storeId, string $orderReference = '', string $governmentId = '')
     {
         if (trim($governmentId) !== '') {
             $payload['governmentId'] = $governmentId;

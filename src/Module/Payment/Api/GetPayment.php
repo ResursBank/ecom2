@@ -23,7 +23,7 @@ class GetPayment
     ) {
     }
 
-    public function exec(string $orderReference)
+    public function call(string $orderReference)
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(

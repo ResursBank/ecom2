@@ -63,7 +63,7 @@ class Repository
         string $governmentId = '',
         FindPayment $api = new FindPayment()
     ) {
-        return $api->exec(
+        return $api->call(
             $storeId,
             $orderReference,
             $governmentId
@@ -79,7 +79,7 @@ class Repository
         string $orderReference,
         GetPayment $api = new GetPayment()
     ) {
-        return $api->exec(
+        return $api->call(
             $orderReference
         );
     }

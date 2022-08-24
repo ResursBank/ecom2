@@ -18,6 +18,8 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Repository;
 
 class GetPaymentTest extends TestCase
 {
@@ -58,7 +60,7 @@ class GetPaymentTest extends TestCase
             // Temporary solution.
             $orderReference = '9e744903-b9be-431a-a11d-a210f92ecbc3';
             // 20220816073146-1557096130 => 9e744903-b9be-431a-a11d-a210f92ecbc3
-            $payment = (new GetPayment())->exec($orderReference);
+            $payment = Repository::getPayment($orderReference);
 
             static::assertEquals($orderReference, $payment->id);
             return;
@@ -69,6 +71,42 @@ class GetPaymentTest extends TestCase
                 'first. This can be solved with findPayment when/if problem with searching is solved.',
                 __FUNCTION__
             )
+        );
+    }
+
+    public function testGetPaymentMocked()
+    {
+        $expectedOrderReference = 'testOrderReference';
+        $getPayment = $this->createMock(
+            originalClassName: GetPayment::class
+        );
+
+        $payment = new Payment(
+            $expectedOrderReference,
+            created: '2022-08-16T09:31:47.829',
+            storeId: 'storeId',
+            paymentMethodId: 'paymentMethodId',
+            paymentActions: [],
+            customer: new Payment\Customer(),
+            status: new Payment\Status(
+                value: 'string',
+                possibleActions: []
+            ),
+            information: new Payment\Information(
+                creator: 'username'
+            ),
+            application: new Payment\Application(
+                approvedCreditLimit: 1000,
+                requestedCreditLimit: 1000,
+                reference: 1000
+            ),
+            countryCode: 'SE'
+        );
+        $getPayment->method('call')->willReturn($payment);
+        $response = $getPayment->call($expectedOrderReference);
+        static::assertTrue(
+            condition: $response instanceof Payment &&
+            $response->id === $expectedOrderReference
         );
     }
 }
