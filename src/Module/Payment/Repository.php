@@ -10,6 +10,8 @@ namespace Resursbank\Ecom\Module\Payment;
 
 use Error;
 use Exception;
+use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -17,6 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Module\Payment\Api\FindPayment;
+use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 
 class Repository
 {
@@ -46,8 +49,8 @@ class Repository
      * @param string $governmentId
      * @param FindPayment $api
      * @return void
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
      * @throws ValidationException
@@ -64,6 +67,20 @@ class Repository
             $storeId,
             $orderReference,
             $governmentId
+        );
+    }
+
+    /**
+     * @param string $orderReference
+     * @param GetPayment $api
+     * @return Models\Payment
+     */
+    public static function getPayment(
+        string $orderReference,
+        GetPayment $api = new GetPayment()
+    ) {
+        return $api->exec(
+            $orderReference
         );
     }
 }

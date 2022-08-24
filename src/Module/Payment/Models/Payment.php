@@ -8,7 +8,6 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\PaymentActions;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
-use stdClass;
 
 class Payment
 {
@@ -34,8 +33,8 @@ class Payment
         public readonly string $created,
         public readonly string $storeId,
         public readonly string $paymentMethodId,
-        public readonly Customer $customer,
         public readonly array $paymentActions,
+        public readonly Customer $customer,
         public readonly Status $status,
         public readonly Information $information,
         public readonly Application $application,

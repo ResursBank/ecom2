@@ -3,9 +3,7 @@
 namespace Resursbank\Ecom\Module\Payment\Models;
 
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 
 class FindPayment
