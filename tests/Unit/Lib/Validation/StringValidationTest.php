@@ -243,4 +243,32 @@ final class StringValidationTest extends TestCase
             condition: $this->stringValidation->isDate(value: '2007-07-12')
         );
     }
+
+    /**
+     * Assert isUuid() throws IllegalValueException when the value isn't an
+     * uuid.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsUuidThrowsIllegalValue(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isUuid(value: 'not-a-uuid');
+    }
+
+    /**
+     * Assert isUuid() return TRUE when supplied a uuid.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsUuidReturnsTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->stringValidation->isUuid(
+                value: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
+            )
+        );
+    }
 }
