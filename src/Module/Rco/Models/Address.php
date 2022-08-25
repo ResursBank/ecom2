@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models;
 
+use Resursbank\Ecom\Lib\Model\Model;
+
 /**
  * Defines customer address information.
  */
-class Address
+class Address extends Model
 {
     /**
      * @param string|null $firstName
