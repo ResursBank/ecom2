@@ -4,7 +4,11 @@ namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
 class Customer
 {
-    public function __construct()
-    {
+    /**
+     * @param mixed $customerType
+     */
+    public function __construct(
+        public readonly mixed $customerType,
+    ) {
     }
 }

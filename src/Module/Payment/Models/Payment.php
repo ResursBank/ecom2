@@ -16,10 +16,10 @@ class Payment
      * @param string $created Timestamp.
      * @param string $storeId
      * @param string $paymentMethodId
-     * @param Customer $customer
      * @param array $paymentActions
-     * @param Information $information
+     * @param Customer $customer
      * @param Status $status
+     * @param Information|null $information
      * @param Application $application
      * @param string $countryCode
      * @param StringValidation $stringValidation
@@ -35,9 +35,9 @@ class Payment
         public readonly array $paymentActions,
         public readonly Customer $customer,
         public readonly Status $status,
-        public readonly Information $information,
-        public readonly Application $application,
-        public readonly string $countryCode = '',
+        public readonly ?Application $application = null,
+        public readonly ?Information $information = null,
+        public readonly ?string $countryCode = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
     ) {
     }

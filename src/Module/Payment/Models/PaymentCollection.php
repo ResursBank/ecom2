@@ -16,7 +16,7 @@ use Resursbank\Ecom\Lib\Collection\Collection;
 /**
  * Defines a Store collection.
  */
-class FindPaymentCollection extends Collection
+class PaymentCollection extends Collection
 {
     /**
      * @param array $data
@@ -26,7 +26,7 @@ class FindPaymentCollection extends Collection
     {
         parent::__construct(
             data: $data,
-            type: FindPayment::class
+            type: Payment::class
         );
     }
 }

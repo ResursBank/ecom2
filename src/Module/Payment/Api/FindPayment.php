@@ -17,7 +17,8 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\FindPaymentCollection;
+use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
 
 class FindPayment
@@ -36,7 +37,7 @@ class FindPayment
      * @param string $storeId
      * @param string $orderReference
      * @param string $governmentId
-     * @return FindPaymentCollection
+     * @return PaymentCollection
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -75,11 +76,11 @@ class FindPayment
 
         $result = DataConverter::arrayToCollection(
             data: $content,
-            targetType: \Resursbank\Ecom\Module\Payment\Models\FindPayment::class
+            targetType: Payment::class
         );
 
-        if (!$result instanceof FindPaymentCollection) {
-            throw new TypeException(message: 'Expected FindPaymentCollection.');
+        if (!$result instanceof PaymentCollection) {
+            throw new TypeException(message: 'Expected PaymentCollection.');
         }
 
         return $result;
