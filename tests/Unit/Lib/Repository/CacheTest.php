@@ -1,0 +1,245 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Unit\Lib\Repository;
+
+use JsonException;
+use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Cache\None;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\EcomTest\Data\Models\Instrument;
+use Resursbank\EcomTest\Data\Models\InstrumentCollection;
+use Resursbank\EcomTest\Data\Models\Music;
+use Resursbank\EcomTest\Data\Models\MusicCollection;
+use stdClass;
+
+use function is_string;
+
+/**
+ * Verifies business logic of ModelConverter trait.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
+final class CacheTest extends TestCase
+{
+    /**
+     * @var None
+     */
+    private None $cacheDriver;
+
+    /**
+     * We call the actual Config::setup() method to initiate mocked objects
+     * to be utilised in tests against the static methods available on our
+     * subject class. The methods on our subject class (such as readCache())
+     * will make calls to object such as Config::$instance->cache, and we wish
+     * to test behaviour when the results from the API / Cache differ.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        $this->cacheDriver = $this->createMock(
+            originalClassName: None::class
+        );
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->cacheDriver
+        );
+
+        parent::setUp();
+    }
+
+    /**
+     * Get instance of Cache repository.
+     *
+     * @return Cache
+     */
+    private function getCache(): Cache
+    {
+        return new Cache(
+            key: 'test',
+            model: Music::class,
+            ttl: 3600
+        );
+    }
+
+    /**
+     * Helper method to assign result from Config::$instance->cache->read()
+     *
+     * @param mixed $data
+     * @return void
+     * @throws JsonException
+     */
+    private function setCacheReadReturn(
+        mixed $data
+    ): void {
+        if (!is_string(value: $data)) {
+            $data = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
+        }
+
+        /**
+         * @psalm-suppress UndefinedMethod
+         * @psalm-suppress MixedMethodCall
+         * @phpstan-ignore-next-line
+         */
+        $this->cacheDriver->method('read')->willReturn(value: $data);
+    }
+
+    /**
+     * Assert that read() returns NULL without any data.
+     *
+     * @return void
+     * @throws CacheException
+     */
+    public function testReadReturnsNull(): void
+    {
+        self::assertNull(actual: $this->getCache()->read());
+    }
+
+    /**
+     * Assert read() returns NULL if cache is an empty array.
+     *
+     * @return void
+     * @throws CacheException
+     * @throws JsonException
+     */
+    public function testReadReturnsNullWithEmptyArray(): void
+    {
+        $this->setCacheReadReturn(data: []);
+        self::assertNull(actual: $this->getCache()->read());
+    }
+
+    /**
+     * Assert read() throws CacheException when cache is invalid JSON encoded
+     * data.
+     *
+     * @return void
+     * @throws CacheException
+     * @throws JsonException
+     */
+    public function testReadThrowsCacheExceptionForInvalidJson(): void
+    {
+        $this->expectException(exception: CacheException::class);
+        $this->setCacheReadReturn(data: json_encode(
+            value: 'invalid json',
+            flags: JSON_THROW_ON_ERROR
+        ));
+        $this->getCache()->read();
+    }
+
+    /**
+     * Assert read() throws CacheException when cache isn't JSON encoded data.
+     *
+     * @return void
+     * @throws CacheException
+     * @throws JsonException
+     */
+    public function testReadThrowsCacheExceptionWithoutJson(): void
+    {
+        $this->expectException(exception: CacheException::class);
+        $this->setCacheReadReturn(data: 'This is not json');
+        $this->getCache()->read();
+    }
+
+    /**
+     * Assert read() converts stdClass to Model.
+     *
+     * @return void
+     * @throws CacheException
+     * @throws JsonException
+     */
+    public function testReadConvertsModel(): void
+    {
+        $data = new stdClass();
+        $data->id = 1;
+        $data->genre = 'test';
+
+        $this->setCacheReadReturn(data: $data);
+
+        self::assertInstanceOf(
+            expected: Music::class,
+            actual: $this->getCache()->read()
+        );
+    }
+
+    /**
+     * Assert read() converts array to Collection.
+     *
+     * @return void
+     * @throws CacheException
+     * @throws JsonException
+     */
+    public function testReadConvertsCollection(): void
+    {
+        $data1 = new Music(id: 1, genre: 'funk');
+        $data2 = new Music(id: 2, genre: 'rock');
+
+        $this->setCacheReadReturn(data: [$data1, $data2]);
+
+        /** @var MusicCollection $data */
+        $data = $this->getCache()->read();
+
+        self::assertInstanceOf(
+            expected: MusicCollection::class,
+            actual: $data
+        );
+        self::assertCount(
+            expectedCount: 2,
+            haystack: $data
+        );
+
+        /** @psalm-suppress MixedPropertyFetch */
+        self::assertSame(
+            expected: 1,
+            actual: $data->current()->id
+        );
+    }
+
+    /**
+     * Assert write() throws CacheException when passed a Model instance not
+     * matching the model class of the Cache instance (see getCache()).
+     *
+     * @return void
+     * @throws CacheException
+     */
+    public function testWriteThrowsWithInvalidModel(): void
+    {
+        $this->expectException(exception: CacheException::class);
+        $this->getCache()->write(data: new Instrument(id: 1, name: 'guitar'));
+    }
+
+
+
+    /**
+     * Assert write() throws CacheException when passed a Collection instance
+     * not matching the model class of the Cache instance (see getCache()).
+     *
+     * @return void
+     * @throws CacheException
+     * @throws IllegalTypeException
+     */
+    public function testWriteThrowsWithInvalidCollection(): void
+    {
+        $this->expectException(exception: CacheException::class);
+        $this->getCache()->write(data: new InstrumentCollection(data: [
+            new Instrument(id: 1, name: 'guitar'),
+            new Instrument(id: 1, name: 'guitar'),
+            new Instrument(id: 1, name: 'guitar'),
+            new Instrument(id: 1, name: 'guitar')
+        ]));
+    }
+}
