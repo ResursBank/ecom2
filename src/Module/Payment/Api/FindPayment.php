@@ -66,13 +66,13 @@ class FindPayment
             responseContentType: ContentType::JSON
         );
 
-        $body = $curl->exec()->body;
+        $data = $curl->exec()->body;
 
         $content = (
-            $body instanceof stdClass &&
-            isset($body->results) &&
-            is_array(value: $body->results)
-        ) ? $body->results : [];
+            $data instanceof stdClass &&
+            isset($data->results) &&
+            is_array(value: $data->results)
+        ) ? $data->results : [];
 
         $result = DataConverter::arrayToCollection(
             data: $content,

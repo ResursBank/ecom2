@@ -2,7 +2,9 @@
 
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
-class Status
+use Resursbank\Ecom\Lib\Model\Model;
+
+class Status extends Model
 {
     /**
      * @param string $value TASK_REDIRECTION_REQUIRED, INSPECTION, SUPPLEMENTING_REQUIRED, FROZEN, ACCEPTED, REJECTED

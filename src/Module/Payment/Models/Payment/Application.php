@@ -2,7 +2,9 @@
 
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
-class Application
+use Resursbank\Ecom\Lib\Model\Model;
+
+class Application extends Model
 {
     /**
      * @param int $approvedCreditLimit

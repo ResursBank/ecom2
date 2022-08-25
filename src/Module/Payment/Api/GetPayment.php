@@ -34,11 +34,11 @@ class GetPayment
             responseContentType: ContentType::JSON
         );
 
-        $body = $curl->exec()->body;
+        $data = $curl->exec()->body;
 
         $content = (
-            $body instanceof stdClass
-        ) ? $body : new stdClass();
+            $data instanceof stdClass
+        ) ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
             $content,

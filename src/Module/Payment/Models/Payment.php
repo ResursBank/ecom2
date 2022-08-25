@@ -2,6 +2,7 @@
 
 namespace Resursbank\Ecom\Module\Payment\Models;
 
+use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
@@ -9,7 +10,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\PaymentActions;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 
-class Payment
+class Payment extends Model
 {
     /**
      * @param string $id
@@ -19,9 +20,9 @@ class Payment
      * @param array $paymentActions
      * @param Customer $customer
      * @param Status $status
+     * @param Application|null $application
      * @param Information|null $information
-     * @param Application $application
-     * @param string $countryCode
+     * @param string|null $countryCode
      * @param StringValidation $stringValidation
      * @todo Application and countryCode is currently not showing in FindPayment, so to make
      * @todo FindPayment compatible with the Payment model, we are temporary setting the missing fields

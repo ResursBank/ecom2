@@ -4,10 +4,11 @@ namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
-class Information extends Model
+class Identification extends Model
 {
     public function __construct(
-        public readonly string $creator,
+        public readonly string $type,
+        public readonly string $reference,
     ) {
     }
 }
