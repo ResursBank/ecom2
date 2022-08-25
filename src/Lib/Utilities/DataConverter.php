@@ -14,6 +14,7 @@ use ReflectionClass;
 use ReflectionObject;
 use ReflectionNamedType;
 use ReflectionException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_object;
@@ -34,6 +35,7 @@ class DataConverter
      * @return mixed
      * @throws ReflectionException
      * @throws ArgumentCountError
+     * @throws IllegalTypeException
      * @psalm-suppress MixedAssignment
      * @psalm-suppress InvalidNamedArgument
      * @psalm-suppress ArgumentTypeCoercion
@@ -78,6 +80,13 @@ class DataConverter
                         object: $value,
                         type: $propertyType
                     );
+                } elseif (enum_exists($propertyType)) {
+                    // If our property is an enum we need to convert the value
+                    // to the enum value it represents.
+                    $arguments[$name] = \call_user_func(
+                        $propertyType . '::from',
+                        $value
+                    );
                 } else {
                     $arguments[$name] = $value;
                 }
@@ -92,6 +101,7 @@ class DataConverter
      * @param class-string $targetType
      * @return mixed
      * @throws ReflectionException
+     * @throws IllegalTypeException
      */
     public static function arrayToCollection(array $data, string $targetType): mixed
     {

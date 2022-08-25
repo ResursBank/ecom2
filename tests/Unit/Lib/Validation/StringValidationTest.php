@@ -243,4 +243,86 @@ final class StringValidationTest extends TestCase
             condition: $this->stringValidation->isDate(value: '2007-07-12')
         );
     }
+
+    /**
+     * Assert length() return TRUE when supplied a string within length.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthReturnsTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->stringValidation->length(
+                value: '',
+                min: 0,
+                max: 5
+            )
+        );
+        self::assertTrue(
+            condition: $this->stringValidation->length(
+                value: '123',
+                min: 0,
+                max: 5
+            )
+        );
+        self::assertTrue(
+            condition: $this->stringValidation->length(
+                value: '12345',
+                min: 0,
+                max: 5
+            )
+        );
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when the string is too
+     * short.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsWhenTooShort(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->length(value: '1', min: 2, max: 5);
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when the string is too long.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsWhenTooLong(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->length(value: '123456', min: 2, max: 5);
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when given a negative
+     * minimum value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsWithNegativeMin(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->length(value: '123', min: -1, max: 5);
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when given a maximum value
+     * that is less than the minimum.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsWithInvalidMax(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->length(value: '123', min: 2, max: 0);
+    }
 }

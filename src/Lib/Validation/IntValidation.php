@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Validation;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 
 use function is_int;
@@ -44,5 +45,31 @@ class IntValidation
         }
 
         return $data[$key];
+    }
+
+    /**
+     * @param int $value
+     * @param int $min
+     * @param int $max
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function inRange(int $value, int $min, int $max): bool
+    {
+        if ($max < $min) {
+            throw new IllegalValueException(
+                message: 'Argument $max ' . "($max) " . 'is less than $min' .
+                "($min)."
+            );
+        }
+
+        if ($value < $min || $value > $max) {
+            throw new IllegalValueException(
+                message: "$value is not in range. $value needs to be within " .
+                ">=$min & <=$max."
+            );
+        }
+
+        return true;
     }
 }

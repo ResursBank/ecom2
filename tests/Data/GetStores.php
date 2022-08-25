@@ -49,7 +49,7 @@ class GetStores
         "tradeName": "Popular Candy",
         "popularName": "Dentists Office",
         "representativeId": "3217ac8b-6942-452b-990f-c32f393c5977"
-    }
+    },
 ]
 EOD;
 

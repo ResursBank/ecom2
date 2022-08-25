@@ -16,6 +16,7 @@ use stdClass;
 
 use function in_array;
 use function is_array;
+use function count;
 
 /**
  * Methods to validate arrays.
@@ -149,6 +150,68 @@ class ArrayValidation
                     message: 'Array contains illegal key.'
                 );
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate that a one-dimensional array contains only data of specified
+     * type.
+     *
+     * @param array<int, mixed> $data
+     * @param string $type
+     * @param callable $compareFn
+     * @return bool
+     * @throws IllegalTypeException
+     */
+    public function isOfType(
+        array $data,
+        string $type,
+        callable $compareFn
+    ): bool {
+        /** @psalm-suppress MixedAssignment */
+        foreach ($data as $i => $item) {
+            if (!$compareFn($item)) {
+                throw new IllegalTypeException(
+                    message: 'Array contains data that is not of type ' .
+                    "$type at index $i."
+                );
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array<int, mixed> $data
+     * @param int $min
+     * @param int $max
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function inRange(array $data, int $min, int $max): bool
+    {
+        $len = count($data);
+
+        if ($max < $min) {
+            throw new IllegalValueException(
+                message: 'Argument $max ' . "($max) " . 'is less than $min' .
+                "($min)."
+            );
+        }
+
+        if ($min < 0) {
+            throw new IllegalValueException(
+                message: 'Argument $min may not be a negative integer.'
+            );
+        }
+
+        if ($len < $min || $len > $max) {
+            throw new IllegalValueException(
+                message: "Array has invalid length. Length is $len. " .
+                "Allowed range is from $min to $max."
+            );
         }
 
         return true;
