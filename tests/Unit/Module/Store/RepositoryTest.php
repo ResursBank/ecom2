@@ -57,7 +57,7 @@ class RepositoryTest extends TestCase
     private Api $api;
 
     /**
-     * We callute the actual Config::setup() method to initiate mocked objects
+     * We call the actual Config::setup() method to initiate mocked objects
      * to be utilised in tests against the static methods available on our
      * subject class. The methods on our subject class (such as readCache())
      * will make calls to object such as Config::$instance->cache, and we wish

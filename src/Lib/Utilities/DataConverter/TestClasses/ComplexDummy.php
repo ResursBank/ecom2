@@ -9,10 +9,13 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
 
+use Resursbank\Ecom\Lib\Model\Model;
+
 /**
  * To test stdClass conversion of objects specifying object properties.
  */
-class ComplexDummy
+class ComplexDummy extends Model
+
 {
     /**
      * @param int $int

@@ -11,12 +11,13 @@ namespace Resursbank\Ecom\Module\Store\Models;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines a Store resource collected from the API.
  */
-class Store
+class Store extends Model
 {
     /**
      * @param string $id | API identifier.

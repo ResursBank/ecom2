@@ -23,7 +23,7 @@ use function is_int;
 class Filesystem extends AbstractCache implements CacheInterface
 {
     /**
-     * @param string $path
+     * @param string $path | Directory where cache files will be stored.
      */
     public function __construct(
         private readonly string $path
@@ -95,7 +95,7 @@ class Filesystem extends AbstractCache implements CacheInterface
             }
         }
 
-        $ttl = time() + ($ttl * 1000);
+        $ttl = time() + $ttl;
 
         file_put_contents(filename: $filename, data: "$ttl|$data");
     }

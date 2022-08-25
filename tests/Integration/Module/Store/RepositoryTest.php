@@ -61,7 +61,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws CacheException
      */
-    public static function testClearCache(): void
+    public function testClearCache(): void
     {
         Repository::getStores();
 

@@ -17,6 +17,7 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
+use Resursbank\Ecom\Lib\Model\Model;
 use function is_object;
 
 /**
@@ -32,7 +33,7 @@ class DataConverter
      *
      * @param object $object
      * @param class-string $type
-     * @return mixed
+     * @return Model
      * @throws ReflectionException
      * @throws ArgumentCountError
      * @throws IllegalTypeException
@@ -41,7 +42,7 @@ class DataConverter
      * @psalm-suppress ArgumentTypeCoercion
      * @psalm-suppress MixedMethodCall
      */
-    public static function stdClassToType(object $object, string $type): mixed
+    public static function stdClassToType(object $object, string $type): Model
     {
         $sourceReflection = new ReflectionObject(object: $object);
         $destReflection = new ReflectionClass(objectOrClass: $type);
@@ -99,11 +100,11 @@ class DataConverter
     /**
      * @param array $data
      * @param class-string $targetType
-     * @return mixed
+     * @return Collection
      * @throws ReflectionException
      * @throws IllegalTypeException
      */
-    public static function arrayToCollection(array $data, string $targetType): mixed
+    public static function arrayToCollection(array $data, string $targetType): Collection
     {
         $convertedData = [];
         foreach ($data as $item) {

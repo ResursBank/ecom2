@@ -1,0 +1,263 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Integration\Module\PaymentMethod;
+
+use JsonException;
+use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Cache\Filesystem;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Store\Models\Store;
+use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
+use Resursbank\Ecom\Lib\Repository\Cache;
+
+/**
+ * Integration tests for PaymentMethods repository.
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
+class RepositoryTest extends TestCase
+{
+    /**
+     * @var Cache
+     */
+    private Cache $cache;
+
+    /**
+     * @var string
+     */
+    private string $storeId;
+
+    /**
+     * @return void
+     * @throws ApiException
+     * @throws CacheException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
+            jwtAuth: new Jwt(
+                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
+                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->storeId = $this->getRandomStore()->id;
+        $this->cache = Repository::getCache(storeId: $this->storeId);
+        $this->cache->clear();
+
+        parent::setUp();
+    }
+
+    /**
+     * @return Store
+     * @throws ApiException
+     * @throws CacheException
+     * @psalm-suppress MixedInferredReturnType
+     */
+    private function getRandomStore(): Store
+    {
+        // @todo We are not allowed to do this, it creates a coupling between Payment Methods -> Stores. Get static ids, put them in a list in phpunit.xml
+        $stores = StoreRepository::getStores()->toArray();
+
+        /** @psalm-suppress MixedReturnStatement */
+        return $stores[(int) array_rand(array: $stores)]; /** @phpstan-ignore-line */
+    }
+
+    /**
+     * Assert clearCache() clears cache.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testClearCache(): void
+    {
+        Repository::getPaymentMethods(storeId: $this->storeId);
+
+        self::assertNotNull(actual: $this->cache->read());
+
+        $this->cache->clear();
+
+        self::assertNull(actual: $this->cache->read());
+    }
+
+    /**
+     * Assert read() returns data from the API when cache is empty.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws CacheException
+     * @throws EmptyValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testReadReturnsWithoutCache(): void
+    {
+        self::assertNull(actual: $this->cache->read());
+        self::assertNotEmpty(
+            actual: Repository::getPaymentMethods(
+                storeId: $this->storeId
+            )
+        );
+    }
+
+    /**
+     * Assert read() retrieves payment methods, paymentMethod them in cache, and
+     * will later return the same paymentMethods from cache.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testReadReturnsCache(): void
+    {
+        self::assertEmpty(actual: $this->cache->read());
+
+        $data = Repository::getPaymentMethods(
+            storeId: $this->storeId
+        );
+
+        self::assertNotEmpty(actual: $data);
+
+        /* Since we cannot mock the API adapter we will need to call the
+            readCache() directly to ensure we don't fetch from the API again. */
+        self::assertEquals(expected: $data, actual: $this->cache->read());
+    }
+
+    /**
+     * Assure that different datasets are returned from the API when different
+     * store id values are supplied. Also make sure the cache is kept separated
+     * by the same id.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testDataSeparatedByStoreId(): void
+    {
+        $store1 = $this->getRandomStore()->id;
+        $store2 = $this->getRandomStore()->id;
+
+        // Load data from API to cache.
+        $apiData1 = Repository::getPaymentMethods(storeId: $store1);
+        $apiData2 = Repository::getPaymentMethods(storeId: $store2);
+
+        // Retrieve same data from cache.
+        $cacheData1 = Repository::getCache(storeId: $store1)->read();
+        $cacheData2 = Repository::getCache(storeId: $store2)->read();
+
+        self::assertEquals(expected: $apiData1, actual: $cacheData1);
+        self::assertEquals(expected: $apiData2, actual: $cacheData2);
+        self::assertNotEquals(expected: $apiData1, actual: $apiData2);
+        self::assertNotEquals(expected: $cacheData1, actual: $cacheData2);
+    }
+
+    /**
+     * Assert different datasets from the API for different amount values. Also
+     * make sure the cache is kept separated by the same value.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testDataSeparatedByAmount(): void
+    {
+        $storeId = $this->getRandomStore()->id;
+
+        $amount1 = 1;
+        $amount2 = 1000;
+
+        // Load data from API to cache.
+        $apiData1 = Repository::getPaymentMethods(
+            storeId: $storeId,
+            amount: $amount1
+        );
+
+        $apiData2 = Repository::getPaymentMethods(
+            storeId: $storeId,
+            amount: $amount2
+        );
+
+        // Retrieve same data from cache.
+        $cacheData1 = Repository::getCache(
+            storeId: $storeId,
+            amount: $amount1
+        )->read();
+
+        $cacheData2 = Repository::getCache(
+            storeId: $storeId,
+            amount: $amount2
+        )->read();
+
+        self::assertEquals(expected: $apiData1, actual: $cacheData1);
+        self::assertEquals(expected: $apiData2, actual: $cacheData2);
+        self::assertNotEquals(expected: $apiData1, actual: $apiData2);
+        self::assertNotEquals(expected: $cacheData1, actual: $cacheData2);
+    }
+}

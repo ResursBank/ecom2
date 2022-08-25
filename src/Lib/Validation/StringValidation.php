@@ -180,6 +180,25 @@ class StringValidation
                 "Length is $len. Allowed range is from $min to $max."
             );
         }
+        
+        return true;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isUuid(string $value): bool
+    {
+        if (
+            !preg_match(
+                pattern: '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
+                subject: $value
+            )
+        ) {
+            throw new IllegalValueException(message: "$value is not a UUID.");
+        }
 
         return true;
     }

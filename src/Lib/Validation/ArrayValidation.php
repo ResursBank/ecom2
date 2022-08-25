@@ -105,7 +105,9 @@ class ArrayValidation
                     );
                 }
 
-                $this->isMultiDimensional(data: $el, depth: $depth - 1);
+                if ($depth - 1 > 0) {
+                    $this->isMultiDimensional(data: $el, depth: $depth - 1);
+                }
             }
         }
 

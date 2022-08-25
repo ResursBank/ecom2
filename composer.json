@@ -15,7 +15,13 @@
       "Resursbank\\Ecom\\": "src/"
     }
   },
-    "require": {
-      "ext-curl": "*"
+  "autoload-dev": {
+    "psr-4": {
+        "Resursbank\\EcomTest\\": "tests/"
     }
+  },
+  "require": {
+    "php": "8.1.*",
+    "ext-curl": "*"
+  }
 }

@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Rco\Models;
 
+use Resursbank\Ecom\Lib\Model\Model;
+
 /**
  * Defines a MetaData item.
  */
-class MetaData
+class MetaData extends Model
 {
     /**
      * @param string $key
