@@ -7,22 +7,22 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
+namespace Resursbank\EcomTest\Data\Models;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * To test stdClass conversions.
+ * Mock model.
  */
-class SimpleDummy extends Model
+class Instrument extends Model
 {
     /**
-     * @param int $int
-     * @param string $message
+     * @param int $id
+     * @param string $name
      */
     public function __construct(
-        public int $int,
-        public string $message
+        public readonly int $id,
+        public readonly string $name
     ) {
     }
 }

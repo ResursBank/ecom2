@@ -25,8 +25,6 @@ use Redis as Server;
  */
 class RedisTest extends TestCase
 {
-    private const REDIS_HOST = 'redis';
-
     /**
      * @var Redis
      */
@@ -45,7 +43,7 @@ class RedisTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->redis = new Redis(host: self::REDIS_HOST);
+        $this->redis = new Redis(host: (string) $_ENV['REDIS_HOST']);
 
         // NOTE: Simply using time() is unsafe, tests run too quickly.
         $this->key = AbstractCache::getKey(
@@ -62,7 +60,7 @@ class RedisTest extends TestCase
     private function getRedisConnection(): Server
     {
         $server = new Server();
-        $server->connect(host: self::REDIS_HOST);
+        $server->connect(host: (string) $_ENV['REDIS_HOST']);
 
         return $server;
     }

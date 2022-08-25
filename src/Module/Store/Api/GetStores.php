@@ -77,6 +77,8 @@ class GetStores
         );
 
         $body = $curl->exec()->body;
+
+        // @todo We could validate this better. If the body is not what we expect we may want to throw and exception.
         $content = (
             $body instanceof stdClass &&
             isset($body->content) &&

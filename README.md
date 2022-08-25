@@ -58,7 +58,8 @@ Custom Exception classes utilized for data validation.
 Libraries are located under **src/Lib**. Libraries are allowed to communicate
 with each other. As such they are allowed to have dependencies on each other.
 These classes contain abstract business logic and are not meant to be called
-directly by the end user.
+directly by the end user. Libraries are not allowed to communicate with modules,
+modules are however allowed to communicate with libraries.
 
 ### Api
 
