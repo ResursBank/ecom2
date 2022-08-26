@@ -49,7 +49,7 @@ class RepositoryTest extends TestCase
             logger: $this->createMock(originalClassName: FileLogger::class),
             basicAuth: new Basic(
                 username: (string)$_ENV['BASIC_AUTH_USERNAME'],
-                password: (string) $_ENV['BASIC_AUTH_PASSWORD']
+                password: (string)$_ENV['BASIC_AUTH_PASSWORD']
             )
         );
 
