@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\PaymentMethod\Enum;
 
 /**
- * Valid payment actions.
+ * Possible payment actions.
  *
  * @codingStandardsIgnoreStart
  */
