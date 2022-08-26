@@ -14,6 +14,7 @@ use ReflectionClass;
 use ReflectionObject;
 use ReflectionNamedType;
 use ReflectionException;
+use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
