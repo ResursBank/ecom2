@@ -25,8 +25,6 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\Store\Models\Store;
-use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
 /**
@@ -51,14 +49,14 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
-     * @throws ApiException
-     * @throws CacheException
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
+        $this->storeId = (string) $_ENV['STORE_ID'];
+
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
@@ -70,26 +68,10 @@ class RepositoryTest extends TestCase
             )
         );
 
-        $this->storeId = $this->getRandomStore()->id;
         $this->cache = Repository::getCache(storeId: $this->storeId);
         $this->cache->clear();
 
         parent::setUp();
-    }
-
-    /**
-     * @return Store
-     * @throws ApiException
-     * @throws CacheException
-     * @psalm-suppress MixedInferredReturnType
-     */
-    private function getRandomStore(): Store
-    {
-        // @todo We are not allowed to do this, it creates a coupling between Payment Methods -> Stores. Get static ids, put them in a list in phpunit.xml
-        $stores = StoreRepository::getStores()->toArray();
-
-        /** @psalm-suppress MixedReturnStatement */
-        return $stores[(int) array_rand(array: $stores)]; /** @phpstan-ignore-line */
     }
 
     /**
@@ -175,42 +157,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assure that different datasets are returned from the API when different
-     * store id values are supplied. Also make sure the cache is kept separated
-     * by the same id.
-     *
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testDataSeparatedByStoreId(): void
-    {
-        $store1 = $this->getRandomStore()->id;
-        $store2 = $this->getRandomStore()->id;
-
-        // Load data from API to cache.
-        $apiData1 = Repository::getPaymentMethods(storeId: $store1);
-        $apiData2 = Repository::getPaymentMethods(storeId: $store2);
-
-        // Retrieve same data from cache.
-        $cacheData1 = Repository::getCache(storeId: $store1)->read();
-        $cacheData2 = Repository::getCache(storeId: $store2)->read();
-
-        self::assertEquals(expected: $apiData1, actual: $cacheData1);
-        self::assertEquals(expected: $apiData2, actual: $cacheData2);
-        self::assertNotEquals(expected: $apiData1, actual: $apiData2);
-        self::assertNotEquals(expected: $cacheData1, actual: $cacheData2);
-    }
-
-    /**
      * Assert different datasets from the API for different amount values. Also
      * make sure the cache is kept separated by the same value.
      *
@@ -228,7 +174,7 @@ class RepositoryTest extends TestCase
      */
     public function testDataSeparatedByAmount(): void
     {
-        $storeId = $this->getRandomStore()->id;
+        $storeId = $this->storeId;
 
         $amount1 = 1;
         $amount2 = 1000;

@@ -9,15 +9,22 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Store;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\Store\Repository;
 
 /**
@@ -31,9 +38,13 @@ use Resursbank\Ecom\Module\Store\Repository;
 class RepositoryTest extends TestCase
 {
     /**
+     * @var Cache
+     */
+    private Cache $cache;
+
+    /**
      * @return void
      * @throws EmptyValueException
-     * @throws ValidationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
@@ -49,8 +60,6 @@ class RepositoryTest extends TestCase
             )
         );
 
-        Repository::clearCache();
-
         parent::setUp();
     }
 
@@ -60,16 +69,21 @@ class RepositoryTest extends TestCase
      * @return void
      * @throws ApiException
      * @throws CacheException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws IllegalTypeException
      */
     public function testClearCache(): void
     {
         Repository::getStores();
-
-        self::assertNotNull(actual: Repository::readCache());
-
-        Repository::clearCache();
-
-        self::assertNull(actual: Repository::readCache());
+        self::assertNotNull(actual: Repository::getCache()->read());
+        Repository::getCache()->clear();
+        self::assertNull(actual: Repository::getCache()->read());
     }
 
     /**
@@ -77,11 +91,19 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ApiException
+     * @throws AuthException
      * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testReadReturnsWithoutCache(): void
     {
-        self::assertNull(actual: Repository::readCache());
+        self::assertNull(actual: Repository::getCache()->read());
         self::assertNotEmpty(actual: Repository::getStores());
     }
 
@@ -91,18 +113,21 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ApiException
+     * @throws AuthException
      * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testReadReturnsCache(): void
     {
-        self::assertEmpty(actual: Repository::readCache());
-
-        $data = Repository::getStores();
-
-        self::assertNotEmpty(actual: $data);
-
-        /* Since we cannot mock the API adapter we will need to call the
-            readCache() directly to ensure we don't fetch from the API again. */
-        self::assertEquals(expected: $data, actual: Repository::readCache());
+        Repository::getCache()->clear();
+        self::assertNull(actual: Repository::getCache()->read());
+        Repository::getStores();
+        self::assertNotNull(actual: Repository::getCache()->read());
     }
 }

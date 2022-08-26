@@ -16,6 +16,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 
+use StringBackedEnum;
 use function in_array;
 use function is_string;
 

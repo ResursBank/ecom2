@@ -17,6 +17,7 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\EcomTest\Data\GetStores;
@@ -108,7 +109,7 @@ class StoreTest extends TestCase
     }
 
     /**
-     * Assert validateCountryCode() accepts values like SE, NO, FI, DK.
+     * Assert validateCountryCode() accepts values  SE, NO, FI, DK.
      *
      * @return void
      * @throws ReflectionException
@@ -226,5 +227,19 @@ class StoreTest extends TestCase
             expected: $this->data->representativeId,
             actual: $this->item->representativeId
         );
+    }
+
+    /**
+     * Assert validateId() throws IllegalValueException when id is not a valid
+     * uuid.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testValidateIdThrowsWithoutUuid(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['id' => 'not-a-uuid']);
     }
 }
