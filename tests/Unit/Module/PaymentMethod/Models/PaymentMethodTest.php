@@ -19,6 +19,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod\Status;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
 use Resursbank\EcomTest\Data\GetPaymentMethods;
 use stdClass;
+use ValueError;
 
 /**
  * Test data integrity of payment method entity model.
@@ -26,6 +27,7 @@ use stdClass;
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PaymentMethodTest extends TestCase
 {
@@ -54,6 +56,7 @@ class PaymentMethodTest extends TestCase
     /**
      * @param array $updates
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -83,6 +86,7 @@ class PaymentMethodTest extends TestCase
      * Assert validateId() raises Error when id is empty.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -93,16 +97,16 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * Assert validateId() throws IllegalCharsetException when id contains
-     * illegal charset.
+     * Assert validateId() throws IllegalValueException when not a UUID.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
-    public function testValidateIdThrowsWithIllegalCharacter(): void
+    public function testValidateIdThrowsWithoutUuid(): void
     {
-        $this->expectException(exception: IllegalCharsetException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['id' => 'Test5']);
     }
 
@@ -110,6 +114,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -123,6 +128,7 @@ class PaymentMethodTest extends TestCase
      * Assert validateCustomerType() accepts value NATURAL.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -136,6 +142,7 @@ class PaymentMethodTest extends TestCase
      * Assert validateCustomerType() accepts value LEGAL.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -149,6 +156,7 @@ class PaymentMethodTest extends TestCase
      * Assert validateCustomerType() accepts empty value.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -163,6 +171,7 @@ class PaymentMethodTest extends TestCase
      * customerType is not one of its legal values.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -177,6 +186,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -197,6 +207,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -214,6 +225,7 @@ class PaymentMethodTest extends TestCase
      * is empty.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -227,6 +239,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -244,6 +257,7 @@ class PaymentMethodTest extends TestCase
      * empty.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -258,6 +272,7 @@ class PaymentMethodTest extends TestCase
      * not formatted as a date.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -271,6 +286,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -288,6 +304,7 @@ class PaymentMethodTest extends TestCase
      * empty.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -302,6 +319,7 @@ class PaymentMethodTest extends TestCase
      * not formatted as a date.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -315,6 +333,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -331,6 +350,7 @@ class PaymentMethodTest extends TestCase
      * Assert validateSupportedActions() accepts empty array.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -345,6 +365,7 @@ class PaymentMethodTest extends TestCase
      * array is not sequential.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -368,44 +389,32 @@ class PaymentMethodTest extends TestCase
     {
         $this->expectException(exception: IllegalTypeException::class);
         $this->convert(updates: ['supportedActions' =>
-            ['TESTING', 55, 'asd', true]
+            [55, 'asd', true]
         ]);
     }
 
     /**
-     * Assert validateSupportedActions() throws IllegalValueException when
-     * supplied array contains an empty string.
+     * Assert validateSupportedActions() throws ValueError when supplied value
+     * is not defined by SupportedActions enum.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
     public function testValidateSupportedActionsThrowsWithEmptyValue(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: ValueError::class);
         $this->convert(updates: ['supportedActions' =>
-            ['SOME', 'TEST', '', 'END']
+            ['DEBIT', 'CREDIT', 'CATALYST']
         ]);
-    }
-
-    /**
-     * Assert validateSupportedActions() throws IllegalValueException when
-     * supplied array contains a value matching an illegal charset.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testValidateSupportedActionsThrowsWithIllegalKeyChar(): void
-    {
-        $this->expectException(exception: IllegalCharsetException::class);
-        $this->convert(updates: ['supportedActions' => ['A_TEST', 'TEST_this']]);
     }
 
     /**
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -422,6 +431,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -438,6 +448,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -454,6 +465,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -470,6 +482,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -486,6 +499,7 @@ class PaymentMethodTest extends TestCase
      * Assert validateType() throws EmptyValueException when type is empty.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -500,6 +514,7 @@ class PaymentMethodTest extends TestCase
      * illegal character.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -513,6 +528,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -530,6 +546,7 @@ class PaymentMethodTest extends TestCase
      * data integrity.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
      */
