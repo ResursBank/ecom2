@@ -7,7 +7,7 @@
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
@@ -43,10 +43,10 @@ class GetPaymentTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
+                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
             ),
             storeId: $this->getStoreId()
         );
@@ -58,7 +58,7 @@ class GetPaymentTest extends TestCase
      */
     private function getStoreId()
     {
-        return (string) ( $_ENV['STORE_ID'] ?? '' );
+        return (string)($_ENV['STORE_ID'] ?? '');
     }
 
     /**
@@ -106,7 +106,7 @@ class GetPaymentTest extends TestCase
     public function testGetPaymentMocked()
     {
         $expectedOrderReference = 'testOrderReference';
-        $getPayment             = $this->createMock(
+        $getPayment = $this->createMock(
             originalClassName: GetPayment::class
         );
 
@@ -130,7 +130,7 @@ class GetPaymentTest extends TestCase
                 phone: '0701122334',
                 customerType: 'NATURAL',
                 identification: new Identification(
-                    type: IdentificationType::ID,
+                    type: 'ID',
                     reference: '123'
                 )
             ),
@@ -138,13 +138,13 @@ class GetPaymentTest extends TestCase
                 value: 'string',
                 possibleActions: []
             ),
-            information: new Information(
-                creator: 'username'
-            ),
             application: new Application(
                 approvedCreditLimit: 1000,
                 requestedCreditLimit: 1000,
                 reference: 1000
+            ),
+            information: new Information(
+                creator: 'username'
             ),
             countryCode: 'SE'
         );
@@ -152,7 +152,7 @@ class GetPaymentTest extends TestCase
         $response = $getPayment->call($expectedOrderReference);
         static::assertTrue(
             condition: $response instanceof Payment &&
-                       $response->id === $expectedOrderReference
+            $response->id === $expectedOrderReference
         );
     }
 }

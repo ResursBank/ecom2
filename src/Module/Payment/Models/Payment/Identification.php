@@ -17,11 +17,11 @@ use Resursbank\Ecom\Module\Payment\Enum\IdentificationType;
 class Identification extends Model
 {
     /**
-     * @param IdentificationType|null $type
+     * @param string $type
      * @param string $reference
      */
     public function __construct(
-        public readonly ?IdentificationType $type = null,
+        public readonly string $type,
         public readonly string $reference = '',
     ) {
     }

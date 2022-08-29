@@ -37,10 +37,9 @@ class Payment extends Model
      * @param Status $status
      * @param Application|null $application
      * @param Information|null $information
-     * @param Identification|null $identification
      * @param string|null $countryCode
-     * @param StringValidation $stringValidation
-     *
+     * @param MetaData|null $metaData
+     * @param CoApplicant|null $coApplicant
      * @todo Application and countryCode is currently not showing in FindPayment, so to make
      * @todo FindPayment compatible with the Payment model, we are temporary setting the missing fields
      * @todo with empty defaults.
