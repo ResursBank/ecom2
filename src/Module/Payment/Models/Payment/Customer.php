@@ -31,7 +31,7 @@ class Customer extends Model
         public readonly string $mobilePhone,
         public readonly string $phone,
         public readonly string $customerType,
-        public readonly ?Identification $identification = null,
+        public readonly ?Identification $identification = new Identification(),
     ) {
     }
 }

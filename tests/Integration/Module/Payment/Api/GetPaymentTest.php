@@ -7,18 +7,30 @@
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Enum\IdentificationType;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 class GetPaymentTest extends TestCase
@@ -31,10 +43,10 @@ class GetPaymentTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
+                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
             ),
             storeId: $this->getStoreId()
         );
@@ -46,13 +58,19 @@ class GetPaymentTest extends TestCase
      */
     private function getStoreId()
     {
-        return (string)($_ENV['STORE_ID'] ?? '');
+        return (string) ( $_ENV['STORE_ID'] ?? '' );
     }
 
     /**
      * This feature will be fixed after findPayments as we need proper payment ids as seen from MAPI.
      * @return void
-     * @throws TypeException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetPaymentLive()
     {
@@ -63,6 +81,7 @@ class GetPaymentTest extends TestCase
             $payment = Repository::getPayment($orderReference);
 
             static::assertEquals($orderReference, $payment->id);
+
             return;
         }
         static::markTestSkipped(
@@ -74,10 +93,20 @@ class GetPaymentTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
     public function testGetPaymentMocked()
     {
         $expectedOrderReference = 'testOrderReference';
-        $getPayment = $this->createMock(
+        $getPayment             = $this->createMock(
             originalClassName: GetPayment::class
         );
 
@@ -87,15 +116,32 @@ class GetPaymentTest extends TestCase
             storeId: 'storeId',
             paymentMethodId: 'paymentMethodId',
             paymentActions: [],
-            customer: new Payment\Customer(),
-            status: new Payment\Status(
+            customer: new Payment\Customer(
+                deliveryAddress: new Payment\Address(
+                    'Full Name',
+                    addressRow1: 'Glassgatan 17',
+                    postalArea: 'Göteborg',
+                    postalCode: '12345',
+                    addressRow2: ''
+                ),
+                email: 'test@test.com',
+                governmentId: '8305147715',
+                mobilePhone: '0701122334',
+                phone: '0701122334',
+                customerType: 'NATURAL',
+                identification: new Identification(
+                    type: IdentificationType::ID,
+                    reference: '123'
+                )
+            ),
+            status: new Status(
                 value: 'string',
                 possibleActions: []
             ),
-            information: new Payment\Information(
+            information: new Information(
                 creator: 'username'
             ),
-            application: new Payment\Application(
+            application: new Application(
                 approvedCreditLimit: 1000,
                 requestedCreditLimit: 1000,
                 reference: 1000
@@ -106,7 +152,7 @@ class GetPaymentTest extends TestCase
         $response = $getPayment->call($expectedOrderReference);
         static::assertTrue(
             condition: $response instanceof Payment &&
-            $response->id === $expectedOrderReference
+                       $response->id === $expectedOrderReference
         );
     }
 }

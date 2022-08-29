@@ -9,14 +9,19 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Module\Payment\Enum\IdentificationType;
 
 /**
  * Information about the identification made on a payment.
  */
 class Identification extends Model
 {
+    /**
+     * @param IdentificationType|null $type
+     * @param string $reference
+     */
     public function __construct(
-        public readonly string $type = '',
+        public readonly ?IdentificationType $type = null,
         public readonly string $reference = '',
     ) {
     }

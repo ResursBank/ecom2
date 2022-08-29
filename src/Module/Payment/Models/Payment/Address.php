@@ -20,8 +20,7 @@ class Address extends Model
         public readonly string $addressRow1,
         public readonly string $postalArea,
         public readonly string $postalCode,
-        public readonly string $addressRow2 = '',
-    )
-    {
+        public readonly ?string $addressRow2 = null,
+    ) {
     }
 }

@@ -34,6 +34,7 @@ class Repository
      * @param string $cause
      * @param Exception|Error $exception
      * @param string $data
+     *
      * @return void
      */
     private static function debug(
@@ -53,6 +54,7 @@ class Repository
      * @param string $orderReference
      * @param string $governmentId
      * @param FindPayment $api
+     *
      * @return void
      * @throws JsonException
      * @throws ReflectionException
@@ -78,6 +80,7 @@ class Repository
     /**
      * @param string $orderReference
      * @param GetPayment $api
+     *
      * @return Payment
      * @throws AuthException
      * @throws CurlException

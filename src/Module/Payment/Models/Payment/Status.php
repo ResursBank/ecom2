@@ -23,6 +23,7 @@ class Status extends Model
      * @param float $capturedAmount
      * @param float $refundedAmount
      * @param float $authorizedAmount
+     *
      * @todo authorizedAmount has not been present in the tests, but are shown in swagger example.
      * @todo We need to make sure whether authorizedAmount should be there or not.
      */
