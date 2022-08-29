@@ -15,7 +15,7 @@ pipelines:
               - cp phpunit.xml.example phpunit.xml
               - sed -i 's/name="BASIC_AUTH_USERNAME" value="REPLACEME"/name="BASIC_AUTH_USERNAME" value="au2toto2"/' phpunit.xml
               - sed -i 's/name="BASIC_AUTH_PASSWORD" value="REPLACEME"/name="BASIC_AUTH_PASSWORD" value="m7O2O7V6zXZOy54DIk4L3SM1oWp73itU"/' phpunit.xml
-              - sed -i 's/name="MERCHANT_STORE_ID" value="REPLACEME"/name="MERCHANT_STORE_ID" value="3727e9e3-8c35-4bf1-b785-03284c0fd987"/' phpunit.xml
+              - sed -i 's/name="STORE_ID" value="REPLACEME"/name="STORE_ID" value="3727e9e3-8c35-4bf1-b785-03284c0fd987"/' phpunit.xml
               - sed -i 's/name="JWT_AUTH_CLIENT_ID" value="REPLACEME"/name="JWT_AUTH_CLIENT_ID" value="tomas_t"/' phpunit.xml
               - sed -i 's/name="JWT_AUTH_CLIENT_SECRET" value="REPLACEME"/name="JWT_AUTH_CLIENT_SECRET" value="resurs123"/' phpunit.xml
               - composer install

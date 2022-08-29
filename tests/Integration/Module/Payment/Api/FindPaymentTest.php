@@ -50,7 +50,7 @@ class FindPaymentTest extends TestCase
      */
     private function getStoreId()
     {
-        return (string)($_ENV['MERCHANT_STORE_ID'] ?? '');
+        return (string)($_ENV['STORE_ID'] ?? '');
     }
 
     /**

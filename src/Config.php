@@ -34,7 +34,6 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param string $storeId
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -48,8 +47,7 @@ final class Config
         public readonly bool $isProduction = false,
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
-        public readonly int $timeout = 60,
-        public readonly string $storeId = ''
+        public readonly int $timeout = 60
     ) {
     }
 
@@ -64,7 +62,6 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param string $storeId
      * @return void
      * @noinspection PhpTooManyParametersInspection
      */
@@ -78,8 +75,7 @@ final class Config
         bool $isProduction = false,
         string $proxy = '',
         int $proxyType = 0,
-        int $timeout = 0,
-        string $storeId = '',
+        int $timeout = 0
     ): void {
         self::$instance = new Config(
             logger: $logger,
