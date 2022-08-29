@@ -29,15 +29,37 @@ class Order
 {
     "orderLines": [
         {
-            "description": "Album",
-            "quantity": 1,
-            "reference": "ALBUM-012G-VV",
-            "type": "DIGITAL_GOODS",
+            "description": "Product one",
+            "quantity": 1.00000,
+            "reference": "TST-101",
+            "type": "NORMAL",
             "quantityUnit": "st",
-            "unitAmountIncludingVat": 120.0,
-            "vatRate": 25,
-            "totalAmountIncludingVat": 199.9,
-            "totalVatAmount": 79.9
+            "unitAmountIncludingVat": 625.00000,
+            "vatRate": 25.00000,
+            "totalAmountIncludingVat": 625.00000,
+            "totalVatAmount": 125.00000
+        },
+        {
+            "description": "Product one",
+            "quantity": 1.00000,
+            "reference": "TST-101",
+            "type": "NORMAL",
+            "quantityUnit": "st",
+            "unitAmountIncludingVat": 625.00000,
+            "vatRate": 25.00000,
+            "totalAmountIncludingVat": 625.00000,
+            "totalVatAmount": 125.00000
+        },
+        {
+            "description": "Discount one",
+            "quantity": 1.00000,
+            "reference": "DC-101",
+            "type": "NORMAL",
+            "quantityUnit": "st",
+            "unitAmountIncludingVat": -25.00000,
+            "vatRate": 0.00000,
+            "totalAmountIncludingVat": -25.00000,
+            "totalVatAmount": 0.00000
         }
     ],
     "orderReference": "aklsfjah234oiaslhjfd"

@@ -74,14 +74,6 @@ class OrderTest extends TestCase
             $this->data->{$key} = $val;
         }
 
-        if (\array_key_exists('orderReference', $updates)) {
-            $orderLine = $this->data->orderLines[0];
-            $arr = (array) $orderLine;
-            $arr['type'] = OrderLineType::NORMAL;
-            $orderLineInstance = new OrderLine(...$arr);
-            $stop = 123;
-        }
-
         $item = DataConverter::stdClassToType(
             object: $this->data,
             type: OrderModel::class

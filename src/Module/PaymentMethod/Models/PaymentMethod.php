@@ -12,7 +12,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\SupportedActions;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod\Status;
+use ValueError;
 
 use function is_string;
 
@@ -43,7 +45,14 @@ class PaymentMethod extends Model
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @todo Confirm data types of min/maxPurchase/ApplicationLimit properties.
+     * @todo $customerType validation to be replaced by Enum\CustomerType when supported by DataConverter.
+     * @todo $displayOrder may support negative values, Int32.
+     * @todo $description, are there any validation rules?
+     * @todo $minPurchaseLimit, value range?
+     * @todo $maxPurchaseLimit, value range?
+     * @todo $minApplicationLimit, value range?
+     * @todo $maxApplicationLimit, value range?
+     * @todo @type validation to be replaced by Enum\PaymentMethodType when supported by DataConverter.
      * @todo validFom / validTo converts to DateTime(), consider adding method to extract them as such, or a method
      * @todo to confirm validation between these dates.
      */
@@ -74,16 +83,13 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @throws IllegalCharsetException
      * @throws EmptyValueException
+     * @throws IllegalValueException
      */
     private function validateId(): void
     {
         $this->stringValidation->notEmpty(value: $this->id);
-        $this->stringValidation->matchRegex(
-            value: $this->id,
-            pattern: '/^[\da-z\-]+$/'
-        );
+        $this->stringValidation->isUuid(value: $this->id);
     }
 
     /**
@@ -129,31 +135,24 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @throws IllegalCharsetException
+     * @return void
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws EmptyValueException
-     * @todo We should investigate if there is a specific set of actions we can validate against.
-     * @todo Confirm charset validation.
      */
     private function validateSupportedActions(): void
     {
         if (count($this->supportedActions)) {
             $this->arrayValidation->isSequential(data: $this->supportedActions);
 
-            // Values must be non-empty strings consisting of A-Z and underscore.
             foreach ($this->supportedActions as $item) {
                 if (!is_string(value: $item)) {
                     throw new IllegalTypeException(
-                        message: 'Array may only consist of strings.'
+                        message: 'Supported actions must be a list of strings.'
                     );
                 }
 
-                $this->stringValidation->notEmpty(value: $item);
-                $this->stringValidation->matchRegex(
-                    value: $item,
-                    pattern: '/^[A-Z_]+$/'
-                );
+                /** @noinspection PhpExpressionResultUnusedInspection */
+                SupportedActions::from(value: $item);
             }
         }
     }

@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Store\Models;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -29,11 +30,13 @@ class Store extends Model
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalCharsetException
-     * @todo Validation of representative id.
-     * @todo Charset validation of most values.
-     * @todo Validation of national store id.
-     * @todo Validation of trade name. Do not know if this can be empty.
-     * @todo Validation of popular name. Do not know if this can be empty.
+     * @throws IllegalValueException
+     * @todo nationalStoreId needs more validation.
+     * @todo $countryCode validation to be replaced by Enum\Country when DataConverter supports enums.
+     * @todo $id, can this be empty?
+     * @todo $nationalStoreId, what is the actual value range? Specified as Int64, may accept negative values.
+     * @todo $tradeName, are there any validation rules?
+     * @todo $popularName, are there any validation rules?
      */
     public function __construct(
         public readonly string $id,
@@ -49,11 +52,12 @@ class Store extends Model
     }
 
     /**
-     * @throws EmptyValueException
+     * @throws EmptyValueException|IllegalValueException
      */
     private function validateId(): void
     {
         $this->stringValidation->notEmpty(value: $this->id);
+        $this->stringValidation->isUuid(value: $this->id);
     }
 
     /**
