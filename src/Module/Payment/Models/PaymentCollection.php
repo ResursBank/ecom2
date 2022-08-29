@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -14,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Defines a Store collection.
+ * Defines a Payment collection.
  */
 class PaymentCollection extends Collection
 {
