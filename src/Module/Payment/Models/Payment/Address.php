@@ -15,7 +15,13 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Address extends Model
 {
-    public function __construct()
+    public function __construct(
+        public readonly string $fullName,
+        public readonly string $addressRow1,
+        public readonly string $postalArea,
+        public readonly string $postalCode,
+        public readonly string $addressRow2 = '',
+    )
     {
     }
 }

@@ -16,8 +16,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Identification extends Model
 {
     public function __construct(
-        public readonly string $type,
-        public readonly string $reference,
+        public readonly string $type = '',
+        public readonly string $reference = '',
     ) {
     }
 }

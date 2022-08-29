@@ -12,6 +12,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\PaymentActions;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
@@ -22,8 +23,11 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 class Payment extends Model
 {
     /**
+     * Payment data container that is also used by FindPayment. When FindPayment is active, some of the
+     * returned fields are not guaranteed to be present; those fields are also nullable.
+     *
      * @param string $id
-     * @param string $created Timestamp.
+     * @param string $created Stringed timestamp.
      * @param string $storeId
      * @param string $paymentMethodId
      * @param array $paymentActions
@@ -31,6 +35,7 @@ class Payment extends Model
      * @param Status $status
      * @param Application|null $application
      * @param Information|null $information
+     * @param Identification|null $identification
      * @param string|null $countryCode
      * @param StringValidation $stringValidation
      * @todo Application and countryCode is currently not showing in FindPayment, so to make

@@ -24,7 +24,9 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 class FindPaymentTest extends TestCase
 {
@@ -50,7 +52,32 @@ class FindPaymentTest extends TestCase
      */
     private function getStoreId()
     {
-        return (string)($_ENV['MERCHANT_STORE_ID'] ?? '');
+        return (string)($_ENV['STORE_ID'] ?? '');
+    }
+
+    /**
+     * Special functions that makes sure some of the tests being made here is limited to a specific account.
+     * This will be changed when we find a simpler way to search for payments.
+     * @return bool
+     */
+    private function verifyLiveAccount()
+    {
+        return isset($_ENV['JWT_AUTH_CLIENT_ID']) && $_ENV['JWT_AUTH_CLIENT_ID'] === 'tomas_t';
+    }
+
+    /**
+     * @return void
+     */
+    private function markLiveAccountSkipped($func) {
+        if (!$this->verifyLiveAccount()) {
+            static::markTestSkipped(
+                sprintf(
+                    'Can not run live test for %s since we can not do a proper search for random orders. Current ' .
+                    'search is restricted to specific orders only.',
+                    $func
+                )
+            );
+        }
     }
 
     /**
@@ -60,7 +87,7 @@ class FindPaymentTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws TypeException
+     * @throws InvalidTypeException
      * @throws ValidationException
      * @throws ReflectionException
      * @todo Reference is currently required to have if we want to run live tests.
@@ -68,9 +95,10 @@ class FindPaymentTest extends TestCase
      */
     public function testFindPaymentLive()
     {
-        if (isset($_ENV['JWT_AUTH_CLIENT_ID']) && $_ENV['JWT_AUTH_CLIENT_ID'] === 'tomas_t') {
-            $orderReference = '20220816073146-1557096130';
-            $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
+        $orderReference = '20220816073146-1557096130';
+        $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
+
+        if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
                 $paymentCollection = Repository::findPayment(
                     $this->getStoreId(),
@@ -78,16 +106,45 @@ class FindPaymentTest extends TestCase
                 );
 
                 $payment = $paymentCollection->current();
-                static::assertSame($expectedId, $payment->id);
-                return;
+                static::assertTrue(
+                    $expectedId === $payment->id &&
+                    $payment->customer->customerType === 'NATURAL'
+                );
             }
         }
-        static::markTestSkipped(
-            sprintf(
-                'Can not run live test for %s since we can not do a proper search for random orders. Current ' .
-                'search is restricted to specific orders only.',
-                __FUNCTION__
-            )
-        );
+        $this->markLiveAccountSkipped(__FUNCTION__);
+    }
+
+    /**
+     * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testFindPaymentCompany() {
+        $orderReference = '20220829085222-RC31538721';
+        $expectedId = 'f3b7dd6b-dc21-4813-9b94-99ffeb4b28d0';
+
+        if ($this->verifyLiveAccount()) {
+            if (!empty($orderReference)) {
+                $paymentCollection = Repository::findPayment(
+                    $this->getStoreId(),
+                    $orderReference
+                );
+
+                /** @var Payment $payment */
+                $payment = $paymentCollection->current();
+
+                static::assertTrue(
+                    $expectedId === $payment->id &&
+                    $payment->customer->customerType === 'LEGAL'
+                );
+            }
+        }
+        $this->markLiveAccountSkipped(__FUNCTION__);
     }
 }
