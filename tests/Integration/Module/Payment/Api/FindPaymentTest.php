@@ -68,7 +68,8 @@ class FindPaymentTest extends TestCase
     /**
      * @return void
      */
-    private function markLiveAccountSkipped($func) {
+    private function markLiveAccountSkipped($func)
+    {
         if (!$this->verifyLiveAccount()) {
             static::markTestSkipped(
                 sprintf(
@@ -125,7 +126,8 @@ class FindPaymentTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testFindPaymentCompany() {
+    public function testFindPaymentCompany()
+    {
         $orderReference = '20220829085222-RC31538721';
         $expectedId = 'f3b7dd6b-dc21-4813-9b94-99ffeb4b28d0';
 
@@ -142,6 +144,44 @@ class FindPaymentTest extends TestCase
                 static::assertTrue(
                     $expectedId === $payment->id &&
                     $payment->customer->customerType === 'LEGAL'
+                );
+            }
+        }
+        $this->markLiveAccountSkipped(__FUNCTION__);
+    }
+
+    /**
+     * Testing to find a payment that has a different delivery address than the billing address.
+     * This test is not checking nor expecting anything but the delivery block as of aug -22, this
+     * test is only here to make it easier to confirm that.
+     *
+     * @return void
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testBillingDeliveryNatural()
+    {
+        $orderReference = '20220829092623-RC84384074';
+        $expectedId = '6f3269c4-30df-429e-898b-7a63371422b5';
+
+        if ($this->verifyLiveAccount()) {
+            if (!empty($orderReference)) {
+                $paymentCollection = Repository::findPayment(
+                    $this->getStoreId(),
+                    $orderReference
+                );
+
+                /** @var Payment $payment */
+                $payment = $paymentCollection->current();
+
+                static::assertTrue(
+                    $expectedId === $payment->id &&
+                    $payment->customer->customerType === 'NATURAL'
                 );
             }
         }
