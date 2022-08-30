@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Models;
 
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
@@ -19,7 +18,6 @@ class PaymentCollection extends Collection
 {
     /**
      * @param array $data
-     *
      * @throws IllegalTypeException
      */
     public function __construct(array $data)

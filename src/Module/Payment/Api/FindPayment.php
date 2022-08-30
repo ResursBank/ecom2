@@ -12,7 +12,6 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -23,9 +22,8 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use function is_array;
@@ -34,7 +32,6 @@ class FindPayment
 {
     /**
      * @param Mapi $mapi
-     * @param StringValidation $stringValidation
      */
     public function __construct(
         private readonly Mapi $mapi = new Mapi()
@@ -45,7 +42,7 @@ class FindPayment
      * @param string $storeId
      * @param string $orderReference
      * @param string $governmentId
-     * @return PaymentCollection
+     * @return Collection
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

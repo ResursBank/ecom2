@@ -38,13 +38,13 @@ class GetPayment
     /**
      * @param string $orderReference
      * @return Payment
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws JsonException
      */
     public function call(string $orderReference): Payment
     {

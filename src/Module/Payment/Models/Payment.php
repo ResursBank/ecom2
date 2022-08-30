@@ -9,14 +9,11 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Models;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\CoApplicant;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\MetaData;
-use Resursbank\Ecom\Module\Payment\Models\Payment\PaymentActions;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 
 /**
@@ -25,8 +22,11 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 class Payment extends Model
 {
     /**
-     * Payment data container that is also used by FindPayment. When FindPayment is active, some of the
+     * Payment data container that is also used by FindPayment. When FindPayment is active, some
      * returned fields are not guaranteed to be present; those fields are also nullable.
+     * Application and countryCode is currently not showing in FindPayment, so to make
+     * FindPayment compatible with the Payment model, we are temporary setting the missing fields
+     * with empty defaults.
      *
      * @param string $id
      * @param string $created Stringed timestamp.
@@ -40,9 +40,6 @@ class Payment extends Model
      * @param string|null $countryCode
      * @param MetaData|null $metaData
      * @param CoApplicant|null $coApplicant
-     * @todo Application and countryCode is currently not showing in FindPayment, so to make
-     * @todo FindPayment compatible with the Payment model, we are temporary setting the missing fields
-     * @todo with empty defaults.
      */
     public function __construct(
         public readonly string $id,

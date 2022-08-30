@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Payment\Enum\IdentificationType;
 
 /**
  * Information about the identification made on a payment.
