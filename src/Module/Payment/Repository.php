@@ -18,9 +18,14 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Module\Payment\Api\FindPayment;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
 
+/**
+ * Payment repository.
+ */
 class Repository
 {
     /**
@@ -29,6 +34,7 @@ class Repository
      * @param string $cause
      * @param Exception|Error $exception
      * @param string $data
+     *
      * @return void
      */
     private static function debug(
@@ -48,6 +54,7 @@ class Repository
      * @param string $orderReference
      * @param string $governmentId
      * @param FindPayment $api
+     *
      * @return void
      * @throws JsonException
      * @throws ReflectionException
@@ -62,7 +69,7 @@ class Repository
         string $orderReference = '',
         string $governmentId = '',
         FindPayment $api = new FindPayment()
-    ) {
+    ): Collection {
         return $api->call(
             $storeId,
             $orderReference,
@@ -73,12 +80,20 @@ class Repository
     /**
      * @param string $orderReference
      * @param GetPayment $api
-     * @return Models\Payment
+     *
+     * @return Payment
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public static function getPayment(
         string $orderReference,
         GetPayment $api = new GetPayment()
-    ) {
+    ): Payment {
         return $api->call(
             $orderReference
         );
