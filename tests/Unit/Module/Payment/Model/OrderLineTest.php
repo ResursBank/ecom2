@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\Payment\Model;
 
-require_once(__DIR__ . '/../../../../Data/OrderLine.php');
-
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;

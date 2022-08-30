@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\Payment\Model;
 
-require_once(__DIR__ . '/../../../../Data/Order.php');
-
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -26,6 +24,10 @@ use Resursbank\Ecom\Module\Payment\Models\OrderLine;
 use Resursbank\EcomTest\Data\Order;
 use Resursbank\Ecom\Module\Payment\Models\Order as OrderModel;
 use stdClass;
+
+use function array_fill;
+use function json_encode;
+use function json_decode;
 
 /**
  * Test data integrity of store entity model.
@@ -64,7 +66,6 @@ class OrderTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      */
     private function convert(
         array $updates = []
@@ -96,25 +97,31 @@ class OrderTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws JsonException
      */
     public function testValidateOrderLinesThrowsWhenTooLong(): void
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'orderLines' => \array_fill(
-                0,
-                1001,
-                new OrderLine(
-                    'test',
-                    'test',
-                    OrderLineType::NORMAL,
-                    'test',
-                    20,
-                    20,
-                    20.1,
-                    20.1,
-                    20.1
-                )
+            'orderLines' => json_decode(
+                json_encode(array_fill(
+                    0,
+                    1001,
+                    new OrderLine(
+                        'test',
+                        'test',
+                        OrderLineType::NORMAL,
+                        'test',
+                        20,
+                        20,
+                        20.1,
+                        20.1,
+                        20.1
+                    )
+                ), JSON_THROW_ON_ERROR),
+                false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
             )
         ]);
     }
@@ -187,223 +194,4 @@ class OrderTest extends TestCase
             'orderReference' => 'Test!'
         ]);
     }
-
-//    /**
-//     * Assert validateReference() throws IllegalValueException when its
-//     * length is too long.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testValidateReferenceThrowsWhenTooLong(): void
-//    {
-//        $this->expectException(exception: IllegalValueException::class);
-//        $this->convert(updates: [
-//            'reference' => 'This text is way too long for this poor little ' .
-//                'model property.'
-//        ]);
-//    }
-//
-//    /**
-//     * Assert validateQuantityUnit() throws IllegalValueException when its
-//     * length is too long.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testValidateQuantityUnitThrowsWhenTooLong(): void
-//    {
-//        $this->expectException(exception: IllegalValueException::class);
-//        $this->convert(updates: [
-//            'quantityUnit' => 'This text is way too long for this poor little ' .
-//                'model property.'
-//        ]);
-//    }
-//
-//    /**
-//     * Assert validateVatRate() throws IllegalValueException when its
-//     * value is too small.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testVatRateThrowsWhenTooSmall(): void
-//    {
-//        $this->expectException(exception: IllegalValueException::class);
-//        $this->convert(updates: ['vatRate' => -10]);
-//    }
-//
-//    /**
-//     * Assert validateVatRate() throws IllegalValueException when its
-//     * value is too big.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testVatRateThrowsWhenTooBig(): void
-//    {
-//        $this->expectException(exception: IllegalValueException::class);
-//        $this->convert(updates: ['vatRate' => 110]);
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testDescriptionWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->description,
-//            actual: $this->item->description
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testReferenceWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->reference,
-//            actual: $this->item->reference
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testTypeWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->type,
-//            actual: $this->item->type->value
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testQuantityUnitWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->quantityUnit,
-//            actual: $this->item->quantityUnit
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testQuantityWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->quantity,
-//            actual: $this->item->quantity
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testVatRateWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->vatRate,
-//            actual: $this->item->vatRate
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testUnitAmountIncludingVatWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->unitAmountIncludingVat,
-//            actual: $this->item->unitAmountIncludingVat
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testTotalAmountIncludingVatWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->totalAmountIncludingVat,
-//            actual: $this->item->totalAmountIncludingVat
-//        );
-//    }
-//
-//    /**
-//     * Assert property was assigned during object conversion.
-//     *
-//     * @return void
-//     * @throws ReflectionException
-//     * @throws TestException
-//     * @throws IllegalTypeException
-//     */
-//    public function testTotalVatAmountWasAssigned(): void
-//    {
-//        $this->convert();
-//        self::assertSame(
-//            expected: $this->data->totalVatAmount,
-//            actual: $this->item->totalVatAmount
-//        );
-//    }
 }

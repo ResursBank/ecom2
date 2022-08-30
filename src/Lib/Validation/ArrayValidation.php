@@ -161,7 +161,7 @@ class ArrayValidation
      * Validate that a one-dimensional array contains only data of specified
      * type.
      *
-     * @param array<int, mixed> $data
+     * @param array $data
      * @param string $type
      * @param callable $compareFn
      * @return bool
@@ -186,7 +186,7 @@ class ArrayValidation
     }
 
     /**
-     * @param array<int, mixed> $data
+     * @param array $data
      * @param int $min
      * @param int $max
      * @return bool

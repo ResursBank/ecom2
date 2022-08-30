@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Validation;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 
 use function is_float;
@@ -53,5 +54,31 @@ class FloatValidation
         }
 
         return $data[$key];
+    }
+
+    /**
+     * @param float $value
+     * @param float $min
+     * @param float $max
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function inRange(float $value, float $min, float $max): bool
+    {
+        if ($max < $min) {
+            throw new IllegalValueException(
+                message: 'Argument $max ' . "($max) " . 'is less than $min' .
+                "($min)."
+            );
+        }
+
+        if ($value < $min || $value > $max) {
+            throw new IllegalValueException(
+                message: "$value is not in range. $value needs to be within " .
+                ">=$min & <=$max."
+            );
+        }
+
+        return true;
     }
 }

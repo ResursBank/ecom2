@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use function call_user_func;
 use function is_object;
 
 /**
@@ -77,17 +78,18 @@ class DataConverter
                     }
                     $dummyCollection->setData(data: $converted);
                     $arguments[$name] = $dummyCollection;
+                } elseif (enum_exists($propertyType)) {
+                    // If our property is an enum we need to convert the value
+                    // to the enum value it represents.
+                    $arguments[$name] = call_user_func(
+                        $propertyType . '::from',
+                        /** @psalm-suppress MixedPropertyFetch */
+                        is_object($value) ? $value->value : $value
+                    );
                 } elseif (is_object(value: $value)) {
                     $arguments[$name] = self::stdClassToType(
                         object: $value,
                         type: $propertyType
-                    );
-                } elseif (enum_exists($propertyType)) {
-                    // If our property is an enum we need to convert the value
-                    // to the enum value it represents.
-                    $arguments[$name] = \call_user_func(
-                        $propertyType . '::from',
-                        $value
                     );
                 } else {
                     $arguments[$name] = $value;
