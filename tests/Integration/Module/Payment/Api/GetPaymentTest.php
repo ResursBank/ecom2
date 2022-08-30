@@ -47,8 +47,7 @@ class GetPaymentTest extends TestCase
                 clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: (string)$_ENV['JWT_AUTH_SCOPE'],
                 grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
-            ),
-            storeId: $this->getStoreId()
+            )
         );
     }
 
