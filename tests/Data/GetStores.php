@@ -143,30 +143,6 @@ class GetStores
         "tradeName": "Yrkesbutiken",
         "popularName": "Perfekta butiken",
         "representativeId": "81a04488-a128-4760-a3dd-e32f16b75b23"
-    },
-    {
-        "id": "f8f8f8f8-f8f8-f8f8-f8f8-f8f8f8f8f8f8",
-        "nationalStoreId": 8903,
-        "countryCode": "DK",
-        "tradeName": "Testkonto onboarding",
-        "popularName": "LIVE",
-        "representativeId": "81a04488-a128-4760-a3dd-e32f16b75b23"
-    },
-    {
-        "id": "f8f8f8f8-f8f8-f8f8-f8f8-f8f8f8f8f8f8",
-        "nationalStoreId": 8903,
-        "countryCode": "DK",
-        "tradeName": "Testkonto onboarding",
-        "popularName": "LIVE",
-        "representativeId": "81a04488-a128-4760-a3dd-e32f16b75b23"
-    },
-    {
-        "id": "f8f8f8f8-f8f8-f8f8-f8f8-f8f8f8f8f8f8",
-        "nationalStoreId": 8903,
-        "countryCode": "DK",
-        "tradeName": "Testkonto onboarding",
-        "popularName": "LIVE",
-        "representativeId": "81a04488-a128-4760-a3dd-e32f16b75b23"
     }
 ]
 EOD;
