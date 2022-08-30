@@ -25,6 +25,9 @@ use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
+/**
+ * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
+ */
 class GetPayment
 {
     /**
