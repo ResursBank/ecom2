@@ -22,10 +22,10 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 class Payment extends Model
 {
     /**
-     * Payment data container that is also used by FindPayment. When FindPayment is active, some
+     * Payment data container that is also used by Search. When Search is active, some
      * returned fields are not guaranteed to be present; those fields are also nullable.
-     * Application and countryCode is currently not showing in FindPayment, so to make
-     * FindPayment compatible with the Payment model, we are temporary setting the missing fields
+     * Application and countryCode is currently not showing in Search, so to make
+     * Search compatible with the Payment model, we are temporary setting the missing fields
      * with empty defaults.
      *
      * @param string $id
@@ -46,9 +46,9 @@ class Payment extends Model
         public readonly string $created,
         public readonly string $storeId,
         public readonly string $paymentMethodId,
-        public readonly array $paymentActions,
         public readonly Customer $customer,
         public readonly Status $status,
+        public readonly array $paymentActions = [],
         public readonly ?Application $application = null,
         public readonly ?Information $information = null,
         public readonly ?string $countryCode = null,

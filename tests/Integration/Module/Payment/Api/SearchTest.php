@@ -28,7 +28,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
-class FindPaymentTest extends TestCase
+class SearchTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -82,6 +82,8 @@ class FindPaymentTest extends TestCase
     }
 
     /**
+     * Reference is currently required to have if we want to run live tests.
+     *
      * @return void
      * @throws AuthException
      * @throws CurlException
@@ -91,17 +93,15 @@ class FindPaymentTest extends TestCase
      * @throws InvalidTypeException
      * @throws ValidationException
      * @throws ReflectionException
-     * @todo Reference is currently required to have if we want to run live tests.
-     * @todo Reported: findPayments should be able to find at least the last payments rendered for the current store.
      */
-    public function testFindPaymentLive()
+    public function testSearchLive()
     {
         $orderReference = '20220816073146-1557096130';
         $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::findPayment(
+                $paymentCollection = Repository::Search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -126,14 +126,14 @@ class FindPaymentTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testFindPaymentCompany()
+    public function testSearchCompany()
     {
         $orderReference = '20220829085222-RC31538721';
         $expectedId = 'f3b7dd6b-dc21-4813-9b94-99ffeb4b28d0';
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::findPayment(
+                $paymentCollection = Repository::Search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -164,14 +164,14 @@ class FindPaymentTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testBillingDeliveryNatural()
+    public function testSearchBillingDeliveryNatural()
     {
         $orderReference = '20220829092623-RC84384074';
         $expectedId = '6f3269c4-30df-429e-898b-7a63371422b5';
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::findPayment(
+                $paymentCollection = Repository::Search(
                     $this->getStoreId(),
                     $orderReference
                 );

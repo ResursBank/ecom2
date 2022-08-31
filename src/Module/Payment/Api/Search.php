@@ -31,7 +31,7 @@ use function is_array;
 /**
  * POST /payments/find_payment for looking up payments in MAPI. Can be used to find legacy payments.
  */
-class FindPayment
+class Search
 {
     /**
      * @param Mapi $mapi
@@ -62,10 +62,11 @@ class FindPayment
         if (trim($orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
+        $payload['storeId'] = $storeId;
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/find_payment/%s', Mapi::PAYMENT_ROUTE, $storeId)
+                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE, $storeId)
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload ?? [],
