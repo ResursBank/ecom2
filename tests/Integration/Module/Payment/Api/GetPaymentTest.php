@@ -25,7 +25,6 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
-use Resursbank\Ecom\Module\Payment\Enum\IdentificationType;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
@@ -35,6 +34,10 @@ use Resursbank\Ecom\Module\Payment\Repository;
 
 class GetPaymentTest extends TestCase
 {
+    /**
+     * @return void
+     * @throws EmptyValueException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,15 +56,17 @@ class GetPaymentTest extends TestCase
 
     /**
      * Set a store id if phpunit.xml has one (for find_payments).
+     *
      * @return string
      */
-    private function getStoreId()
+    private function getStoreId(): string
     {
         return (string)($_ENV['STORE_ID'] ?? '');
     }
 
     /**
      * This feature will be fixed after findPayments as we need proper payment ids as seen from MAPI.
+     *
      * @return void
      * @throws AuthException
      * @throws CurlException
@@ -71,7 +76,7 @@ class GetPaymentTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testGetPaymentLive()
+    public function testGetPaymentLive(): void
     {
         if (isset($_ENV['JWT_AUTH_CLIENT_ID']) && $_ENV['JWT_AUTH_CLIENT_ID'] === 'tomas_t') {
             // Temporary solution.
@@ -102,7 +107,7 @@ class GetPaymentTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      */
-    public function testGetPaymentMocked()
+    public function testGetPaymentMocked(): void
     {
         $expectedOrderReference = 'testOrderReference';
         $getPayment = $this->createMock(
@@ -114,7 +119,6 @@ class GetPaymentTest extends TestCase
             created: '2022-08-16T09:31:47.829',
             storeId: 'storeId',
             paymentMethodId: 'paymentMethodId',
-            paymentActions: [],
             customer: new Payment\Customer(
                 deliveryAddress: new Payment\Address(
                     'Full Name',
@@ -137,6 +141,7 @@ class GetPaymentTest extends TestCase
                 value: 'string',
                 possibleActions: []
             ),
+            paymentActions: [],
             application: new Application(
                 approvedCreditLimit: 1000,
                 requestedCreditLimit: 1000,
