@@ -28,6 +28,9 @@ use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use function is_array;
 
+/**
+ * POST /payments/find_payment for looking up payments in MAPI. Can be used to find legacy payments.
+ */
 class Search
 {
     /**
