@@ -94,14 +94,14 @@ class SearchTest extends TestCase
      * @throws ValidationException
      * @throws ReflectionException
      */
-    public function testFindPaymentLive()
+    public function testSearchLive()
     {
         $orderReference = '20220816073146-1557096130';
         $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::findPayment(
+                $paymentCollection = Repository::Search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -126,14 +126,14 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testFindPaymentCompany()
+    public function testSearchCompany()
     {
         $orderReference = '20220829085222-RC31538721';
         $expectedId = 'f3b7dd6b-dc21-4813-9b94-99ffeb4b28d0';
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::findPayment(
+                $paymentCollection = Repository::Search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -164,14 +164,14 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testBillingDeliveryNatural()
+    public function testSearchBillingDeliveryNatural()
     {
         $orderReference = '20220829092623-RC84384074';
         $expectedId = '6f3269c4-30df-429e-898b-7a63371422b5';
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::findPayment(
+                $paymentCollection = Repository::Search(
                     $this->getStoreId(),
                     $orderReference
                 );

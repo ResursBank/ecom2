@@ -54,17 +54,16 @@ class Repository
      * @param string $orderReference
      * @param string $governmentId
      * @param Search $api
-     *
-     * @return void
-     * @throws JsonException
-     * @throws ReflectionException
+     * @return Collection
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
-    public static function findPayment(
+    public static function Search(
         string $storeId,
         string $orderReference = '',
         string $governmentId = '',
