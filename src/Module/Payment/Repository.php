@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Module\Payment\Api\FindPayment;
+use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 
@@ -53,7 +53,7 @@ class Repository
      * @param string $storeId
      * @param string $orderReference
      * @param string $governmentId
-     * @param FindPayment $api
+     * @param Search $api
      *
      * @return void
      * @throws JsonException
@@ -68,7 +68,7 @@ class Repository
         string $storeId,
         string $orderReference = '',
         string $governmentId = '',
-        FindPayment $api = new FindPayment()
+        Search $api = new Search()
     ): Collection {
         return $api->call(
             $storeId,

@@ -28,7 +28,7 @@ use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use function is_array;
 
-class FindPayment
+class Search
 {
     /**
      * @param Mapi $mapi

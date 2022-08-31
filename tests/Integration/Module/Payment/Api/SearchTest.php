@@ -28,7 +28,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
-class FindPaymentTest extends TestCase
+class SearchTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -82,6 +82,8 @@ class FindPaymentTest extends TestCase
     }
 
     /**
+     * Reference is currently required to have if we want to run live tests.
+     *
      * @return void
      * @throws AuthException
      * @throws CurlException
@@ -91,8 +93,6 @@ class FindPaymentTest extends TestCase
      * @throws InvalidTypeException
      * @throws ValidationException
      * @throws ReflectionException
-     * @todo Reference is currently required to have if we want to run live tests.
-     * @todo Reported: findPayments should be able to find at least the last payments rendered for the current store.
      */
     public function testFindPaymentLive()
     {
