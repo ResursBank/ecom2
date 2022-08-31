@@ -59,10 +59,11 @@ class FindPayment
         if (trim($orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
+        $payload['storeId'] = $storeId;
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/find_payment/%s', Mapi::PAYMENT_ROUTE, $storeId)
+                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE, $storeId)
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload ?? [],
