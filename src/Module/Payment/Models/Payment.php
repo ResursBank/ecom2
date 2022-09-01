@@ -46,8 +46,8 @@ class Payment extends Model
      * @param CoApplicant|null $coApplicant
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalValueException
+     * @todo Solve problems with empty country code when using Search.
      */
     public function __construct(
         public readonly string $id,
@@ -66,7 +66,7 @@ class Payment extends Model
     ) {
         $this->validateId();
         $this->validateStoreId();
-        $this->validateCountryCode();
+        // Validation on country code will fail when request is running through the Search call.
     }
 
     /**
