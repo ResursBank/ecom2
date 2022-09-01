@@ -17,23 +17,45 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Address;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
+use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
+use TypeError;
 
 class GetPaymentTest extends TestCase
 {
+    /**
+     * Generic uuid for mocked stores (storeId).
+     * @var string $expectedStoreId
+     */
+    private string $expectedStoreId = 'febe5ddc-e4fa-4017-89f2-ae741930e9cf';
+
+    /**
+     * Generic uuid for mocked order references.
+     * @var string $expectedOrderReference
+     */
+    private string $expectedOrderReference = '92678aea-c7a2-4ec5-b5b5-406789610f63';
+
+    /**
+     * Generic uuid for mocked payment methods.
+     * @var string $expectedPaymentMethod
+     */
+    private string $expectedPaymentMethod = '22273236-7cb8-4f09-9044-36c80d5c3649';
+
     /**
      * @return void
      * @throws EmptyValueException
@@ -106,21 +128,21 @@ class GetPaymentTest extends TestCase
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @noinspection PhpConditionAlreadyCheckedInspection
      */
     public function testGetPaymentMocked(): void
     {
-        $expectedOrderReference = 'testOrderReference';
         $getPayment = $this->createMock(
             originalClassName: GetPayment::class
         );
 
         $payment = new Payment(
-            $expectedOrderReference,
+            $this->expectedOrderReference,
             created: '2022-08-16T09:31:47.829',
-            storeId: 'storeId',
-            paymentMethodId: 'paymentMethodId',
-            customer: new Payment\Customer(
-                deliveryAddress: new Payment\Address(
+            storeId: $this->expectedStoreId,
+            paymentMethodId: $this->expectedPaymentMethod,
+            customer: new Customer(
+                deliveryAddress: new Address(
                     'Full Name',
                     addressRow1: 'Glassgatan 17',
                     postalArea: 'Göteborg',
@@ -153,10 +175,49 @@ class GetPaymentTest extends TestCase
             countryCode: 'SE'
         );
         $getPayment->method('call')->willReturn($payment);
-        $response = $getPayment->call($expectedOrderReference);
+        $response = $getPayment->call($this->expectedOrderReference);
         static::assertTrue(
             condition: $response instanceof Payment &&
-            $response->id === $expectedOrderReference
+            $response->id === $this->expectedOrderReference
+        );
+    }
+
+    /**
+     * Bad customer test, for which the customer object for some reason is empty on the request.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalValueException
+     */
+    public function testGetPaymentMockedBadCustomer(): void
+    {
+        static::expectException(TypeError::class);
+        $expectedOrderReference = '92678aea-c7a2-4ec5-b5b5-406789610f63';
+        $this->createMock(
+            originalClassName: GetPayment::class
+        );
+
+        new Payment(
+            $expectedOrderReference,
+            created: '2022-08-16T09:31:47.829',
+            storeId: $this->expectedStoreId,
+            paymentMethodId: $this->expectedPaymentMethod,
+            customer: null,
+            status: new Status(
+                value: 'string',
+                possibleActions: []
+            ),
+            paymentActions: [],
+            application: new Application(
+                approvedCreditLimit: 1000,
+                requestedCreditLimit: 1000,
+                reference: 1000
+            ),
+            information: new Information(
+                creator: 'username'
+            ),
+            countryCode: 'SE'
         );
     }
 }

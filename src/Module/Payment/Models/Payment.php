@@ -8,7 +8,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Models;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\CoApplicant;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
@@ -32,14 +36,18 @@ class Payment extends Model
      * @param string $created Stringed timestamp.
      * @param string $storeId
      * @param string $paymentMethodId
-     * @param array $paymentActions
      * @param Customer $customer
      * @param Status $status
+     * @param array $paymentActions
      * @param Application|null $application
      * @param Information|null $information
      * @param string|null $countryCode
      * @param MetaData|null $metaData
      * @param CoApplicant|null $coApplicant
+     * @param StringValidation $stringValidation
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalValueException
      */
     public function __construct(
         public readonly string $id,
@@ -53,7 +61,62 @@ class Payment extends Model
         public readonly ?Information $information = null,
         public readonly ?string $countryCode = null,
         public readonly ?MetaData $metaData = null,
-        public readonly ?CoApplicant $coApplicant = null
+        public readonly ?CoApplicant $coApplicant = null,
+        private readonly StringValidation $stringValidation = new StringValidation(),
     ) {
+        $this->validateId();
+        $this->validateStoreId();
+        $this->validateCountryCode();
+    }
+
+    /**
+     * Validate country.
+     * @throws EmptyValueException|IllegalCharsetException
+     */
+    private function validateCountryCode(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->countryCode);
+        $this->stringValidation->matchRegex(
+            value: $this->countryCode,
+            pattern: '/^[A-Z]{2}$/'
+        );
+    }
+
+    /**
+     * Validate that an (uu)id exists on the payment.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    private function validateId(): void
+    {
+        $this->validateUuid($this->id);
+    }
+
+    /**
+     * Validate existing store (uu)id.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    private function validateStoreId(): void
+    {
+        $this->validateUuid($this->storeId);
+    }
+
+    /**
+     * Validate that a string is an uuid and not empty.
+     *
+     * @param $uuid
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    private function validateUuid($uuid): void
+    {
+        $this->stringValidation->notEmpty(value: $uuid);
+        $this->stringValidation->isUuid(value: $uuid);
     }
 }
