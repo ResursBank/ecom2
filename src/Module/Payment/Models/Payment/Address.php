@@ -17,9 +17,12 @@ class Address extends Model
 {
     public function __construct(
         public readonly string $fullName,
+        public readonly string $firstName,
+        public readonly string $lastName,
         public readonly string $addressRow1,
         public readonly string $postalArea,
         public readonly string $postalCode,
+        public readonly string $countryCode,
         public readonly ?string $addressRow2 = null,
     ) {
     }
