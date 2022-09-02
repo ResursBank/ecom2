@@ -1,8 +1,20 @@
 <?php
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Api;
 
-use Resursbank\Ecom\Exception\TypeException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -10,9 +22,12 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
-use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
+/**
+ * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
+ */
 class GetPayment
 {
     /**
@@ -23,7 +38,18 @@ class GetPayment
     ) {
     }
 
-    public function call(string $orderReference)
+    /**
+     * @param string $orderReference
+     * @return Payment
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws JsonException
+     */
+    public function call(string $orderReference): Payment
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
@@ -46,7 +72,7 @@ class GetPayment
         );
 
         if (!$result instanceof Payment) {
-            throw new TypeException(message: 'Expected PaymentCollection.');
+            throw new InvalidTypeException(message: 'Expected PaymentCollection.');
         }
 
         return $result;

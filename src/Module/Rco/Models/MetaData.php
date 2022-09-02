@@ -21,8 +21,8 @@ class MetaData extends Model
      * @param string $value
      */
     public function __construct(
-        public string $key,
-        public string $value
+        public string $key = '',
+        public string $value = ''
     ) {
     }
 }

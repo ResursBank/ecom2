@@ -11,17 +11,13 @@ namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Information about the identification made on a payment.
+ * MetaData information class for payments. Currently, it does not have a proper collection.
  */
-class Identification extends Model
+class MetaData extends Model
 {
-    /**
-     * @param string $type
-     * @param string $reference
-     */
     public function __construct(
-        public readonly string $type,
-        public readonly string $reference = '',
+        public readonly ?string $creator = null,
+        public readonly ?array $custom = null,
     ) {
     }
 }
