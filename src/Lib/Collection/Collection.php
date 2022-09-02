@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Collection;
 use ArrayAccess;
 use Iterator;
 use Countable;
+use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 
 use function is_object;
@@ -208,9 +209,15 @@ class Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * @inheritDoc
+     * @throws CollectionException
      */
     public function current(): mixed
     {
+        if (!isset($this->data[$this->position])) {
+            throw new CollectionException(
+                message: 'Could not find any data in data array.'
+            );
+        }
         return $this->data[$this->position];
     }
 
