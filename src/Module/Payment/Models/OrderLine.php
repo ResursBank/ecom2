@@ -15,21 +15,24 @@ use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
+use function is_float;
+use function is_string;
+
 /**
  * Defines a product in an order.
  */
 class OrderLine extends Model
 {
     /**
-     * @param string $description
-     * @param string $reference
-     * @param OrderLineType $type
-     * @param string $quantityUnit
+     * @param string|null $description
+     * @param string|null $reference
+     * @param string|null $quantityUnit
      * @param float $quantity
      * @param float $vatRate
-     * @param float $unitAmountIncludingVat
+     * @param float|null $unitAmountIncludingVat
      * @param float $totalAmountIncludingVat
      * @param float $totalVatAmount
+     * @param OrderLineType|null $type
      * @param StringValidation $stringValidation
      * @param FloatValidation $floatValidation
      * @throws IllegalValueException
@@ -37,15 +40,15 @@ class OrderLine extends Model
      *      We have no idea at the moment.
      */
     public function __construct(
-        public readonly string $description,
-        public readonly string $reference,
-        public readonly OrderLineType $type,
-        public readonly string $quantityUnit,
+        public readonly ?string $description,
+        public readonly ?string $reference,
+        public readonly ?string $quantityUnit,
         public readonly float $quantity,
         public readonly float $vatRate,
-        public readonly float $unitAmountIncludingVat,
+        public readonly ?float $unitAmountIncludingVat,
         public readonly float $totalAmountIncludingVat,
         public readonly float $totalVatAmount,
+        public readonly ?OrderLineType $type,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation(),
     ) {
@@ -54,6 +57,9 @@ class OrderLine extends Model
         $this->validateQuantityUnit();
         $this->validateVatRate();
         $this->validateQuantity();
+        $this->validateUnitAmountIncludingVat();
+        $this->validateTotalAmountIncludingVat();
+        $this->validateTotalVatAmount();
     }
 
     /**
@@ -62,11 +68,13 @@ class OrderLine extends Model
      */
     private function validateDescription(): void
     {
-        $this->stringValidation->length(
-            value: $this->description,
-            min: 0,
-            max: 50
-        );
+        if (is_string($this->description)) {
+            $this->stringValidation->length(
+                value: $this->description,
+                min: 0,
+                max: 50
+            );
+        }
     }
 
     /**
@@ -75,11 +83,13 @@ class OrderLine extends Model
      */
     private function validateReference(): void
     {
-        $this->stringValidation->length(
-            value: $this->reference,
-            min: 0,
-            max: 50
-        );
+        if (is_string($this->reference)) {
+            $this->stringValidation->length(
+                value: $this->reference,
+                min: 0,
+                max: 50
+            );
+        }
     }
 
     /**
@@ -88,11 +98,13 @@ class OrderLine extends Model
      */
     private function validateQuantityUnit(): void
     {
-        $this->stringValidation->length(
-            value: $this->quantityUnit,
-            min: 0,
-            max: 50
-        );
+        if (is_string($this->quantityUnit)) {
+            $this->stringValidation->length(
+                value: $this->quantityUnit,
+                min: 0,
+                max: 50
+            );
+        }
     }
 
     /**
@@ -101,10 +113,16 @@ class OrderLine extends Model
      */
     private function validateVatRate(): void
     {
+        $this->stringValidation->length(
+            value: (string) $this->getFraction($this->vatRate),
+            min: 0,
+            max: 2
+        );
+
         $this->floatValidation->inRange(
             value: $this->vatRate,
             min: 0,
-            max: 100
+            max: 99.99
         );
     }
 
@@ -113,19 +131,10 @@ class OrderLine extends Model
      */
     private function validateQuantity(): void
     {
-        $whole = floor($this->quantity);
-        $fraction = $this->quantity - $whole;
-
         $this->stringValidation->length(
-            value: (string) floor($whole),
-            min: 1,
-            max: 10
-        );
-
-        $this->stringValidation->length(
-            value: (string) floor($fraction),
+            value: (string) $this->getFraction($this->quantity),
             min: 0,
-            max: 5
+            max: 2
         );
 
         $this->floatValidation->inRange(
@@ -133,5 +142,72 @@ class OrderLine extends Model
             min: 0,
             max: 9999999999.99
         );
+    }
+
+    /**
+     * @throws IllegalValueException
+     */
+    private function validateUnitAmountIncludingVat(): void
+    {
+        if (is_float($this->unitAmountIncludingVat)) {
+            $this->stringValidation->length(
+                value: (string) $this->getFraction($this->unitAmountIncludingVat),
+                min: 0,
+                max: 2
+            );
+
+            $this->floatValidation->inRange(
+                value: $this->unitAmountIncludingVat,
+                min: 0,
+                max: 9999999999.99
+            );
+        }
+    }
+
+    /**
+     * @throws IllegalValueException
+     * @returns void
+     */
+    private function validateTotalAmountIncludingVat(): void
+    {
+        $this->stringValidation->length(
+            value: (string) $this->getFraction($this->totalAmountIncludingVat),
+            min: 0,
+            max: 2
+        );
+
+        $this->floatValidation->inRange(
+            value: $this->totalAmountIncludingVat,
+            min: 0,
+            max: 99.99
+        );
+    }
+
+    /**
+     * @throws IllegalValueException
+     * @returns void
+     */
+    private function validateTotalVatAmount(): void
+    {
+        $this->stringValidation->length(
+            value: (string) $this->getFraction($this->totalVatAmount),
+            min: 0,
+            max: 2
+        );
+
+        $this->floatValidation->inRange(
+            value: $this->totalVatAmount,
+            min: 0,
+            max: 99.99
+        );
+    }
+
+    /**
+     * @param float $num
+     * @return float
+     */
+    private function getFraction(float $num): float
+    {
+        return $num - floor($num);
     }
 }
