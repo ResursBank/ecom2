@@ -105,6 +105,7 @@ class Repository
      * @param int|null $page
      * @param array $sort
      * @return Get
+     * @throws IllegalTypeException
      */
     public static function getApi(
         int $size = 999999,

@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Validation;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Lib\Validation\IntValidation;
 
@@ -79,6 +80,59 @@ final class IntValidationTest extends TestCase
                 data: ['epic' => 123],
                 key: 'epic'
             )
+        );
+    }
+
+    /**
+     * Assert isPositive() throws IllegalValueException when the value is
+     * negative.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsPositiveThrowsOnNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->intValidation->isPositive(value: -1);
+    }
+
+    /**
+     * Assert isPositive() returns true when the value is positive.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsPositiveReturnTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->intValidation->isPositive(value: 1)
+        );
+    }
+
+    /**
+     * Assert isGt() throws IllegalValueException when the value is less than
+     * supplied minimum.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsGtThrowsOnLessThan(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->intValidation->isGt(value: 1, min: 2);
+    }
+
+    /**
+     * Assert isGt() returns true when the value is greater than supplied
+     * minimum.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsGtReturnTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->intValidation->isGt(value: 2, min: 1)
         );
     }
 }

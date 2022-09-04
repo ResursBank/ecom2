@@ -32,7 +32,7 @@ class Mapi
     /**
      * Common prefix route name for all API calls.
      */
-    public const COMMON_ROUTE = 'mock_merchant_api_service';
+    public const COMMON_ROUTE = 'mock_merchant_stores_v2';
 
     /**
      * Prefix route name for payment based API calls.

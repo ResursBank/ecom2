@@ -451,7 +451,7 @@ class CurlTest extends TestCase
         } catch (CurlException $e) {
             if ($e->getCode() !== 28) {
                 static::markTestSkipped(
-                    sprintf(
+                    message: sprintf(
                         'Problems occured with %s (error %s: %s).',
                         $timeoutUrl,
                         $e->getCode(),
@@ -461,7 +461,7 @@ class CurlTest extends TestCase
             } else {
                 //static::assertSame(28, $e->getCode() === 28);
                 static::assertTrue(
-                    $e->getCode() === 28
+                    condition: $e->getCode() === 28
                 );
             }
         }
@@ -476,6 +476,12 @@ class CurlTest extends TestCase
      */
     public function testProxy(): void
     {
+        if ((int) $_ENV['SKIP_PROXY_TESTS'] === 1) {
+            static::markTestSkipped(
+                message: 'Skipping proxy tests because of environment variable.'
+            );
+        }
+
         if ($this->isPipeline()) {
             self::markTestSkipped(
                 message: 'Pipelines does not support proxies.'

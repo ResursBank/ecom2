@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Validation;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 
@@ -79,6 +80,30 @@ final class FloatValidationTest extends TestCase
                 data: ['epic' => 10.55],
                 key: 'epic'
             )
+        );
+    }/**
+ * Assert isPositive() throws IllegalValueException when the value is
+ * negative.
+ *
+ * @return void
+ * @throws IllegalValueException
+ */
+    public function testIsPositiveThrowsOnNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->isPositive(value: -1);
+    }
+
+    /**
+     * Assert isPositive() returns true when the value is positive.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsPositiveReturnTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->floatValidation->isPositive(value: 1)
         );
     }
 }

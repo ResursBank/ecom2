@@ -17,6 +17,7 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Store\Models\Store;
@@ -59,6 +60,7 @@ class StoreTest extends TestCase
      * @return void
      * @throws ReflectionException
      * @throws TestException
+     * @throws IllegalTypeException
      */
     private function convert(
         array $updates = []
@@ -87,7 +89,7 @@ class StoreTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
@@ -100,7 +102,7 @@ class StoreTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
     public function testIdAssigned(): void
     {
@@ -109,11 +111,69 @@ class StoreTest extends TestCase
     }
 
     /**
+     * Assert validateNationalStoreId() throws IllegalValueException when
+     * nationalStoreId is 0.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException|IllegalTypeException
+     */
+    public function testNationalStoreIdThrowsWithZeroValue(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['nationalStoreId' => 0]);
+    }
+
+    /**
+     * Assert validateNationalStoreId() throws IllegalValueException when
+     * nationalStoreId is negative.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException|IllegalTypeException
+     */
+    public function testNationalStoreIdThrowsWithNegativeValue(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['nationalStoreId' => -1]);
+    }
+
+    /**
+     * Assert property was assigned during object conversion.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException|IllegalTypeException
+     */
+    public function testNationalStoreIdWasAssigned(): void
+    {
+        $this->convert();
+        self::assertSame(
+            expected: $this->data->nationalStoreId,
+            actual: $this->item->nationalStoreId
+        );
+    }
+
+    /**
+     * Assert validateId() throws IllegalValueException when id is not a valid
+     * uuid.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException|IllegalTypeException
+     */
+    public function testValidateIdThrowsWithoutUuid(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['id' => 'not-a-uuid']);
+    }
+
+    /**
      * Assert validateCountryCode() accepts values  SE, NO, FI, DK.
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
     public function testValidateCountryCodeAcceptsAlpha2CountryCode(): void
     {
@@ -127,7 +187,7 @@ class StoreTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
     public function testValidateCountryCodeThrowsOnAlpha3CountryCode(): void
     {
@@ -141,7 +201,7 @@ class StoreTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
     public function testValidateCountryCodeThrowsWithIllegalCharset(): void
     {
@@ -154,7 +214,7 @@ class StoreTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
     public function testCountryCodeWasAssigned(): void
     {
@@ -166,19 +226,16 @@ class StoreTest extends TestCase
     }
 
     /**
-     * Assert property was assigned during object conversion.
+     * Assert validateName() throws EmptyValueException when name is empty.
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
-    public function testNationalStoreIdWasAssigned(): void
+    public function testValidateNameThrowsWithEmptyValue(): void
     {
-        $this->convert();
-        self::assertSame(
-            expected: $this->data->nationalStoreId,
-            actual: $this->item->nationalStoreId
-        );
+        $this->expectException(exception: EmptyValueException::class);
+        $this->convert(updates: ['name' => '']);
     }
 
     /**
@@ -186,60 +243,14 @@ class StoreTest extends TestCase
      *
      * @return void
      * @throws ReflectionException
-     * @throws TestException
+     * @throws TestException|IllegalTypeException
      */
-    public function testTradeNameWasAssigned(): void
+    public function testNameWasAssigned(): void
     {
         $this->convert();
         self::assertSame(
-            expected: $this->data->tradeName,
-            actual: $this->item->tradeName
+            expected: $this->data->name,
+            actual: $this->item->name
         );
-    }
-
-    /**
-     * Assert property was assigned during object conversion.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testPopularNameWasAssigned(): void
-    {
-        $this->convert();
-        self::assertSame(
-            expected: $this->data->popularName,
-            actual: $this->item->popularName
-        );
-    }
-
-    /**
-     * Assert property was assigned during object conversion.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testRepresentativeIdWasAssigned(): void
-    {
-        $this->convert();
-        self::assertSame(
-            expected: $this->data->representativeId,
-            actual: $this->item->representativeId
-        );
-    }
-
-    /**
-     * Assert validateId() throws IllegalValueException when id is not a valid
-     * uuid.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testValidateIdThrowsWithoutUuid(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['id' => 'not-a-uuid']);
     }
 }

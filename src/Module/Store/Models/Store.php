@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Validation\IntValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -24,31 +25,27 @@ class Store extends Model
      * @param string $id | API identifier.
      * @param int $nationalStoreId
      * @param string $countryCode
-     * @param string $tradeName
-     * @param string $popularName
-     * @param string $representativeId
+     * @param string $name
      * @param StringValidation $stringValidation
+     * @param IntValidation $intValidation
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalValueException
-     * @todo nationalStoreId needs more validation.
      * @todo $countryCode validation to be replaced by Enum\Country when DataConverter supports enums.
-     * @todo $id, can this be empty?
-     * @todo $nationalStoreId, what is the actual value range? Specified as Int64, may accept negative values.
-     * @todo $tradeName, are there any validation rules?
-     * @todo $popularName, are there any validation rules?
+     * @todo $name will get a max length but that is not yet defined.
      */
     public function __construct(
         public readonly string $id,
         public readonly int $nationalStoreId,
         public readonly string $countryCode,
-        public readonly string $tradeName,
-        public readonly string $popularName,
-        public readonly string $representativeId,
+        public readonly string $name,
         private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly IntValidation $intValidation = new IntValidation()
     ) {
         $this->validateId();
+        $this->validateNationalStoreId();
         $this->validateCountryCode();
+        $this->validateName();
     }
 
     /**
@@ -61,8 +58,17 @@ class Store extends Model
     }
 
     /**
+     * @return void
+     * @throws IllegalValueException
+     */
+    private function validateNationalStoreId(): void
+    {
+        $this->intValidation->isPositive(value: $this->nationalStoreId);
+        $this->intValidation->isGt(value: $this->nationalStoreId, min: 0);
+    }
+
+    /**
      * @throws EmptyValueException|IllegalCharsetException
-     * @todo Add charset validation.
      */
     private function validateCountryCode(): void
     {
@@ -71,5 +77,14 @@ class Store extends Model
             value: $this->countryCode,
             pattern: '/^[A-Z]{2}$/'
         );
+    }
+
+    /**
+     * @return void
+     * @throws EmptyValueException
+     */
+    private function validateName(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->name);
     }
 }
