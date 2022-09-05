@@ -476,7 +476,7 @@ class CurlTest extends TestCase
      */
     public function testProxy(): void
     {
-        if ((int) $_ENV['SKIP_PROXY_TESTS'] === 1) {
+        if (isset($_ENV['SKIP_PROXY_TESTS']) && (int) $_ENV['SKIP_PROXY_TESTS'] === 1) {
             static::markTestSkipped(
                 message: 'Skipping proxy tests because of environment variable.'
             );
