@@ -17,7 +17,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Module\Common\Address;
+use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
 use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 

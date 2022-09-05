@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
+use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Common\Address;
 
 /**
  * Customer address data from a payment.
@@ -17,7 +17,7 @@ use Resursbank\Ecom\Module\Common\Address;
 class Customer extends Model
 {
     /**
-     * @param Address $deliveryAddress
+     * @param Address|null $deliveryAddress
      * @param string $email
      * @param string $governmentId
      * @param string $mobilePhone
@@ -26,12 +26,12 @@ class Customer extends Model
      * @param Identification|null $identification
      */
     public function __construct(
-        public readonly Address $deliveryAddress,
         public readonly string $email,
         public readonly string $governmentId,
         public readonly string $mobilePhone,
         public readonly string $phone,
         public readonly string $customerType,
+        public readonly ?Address $deliveryAddress = null,
         public readonly ?Identification $identification = null,
     ) {
     }

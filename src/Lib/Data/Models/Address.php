@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Common;
+namespace Resursbank\Ecom\Lib\Data\Models;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
