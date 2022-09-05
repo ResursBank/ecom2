@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Module\Common\Address;
 
 /**
  * Customer address data from a payment.

@@ -1,0 +1,214 @@
+<?php
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Integration\Module\Customer;
+
+use JsonException;
+use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\GetAddressException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Cache\CacheInterface;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
+use Resursbank\Ecom\Module\Customer\Repository;
+
+class GetAddressTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
+                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+    }
+
+    /**
+     * Set a store id if phpunit.xml has one (for find_payments).
+     * @return string
+     */
+    private function getStoreId(): string
+    {
+        return (string)($_ENV['STORE_ID'] ?? '');
+    }
+
+    /**
+     * @return string
+     */
+    private function getHappyFlowCustomer(): string
+    {
+        return (string)($_ENV['GOVERNMENT_ID_HAPPY_NATURAL'] ?? '');
+    }
+
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public function testGetAddress(): void
+    {
+        $expect = [
+            'fullName' => 'Vincent Williamsson Alexandersson',
+            'addressRow1' => 'Glassgatan 15',
+            'postalArea' => 'Göteborg',
+            'postalCode' => '41655',
+            'countryCode' => 'SE',
+            'firstName' => 'Vincent',
+            'lastName' => 'Alexandersson',
+            'addressRow2' => ''
+        ];
+
+        $address = Repository::GetAddress(
+            storeId: $this->getStoreId(),
+            governmentId: $this->getHappyFlowCustomer(),
+            customerType: CustomerType::NATURAL
+        );
+
+        // Testing similarities by intersect.
+        static::assertSame(8, count(array_intersect((array)$address, $expect)));
+    }
+
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public function testGetAddressOliver(): void
+    {
+        $expect = [
+            'fullName' => 'Oliver Liamsson Williamsson',
+            'addressRow1' => 'Makadamg 1',
+            'postalArea' => 'Helsingborg',
+            'postalCode' => '25024',
+            'countryCode' => 'SE',
+            'firstName' => 'Oliver',
+            'lastName' => 'Williamsson',
+            'addressRow2' => ''
+        ];
+
+        $address = Repository::GetAddress(
+            storeId: $this->getStoreId(),
+            governmentId: '195012026430',
+            customerType: CustomerType::NATURAL
+        );
+
+        // Testing similarities by intersect.
+        static::assertSame(8, count(array_intersect((array)$address, $expect)));
+    }
+
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public function testGetAddressOrganization(): void
+    {
+        $expect = [
+            'fullName' => 'Pilsnerbolaget HB',
+            'addressRow1' => 'Glassgatan 17',
+            'postalArea' => 'Helsingborg',
+            'postalCode' => '25024',
+            'countryCode' => 'SE',
+            'addressRow2' => ''
+        ];
+
+        $address = Repository::GetAddress(
+            storeId: $this->getStoreId(),
+            governmentId: '166997368573',
+            customerType: CustomerType::LEGAL
+        );
+
+        // Testing similarities by intersect.
+        static::assertSame(8, count(array_intersect((array)$address, $expect)));
+    }
+
+    /**
+     * GetAddress resolving an organization but with NATURAL as customerType.
+     *
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public function testGetAddressOrganizationByNatural(): void
+    {
+        static::expectException(GetAddressException::class);
+
+        Repository::GetAddress(
+            storeId: $this->getStoreId(),
+            governmentId: '166997368573',
+            customerType: CustomerType::NATURAL
+        );
+    }
+
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public function testMismatchAddress(): void
+    {
+        $expect = [
+            'fullName' => 'Something Else',
+            'addressRow1' => 'Glassgatan 15',
+            'postalArea' => 'Göteborg',
+            'postalCode' => '41655',
+            'countryCode' => 'SE',
+            'firstName' => 'Vincent',
+            'lastName' => 'Alexandersson',
+            'addressRow2' => ''
+        ];
+
+        $address = Repository::GetAddress(
+            storeId: $this->getStoreId(),
+            governmentId: $this->getHappyFlowCustomer(),
+            customerType: CustomerType::NATURAL
+        );
+
+        // Only 7 out of 8 fields are the same.
+        static::assertSame(7, count(array_intersect((array)$address, $expect)));
+    }
+}
