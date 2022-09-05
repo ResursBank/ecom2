@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -26,10 +27,12 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 class SearchTest extends TestCase
 {
+    /**
+     * @throws EmptyValueException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -48,9 +51,10 @@ class SearchTest extends TestCase
 
     /**
      * Set a store id if phpunit.xml has one (for find_payments).
+     *
      * @return string
      */
-    private function getStoreId()
+    private function getStoreId(): string
     {
         return (string)($_ENV['STORE_ID'] ?? '');
     }
@@ -58,17 +62,19 @@ class SearchTest extends TestCase
     /**
      * Special functions that makes sure some of the tests being made here is limited to a specific account.
      * This will be changed when we find a simpler way to search for payments.
+     *
      * @return bool
      */
-    private function verifyLiveAccount()
+    private function verifyLiveAccount(): bool
     {
         return isset($_ENV['JWT_AUTH_CLIENT_ID']) && $_ENV['JWT_AUTH_CLIENT_ID'] === 'tomas_t';
     }
 
     /**
+     * @param $func
      * @return void
      */
-    private function markLiveAccountSkipped($func)
+    private function markLiveAccountSkipped($func): void
     {
         if (!$this->verifyLiveAccount()) {
             static::markTestSkipped(
@@ -86,15 +92,15 @@ class SearchTest extends TestCase
      *
      * @return void
      * @throws AuthException
+     * @throws CollectionException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws InvalidTypeException
-     * @throws ValidationException
      * @throws ReflectionException
+     * @throws ValidationException
      */
-    public function testSearchLive()
+    public function testSearchLive(): void
     {
         $orderReference = '20220816073146-1557096130';
         $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
@@ -119,6 +125,7 @@ class SearchTest extends TestCase
     /**
      * @return void
      * @throws AuthException
+     * @throws CollectionException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -126,7 +133,7 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testSearchCompany()
+    public function testSearchCompany(): void
     {
         $orderReference = '20220829085222-RC31538721';
         $expectedId = 'f3b7dd6b-dc21-4813-9b94-99ffeb4b28d0';
@@ -163,8 +170,9 @@ class SearchTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws CollectionException
      */
-    public function testSearchBillingDeliveryNatural()
+    public function testSearchBillingDeliveryNatural(): void
     {
         $orderReference = '20220829092623-RC84384074';
         $expectedId = '6f3269c4-30df-429e-898b-7a63371422b5';
@@ -184,6 +192,33 @@ class SearchTest extends TestCase
                     $payment->customer->customerType === 'NATURAL'
                 );
             }
+        }
+        $this->markLiveAccountSkipped(__FUNCTION__);
+    }
+
+    /**
+     * Free search without order references.
+     * Currently expecting no results.
+     *
+     * @return void
+     * @throws AuthException
+     * @throws CollectionException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSearchFreely(): void
+    {
+        static::expectException(CollectionException::class);
+        if ($this->verifyLiveAccount()) {
+            $paymentCollection = Repository::Search(
+                $this->getStoreId()
+            );
+
+            $paymentCollection->current();
         }
         $this->markLiveAccountSkipped(__FUNCTION__);
     }
