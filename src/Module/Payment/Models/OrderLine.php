@@ -113,8 +113,8 @@ class OrderLine extends Model
      */
     private function validateVatRate(): void
     {
-        $this->stringValidation->length(
-            value: (string) $this->getFraction($this->vatRate),
+        $this->floatValidation->length(
+            value: $this->vatRate,
             min: 0,
             max: 2
         );
@@ -131,8 +131,8 @@ class OrderLine extends Model
      */
     private function validateQuantity(): void
     {
-        $this->stringValidation->length(
-            value: (string) $this->getFraction($this->quantity),
+        $this->floatValidation->length(
+            value: $this->quantity,
             min: 0,
             max: 2
         );
@@ -150,8 +150,8 @@ class OrderLine extends Model
     private function validateUnitAmountIncludingVat(): void
     {
         if (is_float($this->unitAmountIncludingVat)) {
-            $this->stringValidation->length(
-                value: (string) $this->getFraction($this->unitAmountIncludingVat),
+            $this->floatValidation->length(
+                value: $this->unitAmountIncludingVat,
                 min: 0,
                 max: 2
             );
@@ -170,8 +170,8 @@ class OrderLine extends Model
      */
     private function validateTotalAmountIncludingVat(): void
     {
-        $this->stringValidation->length(
-            value: (string) $this->getFraction($this->totalAmountIncludingVat),
+        $this->floatValidation->length(
+            value: $this->totalAmountIncludingVat,
             min: 0,
             max: 2
         );
@@ -179,7 +179,7 @@ class OrderLine extends Model
         $this->floatValidation->inRange(
             value: $this->totalAmountIncludingVat,
             min: 0,
-            max: 99.99
+            max: 9999999999.99
         );
     }
 
@@ -189,8 +189,8 @@ class OrderLine extends Model
      */
     private function validateTotalVatAmount(): void
     {
-        $this->stringValidation->length(
-            value: (string) $this->getFraction($this->totalVatAmount),
+        $this->floatValidation->length(
+            value: $this->totalVatAmount,
             min: 0,
             max: 2
         );
@@ -198,16 +198,7 @@ class OrderLine extends Model
         $this->floatValidation->inRange(
             value: $this->totalVatAmount,
             min: 0,
-            max: 99.99
+            max: 9999999999.99
         );
-    }
-
-    /**
-     * @param float $num
-     * @return float
-     */
-    private function getFraction(float $num): float
-    {
-        return $num - floor($num);
     }
 }

@@ -139,14 +139,14 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateVatRate() throws IllegalValueException when its
-     * value is too small.
+     * value is negative.
      *
      * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
      */
-    public function testVatRateThrowsWhenTooSmall(): void
+    public function testVatRateThrowsWhenNegative(): void
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['vatRate' => -10]);
@@ -154,7 +154,22 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateVatRate() throws IllegalValueException when its
-     * value is too big.
+     * value has more than 2 decimals digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testVatRateThrowsWhenItHasTooManyDecimals(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['vatRate' => 0.999]);
+    }
+
+    /**
+     * Assert validateVatRate() throws IllegalValueException when its
+     * value has more than 2 integer digits.
      *
      * @return void
      * @throws ReflectionException
@@ -164,7 +179,187 @@ class OrderLineTest extends TestCase
     public function testVatRateThrowsWhenTooBig(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['vatRate' => 110]);
+        $this->convert(updates: ['vatRate' => 100]);
+    }
+
+    /**
+     * Assert validateQuantity() throws IllegalValueException when its
+     * value is negative.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testQuantityThrowsWhenNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['quantity' => -10]);
+    }
+
+    /**
+     * Assert validateQuantity() throws IllegalValueException when its
+     * value has more than 2 decimals digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testQuantityThrowsWhenItHasTooManyDecimals(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['quantity' => 0.999]);
+    }
+
+    /**
+     * Assert validateQuantity() throws IllegalValueException when its
+     * value has more than 10 integer digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testQuantityThrowsWhenTooBig(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['quantity' => 99999999999]);
+    }
+
+    /**
+     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
+     * its value is negative.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testUnitAmountIncludingVatThrowsWhenNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['unitAmountIncludingVat' => -10]);
+    }
+
+    /**
+     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
+     * its value has more than 2 decimals digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testUnitAmountIncludingVatThrowsWhenItHasTooManyDecimals(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['unitAmountIncludingVat' => 0.999]);
+    }
+
+    /**
+     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
+     * its value has more than 10 integer digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testUnitAmountIncludingVatThrowsWhenTooBig(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['unitAmountIncludingVat' => 99999999999]);
+    }
+
+    /**
+     * Assert validateTotalAmountIncludingVat() throws IllegalValueException when
+     * its value is negative.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testTotalAmountIncludingVatThrowsWhenNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['totalAmountIncludingVat' => -10]);
+    }
+
+    /**
+     * Assert validateTotalAmountIncludingVat() throws IllegalValueException when
+     * its value has more than 2 decimals digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testTotalAmountIncludingVatThrowsWhenItHasTooManyDecimals(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['totalAmountIncludingVat' => 0.999]);
+    }
+
+    /**
+     * Assert validateTotalAmountIncludingVat() throws IllegalValueException when
+     * its value has more than 10 integer digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testTotalAmountIncludingVatThrowsWhenTooBig(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['totalAmountIncludingVat' => 99999999999]);
+    }
+
+    /**
+     * Assert validateTotalVatAmount() throws IllegalValueException when
+     * its value is negative.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testTotalVatAmountThrowsWhenNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['totalVatAmount' => -10]);
+    }
+
+    /**
+     * Assert validateTotalVatAmount() throws IllegalValueException when
+     * its value has more than 2 decimals digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testTotalVatAmountThrowsWhenItHasTooManyDecimals(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['totalVatAmount' => 0.999]);
+    }
+
+    /**
+     * Assert validateTotalVatAmount() throws IllegalValueException when
+     * its value has more than 10 integer digits.
+     *
+     * @return void
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    public function testTotalVatAmountThrowsWhenTooBig(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: ['totalVatAmount' => 99999999999]);
     }
 
     /**
