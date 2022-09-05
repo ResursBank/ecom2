@@ -109,7 +109,8 @@ class GetAddressTest extends TestCase
     public function testGetAddress(): void
     {
         if (!$this->isPipeline()) {
-            $_SERVER['REMOTE_ADDR'] = $this->getRemoteAddr();
+            //$_SERVER['REMOTE_ADDR'] = $this->getRemoteAddr();
+            $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
 
             $expect = [
                 'fullName' => 'Vincent Williamsson Alexandersson',
