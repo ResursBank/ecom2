@@ -168,13 +168,36 @@ class GetAddressTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      */
-    public function testGetAddressOrganizationByNatural(): void
+    public function testGetBadAddressOrganizationByNatural(): void
     {
         static::expectException(GetAddressException::class);
 
         Repository::GetAddress(
             storeId: $this->getStoreId(),
             governmentId: '166997368573',
+            customerType: CustomerType::NATURAL
+        );
+    }
+
+    /**
+     * GetAddress resolving an organization but with NATURAL as customerType.
+     *
+     * @return void
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
+    public function testGetBadAddressByNatural(): void
+    {
+        static::expectException(GetAddressException::class);
+
+        Repository::GetAddress(
+            storeId: $this->getStoreId(),
+            governmentId: '12345',
             customerType: CustomerType::NATURAL
         );
     }
