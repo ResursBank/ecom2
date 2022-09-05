@@ -68,7 +68,7 @@ class OrderLine extends Model
      */
     private function validateDescription(): void
     {
-        if (is_string($this->description)) {
+        if (is_string(value: $this->description)) {
             $this->stringValidation->length(
                 value: $this->description,
                 min: 0,
@@ -83,7 +83,7 @@ class OrderLine extends Model
      */
     private function validateReference(): void
     {
-        if (is_string($this->reference)) {
+        if (is_string(value: $this->reference)) {
             $this->stringValidation->length(
                 value: $this->reference,
                 min: 0,
@@ -98,7 +98,7 @@ class OrderLine extends Model
      */
     private function validateQuantityUnit(): void
     {
-        if (is_string($this->quantityUnit)) {
+        if (is_string(value: $this->quantityUnit)) {
             $this->stringValidation->length(
                 value: $this->quantityUnit,
                 min: 0,
@@ -149,7 +149,7 @@ class OrderLine extends Model
      */
     private function validateUnitAmountIncludingVat(): void
     {
-        if (is_float($this->unitAmountIncludingVat)) {
+        if (is_float(value: $this->unitAmountIncludingVat)) {
             $this->floatValidation->length(
                 value: $this->unitAmountIncludingVat,
                 min: 0,

@@ -15,7 +15,6 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
@@ -30,7 +29,7 @@ use function json_encode;
 use function json_decode;
 
 /**
- * Test data integrity of store entity model.
+ * Test data integrity of order entity model.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -82,7 +81,8 @@ class OrderTest extends TestCase
 
         if (!$item instanceof OrderModel) {
             throw new TestException(
-                message: 'Conversion succeeded but did not return Method instance.'
+                message: 'Conversion succeeded but did not return ' .
+                    'Order instance.'
             );
         }
 
@@ -104,22 +104,22 @@ class OrderTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'orderLines' => json_decode(
-                json_encode(array_fill(
-                    0,
-                    1001,
-                    new OrderLine(
-                        'test',
-                        'test',
-                        OrderLineType::NORMAL,
-                        'test',
-                        20,
-                        20,
-                        20.1,
-                        20.1,
-                        20.1
+                json: json_encode(value: array_fill(
+                    start_index: 0,
+                    count: 1001,
+                    value: new OrderLine(
+                        description: 'test',
+                        reference: 'test',
+                        quantityUnit: 'test',
+                        quantity: 20.1,
+                        vatRate: 20,
+                        unitAmountIncludingVat: 20,
+                        totalAmountIncludingVat: 20.1,
+                        totalVatAmount: 20.1,
+                        type: OrderLineType::NORMAL
                     )
-                ), JSON_THROW_ON_ERROR),
-                false,
+                ), flags: JSON_THROW_ON_ERROR),
+                associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
             )
@@ -138,7 +138,7 @@ class OrderTest extends TestCase
     public function testValidateOrderLinesThrowsWhenTooShort(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert([
+        $this->convert(updates: [
             'orderLines' => []
         ]);
     }
@@ -155,7 +155,7 @@ class OrderTest extends TestCase
     public function testValidateReferenceThrowsWhenTooLong(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert([
+        $this->convert(updates: [
             'orderReference' => 'Lorem ipsum dolor sit amet, consectetur ' .
                 'adipiscing elit. Pellentesque tempus gravida varius.'
         ]);
@@ -173,7 +173,7 @@ class OrderTest extends TestCase
     public function testValidateReferenceThrowsWhenTooShort(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert([
+        $this->convert(updates: [
             'orderReference' => ''
         ]);
     }
@@ -190,7 +190,7 @@ class OrderTest extends TestCase
     public function testValidateReferenceThrowsWhenUsingIllegalChars(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert([
+        $this->convert(updates: [
             'orderReference' => 'Test!'
         ]);
     }

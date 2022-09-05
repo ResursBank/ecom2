@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Defines a product in an order.
+ * Defines order line (product) collection.
  */
 class OrderLineCollection extends Collection
 {

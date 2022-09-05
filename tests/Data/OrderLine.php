@@ -19,7 +19,8 @@ use function is_array;
 use function is_int;
 
 /**
- * Mock data for tests relating to Store module.
+ * Mock data for tests relating to Payment module, Create Payment
+ * implementation.
  *
  * @todo Add more data to this class.
  */

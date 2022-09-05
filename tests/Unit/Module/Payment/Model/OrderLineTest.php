@@ -15,7 +15,6 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
@@ -24,7 +23,7 @@ use Resursbank\Ecom\Module\Payment\Models\OrderLine as OrderLineModel;
 use stdClass;
 
 /**
- * Test data integrity of store entity model.
+ * Test data integrity of order line entity model.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -76,7 +75,8 @@ class OrderLineTest extends TestCase
 
         if (!$item instanceof OrderLineModel) {
             throw new TestException(
-                message: 'Conversion succeeded but did not return Method instance.'
+                message: 'Conversion succeeded but did not return ' .
+                    'Order Line instance.'
             );
         }
 
@@ -273,8 +273,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateTotalAmountIncludingVat() throws IllegalValueException when
-     * its value is negative.
+     * Assert validateTotalAmountIncludingVat() throws IllegalValueException
+     * when its value is negative.
      *
      * @return void
      * @throws ReflectionException
@@ -288,8 +288,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateTotalAmountIncludingVat() throws IllegalValueException when
-     * its value has more than 2 decimals digits.
+     * Assert validateTotalAmountIncludingVat() throws IllegalValueException
+     * when its value has more than 2 decimals digits.
      *
      * @return void
      * @throws ReflectionException
@@ -303,8 +303,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateTotalAmountIncludingVat() throws IllegalValueException when
-     * its value has more than 10 integer digits.
+     * Assert validateTotalAmountIncludingVat() throws IllegalValueException
+     * when its value has more than 10 integer digits.
      *
      * @return void
      * @throws ReflectionException
