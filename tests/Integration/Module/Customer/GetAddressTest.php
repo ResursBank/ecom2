@@ -20,7 +20,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Network\ContentType;
+use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 use Resursbank\Ecom\Module\Customer\Repository;
 
@@ -60,6 +63,23 @@ class GetAddressTest extends TestCase
     }
 
     /**
+     * @return string
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     */
+    private function getRemoteAddr(): string
+    {
+        $curl = new Curl(
+            url: 'https://ipv4.netcurl.org/ip.php',
+            requestMethod: RequestMethod::GET,
+            responseContentType: ContentType::RAW
+        );
+        return trim($curl->exec()->body->message);
+    }
+
+    /**
      * @return void
      * @throws JsonException
      * @throws ReflectionException
@@ -71,6 +91,8 @@ class GetAddressTest extends TestCase
      */
     public function testGetAddress(): void
     {
+        $_SERVER['REMOTE_ADDR'] = $this->getRemoteAddr();
+
         $expect = [
             'fullName' => 'Vincent Williamsson Alexandersson',
             'addressRow1' => 'Glassgatan 15',
