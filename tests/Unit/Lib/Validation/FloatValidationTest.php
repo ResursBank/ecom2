@@ -81,13 +81,15 @@ final class FloatValidationTest extends TestCase
                 key: 'epic'
             )
         );
-    }/**
- * Assert isPositive() throws IllegalValueException when the value is
- * negative.
- *
- * @return void
- * @throws IllegalValueException
- */
+    }
+
+    /**
+     * Assert isPositive() throws IllegalValueException when the value is
+     * negative.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
     public function testIsPositiveThrowsOnNegative(): void
     {
         $this->expectException(exception: IllegalValueException::class);
