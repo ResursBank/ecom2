@@ -77,7 +77,13 @@ class GetAddress
         try {
             $data = $curl->exec()->body;
         } catch (EmptyValueException $e) {
-            throw new GetAddressException('Could not properly resolve address.');
+            throw new GetAddressException(
+                message: sprintf(
+                    'Could not properly resolve address: %s (%d).',
+                    $e->getMessage(),
+                    $e->getCode()
+                )
+            );
         }
 
         $content = (
