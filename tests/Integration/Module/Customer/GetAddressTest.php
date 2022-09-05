@@ -29,8 +29,15 @@ use Resursbank\Ecom\Module\Customer\Repository;
 
 class GetAddressTest extends TestCase
 {
+    private bool $isPipeline = false;
+
     protected function setUp(): void
     {
+        // For pipelines.
+        if (isset($_ENV['is_pipeline'])) {
+            $this->isPipeline = (bool)$_ENV['is_pipeline'];
+        }
+
         parent::setUp();
 
         Config::setup(
@@ -80,6 +87,16 @@ class GetAddressTest extends TestCase
     }
 
     /**
+     * Tests are marked with this value if running from Bitbucket Pipelines.
+     *
+     * @return bool
+     */
+    protected function isPipeline(): bool
+    {
+        return $this->isPipeline;
+    }
+
+    /**
      * @return void
      * @throws JsonException
      * @throws ReflectionException
@@ -91,27 +108,31 @@ class GetAddressTest extends TestCase
      */
     public function testGetAddress(): void
     {
-        $_SERVER['REMOTE_ADDR'] = $this->getRemoteAddr();
+        if (!$this->isPipeline()) {
+            $_SERVER['REMOTE_ADDR'] = $this->getRemoteAddr();
 
-        $expect = [
-            'fullName' => 'Vincent Williamsson Alexandersson',
-            'addressRow1' => 'Glassgatan 15',
-            'postalArea' => 'Göteborg',
-            'postalCode' => '41655',
-            'countryCode' => 'SE',
-            'firstName' => 'Vincent',
-            'lastName' => 'Alexandersson',
-            'addressRow2' => ''
-        ];
+            $expect = [
+                'fullName' => 'Vincent Williamsson Alexandersson',
+                'addressRow1' => 'Glassgatan 15',
+                'postalArea' => 'Göteborg',
+                'postalCode' => '41655',
+                'countryCode' => 'SE',
+                'firstName' => 'Vincent',
+                'lastName' => 'Alexandersson',
+                'addressRow2' => ''
+            ];
 
-        $address = Repository::GetAddress(
-            storeId: $this->getStoreId(),
-            governmentId: $this->getHappyFlowCustomer(),
-            customerType: CustomerType::NATURAL
-        );
+            $address = Repository::GetAddress(
+                storeId: $this->getStoreId(),
+                governmentId: $this->getHappyFlowCustomer(),
+                customerType: CustomerType::NATURAL
+            );
 
-        // Testing similarities by intersect.
-        static::assertSame(8, count(array_intersect((array)$address, $expect)));
+            // Testing similarities by intersect.
+            static::assertSame(8, count(array_intersect((array)$address, $expect)));
+        } else {
+            static::markTestSkipped('This test is currently unavailable from pipelines.');
+        }
     }
 
     /**
@@ -236,24 +257,28 @@ class GetAddressTest extends TestCase
      */
     public function testMismatchAddress(): void
     {
-        $expect = [
-            'fullName' => 'Something Else',
-            'addressRow1' => 'Glassgatan 15',
-            'postalArea' => 'Göteborg',
-            'postalCode' => '41655',
-            'countryCode' => 'SE',
-            'firstName' => 'Vincent',
-            'lastName' => 'Alexandersson',
-            'addressRow2' => ''
-        ];
+        if (!$this->isPipeline()) {
+            $expect = [
+                'fullName' => 'Something Else',
+                'addressRow1' => 'Glassgatan 15',
+                'postalArea' => 'Göteborg',
+                'postalCode' => '41655',
+                'countryCode' => 'SE',
+                'firstName' => 'Vincent',
+                'lastName' => 'Alexandersson',
+                'addressRow2' => ''
+            ];
 
-        $address = Repository::GetAddress(
-            storeId: $this->getStoreId(),
-            governmentId: $this->getHappyFlowCustomer(),
-            customerType: CustomerType::NATURAL
-        );
+            $address = Repository::GetAddress(
+                storeId: $this->getStoreId(),
+                governmentId: $this->getHappyFlowCustomer(),
+                customerType: CustomerType::NATURAL
+            );
 
-        // Only 7 out of 8 fields are the same.
-        static::assertSame(7, count(array_intersect((array)$address, $expect)));
+            // Only 7 out of 8 fields are the same.
+            static::assertSame(7, count(array_intersect((array)$address, $expect)));
+        } else {
+            static::markTestSkipped('This test is currently unavailable from pipelines.');
+        }
     }
 }
