@@ -23,11 +23,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
+use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Address;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
@@ -143,7 +143,7 @@ class GetPaymentTest extends TestCase
             paymentMethodId: $this->expectedPaymentMethod,
             customer: new Customer(
                 deliveryAddress: new Address(
-                    'Full Name',
+                    fullName: 'Full Name',
                     addressRow1: 'Glassgatan 17',
                     postalArea: 'Göteborg',
                     postalCode: '12345',
