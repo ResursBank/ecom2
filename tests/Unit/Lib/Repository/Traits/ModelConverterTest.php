@@ -28,6 +28,9 @@ use stdClass;
  */
 final class ModelConverterTest extends TestCase
 {
+    /**
+     * @var array|array[]
+     */
     private static array $data = [
         [
             'id' => 1,
@@ -159,7 +162,7 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelConvertsStdclass(): void
     {
         $result = $this->convertToModel(
-            data: self::$data[1],
+            data: json_encode(value: self::$data[1], flags: JSON_THROW_ON_ERROR),
             model: Instrument::class,
         );
 
@@ -181,7 +184,7 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelConvertsStdclassArray(): void
     {
         $result = $this->convertToModel(
-            data: self::$data,
+            data: json_encode(value: self::$data, flags: JSON_THROW_ON_ERROR),
             model: Instrument::class,
         );
 

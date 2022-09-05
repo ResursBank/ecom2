@@ -21,15 +21,14 @@ class PaymentMethod extends Model
     /**
      * @param string $id
      * @param string $name
+     * @param string $type
      * @param float $minPurchaseLimit
      * @param float $maxPurchaseLimit
      * @param float $minApplicationLimit
      * @param float $maxApplicationLimit
      * @param array<int, LegalLink> $legalLinks
-     * @param string $type
      * @param bool $enabledForLegalCustomer
      * @param bool $enabledForNaturalCustomer
-     * @param bool $disabled
      * @param StringValidation $stringValidation
      * @param FloatValidation $floatValidation
      * @throws EmptyValueException
@@ -41,15 +40,14 @@ class PaymentMethod extends Model
     public function __construct(
         public readonly string $id,
         public readonly string $name,
+        public readonly string $type,
         public readonly float $minPurchaseLimit,
         public readonly float $maxPurchaseLimit,
         public readonly float $minApplicationLimit,
         public readonly float $maxApplicationLimit,
         public readonly array $legalLinks,
-        public readonly string $type,
         public readonly bool $enabledForLegalCustomer,
         public readonly bool $enabledForNaturalCustomer,
-        public readonly bool $disabled,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation()
     ) {

@@ -34,8 +34,7 @@ class PaymentMethodTest extends TestCase
         'type' => 'INVOICE',
         'legalLinks' => [],
         'enabledForLegalCustomer' => true,
-        'enabledForNaturalCustomer' => true,
-        'disabled' => false
+        'enabledForNaturalCustomer' => true
     ];
 
     /**

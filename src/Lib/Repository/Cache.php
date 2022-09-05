@@ -36,7 +36,7 @@ class Cache
      * @param int $ttl | Timeout in seconds before cache expires (0=never).
      */
     public function __construct(
-        private readonly string $key,
+        public readonly string $key,
         private readonly string $model,
         private readonly int $ttl = 3600
     ) {
@@ -116,7 +116,10 @@ class Cache
             // Write cache.
             Config::$instance->cache->write(
                 key: AbstractCache::getKey(key: $this->key),
-                data: json_encode(value: $data->toArray(), flags: JSON_THROW_ON_ERROR),
+                data: json_encode(
+                    value: $data->toArray(),
+                    flags: JSON_THROW_ON_ERROR
+                ),
                 ttl: $this->ttl
             );
         } catch (TypeError | Exception $e) {
