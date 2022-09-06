@@ -8,11 +8,14 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Customer;
 
+use Error;
+use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -47,16 +50,17 @@ class Repository
     /**
      * @param string $storeId
      * @param string $governmentId
-     * @param CustomerType $customerType
+     * @param string $customerType
      * @param GetAddress $api
-     * @return Collection
+     * @return Address
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws ValidationException
+     * @throws GetAddressException
      * @todo Use CustomerType-enum instead of string.
      */
     public static function GetAddress(
@@ -65,10 +69,17 @@ class Repository
         string $customerType,
         GetAddress $api = new GetAddress()
     ): Address {
-        return $api->call(
-            $storeId,
-            $governmentId,
-            $customerType
-        );
+        try {
+            return $api->call(
+                $storeId,
+                $governmentId,
+                $customerType
+            );
+        } catch (Exception $e) {
+            self::debug(
+                cause: $e->getMessage(),exception: $e
+            );
+            throw $e;
+        }
     }
 }

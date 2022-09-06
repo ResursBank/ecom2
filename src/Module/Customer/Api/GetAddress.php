@@ -47,13 +47,14 @@ class GetAddress
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws GetAddressException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
      * @todo Use CustomerType-enum instead of string.
      */
-    public function call(string $storeId, string $governmentId, string $customerType)
+    public function call(string $storeId, string $governmentId, string $customerType): Address
     {
         // REMOTE_ADDR is normally present, however - if this is running from console or similar (when REMOTE_ADDR
         // is simply absent) we should add localhost as remote.

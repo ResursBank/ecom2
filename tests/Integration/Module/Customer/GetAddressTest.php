@@ -31,6 +31,10 @@ class GetAddressTest extends TestCase
 {
     private bool $isPipeline = false;
 
+    /**
+     * @return void
+     * @throws EmptyValueException
+     */
     protected function setUp(): void
     {
         // For pipelines.
@@ -98,13 +102,14 @@ class GetAddressTest extends TestCase
 
     /**
      * @return void
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
+     * @throws GetAddressException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetAddress(): void
     {
@@ -138,13 +143,14 @@ class GetAddressTest extends TestCase
 
     /**
      * @return void
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
+     * @throws GetAddressException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetAddressOliver(): void
     {
@@ -171,13 +177,14 @@ class GetAddressTest extends TestCase
 
     /**
      * @return void
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
+     * @throws GetAddressException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetAddressOrganization(): void
     {
@@ -241,20 +248,21 @@ class GetAddressTest extends TestCase
 
         Repository::GetAddress(
             storeId: $this->getStoreId(),
-            governmentId: '12345',
+            governmentId: '8305417715',
             customerType: CustomerType::NATURAL
         );
     }
 
     /**
      * @return void
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
+     * @throws GetAddressException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testMismatchAddress(): void
     {
