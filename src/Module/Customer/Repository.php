@@ -8,22 +8,18 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Customer;
 
-use Error;
 use Exception;
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
-use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 
 class Repository
 {
