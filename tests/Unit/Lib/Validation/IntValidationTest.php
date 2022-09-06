@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Validation;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Lib\Validation\IntValidation;
 
@@ -78,6 +79,49 @@ final class IntValidationTest extends TestCase
             actual: $this->intValidation->getKey(
                 data: ['epic' => 123],
                 key: 'epic'
+            )
+        );
+    }
+
+    /**
+     * Assert inRange() throws IllegalValueException when the tested integer is
+     * out of range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeThrowsWithIllegalValue(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->intValidation->inRange(value: 100, min: 0, max: 1);
+    }
+
+    /**
+     * Assert inRange() throws IllegalValueException when the max value is less
+     * than the min value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeThrowsWithIllegalValueWhenMaxIsInvalid(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->intValidation->inRange(value: 5, min: 3, max: 1);
+    }
+
+    /**
+     * Asserts that inRange() validates that the tested integer within range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeReturnsTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->intValidation->inRange(
+                value: 5,
+                min: 0,
+                max: 10
             )
         );
     }
