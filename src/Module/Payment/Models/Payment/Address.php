@@ -23,8 +23,17 @@ use function is_string;
 class Address extends Model
 {
     /**
-     * @throws IllegalValueException
+     * @param string $addressRow1
+     * @param string $postalArea
+     * @param string $postalCode
+     * @param CountryCode $countryCode
+     * @param string|null $fullName
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param string|null $addressRow2
+     * @param StringValidation $stringValidation
      * @throws IllegalCharsetException
+     * @throws IllegalValueException
      */
     public function __construct(
         public readonly string $addressRow1,

@@ -23,7 +23,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Address as AddressModel;
 use stdClass;
 
 /**
- * Test data integrity of order line entity model.
+ * Test data integrity of Address entity model.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
