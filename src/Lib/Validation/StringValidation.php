@@ -180,7 +180,7 @@ class StringValidation
                 "Length is $len. Allowed range is from $min to $max."
             );
         }
-        
+
         return true;
     }
 

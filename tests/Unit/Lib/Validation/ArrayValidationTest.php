@@ -311,4 +311,43 @@ final class ArrayValidationTest extends TestCase
             )
         );
     }
+
+    /**
+     * Test that length() throws IllegalValueException when given a max value
+     * that is lower than the given min value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsIfMaxIsLessThanMin(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->arrayValidation->length(data: [], min: 10, max: 5);
+    }
+
+    /**
+     * Test that length() throws IllegalValueException when given a min value
+     * that is negative.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsIfMinIsNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->arrayValidation->length(data: [], min: -1, max: 5);
+    }
+
+    /**
+     * Test that length() throws IllegalValueException when the given array has
+     * a length that does not fit into the specified min and max parameters.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsIfValueHasInvalidLength(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->arrayValidation->length(data: [1, 2, 3], min: 0, max: 2);
+    }
 }

@@ -192,7 +192,7 @@ class ArrayValidation
      * @return bool
      * @throws IllegalValueException
      */
-    public function inRange(array $data, int $min, int $max): bool
+    public function length(array $data, int $min, int $max): bool
     {
         $len = count($data);
 

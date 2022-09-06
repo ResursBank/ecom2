@@ -47,7 +47,7 @@ class Order extends Model
     public function validateOrderLines(): void
     {
         $this->arrayValidation->isSequential(data: $this->orderLines->data);
-        $this->arrayValidation->inRange(
+        $this->arrayValidation->length(
             data: $this->orderLines->data,
             min: 1,
             max: 1000
