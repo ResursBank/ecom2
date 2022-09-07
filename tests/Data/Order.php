@@ -28,39 +28,48 @@ class Order
      */
     public static string $data = <<<EOD
 {
-    "orderLines": [
+    "actionLog": [
         {
-            "description": "Product one",
-            "quantity": 1.00000,
-            "reference": "TST-101",
-            "type": "NORMAL",
-            "quantityUnit": "st",
-            "unitAmountIncludingVat": 625.00000,
-            "vatRate": 25.00000,
-            "totalAmountIncludingVat": 625.00000,
-            "totalVatAmount": 125.00000
-        },
-        {
-            "description": "Product one",
-            "quantity": 1.00000,
-            "reference": "TST-101",
-            "type": "NORMAL",
-            "quantityUnit": "st",
-            "unitAmountIncludingVat": 625.00000,
-            "vatRate": 25.00000,
-            "totalAmountIncludingVat": 625.00000,
-            "totalVatAmount": 125.00000
-        },
-        {
-            "description": "Discount one",
-            "quantity": 1.00000,
-            "reference": "DC-101",
-            "type": "NORMAL",
-            "quantityUnit": "st",
-            "unitAmountIncludingVat": -25.00000,
-            "vatRate": 0.00000,
-            "totalAmountIncludingVat": -25.00000,
-            "totalVatAmount": 0.00000
+            "id": "160d2b10-7586-4a32-87a1-23a425b252ce",
+            "type": "CREATE",
+            "created": "2022-09-07T14:52:56.709",
+            "creator": "jultomten",
+            "orderLines": [
+                {
+                    "description": "Product one",
+                    "quantity": 1.00000,
+                    "reference": "TST-101",
+                    "type": "NORMAL",
+                    "quantityUnit": "st",
+                    "unitAmountIncludingVat": 625.00000,
+                    "vatRate": 25.00000,
+                    "totalAmountIncludingVat": 625.00000,
+                    "totalVatAmount": 125.00000
+                },
+                {
+                    "description": "Product one",
+                    "quantity": 1.00000,
+                    "reference": "TST-101",
+                    "type": "NORMAL",
+                    "quantityUnit": "st",
+                    "unitAmountIncludingVat": 625.00000,
+                    "vatRate": 25.00000,
+                    "totalAmountIncludingVat": 625.00000,
+                    "totalVatAmount": 125.00000
+                },
+                {
+                    "description": "Discount one",
+                    "quantity": 1.00000,
+                    "reference": "DC-101",
+                    "type": "NORMAL",
+                    "quantityUnit": "st",
+                    "unitAmountIncludingVat": -25.00000,
+                    "vatRate": 0.00000,
+                    "totalAmountIncludingVat": -25.00000,
+                    "totalVatAmount": 0.00000
+                }
+                ]
+            ]
         }
     ],
     "orderReference": "aklsfjah234oiaslhjfd",
