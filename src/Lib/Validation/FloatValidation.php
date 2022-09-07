@@ -58,7 +58,6 @@ class FloatValidation
     }
 
     /**
-<<<<<<< HEAD
      * @param float $value
      * @return bool
      * @throws IllegalValueException
