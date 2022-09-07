@@ -395,7 +395,7 @@ class Curl
             ContentType::EMPTY, ContentType::RAW => '',
             ContentType::JSON => json_encode(
                 value: $payload,
-                flags: JSON_THROW_ON_ERROR
+                flags: JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT
             ),
             ContentType::URL => http_build_query(data: $payload)
         };
