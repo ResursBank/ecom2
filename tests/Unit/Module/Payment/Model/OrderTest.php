@@ -19,14 +19,14 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\OrderLine;
-use Resursbank\EcomTest\Data\Order;
 use Resursbank\Ecom\Module\Payment\Models\Order as OrderModel;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLine;
+use Resursbank\EcomTest\Data\Order;
 use stdClass;
 
 use function array_fill;
-use function json_encode;
 use function json_decode;
+use function json_encode;
 
 /**
  * Test data integrity of order entity model.

@@ -18,8 +18,8 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLine as OrderLineModel;
 use Resursbank\EcomTest\Data\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\OrderLine as OrderLineModel;
 use stdClass;
 
 /**
