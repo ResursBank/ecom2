@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Payment\Order;
+namespace Resursbank\Ecom\Module\Payment\Models\Order;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
@@ -20,7 +20,7 @@ class ActionLog extends Model
         public readonly string $created,
         public readonly string $creator,
         public readonly OrderLineCollection $orderLines,
-        public readonly string $transactionId
+        public readonly ?string $transactionId = null
     ) {
     }
 }

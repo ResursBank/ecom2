@@ -16,7 +16,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Order\ActionLogCollection;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLogCollection;
 
 /**
  * Defines an order.
@@ -50,27 +50,7 @@ class Order extends Model
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
     ) {
-        $this->validateOrderLines();
         $this->validateOrderReference();
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws IllegalTypeException
-     */
-    public function validateOrderLines(): void
-    {
-        $this->arrayValidation->isSequential(data: $this->orderLines->data);
-        $this->arrayValidation->inRange(
-            data: $this->orderLines->data,
-            min: 1,
-            max: 1000
-        );
-        $this->arrayValidation->isOfType(
-            data: $this->orderLines->data,
-            type: OrderLine::class,
-            compareFn: fn (mixed $value) => $value instanceof OrderLine
-        );
     }
 
     /**
