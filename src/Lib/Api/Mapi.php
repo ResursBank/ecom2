@@ -40,6 +40,11 @@ class Mapi
     public const PAYMENT_ROUTE = 'mock_merchant_payments_v2';
 
     /**
+     * Prefix route name for payment based API calls.
+     */
+    public const CUSTOMER_ROUTE = 'mock_merchant_customers_v2';
+
+    /**
      * @param StringValidation $stringValidation
      */
     public function __construct(
