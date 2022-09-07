@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
@@ -96,5 +97,18 @@ class Repository
         return $api->call(
             $orderReference
         );
+    }
+
+    /**
+     * Capture payment
+     *
+     * @param string $orderReference
+     * @return Payment
+     */
+    public static function capture(
+        string $orderReference
+    ): Payment
+    {
+        return (new Capture())->call(orderReference: $orderReference);
     }
 }
