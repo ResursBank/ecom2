@@ -37,7 +37,7 @@ class Payment extends Model
      * @param string $storeId
      * @param string $paymentMethodId
      * @param Customer $customer
-     * @param Status $status
+     * @param string $status
      * @param array $paymentActions
      * @param Application|null $application
      * @param Information|null $information
@@ -55,7 +55,8 @@ class Payment extends Model
         public readonly string $storeId,
         public readonly string $paymentMethodId,
         public readonly Customer $customer,
-        public readonly Status $status,
+        public readonly string $status,
+        public readonly Order $order,
         public readonly array $paymentActions = [],
         public readonly ?Application $application = null,
         public readonly ?Information $information = null,
