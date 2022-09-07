@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\Type;
 
 /**
  * Test data integrity of payment method entity model.
@@ -24,6 +25,9 @@ use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
  */
 class PaymentMethodTest extends TestCase
 {
+    /**
+     * @var array
+     */
     private static array $data = [
         'id' => '4fcf7608-59df-4c4b-b49d-11063c58be7a',
         'name' => 'Faktura',
@@ -31,7 +35,7 @@ class PaymentMethodTest extends TestCase
         'maxPurchaseLimit' => 1000.0,
         'minApplicationLimit' => 0,
         'maxApplicationLimit' => 5000,
-        'type' => 'INVOICE',
+        'type' => 'RESURS_INVOICE',
         'legalLinks' => [],
         'enabledForLegalCustomer' => true,
         'enabledForNaturalCustomer' => true
@@ -267,6 +271,23 @@ class PaymentMethodTest extends TestCase
         self::assertSame(
             expected: self::$data['legalLinks'],
             actual: $item->legalLinks
+        );
+    }
+
+
+    /**
+     * Assert property was assigned during object conversion.
+     *
+     * @return void
+     * @throws IllegalTypeException
+     * @throws ReflectionException|TestException
+     */
+    public function testTypeAssigned(): void
+    {
+        $item = $this->convert();
+        self::assertSame(
+            expected: Type::RESURS_INVOICE,
+            actual: $item->type
         );
     }
 }

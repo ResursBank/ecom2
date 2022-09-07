@@ -9,6 +9,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\Type;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod\LegalLink;
 
 /**
@@ -21,7 +22,7 @@ class PaymentMethod extends Model
     /**
      * @param string $id
      * @param string $name
-     * @param string $type
+     * @param Type $type
      * @param float $minPurchaseLimit
      * @param float $maxPurchaseLimit
      * @param float $minApplicationLimit
@@ -33,14 +34,13 @@ class PaymentMethod extends Model
      * @param FloatValidation $floatValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @todo $type validation to be replaced by Enum\PaymentMethodType when supported by DataConverter.
      * @todo $legalLinks should be validated to be an array of LegalLink by support in DataConverter.
      * @todo $legalLinks can be empty?
      */
     public function __construct(
         public readonly string $id,
         public readonly string $name,
-        public readonly string $type,
+        public readonly Type $type,
         public readonly float $minPurchaseLimit,
         public readonly float $maxPurchaseLimit,
         public readonly float $minApplicationLimit,

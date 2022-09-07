@@ -60,7 +60,6 @@ class Store extends Model
      */
     private function validateNationalStoreId(): void
     {
-        $this->intValidation->isPositive(value: $this->nationalStoreId);
         $this->intValidation->isGt(value: $this->nationalStoreId, min: 0);
     }
 
