@@ -26,13 +26,13 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Enum\Status;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Address;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
 use TypeError;
 
@@ -159,7 +159,7 @@ class GetPaymentTest extends TestCase
                     reference: '123'
                 )
             ),
-            status: 'TASK_REDIRECTION_REQUIRED',
+            status: Status::ACCEPTED,
             paymentActions: [],
             application: new Application(
                 approvedCreditLimit: 1000,
@@ -201,7 +201,7 @@ class GetPaymentTest extends TestCase
             storeId: $this->expectedStoreId,
             paymentMethodId: $this->expectedPaymentMethod,
             customer: null,
-            status: 'TASK_REDIRECTION_REQUIRED',
+            status: Status::ACCEPTED,
             paymentActions: [],
             application: new Application(
                 approvedCreditLimit: 1000,

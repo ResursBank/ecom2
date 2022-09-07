@@ -13,12 +13,12 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Enum\Status;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\CoApplicant;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\MetaData;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 
 /**
  * Payment model used in the GET /payment call.
@@ -37,9 +37,9 @@ class Payment extends Model
      * @param string $storeId
      * @param string $paymentMethodId
      * @param Customer $customer
-     * @param string $status
-     * @param Order $order
+     * @param Status $status
      * @param array $paymentActions
+     * @param Order|null $order
      * @param Application|null $application
      * @param Information|null $information
      * @param string|null $countryCode
@@ -56,7 +56,7 @@ class Payment extends Model
         public readonly string $storeId,
         public readonly string $paymentMethodId,
         public readonly Customer $customer,
-        public readonly string $status,
+        public readonly Status $status,
         public readonly array $paymentActions = [],
         public readonly ?Order $order = null,
         public readonly ?Application $application = null,
