@@ -45,16 +45,16 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function Search(
+    public static function search(
         string $storeId,
         string $orderReference = '',
         string $governmentId = '',
         Search $api = new Search()
     ): Collection {
         return $api->call(
-            $storeId,
-            $orderReference,
-            $governmentId
+            storeId: $storeId,
+            orderReference: $orderReference,
+            governmentId: $governmentId
         );
     }
 

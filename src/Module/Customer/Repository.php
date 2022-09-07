@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -20,7 +21,11 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
+use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 
+/**
+ * Customer repository.
+ */
 class Repository
 {
     use ExceptionLog;
@@ -28,20 +33,20 @@ class Repository
     /**
      * @param string $storeId
      * @param string $governmentId
-     * @param string $customerType
+     * @param CustomerType $customerType
      * @param GetAddress $api
      * @return Address
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws GetAddressException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws GetAddressException
      * @todo Use CustomerType-enum instead of string.
      */
-    public static function GetAddress(
+    public static function getAddress(
         string $storeId,
         string $governmentId,
         string $customerType,
@@ -49,9 +54,9 @@ class Repository
     ): Address {
         try {
             return $api->call(
-                $storeId,
-                $governmentId,
-                $customerType
+                storeId: $storeId,
+                governmentId: $governmentId,
+                customerType: $customerType
             );
         } catch (Exception $e) {
             self::logException(exception: $e);

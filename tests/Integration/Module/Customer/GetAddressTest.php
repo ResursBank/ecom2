@@ -20,13 +20,13 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 use Resursbank\Ecom\Module\Customer\Repository;
 
+/**
+ * Tests for the API call getAddress.
+ */
 class GetAddressTest extends TestCase
 {
     private bool $isPipeline = false;
@@ -74,23 +74,6 @@ class GetAddressTest extends TestCase
     }
 
     /**
-     * @return string
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     */
-    private function getRemoteAddr(): string
-    {
-        $curl = new Curl(
-            url: 'https://ipv4.netcurl.org/ip.php',
-            requestMethod: RequestMethod::GET,
-            responseContentType: ContentType::RAW
-        );
-        return trim($curl->exec()->body->message);
-    }
-
-    /**
      * Tests are marked with this value if running from Bitbucket Pipelines.
      *
      * @return bool
@@ -113,32 +96,33 @@ class GetAddressTest extends TestCase
      */
     public function testGetAddress(): void
     {
-        if (!$this->isPipeline()) {
-            // Using another "customerIp" so that we can trace requests in central.
-            $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
+        if ($this->isPipeline()) {
+            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
+            return;
 
-            $expect = [
-                'fullName' => 'Vincent Williamsson Alexandersson',
-                'addressRow1' => 'Glassgatan 15',
-                'postalArea' => 'Göteborg',
-                'postalCode' => '41655',
-                'countryCode' => 'SE',
-                'firstName' => 'Vincent',
-                'lastName' => 'Alexandersson',
-                'addressRow2' => ''
-            ];
-
-            $address = Repository::GetAddress(
-                storeId: $this->getStoreId(),
-                governmentId: $this->getHappyFlowCustomer(),
-                customerType: CustomerType::NATURAL
-            );
-
-            // Testing similarities by intersect.
-            static::assertSame(8, count(array_intersect((array)$address, $expect)));
-        } else {
-            static::markTestSkipped('This test is currently unavailable from pipelines.');
         }
+        // Using another "customerIp" so that we can trace requests in central.
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
+
+        $expect = [
+            'fullName' => 'Vincent Williamsson Alexandersson',
+            'addressRow1' => 'Glassgatan 15',
+            'postalArea' => 'Göteborg',
+            'postalCode' => '41655',
+            'countryCode' => 'SE',
+            'firstName' => 'Vincent',
+            'lastName' => 'Alexandersson',
+            'addressRow2' => ''
+        ];
+
+        $address = Repository::getAddress(
+            storeId: $this->getStoreId(),
+            governmentId: $this->getHappyFlowCustomer(),
+            customerType: CustomerType::NATURAL
+        );
+
+        // Testing similarities by intersect.
+        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
     }
 
     /**
@@ -165,14 +149,14 @@ class GetAddressTest extends TestCase
             'addressRow2' => ''
         ];
 
-        $address = Repository::GetAddress(
+        $address = Repository::getAddress(
             storeId: $this->getStoreId(),
             governmentId: '195012026430',
             customerType: CustomerType::NATURAL
         );
 
         // Testing similarities by intersect.
-        static::assertSame(8, count(array_intersect((array)$address, $expect)));
+        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
     }
 
     /**
@@ -197,14 +181,14 @@ class GetAddressTest extends TestCase
             'addressRow2' => ''
         ];
 
-        $address = Repository::GetAddress(
+        $address = Repository::getAddress(
             storeId: $this->getStoreId(),
             governmentId: '166997368573',
             customerType: CustomerType::LEGAL
         );
 
         // Testing similarities by intersect.
-        static::assertSame(8, count(array_intersect((array)$address, $expect)));
+        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
     }
 
     /**
@@ -221,9 +205,9 @@ class GetAddressTest extends TestCase
      */
     public function testGetBadAddressOrganizationByNatural(): void
     {
-        static::expectException(GetAddressException::class);
+        $this->expectException(exception: GetAddressException::class);
 
-        Repository::GetAddress(
+        Repository::getAddress(
             storeId: $this->getStoreId(),
             governmentId: '166997368573',
             customerType: CustomerType::NATURAL
@@ -244,9 +228,9 @@ class GetAddressTest extends TestCase
      */
     public function testGetBadAddressByNatural(): void
     {
-        static::expectException(GetAddressException::class);
+        $this->expectException(exception: GetAddressException::class);
 
-        Repository::GetAddress(
+        Repository::getAddress(
             storeId: $this->getStoreId(),
             governmentId: '8305417715',
             customerType: CustomerType::NATURAL
@@ -266,28 +250,27 @@ class GetAddressTest extends TestCase
      */
     public function testMismatchAddress(): void
     {
-        if (!$this->isPipeline()) {
-            $expect = [
-                'fullName' => 'Something Else',
-                'addressRow1' => 'Glassgatan 15',
-                'postalArea' => 'Göteborg',
-                'postalCode' => '41655',
-                'countryCode' => 'SE',
-                'firstName' => 'Vincent',
-                'lastName' => 'Alexandersson',
-                'addressRow2' => ''
-            ];
-
-            $address = Repository::GetAddress(
-                storeId: $this->getStoreId(),
-                governmentId: $this->getHappyFlowCustomer(),
-                customerType: CustomerType::NATURAL
-            );
-
-            // Only 7 out of 8 fields are the same.
-            static::assertSame(7, count(array_intersect((array)$address, $expect)));
-        } else {
-            static::markTestSkipped('This test is currently unavailable from pipelines.');
+        if ($this->isPipeline()) {
+            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
+            return;
         }
+        $expect = [
+            'fullName' => 'Something Else',
+            'addressRow1' => 'Glassgatan 15',
+            'postalArea' => 'Göteborg',
+            'postalCode' => '41655',
+            'countryCode' => 'SE',
+            'firstName' => 'Vincent',
+            'lastName' => 'Alexandersson',
+            'addressRow2' => ''
+        ];
+
+        $address = Repository::getAddress(
+            storeId: $this->getStoreId(),
+            governmentId: $this->getHappyFlowCustomer(),
+            customerType: CustomerType::NATURAL
+        );
+
+        static::assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));
     }
 }

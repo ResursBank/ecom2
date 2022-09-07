@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -8,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Customer\Api;
 
+use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -23,6 +25,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
@@ -77,10 +80,10 @@ class GetAddress
 
         try {
             $data = $curl->exec()->body;
-        } catch (EmptyValueException $e) {
+        } catch (Exception $e) {
             throw new GetAddressException(
                 message: sprintf(
-                    'Could not properly resolve address: %s (%d).',
+                    'Customer address request error: %s (%d).',
                     $e->getMessage(),
                     $e->getCode()
                 )
@@ -88,11 +91,12 @@ class GetAddress
         }
 
         $content = (
+            $data instanceof stdClass &&
             $data->address instanceof stdClass
         ) ? $data->address : new stdClass();
 
         $result = DataConverter::stdClassToType(
-            $content,
+            object: $content,
             type: Address::class
         );
 

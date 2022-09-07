@@ -107,7 +107,7 @@ class SearchTest extends TestCase
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::Search(
+                $paymentCollection = Repository::search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -140,7 +140,7 @@ class SearchTest extends TestCase
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::Search(
+                $paymentCollection = Repository::search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -179,7 +179,7 @@ class SearchTest extends TestCase
 
         if ($this->verifyLiveAccount()) {
             if (!empty($orderReference)) {
-                $paymentCollection = Repository::Search(
+                $paymentCollection = Repository::search(
                     $this->getStoreId(),
                     $orderReference
                 );
@@ -214,7 +214,7 @@ class SearchTest extends TestCase
     {
         static::expectException(CollectionException::class);
         if ($this->verifyLiveAccount()) {
-            $paymentCollection = Repository::Search(
+            $paymentCollection = Repository::search(
                 $this->getStoreId()
             );
 

@@ -10,6 +10,9 @@ namespace Resursbank\Ecom\Exception;
 
 use Exception;
 
+/**
+ * Exceptions for the API call GetAddress.
+ */
 class GetAddressException extends Exception
 {
 }
