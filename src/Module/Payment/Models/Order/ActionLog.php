@@ -18,9 +18,9 @@ class ActionLog extends Model
         public readonly string $id,
         public readonly string $type,
         public readonly string $created,
-        public readonly string $creator,
         public readonly OrderLineCollection $orderLines,
-        public readonly ?string $transactionId = null
+        public readonly ?string $transactionId = null,
+        public readonly ?string $creator = null,
     ) {
     }
 }
