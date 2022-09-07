@@ -49,6 +49,42 @@ class IntValidation
 
     /**
      * @param int $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isPositive(
+        int $value
+    ): bool {
+        if ($value < 0) {
+            throw new IllegalValueException(
+                message: "$value may not be negative."
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param int $value
+     * @param int $min
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isGt(
+        int $value,
+        int $min
+    ): bool {
+        if ($value <= $min) {
+            throw new IllegalValueException(
+                message: "$value may not be less than or equal to $min."
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param int $value
      * @param int $min
      * @param int $max
      * @return bool

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
+use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**

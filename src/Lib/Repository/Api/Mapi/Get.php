@@ -30,6 +30,9 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use stdClass;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 
+use function is_array;
+use function is_string;
+
 /**
  * Generic functionality to perform a GET call against the Merchant API and
  * convert the response to model instance(s).
@@ -41,6 +44,11 @@ class Get
 
     /**
      * @param class-string $model | Convert cached data to model instance(s).
+     * @param string $route
+     * @param array $params
+     * @param string $extractProperty
+     * @param Mapi $mapi
+     * @throws IllegalTypeException
      */
     public function __construct(
         private readonly string $model,
@@ -101,6 +109,17 @@ class Get
 
             /** @psalm-suppress MixedAssignment */
             $data = $data->{$this->extractProperty};
+        }
+
+        if (
+            !$data instanceof stdClass &&
+            !is_string(value: $data) &&
+            !is_array(value: $data)
+        ) {
+            throw new ApiException(
+                message: 'Invalid response from API. Not an stdClass or array.',
+                code: 500,
+            );
         }
 
         return $this->convertToModel(
