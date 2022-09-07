@@ -63,7 +63,12 @@ class Order
             "totalVatAmount": 0.00000
         }
     ],
-    "orderReference": "aklsfjah234oiaslhjfd"
+    "orderReference": "aklsfjah234oiaslhjfd",
+    "possibleActions": [],
+    "totalOrderAmount": 12.34,
+    "canceledAmount": 0.12,
+    "capturedAmount": 1.23,
+    "refundedAmount": 0.0
 }
 EOD;
 
