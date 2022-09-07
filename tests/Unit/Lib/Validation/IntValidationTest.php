@@ -98,6 +98,16 @@ final class IntValidationTest extends TestCase
 
     /**
      * Assert isPositive() returns true when the value is positive.
+     */
+    public function testInRangeThrowsWithIllegalValue(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->intValidation->inRange(value: 100, min: 0, max: 1);
+    }
+
+    /**
+     * Assert inRange() throws IllegalValueException when the max value is less
+     * than the min value.
      *
      * @return void
      * @throws IllegalValueException
@@ -133,6 +143,33 @@ final class IntValidationTest extends TestCase
     {
         self::assertTrue(
             condition: $this->intValidation->isGt(value: 2, min: 1)
+        );
+    }
+
+    /**
+     * Assert inRange() throws IllegalValueException when the tested integer is
+     * out of range.
+     */
+    public function testInRangeThrowsWithIllegalValueWhenMaxIsInvalid(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->intValidation->inRange(value: 5, min: 3, max: 1);
+    }
+
+    /**
+     * Asserts that inRange() validates that the tested integer within range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeReturnsTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->intValidation->inRange(
+                value: 5,
+                min: 0,
+                max: 10
+            )
         );
     }
 }

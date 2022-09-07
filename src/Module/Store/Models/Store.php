@@ -10,11 +10,11 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Store\Models;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\IntValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Store\Enum\Country;
 
 /**
  * Defines a Store resource collected from the API.
@@ -24,27 +24,24 @@ class Store extends Model
     /**
      * @param string $id | API identifier.
      * @param int $nationalStoreId
-     * @param string $countryCode
+     * @param Country $countryCode
      * @param string $name
      * @param StringValidation $stringValidation
      * @param IntValidation $intValidation
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalValueException
-     * @todo $countryCode validation to be replaced by Enum\Country when DataConverter supports enums.
      * @todo $name will get a max length but that is not yet defined.
      */
     public function __construct(
         public readonly string $id,
         public readonly int $nationalStoreId,
-        public readonly string $countryCode,
+        public readonly Country $countryCode,
         public readonly string $name,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly IntValidation $intValidation = new IntValidation()
     ) {
         $this->validateId();
         $this->validateNationalStoreId();
-        $this->validateCountryCode();
         $this->validateName();
     }
 
@@ -65,18 +62,6 @@ class Store extends Model
     {
         $this->intValidation->isPositive(value: $this->nationalStoreId);
         $this->intValidation->isGt(value: $this->nationalStoreId, min: 0);
-    }
-
-    /**
-     * @throws EmptyValueException|IllegalCharsetException
-     */
-    private function validateCountryCode(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->countryCode);
-        $this->stringValidation->matchRegex(
-            value: $this->countryCode,
-            pattern: '/^[A-Z]{2}$/'
-        );
     }
 
     /**

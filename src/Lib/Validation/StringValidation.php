@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 
 use function in_array;
 use function is_string;
+use function strlen;
 
 /**
  * Methods to validate strings.
@@ -151,6 +152,40 @@ class StringValidation
 
     /**
      * @param string $value
+     * @param int $min
+     * @param int $max
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function length(string $value, int $min, int $max): bool
+    {
+        $len = strlen($value);
+
+        if ($max < $min) {
+            throw new IllegalValueException(
+                message: 'Argument $max ' . "($max) " . 'is less than $min' .
+                "($min)."
+            );
+        }
+
+        if ($min < 0) {
+            throw new IllegalValueException(
+                message: 'Argument $min may not be a negative integer.'
+            );
+        }
+
+        if ($len < $min || $len > $max) {
+            throw new IllegalValueException(
+                message: "String \"$value\" has invalid length. " .
+                "Length is $len. Allowed range is from $min to $max."
+            );
+        }
+        
+        return true;
+    }
+
+    /**
+     * @param string $value
      * @return bool
      * @throws IllegalValueException
      */
@@ -158,7 +193,7 @@ class StringValidation
     {
         if (
             !preg_match(
-                pattern: '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
+                pattern: '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[0-9a-d][0-9a-f]{3}-[0-9a-f]{12}$/i',
                 subject: $value
             )
         ) {
