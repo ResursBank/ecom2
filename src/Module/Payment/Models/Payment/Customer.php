@@ -28,8 +28,8 @@ class Customer extends Model
         public readonly string $email,
         public readonly string $governmentId,
         public readonly string $mobilePhone,
-        public readonly string $phone,
         public readonly string $customerType,
+        public readonly ?string $phone = null,
         public readonly ?Address $deliveryAddress = null,
         public readonly ?Identification $identification = null,
     ) {
