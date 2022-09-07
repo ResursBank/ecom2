@@ -81,8 +81,7 @@ class OrderTest extends TestCase
 
         if (!$item instanceof OrderModel) {
             throw new TestException(
-                message: 'Conversion succeeded but did not return ' .
-                    'Order instance.'
+                message: 'Conversion succeeded but did not return Order instance.'
             );
         }
 
