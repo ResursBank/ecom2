@@ -46,7 +46,6 @@ class Capture
      * @param string|null $creator
      * @param string|null $transactionId
      * @param string|null $invoiceId
-     * @param string|null $requestId
      * @return Payment
      * @throws AuthException
      * @throws CurlException
