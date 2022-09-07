@@ -27,12 +27,12 @@ use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Enum\Status;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
 use TypeError;
 
@@ -142,6 +142,11 @@ class GetPaymentTest extends TestCase
             storeId: $this->expectedStoreId,
             paymentMethodId: $this->expectedPaymentMethod,
             customer: new Customer(
+                email: 'test@test.com',
+                governmentId: '8305147715',
+                mobilePhone: '0701122334',
+                phone: '0701122334',
+                customerType: 'NATURAL',
                 deliveryAddress: new Address(
                     fullName: 'Full Name',
                     addressRow1: 'Glassgatan 17',
@@ -149,20 +154,12 @@ class GetPaymentTest extends TestCase
                     postalCode: '12345',
                     addressRow2: ''
                 ),
-                email: 'test@test.com',
-                governmentId: '8305147715',
-                mobilePhone: '0701122334',
-                phone: '0701122334',
-                customerType: 'NATURAL',
                 identification: new Identification(
                     type: 'ID',
                     reference: '123'
                 )
             ),
-            status: new Status(
-                value: 'string',
-                possibleActions: []
-            ),
+            status: Status::ACCEPTED,
             paymentActions: [],
             application: new Application(
                 approvedCreditLimit: 1000,
@@ -204,10 +201,7 @@ class GetPaymentTest extends TestCase
             storeId: $this->expectedStoreId,
             paymentMethodId: $this->expectedPaymentMethod,
             customer: null,
-            status: new Status(
-                value: 'string',
-                possibleActions: []
-            ),
+            status: Status::ACCEPTED,
             paymentActions: [],
             application: new Application(
                 approvedCreditLimit: 1000,
