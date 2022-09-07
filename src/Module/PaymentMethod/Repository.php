@@ -107,7 +107,7 @@ class Repository
      * @param string $storeId
      * @param float|null $amount
      * @return Get
-     * @throws IllegalValueException
+     * @throws IllegalValueException|IllegalTypeException
      */
     public static function getApi(
         string $storeId,

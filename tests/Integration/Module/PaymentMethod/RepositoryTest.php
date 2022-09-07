@@ -176,7 +176,7 @@ class RepositoryTest extends TestCase
     {
         $storeId = $this->storeId;
 
-        $amount1 = 1;
+        $amount1 = 11;
         $amount2 = 1000;
 
         // Load data from API to cache.

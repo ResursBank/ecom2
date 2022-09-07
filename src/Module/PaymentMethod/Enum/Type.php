@@ -14,7 +14,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Enum;
  *
  * @codingStandardsIgnoreStart
  */
-enum PaymentMethodType: string
+enum Type: string
 {
     case RESURS_INVOICE = 'RESURS_INVOICE';
     case RESURS_PART_PAYMENT = 'RESURS_PART_PAYMENT';
