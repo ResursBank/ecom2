@@ -68,7 +68,6 @@ class Order
                     "totalAmountIncludingVat": -25.00000,
                     "totalVatAmount": 0.00000
                 }
-                ]
             ]
         }
     ],
