@@ -20,6 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
+use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
@@ -29,26 +30,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment;
  */
 class Repository
 {
-    /**
-     * Write information to debug log.
-     *
-     * @param string $cause
-     * @param Exception|Error $exception
-     * @param string $data
-     *
-     * @return void
-     */
-    private static function debug(
-        string $cause,
-        Exception|Error $exception,
-        string $data = ''
-    ): void {
-        Config::$instance->logger->debug(message: '--------------------------');
-        Config::$instance->logger->debug(message: $cause);
-        Config::$instance->logger->debug(message: $exception);
-        Config::$instance->logger->debug(message: serialize(value: $data));
-        Config::$instance->logger->debug(message: '--------------------------');
-    }
+    use ExceptionLog;
 
     /**
      * @param string $storeId
@@ -94,9 +76,15 @@ class Repository
         string $orderReference,
         GetPayment $api = new GetPayment()
     ): Payment {
-        return $api->call(
-            $orderReference
-        );
+        try {
+            return $api->call(
+                $orderReference
+            );
+        } catch (Exception $e) {
+            self::logException(exception: $e);
+
+            throw $e;
+        }
     }
 
     /**
