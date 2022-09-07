@@ -39,12 +39,13 @@ class CapturePaymentTest extends TestCase
     public function testCaptureEntirePayment(): void
     {
         // Create payment
-
+        // @todo Create payment when we have a createPayment method available
 
         // Capture payment
-        $response = Repository::capture(orderReference: "0a12ab21-d799-4833-a679-450b8f4a5b47");
+        $response = Repository::capture(orderReference: "064add0e-45d8-46ec-b7a6-2cf0ea7c766e");
 
         // Assert that payment has been captured in full
+
     }
     
     public function testCaptureSingleOrderline(): void
