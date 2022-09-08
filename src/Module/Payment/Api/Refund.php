@@ -23,6 +23,7 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
+use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
@@ -68,7 +69,7 @@ class Refund
         if ($transactionId) {
             $payload['transactionId'] = $transactionId;
         }
-        
+
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: sprintf('%s/payments/%s/refund', Mapi::PAYMENT_ROUTE, $paymentId)
@@ -76,7 +77,8 @@ class Refund
             requestMethod: RequestMethod::POST,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON
+            responseContentType: ContentType::JSON,
+            forceObject: true
         );
 
         $data = $curl->exec()->body;

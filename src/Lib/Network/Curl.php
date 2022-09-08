@@ -52,6 +52,7 @@ class Curl
      * @param ApiType $apiType
      * @param StringValidation $stringValidation
      * @param ContentType|null $responseContentType
+     * @param bool $forceObject Enforces the JSON_FORCE_OBJECT flag on json_encode of payload
      * @throws AuthException
      * @throws CurlException
      * @throws JsonException
@@ -68,7 +69,8 @@ class Curl
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        public ?ContentType $responseContentType = null
+        public ?ContentType $responseContentType = null,
+        private readonly bool $forceObject = false
     ) {
         if ($this->responseContentType === null) {
             $this->responseContentType = $this->contentType;
@@ -391,11 +393,15 @@ class Curl
     public function getPayloadData(
         array $payload
     ): string {
+        $flags = JSON_THROW_ON_ERROR;
+        if ($this->forceObject) {
+            $flags = JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT;
+        }
         return match ($this->contentType) {
             ContentType::EMPTY, ContentType::RAW => '',
             ContentType::JSON => json_encode(
                 value: $payload,
-                flags: JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT
+                flags: $flags
             ),
             ContentType::URL => http_build_query(data: $payload)
         };

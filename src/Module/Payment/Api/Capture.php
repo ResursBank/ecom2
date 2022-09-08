@@ -86,7 +86,8 @@ class Capture
             requestMethod: RequestMethod::POST,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON
+            responseContentType: ContentType::JSON,
+            forceObject: true
         );
 
         $data = $curl->exec()->body;
