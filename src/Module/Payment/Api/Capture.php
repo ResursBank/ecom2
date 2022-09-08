@@ -43,7 +43,7 @@ class Capture
 
     /**
      * Makes call to the API
-     * 
+     *
      * @param string $orderReference
      * @param OrderLineCollection|null $orderLines
      * @param string|null $creator
@@ -78,7 +78,7 @@ class Capture
         if ($invoiceId) {
             $payload['invoiceId'] = $invoiceId;
         }
-        
+
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: sprintf('%s/payments/%s/capture', Mapi::PAYMENT_ROUTE, $orderReference)
