@@ -17,6 +17,12 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 
+/**
+ * Tests for MAPI Payment Cancel class
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class CancelPaymentTest extends TestCase
 {
     protected function setUp(): void

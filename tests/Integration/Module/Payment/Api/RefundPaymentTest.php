@@ -13,12 +13,23 @@ namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 
+/**
+ * Tests for MAPI Payment Refund class
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class RefundPaymentTest extends TestCase
 {
+    /**
+     * @return void
+     * @throws EmptyValueException
+     */
     protected function setUp(): void
     {
         parent::setUp();
