@@ -12,8 +12,19 @@ namespace Resursbank\Ecom\Module\Payment\Models\Order;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
 
+/**
+ * Defines an action log item
+ */
 class ActionLog extends Model
 {
+    /**
+     * @param string $id
+     * @param string $type
+     * @param string $created
+     * @param OrderLineCollection $orderLines
+     * @param string|null $transactionId
+     * @param string|null $creator
+     */
     public function __construct(
         public readonly string $id,
         public readonly string $type,
