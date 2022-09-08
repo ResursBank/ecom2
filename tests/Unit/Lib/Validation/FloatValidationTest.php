@@ -179,4 +179,29 @@ final class FloatValidationTest extends TestCase
             )
         );
     }
+
+    /**
+     * Assert isPositive() throws IllegalValueException when the value is negative.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsPositiveThrowsOnNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->isPositive(value: -1);
+    }
+
+    /**
+     * Assert isPositive() returns true when the value is positive.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsPositiveReturnTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->floatValidation->isPositive(value: 1)
+        );
+    }
 }

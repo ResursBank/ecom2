@@ -15,6 +15,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLogCollection;
 
 /**
  * Defines an order.
@@ -24,15 +27,29 @@ class Order extends Model
     /**
      * @param OrderLineCollection $orderLines
      * @param string $orderReference
+     * @param ActionLogCollection $actionLog
+     * @param array $possibleActions
+     * @param float $totalOrderAmount
+     * @param float $canceledAmount
+     * @param float $authorizedAmount
+     * @param float $capturedAmount
+     * @param float $refundedAmount
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation
      * @throws IllegalCharsetException
-     * @throws IllegalValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function __construct(
         public readonly OrderLineCollection $orderLines,
         public readonly string $orderReference,
+        public readonly ActionLogCollection $actionLog,
+        public readonly array $possibleActions,
+        public readonly float $totalOrderAmount,
+        public readonly float $canceledAmount,
+        public readonly float $authorizedAmount,
+        public readonly float $capturedAmount,
+        public readonly float $refundedAmount,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
     ) {

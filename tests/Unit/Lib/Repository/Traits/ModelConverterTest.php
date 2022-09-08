@@ -17,10 +17,9 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
+use Resursbank\EcomTest\Data\Models\Instrument;
+use Resursbank\EcomTest\Data\Models\InstrumentCollection;
 use stdClass;
-use Resursbank\EcomTest\Data\GetPaymentMethods;
 
 /**
  * Verifies business logic of ModelConverter trait.
@@ -29,6 +28,24 @@ use Resursbank\EcomTest\Data\GetPaymentMethods;
  */
 final class ModelConverterTest extends TestCase
 {
+    /**
+     * @var array|array[]
+     */
+    private static array $data = [
+        [
+            'id' => 1,
+            'name' => 'Guitar',
+        ],
+        [
+            'id' => 2,
+            'name' => 'Piano',
+        ],
+        [
+            'id' => 3,
+            'name' => 'Violin',
+        ],
+    ];
+
     use ModelConverter;
 
     /**
@@ -95,7 +112,6 @@ final class ModelConverterTest extends TestCase
      * Assert convertToModel() converts JSON to request Model instance.
      *
      * @throws IllegalTypeException
-     * @throws TestException
      * @throws ReflectionException
      * @throws JsonException
      */
@@ -103,20 +119,19 @@ final class ModelConverterTest extends TestCase
     {
         $result = $this->convertToModel(
             data: json_encode(
-                value: GetPaymentMethods::getRandomPaymentMethodData(),
+                value: self::$data[0],
                 flags: JSON_THROW_ON_ERROR
             ),
-            model: PaymentMethod::class,
+            model: Instrument::class,
         );
 
-        self::assertInstanceOf(expected: PaymentMethod::class, actual: $result);
+        self::assertInstanceOf(expected: Instrument::class, actual: $result);
     }
 
     /**
      * Assert convertToModel() converts JSON to request Model instance.
      *
      * @throws IllegalTypeException
-     * @throws TestException
      * @throws ReflectionException
      * @throws JsonException
      */
@@ -124,20 +139,14 @@ final class ModelConverterTest extends TestCase
     {
         $result = $this->convertToModel(
             data: json_encode(
-                value: [
-                    GetPaymentMethods::getRandomPaymentMethodData(),
-                    GetPaymentMethods::getRandomPaymentMethodData(),
-                    GetPaymentMethods::getRandomPaymentMethodData(),
-                    GetPaymentMethods::getRandomPaymentMethodData(),
-                    GetPaymentMethods::getRandomPaymentMethodData()
-                ],
+                value: self::$data,
                 flags: JSON_THROW_ON_ERROR
             ),
-            model: PaymentMethod::class,
+            model: Instrument::class,
         );
 
         self::assertInstanceOf(
-            expected: PaymentMethodCollection::class,
+            expected: InstrumentCollection::class,
             actual: $result
         );
     }
@@ -149,17 +158,16 @@ final class ModelConverterTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TestException
      */
     public function testConvertToModelConvertsStdclass(): void
     {
         $result = $this->convertToModel(
-            data: GetPaymentMethods::getRandomPaymentMethodData(),
-            model: PaymentMethod::class,
+            data: json_encode(value: self::$data[1], flags: JSON_THROW_ON_ERROR),
+            model: Instrument::class,
         );
 
         self::assertInstanceOf(
-            expected: PaymentMethod::class,
+            expected: Instrument::class,
             actual: $result
         );
     }
@@ -172,23 +180,16 @@ final class ModelConverterTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TestException
      */
     public function testConvertToModelConvertsStdclassArray(): void
     {
         $result = $this->convertToModel(
-            data: [
-                GetPaymentMethods::getRandomPaymentMethodData(),
-                GetPaymentMethods::getRandomPaymentMethodData(),
-                GetPaymentMethods::getRandomPaymentMethodData(),
-                GetPaymentMethods::getRandomPaymentMethodData(),
-                GetPaymentMethods::getRandomPaymentMethodData()
-            ],
-            model: PaymentMethod::class,
+            data: json_encode(value: self::$data, flags: JSON_THROW_ON_ERROR),
+            model: Instrument::class,
         );
 
         self::assertInstanceOf(
-            expected: PaymentMethodCollection::class,
+            expected: InstrumentCollection::class,
             actual: $result
         );
     }

@@ -32,12 +32,17 @@ class Mapi
     /**
      * Common prefix route name for all API calls.
      */
-    public const COMMON_ROUTE = 'mock_merchant_api_service';
+    public const COMMON_ROUTE = 'mock_merchant_stores_v2';
 
     /**
      * Prefix route name for payment based API calls.
      */
     public const PAYMENT_ROUTE = 'mock_merchant_payments_v2';
+
+    /**
+     * Prefix route name for payment based API calls.
+     */
+    public const CUSTOMER_ROUTE = 'mock_merchant_customers_v2';
 
     /**
      * @param StringValidation $stringValidation

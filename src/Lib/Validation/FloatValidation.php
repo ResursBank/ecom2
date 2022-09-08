@@ -58,6 +58,23 @@ class FloatValidation
     }
 
     /**
+     * @param float $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isPositive(
+        float $value
+    ): bool {
+        if ($value < 0) {
+            throw new IllegalValueException(
+                message: "$value may not be negative."
+            );
+        }
+
+        return true;
+    }
+
+    /**
      * Validates that a float value is within the given min and max range.
      *
      * @param float $value
@@ -97,7 +114,7 @@ class FloatValidation
      */
     public function length(float $value, int $min, int $max): bool
     {
-        $len = strlen((string) $this->getFraction($value));
+        $len = strlen(string: (string) $this->getFraction(num: $value));
 
         if ($max < $min) {
             throw new IllegalValueException(
@@ -131,7 +148,7 @@ class FloatValidation
      */
     private function getFraction(float $num): int
     {
-        $strNum = strstr((string) $num, '.');
-        return (int) ($strNum ? substr($strNum, 1) : '');
+        $strNum = strstr(haystack: (string) $num, needle: '.');
+        return (int) ($strNum ? substr(string: $strNum, offset: 1) : '');
     }
 }
