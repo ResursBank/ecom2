@@ -23,7 +23,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
@@ -78,9 +78,7 @@ class Capture
         if ($invoiceId) {
             $payload['invoiceId'] = $invoiceId;
         }
-
-        $route = sprintf('%s/payments/%s/capture', Mapi::PAYMENT_ROUTE, $orderReference);
-        Config::$instance->logger->error(message: $route);
+        
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: sprintf('%s/payments/%s/capture', Mapi::PAYMENT_ROUTE, $orderReference)
