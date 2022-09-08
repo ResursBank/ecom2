@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -20,10 +21,10 @@ class Address extends Model
         public readonly string $addressRow1,
         public readonly string $postalArea,
         public readonly string $postalCode,
-        public readonly ?string $countryCode = '',
         public readonly ?string $firstName = '',
         public readonly ?string $lastName = '',
         public readonly ?string $addressRow2 = null,
+        public readonly ?string $countryCode = '',
     ) {
     }
 }
