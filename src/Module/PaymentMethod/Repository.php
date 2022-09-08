@@ -119,7 +119,7 @@ class Repository
             model: PaymentMethod::class,
             route: "stores/$storeId/payment_methods",
             params: compact('storeId', 'amount'),
-            extractProperty: 'paymentMethods'
+            extractProperty: 'content'
         );
     }
 
