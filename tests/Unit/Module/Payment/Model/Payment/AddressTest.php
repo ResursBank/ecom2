@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\EcomTest\Data\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Address as AddressModel;
+use Resursbank\Ecom\Module\Payment\Models\Payment\DeliveryAddress as AddressModel;
 use stdClass;
 
 /**

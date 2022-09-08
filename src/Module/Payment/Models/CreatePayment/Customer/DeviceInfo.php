@@ -6,13 +6,11 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Payment;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-
-use function is_string;
 
 /**
  * Information and details about a payment.
@@ -41,7 +39,7 @@ class DeviceInfo extends Model
      */
     private function validateUserAgent(): void
     {
-        if (is_string($this->userAgent)) {
+        if ($this->userAgent !== null) {
             $this->stringValidation->length($this->userAgent, 1, 200);
         }
     }

@@ -23,7 +23,6 @@ class Customer extends Model
      * @param string $phone
      * @param string $customerType
      * @param Identification|null $identification
-     * @param DeviceInfo|null $deviceInfo
      */
     public function __construct(
         public readonly Address $deliveryAddress,
@@ -32,8 +31,7 @@ class Customer extends Model
         public readonly string $mobilePhone,
         public readonly string $phone,
         public readonly string $customerType,
-        public readonly ?Identification $identification,
-        public readonly ?DeviceInfo $deviceInfo,
+        public readonly ?Identification $identification = null,
     ) {
     }
 }

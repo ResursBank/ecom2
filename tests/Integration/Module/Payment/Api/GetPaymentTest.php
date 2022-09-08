@@ -27,7 +27,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Address;
+use Resursbank\Ecom\Module\Payment\Models\Payment\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
@@ -142,7 +142,7 @@ class GetPaymentTest extends TestCase
             storeId: $this->expectedStoreId,
             paymentMethodId: $this->expectedPaymentMethod,
             customer: new Customer(
-                deliveryAddress: new Address(
+                deliveryAddress: new DeliveryAddress(
                     'Full Name',
                     addressRow1: 'Glassgatan 17',
                     postalArea: 'Göteborg',
