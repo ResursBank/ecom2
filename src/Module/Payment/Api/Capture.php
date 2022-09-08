@@ -44,7 +44,7 @@ class Capture
     /**
      * Makes call to the API
      *
-     * @param string $orderReference
+     * @param string $paymentId
      * @param OrderLineCollection|null $orderLines
      * @param string|null $creator
      * @param string|null $transactionId
@@ -59,7 +59,7 @@ class Capture
      * @throws ValidationException
      */
     public function call(
-        string $orderReference,
+        string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
         ?string $transactionId = null,
@@ -81,7 +81,7 @@ class Capture
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s/capture', Mapi::PAYMENT_ROUTE, $orderReference)
+                route: sprintf('%s/payments/%s/capture', Mapi::PAYMENT_ROUTE, $paymentId)
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,

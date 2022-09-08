@@ -9,6 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Api;
 
+use JsonException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -33,8 +39,21 @@ class Cancel
         $this->mapi = new Mapi();
     }
 
+    /**
+     * @param string $paymentId
+     * @param OrderLineCollection|null $orderLines
+     * @param string|null $creator
+     * @return Payment
+     * @throws JsonException
+     * @throws \ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
     public function call(
-        string $orderReference,
+        string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null
     ): Payment {
@@ -48,7 +67,7 @@ class Cancel
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s/cancel', Mapi::PAYMENT_ROUTE, $orderReference)
+                route: sprintf('%s/payments/%s/cancel', Mapi::PAYMENT_ROUTE, $paymentId)
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,
