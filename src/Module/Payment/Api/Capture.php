@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -32,15 +33,17 @@ use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
  */
 class Capture
 {
-    /**
-     * @param Mapi $mapi
-     */
-    public function __construct(
-        private readonly Mapi $mapi = new Mapi()
-    ) {
+    /** @var Mapi  */
+    private Mapi $mapi;
+
+    public function __construct()
+    {
+        $this->mapi = new Mapi();
     }
 
     /**
+     * Makes call to the API
+     * 
      * @param string $orderReference
      * @param OrderLineCollection|null $orderLines
      * @param string|null $creator
