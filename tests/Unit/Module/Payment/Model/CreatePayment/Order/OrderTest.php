@@ -22,6 +22,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order;
+use Resursbank\Ecom\Module\Payment\Models\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
 
 /**
@@ -34,7 +35,7 @@ use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
 class OrderTest extends TestCase
 {
     private static array $data = [];
-    private static \Resursbank\Ecom\Module\Payment\Models\Order\OrderLine $orderLine;
+    private static OrderLine $orderLine;
 
     /**
      * @return void
@@ -45,7 +46,7 @@ class OrderTest extends TestCase
      */
     protected function setUp(): void
     {
-        self::$orderLine = new \Resursbank\Ecom\Module\Payment\Models\Order\OrderLine(
+        self::$orderLine = new OrderLine(
             description: 'Item',
             quantity: 1,
             reference: 'I-200',
@@ -59,7 +60,7 @@ class OrderTest extends TestCase
 
         /** @var array $data */
         $data = json_decode(json_encode(new Order(
-            orderLines: new \Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection(
+            orderLines: new OrderLineCollection(
                 data: [self::$orderLine],
             ),
             orderReference: 'asdf'
