@@ -24,7 +24,10 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
 use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
@@ -43,22 +46,27 @@ class Create
      * @param string $storeId
      * @param string $paymentMethodId
      * @param OrderLineCollection $orderLines
+     * @param string|null $orderReference
      * @return Payment
      * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
      * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
      */
     public function call(
         string $storeId,
         string $paymentMethodId,
         OrderLineCollection $orderLines,
-        ?string $orderReference = null
+        ?string $orderReference = null,
+        ?Application $application = null,
+        ?Customer $customer = null,
+        ?MetaData $metaData = null,
+        ?Options $options = null
     ): Payment {
         $params = [
             'storeId' => $storeId,
@@ -69,6 +77,18 @@ class Create
         ];
         if ($orderReference) {
             $params['order']['orderReference'] = $orderReference;
+        }
+        if ($application) {
+            $params['application'] = $application;
+        }
+        if ($customer) {
+            $params['customer'] = $customer;
+        }
+        if ($metaData) {
+            $params['metaData'] = $metaData;
+        }
+        if ($options) {
+            $params['options'] = $options;
         }
 
         $curl = new Curl(
