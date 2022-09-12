@@ -21,14 +21,18 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Module\Payment\Api\Cancel;
+use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
 
@@ -140,5 +144,95 @@ class Repository
         }
 
         return $result;
+    }
+        
+    /**
+     * Capture payment
+     *
+     * @param string $paymentId
+     * @param OrderLineCollection|null $orderLines
+     * @param string|null $creator
+     * @param string|null $transactionId
+     * @param string|null $invoiceId
+     * @return Payment
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function capture(
+        string $paymentId,
+        ?OrderLineCollection $orderLines = null,
+        ?string $creator = null,
+        ?string $transactionId = null,
+        ?string $invoiceId = null
+    ): Payment {
+        return (new Capture())->call(
+            paymentId: $paymentId,
+            orderLines: $orderLines,
+            creator: $creator,
+            transactionId: $transactionId,
+            invoiceId: $invoiceId
+        );
+    }
+
+    /**
+     * Cancel payment
+     *
+     * @param string $paymentId
+     * @param OrderLineCollection|null $orderLines
+     * @param string|null $creator
+     * @return Payment
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function cancel(
+        string $paymentId,
+        ?OrderLineCollection $orderLines = null,
+        ?string $creator = null
+    ): Payment {
+        return (new Cancel())->call(
+            paymentId: $paymentId,
+            orderLines: $orderLines,
+            creator: $creator
+        );
+    }
+
+    /**
+     * Refund payment
+     *
+     * @param string $paymentId
+     * @param OrderLineCollection|null $orderLines
+     * @param string|null $creator
+     * @param string|null $transactionId
+     * @return Payment
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function refund(
+        string $paymentId,
+        ?OrderLineCollection $orderLines = null,
+        ?string $creator = null,
+        ?string $transactionId = null
+    ): Payment {
+        return (new Refund())->call(
+            paymentId: $paymentId,
+            orderLines: $orderLines,
+            creator: $creator,
+            transactionId: $transactionId
+        );
     }
 }
