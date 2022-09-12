@@ -19,6 +19,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\CoApplicant;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Models\Payment\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\Payment\TaskRedirectionUrls;
 
 /**
  * Payment model used in the GET /payment call.
@@ -64,6 +65,7 @@ class Payment extends Model
         public readonly ?Information $information = null,
         public readonly ?MetaData $metaData = null,
         public readonly ?CoApplicant $coApplicant = null,
+        public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
     ) {
         $this->validateId();

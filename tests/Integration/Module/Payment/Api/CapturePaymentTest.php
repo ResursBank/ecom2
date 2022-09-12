@@ -22,6 +22,13 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Order\CountryCode;
+use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\DeliveryAddress;
+use Resursbank\Ecom\Module\Payment\Models\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -81,9 +88,41 @@ class CapturePaymentTest extends TestCase
         $orderReference = $this->generateOrderReference();
         // Create payment
         // @todo Create payment when we have a createPayment method available
+        $order = Repository::createPayment(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            orderLines: new OrderLineCollection(data: [
+                new OrderLine(
+                    description: 'asdasdasd',
+                    reference: 'T-800',
+                    quantityUnit: 'st',
+                    quantity: 2.00,
+                    vatRate: 25.00,
+                    unitAmountIncludingVat: 150.75,
+                    totalAmountIncludingVat: 301.5,
+                    totalVatAmount: 60.3,
+                    type: OrderLineType::PHYSICAL_GOODS
+                )
+            ]),
+            orderReference: $orderReference,
+            customer: new Customer(
+                deliveryAddress: new DeliveryAddress(
+                    addressRow1: 'Glassgatan 15',
+                    postalArea: 'Göteborg',
+                    postalCode: '41655',
+                    countryCode: CountryCode::SE
+                ),
+                customerType: CustomerType::NATURAL,
+                contactPerson: 'Vincent',
+                email: 'test@hosted.resurs',
+                governmentId: '198305147715',
+                mobilePhone: '46701234567',
+                deviceInfo: new Customer\DeviceInfo()
+            )
+        );
 
         // Capture payment
-        $originalId = '';
+        $originalId = $order->id;
         $response = Repository::capture(paymentId: $originalId);
 
         // Assert that payment has been captured in full

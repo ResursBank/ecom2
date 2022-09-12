@@ -27,8 +27,8 @@ class DeviceInfo extends Model
         /**
          * @todo Don't know how to validate ip-address.
          */
-        public readonly ?string $ip,
-        public readonly ?string $userAgent,
+        public readonly ?string $ip = null,
+        public readonly ?string $userAgent = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateUserAgent();

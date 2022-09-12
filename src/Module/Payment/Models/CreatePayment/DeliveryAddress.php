@@ -40,10 +40,10 @@ class DeliveryAddress extends Model
         public readonly string $postalArea,
         public readonly string $postalCode,
         public readonly CountryCode $countryCode,
-        public readonly ?string $fullName,
-        public readonly ?string $firstName,
-        public readonly ?string $lastName,
-        public readonly ?string $addressRow2,
+        public readonly ?string $fullName = null,
+        public readonly ?string $firstName = null,
+        public readonly ?string $lastName = null,
+        public readonly ?string $addressRow2 = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateFullName();
