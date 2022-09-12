@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order;
+namespace Resursbank\Ecom\Module\Payment\Models\Order;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
@@ -19,13 +19,11 @@ class OrderLineCollection extends Collection
 {
     /**
      * @param array<int, OrderLine> $data
-     * @param string $type
      * @throws IllegalTypeException
      */
     public function __construct(
-        public readonly array $data,
-        protected string $type = OrderLine::class
+        public readonly array $data
     ) {
-        parent::__construct(data: $data, type: $type);
+        parent::__construct(data: $data, type: OrderLine::class);
     }
 }
