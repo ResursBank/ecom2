@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -8,11 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment;
 
-use Error;
 use Exception;
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -136,7 +135,7 @@ class Repository
 
         if (!$result instanceof Payment) {
             throw new IllegalValueException(
-                'Not an instance of Payment response model.'
+                'Response is not an instance of ' . Payment::class
             );
         }
 

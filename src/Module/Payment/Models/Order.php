@@ -10,13 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Models;
 
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Models\Order\ActionLogCollection;
 
 /**
@@ -25,7 +21,6 @@ use Resursbank\Ecom\Module\Payment\Models\Order\ActionLogCollection;
 class Order extends Model
 {
     /**
-     * @param OrderLineCollection $orderLines
      * @param string $orderReference
      * @param ActionLogCollection $actionLog
      * @param array $possibleActions
@@ -35,13 +30,10 @@ class Order extends Model
      * @param float $capturedAmount
      * @param float $refundedAmount
      * @param StringValidation $stringValidation
-     * @param ArrayValidation $arrayValidation
      * @throws IllegalCharsetException
-     * @throws IllegalTypeException
      * @throws IllegalValueException
      */
     public function __construct(
-        public readonly OrderLineCollection $orderLines,
         public readonly string $orderReference,
         public readonly ActionLogCollection $actionLog,
         public readonly array $possibleActions,
@@ -51,29 +43,8 @@ class Order extends Model
         public readonly float $capturedAmount,
         public readonly float $refundedAmount,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
     ) {
-        $this->validateOrderLines();
         $this->validateOrderReference();
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws IllegalTypeException
-     */
-    public function validateOrderLines(): void
-    {
-        $this->arrayValidation->isSequential(data: $this->orderLines->data);
-        $this->arrayValidation->length(
-            data: $this->orderLines->data,
-            min: 1,
-            max: 1000
-        );
-        $this->arrayValidation->isOfType(
-            data: $this->orderLines->data,
-            type: OrderLine::class,
-            compareFn: fn (mixed $value) => $value instanceof OrderLine
-        );
     }
 
     /**
@@ -85,7 +56,7 @@ class Order extends Model
         $this->stringValidation->length(
             value: $this->orderReference,
             min: 1,
-            max: 32
+            max: 36
         );
 
         $this->stringValidation->matchRegex(

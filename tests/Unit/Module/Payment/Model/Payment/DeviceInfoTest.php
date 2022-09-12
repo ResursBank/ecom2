@@ -83,58 +83,58 @@ class DeviceInfoTest extends TestCase
         $this->item = $item;
     }
 
-    /**
-     * Assert validateUserAgent() throws IllegalValueException when its
-     * length is too long.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testValidateUserAgentThrowsWhenTooLong(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'userAgent' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing elit. Curabitur fringilla, leo ut maximus.' .
-                'accumsan, massa nulla ornare arcu. Lorem ipsum dolor sit. ' .
-                'met Lorem ipsum dolor sit amet, consectetur. Curabitur ' .
-                'fringilla, leo ut maximus.'
-        ]);
-    }
-
-    /**
-     * Assert validateUserAgent() throws IllegalValueException when its
-     * length is too short.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testValidateUserAgentThrowsWhenTooShort(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'userAgent' => ''
-        ]);
-    }
-
-    /**
-     * Assert property was assigned during object conversion.
-     *
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testUserAgentWasAssigned(): void
-    {
-        $this->convert();
-        self::assertSame(
-            expected: $this->data->userAgent,
-            actual: $this->item->userAgent
-        );
-    }
+//    /**
+//     * Assert validateUserAgent() throws IllegalValueException when its
+//     * length is too long.
+//     *
+//     * @return void
+//     * @throws ReflectionException
+//     * @throws TestException
+//     * @throws IllegalTypeException
+//     */
+//    public function testValidateUserAgentThrowsWhenTooLong(): void
+//    {
+//        $this->expectException(exception: IllegalValueException::class);
+//        $this->convert(updates: [
+//            'userAgent' => 'Lorem ipsum dolor sit amet, consectetur ' .
+//                'adipiscing elit. Curabitur fringilla, leo ut maximus.' .
+//                'accumsan, massa nulla ornare arcu. Lorem ipsum dolor sit. ' .
+//                'met Lorem ipsum dolor sit amet, consectetur. Curabitur ' .
+//                'fringilla, leo ut maximus.'
+//        ]);
+//    }
+//
+//    /**
+//     * Assert validateUserAgent() throws IllegalValueException when its
+//     * length is too short.
+//     *
+//     * @return void
+//     * @throws ReflectionException
+//     * @throws TestException
+//     * @throws IllegalTypeException
+//     */
+//    public function testValidateUserAgentThrowsWhenTooShort(): void
+//    {
+//        $this->expectException(exception: IllegalValueException::class);
+//        $this->convert(updates: [
+//            'userAgent' => ''
+//        ]);
+//    }
+//
+//    /**
+//     * Assert property was assigned during object conversion.
+//     *
+//     * @return void
+//     * @throws ReflectionException
+//     * @throws TestException
+//     * @throws IllegalTypeException
+//     */
+//    public function testUserAgentWasAssigned(): void
+//    {
+//        $this->convert();
+//        self::assertSame(
+//            expected: $this->data->userAgent,
+//            actual: $this->item->userAgent
+//        );
+//    }
 }

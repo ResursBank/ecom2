@@ -118,7 +118,7 @@ class GetAddressTest extends TestCase
         $address = Repository::getAddress(
             storeId: $this->getStoreId(),
             governmentId: $this->getHappyFlowCustomer(),
-            customerType: CustomerType::NATURAL
+            customerType: 'NATURAL'
         );
 
         // Testing similarities by intersect.
@@ -268,7 +268,7 @@ class GetAddressTest extends TestCase
         $address = Repository::getAddress(
             storeId: $this->getStoreId(),
             governmentId: $this->getHappyFlowCustomer(),
-            customerType: CustomerType::NATURAL
+            customerType: 'NATURAL',
         );
 
         static::assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));

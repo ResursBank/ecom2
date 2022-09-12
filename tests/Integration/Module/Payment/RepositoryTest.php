@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -68,7 +69,7 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
-        Repository::createPayment([
+        $result = Repository::createPayment([
             'storeId' => (string) $_ENV['STORE_ID'],
             'paymentMethodId' => (string) $_ENV['PAYMENT_METHOD_ID'],
             'order' => [
@@ -87,5 +88,7 @@ class RepositoryTest extends TestCase
                 ]
             ]
         ]);
+
+        static::assertInstanceOf(Payment::class, $result);
     }
 }

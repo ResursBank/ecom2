@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Models\Payment;
 
 use Resursbank\Ecom\Lib\Data\Models\Address;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Order\CustomerType;
 
 /**
  * Customer address data from a payment.
@@ -27,10 +28,10 @@ class Customer extends Model
      * @param string|null $phone
      */
     public function __construct(
-        public readonly string $customerType,
-        public readonly string $email,
-        public readonly string $governmentId,
-        public readonly string $mobilePhone,
+        public readonly CustomerType $customerType = CustomerType::NATURAL,
+        public readonly ?string $email = null,
+        public readonly ?string $governmentId = null,
+        public readonly ?string $mobilePhone = null,
         public readonly ?Address $deliveryAddress = null,
         public readonly ?Identification $identification = null,
         public readonly ?string $phone = null,
