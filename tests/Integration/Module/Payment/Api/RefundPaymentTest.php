@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Module\Payment\Models\Payment;
 
 /**
  * Tests for MAPI Payment Refund class
@@ -46,19 +47,43 @@ class RefundPaymentTest extends TestCase
         );
     }
 
-    public function testRefundEntirePayment(): void
+    /**
+     * Create a payment
+     *
+     * @return Payment
+     */
+    private function createPayment(): Payment
     {
+
     }
 
+    /**
+     * Verify that refunding an entire payment works
+     *
+     * @return void
+     */
+    public function testRefundEntirePayment(): void
+    {
+        $payment = $this->createPayment();
+    }
+
+    /**
+     * Verify that refunding a single captured order line works
+     *
+     * @return void
+     */
     public function testRefundSingleOrderLine(): void
     {
+        $this->createPayment();
     }
 
     public function testRefundWithTransactionId(): void
     {
+        $this->createPayment();
     }
 
     public function testRefundWithCreator(): void
     {
+        $this->createPayment();
     }
 }
