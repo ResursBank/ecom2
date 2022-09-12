@@ -18,8 +18,13 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Network\AuthType;
+use Resursbank\Ecom\Lib\Network\ContentType;
+use Resursbank\Ecom\Lib\Network\Curl;
+use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\Payment;
@@ -84,5 +89,32 @@ class Repository
 
             throw $e;
         }
+    }
+
+    /**
+     * @throws IllegalTypeException
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws EmptyValueException
+     * @throws CurlException
+     * @throws JsonException
+     */
+    public static function createPayment(
+        array $params
+    ): void {
+        $mapi = new Mapi();
+        $curl = new Curl(
+            url: $mapi->getUrl(
+                route: Mapi::PAYMENT_ROUTE . '/payments'
+            ),
+            requestMethod: RequestMethod::POST,
+            payload: $params,
+            contentType: ContentType::URL,
+            authType: AuthType::JWT,
+            responseContentType: ContentType::JSON
+        );
+
+        $data = $curl->exec()->body;
+        die(var_dump($data));
     }
 }
