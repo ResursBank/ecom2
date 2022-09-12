@@ -68,85 +68,24 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
-        Repository::createPayment(
-            json_decode('{
-                "storeId": "876aa478-c14e-44a0-b99f-4eb4dcc024c9",
-                "paymentMethodId": "07df8603-1fd0-48fc-b17a-cb538ccaede4",
-                "order": {
-                    "orderLines": [
-                        {
-                            "description": "Boasdfk",
-                            "quantity": 2.00,
-                            "reference": "T-800",
-                            "type": "PHYSICAL_GOODS",
-                            "quantityUnit": "st",
-                            "unitAmountIncludingVat": 150.75,
-                            "vatRate": 25.00,
-                            "totalAmountIncludingVat": 301.5,
-                            "totalVatAmount": 60.3
-                        }
-                    ],
-                    "orderReference": "asdfasdfasd"
-                },
-                "application": {
-                    "requestedCreditLimit": 10,
-                    "applicationData": {
-                        "additionalProp1": "asdfsdasd"
-                    }
-                },
-                "customer": {
-                    "contactPerson": "Lorem ipsum",
-                    "customerType": "NATURAL",
-                    "governmentId": "198305147715",
-                    "deliveryAddress": {
-                        "fullName": "Vincent Williamsson Alexandersson",
-                        "firstName": "Vincent",
-                        "lastName": "Alexandersson",
-                        "addressRow1": "Glassgatan 15",
-                        "postalArea": "Göteborg",
-                        "postalCode": "41655",
-                        "countryCode": "SE"
-                    },
-                    "email": "test@resurs.se",
-                    "mobilePhone": "+467xyzstuvw",
-                    "deviceInfo": {
-                        "userAgent": "asdf"
-                    }
-                },
-  "information": {
-        "creator": "gert_l",
-    "metaData": {
-            "key_1": "value_1",
-      "key_2": "value_2"
-    }
-  },
-  "metaData": {
-        "creator": "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf "
-  },
-  "options": {
-        "initiatedOnCustomersDevice": true,
-    "handleFrozenPayments": true,
-    "handleManualInspection": false,
-    "callbacks": {
-            "authorization": {
-                "url": ""
-      },
-      "management": {
-                "url": ""
-      }
-    },
-    "redirectionUrls": {
-            "customer": {
-                "failUrl": "",
-        "successUrl": ""
-      },
-      "merchant": {
-                "failUrl": "",
-        "successUrl": ""
-      }
-    },
-    "timeToLiveInMinutes": 1.123
-  }
-}', true, 512, JSON_THROW_ON_ERROR));
+        Repository::createPayment([
+            'storeId' => (string) $_ENV['STORE_ID'],
+            'paymentMethodId' => (string) $_ENV['PAYMENT_METHOD_ID'],
+            'order' => [
+                'orderLines' => [
+                    [
+                        'description' => 'asdasdasd',
+                        'quantity' => 2.00,
+                        'reference' => 'T-800',
+                        'type' => 'PHYSICAL_GOODS',
+                        'quantityUnit' => 'st',
+                        'unitAmountIncludingVat' => 150.75,
+                        'vatRate' => 25.00,
+                        'totalAmountIncludingVat' => 301.5,
+                        'totalVatAmount' => 60.3
+                    ]
+                ]
+            ]
+        ]);
     }
 }
