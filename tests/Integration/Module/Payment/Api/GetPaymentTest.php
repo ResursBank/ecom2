@@ -119,65 +119,65 @@ class GetPaymentTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @noinspection PhpConditionAlreadyCheckedInspection
-     */
-    public function testGetPaymentMocked(): void
-    {
-        $getPayment = $this->createMock(
-            originalClassName: GetPayment::class
-        );
-
-        $payment = new Payment(
-            $this->expectedOrderReference,
-            created: '2022-08-16T09:31:47.829',
-            storeId: $this->expectedStoreId,
-            paymentMethodId: $this->expectedPaymentMethod,
-            customer: new Customer(
-                email: 'test@test.com',
-                governmentId: '8305147715',
-                mobilePhone: '0701122334',
-                phone: '0701122334',
-                customerType: 'NATURAL',
-                deliveryAddress: new Address(
-                    fullName: 'Full Name',
-                    addressRow1: 'Glassgatan 17',
-                    postalArea: 'Göteborg',
-                    postalCode: '12345',
-                    addressRow2: ''
-                ),
-                identification: new Identification(
-                    type: 'ID',
-                    reference: '123'
-                )
-            ),
-            status: Status::ACCEPTED,
-            paymentActions: [],
-            application: new Application(
-                approvedCreditLimit: 1000,
-                requestedCreditLimit: 1000,
-                reference: 1000
-            ),
-            information: new Information(
-                creator: 'username'
-            ),
-            countryCode: 'SE'
-        );
-        $getPayment->method('call')->willReturn($payment);
-        $response = $getPayment->call($this->expectedOrderReference);
-        static::assertTrue(
-            condition: $response instanceof Payment &&
-            $response->id === $this->expectedOrderReference
-        );
-    }
+//    /**
+//     * @return void
+//     * @throws JsonException
+//     * @throws ReflectionException
+//     * @throws AuthException
+//     * @throws CurlException
+//     * @throws ValidationException
+//     * @throws EmptyValueException
+//     * @throws IllegalTypeException
+//     * @noinspection PhpConditionAlreadyCheckedInspection
+//     */
+//    public function testGetPaymentMocked(): void
+//    {
+//        $getPayment = $this->createMock(
+//            originalClassName: GetPayment::class
+//        );
+//
+//        $payment = new Payment(
+//            $this->expectedOrderReference,
+//            created: '2022-08-16T09:31:47.829',
+//            storeId: $this->expectedStoreId,
+//            paymentMethodId: $this->expectedPaymentMethod,
+//            customer: new Customer(
+//                email: 'test@test.com',
+//                governmentId: '8305147715',
+//                mobilePhone: '0701122334',
+//                phone: '0701122334',
+//                customerType: 'NATURAL',
+//                deliveryAddress: new Address(
+//                    fullName: 'Full Name',
+//                    addressRow1: 'Glassgatan 17',
+//                    postalArea: 'Göteborg',
+//                    postalCode: '12345',
+//                    addressRow2: ''
+//                ),
+//                identification: new Identification(
+//                    type: 'ID',
+//                    reference: '123'
+//                )
+//            ),
+//            status: Status::ACCEPTED,
+//            paymentActions: [],
+//            application: new Application(
+//                approvedCreditLimit: 1000,
+//                requestedCreditLimit: 1000,
+//                reference: 1000
+//            ),
+//            information: new Information(
+//                creator: 'username'
+//            ),
+//            countryCode: 'SE'
+//        );
+//        $getPayment->method('call')->willReturn($payment);
+//        $response = $getPayment->call($this->expectedOrderReference);
+//        static::assertTrue(
+//            condition: $response instanceof Payment &&
+//            $response->id === $this->expectedOrderReference
+//        );
+//    }
 
     /**
      * Bad customer test, for which the customer object for some reason is empty on the request.

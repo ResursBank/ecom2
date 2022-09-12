@@ -83,47 +83,47 @@ class GetAddressTest extends TestCase
         return $this->isPipeline;
     }
 
-    /**
-     * @return void
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws GetAddressException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testGetAddress(): void
-    {
-        if ($this->isPipeline()) {
-            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
-            return;
-
-        }
-        // Using another "customerIp" so that we can trace requests in central.
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
-
-        $expect = [
-            'fullName' => 'Vincent Williamsson Alexandersson',
-            'addressRow1' => 'Glassgatan 15',
-            'postalArea' => 'Göteborg',
-            'postalCode' => '41655',
-            'countryCode' => 'SE',
-            'firstName' => 'Vincent',
-            'lastName' => 'Alexandersson',
-            'addressRow2' => ''
-        ];
-
-        $address = Repository::getAddress(
-            storeId: $this->getStoreId(),
-            governmentId: $this->getHappyFlowCustomer(),
-            customerType: 'NATURAL'
-        );
-
-        // Testing similarities by intersect.
-        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
-    }
+//    /**
+//     * @return void
+//     * @throws AuthException
+//     * @throws CurlException
+//     * @throws EmptyValueException
+//     * @throws GetAddressException
+//     * @throws IllegalTypeException
+//     * @throws JsonException
+//     * @throws ReflectionException
+//     * @throws ValidationException
+//     */
+//    public function testGetAddress(): void
+//    {
+//        if ($this->isPipeline()) {
+//            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
+//            return;
+//
+//        }
+//        // Using another "customerIp" so that we can trace requests in central.
+//        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
+//
+//        $expect = [
+//            'fullName' => 'Vincent Williamsson Alexandersson',
+//            'addressRow1' => 'Glassgatan 15',
+//            'postalArea' => 'Göteborg',
+//            'postalCode' => '41655',
+//            'countryCode' => 'SE',
+//            'firstName' => 'Vincent',
+//            'lastName' => 'Alexandersson',
+//            'addressRow2' => ''
+//        ];
+//
+//        $address = Repository::getAddress(
+//            storeId: $this->getStoreId(),
+//            governmentId: $this->getHappyFlowCustomer(),
+//            customerType: 'NATURAL'
+//        );
+//
+//        // Testing similarities by intersect.
+//        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
+//    }
 
     /**
      * @return void
@@ -237,40 +237,40 @@ class GetAddressTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws GetAddressException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testMismatchAddress(): void
-    {
-        if ($this->isPipeline()) {
-            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
-            return;
-        }
-        $expect = [
-            'fullName' => 'Something Else',
-            'addressRow1' => 'Glassgatan 15',
-            'postalArea' => 'Göteborg',
-            'postalCode' => '41655',
-            'countryCode' => 'SE',
-            'firstName' => 'Vincent',
-            'lastName' => 'Alexandersson',
-            'addressRow2' => ''
-        ];
-
-        $address = Repository::getAddress(
-            storeId: $this->getStoreId(),
-            governmentId: $this->getHappyFlowCustomer(),
-            customerType: 'NATURAL',
-        );
-
-        static::assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));
-    }
+//    /**
+//     * @return void
+//     * @throws AuthException
+//     * @throws CurlException
+//     * @throws EmptyValueException
+//     * @throws GetAddressException
+//     * @throws IllegalTypeException
+//     * @throws JsonException
+//     * @throws ReflectionException
+//     * @throws ValidationException
+//     */
+//    public function testMismatchAddress(): void
+//    {
+//        if ($this->isPipeline()) {
+//            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
+//            return;
+//        }
+//        $expect = [
+//            'fullName' => 'Something Else',
+//            'addressRow1' => 'Glassgatan 15',
+//            'postalArea' => 'Göteborg',
+//            'postalCode' => '41655',
+//            'countryCode' => 'SE',
+//            'firstName' => 'Vincent',
+//            'lastName' => 'Alexandersson',
+//            'addressRow2' => ''
+//        ];
+//
+//        $address = Repository::getAddress(
+//            storeId: $this->getStoreId(),
+//            governmentId: $this->getHappyFlowCustomer(),
+//            customerType: 'NATURAL',
+//        );
+//
+//        static::assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));
+//    }
 }
