@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -28,8 +29,7 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\MetaData;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
 use stdClass;
 
 class Create
@@ -47,7 +47,7 @@ class Create
      * @param string $paymentMethodId
      * @param OrderLineCollection $orderLines
      * @param string|null $orderReference
-     * @return Payment
+     * @return \Resursbank\Ecom\Lib\Model\Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException

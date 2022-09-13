@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models;
+namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\Order\ActionLogCollection;
 
 /**
  * Defines an order.

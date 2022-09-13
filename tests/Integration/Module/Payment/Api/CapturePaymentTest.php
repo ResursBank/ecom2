@@ -27,8 +27,8 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**

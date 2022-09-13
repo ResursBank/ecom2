@@ -16,8 +16,8 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
 
 /**
  * Tests for MAPI Payment Refund class

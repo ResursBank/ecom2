@@ -15,8 +15,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
 
 /**
  * Defines an order.
@@ -24,7 +24,7 @@ use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
 class Order extends Model
 {
     /**
-     * @param \Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection $orderLines
+     * @param \Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection $orderLines
      * @param string|null $orderReference
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation

@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
 
 /**
  * Test data integrity of order line entity model.
@@ -59,20 +59,20 @@ class OrderLineTest extends TestCase
 
     /**
      * @param array $updates
-     * @return \Resursbank\Ecom\Module\Payment\Models\Order\OrderLine
+     * @return \Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
      */
     private function convert(
         array $updates = []
-    ): OrderLine {
+    ): \Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine {
         $result = DataConverter::stdClassToType(
             object: (object) array_merge(self::$data, $updates),
-            type: OrderLine::class
+            type: \Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine::class
         );
 
-        if (!$result instanceof OrderLine) {
+        if (!$result instanceof \Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine) {
             throw new TestException(
                 message: 'Failed to convert stdClass to PaymentMethod.'
             );

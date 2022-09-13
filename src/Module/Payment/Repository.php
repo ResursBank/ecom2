@@ -19,20 +19,20 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
-use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Module\Payment\Api\Create;
+use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
-use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\MetaData;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
-use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
-use Resursbank\Ecom\Module\Payment\Models\Order\OrderLineCollection;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
 
 /**
  * Payment repository.
@@ -196,7 +196,7 @@ class Repository
      * @param ActionLogOrderLineCollection|null $orderLines
      * @param string|null $creator
      * @param string|null $transactionId
-     * @return Payment
+     * @return \Resursbank\Ecom\Lib\Model\Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

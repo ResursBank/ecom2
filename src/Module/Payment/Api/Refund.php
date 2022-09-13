@@ -16,13 +16,13 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
@@ -41,10 +41,10 @@ class Refund
 
     /**
      * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
+     * @param \Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection|null $orderLines
      * @param string|null $creator
      * @param string|null $transactionId
-     * @return Payment
+     * @return \Resursbank\Ecom\Lib\Model\Payment
      * @throws JsonException
      * @throws \ReflectionException
      * @throws AuthException

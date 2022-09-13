@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Models;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
