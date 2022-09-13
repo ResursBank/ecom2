@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 
 /**
  * Test data integrity of order line entity model.
@@ -42,14 +42,14 @@ class OrderLineTest extends TestCase
         /** @var array $data */
         $data = json_decode(json_encode(new OrderLine(
             description: 'Item',
-            quantity: 1,
             reference: 'I-200',
-            type: OrderLineType::NORMAL,
             quantityUnit: 'st',
+            quantity: 1,
+            vatRate: 10,
             unitAmountIncludingVat: 10,
             totalAmountIncludingVat: 11,
             totalVatAmount: 1,
-            vatRate: 10
+            type: OrderLineType::NORMAL
         ), JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
 
         self::$data = $data;

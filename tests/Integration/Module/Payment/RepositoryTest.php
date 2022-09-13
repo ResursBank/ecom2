@@ -11,7 +11,9 @@ namespace Resursbank\EcomTest\Integration\Module\Payment;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -19,10 +21,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
+use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -56,8 +59,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert read() returns data from the API when cache is empty.
-     *
      * @return void
      * @throws AuthException
      * @throws CurlException
@@ -66,29 +67,35 @@ class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ValidationException
+     * @throws ReflectionException
+     * @throws ApiException
      */
     public function testCreatePayment(): void
     {
-        $result = Repository::createPayment([
-            'storeId' => (string) $_ENV['STORE_ID'],
-            'paymentMethodId' => (string) $_ENV['PAYMENT_METHOD_ID'],
-            'order' => [
-                'orderLines' => [
-                    [
-                        'description' => 'asdasdasd',
-                        'quantity' => 2.00,
-                        'reference' => 'T-800',
-                        'type' => 'PHYSICAL_GOODS',
-                        'quantityUnit' => 'st',
-                        'unitAmountIncludingVat' => 150.75,
-                        'vatRate' => 25.00,
-                        'totalAmountIncludingVat' => 301.5,
-                        'totalVatAmount' => 60.3
-                    ]
-                ]
+        $orderLines = new OrderLineCollection(
+            data: [
+                new OrderLine(
+                    description: 'asdasdasd',
+                    reference: 'T-800',
+                    quantityUnit: 'st',
+                    quantity: 2.00,
+                    vatRate: 25.00,
+                    unitAmountIncludingVat: 150.75,
+                    totalAmountIncludingVat: 301.5,
+                    totalVatAmount: 60.3,
+                    type: OrderLineType::PHYSICAL_GOODS
+                )
             ]
-        ]);
+        );
+        $result = Repository::createPayment(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            orderLines: $orderLines
+        );
 
-        static::assertInstanceOf(Payment::class, $result);
+        $this->assertInstanceOf(
+            expected: Payment::class,
+            actual: $result
+        );
     }
 }

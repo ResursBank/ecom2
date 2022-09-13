@@ -24,8 +24,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 class SearchTest extends TestCase
@@ -145,7 +145,7 @@ class SearchTest extends TestCase
                     $orderReference
                 );
 
-                /** @var Payment $payment */
+                /** @var \Resursbank\Ecom\Lib\Model\Payment $payment */
                 $payment = $paymentCollection->current();
 
                 static::assertTrue(
@@ -184,7 +184,7 @@ class SearchTest extends TestCase
                     $orderReference
                 );
 
-                /** @var Payment $payment */
+                /** @var \Resursbank\Ecom\Lib\Model\Payment $payment */
                 $payment = $paymentCollection->current();
 
                 static::assertTrue(
