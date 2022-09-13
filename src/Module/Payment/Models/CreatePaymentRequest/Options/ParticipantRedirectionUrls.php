@@ -7,28 +7,28 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
  * Application data for a payment.
  */
-class Callbacks extends Model
+class ParticipantRedirectionUrls extends Model
 {
     /**
-     * @param Callback|null $authorization
-     * @param Callback|null $management
+     * @param string|null $failUrl
+     * @param string|null $successUrl
      */
     public function __construct(
         /**
          * @todo Don't know how to validate urls.
          */
-        public readonly ?Callback $authorization,
+        public readonly ?string $failUrl,
         /**
          * @todo Don't know how to validate urls.
          */
-        public readonly ?Callback $management,
+        public readonly ?string $successUrl,
     ) {
     }
 }

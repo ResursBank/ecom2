@@ -21,9 +21,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 
 /**
  * Test data integrity of order entity model.

@@ -25,10 +25,10 @@ use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**

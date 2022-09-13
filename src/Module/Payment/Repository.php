@@ -28,11 +28,11 @@ use Resursbank\Ecom\Module\Payment\Api\Create;
 use Resursbank\Ecom\Module\Payment\Api\GetPayment;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\MetaData;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 
 /**
  * Payment repository.

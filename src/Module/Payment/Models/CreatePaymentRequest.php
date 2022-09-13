@@ -13,10 +13,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\MetaData;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 
 /**
  * Payment model used in a POST /payments request.

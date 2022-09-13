@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\IntValidation;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options\Callbacks;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options\RedirectionUrls;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options\Callbacks;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options\RedirectionUrls;
 
 /**
  * Application data for a payment.

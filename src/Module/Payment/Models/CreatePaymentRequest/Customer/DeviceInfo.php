@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
 
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -15,8 +15,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 
 /**
  * Defines an order.
@@ -24,7 +24,7 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollectio
 class Order extends Model
 {
     /**
-     * @param \Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection $orderLines
+     * @param \Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection $orderLines
      * @param string|null $orderReference
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation

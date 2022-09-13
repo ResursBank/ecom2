@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 
 use Resursbank\Ecom\Lib\Model\Model;
 

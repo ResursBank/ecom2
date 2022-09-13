@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePayment;
+namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer\DeviceInfo;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer\DeviceInfo;
 
 /**
  * Customer address data from a payment.

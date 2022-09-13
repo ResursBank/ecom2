@@ -25,11 +25,11 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Application;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\MetaData;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Options;
-use Resursbank\Ecom\Module\Payment\Models\CreatePayment\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use stdClass;
 
 class Create
