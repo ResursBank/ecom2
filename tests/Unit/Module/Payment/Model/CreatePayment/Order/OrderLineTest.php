@@ -42,14 +42,14 @@ class OrderLineTest extends TestCase
         /** @var array $data */
         $data = json_decode(json_encode(new OrderLine(
             description: 'Item',
-            quantity: 1,
             reference: 'I-200',
-            type: OrderLineType::NORMAL,
             quantityUnit: 'st',
+            quantity: 1,
+            vatRate: 10,
             unitAmountIncludingVat: 10,
             totalAmountIncludingVat: 11,
             totalVatAmount: 1,
-            vatRate: 10
+            type: OrderLineType::NORMAL
         ), JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
 
         self::$data = $data;
@@ -66,10 +66,10 @@ class OrderLineTest extends TestCase
      */
     private function convert(
         array $updates = []
-    ): \Resursbank\Ecom\Module\Payment\Models\Order\OrderLine {
+    ): OrderLine {
         $result = DataConverter::stdClassToType(
             object: (object) array_merge(self::$data, $updates),
-            type: \Resursbank\Ecom\Module\Payment\Models\Order\OrderLine::class
+            type: OrderLine::class
         );
 
         if (!$result instanceof OrderLine) {
