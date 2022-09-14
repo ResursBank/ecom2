@@ -55,7 +55,7 @@ class Cancel
     public function call(
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
-        ?string $creator = null
+        ?string $creator = null,
     ): Payment {
         $payload = [];
         if ($orderLines) {
@@ -73,7 +73,7 @@ class Cancel
             payload: $payload,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON,
-            forceObject: true
+            forceObject: empty($payload)
         );
 
         $data = $curl->exec()->body;
