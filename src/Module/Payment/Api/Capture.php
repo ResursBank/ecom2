@@ -75,7 +75,7 @@ class Capture
             $payload['transactionId'] = $transactionId;
         }
         if ($invoiceId) {
-            $payload['invoiceId'] = $invoiceId;
+            $payload['invoiceOptions'] = ['invoiceId' => $invoiceId];
         }
 
         $curl = new Curl(
@@ -86,7 +86,7 @@ class Capture
             payload: $payload,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON,
-            forceObject: true
+            forceObject: empty($payload)
         );
 
         $data = $curl->exec()->body;
