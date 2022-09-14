@@ -78,12 +78,15 @@ class CapturePaymentTest extends TestCase
     }
 
     /**
-     * @todo Implement mock signing
      * @param Payment $payment
      * @return void
+     * @throws EmptyValueException
      */
     private function mockSign(Payment $payment): void
     {
+        if (!$payment->taskRedirectionUrls) {
+            throw new EmptyValueException(message: "No redirection URL object found");
+        }
         $curlHandle = curl_init(url: $payment->taskRedirectionUrls->customerUrl);
         curl_setopt(handle: $curlHandle, option: CURLOPT_HEADER, value: true);
         curl_setopt(handle: $curlHandle, option: CURLOPT_FOLLOWLOCATION, value: true);
@@ -96,6 +99,7 @@ class CapturePaymentTest extends TestCase
             '&govId=' . $payment->customer->governmentId;
 
         $curlHandle = curl_init(url: $realAuthUrl);
+        curl_setopt(handle: $curlHandle, option: CURLOPT_FOLLOWLOCATION, value: true);
         curl_exec(handle: $curlHandle);
     }
 
