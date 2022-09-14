@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -98,23 +100,23 @@ class CapturePaymentTest extends TestCase
     }
 
     /**
-     * Verify that capturing an entire order works
+     * Make API call to create payment
      *
-     * @return void
-     * @throws EmptyValueException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @param string $orderReference
+     * @return Payment
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws Exception
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
-    public function testCaptureEntirePayment(): void
+    private function createPayment(string $orderReference): Payment
     {
-        $orderReference = $this->generateOrderReference();
-        // Create payment
-        $payment = Repository::createPayment(
+        return Repository::createPayment(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
@@ -157,6 +159,26 @@ class CapturePaymentTest extends TestCase
                 deviceInfo: new Customer\DeviceInfo()
             )
         );
+    }
+
+    /**
+     * Verify that capturing an entire order works
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws IllegalTypeException
+     * @throws Exception
+     */
+    public function testCaptureEntirePayment(): void
+    {
+        $orderReference = $this->generateOrderReference();
+        // Create payment
+        $payment = $this->createPayment(orderReference: $orderReference);
         $originalId = $payment->id;
 
         // Sign
@@ -189,49 +211,7 @@ class CapturePaymentTest extends TestCase
     {
         $orderReference = $this->generateOrderReference();
         // Create payment with multiple order lines
-        $payment = Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: new OrderLineCollection(data: [
-                new OrderLine(
-                    description: 'Android',
-                    reference: 'T-800',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
-                    unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
-                ),
-                new OrderLine(
-                    description: 'Robot',
-                    reference: 'T-1000',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
-                    unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
-                )
-            ]),
-            orderReference: $orderReference,
-            customer: new Customer(
-                deliveryAddress: new DeliveryAddress(
-                    addressRow1: 'Glassgatan 15',
-                    postalArea: 'Göteborg',
-                    postalCode: '41655',
-                    countryCode: CountryCode::SE
-                ),
-                customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
-                email: 'test@hosted.resurs',
-                governmentId: '198305147715',
-                mobilePhone: '46701234567',
-                deviceInfo: new Customer\DeviceInfo()
-            )
-        );
+        $payment = $this->createPayment(orderReference: $orderReference);
 
         $this->mockSign(payment: $payment);
 
@@ -278,8 +258,8 @@ class CapturePaymentTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws ValidationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws ApiException
      * @throws IllegalValueException
      * @throws Exception
@@ -288,49 +268,7 @@ class CapturePaymentTest extends TestCase
     {
         $orderReference = $this->generateOrderReference();
         // Create payment
-        $payment = Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: new OrderLineCollection(data: [
-                new OrderLine(
-                    description: 'Android',
-                    reference: 'T-800',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
-                    unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
-                ),
-                new OrderLine(
-                    description: 'Robot',
-                    reference: 'T-1000',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
-                    unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
-                )
-            ]),
-            orderReference: $orderReference,
-            customer: new Customer(
-                deliveryAddress: new DeliveryAddress(
-                    addressRow1: 'Glassgatan 15',
-                    postalArea: 'Göteborg',
-                    postalCode: '41655',
-                    countryCode: CountryCode::SE
-                ),
-                customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
-                email: 'test@hosted.resurs',
-                governmentId: '198305147715',
-                mobilePhone: '46701234567',
-                deviceInfo: new Customer\DeviceInfo()
-            )
-        );
+        $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
         $this->mockSign(payment: $payment);
@@ -356,54 +294,22 @@ class CapturePaymentTest extends TestCase
      * Verify that capturing with an invoice ID works
      *
      * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function testCaptureWithInvoiceId(): void
     {
         $orderReference = $this->generateOrderReference();
         // Create payment
-        $payment = Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: new OrderLineCollection(data: [
-                new OrderLine(
-                    description: 'Android',
-                    reference: 'T-800',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
-                    unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
-                ),
-                new OrderLine(
-                    description: 'Robot',
-                    reference: 'T-1000',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
-                    unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
-                )
-            ]),
-            orderReference: $orderReference,
-            customer: new Customer(
-                deliveryAddress: new DeliveryAddress(
-                    addressRow1: 'Glassgatan 15',
-                    postalArea: 'Göteborg',
-                    postalCode: '41655',
-                    countryCode: CountryCode::SE
-                ),
-                customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
-                email: 'test@hosted.resurs',
-                governmentId: '198305147715',
-                mobilePhone: '46701234567',
-                deviceInfo: new Customer\DeviceInfo()
-            )
-        );
+        $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
         $this->mockSign(payment: $payment);
