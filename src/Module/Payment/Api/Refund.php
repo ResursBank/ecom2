@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -46,7 +47,7 @@ class Refund
      * @param string|null $transactionId
      * @return Payment
      * @throws JsonException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
      * @throws ValidationException

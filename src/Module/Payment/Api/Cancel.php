@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -41,11 +42,11 @@ class Cancel
 
     /**
      * @param string $paymentId
-     * @param \Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection|null $orderLines
+     * @param OrderLineCollection|null $orderLines
      * @param string|null $creator
      * @return Payment
      * @throws JsonException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
      * @throws ValidationException
