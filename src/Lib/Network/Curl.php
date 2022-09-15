@@ -138,6 +138,16 @@ class Curl
     }
 
     /**
+     * Fetch CURLINFO_EFFECTIVE_URL
+     *
+     * @return string
+     */
+    public function getEffectiveUrl(): string
+    {
+        return curl_getinfo(handle: $this->ch, option: CURLINFO_EFFECTIVE_URL);
+    }
+
+    /**
      * @param string $url
      * @param array $payload
      * @param AuthType $authType
@@ -273,7 +283,7 @@ class Curl
             CURLOPT_AUTOREFERER => true, // Follow redirects.
             CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
             CURLOPT_HEADER => false, // Do not include header in output.
-            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_USERAGENT => Header::getUserAgent(),
             CURLOPT_HTTPHEADER => Header::getHeadersData(
@@ -326,7 +336,7 @@ class Curl
      */
     public function generateUrl(string $url, array $payload): string
     {
-        $url .= $this->hasBodyData()
+        $url .= $this->hasBodyData() || empty($payload)
             ? '' :
             '?' . $this->getPayloadData(payload: $payload);
 
