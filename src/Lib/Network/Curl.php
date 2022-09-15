@@ -504,6 +504,7 @@ class Curl
             // CURLE_RECV_ERROR. Among a few examples, this could happen when integrations are using proxy layers
             // for which the proxy remote end won't allow. Usually the remote proxy may throw 400 or permission
             // denied errors, which should be used instead of CURLE_RECV_ERROR.
+            print_r($body);
             $throwCode = $code !== 0 ? $code : $httpCode;
             if ($connectCode >= 400 && $code === CURLE_RECV_ERROR) {
                 $throwCode = $connectCode;
