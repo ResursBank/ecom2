@@ -26,14 +26,11 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Payment;
-use Resursbank\Ecom\Lib\Network\AuthType;
-use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
@@ -79,45 +76,6 @@ class RefundPaymentTest extends TestCase
     private function generateOrderReference(): string
     {
         return bin2hex(string: random_bytes(length: 12));
-    }
-
-    /**
-     * Mock user signature
-     *
-     * @param Payment $payment
-     * @return void
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
-     */
-    private function mockSign(Payment $payment): void
-    {
-        if (!$payment->taskRedirectionUrls) {
-            throw new EmptyValueException(message: "No redirection URL object found");
-        }
-        $curl = new Curl(
-            url: $payment->taskRedirectionUrls->customerUrl,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::URL,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-        $curl->exec();
-        $redirectUrl = $curl->getEffectiveUrl();
-        $realAuthUrl = str_replace("authenticate", 'doAuth', $redirectUrl) .
-            '&govId=' . $payment->customer->governmentId;
-
-        $curl = new Curl(
-            url: $realAuthUrl,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::EMPTY,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-        $curl->exec();
     }
 
     /**
@@ -204,7 +162,7 @@ class RefundPaymentTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        $this->mockSign(payment: $payment);
+        MockSigner::approve(payment: $payment);
 
         // Capture payment
         Repository::capture(paymentId: $payment->id);
@@ -251,7 +209,7 @@ class RefundPaymentTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        $this->mockSign(payment: $payment);
+        MockSigner::approve(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -311,7 +269,7 @@ class RefundPaymentTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        $this->mockSign(payment: $payment);
+        MockSigner::approve(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -357,7 +315,7 @@ class RefundPaymentTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        $this->mockSign(payment: $payment);
+        MockSigner::approve(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
