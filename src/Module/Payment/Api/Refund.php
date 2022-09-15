@@ -41,10 +41,10 @@ class Refund
 
     /**
      * @param string $paymentId
-     * @param \Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection|null $orderLines
+     * @param OrderLineCollection|null $orderLines
      * @param string|null $creator
      * @param string|null $transactionId
-     * @return \Resursbank\Ecom\Lib\Model\Payment
+     * @return Payment
      * @throws JsonException
      * @throws \ReflectionException
      * @throws AuthException
@@ -78,7 +78,7 @@ class Refund
             payload: $payload,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON,
-            forceObject: true
+            forceObject: empty($payload)
         );
 
         $data = $curl->exec()->body;
