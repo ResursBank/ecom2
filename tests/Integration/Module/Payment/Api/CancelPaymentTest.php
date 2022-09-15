@@ -26,7 +26,11 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Network\AuthType;
+use Resursbank\Ecom\Lib\Network\ContentType;
+use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
@@ -77,30 +81,42 @@ class CancelPaymentTest extends TestCase
     }
 
     /**
+     * Mock user signature
+     *
      * @param Payment $payment
      * @return void
+     * @throws AuthException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ValidationException
      */
     private function mockSign(Payment $payment): void
     {
         if (!$payment->taskRedirectionUrls) {
             throw new EmptyValueException(message: "No redirection URL object found");
         }
-        $curlHandle = curl_init(url: $payment->taskRedirectionUrls->customerUrl);
-        curl_setopt(handle: $curlHandle, option: CURLOPT_HEADER, value: true);
-        curl_setopt(handle: $curlHandle, option: CURLOPT_FOLLOWLOCATION, value: true);
-        curl_setopt(handle: $curlHandle, option: CURLOPT_RETURNTRANSFER, value: true);
-        curl_exec(handle: $curlHandle);
-        $redirectUrl = curl_getinfo(handle: $curlHandle, option: CURLINFO_EFFECTIVE_URL);
-        curl_close(handle: $curlHandle);
-
+        $curl = new Curl(
+            url: $payment->taskRedirectionUrls->customerUrl,
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::URL,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::RAW
+        );
+        $curl->exec();
+        $redirectUrl = $curl->getEffectiveUrl();
         $realAuthUrl = str_replace("authenticate", 'doAuth', $redirectUrl) .
             '&govId=' . $payment->customer->governmentId;
 
-        $curlHandle = curl_init(url: $realAuthUrl);
-        curl_setopt(handle: $curlHandle, option: CURLOPT_FOLLOWLOCATION, value: true);
-        curl_setopt(handle: $curlHandle, option: CURLOPT_RETURNTRANSFER, value: true);
-        curl_exec(handle: $curlHandle);
+        $curl = new Curl(
+            url: $realAuthUrl,
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::EMPTY,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::RAW
+        );
+        $curl->exec();
     }
 
     /**
