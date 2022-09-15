@@ -12,17 +12,21 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 use Resursbank\Ecom\Module\Customer\Repository;
+use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 
 /**
  * Tests for the API call getAddress.
@@ -57,12 +61,33 @@ class GetAddressTest extends TestCase
     }
 
     /**
-     * Set a store id if phpunit.xml has one (for find_payments).
      * @return string
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ApiException
+     * @throws CacheException
+     * @throws IllegalValueException
      */
     private function getStoreId(): string
     {
-        return (string)($_ENV['STORE_ID'] ?? '');
+        $return = (string)($_ENV['STORE_ID'] ?? '');
+
+        if (isset($_ENV['STORE_ID_NATIONAL']) && (int)$_ENV['STORE_ID_NATIONAL']) {
+            $allStores = StoreRepository::getStores()->toArray();
+            foreach ($allStores as $store) {
+                if ($store->nationalStoreId === (int)$_ENV['STORE_ID']) {
+                    $return = $store->id;
+                    break;
+                }
+            }
+        }
+
+        return $return;
     }
 
     /**

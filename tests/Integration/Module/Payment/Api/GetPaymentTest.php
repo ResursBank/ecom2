@@ -34,6 +34,7 @@ use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Identification;
 use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use TypeError;
 
 class GetPaymentTest extends TestCase
@@ -77,13 +78,33 @@ class GetPaymentTest extends TestCase
     }
 
     /**
-     * Set a store id if phpunit.xml has one (for find_payments).
-     *
      * @return string
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws \Resursbank\Ecom\Exception\ApiException
+     * @throws \Resursbank\Ecom\Exception\CacheException
      */
     private function getStoreId(): string
     {
-        return (string)($_ENV['STORE_ID'] ?? '');
+        $return = (string)($_ENV['STORE_ID'] ?? '');
+
+        if (isset($_ENV['STORE_ID_NATIONAL']) && (int)$_ENV['STORE_ID_NATIONAL']) {
+            $allStores = StoreRepository::getStores()->toArray();
+            foreach ($allStores as $store) {
+                if ($store->nationalStoreId === (int)$_ENV['STORE_ID']) {
+                    $return = $store->id;
+                    break;
+                }
+            }
+        }
+
+        return $return;
     }
 
     /**
