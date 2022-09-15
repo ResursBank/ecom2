@@ -232,9 +232,8 @@ class CancelPaymentTest extends TestCase
             expected: $payment->id,
             actual: $response->id
         );
-        $this->assertNotNull(
-            actual: $response->order
-        );
+        $this->assertNotNull(actual: $response->order);
+        $this->assertNotNull(actual: $payment->order);
         $this->assertEquals(
             expected: $payment->order->actionLog[0]->orderLines[0],
             actual: $response->order->actionLog[1]->orderLines[0]
