@@ -125,14 +125,14 @@ class GetPaymentTest extends TestCase
             // Temporary solution.
             $orderReference = '9e744903-b9be-431a-a11d-a210f92ecbc3';
             // 20220816073146-1557096130 => 9e744903-b9be-431a-a11d-a210f92ecbc3
-            $payment = Repository::getPayment($orderReference);
+            $payment = Repository::getPayment(orderReference: $orderReference);
 
-            static::assertEquals($orderReference, $payment->id);
+            static::assertEquals(expected: $orderReference, actual: $payment->id);
 
             return;
         }
         static::markTestSkipped(
-            sprintf(
+            message: sprintf(
                 'Can not run live test for %s since we can not do lookups for orders. They have to be created ' .
                 'first. This can be solved with findPayment when/if problem with searching is solved.',
                 __FUNCTION__
@@ -158,7 +158,7 @@ class GetPaymentTest extends TestCase
         );
 
         $payment = new Payment(
-            $this->expectedOrderReference,
+            id: $this->expectedOrderReference,
             created: '2022-08-16T09:31:47.829',
             storeId: $this->expectedStoreId,
             paymentMethodId: $this->expectedPaymentMethod,
@@ -192,8 +192,8 @@ class GetPaymentTest extends TestCase
             ),
             countryCode: 'SE'
         );
-        $getPayment->method('call')->willReturn($payment);
-        $response = $getPayment->call($this->expectedOrderReference);
+        $getPayment->method('call')->willReturn(value: $payment);
+        $response = $getPayment->call(orderReference: $this->expectedOrderReference);
         static::assertTrue(
             condition: $response instanceof Payment &&
             $response->id === $this->expectedOrderReference
@@ -210,14 +210,14 @@ class GetPaymentTest extends TestCase
      */
     public function testGetPaymentMockedBadCustomer(): void
     {
-        static::expectException(TypeError::class);
+        static::expectException(exception: TypeError::class);
         $expectedOrderReference = '92678aea-c7a2-4ec5-b5b5-406789610f63';
         $this->createMock(
             originalClassName: GetPayment::class
         );
 
         new Payment(
-            $expectedOrderReference,
+            id: $expectedOrderReference,
             created: '2022-08-16T09:31:47.829',
             storeId: $this->expectedStoreId,
             paymentMethodId: $this->expectedPaymentMethod,
