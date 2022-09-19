@@ -294,9 +294,12 @@ class RefundPaymentTest extends TestCase
             actual: $refundResponse->id
         );
         self::assertNotNull(actual: $refundResponse->order);
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         */
         self::assertEquals(
             expected: $transactionId,
-            actual: $refundResponse->order->actionLog->data[2]->transactionId
+            actual: $refundResponse->order->actionLog[2]->transactionId
         );
     }
 
@@ -341,9 +344,12 @@ class RefundPaymentTest extends TestCase
             actual: $refundResponse->id
         );
         self::assertNotNull(actual: $refundResponse->order);
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         */
         self::assertEquals(
             expected: $creator,
-            actual: $refundResponse->order->actionLog->data[2]->creator
+            actual: $refundResponse->order->actionLog[2]->creator
         );
     }
 }
