@@ -45,7 +45,6 @@ class Repository
      * @param string $storeId
      * @param string $orderReference
      * @param string $governmentId
-     * @param Search $api
      * @return Collection
      * @throws AuthException
      * @throws CurlException
@@ -57,11 +56,10 @@ class Repository
      */
     public static function search(
         string $storeId,
-        string $orderReference = '',
-        string $governmentId = '',
-        Search $api = new Search()
+        ?string $orderReference = null,
+        ?string $governmentId = null
     ): Collection {
-        return $api->call(
+        return (new Search())->call(
             storeId: $storeId,
             orderReference: $orderReference,
             governmentId: $governmentId
