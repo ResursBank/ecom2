@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -6,19 +7,20 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models;
+namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Payment\Application;
+use Resursbank\Ecom\Lib\Model\Payment\CoApplicant;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Information;
+use Resursbank\Ecom\Lib\Model\Payment\MetaData;
+use Resursbank\Ecom\Lib\Model\Payment\Order;
+use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Application;
-use Resursbank\Ecom\Module\Payment\Models\Payment\CoApplicant;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Customer;
-use Resursbank\Ecom\Module\Payment\Models\Payment\Information;
-use Resursbank\Ecom\Module\Payment\Models\Payment\MetaData;
 
 /**
  * Payment model used in the GET /payment call.
@@ -39,16 +41,18 @@ class Payment extends Model
      * @param Customer $customer
      * @param Status $status
      * @param array $paymentActions
+     * @param string|null $countryCode
      * @param Order|null $order
      * @param Application|null $application
      * @param Information|null $information
-     * @param string|null $countryCode
      * @param MetaData|null $metaData
      * @param CoApplicant|null $coApplicant
+     * @param TaskRedirectionUrls|null $taskRedirectionUrls
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @todo Solve problems with empty country code when using Search.
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly string $id,
@@ -64,6 +68,7 @@ class Payment extends Model
         public readonly ?Information $information = null,
         public readonly ?MetaData $metaData = null,
         public readonly ?CoApplicant $coApplicant = null,
+        public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
     ) {
         $this->validateId();
@@ -73,15 +78,22 @@ class Payment extends Model
 
     /**
      * Validate country.
+     *
+     * @todo Solve problems with empty country code when using Search.
      * @throws EmptyValueException|IllegalCharsetException
+     * @noinspection PhpUnusedPrivateMethodInspection
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @phpstan-ignore-next-line
      */
     private function validateCountryCode(): void
     {
-        $this->stringValidation->notEmpty(value: $this->countryCode);
-        $this->stringValidation->matchRegex(
-            value: $this->countryCode,
-            pattern: '/^[A-Z]{2}$/'
-        );
+        if ($this->countryCode !== null) {
+            $this->stringValidation->notEmpty(value: $this->countryCode);
+            $this->stringValidation->matchRegex(
+                value: $this->countryCode,
+                pattern: '/^[A-Z]{2}$/'
+            );
+        }
     }
 
     /**
@@ -111,12 +123,12 @@ class Payment extends Model
     /**
      * Validate that a string is an uuid and not empty.
      *
-     * @param $uuid
+     * @param string $uuid
      * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
-    private function validateUuid($uuid): void
+    private function validateUuid(string $uuid): void
     {
         $this->stringValidation->notEmpty(value: $uuid);
         $this->stringValidation->isUuid(value: $uuid);

@@ -5,9 +5,11 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection DuplicatedCode */
+
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Order\ActionLog;
+namespace Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -36,6 +38,7 @@ class OrderLine extends Model
      * @param StringValidation $stringValidation
      * @param FloatValidation $floatValidation
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo $quantity could be a float, or shift between float and int.
      *      We have no idea at the moment.
      */

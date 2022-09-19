@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection DuplicatedCode */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Validation;
@@ -76,7 +78,7 @@ class FloatValidation
 
     /**
      * Validates that a float value is within the given min and max range.
-     * 
+     *
      * @param float $value
      * @param float $min
      * @param float $max
@@ -105,7 +107,7 @@ class FloatValidation
     /**
      * Validates that a float value has a number of decimals within the given
      * min and max range.
-     * 
+     *
      * @param float $value
      * @param int $min
      * @param int $max

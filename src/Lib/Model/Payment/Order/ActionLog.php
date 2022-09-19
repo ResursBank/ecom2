@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Order;
+namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Payment\Models\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 
 /**
  * Defines an action log item

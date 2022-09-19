@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection DuplicatedCode */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Validation;
@@ -180,7 +182,7 @@ class StringValidation
                 "Length is $len. Allowed range is from $min to $max."
             );
         }
-        
+
         return true;
     }
 

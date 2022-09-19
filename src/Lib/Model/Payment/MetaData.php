@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Payment;
+namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -15,6 +15,10 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class MetaData extends Model
 {
+    /**
+     * @param string|null $creator
+     * @param array|null $custom
+     */
     public function __construct(
         public readonly ?string $creator = null,
         public readonly ?array $custom = null,

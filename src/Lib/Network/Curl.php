@@ -32,8 +32,8 @@ use function is_string;
  * Curl wrapper.
  *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
- * @noinspection PhpComplexClassInspection
  */
 class Curl
 {
@@ -52,11 +52,13 @@ class Curl
      * @param ApiType $apiType
      * @param StringValidation $stringValidation
      * @param ContentType|null $responseContentType
+     * @param bool $forceObject Enforces the JSON_FORCE_OBJECT flag on json_encode of payload
      * @throws AuthException
      * @throws CurlException
      * @throws JsonException
      * @throws ValidationException
      * @throws IllegalTypeException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
     public function __construct(
@@ -68,7 +70,8 @@ class Curl
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        public ?ContentType $responseContentType = null
+        public ?ContentType $responseContentType = null,
+        private readonly bool $forceObject = false
     ) {
         if ($this->responseContentType === null) {
             $this->responseContentType = $this->contentType;
@@ -92,6 +95,7 @@ class Curl
      */
     public function exec(): Response
     {
+        /** @noinspection DuplicatedCode */
         $body = curl_exec(handle: $this->ch);
 
         $this->handleError(body: $body); // We want to check for errors immediately after running curl_exec
@@ -133,6 +137,16 @@ class Curl
         curl_close(handle: $this->ch);
 
         return new Response(body: $body, code: $code);
+    }
+
+    /**
+     * Fetch CURLINFO_EFFECTIVE_URL
+     *
+     * @return string
+     */
+    public function getEffectiveUrl(): string
+    {
+        return curl_getinfo(handle: $this->ch, option: CURLINFO_EFFECTIVE_URL);
     }
 
     /**
@@ -262,6 +276,7 @@ class Curl
         array $headers,
         array $payload
     ): CurlHandle {
+        /** @noinspection DuplicatedCode */
         $ch = curl_init();
 
         $options = [
@@ -271,7 +286,7 @@ class Curl
             CURLOPT_AUTOREFERER => true, // Follow redirects.
             CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
             CURLOPT_HEADER => false, // Do not include header in output.
-            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_USERAGENT => Header::getUserAgent(),
             CURLOPT_HTTPHEADER => Header::getHeadersData(
@@ -324,7 +339,7 @@ class Curl
      */
     public function generateUrl(string $url, array $payload): string
     {
-        $url .= $this->hasBodyData()
+        $url .= $this->hasBodyData() || empty($payload)
             ? '' :
             '?' . $this->getPayloadData(payload: $payload);
 
@@ -391,12 +406,13 @@ class Curl
     public function getPayloadData(
         array $payload
     ): string {
+        $flags = JSON_THROW_ON_ERROR;
+        if ($this->forceObject) {
+            $flags = JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT;
+        }
         return match ($this->contentType) {
             ContentType::EMPTY, ContentType::RAW => '',
-            ContentType::JSON => json_encode(
-                value: $payload,
-                flags: JSON_THROW_ON_ERROR
-            ),
+            ContentType::JSON => json_encode($payload, JSON_THROW_ON_ERROR | $flags),
             ContentType::URL => http_build_query(data: $payload)
         };
     }
@@ -406,6 +422,7 @@ class Curl
      * @return void
      * @throws CurlException
      * @throws AuthException
+     * @throws IllegalTypeException
      */
     private function setAuth(CurlHandle $ch): void
     {
@@ -446,6 +463,7 @@ class Curl
      * @return void
      * @throws CurlException
      * @throws AuthException
+     * @throws IllegalTypeException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
@@ -475,6 +493,7 @@ class Curl
      */
     private function handleError(mixed $body = null): void
     {
+        /** @noinspection DuplicatedCode */
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
         $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
@@ -494,7 +513,7 @@ class Curl
             }
 
             throw new CurlException(
-                message: "CURL error (" . $throwCode . "): $msg",
+                message: 'CURL error (' . $throwCode . "): $msg",
                 code: ($code !== 0 ? $throwCode : $httpCode),
                 requestBody: is_string($body) ? $body : null
             );

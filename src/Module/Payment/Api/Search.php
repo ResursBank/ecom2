@@ -17,15 +17,16 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\PaymentCollection;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
-use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+
 use function is_array;
 
 /**
@@ -54,22 +55,26 @@ class Search
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function call(string $storeId, string $orderReference = '', string $governmentId = ''): Collection
-    {
-        if (trim($governmentId) !== '') {
+    public function call(
+        string $storeId,
+        ?string $orderReference = null,
+        ?string $governmentId = null
+    ): Collection {
+        $payload = [];
+        if ($governmentId && trim($governmentId) !== '') {
             $payload['governmentId'] = $governmentId;
         }
-        if (trim($orderReference) !== '') {
+        if ($orderReference && trim($orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
         $payload['storeId'] = $storeId;
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE, $storeId)
+                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE)
             ),
             requestMethod: RequestMethod::POST,
-            payload: $payload ?? [],
+            payload: $payload,
             contentType: ContentType::JSON,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON

@@ -6,6 +6,7 @@
  */
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
+/** @noinspection EfferentObjectCouplingInspection */
 
 declare(strict_types=1);
 
@@ -36,11 +37,18 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
 
-class SearchTest extends TestCase
+/**
+ * Tests for MAPI Payment Cancel class
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.Superglobals)
+ */
+class CancelTest extends TestCase
 {
-    private const GOVERNMENT_ID = '198305147715';
-
     /**
      * @throws EmptyValueException
      */
@@ -72,23 +80,26 @@ class SearchTest extends TestCase
     }
 
     /**
+     * Make API call to create payment
+     *
      * @param string $orderReference
      * @return Payment
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ApiException
-     * @throws IllegalValueException
      */
     private function createPayment(string $orderReference): Payment
     {
+        /** @noinspection DuplicatedCode */
         return Repository::create(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -124,7 +135,7 @@ class SearchTest extends TestCase
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs',
-                governmentId: self::GOVERNMENT_ID,
+                governmentId: '198305147715',
                 mobilePhone: '46701234567',
                 deviceInfo: new Customer\DeviceInfo()
             )
@@ -132,19 +143,20 @@ class SearchTest extends TestCase
     }
 
     /**
-     * Reference is currently required to have if we want to run live tests.
-     *
+     * Verify that canceling an entire payment works as intended
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
      * @throws Exception
      */
-    public function testSearchOrderReference(): void
+    public function testCancelEntirePayment(): void
     {
         // Create payment
         $orderReference = $this->generateOrderReference();
@@ -153,30 +165,47 @@ class SearchTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Try to find the order
-        sleep(seconds: 3);
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference
-        );
+        // Cancel payment
+        $response = Repository::cancel(paymentId: $payment->id);
 
-        $this->assertEquals(
+        // Assert that cancel went through
+        self::assertEquals(
             expected: $payment->id,
-            actual: $paymentCollection[0]->id
+            actual: $response->id
+        );
+        self::assertNotNull(actual: $response->order);
+        self::assertNotNull(actual: $payment->order);
+        /** @psalm-suppress MixedPropertyFetch */
+        self::assertEquals(
+            expected: 'CANCEL',
+            actual: $response->order->actionLog[1]->type
+        );
+        self::assertEquals(
+            expected: $payment->order->totalOrderAmount,
+            actual: $response->order->totalOrderAmount
+        );
+        self::assertEquals(
+            expected: $response->order->totalOrderAmount,
+            actual: $response->order->canceledAmount
         );
     }
 
     /**
-     * @throws ValidationException
+     * Verify that cancelling a single order line works as intended
+     *
+     * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws JsonException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
      * @throws ReflectionException
      * @throws Exception
      */
-    public function testSearchWithGovernmentId(): void
+    public function testCancelWithOrderLines(): void
     {
         // Create payment
         $orderReference = $this->generateOrderReference();
@@ -185,17 +214,91 @@ class SearchTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Try to find the order
-        sleep(seconds: 3);
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference,
-            governmentId: self::GOVERNMENT_ID
+        // Cancel one order line
+        $orderLine = new ActionLogOrderLine(
+            description: 'Android',
+            reference: 'T-800',
+            quantityUnit: 'st',
+            quantity: 2.00,
+            vatRate: 25.00,
+            unitAmountIncludingVat: 150.75,
+            totalAmountIncludingVat: 301.5,
+            totalVatAmount: 60.3,
+            type: OrderLineType::PHYSICAL_GOODS
+        );
+        $response = Repository::cancel(
+            paymentId: $payment->id,
+            orderLines: new ActionLogOrderLineCollection(data: [$orderLine])
         );
 
-        $this->assertEquals(
+        // Assert that cancel went through
+        self::assertEquals(
             expected: $payment->id,
-            actual: $paymentCollection[0]->id
+            actual: $response->id
+        );
+        self::assertNotNull(actual: $response->order);
+        self::assertNotNull(actual: $payment->order);
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        self::assertEquals(
+            expected: $payment->order->actionLog[0]->orderLines[0],
+            actual: $response->order->actionLog[1]->orderLines[0]
+        );
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        self::assertEquals(
+            expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
+            actual: $response->order->canceledAmount
+        );
+    }
+
+    /**
+     * Verify that canceling with creator argument results in specified creator value being present in action log
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testCancelWithCreator(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Cancel order
+        $creator = 'Foobar';
+        $response = Repository::cancel(
+            paymentId: $payment->id,
+            creator: $creator
+        );
+
+        // Assert that creator argument is present in action log
+        self::assertEquals(
+            expected: $payment->id,
+            actual: $response->id
+        );
+        self::assertNotNull(
+            actual: $response->order
+        );
+        /** @psalm-suppress MixedPropertyFetch */
+        self::assertEquals(
+            expected: $creator,
+            actual: $response->order->actionLog[1]->creator
         );
     }
 }

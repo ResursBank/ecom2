@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -16,19 +17,18 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\Payment;
 use stdClass;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
  * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
  */
-class GetPayment
+class Get
 {
     /**
      * @param Mapi $mapi
@@ -39,7 +39,7 @@ class GetPayment
     }
 
     /**
-     * @param string $orderReference
+     * @param string $paymentId
      * @return Payment
      * @throws AuthException
      * @throws CurlException
@@ -49,11 +49,11 @@ class GetPayment
      * @throws ValidationException
      * @throws JsonException
      */
-    public function call(string $orderReference): Payment
+    public function call(string $paymentId): Payment
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s', Mapi::PAYMENT_ROUTE, $orderReference)
+                route: sprintf('%s/payments/%s', Mapi::PAYMENT_ROUTE, $paymentId)
             ),
             requestMethod: RequestMethod::GET,
             authType: AuthType::JWT,
@@ -67,12 +67,12 @@ class GetPayment
         ) ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
-            $content,
+            object: $content,
             type: Payment::class
         );
 
         if (!$result instanceof Payment) {
-            throw new InvalidTypeException(message: 'Expected PaymentCollection.');
+            throw new IllegalTypeException(message: 'Expected PaymentCollection.');
         }
 
         return $result;

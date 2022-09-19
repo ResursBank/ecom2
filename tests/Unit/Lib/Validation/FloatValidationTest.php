@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection DuplicatedCode */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Validation;
@@ -18,6 +20,7 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
 /**
  * Test float validation methods.
  *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @psalm-suppress PropertyNotSetInConstructor
  */
 final class FloatValidationTest extends TestCase
@@ -84,8 +87,104 @@ final class FloatValidationTest extends TestCase
     }
 
     /**
-     * Assert isPositive() throws IllegalValueException when the value is
-     * negative.
+     * Assert inRange() throws IllegalValueException when max is less than min.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeThrowsIfMaxIsLessThanMin(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->inRange(value: 10.0, min: 10, max: 5);
+    }
+
+    /**
+     * Assert inRange() throws IllegalValueException when the value is out of
+     * range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeThrowsIfValueIsOutOfRange(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->inRange(value: 10.0, min: 0, max: 5);
+    }
+
+    /**
+     * Assert inRange() returns true when the value is in the given range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testInRangeReturnsTrueWhenValueInRange(): void
+    {
+        self::assertTrue(
+            condition: $this->floatValidation->inRange(
+                value: 10.0,
+                min: 5,
+                max: 10,
+            )
+        );
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when max is less than min.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsIfMaxIsLessThanMin(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->length(value: 10.0, min: 10, max: 5);
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when given a min value that
+     * is negative.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsIfMinIsNegative(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->length(value: 10.0, min: -1, max: 5);
+    }
+
+    /**
+     * Assert length() throws IllegalValueException when the value is out of
+     * range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthThrowsIfValueIsOutOfRange(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->floatValidation->length(value: 10.1, min: 2, max: 3);
+    }
+
+    /**
+     * Assert length() returns true when the value is in the given range.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testLengthReturnsTrueWhenValueInRange(): void
+    {
+        self::assertTrue(
+            condition: $this->floatValidation->length(
+                value: 10.123,
+                min: 2,
+                max: 5,
+            )
+        );
+    }
+
+    /**
+     * Assert isPositive() throws IllegalValueException when the value is negative.
      *
      * @return void
      * @throws IllegalValueException

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -6,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Payment;
+namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -15,6 +16,13 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class CoApplicant extends Model
 {
+    /**
+     * @param string $governmentId
+     * @param string $mobilePhone
+     * @param string $phone
+     * @param string $email
+     * @param Identification|null $identification
+     */
     public function __construct(
         public readonly string $governmentId,
         public readonly string $mobilePhone,

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\Payment;
+namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -17,14 +17,14 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Application extends Model
 {
     /**
-     * @param int $approvedCreditLimit
      * @param float $requestedCreditLimit
-     * @param int $reference Credit application reference (int64).
+     * @param int|null $approvedCreditLimit
+     * @param int|null $reference Credit application reference (int64).
      */
     public function __construct(
-        public readonly int $approvedCreditLimit,
         public readonly float $requestedCreditLimit,
-        public readonly int $reference,
+        public readonly ?int $approvedCreditLimit = null,
+        public readonly ?int $reference = null,
     ) {
     }
 }
