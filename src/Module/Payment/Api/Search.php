@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -31,6 +32,8 @@ use function is_array;
 
 /**
  * POST /payments/find_payment for looking up payments in MAPI. Can be used to find legacy payments.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Search
 {
@@ -57,25 +60,31 @@ class Search
      */
     public function call(string $storeId, string $orderReference = '', string $governmentId = ''): Collection
     {
+        $payload = [];
+
+        /** @noinspection DuplicatedCode */
         if (trim($governmentId) !== '') {
             $payload['governmentId'] = $governmentId;
         }
         if (trim($orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
+
         $payload['storeId'] = $storeId;
 
+        /** @noinspection PrintfScanfArgumentsInspection */
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE, $storeId)
             ),
             requestMethod: RequestMethod::POST,
-            payload: $payload ?? [],
+            payload: $payload,
             contentType: ContentType::JSON,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON
         );
 
+        /** @noinspection DuplicatedCode */
         $data = $curl->exec()->body;
 
         $content = (

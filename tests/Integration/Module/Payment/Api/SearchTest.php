@@ -18,7 +18,6 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -26,8 +25,14 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Repository;
 
+/**
+ * @SuppressWarnings(PHPMD.Superglobals)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class SearchTest extends TestCase
 {
     /**
@@ -60,7 +65,7 @@ class SearchTest extends TestCase
     }
 
     /**
-     * Special functions that makes sure some of the tests being made here is limited to a specific account.
+     * Special functions that makes sure some tests being made here is limited to a specific account.
      * This will be changed when we find a simpler way to search for payments.
      *
      * @return bool
@@ -71,14 +76,14 @@ class SearchTest extends TestCase
     }
 
     /**
-     * @param $func
+     * @param string $func
      * @return void
      */
-    private function markLiveAccountSkipped($func): void
+    private function markLiveAccountSkipped(string $func): void
     {
         if (!$this->verifyLiveAccount()) {
             static::markTestSkipped(
-                sprintf(
+                message: sprintf(
                     'Can not run live test for %s since we can not do a proper search for random orders. Current ' .
                     'search is restricted to specific orders only.',
                     $func
@@ -106,20 +111,20 @@ class SearchTest extends TestCase
         $expectedId = '9e744903-b9be-431a-a11d-a210f92ecbc3';
 
         if ($this->verifyLiveAccount()) {
-            if (!empty($orderReference)) {
-                $paymentCollection = Repository::search(
-                    $this->getStoreId(),
-                    $orderReference
-                );
+            $paymentCollection = Repository::search(
+                storeId: $this->getStoreId(),
+                orderReference: $orderReference
+            );
 
-                $payment = $paymentCollection->current();
-                static::assertTrue(
-                    $expectedId === $payment->id &&
-                    $payment->customer->customerType === 'NATURAL'
-                );
-            }
+            /** @var Payment $payment */
+            $payment = $paymentCollection->current();
+
+            static::assertTrue(
+                condition: $expectedId === $payment->id &&
+                $payment->customer->customerType === CustomerType::NATURAL
+            );
         }
-        $this->markLiveAccountSkipped(__FUNCTION__);
+        $this->markLiveAccountSkipped(func: __FUNCTION__);
     }
 
     /**
@@ -139,22 +144,20 @@ class SearchTest extends TestCase
         $expectedId = 'f3b7dd6b-dc21-4813-9b94-99ffeb4b28d0';
 
         if ($this->verifyLiveAccount()) {
-            if (!empty($orderReference)) {
-                $paymentCollection = Repository::search(
-                    $this->getStoreId(),
-                    $orderReference
-                );
+            $paymentCollection = Repository::search(
+                storeId: $this->getStoreId(),
+                orderReference: $orderReference
+            );
 
-                /** @var \Resursbank\Ecom\Lib\Model\Payment $payment */
-                $payment = $paymentCollection->current();
+            /** @var Payment $payment */
+            $payment = $paymentCollection->current();
 
-                static::assertTrue(
-                    $expectedId === $payment->id &&
-                    $payment->customer->customerType === 'LEGAL'
-                );
-            }
+            static::assertTrue(
+                condition: $expectedId === $payment->id &&
+                $payment->customer->customerType === CustomerType::LEGAL
+            );
         }
-        $this->markLiveAccountSkipped(__FUNCTION__);
+        $this->markLiveAccountSkipped(func: __FUNCTION__);
     }
 
     /**
@@ -178,22 +181,20 @@ class SearchTest extends TestCase
         $expectedId = '6f3269c4-30df-429e-898b-7a63371422b5';
 
         if ($this->verifyLiveAccount()) {
-            if (!empty($orderReference)) {
-                $paymentCollection = Repository::search(
-                    $this->getStoreId(),
-                    $orderReference
-                );
+            $paymentCollection = Repository::search(
+                storeId: $this->getStoreId(),
+                orderReference: $orderReference
+            );
 
-                /** @var \Resursbank\Ecom\Lib\Model\Payment $payment */
-                $payment = $paymentCollection->current();
+            /** @var Payment $payment */
+            $payment = $paymentCollection->current();
 
-                static::assertTrue(
-                    $expectedId === $payment->id &&
-                    $payment->customer->customerType === 'NATURAL'
-                );
-            }
+            static::assertTrue(
+                condition: $expectedId === $payment->id &&
+                $payment->customer->customerType === CustomerType::NATURAL
+            );
         }
-        $this->markLiveAccountSkipped(__FUNCTION__);
+        $this->markLiveAccountSkipped(func: __FUNCTION__);
     }
 
     /**
@@ -212,14 +213,14 @@ class SearchTest extends TestCase
      */
     public function testSearchFreely(): void
     {
-        static::expectException(CollectionException::class);
+        $this->expectException(CollectionException::class);
         if ($this->verifyLiveAccount()) {
             $paymentCollection = Repository::search(
-                $this->getStoreId()
+                storeId: $this->getStoreId()
             );
 
             $paymentCollection->current();
         }
-        $this->markLiveAccountSkipped(__FUNCTION__);
+        $this->markLiveAccountSkipped(func: __FUNCTION__);
     }
 }

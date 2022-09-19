@@ -40,17 +40,25 @@ class OrderLineTest extends TestCase
     protected function setUp(): void
     {
         /** @var array $data */
-        $data = json_decode(json_encode(new OrderLine(
-            description: 'Item',
-            reference: 'I-200',
-            quantityUnit: 'st',
-            quantity: 1,
-            vatRate: 10,
-            unitAmountIncludingVat: 10,
-            totalAmountIncludingVat: 11,
-            totalVatAmount: 1,
-            type: OrderLineType::NORMAL
-        ), JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode(
+            json: json_encode(
+                value: new OrderLine(
+                    description: 'Item',
+                    reference: 'I-200',
+                    quantityUnit: 'st',
+                    quantity: 1,
+                    vatRate: 10,
+                    unitAmountIncludingVat: 10,
+                    totalAmountIncludingVat: 11,
+                    totalVatAmount: 1,
+                    type: OrderLineType::NORMAL
+                ),
+                flags: JSON_THROW_ON_ERROR
+            ),
+            associative: true,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
 
         self::$data = $data;
 

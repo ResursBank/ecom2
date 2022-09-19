@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -23,7 +24,6 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
  * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
@@ -67,12 +67,12 @@ class GetPayment
         ) ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
-            $content,
+            object: $content,
             type: Payment::class
         );
 
         if (!$result instanceof Payment) {
-            throw new InvalidTypeException(message: 'Expected PaymentCollection.');
+            throw new IllegalTypeException(message: 'Expected PaymentCollection.');
         }
 
         return $result;

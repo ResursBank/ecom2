@@ -407,6 +407,7 @@ class OrderLineTest extends TestCase
     public function testTypeWasAssigned(): void
     {
         $this->convert();
+        self::assertNotNull(actual: $this->item->type);
         self::assertSame(
             expected: $this->data->type,
             actual: $this->item->type->value

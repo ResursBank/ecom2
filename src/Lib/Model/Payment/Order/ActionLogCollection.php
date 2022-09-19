@@ -19,13 +19,11 @@ class ActionLogCollection extends Collection
 {
     /**
      * @param array<int, ActionLog> $data
-     * @param string $type
      * @throws IllegalTypeException
      */
     public function __construct(
-        public readonly array $data,
-        protected string $type = ActionLog::class
+        public readonly array $data
     ) {
-        parent::__construct(data: $data, type: $type);
+        parent::__construct(data: $data, type: ActionLog::class);
     }
 }

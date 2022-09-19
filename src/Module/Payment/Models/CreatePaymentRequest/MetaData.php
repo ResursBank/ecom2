@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -42,7 +43,7 @@ class MetaData extends Model
     private function validateCreator(): void
     {
         if ($this->creator !== null) {
-            $this->stringValidation->length($this->creator, 0, 50);
+            $this->stringValidation->length(value: $this->creator, min: 0, max: 50);
         }
     }
 
@@ -53,7 +54,7 @@ class MetaData extends Model
     private function validateCustom(): void
     {
         if ($this->custom !== null) {
-            $this->arrayValidation->isAssoc($this->custom);
+            $this->arrayValidation->isAssoc(data: $this->custom);
         }
     }
 }

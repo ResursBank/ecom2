@@ -6,6 +6,7 @@
  */
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
+/** @noinspection EfferentObjectCouplingInspection */
 
 declare(strict_types=1);
 
@@ -44,6 +45,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as Act
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.Superglobals)
  */
 class RefundPaymentTest extends TestCase
 {
@@ -95,9 +97,10 @@ class RefundPaymentTest extends TestCase
      */
     private function createPayment(string $orderReference): Payment
     {
+        /** @noinspection DuplicatedCode */
         return Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -171,17 +174,17 @@ class RefundPaymentTest extends TestCase
         $refundResponse = Repository::refund(paymentId: $payment->id);
 
         // Assert that entire payment has been refunded
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $refundResponse->order
         );
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $payment->order
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->order->totalOrderAmount,
             actual: $refundResponse->order->refundedAmount
         );
@@ -234,14 +237,17 @@ class RefundPaymentTest extends TestCase
         );
 
         // Assert that only specified order line has been refunded
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $refundResponse->order
         );
-        $this->assertEquals(
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         */
+        self::assertEquals(
             expected: $orderLines[0]->totalAmountIncludingVat,
             actual: $refundResponse->order->refundedAmount
         );
@@ -265,6 +271,7 @@ class RefundPaymentTest extends TestCase
     public function testRefundWithTransactionId(): void
     {
         // Create payment
+        /** @noinspection DuplicatedCode */
         $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
 
@@ -282,14 +289,14 @@ class RefundPaymentTest extends TestCase
         );
 
         // Assert that transaction id is present in action log
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        $this->assertNotNull(actual: $refundResponse->order);
-        $this->assertEquals(
+        self::assertNotNull(actual: $refundResponse->order);
+        self::assertEquals(
             expected: $transactionId,
-            actual: $refundResponse->order->actionLog[2]->transactionId
+            actual: $refundResponse->order->actionLog->data[2]->transactionId
         );
     }
 
@@ -311,6 +318,7 @@ class RefundPaymentTest extends TestCase
     public function testRefundWithCreator(): void
     {
         // Create payment
+        /** @noinspection DuplicatedCode */
         $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
 
@@ -328,14 +336,14 @@ class RefundPaymentTest extends TestCase
         );
 
         // Assert that transaction id is present in action log
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        $this->assertNotNull(actual: $refundResponse->order);
-        $this->assertEquals(
+        self::assertNotNull(actual: $refundResponse->order);
+        self::assertEquals(
             expected: $creator,
-            actual: $refundResponse->order->actionLog[2]->creator
+            actual: $refundResponse->order->actionLog->data[2]->creator
         );
     }
 }

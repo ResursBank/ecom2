@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -40,7 +41,7 @@ class DeviceInfo extends Model
     private function validateUserAgent(): void
     {
         if ($this->userAgent !== null) {
-            $this->stringValidation->length($this->userAgent, 1, 200);
+            $this->stringValidation->length(value: $this->userAgent, min: 1, max: 200);
         }
     }
 }

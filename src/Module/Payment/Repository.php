@@ -36,6 +36,8 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCo
 
 /**
  * Payment repository.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {
@@ -86,7 +88,7 @@ class Repository
         $api = new GetPayment();
         try {
             return $api->call(
-                $orderReference
+                orderReference: $orderReference
             );
         } catch (Exception $e) {
             self::logException(exception: $e);
@@ -106,6 +108,7 @@ class Repository
      * @throws JsonException
      * @throws ApiException
      * @throws ReflectionException
+     * @noinspection PhpTooManyParametersInspection
      */
     public static function createPayment(
         string $storeId,
@@ -196,7 +199,7 @@ class Repository
      * @param ActionLogOrderLineCollection|null $orderLines
      * @param string|null $creator
      * @param string|null $transactionId
-     * @return \Resursbank\Ecom\Lib\Model\Payment
+     * @return Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

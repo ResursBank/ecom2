@@ -44,9 +44,9 @@ class Application extends Model
     {
         if ($this->requestedCreditLimit !== null) {
             $this->intValidation->inRange(
-                $this->requestedCreditLimit,
-                1,
-                9999999999
+                value: $this->requestedCreditLimit,
+                min: 1,
+                max: 9999999999
             );
         }
     }
@@ -58,7 +58,7 @@ class Application extends Model
     private function validateApplicationData(): void
     {
         if ($this->applicationData !== null) {
-            $this->arrayValidation->isAssoc($this->applicationData);
+            $this->arrayValidation->isAssoc(data: $this->applicationData);
         }
     }
 }

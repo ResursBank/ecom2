@@ -32,8 +32,8 @@ use function is_string;
  * Curl wrapper.
  *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
- * @noinspection PhpComplexClassInspection
  */
 class Curl
 {
@@ -58,6 +58,7 @@ class Curl
      * @throws JsonException
      * @throws ValidationException
      * @throws IllegalTypeException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
     public function __construct(
@@ -94,6 +95,7 @@ class Curl
      */
     public function exec(): Response
     {
+        /** @noinspection DuplicatedCode */
         $body = curl_exec(handle: $this->ch);
 
         $this->handleError(body: $body); // We want to check for errors immediately after running curl_exec
@@ -274,6 +276,7 @@ class Curl
         array $headers,
         array $payload
     ): CurlHandle {
+        /** @noinspection DuplicatedCode */
         $ch = curl_init();
 
         $options = [
@@ -409,10 +412,7 @@ class Curl
         }
         return match ($this->contentType) {
             ContentType::EMPTY, ContentType::RAW => '',
-            ContentType::JSON => json_encode(
-                value: $payload,
-                flags: $flags
-            ),
+            ContentType::JSON => json_encode($payload, JSON_THROW_ON_ERROR | $flags),
             ContentType::URL => http_build_query(data: $payload)
         };
     }
@@ -422,6 +422,7 @@ class Curl
      * @return void
      * @throws CurlException
      * @throws AuthException
+     * @throws IllegalTypeException
      */
     private function setAuth(CurlHandle $ch): void
     {
@@ -462,6 +463,7 @@ class Curl
      * @return void
      * @throws CurlException
      * @throws AuthException
+     * @throws IllegalTypeException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
@@ -491,6 +493,7 @@ class Curl
      */
     private function handleError(mixed $body = null): void
     {
+        /** @noinspection DuplicatedCode */
         $msg = curl_error(handle: $this->ch);
         $code = curl_errno(handle: $this->ch);
         $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
@@ -510,7 +513,7 @@ class Curl
             }
 
             throw new CurlException(
-                message: "CURL error (" . $throwCode . "): $msg",
+                message: 'CURL error (' . $throwCode . "): $msg",
                 code: ($code !== 0 ? $throwCode : $httpCode),
                 requestBody: is_string($body) ? $body : null
             );

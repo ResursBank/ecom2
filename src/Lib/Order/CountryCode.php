@@ -1,9 +1,12 @@
-<?php /** @noinspection PhpCSValidationInspection */
+<?php
 
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
+
+/** @noinspection PhpCSValidationInspection */
+/** @noinspection DuplicatedCode */
 
 declare(strict_types=1);
 

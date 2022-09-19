@@ -19,10 +19,10 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 class Customer extends Model
 {
     /**
-     * @param string $customerType
-     * @param string $email
-     * @param string $governmentId
-     * @param string $mobilePhone
+     * @param CustomerType $customerType
+     * @param string|null $email
+     * @param string|null $governmentId
+     * @param string|null $mobilePhone
      * @param Address|null $deliveryAddress Delivery address can be unset in some occasions.
      * @param Identification|null $identification
      * @param string|null $phone

@@ -6,6 +6,7 @@
  */
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
+/** @noinspection EfferentObjectCouplingInspection */
 
 declare(strict_types=1);
 
@@ -44,6 +45,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrde
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.Superglobals)
  */
 class CancelPaymentTest extends TestCase
 {
@@ -94,9 +96,10 @@ class CancelPaymentTest extends TestCase
      */
     private function createPayment(string $orderReference): Payment
     {
+        /** @noinspection DuplicatedCode */
         return Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -166,21 +169,22 @@ class CancelPaymentTest extends TestCase
         $response = Repository::cancel(paymentId: $payment->id);
 
         // Assert that cancel went through
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        $this->assertNotNull(actual: $response->order);
-        $this->assertNotNull(actual: $payment->order);
-        $this->assertEquals(
+        self::assertNotNull(actual: $response->order);
+        self::assertNotNull(actual: $payment->order);
+        /** @psalm-suppress MixedPropertyFetch */
+        self::assertEquals(
             expected: 'CANCEL',
             actual: $response->order->actionLog[1]->type
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->order->totalOrderAmount,
             actual: $response->order->totalOrderAmount
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: $response->order->totalOrderAmount,
             actual: $response->order->canceledAmount
         );
@@ -228,17 +232,25 @@ class CancelPaymentTest extends TestCase
         );
 
         // Assert that cancel went through
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        $this->assertNotNull(actual: $response->order);
-        $this->assertNotNull(actual: $payment->order);
-        $this->assertEquals(
+        self::assertNotNull(actual: $response->order);
+        self::assertNotNull(actual: $payment->order);
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        self::assertEquals(
             expected: $payment->order->actionLog[0]->orderLines[0],
             actual: $response->order->actionLog[1]->orderLines[0]
         );
-        $this->assertEquals(
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        self::assertEquals(
             expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
             actual: $response->order->canceledAmount
         );
@@ -269,21 +281,22 @@ class CancelPaymentTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         // Cancel order
-        $creator = "Foobar";
+        $creator = 'Foobar';
         $response = Repository::cancel(
             paymentId: $payment->id,
             creator: $creator
         );
 
         // Assert that creator argument is present in action log
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $response->order
         );
-        $this->assertEquals(
+        /** @psalm-suppress MixedPropertyFetch */
+        self::assertEquals(
             expected: $creator,
             actual: $response->order->actionLog[1]->creator
         );

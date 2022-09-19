@@ -25,10 +25,11 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
  * POST /payments/{payment_id}/cancel
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Cancel
 {
@@ -87,7 +88,7 @@ class Cancel
         );
 
         if (!$result instanceof Payment) {
-            throw new InvalidTypeException(message: "Exptected Payment");
+            throw new IllegalTypeException(message: 'Expected Payment');
         }
 
         return $result;

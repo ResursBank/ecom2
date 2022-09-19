@@ -49,7 +49,7 @@ class Options extends Model
     private function validateTimeToLiveInMinutes(): void
     {
         if ($this->timeToLiveInMinutes !== null) {
-            $this->intValidation->inRange($this->timeToLiveInMinutes, 1, 43200);
+            $this->intValidation->inRange(value: $this->timeToLiveInMinutes, min: 1, max: 43200);
         }
     }
 }

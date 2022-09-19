@@ -38,11 +38,6 @@ use function json_encode;
 class OrderTest extends TestCase
 {
     /**
-     * @var OrderModel
-     */
-    private OrderModel $item;
-
-    /**
      * @var stdClass
      */
     private stdClass $data;
@@ -84,8 +79,6 @@ class OrderTest extends TestCase
                 message: 'Conversion succeeded but did not return Order instance.'
             );
         }
-
-        $this->item = $item;
     }
 
     /**
