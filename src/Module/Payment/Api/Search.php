@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -19,12 +18,12 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\PaymentCollection;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Models\PaymentCollection;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
@@ -32,8 +31,6 @@ use function is_array;
 
 /**
  * POST /payments/find_payment for looking up payments in MAPI. Can be used to find legacy payments.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Search
 {
@@ -58,24 +55,23 @@ class Search
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function call(string $storeId, string $orderReference = '', string $governmentId = ''): Collection
-    {
+    public function call(
+        string $storeId,
+        ?string $orderReference = null,
+        ?string $governmentId = null
+    ): Collection {
         $payload = [];
-
-        /** @noinspection DuplicatedCode */
-        if (trim($governmentId) !== '') {
+        if ($governmentId && trim($governmentId) !== '') {
             $payload['governmentId'] = $governmentId;
         }
-        if (trim($orderReference) !== '') {
+        if ($orderReference && trim($orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
-
         $payload['storeId'] = $storeId;
 
-        /** @noinspection PrintfScanfArgumentsInspection */
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE, $storeId)
+                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE)
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,
@@ -84,7 +80,6 @@ class Search
             responseContentType: ContentType::JSON
         );
 
-        /** @noinspection DuplicatedCode */
         $data = $curl->exec()->body;
 
         $content = (

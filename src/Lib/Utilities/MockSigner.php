@@ -56,7 +56,7 @@ class MockSigner
             search: 'authenticate',
             replace: 'doAuth',
             subject: $redirectUrl
-        ) . '&govId=' . ($payment->customer->governmentId || '');
+        ) . '&govId=' . $payment->customer->governmentId;
 
         $curl = new Curl(
             url: $realAuthUrl,

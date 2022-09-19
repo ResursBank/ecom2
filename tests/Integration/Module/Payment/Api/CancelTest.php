@@ -37,20 +37,19 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
 
 /**
- * Tests for MAPI Payment Refund class
+ * Tests for MAPI Payment Cancel class
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.Superglobals)
  */
-class RefundPaymentTest extends TestCase
+class CancelTest extends TestCase
 {
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -98,7 +97,7 @@ class RefundPaymentTest extends TestCase
     private function createPayment(string $orderReference): Payment
     {
         /** @noinspection DuplicatedCode */
-        return Repository::createPayment(
+        return Repository::create(
             storeId: (string) $_ENV['STORE_ID'],
             paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
@@ -144,8 +143,7 @@ class RefundPaymentTest extends TestCase
     }
 
     /**
-     * Verify that refunding an entire order works as intended
-     *
+     * Verify that canceling an entire payment works as intended
      * @return void
      * @throws ApiException
      * @throws AuthException
@@ -153,12 +151,12 @@ class RefundPaymentTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws JsonException
      * @throws ValidationException
+     * @throws JsonException
      * @throws ReflectionException
      * @throws Exception
      */
-    public function testRefundEntirePayment(): void
+    public function testCancelEntirePayment(): void
     {
         // Create payment
         $orderReference = $this->generateOrderReference();
@@ -167,31 +165,33 @@ class RefundPaymentTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Capture payment
-        Repository::capture(paymentId: $payment->id);
+        // Cancel payment
+        $response = Repository::cancel(paymentId: $payment->id);
 
-        // Refund entire payment
-        $refundResponse = Repository::refund(paymentId: $payment->id);
-
-        // Assert that entire payment has been refunded
+        // Assert that cancel went through
         self::assertEquals(
             expected: $payment->id,
-            actual: $refundResponse->id
+            actual: $response->id
         );
-        self::assertNotNull(
-            actual: $refundResponse->order
-        );
-        self::assertNotNull(
-            actual: $payment->order
+        self::assertNotNull(actual: $response->order);
+        self::assertNotNull(actual: $payment->order);
+        /** @psalm-suppress MixedPropertyFetch */
+        self::assertEquals(
+            expected: 'CANCEL',
+            actual: $response->order->actionLog[1]->type
         );
         self::assertEquals(
             expected: $payment->order->totalOrderAmount,
-            actual: $refundResponse->order->refundedAmount
+            actual: $response->order->totalOrderAmount
+        );
+        self::assertEquals(
+            expected: $response->order->totalOrderAmount,
+            actual: $response->order->canceledAmount
         );
     }
 
     /**
-     * Verify that refunding a single captured order line works
+     * Verify that cancelling a single order line works as intended
      *
      * @return void
      * @throws ApiException
@@ -200,12 +200,12 @@ class RefundPaymentTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
      * @throws Exception
      */
-    public function testRefundSingleOrderLine(): void
+    public function testCancelWithOrderLines(): void
     {
         // Create payment
         $orderReference = $this->generateOrderReference();
@@ -214,47 +214,50 @@ class RefundPaymentTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Capture
-        Repository::capture(paymentId: $payment->id);
-
-        // Refund single order line
-        $orderLines = new ActionLogOrderLineCollection([
-            new ActionLogOrderLine(
-                description: 'Android',
-                reference: 'T-800',
-                quantityUnit: 'st',
-                quantity: 2.00,
-                vatRate: 25.00,
-                unitAmountIncludingVat: 150.75,
-                totalAmountIncludingVat: 301.5,
-                totalVatAmount: 60.3,
-                type: OrderLineType::PHYSICAL_GOODS
-            )
-        ]);
-        $refundResponse = Repository::refund(
+        // Cancel one order line
+        $orderLine = new ActionLogOrderLine(
+            description: 'Android',
+            reference: 'T-800',
+            quantityUnit: 'st',
+            quantity: 2.00,
+            vatRate: 25.00,
+            unitAmountIncludingVat: 150.75,
+            totalAmountIncludingVat: 301.5,
+            totalVatAmount: 60.3,
+            type: OrderLineType::PHYSICAL_GOODS
+        );
+        $response = Repository::cancel(
             paymentId: $payment->id,
-            orderLines: $orderLines
+            orderLines: new ActionLogOrderLineCollection(data: [$orderLine])
         );
 
-        // Assert that only specified order line has been refunded
+        // Assert that cancel went through
         self::assertEquals(
             expected: $payment->id,
-            actual: $refundResponse->id
+            actual: $response->id
         );
-        self::assertNotNull(
-            actual: $refundResponse->order
+        self::assertNotNull(actual: $response->order);
+        self::assertNotNull(actual: $payment->order);
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        self::assertEquals(
+            expected: $payment->order->actionLog[0]->orderLines[0],
+            actual: $response->order->actionLog[1]->orderLines[0]
         );
         /**
          * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
          */
         self::assertEquals(
-            expected: $orderLines[0]->totalAmountIncludingVat,
-            actual: $refundResponse->order->refundedAmount
+            expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
+            actual: $response->order->canceledAmount
         );
     }
 
     /**
-     * Verify that refunding with a transaction id works
+     * Verify that canceling with creator argument results in specified creator value being present in action log
      *
      * @return void
      * @throws ApiException
@@ -268,88 +271,34 @@ class RefundPaymentTest extends TestCase
      * @throws ValidationException
      * @throws Exception
      */
-    public function testRefundWithTransactionId(): void
+    public function testCancelWithCreator(): void
     {
         // Create payment
-        /** @noinspection DuplicatedCode */
         $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Capture
-        Repository::capture(paymentId: $payment->id);
-
-        // Refund
-        $transactionId = $this->generateOrderReference();
-        $refundResponse = Repository::refund(
-            paymentId: $payment->id,
-            transactionId: $transactionId
-        );
-
-        // Assert that transaction id is present in action log
-        self::assertEquals(
-            expected: $payment->id,
-            actual: $refundResponse->id
-        );
-        self::assertNotNull(actual: $refundResponse->order);
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         */
-        self::assertEquals(
-            expected: $transactionId,
-            actual: $refundResponse->order->actionLog[2]->transactionId
-        );
-    }
-
-    /**
-     * Verify that refunding with creator specified works
-     *
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function testRefundWithCreator(): void
-    {
-        // Create payment
-        /** @noinspection DuplicatedCode */
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Capture
-        Repository::capture(paymentId: $payment->id);
-
-        // Refund
-        $creator = $this->generateOrderReference();
-        $refundResponse = Repository::refund(
+        // Cancel order
+        $creator = 'Foobar';
+        $response = Repository::cancel(
             paymentId: $payment->id,
             creator: $creator
         );
 
-        // Assert that transaction id is present in action log
+        // Assert that creator argument is present in action log
         self::assertEquals(
             expected: $payment->id,
-            actual: $refundResponse->id
+            actual: $response->id
         );
-        self::assertNotNull(actual: $refundResponse->order);
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         */
+        self::assertNotNull(
+            actual: $response->order
+        );
+        /** @psalm-suppress MixedPropertyFetch */
         self::assertEquals(
             expected: $creator,
-            actual: $refundResponse->order->actionLog[2]->creator
+            actual: $response->order->actionLog[1]->creator
         );
     }
 }

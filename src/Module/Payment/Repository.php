@@ -25,7 +25,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as Act
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
-use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Api\Get;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
@@ -36,8 +36,6 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCo
 
 /**
  * Payment repository.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {
@@ -47,7 +45,6 @@ class Repository
      * @param string $storeId
      * @param string $orderReference
      * @param string $governmentId
-     * @param Search $api
      * @return Collection
      * @throws AuthException
      * @throws CurlException
@@ -59,11 +56,10 @@ class Repository
      */
     public static function search(
         string $storeId,
-        string $orderReference = '',
-        string $governmentId = '',
-        Search $api = new Search()
+        ?string $orderReference = null,
+        ?string $governmentId = null
     ): Collection {
-        return $api->call(
+        return (new Search())->call(
             storeId: $storeId,
             orderReference: $orderReference,
             governmentId: $governmentId
@@ -71,7 +67,7 @@ class Repository
     }
 
     /**
-     * @param string $orderReference
+     * @param string $paymentId
      *
      * @return Payment
      * @throws AuthException
@@ -82,17 +78,16 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function getPayment(
-        string $orderReference
+    public static function get(
+        string $paymentId
     ): Payment {
-        $api = new GetPayment();
+        $api = new Get();
         try {
             return $api->call(
-                orderReference: $orderReference
+                paymentId: $paymentId
             );
         } catch (Exception $e) {
             self::logException(exception: $e);
-
             throw $e;
         }
     }
@@ -108,9 +103,8 @@ class Repository
      * @throws JsonException
      * @throws ApiException
      * @throws ReflectionException
-     * @noinspection PhpTooManyParametersInspection
      */
-    public static function createPayment(
+    public static function create(
         string $storeId,
         string $paymentMethodId,
         OrderLineCollection $orderLines,
@@ -199,7 +193,7 @@ class Repository
      * @param ActionLogOrderLineCollection|null $orderLines
      * @param string|null $creator
      * @param string|null $transactionId
-     * @return Payment
+     * @return \Resursbank\Ecom\Lib\Model\Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
