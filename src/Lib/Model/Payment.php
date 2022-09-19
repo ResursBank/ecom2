@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -37,19 +38,21 @@ class Payment extends Model
      * @param string $created Stringed timestamp.
      * @param string $storeId
      * @param string $paymentMethodId
-     * @param \Resursbank\Ecom\Lib\Model\Payment\Customer $customer
+     * @param Customer $customer
      * @param Status $status
      * @param array $paymentActions
+     * @param string|null $countryCode
      * @param Order|null $order
      * @param Application|null $application
      * @param Information|null $information
-     * @param string|null $countryCode
-     * @param \Resursbank\Ecom\Lib\Model\Payment\MetaData|null $metaData
+     * @param MetaData|null $metaData
      * @param CoApplicant|null $coApplicant
+     * @param TaskRedirectionUrls|null $taskRedirectionUrls
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @todo Solve problems with empty country code when using Search.
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly string $id,
@@ -75,15 +78,22 @@ class Payment extends Model
 
     /**
      * Validate country.
+     *
+     * @todo Solve problems with empty country code when using Search.
      * @throws EmptyValueException|IllegalCharsetException
+     * @noinspection PhpUnusedPrivateMethodInspection
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @phpstan-ignore-next-line
      */
     private function validateCountryCode(): void
     {
-        $this->stringValidation->notEmpty(value: $this->countryCode);
-        $this->stringValidation->matchRegex(
-            value: $this->countryCode,
-            pattern: '/^[A-Z]{2}$/'
-        );
+        if ($this->countryCode !== null) {
+            $this->stringValidation->notEmpty(value: $this->countryCode);
+            $this->stringValidation->matchRegex(
+                value: $this->countryCode,
+                pattern: '/^[A-Z]{2}$/'
+            );
+        }
     }
 
     /**
@@ -113,12 +123,12 @@ class Payment extends Model
     /**
      * Validate that a string is an uuid and not empty.
      *
-     * @param $uuid
+     * @param string $uuid
      * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
-    private function validateUuid($uuid): void
+    private function validateUuid(string $uuid): void
     {
         $this->stringValidation->notEmpty(value: $uuid);
         $this->stringValidation->isUuid(value: $uuid);

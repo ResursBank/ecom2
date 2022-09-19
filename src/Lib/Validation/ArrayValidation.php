@@ -194,6 +194,7 @@ class ArrayValidation
      */
     public function length(array $data, int $min, int $max): bool
     {
+        /** @noinspection DuplicatedCode */
         $len = count($data);
 
         if ($max < $min) {

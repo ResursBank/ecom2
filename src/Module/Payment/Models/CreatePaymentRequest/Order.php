@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection DuplicatedCode */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
@@ -24,7 +26,7 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCo
 class Order extends Model
 {
     /**
-     * @param \Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection $orderLines
+     * @param OrderLineCollection $orderLines
      * @param string|null $orderReference
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation

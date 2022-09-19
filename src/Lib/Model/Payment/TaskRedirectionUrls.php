@@ -16,6 +16,11 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class TaskRedirectionUrls extends Model
 {
+    /**
+     * @param string $merchantUrl
+     * @param string $customerUrl
+     * @param string|null $coApplicantUrl
+     */
     public function __construct(
         public string $merchantUrl,
         public string $customerUrl,

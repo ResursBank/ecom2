@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection DuplicatedCode */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Validation;
@@ -18,6 +20,7 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
 /**
  * Test float validation methods.
  *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @psalm-suppress PropertyNotSetInConstructor
  */
 final class FloatValidationTest extends TestCase
@@ -117,7 +120,7 @@ final class FloatValidationTest extends TestCase
     public function testInRangeReturnsTrueWhenValueInRange(): void
     {
         self::assertTrue(
-            $this->floatValidation->inRange(
+            condition: $this->floatValidation->inRange(
                 value: 10.0,
                 min: 5,
                 max: 10,
@@ -172,7 +175,7 @@ final class FloatValidationTest extends TestCase
     public function testLengthReturnsTrueWhenValueInRange(): void
     {
         self::assertTrue(
-            $this->floatValidation->length(
+            condition: $this->floatValidation->length(
                 value: 10.123,
                 min: 2,
                 max: 5,

@@ -15,6 +15,9 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Information extends Model
 {
+    /**
+     * @param string $creator
+     */
     public function __construct(
         public readonly string $creator,
     ) {

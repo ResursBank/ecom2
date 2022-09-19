@@ -32,6 +32,11 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use stdClass;
 
+/**
+ * POST /payments/{payment_id}/create
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Create
 {
     /** @var Mapi  */
@@ -47,7 +52,11 @@ class Create
      * @param string $paymentMethodId
      * @param OrderLineCollection $orderLines
      * @param string|null $orderReference
-     * @return \Resursbank\Ecom\Lib\Model\Payment
+     * @param Application|null $application
+     * @param Customer|null $customer
+     * @param MetaData|null $metaData
+     * @param Options|null $options
+     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -57,6 +66,7 @@ class Create
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @noinspection PhpTooManyParametersInspection
      */
     public function call(
         string $storeId,
@@ -112,13 +122,13 @@ class Create
         }
 
         $result = DataConverter::stdClassToType(
-            $data,
-            Payment::class
+            object: $data,
+            type: Payment::class
         );
 
         if (!$result instanceof Payment) {
             throw new IllegalValueException(
-                'Response is not an instance of ' . Payment::class
+                message: 'Response is not an instance of ' . Payment::class
             );
         }
 

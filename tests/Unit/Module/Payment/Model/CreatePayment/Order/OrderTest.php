@@ -11,16 +11,11 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\Payment\Model\CreatePayment\Order;
 
-use Exception;
-use JsonException;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
-use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
@@ -34,15 +29,11 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCo
  */
 class OrderTest extends TestCase
 {
-    private static array $data = [];
     private static OrderLine $orderLine;
 
     /**
      * @return void
-     * @throws JsonException
      * @throws IllegalValueException
-     * @throws IllegalTypeException
-     * @throws IllegalCharsetException
      */
     protected function setUp(): void
     {
@@ -58,45 +49,7 @@ class OrderTest extends TestCase
             vatRate: 10,
         );
 
-        /** @var array $data */
-        $data = json_decode(json_encode(new Order(
-            orderLines: new Order\OrderLineCollection(
-                data: [self::$orderLine],
-            ),
-            orderReference: 'asdf'
-        ), JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
-
-        self::$data = $data;
-
         parent::setUp();
-    }
-
-    /**
-     * @param array $updates
-     * @return void
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    private function convert(
-        array $updates = []
-    ): void {
-        $result = null;
-
-        try {
-            $result = DataConverter::stdClassToType(
-                object: (object) array_merge(self::$data, $updates),
-                type: Order::class
-            );
-        } catch (Exception $e) {
-            $asd = 123;
-        }
-
-        if (!$result instanceof Order) {
-            throw new TestException(
-                message: 'Failed to convert stdClass to PaymentMethod.'
-            );
-        }
     }
 
     /**
@@ -114,9 +67,9 @@ class OrderTest extends TestCase
         new Order(
             orderLines: new Order\OrderLineCollection(
                 data: array_fill(
-                    0,
-                    1001,
-                    self::$orderLine,
+                    start_index: 0,
+                    count: 1001,
+                    value: self::$orderLine,
                 )
             )
         );
@@ -136,9 +89,9 @@ class OrderTest extends TestCase
         new Order(
             orderLines: new Order\OrderLineCollection(
                 data: array_fill(
-                    0,
-                    5,
-                    self::$orderLine,
+                    start_index: 0,
+                    count: 5,
+                    value: self::$orderLine,
                 ),
             ),
             orderReference: ''
@@ -159,12 +112,12 @@ class OrderTest extends TestCase
         new Order(
             orderLines: new OrderLineCollection(
                 data: array_fill(
-                    0,
-                    5,
-                    self::$orderLine,
+                    start_index: 0,
+                    count: 5,
+                    value: self::$orderLine,
                 ),
             ),
-            orderReference: "asdf asdf asdf asdf asdf asdf asd"
+            orderReference: 'asdf asdf asdf asdf asdf asdf asd'
         );
     }
 
@@ -183,9 +136,9 @@ class OrderTest extends TestCase
         new Order(
             orderLines: new Order\OrderLineCollection(
                 data: array_fill(
-                    0,
-                    5,
-                    self::$orderLine,
+                    start_index: 0,
+                    count: 5,
+                    value: self::$orderLine,
                 ),
             ),
             orderReference: 'äåö'

@@ -41,7 +41,7 @@ class MockSigner
     public static function approve(Payment $payment): void
     {
         if (!$payment->taskRedirectionUrls) {
-            throw new EmptyValueException(message: "No redirection URL object found");
+            throw new EmptyValueException(message: 'No redirection URL object found');
         }
         $curl = new Curl(
             url: $payment->taskRedirectionUrls->customerUrl,
@@ -52,8 +52,11 @@ class MockSigner
         );
         $curl->exec();
         $redirectUrl = $curl->getEffectiveUrl();
-        $realAuthUrl = str_replace("authenticate", 'doAuth', $redirectUrl) .
-            '&govId=' . $payment->customer->governmentId;
+        $realAuthUrl = str_replace(
+            search: 'authenticate',
+            replace: 'doAuth',
+            subject: $redirectUrl
+        ) . '&govId=' . ($payment->customer->governmentId || '');
 
         $curl = new Curl(
             url: $realAuthUrl,

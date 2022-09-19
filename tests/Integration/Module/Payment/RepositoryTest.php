@@ -35,6 +35,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.Superglobals)
  */
 class RepositoryTest extends TestCase
 {
@@ -72,6 +73,8 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $orderLines = new OrderLineCollection(
             data: [
                 new OrderLine(
@@ -87,15 +90,11 @@ class RepositoryTest extends TestCase
                 )
             ]
         );
-        $result = Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: $orderLines
-        );
 
-        $this->assertInstanceOf(
-            expected: Payment::class,
-            actual: $result
+        Repository::createPayment(
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
+            orderLines: $orderLines
         );
     }
 }

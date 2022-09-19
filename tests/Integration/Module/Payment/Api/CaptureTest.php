@@ -6,6 +6,7 @@
  */
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
+/** @noinspection EfferentObjectCouplingInspection */
 
 declare(strict_types=1);
 
@@ -44,6 +45,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.Superglobals)
  */
 class CaptureTest extends TestCase
 {
@@ -95,9 +97,10 @@ class CaptureTest extends TestCase
      */
     private function createPayment(string $orderReference): Payment
     {
+        /** @noinspection DuplicatedCode */
         return Repository::createPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -167,14 +170,14 @@ class CaptureTest extends TestCase
         $response = Repository::capture(paymentId: $originalId);
 
         // Assert that payment has been captured in full
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $response->order
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: $originalId,
             actual: $response->id
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: $response->order->totalOrderAmount,
             actual: $response->order->capturedAmount
         );
@@ -215,14 +218,14 @@ class CaptureTest extends TestCase
         );
 
         // Assert that only this order line has been captured
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $response->order
         );
-        $this->assertCount(
+        self::assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog
         );
@@ -260,10 +263,14 @@ class CaptureTest extends TestCase
         );
 
         // Verify that capture worked as intended
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $response->order
         );
-        $this->assertEquals(
+
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         */
+        self::assertEquals(
             expected: $transactionId,
             actual: $response->order->actionLog[1]->transactionId
         );
@@ -315,14 +322,14 @@ class CaptureTest extends TestCase
         );
 
         // Verify that capture worked as intended
-        $this->assertNotNull(
+        self::assertNotNull(
             actual: $response->order
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        $this->assertCount(
+        self::assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog
         );

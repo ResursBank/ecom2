@@ -54,7 +54,7 @@ class CreatePaymentRequest extends Model
      */
     private function validateStoreId(): void
     {
-        $this->stringValidation->isUuid($this->storeId);
+        $this->stringValidation->isUuid(value: $this->storeId);
     }
 
     /**
@@ -63,6 +63,6 @@ class CreatePaymentRequest extends Model
      */
     private function validatePaymentMethodId(): void
     {
-        $this->stringValidation->isUuid($this->paymentMethodId);
+        $this->stringValidation->isUuid(value: $this->paymentMethodId);
     }
 }
