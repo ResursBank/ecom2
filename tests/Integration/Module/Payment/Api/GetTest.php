@@ -37,11 +37,13 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
-class SearchTest extends TestCase
+/**
+ * Tests that getPayment works
+ */
+class GetTest extends TestCase
 {
-    private const GOVERNMENT_ID = '198305147715';
-
     /**
+     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -65,6 +67,7 @@ class SearchTest extends TestCase
      *
      * @return string
      * @throws Exception
+     * @throws Exception
      */
     private function generateOrderReference(): string
     {
@@ -72,17 +75,15 @@ class SearchTest extends TestCase
     }
 
     /**
-     * @param string $orderReference
-     * @return Payment
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws ValidationException
-     * @throws ApiException
+     * @throws AuthException
+     * @throws EmptyValueException
+     * @throws CurlException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ApiException
+     * @throws ReflectionException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -124,7 +125,7 @@ class SearchTest extends TestCase
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs',
-                governmentId: self::GOVERNMENT_ID,
+                governmentId: '198305147715',
                 mobilePhone: '46701234567',
                 deviceInfo: new Customer\DeviceInfo()
             )
@@ -132,19 +133,19 @@ class SearchTest extends TestCase
     }
 
     /**
-     * Reference is currently required to have if we want to run live tests.
+     * Verify that getting payments works
      *
-     * @return void
+     * @throws ValidationException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
      * @throws JsonException
+     * @throws IllegalTypeException
      * @throws ReflectionException
-     * @throws ValidationException
+     * @throws ApiException
      * @throws Exception
      */
-    public function testSearchOrderReference(): void
+    public function testGetPayment(): void
     {
         // Create payment
         $orderReference = $this->generateOrderReference();
@@ -153,49 +154,13 @@ class SearchTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Try to find the order
-        sleep(seconds: 3);
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference
-        );
+        // Call getPayment
+        $fetched = Repository::get(paymentId: $payment->id);
 
+        // Assert that the fetched order is the one we created
         $this->assertEquals(
             expected: $payment->id,
-            actual: $paymentCollection[0]->id
-        );
-    }
-
-    /**
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testSearchWithGovernmentId(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Try to find the order
-        sleep(seconds: 3);
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference,
-            governmentId: self::GOVERNMENT_ID
-        );
-
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $paymentCollection[0]->id
+            actual: $fetched->id
         );
     }
 }

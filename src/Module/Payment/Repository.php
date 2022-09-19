@@ -25,7 +25,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as Act
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
-use Resursbank\Ecom\Module\Payment\Api\GetPayment;
+use Resursbank\Ecom\Module\Payment\Api\Get;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
@@ -67,7 +67,7 @@ class Repository
     }
 
     /**
-     * @param string $orderReference
+     * @param string $paymentId
      *
      * @return Payment
      * @throws AuthException
@@ -78,17 +78,16 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function getPayment(
-        string $orderReference
+    public static function get(
+        string $paymentId
     ): Payment {
-        $api = new GetPayment();
+        $api = new Get();
         try {
             return $api->call(
-                $orderReference
+                paymentId: $paymentId
             );
         } catch (Exception $e) {
             self::logException(exception: $e);
-
             throw $e;
         }
     }
