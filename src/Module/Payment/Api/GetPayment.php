@@ -39,7 +39,7 @@ class GetPayment
     }
 
     /**
-     * @param string $orderReference
+     * @param string $paymentId
      * @return Payment
      * @throws AuthException
      * @throws CurlException
@@ -49,11 +49,11 @@ class GetPayment
      * @throws ValidationException
      * @throws JsonException
      */
-    public function call(string $orderReference): Payment
+    public function call(string $paymentId): Payment
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s', Mapi::PAYMENT_ROUTE, $orderReference)
+                route: sprintf('%s/payments/%s', Mapi::PAYMENT_ROUTE, $paymentId)
             ),
             requestMethod: RequestMethod::GET,
             authType: AuthType::JWT,
