@@ -20,11 +20,12 @@ class Model
      * Converts the object to an array suitable for use with the Curl library
      *
      * @param mixed $item
+     * @param bool $isRecursion
      * @return array
      */
-    public function toArray(mixed $item = null): array
+    public function toArray(mixed $item = null, bool $isRecursion = false): array
     {
-        if (!$item) {
+        if (!$item && !$isRecursion) {
             $item = $this;
         }
 
@@ -32,9 +33,9 @@ class Model
         foreach ((array)$item as $name => $value) {
             if (is_object($value) || is_array($value)) {
                 if ($value instanceof Collection) {
-                    $data[$name] = $this->toArray(item: $value->toArray());
+                    $data[$name] = $this->toArray(item: $value->toArray(), isRecursion: true);
                 } else {
-                    $data[$name] = $this->toArray(item: $value);
+                    $data[$name] = $this->toArray(item: $value, isRecursion: true);
                 }
             } else {
                 $data[$name] = $value;
