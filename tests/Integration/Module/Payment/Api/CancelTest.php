@@ -45,7 +45,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrde
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CancelPaymentTest extends TestCase
+class CancelTest extends TestCase
 {
     /**
      * @throws EmptyValueException

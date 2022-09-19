@@ -34,18 +34,18 @@ use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
 
 /**
- * Tests for MAPI Payment Refund class
+ * Tests for MAPI Payment Capture class
  *
  * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RefundPaymentTest extends TestCase
+class CaptureTest extends TestCase
 {
     /**
      * @return void
@@ -141,80 +141,59 @@ class RefundPaymentTest extends TestCase
     }
 
     /**
-     * Verify that refunding an entire order works as intended
+     * Verify that capturing an entire order works
      *
      * @return void
-     * @throws ApiException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
      * @throws ValidationException
-     * @throws ReflectionException
+     * @throws IllegalTypeException
      * @throws Exception
      */
-    public function testRefundEntirePayment(): void
+    public function testCaptureEntirePayment(): void
     {
-        // Create payment
         $orderReference = $this->generateOrderReference();
+        // Create payment
         $payment = $this->createPayment(orderReference: $orderReference);
+        $originalId = $payment->id;
 
         // Sign
         MockSigner::approve(payment: $payment);
 
         // Capture payment
-        Repository::capture(paymentId: $payment->id);
+        $response = Repository::capture(paymentId: $originalId);
 
-        // Refund entire payment
-        $refundResponse = Repository::refund(paymentId: $payment->id);
-
-        // Assert that entire payment has been refunded
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $refundResponse->id
-        );
+        // Assert that payment has been captured in full
         $this->assertNotNull(
-            actual: $refundResponse->order
-        );
-        $this->assertNotNull(
-            actual: $payment->order
+            actual: $response->order
         );
         $this->assertEquals(
-            expected: $payment->order->totalOrderAmount,
-            actual: $refundResponse->order->refundedAmount
+            expected: $originalId,
+            actual: $response->id
+        );
+        $this->assertEquals(
+            expected: $response->order->totalOrderAmount,
+            actual: $response->order->capturedAmount
         );
     }
 
     /**
-     * Verify that refunding a single captured order line works
+     * Verify that capturing a single specified order line works
      *
      * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
      * @throws Exception
      */
-    public function testRefundSingleOrderLine(): void
+    public function testCaptureSingleOrderLine(): void
     {
-        // Create payment
         $orderReference = $this->generateOrderReference();
+        // Create payment with multiple order lines
         $payment = $this->createPayment(orderReference: $orderReference);
 
-        // Sign
         MockSigner::approve(payment: $payment);
 
-        // Capture
-        Repository::capture(paymentId: $payment->id);
-
-        // Refund single order line
         $orderLines = new ActionLogOrderLineCollection([
             new ActionLogOrderLine(
                 description: 'Android',
@@ -228,73 +207,70 @@ class RefundPaymentTest extends TestCase
                 type: OrderLineType::PHYSICAL_GOODS
             )
         ]);
-        $refundResponse = Repository::refund(
+
+        // Capture single order line
+        $response = Repository::capture(
             paymentId: $payment->id,
             orderLines: $orderLines
         );
 
-        // Assert that only specified order line has been refunded
+        // Assert that only this order line has been captured
         $this->assertEquals(
             expected: $payment->id,
-            actual: $refundResponse->id
+            actual: $response->id
         );
         $this->assertNotNull(
-            actual: $refundResponse->order
+            actual: $response->order
         );
-        $this->assertEquals(
-            expected: $orderLines[0]->totalAmountIncludingVat,
-            actual: $refundResponse->order->refundedAmount
+        $this->assertCount(
+            expectedCount: 2,
+            haystack: $response->order->actionLog
         );
     }
 
     /**
-     * Verify that refunding with a transaction id works
+     * Verify that capturing with a transaction ID works
      *
      * @return void
-     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
+     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
+     * @throws ApiException
+     * @throws IllegalValueException
      * @throws Exception
      */
-    public function testRefundWithTransactionId(): void
+    public function testCaptureWithTransactionId(): void
     {
-        // Create payment
         $orderReference = $this->generateOrderReference();
+        // Create payment
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Capture
-        Repository::capture(paymentId: $payment->id);
-
-        // Refund
+        // Capture and specify transaction id
         $transactionId = $this->generateOrderReference();
-        $refundResponse = Repository::refund(
+        $response = Repository::capture(
             paymentId: $payment->id,
             transactionId: $transactionId
         );
 
-        // Assert that transaction id is present in action log
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $refundResponse->id
+        // Verify that capture worked as intended
+        $this->assertNotNull(
+            actual: $response->order
         );
-        $this->assertNotNull(actual: $refundResponse->order);
         $this->assertEquals(
             expected: $transactionId,
-            actual: $refundResponse->order->actionLog[2]->transactionId
+            actual: $response->order->actionLog[1]->transactionId
         );
     }
 
     /**
-     * Verify that refunding with creator specified works
+     * Verify that capturing with an invoice ID works
      *
      * @return void
      * @throws ApiException
@@ -303,39 +279,52 @@ class RefundPaymentTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
      * @throws Exception
      */
-    public function testRefundWithCreator(): void
+    public function testCaptureWithInvoiceId(): void
     {
-        // Create payment
         $orderReference = $this->generateOrderReference();
+        // Create payment
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Capture
-        Repository::capture(paymentId: $payment->id);
-
-        // Refund
-        $creator = $this->generateOrderReference();
-        $refundResponse = Repository::refund(
+        // Capture and specify transaction id
+        $invoiceId = $this->generateOrderReference();
+        $orderLines = new ActionLogOrderLineCollection([
+            new ActionLogOrderLine(
+                description: 'Android',
+                reference: 'T-800',
+                quantityUnit: 'st',
+                quantity: 2.00,
+                vatRate: 25.00,
+                unitAmountIncludingVat: 150.75,
+                totalAmountIncludingVat: 301.5,
+                totalVatAmount: 60.3,
+                type: OrderLineType::PHYSICAL_GOODS
+            )
+        ]);
+        $response = Repository::capture(
             paymentId: $payment->id,
-            creator: $creator
+            orderLines: $orderLines,
+            invoiceId: $invoiceId
         );
 
-        // Assert that transaction id is present in action log
+        // Verify that capture worked as intended
+        $this->assertNotNull(
+            actual: $response->order
+        );
         $this->assertEquals(
             expected: $payment->id,
-            actual: $refundResponse->id
+            actual: $response->id
         );
-        $this->assertNotNull(actual: $refundResponse->order);
-        $this->assertEquals(
-            expected: $creator,
-            actual: $refundResponse->order->actionLog[2]->creator
+        $this->assertCount(
+            expectedCount: 2,
+            haystack: $response->order->actionLog
         );
     }
 }
