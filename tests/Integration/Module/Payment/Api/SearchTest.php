@@ -86,7 +86,7 @@ class SearchTest extends TestCase
      */
     private function createPayment(string $orderReference): Payment
     {
-        return Repository::createPayment(
+        return Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [

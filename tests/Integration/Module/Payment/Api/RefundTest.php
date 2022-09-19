@@ -98,7 +98,7 @@ class RefundTest extends TestCase
     private function createPayment(string $orderReference): Payment
     {
         /** @noinspection DuplicatedCode */
-        return Repository::createPayment(
+        return Repository::create(
             storeId: (string) $_ENV['STORE_ID'],
             paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [

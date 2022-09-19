@@ -104,7 +104,7 @@ class Repository
      * @throws ApiException
      * @throws ReflectionException
      */
-    public static function createPayment(
+    public static function create(
         string $storeId,
         string $paymentMethodId,
         OrderLineCollection $orderLines,

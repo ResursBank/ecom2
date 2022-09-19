@@ -91,7 +91,7 @@ class RepositoryTest extends TestCase
             ]
         );
 
-        Repository::createPayment(
+        Repository::create(
             storeId: (string) $_ENV['STORE_ID'],
             paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines
