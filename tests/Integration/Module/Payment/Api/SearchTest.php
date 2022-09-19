@@ -139,7 +139,7 @@ class SearchTest extends TestCase
      * @throws ValidationException
      * @throws Exception
      */
-    public function testSearchLive(): void
+    public function testSearchOrderReference(): void
     {
         // Create payment
         $orderReference = $this->generateOrderReference();
