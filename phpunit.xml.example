@@ -12,6 +12,7 @@
         <env name="BASIC_AUTH_USERNAME" value="REPLACEME" force="true" />
         <env name="BASIC_AUTH_PASSWORD" value="REPLACEME" force="true" />
         <env name="STORE_ID" value="REPLACEME" force="true" />
+        <env name="STORE_ID_NATIONAL" value="REPLACEME" force="true" />
         <env name="JWT_AUTH_CLIENT_ID" value="REPLACEME" force="true" />
         <env name="JWT_AUTH_CLIENT_SECRET" value="REPLACEME" force="true" />
         <env name="JWT_AUTH_SCOPE" value="mock-merchant-api" force="true" />
