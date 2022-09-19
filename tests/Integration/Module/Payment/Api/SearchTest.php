@@ -39,6 +39,8 @@ use Resursbank\Ecom\Module\Payment\Repository;
 
 class SearchTest extends TestCase
 {
+    private const GOVERNMENT_ID = '198305147715';
+
     /**
      * @throws EmptyValueException
      */
@@ -119,7 +121,7 @@ class SearchTest extends TestCase
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs',
-                governmentId: '198305147715',
+                governmentId: self::GOVERNMENT_ID,
                 mobilePhone: '46701234567',
                 deviceInfo: new Customer\DeviceInfo()
             )
@@ -149,9 +151,43 @@ class SearchTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         // Try to find the order
+        sleep(seconds: 3);
         $paymentCollection = Repository::search(
             storeId: $_ENV['STORE_ID'],
             orderReference: $orderReference
+        );
+
+        $this->assertEquals(
+            expected: $payment->id,
+            actual: $paymentCollection[0]->id
+        );
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testSearchWithGovernmentId(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Try to find the order
+        sleep(seconds: 3);
+        $paymentCollection = Repository::search(
+            storeId: $_ENV['STORE_ID'],
+            orderReference: $orderReference,
+            governmentId: self::GOVERNMENT_ID
         );
 
         $this->assertEquals(
