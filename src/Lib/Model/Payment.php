@@ -20,6 +20,7 @@ use Resursbank\Ecom\Lib\Model\Payment\MetaData;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
@@ -132,5 +133,22 @@ class Payment extends Model
     {
         $this->stringValidation->notEmpty(value: $uuid);
         $this->stringValidation->isUuid(value: $uuid);
+    }
+
+    /**
+     * Checks if payment can be cancelled
+     *
+     * @return bool
+     */
+    public function canCancel(): bool
+    {
+        if ($this->order) {
+            foreach ($this->order->possibleActions->toArray() as $action) {
+                if ($action->action === PossibleAction::CANCEL) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

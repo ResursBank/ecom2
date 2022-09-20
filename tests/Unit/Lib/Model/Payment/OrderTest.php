@@ -1,0 +1,108 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Unit\Lib\Model\Payment;
+
+use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\Payment;
+use DateTime;
+use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Module\Payment\Enum\Status;
+
+/**
+ * Tests for the Order class
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
+class OrderTest extends TestCase
+{
+    private function generateUuid(): string
+    {
+        $data = random_bytes(length: 16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
+    /**
+     * Verify that the canCancel method works as intended
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testCanCancel(): void
+    {
+        $cancelable = new Payment(
+            id: $this->generateUuid(),
+            created: (new DateTime())->format(format: 'c'),
+            storeId: $this->generateUuid(),
+            paymentMethodId: $this->generateUuid(),
+            customer: new Payment\Customer(
+                customerType: CustomerType::NATURAL
+            ),
+            status: Status::ACCEPTED,
+            paymentActions: [],
+            order: new Payment\Order(
+                orderReference: $this->generateUuid(),
+                actionLog: new Payment\Order\ActionLogCollection(data: []),
+                possibleActions: new Payment\Order\PossibleActionCollection(data: [
+                    new Payment\Order\PossibleAction(action: PossibleAction::CANCEL)
+                ]),
+                totalOrderAmount: 100.00,
+                canceledAmount: 0.00,
+                authorizedAmount: 100.00,
+                capturedAmount: 0.00,
+                refundedAmount: 0.00
+            )
+        );
+        $unCancelable = new Payment(
+            id: $this->generateUuid(),
+            created: (new DateTime())->format(format: 'c'),
+            storeId: $this->generateUuid(),
+            paymentMethodId: $this->generateUuid(),
+            customer: new Payment\Customer(
+                customerType: CustomerType::NATURAL
+            ),
+            status: Status::ACCEPTED,
+            paymentActions: [],
+            order: new Payment\Order(
+                orderReference: $this->generateUuid(),
+                actionLog: new Payment\Order\ActionLogCollection(data: []),
+                possibleActions: new Payment\Order\PossibleActionCollection(data: [
+                    new Payment\Order\PossibleAction(action: PossibleAction::REFUND),
+                    new Payment\Order\PossibleAction(action: PossibleAction::PARTIAL_REFUND)
+                ]),
+                totalOrderAmount: 100.00,
+                canceledAmount: 0.00,
+                authorizedAmount: 100.00,
+                capturedAmount: 0.00,
+                refundedAmount: 0.00
+            )
+        );
+
+        $this->assertEquals(
+            expected: true,
+            actual: $cancelable->canCancel()
+        );
+        $this->assertEquals(
+            expected: false,
+            actual: $unCancelable->canCancel()
+        );
+    }
+}
