@@ -141,4 +141,37 @@ class OrderTest extends TestCase
             actual: $uncaptureable->canCapture()
         );
     }
+
+    /**
+     * Verify that the canRefund method works as intended
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testCanRefund(): void
+    {
+        $refundable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(data: [
+                new Payment\Order\PossibleAction(action: PossibleAction::REFUND)
+            ])
+        );
+        $nonRefundable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(data: [
+                new Payment\Order\PossibleAction(action: PossibleAction::CANCEL),
+                new Payment\Order\PossibleAction(action: PossibleAction::CAPTURE)
+            ])
+        );
+
+        $this->assertEquals(
+            expected: true,
+            actual: $refundable->canRefund()
+        );
+        $this->assertEquals(
+            expected: false,
+            actual: $nonRefundable->canRefund()
+        );
+    }
 }
