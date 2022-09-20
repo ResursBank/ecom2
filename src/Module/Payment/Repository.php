@@ -30,7 +30,7 @@ use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 
@@ -111,7 +111,7 @@ class Repository
         ?string $orderReference = null,
         ?Application $application = null,
         ?Customer $customer = null,
-        ?MetaData $metaData = null,
+        ?Metadata $metadata = null,
         ?Options $options = null
     ): Payment {
         return (new Create())->call(
@@ -121,7 +121,7 @@ class Repository
             orderReference: $orderReference,
             application: $application,
             customer: $customer,
-            metaData: $metaData,
+            metadata: $metadata,
             options: $options
         );
     }
