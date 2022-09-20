@@ -18,7 +18,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 class ActionLog extends Model
 {
     /**
-     * @param string $id
+     * @param string $actionId
      * @param string $type
      * @param string $created
      * @param OrderLineCollection $orderLines
@@ -26,7 +26,7 @@ class ActionLog extends Model
      * @param string|null $creator
      */
     public function __construct(
-        public readonly string $id,
+        public readonly string $actionId,
         public readonly string $type,
         public readonly string $created,
         public readonly OrderLineCollection $orderLines,
