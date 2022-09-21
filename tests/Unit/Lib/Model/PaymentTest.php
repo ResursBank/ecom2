@@ -41,7 +41,7 @@ class PaymentTest extends TestCase
     }
 
     /**
-     * Create a dummy Payment object with the specified possible actions
+     * Create a dummy Payment object with the specified status
      *
      * @param Status $status
      * @return Payment
