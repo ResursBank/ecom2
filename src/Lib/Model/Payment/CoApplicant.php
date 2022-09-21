@@ -24,9 +24,21 @@ class CoApplicant extends Model
      * @param Identification|null $identification
      */
     public function __construct(
+        /**
+         * @todo Not sure how to validate government id.
+         */
         public readonly string $governmentId,
+        /**
+         * @todo Not sure how to validate phone number.
+         */
         public readonly string $mobilePhone,
+        /**
+         * @todo Not sure how to validate phone number.
+         */
         public readonly string $phone,
+        /**
+         * @todo Not sure how to validate email.
+         */
         public readonly string $email,
         public readonly ?Identification $identification = null
     ) {
