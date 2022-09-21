@@ -195,11 +195,42 @@ class StringValidation
     {
         if (
             !preg_match(
-                pattern: '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[0-9a-d][0-9a-f]{3}-[0-9a-f]{12}$/i',
+                pattern: '/^[\da-f]{8}-[\da-f]{4}-[0-5][\da-f]{3}-[\da-d][\da-f]{3}-[\da-f]{12}$/i',
                 subject: $value
             )
         ) {
             throw new IllegalValueException(message: "$value is not a UUID.");
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if supplied government ID seems valid using the Luhn algorithm
+     *
+     * @param string $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isSwedishGovernmentId(string $value): bool
+    {
+        if (strlen(string: $value) === 12) {
+            $value = substr(string: $value, offset: 2);
+        } elseif (strlen(string: $value) !== 10) {
+            throw new IllegalValueException(
+                message: $value . ' is not a Swedish government ID as its length is ' . strlen($value)
+            );
+        }
+
+        $iter = 1;
+        $sum = 0;
+        foreach (array_reverse(array: str_split(string: $value)) as $char) {
+            $product = ($iter++ % 2 === 0) ? (2 * (int)$char) : (int)$char;
+            $sum += array_sum(array: str_split(string: (string)$product));
+        }
+
+        if ($sum % 10 !== 0) {
+            throw new IllegalValueException(message: $value . ' is not a Swedish government ID: Failed Luhn check');
         }
 
         return true;

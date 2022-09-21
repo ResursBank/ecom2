@@ -353,4 +353,54 @@ final class StringValidationTest extends TestCase
             )
         );
     }
+
+    /**
+     * Assert that isSwedishGovernmentId returns true when supplied with a properly formatted government ID
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishGovernmentId(): void
+    {
+        self::assertTrue(
+            condition: $this->stringValidation->isSwedishGovernmentId(value: '8305147715')
+        );
+    }
+
+    /**
+     * Assert that attempting to validate a too long string as a government ID causes an IllegalValueException
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishGovernmentIdFailsOnTooLongId(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishGovernmentId(value: '1238001011234');
+    }
+
+    /**
+     * Assert that attempting to validate a too short string as a government ID causes an IllegalValueException
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishGovernmentIdFailsOnTooShortId(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishGovernmentId(value: '001011234');
+    }
+
+    /**
+     * Assert that attempting to validate a government ID which results in an invalid Luhn checksum will cause an
+     * IllegalValueException to be thrown.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishGovernmentIdFailsOnInvalidLuhnSum(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishGovernmentId(value: '8101021234');
+    }
 }
