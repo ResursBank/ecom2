@@ -171,4 +171,24 @@ class Payment extends Model
     {
         return $this->canPerformAction(actionType: PossibleAction::CAPTURE);
     }
+
+    /**
+     * Checks if payment can be refunded
+     *
+     * @return bool
+     */
+    public function canRefund(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::REFUND);
+    }
+
+    /**
+     * Alias for canRefund
+     *
+     * @return bool
+     */
+    public function canCredit(): bool
+    {
+        return $this->canRefund();
+    }
 }

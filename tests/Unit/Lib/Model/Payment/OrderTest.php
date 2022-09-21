@@ -23,10 +23,14 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
+use function chr;
+use function ord;
+
 /**
  * Tests for the Order class
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class OrderTest extends TestCase
 {
@@ -38,9 +42,12 @@ class OrderTest extends TestCase
     private function generateUuid(): string
     {
         $data = random_bytes(length: 16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        $data[6] = chr(codepoint: ord(character: $data[6]) & 0x0f | 0x40);
+        $data[8] = chr(codepoint: ord(character: $data[8]) & 0x3f | 0x80);
+        return vsprintf(
+            format: '%s%s-%s-%s-%s-%s%s%s',
+            values: str_split(string: bin2hex(string: $data), length: 4)
+        );
     }
 
     /**
@@ -48,6 +55,7 @@ class OrderTest extends TestCase
      *
      * @param Payment\Order\PossibleActionCollection $possibleActions
      * @return Payment
+     * @throws Exception
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
@@ -101,11 +109,11 @@ class OrderTest extends TestCase
             ])
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             expected: true,
             actual: $cancelable->canCancel()
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: false,
             actual: $unCancelable->canCancel()
         );
@@ -132,13 +140,46 @@ class OrderTest extends TestCase
             ])
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             expected: true,
             actual: $captureable->canCapture()
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: false,
             actual: $uncaptureable->canCapture()
+        );
+    }
+
+    /**
+     * Verify that the canRefund method works as intended
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testCanRefund(): void
+    {
+        $refundable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(data: [
+                new Payment\Order\PossibleAction(action: PossibleAction::REFUND)
+            ])
+        );
+        $nonRefundable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(data: [
+                new Payment\Order\PossibleAction(action: PossibleAction::CANCEL),
+                new Payment\Order\PossibleAction(action: PossibleAction::CAPTURE)
+            ])
+        );
+
+        self::assertEquals(
+            expected: true,
+            actual: $refundable->canRefund()
+        );
+        self::assertEquals(
+            expected: false,
+            actual: $nonRefundable->canRefund()
         );
     }
 }
