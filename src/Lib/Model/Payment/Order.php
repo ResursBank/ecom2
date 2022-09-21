@@ -24,7 +24,7 @@ class Order extends Model
     /**
      * @param string $orderReference
      * @param ActionLogCollection $actionLog
-     * @param array $possibleActions
+     * @param PossibleActionCollection $possibleActions
      * @param float $totalOrderAmount
      * @param float $canceledAmount
      * @param float $authorizedAmount
