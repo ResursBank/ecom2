@@ -18,12 +18,12 @@ class Application extends Model
 {
     /**
      * @param float $requestedCreditLimit
-     * @param int|null $approvedCreditLimit
+     * @param int $approvedCreditLimit
      * @param int|null $reference Credit application reference (int64).
      */
     public function __construct(
         public readonly float $requestedCreditLimit,
-        public readonly ?int $approvedCreditLimit = null,
+        public readonly int $approvedCreditLimit,
         public readonly ?int $reference = null,
     ) {
     }
