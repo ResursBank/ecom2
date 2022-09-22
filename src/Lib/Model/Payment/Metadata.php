@@ -22,7 +22,7 @@ use function is_string;
 class Metadata extends Model
 {
     /**
-     * @param string|null $creator
+     * @param string $creator
      * @param array|null $custom
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation
@@ -30,7 +30,7 @@ class Metadata extends Model
      * @throws IllegalValueException
      */
     public function __construct(
-        public readonly ?string $creator = null,
+        public readonly string $creator,
         public readonly ?array $custom = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
@@ -45,13 +45,11 @@ class Metadata extends Model
      */
     private function validateCreator(): void
     {
-        if ($this->creator !== null) {
-            $this->stringValidation->length(
-                value: $this->creator,
-                min: 0,
-                max: 50
-            );
-        }
+        $this->stringValidation->length(
+            value: $this->creator,
+            min: 0,
+            max: 50
+        );
     }
 
     /**
