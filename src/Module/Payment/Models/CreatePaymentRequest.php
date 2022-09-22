@@ -15,7 +15,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 
 /**
@@ -29,7 +29,7 @@ class CreatePaymentRequest extends Model
      * @param Order $order
      * @param Application|null $application
      * @param Customer|null $customer
-     * @param MetaData|null $metaData
+     * @param Metadata|null $metadata
      * @param Options|null $options
      * @param StringValidation $stringValidation
      * @throws IllegalValueException
@@ -40,7 +40,7 @@ class CreatePaymentRequest extends Model
         public readonly Order $order,
         public readonly ?Application $application,
         public readonly ?Customer $customer,
-        public readonly ?MetaData $metaData,
+        public readonly ?Metadata $metadata,
         public readonly ?Options $options,
         private readonly StringValidation $stringValidation = new StringValidation(),
     ) {

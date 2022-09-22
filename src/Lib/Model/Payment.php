@@ -16,7 +16,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Application;
 use Resursbank\Ecom\Lib\Model\Payment\CoApplicant;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Information;
-use Resursbank\Ecom\Lib\Model\Payment\MetaData;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -46,7 +46,7 @@ class Payment extends Model
      * @param Order|null $order
      * @param Application|null $application
      * @param Information|null $information
-     * @param MetaData|null $metaData
+     * @param Metadata|null $metadata
      * @param CoApplicant|null $coApplicant
      * @param TaskRedirectionUrls|null $taskRedirectionUrls
      * @param StringValidation $stringValidation
@@ -67,7 +67,7 @@ class Payment extends Model
         public readonly ?Order $order = null,
         public readonly ?Application $application = null,
         public readonly ?Information $information = null,
-        public readonly ?MetaData $metaData = null,
+        public readonly ?Metadata $metadata = null,
         public readonly ?CoApplicant $coApplicant = null,
         public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
