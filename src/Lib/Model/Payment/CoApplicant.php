@@ -18,10 +18,9 @@ class CoApplicant extends Model
 {
     /**
      * @param string $governmentId
-     * @param string $mobilePhone
-     * @param string $phone
-     * @param string $email
-     * @param Identification|null $identification
+     * @param string|null $mobilePhone
+     * @param string|null $phone
+     * @param string|null $email
      */
     public function __construct(
         /**
@@ -31,16 +30,15 @@ class CoApplicant extends Model
         /**
          * @todo Not sure how to validate phone number.
          */
-        public readonly string $mobilePhone,
+        public readonly ?string $mobilePhone = null,
         /**
          * @todo Not sure how to validate phone number.
          */
-        public readonly string $phone,
+        public readonly ?string $phone = null,
         /**
          * @todo Not sure how to validate email.
          */
-        public readonly string $email,
-        public readonly ?Identification $identification = null
+        public readonly ?string $email = null,
     ) {
     }
 }
