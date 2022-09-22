@@ -27,7 +27,7 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\MetaData;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use stdClass;
@@ -54,7 +54,7 @@ class Create
      * @param string|null $orderReference
      * @param Application|null $application
      * @param Customer|null $customer
-     * @param MetaData|null $metaData
+     * @param Metadata|null $metadata
      * @param Options|null $options
      * @return Payment
      * @throws ApiException
@@ -75,7 +75,7 @@ class Create
         ?string $orderReference = null,
         ?Application $application = null,
         ?Customer $customer = null,
-        ?MetaData $metaData = null,
+        ?Metadata $metadata = null,
         ?Options $options = null
     ): Payment {
         $params = [
@@ -94,8 +94,8 @@ class Create
         if ($customer) {
             $params['customer'] = $customer;
         }
-        if ($metaData) {
-            $params['metaData'] = $metaData;
+        if ($metadata) {
+            $params['metadata'] = $metadata;
         }
         if ($options) {
             $params['options'] = $options;

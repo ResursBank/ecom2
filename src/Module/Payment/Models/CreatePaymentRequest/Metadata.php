@@ -15,9 +15,9 @@ use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * MetaData information class for payments. Currently, it does not have a proper collection.
+ * Metadata information class for payments. Currently, it does not have a proper collection.
  */
-class MetaData extends Model
+class Metadata extends Model
 {
     /**
      * @param string|null $creator

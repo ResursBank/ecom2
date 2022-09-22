@@ -16,10 +16,11 @@ use Resursbank\Ecom\Lib\Model\Payment\Application;
 use Resursbank\Ecom\Lib\Model\Payment\CoApplicant;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Information;
-use Resursbank\Ecom\Lib\Model\Payment\MetaData;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
@@ -45,7 +46,7 @@ class Payment extends Model
      * @param Order|null $order
      * @param Application|null $application
      * @param Information|null $information
-     * @param MetaData|null $metaData
+     * @param Metadata|null $metadata
      * @param CoApplicant|null $coApplicant
      * @param TaskRedirectionUrls|null $taskRedirectionUrls
      * @param StringValidation $stringValidation
@@ -66,7 +67,7 @@ class Payment extends Model
         public readonly ?Order $order = null,
         public readonly ?Application $application = null,
         public readonly ?Information $information = null,
-        public readonly ?MetaData $metaData = null,
+        public readonly ?Metadata $metadata = null,
         public readonly ?CoApplicant $coApplicant = null,
         public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
@@ -132,5 +133,72 @@ class Payment extends Model
     {
         $this->stringValidation->notEmpty(value: $uuid);
         $this->stringValidation->isUuid(value: $uuid);
+    }
+
+    /**
+     * Check if specified PossibleAction can be performed on this Payment
+     * @param PossibleAction $actionType
+     * @return bool
+     */
+    private function canPerformAction(PossibleAction $actionType): bool
+    {
+        if ($this->order) {
+            foreach ($this->order->possibleActions as $action) {
+                if ($action->action === $actionType) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if payment can be cancelled
+     *
+     * @return bool
+     */
+    public function canCancel(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::CANCEL);
+    }
+
+    /**
+     * Checks if payment can be captured
+     *
+     * @return bool
+     */
+    public function canCapture(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::CAPTURE);
+    }
+
+    /**
+     * Checks if payment can be refunded
+     *
+     * @return bool
+     */
+    public function canRefund(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::REFUND);
+    }
+
+    /**
+     * Alias for canRefund
+     *
+     * @return bool
+     */
+    public function canCredit(): bool
+    {
+        return $this->canRefund();
+    }
+
+    /**
+     * Returns true if payment is frozen
+     *
+     * @return bool
+     */
+    public function isFrozen(): bool
+    {
+        return $this->status === Status::FROZEN;
     }
 }
