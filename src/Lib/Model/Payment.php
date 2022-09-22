@@ -191,4 +191,14 @@ class Payment extends Model
     {
         return $this->canRefund();
     }
+
+    /**
+     * Returns true if payment is frozen
+     *
+     * @return bool
+     */
+    public function isFrozen(): bool
+    {
+        return $this->status === Status::FROZEN;
+    }
 }
