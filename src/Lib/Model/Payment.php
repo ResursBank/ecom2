@@ -72,7 +72,9 @@ class Payment extends Model
         private readonly StringValidation $stringValidation = new StringValidation(),
     ) {
         $this->validateId();
+        $this->validateCreated();
         $this->validateStoreId();
+        $this->validatePaymentMethodId();
         // Validation on country code will fail when request is running through the Search call.
     }
 
@@ -97,6 +99,24 @@ class Payment extends Model
     }
 
     /**
+     * @throws IllegalValueException
+     */
+    private function validateCreated(): void
+    {
+        $this->stringValidation->isDate(value: $this->created);
+    }
+
+    /**
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    private function validatePaymentMethodId(): void
+    {
+        $this->validateUuid(uuid: $this->paymentMethodId);
+    }
+
+    /**
      * Validate that an (uu)id exists on the payment.
      *
      * @return void
@@ -105,7 +125,7 @@ class Payment extends Model
      */
     private function validateId(): void
     {
-        $this->validateUuid($this->id);
+        $this->validateUuid(uuid: $this->id);
     }
 
     /**
@@ -117,7 +137,7 @@ class Payment extends Model
      */
     private function validateStoreId(): void
     {
-        $this->validateUuid($this->storeId);
+        $this->validateUuid(uuid: $this->storeId);
     }
 
     /**
