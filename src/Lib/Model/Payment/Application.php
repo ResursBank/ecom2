@@ -20,11 +20,13 @@ class Application extends Model
      * @param float $requestedCreditLimit
      * @param int $approvedCreditLimit
      * @param int|null $reference Credit application reference (int64).
+     * @param CoApplicant|null $coApplicant
      */
     public function __construct(
         public readonly float $requestedCreditLimit,
         public readonly int $approvedCreditLimit,
         public readonly ?int $reference = null,
+        public readonly ?CoApplicant $coApplicant = null,
     ) {
     }
 }
