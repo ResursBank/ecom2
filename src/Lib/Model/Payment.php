@@ -136,19 +136,59 @@ class Payment extends Model
     }
 
     /**
+     * Check if specified PossibleAction can be performed on this Payment
+     * @param PossibleAction $actionType
+     * @return bool
+     */
+    private function canPerformAction(PossibleAction $actionType): bool
+    {
+        if ($this->order) {
+            foreach ($this->order->possibleActions as $action) {
+                if ($action->action === $actionType) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Checks if payment can be cancelled
      *
      * @return bool
      */
     public function canCancel(): bool
     {
-        if ($this->order) {
-            foreach ($this->order->possibleActions->toArray() as $action) {
-                if ($action->action === PossibleAction::CANCEL) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return $this->canPerformAction(actionType: PossibleAction::CANCEL);
+    }
+
+    /**
+     * Checks if payment can be captured
+     *
+     * @return bool
+     */
+    public function canCapture(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::CAPTURE);
+    }
+
+    /**
+     * Checks if payment can be refunded
+     *
+     * @return bool
+     */
+    public function canRefund(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::REFUND);
+    }
+
+    /**
+     * Alias for canRefund
+     *
+     * @return bool
+     */
+    public function canCredit(): bool
+    {
+        return $this->canRefund();
     }
 }
