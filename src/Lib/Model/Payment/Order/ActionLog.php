@@ -24,7 +24,7 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class ActionLog extends Model
 {
     /**
-     * @param string $id
+     * @param string $actionId
      * @param PaymentActionType $type
      * @param string $created
      * @param OrderLineCollection $orderLines
@@ -36,7 +36,7 @@ class ActionLog extends Model
      * @throws IllegalTypeException
      */
     public function __construct(
-        public readonly string $id,
+        public readonly string $actionId,
         public readonly PaymentActionType $type,
         public readonly string $created,
         public readonly OrderLineCollection $orderLines,
@@ -56,7 +56,7 @@ class ActionLog extends Model
      */
     private function validateId(): void
     {
-        $this->stringValidation->isUuid(value: $this->id);
+        $this->stringValidation->isUuid(value: $this->actionId);
     }
 
     /**
