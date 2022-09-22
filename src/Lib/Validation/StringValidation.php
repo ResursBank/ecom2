@@ -204,4 +204,20 @@ class StringValidation
 
         return true;
     }
+
+    /**
+     * Performs basic email address validation
+     *
+     * @param string|null $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isEmail(?string $value): bool
+    {
+        if (!empty($value) && !str_contains(haystack: $value, needle: '@')) {
+            throw new IllegalValueException(message: $value . ' is not an email address.');
+        }
+
+        return true;
+    }
 }
