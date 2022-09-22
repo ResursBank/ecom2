@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleActionCollection;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -23,7 +24,7 @@ class Order extends Model
     /**
      * @param string $orderReference
      * @param ActionLogCollection $actionLog
-     * @param array $possibleActions
+     * @param PossibleActionCollection $possibleActions
      * @param float $totalOrderAmount
      * @param float $canceledAmount
      * @param float $authorizedAmount
@@ -36,7 +37,7 @@ class Order extends Model
     public function __construct(
         public readonly string $orderReference,
         public readonly ActionLogCollection $actionLog,
-        public readonly array $possibleActions,
+        public readonly PossibleActionCollection $possibleActions,
         public readonly float $totalOrderAmount,
         public readonly float $canceledAmount,
         public readonly float $authorizedAmount,
