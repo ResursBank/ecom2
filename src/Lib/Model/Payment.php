@@ -19,6 +19,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Information;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
+use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
@@ -42,7 +43,7 @@ class Payment extends Model
      * @param Customer $customer
      * @param Status $status
      * @param array $paymentActions
-     * @param string|null $countryCode
+     * @param CountryCode|null $countryCode
      * @param Order|null $order
      * @param Application|null $application
      * @param Information|null $information
@@ -63,7 +64,7 @@ class Payment extends Model
         public readonly Customer $customer,
         public readonly Status $status,
         public readonly array $paymentActions = [],
-        public readonly ?string $countryCode = null,
+        public readonly ?CountryCode $countryCode = null,
         public readonly ?Order $order = null,
         public readonly ?Application $application = null,
         public readonly ?Information $information = null,
