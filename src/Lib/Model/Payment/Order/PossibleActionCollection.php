@@ -18,7 +18,7 @@ use Resursbank\Ecom\Lib\Collection\Collection;
 class PossibleActionCollection extends Collection
 {
     /**
-     * @param array<int, ActionLog> $data
+     * @param array<int, PossibleAction> $data
      * @throws IllegalTypeException
      */
     public function __construct(

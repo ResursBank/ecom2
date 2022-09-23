@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Order\Action;
+use Resursbank\Ecom\Module\Payment\Enum\PossibleAction as ActionEnum;
 
 /**
  * Defines a possible action for the order.
@@ -18,10 +18,10 @@ use Resursbank\Ecom\Lib\Order\Action;
 class PossibleAction extends Model
 {
     /**
-     * @param Action|null $action
+     * @param ActionEnum|null $action
      */
     public function __construct(
-        public readonly ?Action $action = null,
+        public readonly ?ActionEnum $action = null,
     ) {
     }
 }
