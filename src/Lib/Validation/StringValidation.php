@@ -221,11 +221,27 @@ class StringValidation
     {
         if (
             !preg_match(
-                pattern: '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[0-9a-d][0-9a-f]{3}-[0-9a-f]{12}$/i',
+                pattern: '/^[\da-f]{8}-[\da-f]{4}-[0-5][\da-f]{3}-[\da-d][\da-f]{3}-[\da-f]{12}$/i',
                 subject: $value
             )
         ) {
             throw new IllegalValueException(message: "$value is not a UUID.");
+        }
+
+        return true;
+    }
+
+    /**
+     * Performs basic email address validation
+     *
+     * @param string|null $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isEmail(?string $value): bool
+    {
+        if (!empty($value) && !str_contains(haystack: $value, needle: '@')) {
+            throw new IllegalValueException(message: $value . ' is not an email address.');
         }
 
         return true;
