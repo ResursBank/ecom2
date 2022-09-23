@@ -32,6 +32,7 @@ use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
+use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
@@ -177,7 +178,7 @@ class CancelTest extends TestCase
         self::assertNotNull(actual: $payment->order);
         /** @psalm-suppress MixedPropertyFetch */
         self::assertEquals(
-            expected: 'CANCEL',
+            expected: ActionType::CANCEL,
             actual: $response->order->actionLog[1]->type
         );
         self::assertEquals(
