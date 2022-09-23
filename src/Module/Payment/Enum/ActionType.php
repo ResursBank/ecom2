@@ -5,16 +5,11 @@
  * See LICENSE for license details.
  */
 
-/** @noinspection PhpCSValidationInspection */
-
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Order;
+namespace Resursbank\Ecom\Module\Payment\Enum;
 
-/**
- * Defines the payment action types.
- */
-enum PaymentActionType: string
+enum ActionType: string
 {
     case CREATE = 'CREATE';
     case MODIFY_ORDER = 'MODIFY_ORDER';

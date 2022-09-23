@@ -9,14 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Order\PaymentActionType;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 
 /**
  * Defines an action log item
@@ -25,7 +23,7 @@ class ActionLog extends Model
 {
     /**
      * @param string $actionId
-     * @param PaymentActionType $type
+     * @param ActionType $type
      * @param string $created
      * @param OrderLineCollection $orderLines
      * @param string|null $transactionId
@@ -33,11 +31,10 @@ class ActionLog extends Model
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation
      * @throws IllegalValueException
-     * @throws IllegalTypeException
      */
     public function __construct(
         public readonly string $actionId,
-        public readonly PaymentActionType $type,
+        public readonly ActionType $type,
         public readonly string $created,
         public readonly OrderLineCollection $orderLines,
         public readonly ?string $transactionId = null,
@@ -45,16 +42,16 @@ class ActionLog extends Model
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
     ) {
-        $this->validateId();
-        $this->validateOrderLines();
+        $this->validateActionId();
         $this->validateCreated();
+        $this->validateOrderLines();
     }
 
     /**
      * @return void
      * @throws IllegalValueException
      */
-    private function validateId(): void
+    private function validateActionId(): void
     {
         $this->stringValidation->isUuid(value: $this->actionId);
     }
@@ -65,13 +62,12 @@ class ActionLog extends Model
      */
     private function validateCreated(): void
     {
-        $this->stringValidation->isDate(value: $this->created);
+        $this->stringValidation->isIso8601Date(value: $this->created);
     }
 
     /**
      * @return void
      * @throws IllegalValueException
-     * @throws IllegalTypeException
      */
     private function validateOrderLines(): void
     {
@@ -80,11 +76,6 @@ class ActionLog extends Model
             data: $this->orderLines->data,
             min: 1,
             max: 1000
-        );
-        $this->arrayValidation->isOfType(
-            data: $this->orderLines->data,
-            type: OrderLine::class,
-            compareFn: fn (mixed $value) => $value instanceof OrderLine
         );
     }
 }
