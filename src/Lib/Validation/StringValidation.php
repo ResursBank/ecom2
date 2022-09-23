@@ -154,6 +154,32 @@ class StringValidation
 
     /**
      * @param string $value
+     * @return bool
+     * @throws IllegalValueException
+     * @psalm-suppress TooFewArguments
+     * @psalm-suppress InvalidNamedArgument
+     * @noinspection PhpNamedArgumentMightBeUnresolvedInspection
+     */
+    public function isIso8601Date(string $value): bool
+    {
+        $date = DateTime::createFromFormat(format: '', datetime: $value);
+        if (!$date || $date->format(format: '') !== $value) {
+            // Ugly hack because PHP's ISO 8601 parsing has been broken since forever and is still "not a bug"
+            $noNanoseconds = substr(string: $value, offset: 0, length: 23);
+            $remainder = substr(string: $value, offset: 23);
+            if (
+                !DateTime::createFromFormat(format: 'Y-m-d\TH:i:s.v', datetime: $noNanoseconds)
+                || (!empty($remainder) && !ctype_digit(text: $remainder))
+            ) {
+                throw new IllegalValueException(message: "$value is not a valid ISO 8601 date.");
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $value
      * @param int $min
      * @param int $max
      * @return bool
