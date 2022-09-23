@@ -353,4 +353,29 @@ final class StringValidationTest extends TestCase
             )
         );
     }
+
+    /**
+     * Assert that isEmail() returns true when supplied a string with an @ sign in it
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsEmailReturnsTrue(): void
+    {
+        self::assertTrue(
+            condition: $this->stringValidation->isEmail(value: 'foo@example.com')
+        );
+    }
+
+    /**
+     * Assert that isEmail() throws an IllegalValueException when supplied with a string without an @ sign in it
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsEmailThrowsIllegalValue(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isEmail(value: 'foobar');
+    }
 }
