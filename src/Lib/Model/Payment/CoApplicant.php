@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * CoApplicant for Customer models in MAPI.
@@ -18,17 +21,43 @@ class CoApplicant extends Model
 {
     /**
      * @param string $governmentId
-     * @param string $mobilePhone
-     * @param string $phone
-     * @param string $email
+     * @param string|null $mobilePhone
+     * @param string|null $phone
+     * @param string|null $email
      * @param Identification|null $identification
+     * @param StringValidation $stringValidation
+     * @throws IllegalValueException
+     * @throws EmptyValueException
      */
     public function __construct(
         public readonly string $governmentId,
-        public readonly string $mobilePhone,
-        public readonly string $phone,
-        public readonly string $email,
-        public readonly ?Identification $identification = null
+        public readonly ?string $mobilePhone = null,
+        public readonly ?string $phone = null,
+        public readonly ?string $email = null,
+        public readonly ?Identification $identification = null,
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
+        $this->validateGovernmentId();
+        $this->validateEmail();
+    }
+
+    /**
+     * @return void
+     * @throws EmptyValueException
+     */
+    private function validateGovernmentId(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->governmentId);
+    }
+
+    /**
+     * @return void
+     * @throws IllegalValueException
+     */
+    private function validateEmail(): void
+    {
+        if ($this->email) {
+            $this->stringValidation->isEmail(value: $this->email);
+        }
     }
 }
