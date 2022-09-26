@@ -30,8 +30,17 @@ class CoApplicant extends Model
      * @throws EmptyValueException
      */
     public function __construct(
+        /**
+         * @todo Not sure how to validate government id.
+         */
         public readonly string $governmentId,
+        /**
+         * @todo Not sure how to validate phone number.
+         */
         public readonly ?string $mobilePhone = null,
+        /**
+         * @todo Not sure how to validate phone number.
+         */
         public readonly ?string $phone = null,
         public readonly ?string $email = null,
         public readonly ?Identification $identification = null,
