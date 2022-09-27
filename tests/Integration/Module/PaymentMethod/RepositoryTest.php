@@ -101,7 +101,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert read() returns data from the API when cache is empty.
+     * Assert getPaymentMethods() returns data from the API when cache is empty.
      *
      * @return void
      * @throws ApiException
@@ -115,7 +115,7 @@ class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testReadReturnsWithoutCache(): void
+    public function testGetPaymentMethodsReturnsWithoutCache(): void
     {
         self::assertNull(actual: $this->cache->read());
         self::assertNotEmpty(
@@ -126,8 +126,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert read() retrieves payment methods, paymentMethod them in cache, and
-     * will later return the same paymentMethods from cache.
+     * Assert getPaymentMethods() retrieves payment methods, paymentMethod them
+     * in cache, and will later return the same paymentMethods from cache.
      *
      * @return void
      * @throws ApiException
@@ -141,7 +141,7 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testReadReturnsCache(): void
+    public function testGetPaymentMethodsReturnsCache(): void
     {
         self::assertEmpty(actual: $this->cache->read());
 
