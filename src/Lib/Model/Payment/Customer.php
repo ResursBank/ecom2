@@ -24,21 +24,32 @@ class Customer extends Model
      * @param CustomerType $customerType
      * @param string|null $email
      * @param string|null $governmentId
+     * @param string|null $phone
      * @param string|null $mobilePhone
+     * @param string|null $contactPerson
      * @param Address|null $deliveryAddress Delivery address can be unset in some occasions.
      * @param Identification|null $identification
-     * @param string|null $phone
      * @param StringValidation $stringValidation
      * @throws IllegalValueException
      */
     public function __construct(
         public readonly CustomerType $customerType = CustomerType::NATURAL,
         public readonly ?string $email = null,
+        /**
+         * @todo Missing validation rules for gov id.
+         */
         public readonly ?string $governmentId = null,
+        /**
+         * @todo Missing validation rules phone number.
+         */
+        public readonly ?string $phone = null,
+        /**
+         * @todo Missing validation rules phone number.
+         */
         public readonly ?string $mobilePhone = null,
+        public readonly ?string $contactPerson = null,
         public readonly ?Address $deliveryAddress = null,
         public readonly ?Identification $identification = null,
-        public readonly ?string $phone = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateEmail();
