@@ -21,9 +21,8 @@ class ActionLogCollection extends Collection
      * @param array<int, ActionLog> $data
      * @throws IllegalTypeException
      */
-    public function __construct(
-        public readonly array $data
-    ) {
+    public function __construct(array $data)
+    {
         parent::__construct(data: $data, type: ActionLog::class);
     }
 }
