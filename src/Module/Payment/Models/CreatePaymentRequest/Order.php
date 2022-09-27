@@ -50,6 +50,7 @@ class Order extends Model
      */
     private function validateOrderLines(): void
     {
+        $this->arrayValidation->isSequential(data: $this->orderLines->getData());
         $this->arrayValidation->length(
             data: $this->orderLines->getData(),
             min: 1,
