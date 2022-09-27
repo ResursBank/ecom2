@@ -21,9 +21,8 @@ class PossibleActionCollection extends Collection
      * @param array<int, PossibleAction> $data
      * @throws IllegalTypeException
      */
-    public function __construct(
-        public readonly array $data
-    ) {
+    public function __construct(array $data)
+    {
         parent::__construct(data: $data, type: PossibleAction::class);
     }
 }

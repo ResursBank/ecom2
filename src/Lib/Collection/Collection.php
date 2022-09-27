@@ -111,6 +111,14 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @inheritDoc
      */
     public function count(): int
