@@ -102,30 +102,26 @@ class ReadMoreTest extends TestCase
      */
     public function testRenderReadMore(): void
     {
-        ob_start();
-        new ReadMore(
+        $data = new ReadMore(
             paymentMethod: $this->method,
-            amount: $this->method->maxPurchaseLimit,
-            label: 'This is a link'
-        );
-
-        $content = ob_get_clean();
-
-        self::assertMatchesRegularExpression(
-            pattern: '/<div[^>]+class=["\'][^"\']*rb-rm/s',
-            string: $content,
-            message: 'Read more widget should contain a div with class rb-rm.'
+            amount: $this->method->maxPurchaseLimit
         );
 
         self::assertStringContainsString(
-            needle: 'This is a link',
-            haystack: $content,
-            message: 'Read more widget should contain the label.'
+            needle: 'Read more',
+            haystack: $data->content,
+            message: 'Read more link not found.'
+        );
+
+        self::assertMatchesRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-rm/s',
+            string: $data->content,
+            message: 'Read more widget should contain a div with class rb-rm.'
         );
 
         self::assertMatchesRegularExpression(
             pattern: '/<div[^>]+class=["\'][^"\']*rb-rm-link/s',
-            string: $content,
+            string: $data->content,
             message: 'Read more widget should contain a div with class rb-rm-link.'
         );
 
@@ -137,41 +133,38 @@ class ReadMoreTest extends TestCase
 
         self::assertMatchesRegularExpression(
             pattern: "/<iframe[^>]+src=[\"']$testUrl/s",
-            string: $content,
+            string: $data->content,
             message: 'Read more widget should contain an iframe with the correct URL.'
         );
 
         self::assertMatchesRegularExpression(
             pattern: "/<div[^>]+id=[\"']rb-rm-model-{$this->method->id}[\"']/s",
-            string: $content,
+            string: $data->content,
             message: 'Read more widget should contain a div with the correct ID.'
         );
 
         self::assertMatchesRegularExpression(
             pattern: "/<div[^>]+id=[\"']rb-rm-model-{$this->method->id}[\"'][^>]+style=[\"'][^\"']*display:\s*none;/s",
-            string: $content,
+            string: $data->content,
             message: 'Read more widgets lightbox should be hidden by default.'
         );
     }
 
-    /**
-     * @return void
-     * @throws FilesystemException
-     */
-    public function testRenderReadMoreDefaultLabel(): void
-    {
-        ob_start();
-        new ReadMore(
-            paymentMethod: $this->method,
-            amount: $this->method->maxPurchaseLimit
-        );
-
-        $content = ob_get_clean();
-
-        self::assertStringContainsString(
-            needle: 'Read more',
-            haystack: $content,
-            message: 'Read more widget should contain a link with text "Read more".'
-        );
-    }
+//    /**
+//     * @return void
+//     * @throws FilesystemException
+//     */
+//    public function testRenderReadMoreDefaultLabel(): void
+//    {
+//        $data = new ReadMore(
+//            paymentMethod: $this->method,
+//            amount: $this->method->maxPurchaseLimit
+//        );
+//
+//        self::assertStringContainsString(
+//            needle: 'Read more',
+//            haystack: $data->content,
+//            message: 'Read more widget should contain a link with text "Read more".'
+//        );
+//    }
 }
