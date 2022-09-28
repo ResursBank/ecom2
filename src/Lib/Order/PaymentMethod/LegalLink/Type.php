@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Enum\LegalLink;
+namespace Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink;
 
 /**
  * @codingStandardsIgnoreStart

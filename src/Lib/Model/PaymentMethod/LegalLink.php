@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -20,7 +21,7 @@ class LegalLink extends Model
 {
     /**
      * @param string $url
-     * @param string $type
+     * @param Type $type
      * @param bool $needToAppendPriceLast
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
@@ -29,7 +30,7 @@ class LegalLink extends Model
      */
     public function __construct(
         public readonly string $url,
-        public readonly string $type,
+        public readonly Type $type,
         public readonly bool $needToAppendPriceLast,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
