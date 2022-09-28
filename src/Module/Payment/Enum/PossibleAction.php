@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Enum;
 
+/**
+ * Possible order actions.
+ */
 enum PossibleAction: string
 {
     case CAPTURE = 'CAPTURE';

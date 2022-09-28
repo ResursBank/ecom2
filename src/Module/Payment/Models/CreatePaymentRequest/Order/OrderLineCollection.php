@@ -21,9 +21,8 @@ class OrderLineCollection extends Collection
      * @param array<int, OrderLine> $data
      * @throws IllegalTypeException
      */
-    public function __construct(
-        public readonly array $data
-    ) {
+    public function __construct(array $data)
+    {
         parent::__construct(data: $data, type: OrderLine::class);
     }
 }
