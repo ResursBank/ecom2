@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Models;
+namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\Type;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod\LegalLink;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
 
 /**
  * Defines payment method entity.

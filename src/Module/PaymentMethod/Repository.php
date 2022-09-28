@@ -25,8 +25,8 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Exception;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
 /**

@@ -13,7 +13,7 @@ namespace Resursbank\EcomTest\Unit\Module\PaymentMethod\Models\PaymentMethod;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod\LegalLink;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
 
 /**
  * Test data integrity of legal link object attached to payment methods.
