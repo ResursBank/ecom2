@@ -499,7 +499,7 @@ class Curl
         $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
         $connectCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CONNECTCODE);
 
-        if ($this->responseContentType === ContentType::JSON) {
+        if ($this->responseContentType === ContentType::JSON && !empty($body)) {
             /** @psalm-suppress MixedAssignment */
             try {
                 $jsonMessage = json_decode(
