@@ -500,7 +500,6 @@ class Curl
         $connectCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CONNECTCODE);
 
         if ($this->responseContentType === ContentType::JSON) {
-            $this->stringValidation->notEmpty(value: $body);
             /** @psalm-suppress MixedAssignment */
             try {
                 $jsonMessage = json_decode(
@@ -509,7 +508,7 @@ class Curl
                     depth: 768,
                     flags: JSON_THROW_ON_ERROR
                 );
-                if (isset($jsonMessage->message)) {
+                if ($jsonMessage && isset($jsonMessage->message)) {
                     $msg = $jsonMessage->message . '.';
                     if (property_exists($jsonMessage, 'parameters') && is_object($jsonMessage->parameters)) {
                         foreach ($jsonMessage->parameters as $key => $value) {
