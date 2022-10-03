@@ -517,7 +517,9 @@ class Curl
                         }
                     }
                 }
-            } catch (Exception) {}
+            } catch (Exception) {
+                // Ignore.
+            }
         }
 
         if ($code !== 0 || $httpCode >= 400) {
