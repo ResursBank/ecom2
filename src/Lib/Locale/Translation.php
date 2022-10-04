@@ -14,22 +14,24 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * English phrase that can be translated into any language.
+ * Translated phrase. The phrase has to be translated to the languages listed
+ * in the constructor, and cannot be an empty string. Base language is english.
  */
-class Phrase extends Model
+class Translation extends Model
 {
     /**
-     * @param string $id
-     * @param Translation $translation
+     * @param string $sv
+     * @param string $en
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
      */
     public function __construct(
-        public string $id,
-        public Translation $translation,
+        public readonly string $sv,
+        public readonly string $en,
         private readonly StringValidation $stringValidation = new StringValidation(),
     ) {
-        $this->validateId(value: $this->id);
+        $this->validateTranslation(value: $this->sv);
+        $this->validateTranslation(value: $this->en);
     }
 
     /**
@@ -37,7 +39,7 @@ class Phrase extends Model
      * @return void
      * @throws EmptyValueException
      */
-    public function validateId(string $value): void
+    public function validateTranslation(string $value): void
     {
         $this->stringValidation->notEmpty(value: $value);
     }

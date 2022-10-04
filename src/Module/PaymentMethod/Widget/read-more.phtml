@@ -4,12 +4,11 @@
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
+/** @psalm-scope-this Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore */
 
 declare(strict_types=1);
 
-/**
- * @var ReadMore $this
- */
+/** @var ReadMore $this */
 
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 
@@ -27,7 +26,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
             text-decoration:none;
             color:#00a8e6;
             cursor:pointer;
-          "><?= $this->getLabel() ?></p>
+          "><?= $this->label ?></p>
   </div>
   <div id="rb-rm-model-<?= $this->paymentMethod->id ?>" style="display:none;">
     <div

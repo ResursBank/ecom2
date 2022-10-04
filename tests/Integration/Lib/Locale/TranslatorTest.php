@@ -10,8 +10,10 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Lib\Cache\Redis;
 use Resursbank\Ecom\Lib\Locale\Locale;
+use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Locale\Translator;
 
@@ -19,9 +21,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
  * Test that phrases can be translated.
  *
  * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.Superglobals)
  */
 class TranslatorTest extends TestCase
 {
@@ -30,12 +30,23 @@ class TranslatorTest extends TestCase
      */
     protected function setUp(): void
     {
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            locale: Locale::sv
-        );
+        $this->setupConfig();
+        Config::$instance->cache->clear(key: 'resursbank-ecom-translations');
 
         parent::setUp();
+    }
+
+    /**
+     * @param Locale $locale
+     * @return void
+     */
+    private function setupConfig(Locale $locale = Locale::en): void
+    {
+        Config::setup(
+            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            locale: $locale,
+            cache: new Redis(host: (string) $_ENV['REDIS_HOST'])
+        );
     }
 
     /**
@@ -44,12 +55,16 @@ class TranslatorTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws FilesystemException
-     * @throws IllegalValueException
+     * @throws TranslationException
      */
     public function testTranslationWorks(): void
     {
-        $result = Translator::translate('Read More');
+        $result = Translator::translate(phraseId: 'read-more');
+        self::assertSame(expected: 'Read More', actual: $result);
 
+        // Test translating into swedish.
+        $this->setupConfig(Locale::sv);
+        $result = Translator::translate(phraseId: 'read-more');
         self::assertSame(expected: 'Läs Mer', actual: $result);
     }
 
@@ -59,10 +74,79 @@ class TranslatorTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws FilesystemException
+     * @throws TranslationException
      */
-    public function testTranslateThrowsWhenPhraseDoesNotExists(): void
+    public function testTranslateThrowsWhenPhraseIdDoesNotExists(): void
     {
-        $this->expectException(IllegalValueException::class);
-        Translator::translate(phrase: 'Read');
+        $this->expectException(exception: TranslationException::class);
+        Translator::translate(phraseId: 'read');
+    }
+
+    /**
+     * @return void
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testDecodeDataThrowsIfDataIsFaulty(): void
+    {
+        $this->expectException(exception: JsonException::class);
+        Translator::decodeData(data: 'asdfsda');
+    }
+
+    /**
+     * @return void
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function testTranslateLoadsDataFromFile(): void
+    {
+        $cachedData = Config::$instance->cache->read(
+            key: 'resursbank-ecom-translations'
+        );
+
+        $translatedData = Translator::translate(phraseId: 'read-more');
+
+        self::assertNull(actual: $cachedData);
+        self::assertNotEmpty(actual: $translatedData);
+    }
+
+    /**
+     * @return void
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function testTranslateLoadsDataFromCache(): void
+    {
+        $phraseId = 'read-more';
+        $oldCache = Config::$instance->cache->read(
+            key: 'resursbank-ecom-translations'
+        );
+        $translatedString = Translator::translate(phraseId: $phraseId);
+        $newCache = Config::$instance->cache->read(
+            key: 'resursbank-ecom-translations'
+        );
+
+        self::assertNotNull(actual: $newCache);
+
+        $decodedCache = Translator::decodeData(data: $newCache);
+        $result = null;
+
+        /** @var Phrase $item */
+        foreach ($decodedCache->toArray() as $item) {
+            if ($item->id === $phraseId) {
+                /** @var string $result */
+                $result = $item->translation->{Config::$instance->locale->value};
+            }
+        }
+
+        self::assertNull(actual: $oldCache);
+        self::assertSame(expected: $translatedString, actual: $result);
     }
 }

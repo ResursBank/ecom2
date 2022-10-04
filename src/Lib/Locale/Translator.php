@@ -14,7 +14,7 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 use function file_get_contents;
@@ -32,7 +32,7 @@ class Translator
      *
      * @var string
      */
-    private static string $translationsFilePath = __DIR__ . '/Resources/phrases.json';
+    private static string $translationsFilePath = __DIR__ . '/Resources/translations.json';
 
     /**
      * Key to store cached translations under.
@@ -58,18 +58,27 @@ class Translator
      * @throws JsonException
      * @throws ReflectionException
      */
-    private static function load(): PhraseCollection
+    public static function load(): PhraseCollection
     {
-        $file = file_get_contents(filename: self::$translationsFilePath);
-
-        if (!is_string($file)) {
+        if (!file_exists(self::$translationsFilePath)) {
             throw new FilesystemException(
                 message: 'Translations file could not be found on path: ' .
-                    self::$translationsFilePath
+                    self::$translationsFilePath,
+                code: FilesystemException::CODE_FILE_MISSING
             );
         }
 
-        $result = self::decodeData(data: $file);
+        $content = file_get_contents(filename: self::$translationsFilePath);
+
+        if (!is_string($content) || $content === '') {
+            throw new FilesystemException(
+                message: 'Translation file ' . self::$translationsFilePath .
+                    ' is empty.',
+                code: FilesystemException::CODE_FILE_EMPTY
+            );
+        }
+
+        $result = self::decodeData(data: $content);
 
         Config::$instance->cache->write(
             key: self::$cacheKey,
@@ -87,37 +96,31 @@ class Translator
      * Takes an english phrase and translates it to the language of the
      * configured locale.
      *
-     * @param string $phrase
+     * @param string $phraseId
      * @return string
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws IllegalValueException
-     * @see Config::locale
+     * @throws TranslationException
+     * @see Config::$locale
      */
-    public static function translate(string $phrase): string
+    public static function translate(string $phraseId): string
     {
-        $cachedData = Config::$instance->cache->read(key: self::$cacheKey);
-        $result = '';
-
-        if ($cachedData === null) {
-            $phrases = self::load();
-        } else {
-            $phrases = self::decodeData(data: $cachedData);
-        }
+        $phrases = self::getData();
+        $result = null;
 
         /** @var Phrase $item */
         foreach ($phrases as $item) {
-            if ($item->en === $phrase) {
+            if ($item->id === $phraseId) {
                 /** @var string $result */
-                $result = $item->{Config::$instance->locale->value};
+                $result = $item->translation->{Config::$instance->locale->value};
             }
         }
 
-        if ($result === '') {
-            throw new IllegalValueException(
-                message: "A translation for \"${phrase}\" could not be found."
+        if ($result === null) {
+            throw new TranslationException(
+                message: "A translation with $phraseId could not be found."
             );
         }
 
@@ -125,13 +128,35 @@ class Translator
     }
 
     /**
-     * Decodes JSON data into a collection of phrases.
-     *
-     * @throws JsonException
+     * @return PhraseCollection
+     * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws JsonException
      * @throws ReflectionException
      */
-    private static function decodeData(string $data): PhraseCollection
+    public static function getData(): PhraseCollection
+    {
+        $cachedData = Config::$instance->cache->read(key: self::$cacheKey);
+
+        if ($cachedData === null) {
+            $phrases = self::load();
+        } else {
+            $phrases = self::decodeData(data: $cachedData);
+        }
+
+        return $phrases;
+    }
+
+    /**
+     * Decodes JSON data into a collection of phrases.
+     *
+     * @param string $data
+     * @return PhraseCollection
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public static function decodeData(string $data): PhraseCollection
     {
         /** @var array $decode */
         $decode = json_decode(

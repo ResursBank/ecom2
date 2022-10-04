@@ -9,13 +9,14 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 
-use Resursbank\Ecom\Config;
+use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Locale\Dictionary;
-use Resursbank\Ecom\Lib\Locale\Locale;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
-use function is_string;
 
 /**
  * Read more widget.
@@ -33,14 +34,18 @@ class ReadMore extends Widget
     public string $content = '';
 
     /**
-     * @var Dictionary
+     * @var string
      */
-    public Dictionary $label;
+    public string $label;
 
     /**
      * @param PaymentMethod $paymentMethod
      * @param float $amount
      * @throws FilesystemException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
@@ -52,25 +57,7 @@ class ReadMore extends Widget
             }
         }
 
-        $this->label = new Dictionary(
-            en: 'Read more',
-            sv: 'Läs mer',
-        );
-
+        $this->label = Translator::translate('read-more');
         $this->content = $this->render(file: __DIR__ . '/read-more.phtml');
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        $result = $this->label->{Config::$instance->locale->name};
-
-        if (!is_string(value: $result)) {
-            $result = 'Read more';
-        }
-
-        return $result;
     }
 }

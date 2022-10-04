@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
@@ -99,6 +100,10 @@ class ReadMoreTest extends TestCase
     /**
      * @return void
      * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testRenderReadMore(): void
     {
@@ -108,7 +113,7 @@ class ReadMoreTest extends TestCase
         );
 
         self::assertStringContainsString(
-            needle: 'Read more',
+            needle: Translator::translate('read-more'),
             haystack: $data->content,
             message: 'Read more link not found.'
         );
@@ -149,22 +154,4 @@ class ReadMoreTest extends TestCase
             message: 'Read more widgets lightbox should be hidden by default.'
         );
     }
-
-//    /**
-//     * @return void
-//     * @throws FilesystemException
-//     */
-//    public function testRenderReadMoreDefaultLabel(): void
-//    {
-//        $data = new ReadMore(
-//            paymentMethod: $this->method,
-//            amount: $this->method->maxPurchaseLimit
-//        );
-//
-//        self::assertStringContainsString(
-//            needle: 'Read more',
-//            haystack: $data->content,
-//            message: 'Read more widget should contain a link with text "Read more".'
-//        );
-//    }
 }
