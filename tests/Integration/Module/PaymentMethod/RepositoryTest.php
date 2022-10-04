@@ -206,4 +206,74 @@ class RepositoryTest extends TestCase
         self::assertNotEquals(expected: $apiData1, actual: $apiData2);
         self::assertNotEquals(expected: $cacheData1, actual: $cacheData2);
     }
+
+    /**
+     * Assert getById() returns a payment method by its ID.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testGetByIdFindResult(): void
+    {
+        $paymentMethods = Repository::getPaymentMethods(
+            storeId: $this->storeId
+        )->toArray();
+
+        if (!isset($paymentMethods[0])) {
+            self::fail(message: 'No payment methods found');
+        }
+
+        $paymentMethod = Repository::getById(
+            storeId: $this->storeId,
+            paymentMethodId: $paymentMethods[0]->id
+        );
+
+        self::assertNotNull(actual: $paymentMethod);
+        self::assertEquals(
+            expected: $paymentMethods[0]->id,
+            actual: $paymentMethod->id
+        );
+    }
+
+    /**
+     * Assert getById() returns NULL when no payment method is found.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testGetByIdReturnsNull(): void
+    {
+        $paymentMethods = Repository::getPaymentMethods(
+            storeId: $this->storeId
+        )->toArray();
+
+        if (!isset($paymentMethods[0])) {
+            self::fail(message: 'No payment methods found');
+        }
+
+        $paymentMethod = Repository::getById(
+            storeId: $this->storeId,
+            paymentMethodId: 'Not-a-Method'
+        );
+
+        self::assertNull(actual: $paymentMethod);
+    }
 }
