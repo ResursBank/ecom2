@@ -37,7 +37,7 @@ class TranslationTest extends TestCase
     /**
      * @return void
      */
-    public function testValidateIdThrowsIfAnyPropertyIsEmpty(): void
+    public function testValidateIdThrowsIfSvEmpty(): void
     {
         $this->expectException(exception: EmptyValueException::class);
 
@@ -45,10 +45,18 @@ class TranslationTest extends TestCase
             expected: Translation::class,
             actual: new Translation(en: 'asdf', sv: ''),
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function testValidateIdThrowsIfEnEmpty(): void
+    {
+        $this->expectException(exception: EmptyValueException::class);
 
         self::assertInstanceOf(
             expected: Translation::class,
-            actual: new Translation(en: '', sv: 'asdf'),
+            actual: new Translation(sv: 'asdf', en: ''),
         );
     }
 }
