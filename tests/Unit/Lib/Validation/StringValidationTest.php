@@ -378,4 +378,25 @@ final class StringValidationTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->stringValidation->isEmail(value: 'foobar');
     }
+
+    /**
+     * Verify that the ISO 8601 validation method properly validates known good date strings
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsIso8601DateTimeWithValidDates(): void
+    {
+        $validDates = [
+            '2022-09-29T11:19:02.015',
+            '2022-10-06T10:51:12Z',
+            '2022-10-06T10:51:12+00:00'
+        ];
+
+        foreach ($validDates as $validDate) {
+            self::assertTrue(
+                condition: $this->stringValidation->isIso8601DateTime(value: $validDate)
+            );
+        }
+    }
 }
