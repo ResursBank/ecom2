@@ -390,7 +390,8 @@ final class StringValidationTest extends TestCase
         $validDates = [
             '2022-09-29T11:19:02.015',
             '2022-10-06T10:51:12Z',
-            '2022-10-06T10:51:12+00:00'
+            '2022-10-06T10:51:12+00:00',
+            '2022-10-06T12:48:11+00:00'
         ];
 
         foreach ($validDates as $validDate) {
