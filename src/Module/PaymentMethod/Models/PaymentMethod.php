@@ -16,6 +16,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod\LegalLink;
  * Defines payment method entity.
  *
  * NOTE: All Exceptions from namespace Validation extends ValidationException.
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  */
 class PaymentMethod extends Model
 {
@@ -30,6 +31,7 @@ class PaymentMethod extends Model
      * @param array<int, LegalLink> $legalLinks
      * @param bool $enabledForLegalCustomer
      * @param bool $enabledForNaturalCustomer
+     * @param int $sortOrder
      * @param StringValidation $stringValidation
      * @param FloatValidation $floatValidation
      * @throws EmptyValueException
@@ -48,6 +50,7 @@ class PaymentMethod extends Model
         public readonly array $legalLinks,
         public readonly bool $enabledForLegalCustomer,
         public readonly bool $enabledForNaturalCustomer,
+        public int $sortOrder = 0,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation()
     ) {
