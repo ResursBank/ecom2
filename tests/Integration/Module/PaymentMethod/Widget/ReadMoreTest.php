@@ -112,7 +112,7 @@ class ReadMoreTest extends TestCase
         );
 
         self::assertStringContainsString(
-            needle: Translator::translate('read-more'),
+            needle: Translator::translate(phraseId: 'read-more'),
             haystack: $data->content,
             message: 'Read more link not found.'
         );

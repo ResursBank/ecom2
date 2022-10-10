@@ -26,32 +26,32 @@ class PaymentMethods extends Widget
     /**
      * @var string
      */
-    public string $url = '';
+    public readonly string $content;
 
     /**
      * @var string
      */
-    public string $content = '';
+    public readonly string $nameLabel;
 
     /**
      * @var string
      */
-    public string $nameLabel;
+    public readonly string $minTotalLabel;
 
     /**
      * @var string
      */
-    public string $minTotalLabel;
+    public readonly string $maxTotalLabel;
 
     /**
      * @var string
      */
-    public string $maxTotalLabel;
+    public readonly string $sortOrderLabel;
 
     /**
      * @var string
      */
-    public string $sortOrderLabel;
+    public readonly string $missingMethodsWarning;
 
     /**
      * @param PaymentMethodCollection $paymentMethods
@@ -64,10 +64,11 @@ class PaymentMethods extends Widget
     public function __construct(
         public readonly PaymentMethodCollection $paymentMethods,
     ) {
-        $this->nameLabel = Translator::translate('name');
-        $this->minTotalLabel = Translator::translate('min-total');
-        $this->maxTotalLabel = Translator::translate('max-total');
-        $this->sortOrderLabel = Translator::translate('sort-order');
+        $this->nameLabel = Translator::translate(phraseId: 'name');
+        $this->minTotalLabel = Translator::translate(phraseId: 'min-total');
+        $this->maxTotalLabel = Translator::translate(phraseId: 'max-total');
+        $this->sortOrderLabel = Translator::translate(phraseId: 'sort-order');
+        $this->missingMethodsWarning = Translator::translate(phraseId: 'no-payment-methods');
         $this->content = $this->render(file: __DIR__ . '/payment-methods.phtml');
     }
 }

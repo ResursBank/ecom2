@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
@@ -90,30 +91,30 @@ class PaymentMethodsTest extends TestCase
      */
     public function testRenderPaymentMethods(): void
     {
-        self::assertTrue(count($this->methods) > 0);
+        self::assertTrue(condition: count($this->methods) > 0);
 
         $data = new PaymentMethods(paymentMethods: $this->methods);
 
         self::assertStringContainsString(
-            needle: Translator::translate('name'),
+            needle: Translator::translate(phraseId: 'name'),
             haystack: $data->content,
             message: 'Name table header not found.'
         );
 
         self::assertStringContainsString(
-            needle: Translator::translate('min-total'),
+            needle: Translator::translate(phraseId: 'min-total'),
             haystack: $data->content,
             message: 'Minimum total table header not found.'
         );
 
         self::assertStringContainsString(
-            needle: Translator::translate('max-total'),
+            needle: Translator::translate(phraseId: 'max-total'),
             haystack: $data->content,
             message: 'Maximum total table header not found.'
         );
 
         self::assertStringContainsString(
-            needle: Translator::translate('sort-order'),
+            needle: Translator::translate(phraseId: 'sort-order'),
             haystack: $data->content,
             message: 'Sort order table header not found.'
         );
@@ -122,6 +123,63 @@ class PaymentMethodsTest extends TestCase
             pattern: '/<div[^>]+class=["\'][^"\']*rb-payment-methods/s',
             string: $data->content,
             message: 'Payment methods widget should contain a div with class rb-payment-methods.'
+        );
+
+        /** @var PaymentMethod $method */
+        foreach ($this->methods as $method) {
+            self::assertMatchesRegularExpression(
+                pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\']>/s',
+                string: $data->content,
+                message: "Missing row matching payment method $method->id"
+            );
+
+            self::assertMatchesRegularExpression(
+                pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
+                    preg_quote(str: $method->name, delimiter: '/') . '.*<\/td>/s',
+                string: $data->content,
+                message: "Missing name column for payment method row matching $method->id"
+            );
+
+            self::assertMatchesRegularExpression(
+                pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
+                    $method->minPurchaseLimit . '.*<\/td>/s',
+                string: $data->content,
+                message: "Missing min purchase limit column for payment method row matching $method->id"
+            );
+
+            self::assertMatchesRegularExpression(
+                pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
+                    $method->maxPurchaseLimit . '.*<\/td>/s',
+                string: $data->content,
+                message: "Missing max purchase limit column for payment method row matching $method->id"
+            );
+
+            self::assertMatchesRegularExpression(
+                pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
+                    $method->sortOrder . '.*<\/td>/s',
+                string: $data->content,
+                message: "Missing sort order column for payment method row matching $method->id"
+            );
+        }
+    }
+
+    /**
+     * @throws TranslationException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws FilesystemException
+     */
+    public function testRenderPaymentMethodsWarning(): void
+    {
+        $data = new PaymentMethods(
+            paymentMethods: new PaymentMethodCollection(data: [])
+        );
+
+        self::assertStringContainsString(
+            needle: Translator::translate(phraseId: 'no-payment-methods'),
+            haystack: $data->content,
+            message: 'No payment methods warning not found.'
         );
     }
 }

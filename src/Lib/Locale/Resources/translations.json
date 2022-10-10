@@ -33,5 +33,12 @@
       "en": "Sort order",
       "sv": "Sortering"
     }
+  },
+  {
+    "id": "no-payment-methods",
+    "translation": {
+      "en": "No payment methods.",
+      "sv": "Inga betalningsmetoder."
+    }
   }
 ]

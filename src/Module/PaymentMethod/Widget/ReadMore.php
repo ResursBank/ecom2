@@ -31,12 +31,12 @@ class ReadMore extends Widget
     /**
      * @var string
      */
-    public string $content = '';
+    public readonly string $content;
 
     /**
      * @var string
      */
-    public string $label;
+    public readonly string $label;
 
     /**
      * @param PaymentMethod $paymentMethod
@@ -57,7 +57,7 @@ class ReadMore extends Widget
             }
         }
 
-        $this->label = Translator::translate('read-more');
+        $this->label = Translator::translate(phraseId: 'read-more');
         $this->content = $this->render(file: __DIR__ . '/read-more.phtml');
     }
 }
