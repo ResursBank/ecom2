@@ -154,30 +154,4 @@ class ReadMoreTest extends TestCase
             message: 'Read more widgets lightbox should be hidden by default.'
         );
     }
-
-    /**
-     * @return void
-     * @throws FilesystemException
-     */
-    public function testRenderReadMoreDefaultLabel(): void
-    {
-        if ($_ENV['is_pipeline']) {
-            self::markTestSkipped(message: 'Running in pipeline, skipping test.');
-        }
-
-        ob_start();
-        new ReadMore(
-            paymentMethod: $this->method,
-            amount: $this->method->maxPurchaseLimit
-        );
-
-        $content = ob_get_clean();
-
-        self::assertStringContainsString(
-            needle: 'Read more',
-            haystack: $content,
-            message: 'Read more widget should contain a link with text "Read more".'
-        );
-    }
 }
-
