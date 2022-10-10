@@ -20,7 +20,6 @@ use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
 
 /**
  * Payment methods table widget.
- * @psalm
  */
 class PaymentMethods extends Widget
 {

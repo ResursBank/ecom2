@@ -12,8 +12,8 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
@@ -45,7 +45,7 @@ class ReadMore extends Widget
      * @throws JsonException
      * @throws ReflectionException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
+     * @throws TranslationException
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,

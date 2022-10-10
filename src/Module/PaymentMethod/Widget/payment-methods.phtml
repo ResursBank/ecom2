@@ -14,8 +14,7 @@ declare(strict_types=1);
 use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
 
-/** @var PaymentMethod[] $paymentMethods */
-$paymentMethods = $this->paymentMethods->toArray();
+$paymentMethods = $this->paymentMethods;
 ?>
 
 <?php if (count($paymentMethods) !== 0) : ?>
@@ -81,12 +80,13 @@ $paymentMethods = $this->paymentMethods->toArray();
             </tr>
             </thead>
             <tbody>
-                <?php foreach ($paymentMethods as $key => $method) : ?>
-                    <tr>
+                <?php /** @var PaymentMethod $method */ ?>
+                <?php foreach ($paymentMethods as $method) : ?>
+                    <tr id="<?= $method->id ?>">
                         <td><?= $method->name ?></td>
                         <td><?= $method->minPurchaseLimit ?></td>
                         <td><?= $method->maxPurchaseLimit ?></td>
-                        <td><?= $key + 1 ?></td>
+                        <td><?= $method->sortOrder ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -31,12 +31,12 @@ use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethodCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
 
+use function count;
+
 /**
- * Integration tests for PaymentMethods repository.
+ * Integration tests for the PaymentMethods widget.
  *
  * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PaymentMethodsTest extends TestCase
@@ -64,7 +64,7 @@ class PaymentMethodsTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
+            cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
             jwtAuth: new Jwt(
                 clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -88,8 +88,10 @@ class PaymentMethodsTest extends TestCase
      * @throws ReflectionException
      * @throws TranslationException
      */
-    public function testRenderReadMore(): void
+    public function testRenderPaymentMethods(): void
     {
+        self::assertTrue(count($this->methods) > 0);
+
         $data = new PaymentMethods(paymentMethods: $this->methods);
 
         self::assertStringContainsString(
