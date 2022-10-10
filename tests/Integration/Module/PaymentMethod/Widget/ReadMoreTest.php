@@ -103,9 +103,16 @@ class ReadMoreTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testRenderReadMore(): void
     {
+        if ($_ENV['is_pipeline']) {
+            self::markTestSkipped(
+                message: 'Buffer does not work in pipeline, skipping.'
+            );
+        }
+
         $data = new ReadMore(
             paymentMethod: $this->method,
             amount: $this->method->maxPurchaseLimit
