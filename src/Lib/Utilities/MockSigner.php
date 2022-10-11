@@ -67,6 +67,6 @@ class MockSigner
             responseContentType: ContentType::RAW
         );
         $curl->exec();
-        sleep(2);
+        sleep(1);
     }
 }
