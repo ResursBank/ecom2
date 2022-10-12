@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
@@ -228,18 +229,19 @@ class RepositoryTest extends TestCase
             storeId: $this->storeId
         )->toArray();
 
-        if (!isset($paymentMethods[0])) {
-            self::fail(message: 'No payment methods found');
-        }
+        /** @var PaymentMethod|null $method */
+        $method = $paymentMethods[0] ?? null;
+
+        self::assertNotNull(actual: $method);
 
         $paymentMethod = Repository::getById(
             storeId: $this->storeId,
-            paymentMethodId: $paymentMethods[0]->id
+            paymentMethodId: $method->id
         );
 
         self::assertNotNull(actual: $paymentMethod);
         self::assertEquals(
-            expected: $paymentMethods[0]->id,
+            expected: $method->id,
             actual: $paymentMethod->id
         );
     }

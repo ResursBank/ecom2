@@ -37,12 +37,19 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
+/**
+ * Test that searchPayment works.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class SearchTest extends TestCase
 {
     private const GOVERNMENT_ID = '198305147715';
 
     /**
      * @throws EmptyValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -83,12 +90,13 @@ class SearchTest extends TestCase
      * @throws ValidationException
      * @throws ApiException
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function createPayment(string $orderReference): Payment
     {
         return Repository::create(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -143,6 +151,7 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testSearchOrderReference(): void
     {
@@ -155,14 +164,18 @@ class SearchTest extends TestCase
 
         // Try to find the order
         sleep(seconds: 3);
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference
-        );
 
-        $this->assertEquals(
+        $paymentCollection = Repository::search(
+            storeId: (string) $_ENV['STORE_ID'],
+            orderReference: $orderReference
+        )->toArray();
+
+        /** @var Payment|null $fetched */
+        $fetched = $paymentCollection[0] ?? null;
+
+        self::assertSame(
             expected: $payment->id,
-            actual: $paymentCollection[0]->id
+            actual: $fetched !== null ? $fetched->id : ''
         );
     }
 
@@ -175,6 +188,7 @@ class SearchTest extends TestCase
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testSearchWithGovernmentId(): void
     {
@@ -187,15 +201,18 @@ class SearchTest extends TestCase
 
         // Try to find the order
         sleep(seconds: 3);
+
         $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
             orderReference: $orderReference,
             governmentId: self::GOVERNMENT_ID
-        );
+        )->toArray();
 
-        $this->assertEquals(
+        $fetched = $paymentCollection[0] ?? null;
+
+        self::assertSame(
             expected: $payment->id,
-            actual: $paymentCollection[0]->id
+            actual: $fetched !== null ? $fetched->id : ''
         );
     }
 }

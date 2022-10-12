@@ -205,18 +205,6 @@ class CurlTest extends TestCase
     }
 
     /**
-     * @return bool
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    private function isPipeline(): bool
-    {
-        return (
-            isset($_ENV['is_pipeline']) &&
-            (bool)$_ENV['is_pipeline'] === true
-        );
-    }
-
-    /**
      * Purpose is to make the curl entity to set credentials automatically from test Config-class.
      * @throws EmptyValueException
      */
@@ -422,10 +410,12 @@ class CurlTest extends TestCase
 
     /**
      * @return void
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws ValidationException
      * @noinspection SpellCheckingInspection
      */
     public function testTimeout(): void
@@ -459,10 +449,7 @@ class CurlTest extends TestCase
                     )
                 );
             } else {
-                //static::assertSame(28, $e->getCode() === 28);
-                static::assertTrue(
-                    condition: $e->getCode() === 28
-                );
+                static::assertSame(expected: 28, actual: $e->getCode());
             }
         }
     }
@@ -473,19 +460,18 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @SuppressWarnings(PHPMD.superGlobals)
      */
     public function testProxy(): void
     {
-        if (isset($_ENV['SKIP_PROXY_TESTS']) && (int) $_ENV['SKIP_PROXY_TESTS'] === 1) {
+        if ((bool) $_ENV['SKIP_PROXY_TESTS']) {
             static::markTestSkipped(
                 message: 'Skipping proxy tests because of environment variable.'
             );
         }
 
-        if ($this->isPipeline()) {
-            self::markTestSkipped(
-                message: 'Pipelines does not support proxies.'
-            );
+        if ((bool) $_ENV['IS_PIPELINE']) {
+            self::markTestSkipped(message: 'Pipeline does not support proxies.');
         }
 
         Config::setup(

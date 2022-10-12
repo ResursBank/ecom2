@@ -30,6 +30,11 @@ use stdClass;
  */
 class FilesystemTest extends TestCase
 {
+    /**
+     * Whether test is running on pipeline server.
+     *
+     * @var bool
+     */
     private bool $isPipeline = false;
 
     /**
@@ -74,10 +79,7 @@ class FilesystemTest extends TestCase
      */
     protected function setUp(): void
     {
-        // Whether tests are executed from a pipeline, specified in phpunit.xml
-        if (isset($_ENV['is_pipeline'])) {
-            $this->isPipeline = (bool) $_ENV['is_pipeline'];
-        }
+        $this->isPipeline = (bool) $_ENV['IS_PIPELINE'];
 
         // Create directory where all other directories / files will be created
         // during our tests, to avoid bloating /tmp.
@@ -313,7 +315,7 @@ class FilesystemTest extends TestCase
      */
     public function testWriteThrowsIfCacheFileIsNotWritable(): void
     {
-        if ($this->isPipeline()) {
+        if ($this->isPipeline) {
             self::markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
@@ -348,7 +350,7 @@ class FilesystemTest extends TestCase
      */
     public function testWriteThrowsWithExistingDirectory(): void
     {
-        if ($this->isPipeline()) {
+        if ($this->isPipeline) {
             self::markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
@@ -452,7 +454,7 @@ class FilesystemTest extends TestCase
      */
     public function testReadWithUnreadableCacheFileReturnsNull(): void
     {
-        if ($this->isPipeline()) {
+        if ($this->isPipeline) {
             self::markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
@@ -728,7 +730,7 @@ class FilesystemTest extends TestCase
      */
     public function testClearThrowsWhenFileNotWritable(): void
     {
-        if ($this->isPipeline()) {
+        if ($this->isPipeline) {
             self::markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );

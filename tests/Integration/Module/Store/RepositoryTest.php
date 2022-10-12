@@ -24,7 +24,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\Store\Repository;
 
 /**
@@ -37,11 +36,6 @@ use Resursbank\Ecom\Module\Store\Repository;
  */
 class RepositoryTest extends TestCase
 {
-    /**
-     * @var Cache
-     */
-    private Cache $cache;
-
     /**
      * @return void
      * @throws EmptyValueException

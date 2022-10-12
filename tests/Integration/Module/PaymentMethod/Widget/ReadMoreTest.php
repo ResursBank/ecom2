@@ -107,7 +107,7 @@ class ReadMoreTest extends TestCase
      */
     public function testRenderReadMore(): void
     {
-        if ($_ENV['is_pipeline']) {
+        if ((bool) $_ENV['IS_PIPELINE']) {
             self::markTestSkipped(
                 message: 'Buffer does not work in pipeline, skipping.'
             );
