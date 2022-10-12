@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
 namespace Resursbank\Ecom\Lib\Utilities;
 
+/**
+ * Class for string manipulation.
+ */
 class Strings
 {
     /**
-     * Just obfuscate strings between first and last character.
+     * Obfuscate strings between first and last character, just like RCO.
      *
      * @param string $string
      * @param int $startAt
