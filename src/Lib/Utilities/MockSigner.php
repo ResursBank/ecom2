@@ -85,23 +85,28 @@ class MockSigner
             throw new EmptyValueException(message: 'No government ID found');
         }
 
-        $curl = new Curl(
-            url: $payment->taskRedirectionUrls->customerUrl,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::URL,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
+        $url = '';
+        $elapsed = 0;
 
-        $curl->exec();
+        while (!str_contains(haystack: $url, needle: 'authenticate')) {
+            if ($elapsed >= 10) {
+                throw new RuntimeException(
+                    message: 'Timeout waiting for signing URL.'
+                );
+            }
 
-        $url = $curl->getEffectiveUrl();
+            $curl = new Curl(
+                url: $payment->taskRedirectionUrls->customerUrl,
+                requestMethod: RequestMethod::GET,
+                contentType: ContentType::URL,
+                authType: AuthType::NONE,
+                responseContentType: ContentType::RAW
+            );
+            $curl->exec();
 
-        if ($url === '') {
-            throw new RuntimeException(message: sprintf(
-                'Failed to resolve signing URL for payment %s.',
-                $payment->id
-            ));
+            $elapsed++;
+
+            $url = $curl->getEffectiveUrl();
         }
 
         return str_replace(
