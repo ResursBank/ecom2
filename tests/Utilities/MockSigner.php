@@ -9,8 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Utilities;
+namespace Resursbank\EcomTest\Utilities;
 
+use CurlHandle;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -29,7 +30,6 @@ use RuntimeException;
 
 use function sprintf;
 use function sleep;
-use function str_replace;
 
 /**
  * Handles mock signing in dev.
@@ -51,8 +51,6 @@ class MockSigner
      */
     public static function approve(Payment $payment): void
     {
-        $test = self::getSigningUrl(payment: $payment);
-        die(var_dump($test));
         $curl = new Curl(
             url: self::getSigningUrl(payment: $payment),
             requestMethod: RequestMethod::GET,
@@ -87,28 +85,31 @@ class MockSigner
             throw new EmptyValueException(message: 'No government ID found');
         }
 
-        $curl = new Curl(
-            url: $payment->taskRedirectionUrls->customerUrl,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::URL,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
+        $url = '';
+        $elapsed = 0;
 
-        $curl->exec();
+        while (!str_contains(haystack: $url, needle: 'authenticate')) {
+            if ($elapsed >= 10) {
+                throw new RuntimeException(
+                    message: 'Timeout waiting for signing URL.'
+                );
+            }
 
-        $url = $curl->getEffectiveUrl();
+            $curl = new Curl(
+                url: $payment->taskRedirectionUrls->customerUrl,
+                requestMethod: RequestMethod::GET,
+                contentType: ContentType::URL,
+                authType: AuthType::NONE,
+                responseContentType: ContentType::RAW
+            );
+            $curl->exec();
 
-        if ($url === '') {
-            throw new RuntimeException(message: sprintf(
-                'Failed to resolve signing URL for payment %s.',
-                $payment->id
-            ));
+            $elapsed++;
+
+            $url = $curl->getEffectiveUrl();
         }
 
-        die(var_dump($url));
-
-        $test = str_replace(
+        return str_replace(
             search: 'authenticate',
             replace: 'doAuth',
             subject: $url
