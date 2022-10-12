@@ -1,10 +1,20 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
 namespace Resursbank\EcomTest\Integration\Lib\Utilities;
 
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * String testing.
+ */
 class StringsTest extends TestCase
 {
     /**
