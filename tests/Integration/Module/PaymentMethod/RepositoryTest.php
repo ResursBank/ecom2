@@ -154,7 +154,10 @@ class RepositoryTest extends TestCase
 
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
-        self::assertEquals(expected: $data, actual: $this->cache->read());
+        self::assertEquals(
+            expected: $data->toArray(),
+            actual: $this->cache->read()->toArray()
+        );
     }
 
     /**
@@ -184,23 +187,23 @@ class RepositoryTest extends TestCase
         $apiData1 = Repository::getPaymentMethods(
             storeId: $storeId,
             amount: $amount1
-        );
+        )->toArray();
 
         $apiData2 = Repository::getPaymentMethods(
             storeId: $storeId,
             amount: $amount2
-        );
+        )->toArray();
 
         // Retrieve same data from cache.
         $cacheData1 = Repository::getCache(
             storeId: $storeId,
             amount: $amount1
-        )->read();
+        )->read()->toArray();
 
         $cacheData2 = Repository::getCache(
             storeId: $storeId,
             amount: $amount2
-        )->read();
+        )->read()->toArray();
 
         self::assertEquals(expected: $apiData1, actual: $cacheData1);
         self::assertEquals(expected: $apiData2, actual: $cacheData2);

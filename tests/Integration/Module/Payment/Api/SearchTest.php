@@ -162,9 +162,6 @@ class SearchTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Try to find the order
-        sleep(seconds: 3);
-
         $paymentCollection = Repository::search(
             storeId: (string) $_ENV['STORE_ID'],
             orderReference: $orderReference
@@ -198,9 +195,6 @@ class SearchTest extends TestCase
 
         // Sign
         MockSigner::approve(payment: $payment);
-
-        // Try to find the order
-        sleep(seconds: 3);
 
         $paymentCollection = Repository::search(
             storeId: (string) $_ENV['STORE_ID'],

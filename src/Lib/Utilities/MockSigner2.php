@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Utilities;
 
-use CurlHandle;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -30,6 +29,7 @@ use RuntimeException;
 
 use function sprintf;
 use function sleep;
+use function str_replace;
 
 /**
  * Handles mock signing in dev.
@@ -51,6 +51,8 @@ class MockSigner
      */
     public static function approve(Payment $payment): void
     {
+        $test = self::getSigningUrl(payment: $payment);
+        die(var_dump($test));
         $curl = new Curl(
             url: self::getSigningUrl(payment: $payment),
             requestMethod: RequestMethod::GET,
@@ -104,7 +106,9 @@ class MockSigner
             ));
         }
 
-        return str_replace(
+        die(var_dump($url));
+
+        $test = str_replace(
             search: 'authenticate',
             replace: 'doAuth',
             subject: $url
