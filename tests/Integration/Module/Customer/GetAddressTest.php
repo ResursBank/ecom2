@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -26,26 +27,24 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\Customer\Enum\CustomerType;
 use Resursbank\Ecom\Module\Customer\Repository;
+use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 
 /**
  * Tests for the API call getAddress.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class GetAddressTest extends TestCase
 {
-    private bool $isPipeline = false;
-
     /**
      * @return void
      * @throws EmptyValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
-        // For pipelines.
-        if (isset($_ENV['is_pipeline'])) {
-            $this->isPipeline = (bool)$_ENV['is_pipeline'];
-        }
-
         parent::setUp();
 
         Config::setup(
@@ -72,42 +71,31 @@ class GetAddressTest extends TestCase
      * @throws ApiException
      * @throws CacheException
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function getStoreId(): string
     {
         $return = (string)($_ENV['STORE_ID'] ?? '');
 
-        if (isset($_ENV['STORE_ID_NATIONAL']) && (int)$_ENV['STORE_ID_NATIONAL']) {
-            $allStores = StoreRepository::getStores()->toArray();
-            foreach ($allStores as $store) {
-                if ($store->nationalStoreId === (int)$_ENV['STORE_ID']) {
-                    $return = $store->id;
-                    break;
-                }
+        /** @var Store $store */
+        foreach (StoreRepository::getStores() as $store) {
+            if ($store->nationalStoreId === (int)$_ENV['NATIONAL_STORE_ID']) {
+                $return = $store->id;
+                break;
             }
         }
 
         return $return;
     }
 
-    /**
-     * @return string
-     */
-    private function getHappyFlowCustomer(): string
-    {
-        return (string)($_ENV['GOVERNMENT_ID_HAPPY_NATURAL'] ?? '');
-    }
-
-    /**
-     * Tests are marked with this value if running from Bitbucket Pipelines.
-     *
-     * @return bool
-     */
-    protected function isPipeline(): bool
-    {
-        return $this->isPipeline;
-    }
-
+//    /**
+//     * @return string
+//     */
+//    private function getHappyFlowCustomer(): string
+//    {
+//        return (string)($_ENV['GOVERNMENT_ID_HAPPY_NATURAL'] ?? '');
+//    }
+//
 //    /**
 //     * @return void
 //     * @throws AuthException
@@ -152,11 +140,14 @@ class GetAddressTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws CacheException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws GetAddressException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
@@ -186,11 +177,14 @@ class GetAddressTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws CacheException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws GetAddressException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
@@ -220,13 +214,17 @@ class GetAddressTest extends TestCase
      * GetAddress resolving an organization but with NATURAL as customerType.
      *
      * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws GetAddressException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
      * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
      */
     public function testGetBadAddressOrganizationByNatural(): void
     {
@@ -243,13 +241,17 @@ class GetAddressTest extends TestCase
      * GetAddress resolving an organization but with NATURAL as customerType.
      *
      * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws GetAddressException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
      * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
      */
     public function testGetBadAddressByNatural(): void
     {

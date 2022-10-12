@@ -52,6 +52,7 @@ class CancelTest extends TestCase
 {
     /**
      * @throws EmptyValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -94,6 +95,7 @@ class CancelTest extends TestCase
      * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function createPayment(string $orderReference): Payment
     {

@@ -52,6 +52,7 @@ class RefundTest extends TestCase
     /**
      * @return void
      * @throws EmptyValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -94,6 +95,7 @@ class RefundTest extends TestCase
      * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -218,7 +220,7 @@ class RefundTest extends TestCase
         Repository::capture(paymentId: $payment->id);
 
         // Refund single order line
-        $orderLines = new ActionLogOrderLineCollection([
+        $orderLines = new ActionLogOrderLineCollection(data: [
             new ActionLogOrderLine(
                 description: 'Android',
                 reference: 'T-800',

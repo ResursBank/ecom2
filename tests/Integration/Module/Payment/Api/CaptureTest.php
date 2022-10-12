@@ -197,7 +197,7 @@ class CaptureTest extends TestCase
 
         MockSigner::approve(payment: $payment);
 
-        $orderLines = new ActionLogOrderLineCollection([
+        $orderLines = new ActionLogOrderLineCollection(data: [
             new ActionLogOrderLine(
                 description: 'Android',
                 reference: 'T-800',
@@ -302,7 +302,7 @@ class CaptureTest extends TestCase
 
         // Capture and specify transaction id
         $invoiceId = $this->generateOrderReference();
-        $orderLines = new ActionLogOrderLineCollection([
+        $orderLines = new ActionLogOrderLineCollection(data: [
             new ActionLogOrderLine(
                 quantity: 2.00,
                 vatRate: 25.00,
