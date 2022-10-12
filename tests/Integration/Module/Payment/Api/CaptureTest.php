@@ -304,14 +304,14 @@ class CaptureTest extends TestCase
         $invoiceId = $this->generateOrderReference();
         $orderLines = new ActionLogOrderLineCollection(data: [
             new ActionLogOrderLine(
+                quantity: 2.00,
+                vatRate: 25.00,
+                totalAmountIncludingVat: 301.5,
+                totalVatAmount: 60.3,
+                unitAmountIncludingVat: 150.75,
                 description: 'Android',
                 reference: 'T-800',
                 quantityUnit: 'st',
-                quantity: 2.00,
-                vatRate: 25.00,
-                unitAmountIncludingVat: 150.75,
-                totalAmountIncludingVat: 301.5,
-                totalVatAmount: 60.3,
                 type: OrderLineType::PHYSICAL_GOODS
             )
         ]);
