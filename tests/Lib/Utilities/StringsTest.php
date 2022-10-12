@@ -9,7 +9,6 @@ class StringsTest extends TestCase
 {
     /**
      * @test
-     * @since 6.1.6
      */
     public function getObfuscatedStringTest()
     {
