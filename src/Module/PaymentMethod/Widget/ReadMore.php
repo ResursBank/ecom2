@@ -33,6 +33,9 @@ class ReadMore extends Widget
      */
     public readonly string $content;
 
+    /** @var string */
+    public readonly string $css;
+
     /**
      * @var string
      */
@@ -59,5 +62,6 @@ class ReadMore extends Widget
 
         $this->label = Translator::translate(phraseId: 'read-more');
         $this->content = $this->render(file: __DIR__ . '/read-more.phtml');
+        $this->css = $this->render(file: __DIR__ . '/read-more.css');
     }
 }
