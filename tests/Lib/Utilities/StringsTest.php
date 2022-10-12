@@ -22,15 +22,15 @@ class StringsTest extends TestCase
      */
     public function testGetObfuscatedString()
     {
-        $obfuscateFirst = Strings::getObfuscatedString(string: 'Just a string.', startAt: 2);
-        $obfuscateSecond = Strings::getObfuscatedString(string: 'Just a string.', startAt: 3);
-        $obfuscateThird = Strings::getObfuscatedString(string: 'Just a string.', startAt: 4, endAt: 0);
+        $obfuscateFromSecondPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 2);
+        $obfuscateFromThirdPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 3);
+        $obfuscateFromFourthPositionEndAtZero = Strings::getObfuscatedString(string: 'Just a string.', startAt: 4, endAt: 0);
         // Breaking rules.
-        $obfuscateFourth = Strings::getObfuscatedString(string: 'Just', startAt: 5, endAt: 5);
+        $obfuscateFromFifthAndBreakTheStrLenRules = Strings::getObfuscatedString(string: 'Just', startAt: 5, endAt: 5);
 
-        self::assertEquals(expected: 'Ju************.', actual: $obfuscateFirst);
-        self::assertEquals(expected: 'Jus************.', actual: $obfuscateSecond);
-        self::assertEquals(expected: 'Just************', actual: $obfuscateThird);
-        self::assertEquals(expected: 'Just', actual: $obfuscateFourth);
+        self::assertEquals(expected: 'Ju************.', actual: $obfuscateFromSecondPosition);
+        self::assertEquals(expected: 'Jus************.', actual: $obfuscateFromThirdPosition);
+        self::assertEquals(expected: 'Just************', actual: $obfuscateFromFourthPositionEndAtZero);
+        self::assertEquals(expected: 'Just', actual: $obfuscateFromFifthAndBreakTheStrLenRules);
     }
 }
