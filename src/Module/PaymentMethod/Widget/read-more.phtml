@@ -23,11 +23,11 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
         </p>
     </div>
     <div id="rb-rm-model-<?= $this->paymentMethod->id ?>" style="display:none;">
-        <div id="rb-rm-wrapper"
+        <div class="rb-rm-background"
             onclick="document.getElementById('rb-rm-model-<?= $this->paymentMethod->id ?>').style.display='none';">
         </div>
-        <div id="rb-rm-iframe-container">
-            <iframe id="rb-rm-iframe" src="<?= $this->url ?><?= $this->amount ?>" loading="lazy">
+        <div class="rb-rm-iframe-container">
+            <iframe class="rb-rm-iframe" src="<?= $this->url ?><?= $this->amount ?>" loading="lazy">
             </iframe>
         </div>
     </div>

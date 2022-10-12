@@ -157,7 +157,28 @@ class ReadMoreTest extends TestCase
         self::assertMatchesRegularExpression(
             pattern: "/<div[^>]+id=[\"']rb-rm-model-{$this->method->id}[\"'][^>]+style=[\"'][^\"']*display:\s*none;/s",
             string: $data->content,
-            message: 'Read more widgets lightbox should be hidden by default.'
+            message: 'Read more widget lightbox should be hidden by default.'
+        );
+
+        self::assertStringContainsString(
+            needle: '.rb-rm-link p',
+            haystack: $data->css,
+            message: 'Read more widget CSS should contain section for the rb-rm-link class'
+        );
+        self::assertStringContainsString(
+            needle: '.rb-rm-background',
+            haystack: $data->css,
+            message: 'Read more widget CSS should contain section for the rb-rm-background class'
+        );
+        self::assertStringContainsString(
+            needle: '.rb-rm-iframe-container',
+            haystack: $data->css,
+            message: 'Read more widget CSS should contain section for the rb-rm-iframe-container class'
+        );
+        self::assertStringContainsString(
+            needle: '.rb-rm-iframe',
+            haystack: $data->css,
+            message: 'Read more widget CSS should contain section for the rb-rm-iframe class'
         );
     }
 }
