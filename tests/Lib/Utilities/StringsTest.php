@@ -13,11 +13,11 @@ class StringsTest extends TestCase
      */
     public function getFullyObfuscateTest()
     {
-        $obfuscateFirst = Strings::getObfuscatedStringFull('Just a string.', 2);
-        $obfuscateSecond = Strings::getObfuscatedStringFull('Just a string.', 3);
-        $obfuscateThird = Strings::getObfuscatedStringFull('Just a string.', 4, 0);
+        $obfuscateFirst = Strings::getObfuscatedString('Just a string.', 2);
+        $obfuscateSecond = Strings::getObfuscatedString('Just a string.', 3);
+        $obfuscateThird = Strings::getObfuscatedString('Just a string.', 4, 0);
         // Breaking rules.
-        $obfuscateFourth = Strings::getObfuscatedStringFull('Just', 5, 5);
+        $obfuscateFourth = Strings::getObfuscatedString('Just', 5, 5);
         static::assertTrue(
             $obfuscateFirst === 'Ju************.' &&
             $obfuscateSecond === 'Jus************.' &&
