@@ -30,7 +30,7 @@ use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\MockSigner;
+use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
@@ -162,9 +162,6 @@ class SearchTest extends TestCase
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Try to find the order
-        sleep(seconds: 3);
-
         $paymentCollection = Repository::search(
             storeId: (string) $_ENV['STORE_ID'],
             orderReference: $orderReference
@@ -198,9 +195,6 @@ class SearchTest extends TestCase
 
         // Sign
         MockSigner::approve(payment: $payment);
-
-        // Try to find the order
-        sleep(seconds: 3);
 
         $paymentCollection = Repository::search(
             storeId: (string) $_ENV['STORE_ID'],
