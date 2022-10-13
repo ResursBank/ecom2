@@ -146,7 +146,10 @@ class Curl
      */
     public function getEffectiveUrl(): string
     {
-        return curl_getinfo(handle: $this->ch, option: CURLINFO_EFFECTIVE_URL);
+        return (string) curl_getinfo(
+            handle: $this->ch,
+            option: CURLINFO_EFFECTIVE_URL
+        );
     }
 
     /**
@@ -498,6 +501,28 @@ class Curl
         $code = curl_errno(handle: $this->ch);
         $httpCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE);
         $connectCode = curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CONNECTCODE);
+
+        if ($this->responseContentType === ContentType::JSON && !empty($body)) {
+            /** @psalm-suppress MixedAssignment */
+            try {
+                $jsonMessage = json_decode(
+                    json: $body,
+                    associative: false,
+                    depth: 768,
+                    flags: JSON_THROW_ON_ERROR
+                );
+                if ($jsonMessage && isset($jsonMessage->message)) {
+                    $msg = $jsonMessage->message . '.';
+                    if (property_exists($jsonMessage, 'parameters') && is_object($jsonMessage->parameters)) {
+                        foreach ($jsonMessage->parameters as $key => $value) {
+                            $msg .= " $key: $value";
+                        }
+                    }
+                }
+            } catch (Exception) {
+                // Ignore.
+            }
+        }
 
         if ($code !== 0 || $httpCode >= 400) {
             // Some exceptions that curl are throwing as CURLE_RECV_ERROR may falsely state that data could

@@ -30,7 +30,7 @@ use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\MockSigner;
+use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
@@ -38,13 +38,17 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCo
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
- * Tests that getPayment works
+ * Tests that getPayment works.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class GetTest extends TestCase
 {
     /**
      * @return void
      * @throws EmptyValueException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -84,12 +88,13 @@ class GetTest extends TestCase
      * @throws IllegalTypeException
      * @throws ApiException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function createPayment(string $orderReference): Payment
     {
         return Repository::create(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            storeId: (string) $_ENV['STORE_ID'],
+            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -158,7 +163,7 @@ class GetTest extends TestCase
         $fetched = Repository::get(paymentId: $payment->id);
 
         // Assert that the fetched order is the one we created
-        $this->assertEquals(
+        self::assertSame(
             expected: $payment->id,
             actual: $fetched->id
         );

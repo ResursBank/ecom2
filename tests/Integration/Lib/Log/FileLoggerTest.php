@@ -46,21 +46,18 @@ final class FileLoggerTest extends TestCase
      * @return void
      * @throws Exception
      * @noinspection PhpMissingParentCallCommonInspection
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
-        // For pipelines.
-        if (isset($_ENV['is_pipeline'])) {
-            $this->isPipeline = (bool)$_ENV['is_pipeline'];
-        }
-
+        $this->isPipeline = (bool) $_ENV['IS_PIPELINE'];
         $this->message = 'This is a test message';
 
         if (!is_writable(filename: self::BASE_PATH)) {
             $this::markTestSkipped(message: self::BASE_PATH . ' directory is not writable, skipping test');
         }
 
-        $this->path = $this::BASE_PATH . DIRECTORY_SEPARATOR . self::PATH_PREFIX . '_' .
+        $this->path = self::BASE_PATH . DIRECTORY_SEPARATOR . self::PATH_PREFIX . '_' .
             bin2hex(string: random_bytes(length: 8));
         $this->filename = $this->path . DIRECTORY_SEPARATOR . self::LOG_FILENAME;
 
@@ -76,16 +73,6 @@ final class FileLoggerTest extends TestCase
             logger: new FileLogger(path: $this->path),
             logLevel: LogLevel::DEBUG
         );
-    }
-
-    /**
-     * Tests are marked with this value if running from Bitbucket Pipelines.
-     *
-     * @return bool
-     */
-    protected function isPipeline(): bool
-    {
-        return $this->isPipeline;
     }
 
     /**
@@ -125,8 +112,8 @@ final class FileLoggerTest extends TestCase
      */
     public function testLoggingFailure(): void
     {
-        if ($this->isPipeline()) {
-            $this->markTestSkipped(message: 'This test is running from a pipeline project and probably as root.');
+        if ($this->isPipeline) {
+            self::markTestSkipped(message: 'This test cannot run as root.');
         }
 
         if (!chmod(filename: $this->filename, permissions: 0000)) {
@@ -170,7 +157,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this->assertEquals(
+        self::assertEquals(
             expected: LogLevel::DEBUG->name . ': ' . $first . PHP_EOL,
             actual: $logged
         );
@@ -399,8 +386,8 @@ final class FileLoggerTest extends TestCase
      */
     public function testValidatePathWhichIsUnwritable(): void
     {
-        if ($this->isPipeline()) {
-            $this->markTestSkipped(message: 'This test is running from a pipeline project and probably as root.');
+        if ($this->isPipeline) {
+            self::markTestSkipped(message: 'This test cannot run as root.');
         }
 
         if (!chmod(filename: $this->path, permissions: 0400)) {

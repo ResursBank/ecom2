@@ -116,9 +116,12 @@ class Repository
         $result = [];
 
         foreach ($arr as $method) {
-            $factors = self::getAnnuityFactors($storeId, $method->id);
+            $factors = self::getAnnuityFactors(
+                storeId: $storeId,
+                paymentMethodId: $method->id
+            );
 
-            if ($factors->annuityFactors->count() !== 0) {
+            if ($factors->content->count() !== 0) {
                 $result[] = $method;
             }
         }

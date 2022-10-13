@@ -31,7 +31,7 @@ use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\MockSigner;
+use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
@@ -197,7 +197,7 @@ class CaptureTest extends TestCase
 
         MockSigner::approve(payment: $payment);
 
-        $orderLines = new ActionLogOrderLineCollection([
+        $orderLines = new ActionLogOrderLineCollection(data: [
             new ActionLogOrderLine(
                 description: 'Android',
                 reference: 'T-800',
@@ -302,16 +302,16 @@ class CaptureTest extends TestCase
 
         // Capture and specify transaction id
         $invoiceId = $this->generateOrderReference();
-        $orderLines = new ActionLogOrderLineCollection([
+        $orderLines = new ActionLogOrderLineCollection(data: [
             new ActionLogOrderLine(
+                quantity: 2.00,
+                vatRate: 25.00,
+                totalAmountIncludingVat: 301.5,
+                totalVatAmount: 60.3,
+                unitAmountIncludingVat: 150.75,
                 description: 'Android',
                 reference: 'T-800',
                 quantityUnit: 'st',
-                quantity: 2.00,
-                vatRate: 25.00,
-                unitAmountIncludingVat: 150.75,
-                totalAmountIncludingVat: 301.5,
-                totalVatAmount: 60.3,
                 type: OrderLineType::PHYSICAL_GOODS
             )
         ]);

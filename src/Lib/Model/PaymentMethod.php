@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model;
@@ -15,6 +20,7 @@ use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
  * Defines payment method entity.
  *
  * NOTE: All Exceptions from namespace Validation extends ValidationException.
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  */
 class PaymentMethod extends Model
 {
@@ -29,13 +35,11 @@ class PaymentMethod extends Model
      * @param LegalLinkCollection $legalLinks
      * @param bool $enabledForLegalCustomer
      * @param bool $enabledForNaturalCustomer
-     * @param bool $disabled
+     * @param int $sortOrder
      * @param StringValidation $stringValidation
      * @param FloatValidation $floatValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @todo $legalLinks should be validated to be an array of LegalLink by support in DataConverter.
-     * @todo $legalLinks can be empty?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -49,7 +53,7 @@ class PaymentMethod extends Model
         public readonly LegalLinkCollection $legalLinks,
         public readonly bool $enabledForLegalCustomer,
         public readonly bool $enabledForNaturalCustomer,
-        public readonly bool $disabled,
+        public int $sortOrder = 0,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation()
     ) {

@@ -15,6 +15,6 @@ namespace Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink;
 enum Type: string
 {
     case GENERAL_TERMS = 'GENERAL_TERMS';
-    case SEKKI = 'SEKKI';
+    case SECCI = 'SECCI';
     case PRICE_INFO = 'PRICE_INFO';
 }

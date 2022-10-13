@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 
@@ -28,6 +29,7 @@ class ActionLog extends Model
      * @param string|null $transactionId
      * @param string|null $creator
      * @param StringValidation $stringValidation
+     * @param ArrayValidation $arrayValidation
      * @throws IllegalValueException
      */
     public function __construct(
@@ -37,10 +39,12 @@ class ActionLog extends Model
         public readonly OrderLineCollection $orderLines,
         public readonly ?string $transactionId = null,
         public readonly ?string $creator = null,
-        public readonly StringValidation $stringValidation = new StringValidation()
+        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
     ) {
         $this->validateActionId();
         $this->validateCreated();
+        $this->validateOrderLines();
     }
 
     /**
@@ -58,6 +62,20 @@ class ActionLog extends Model
      */
     private function validateCreated(): void
     {
-        $this->stringValidation->isIso8601Date(value: $this->created);
+        $this->stringValidation->isIso8601DateTime(value: $this->created);
+    }
+
+    /**
+     * @return void
+     * @throws IllegalValueException
+     */
+    private function validateOrderLines(): void
+    {
+        $this->arrayValidation->isSequential(data: $this->orderLines->toArray());
+        $this->arrayValidation->length(
+            data: $this->orderLines->toArray(),
+            min: 1,
+            max: 1000
+        );
     }
 }

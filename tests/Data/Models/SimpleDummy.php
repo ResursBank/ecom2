@@ -7,17 +7,21 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Model\TestClasses;
+namespace Resursbank\EcomTest\Data\Models;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Class with property which is an object for testing
+ * Simple use of the Model class for testing
  */
-class ObjectPropertyDummy extends Model
+class SimpleDummy extends Model
 {
+    /**
+     * @param int $number
+     * @param string $message
+     */
     public function __construct(
-        public SimpleDummy $object,
+        public int $number,
         public string $message
     ) {
     }

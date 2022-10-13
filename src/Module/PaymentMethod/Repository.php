@@ -71,6 +71,7 @@ class Repository
                     throw new ApiException(message: 'Invalid API response.');
                 }
 
+                $result = self::setCollectionSortOrder(collection: $result);
                 $cache->write(data: $result);
             }
         } catch (Exception $e) {
@@ -80,6 +81,23 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * Updates sort order of fetched payment methods.
+     *
+     * @param PaymentMethodCollection $collection
+     * @return PaymentMethodCollection
+     */
+    public static function setCollectionSortOrder(
+        PaymentMethodCollection $collection
+    ): PaymentMethodCollection {
+        /** @var PaymentMethod $method */
+        foreach ($collection as $method) {
+            $method->sortOrder = ((int) $collection->key() + 1) * 100;
+        }
+
+        return $collection;
     }
 
     /**
@@ -107,7 +125,8 @@ class Repository
      * @param string $storeId
      * @param float|null $amount
      * @return Get
-     * @throws IllegalValueException|IllegalTypeException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public static function getApi(
         string $storeId,
@@ -121,6 +140,44 @@ class Repository
             params: compact('storeId', 'amount'),
             extractProperty: 'content'
         );
+    }
+
+    /**
+     * @param string $storeId
+     * @param string $paymentMethodId
+     * @param float|null $amount
+     * @return PaymentMethod|null
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function getById(
+        string $storeId,
+        string $paymentMethodId,
+        ?float $amount = null
+    ): ?PaymentMethod {
+        $result = null;
+
+        $paymentMethods = self::getPaymentMethods(
+            storeId: $storeId,
+            amount: $amount
+        );
+
+        /** @var PaymentMethod $paymentMethod */
+        foreach ($paymentMethods as $paymentMethod) {
+            if ($paymentMethod->id === $paymentMethodId) {
+                $result = $paymentMethod;
+            }
+        }
+
+        return $result;
     }
 
     /**

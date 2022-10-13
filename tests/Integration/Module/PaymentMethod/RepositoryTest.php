@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
@@ -101,7 +102,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert read() returns data from the API when cache is empty.
+     * Assert getPaymentMethods() returns data from the API when cache is empty.
      *
      * @return void
      * @throws ApiException
@@ -115,7 +116,7 @@ class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testReadReturnsWithoutCache(): void
+    public function testGetPaymentMethodsReturnsWithoutCache(): void
     {
         self::assertNull(actual: $this->cache->read());
         self::assertNotEmpty(
@@ -126,8 +127,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert read() retrieves payment methods, paymentMethod them in cache, and
-     * will later return the same paymentMethods from cache.
+     * Assert getPaymentMethods() retrieves payment methods, paymentMethod them
+     * in cache, and will later return the same paymentMethods from cache.
      *
      * @return void
      * @throws ApiException
@@ -141,7 +142,7 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testReadReturnsCache(): void
+    public function testGetPaymentMethodsReturnsCache(): void
     {
         self::assertEmpty(actual: $this->cache->read());
 
@@ -151,9 +152,14 @@ class RepositoryTest extends TestCase
 
         self::assertNotEmpty(actual: $data);
 
+        $data->rewind();
+
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
-        self::assertEquals(expected: $data, actual: $this->cache->read());
+        self::assertEquals(
+            expected: $data,
+            actual: $this->cache->read()
+        );
     }
 
     /**
@@ -183,27 +189,98 @@ class RepositoryTest extends TestCase
         $apiData1 = Repository::getPaymentMethods(
             storeId: $storeId,
             amount: $amount1
-        );
+        )->toArray();
 
         $apiData2 = Repository::getPaymentMethods(
             storeId: $storeId,
             amount: $amount2
-        );
+        )->toArray();
 
         // Retrieve same data from cache.
         $cacheData1 = Repository::getCache(
             storeId: $storeId,
             amount: $amount1
-        )->read();
+        )->read()->toArray();
 
         $cacheData2 = Repository::getCache(
             storeId: $storeId,
             amount: $amount2
-        )->read();
+        )->read()->toArray();
 
         self::assertEquals(expected: $apiData1, actual: $cacheData1);
         self::assertEquals(expected: $apiData2, actual: $cacheData2);
         self::assertNotEquals(expected: $apiData1, actual: $apiData2);
         self::assertNotEquals(expected: $cacheData1, actual: $cacheData2);
+    }
+
+    /**
+     * Assert getById() returns a payment method by its ID.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testGetByIdFindResult(): void
+    {
+        $paymentMethods = Repository::getPaymentMethods(
+            storeId: $this->storeId
+        )->toArray();
+
+        /** @var PaymentMethod|null $method */
+        $method = $paymentMethods[0] ?? null;
+
+        self::assertNotNull(actual: $method);
+
+        $paymentMethod = Repository::getById(
+            storeId: $this->storeId,
+            paymentMethodId: $method->id
+        );
+
+        self::assertNotNull(actual: $paymentMethod);
+        self::assertEquals(
+            expected: $method->id,
+            actual: $paymentMethod->id
+        );
+    }
+
+    /**
+     * Assert getById() returns NULL when no payment method is found.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testGetByIdReturnsNull(): void
+    {
+        $paymentMethods = Repository::getPaymentMethods(
+            storeId: $this->storeId
+        )->toArray();
+
+        if (!isset($paymentMethods[0])) {
+            self::fail(message: 'No payment methods found');
+        }
+
+        $paymentMethod = Repository::getById(
+            storeId: $this->storeId,
+            paymentMethodId: 'Not-a-Method'
+        );
+
+        self::assertNull(actual: $paymentMethod);
     }
 }

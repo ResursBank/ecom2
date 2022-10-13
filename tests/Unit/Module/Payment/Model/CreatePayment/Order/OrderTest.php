@@ -132,6 +132,14 @@ class OrderTest extends TestCase
      */
     public function testValidateOrderReferenceThrowsUsingIllegalCharacters(): void
     {
+        $test = new Order\OrderLineCollection(
+            data: array_fill(
+                start_index: 0,
+                count: 5,
+                value: self::$orderLine,
+            ),
+        );
+
         $this->expectException(exception: IllegalCharsetException::class);
         new Order(
             orderLines: new Order\OrderLineCollection(

@@ -39,19 +39,17 @@ class OrderLine extends Model
      * @param FloatValidation $floatValidation
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @todo $quantity could be a float, or shift between float and int.
-     *      We have no idea at the moment.
      */
     public function __construct(
-        public readonly ?string $description,
-        public readonly ?string $reference,
-        public readonly ?string $quantityUnit,
         public readonly float $quantity,
         public readonly float $vatRate,
-        public readonly ?float $unitAmountIncludingVat,
         public readonly float $totalAmountIncludingVat,
         public readonly float $totalVatAmount,
-        public readonly ?OrderLineType $type,
+        public readonly ?float $unitAmountIncludingVat = null,
+        public readonly ?string $description = null,
+        public readonly ?string $reference = null,
+        public readonly ?string $quantityUnit = null,
+        public readonly ?OrderLineType $type = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation(),
     ) {

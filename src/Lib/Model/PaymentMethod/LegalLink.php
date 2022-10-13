@@ -22,16 +22,15 @@ class LegalLink extends Model
     /**
      * @param string $url
      * @param Type $type
-     * @param bool $needToAppendPriceLast
+     * @param bool $appendAmount
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @todo $url validation could be improved to confirm string is a URL.
-     * @todo $type validation to be replaced by Enum\LegalLink\Type when supported by DataConverter.
      */
     public function __construct(
         public readonly string $url,
         public readonly Type $type,
-        public readonly bool $needToAppendPriceLast,
+        public readonly bool $appendAmount,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateUrl();

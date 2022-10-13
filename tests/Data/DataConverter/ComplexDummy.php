@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
+namespace Resursbank\EcomTest\Data\DataConverter;
 
 use Resursbank\Ecom\Lib\Model\Model;
 

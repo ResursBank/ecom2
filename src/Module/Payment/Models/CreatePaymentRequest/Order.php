@@ -50,14 +50,14 @@ class Order extends Model
      */
     private function validateOrderLines(): void
     {
-        $this->arrayValidation->isSequential(data: $this->orderLines->data);
+        $this->arrayValidation->isSequential(data: $this->orderLines->getData());
         $this->arrayValidation->length(
-            data: $this->orderLines->data,
+            data: $this->orderLines->getData(),
             min: 1,
             max: 1000
         );
         $this->arrayValidation->isOfType(
-            data: $this->orderLines->data,
+            data: $this->orderLines->getData(),
             type: OrderLine::class,
             compareFn: fn (mixed $value) => $value instanceof OrderLine
         );

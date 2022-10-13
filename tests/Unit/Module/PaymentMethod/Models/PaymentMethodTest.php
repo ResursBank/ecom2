@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use stdClass;
 
 /**
  * Test data integrity of payment method entity model.
@@ -30,15 +31,38 @@ class PaymentMethodTest extends TestCase
     private static array $data = [
         'id' => '4fcf7608-59df-4c4b-b49d-11063c58be7a',
         'name' => 'Faktura',
+        'type' => 'RESURS_INVOICE',
         'minPurchaseLimit' => 0.0,
         'maxPurchaseLimit' => 1000.0,
         'minApplicationLimit' => 0,
         'maxApplicationLimit' => 5000,
-        'type' => 'RESURS_INVOICE',
         'legalLinks' => [],
         'enabledForLegalCustomer' => true,
         'enabledForNaturalCustomer' => true
     ];
+
+    protected function setUp(): void
+    {
+        self::$data['legalLinks'] = [
+            (object) [
+                'url' => 'https://www.resurs.com/terms',
+                'type' => 'GENERAL_TERMS',
+                'appendAmount' => false,
+            ],
+            (object) array(
+                'url' => 'https://www.resurs.com/price',
+                'type' => 'PRICE_INFO',
+                'appendAmount' => false,
+            ),
+            (object) [
+                'url' => 'https://www.resurs.com/secci',
+                'type' => 'SECCI',
+                'appendAmount' => false,
+            ],
+        ];
+
+        parent::setUp();
+    }
 
     /**
      * @param array $updates
@@ -267,12 +291,31 @@ class PaymentMethodTest extends TestCase
     public function testLegalLinksWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(
-            expected: self::$data['legalLinks'],
-            actual: $item->legalLinks
+
+        self::assertCount(
+            expectedCount: count(self::$data['legalLinks']),
+            haystack: $item->legalLinks,
+            message: 'Legal links were not assigned.'
         );
     }
 
+    /**
+     * Assert legalLinks property accepts empty array.
+     *
+     * @return void
+     * @throws IllegalTypeException
+     * @throws ReflectionException|TestException
+     */
+    public function testLegalLinksMayBeEmpty(): void
+    {
+        $item = $this->convert(updates: ['legalLinks' => []]);
+
+        self::assertCount(
+            expectedCount: 0,
+            haystack: $item->legalLinks,
+            message: 'Legal links were not assigned.'
+        );
+    }
 
     /**
      * Assert property was assigned during object conversion.

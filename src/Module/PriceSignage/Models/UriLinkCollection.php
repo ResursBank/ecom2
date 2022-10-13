@@ -7,20 +7,25 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
+namespace Resursbank\Ecom\Module\PriceSignage\Models;
 
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * To test the conversion to collection from array
+ * Defines URI link entity collection.
  */
-class SimpleDummyCollection extends Collection
+class UriLinkCollection extends Collection
 {
+    /**
+     * @param array $data
+     * @throws IllegalTypeException
+     */
     public function __construct(array $data)
     {
         parent::__construct(
             data: $data,
-            type: SimpleDummy::class
+            type: UriLink::class
         );
     }
 }

@@ -196,6 +196,6 @@ class RepositoryTest extends TestCase
             ),
         );
 
-        self::assertNotEmpty($filteredMethods->toArray());
+        self::assertNotEmpty(actual: $filteredMethods->toArray());
     }
 }
