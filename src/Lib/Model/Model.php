@@ -37,8 +37,8 @@ class Model
 
         /** phpstan-ignore-next-line */
         foreach ($raw as $name => $value) {
-            // Skip DI.
             if (is_object(value: $value)) {
+                // Skip DI.
                 if ($value instanceof Collection || $value instanceof self) {
                     $data[$name] = $value->toArray(full: $full);
                 }
@@ -47,6 +47,7 @@ class Model
                     $data[$name] = $value->value;
                 }
             } elseif (is_array(value: $value)) {
+                // Support arrays containing Model|Collection.
                 $data[$name] = $this->toArray(full: $full, raw: $value);
             } else {
                 $data[$name] = $value;

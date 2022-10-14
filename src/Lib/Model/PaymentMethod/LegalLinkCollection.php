@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Defines a PaymentMethod collection.
+ * Defines a LegalLink collection.
  */
 class LegalLinkCollection extends Collection
 {
