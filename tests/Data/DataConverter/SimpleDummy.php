@@ -7,22 +7,22 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
+namespace Resursbank\EcomTest\Data\DataConverter;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * To test stdClass class conversion of objects specifying arrays.
+ * To test stdClass conversions.
  */
-class ArrayDummy extends Model
+class SimpleDummy extends Model
 {
     /**
      * @param int $int
-     * @param array $arr
+     * @param string $message
      */
     public function __construct(
         public int $int,
-        public array $arr
+        public string $message
     ) {
     }
 }

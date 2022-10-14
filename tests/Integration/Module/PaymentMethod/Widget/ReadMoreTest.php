@@ -27,7 +27,8 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 
@@ -88,7 +89,7 @@ class ReadMoreTest extends TestCase
         $this->method = $method;
 
         foreach ($this->method->legalLinks as $link) {
-            if ($link->type === 'PRICE_INFO') {
+            if ($link->type === Type::PRICE_INFO) {
                 $this->url = $link->url;
             }
         }

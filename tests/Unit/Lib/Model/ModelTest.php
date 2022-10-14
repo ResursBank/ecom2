@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Lib\Model;
 
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Lib\Model\Model\TestClasses\ArrayPropertyDummy;
-use Resursbank\Ecom\Lib\Model\Model\TestClasses\ObjectPropertyDummy;
-use Resursbank\Ecom\Lib\Model\Model\TestClasses\SimpleDummy;
+use Resursbank\EcomTest\Data\Models\ArrayPropertyDummy;
+use Resursbank\EcomTest\Data\Models\ObjectPropertyDummy;
+use Resursbank\EcomTest\Data\Models\SimpleDummy;
 
 /**
  * Verifies that the Model class works as intended
@@ -101,9 +101,9 @@ final class ModelTest extends TestCase
             'message' => 'bar'
         ];
 
-        $this::assertSame(
+        $this::assertEquals(
             expected: $expected,
-            actual: $object->toArray()
+            actual: $object->toArray(full: true)
         );
     }
 }
