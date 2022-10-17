@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Network;
+namespace Resursbank\Ecom\Lib\Api;
 
 /**
  * API scope types.
