@@ -11,13 +11,13 @@ namespace Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\ApplicationFormSpecElementOptionResponseCollection;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\ApplicationFormSpecWithDependencyRequiredIfValue;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\ApplicationFormSpecElementOptionResponseCollection; //phpcs:ignore
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\ApplicationFormSpecWithDependencyRequiredIfValue; //phpcs:ignore
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- *
+ * Individual application data specification response item
  */
 class ApplicationFormSpecElementResponse extends Model
 {

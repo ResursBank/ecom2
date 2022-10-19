@@ -12,6 +12,9 @@ namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 
+/**
+ * Response object for application data specification calls
+ */
 class ApplicationFormSpecResponse extends Model
 {
     public function __construct(

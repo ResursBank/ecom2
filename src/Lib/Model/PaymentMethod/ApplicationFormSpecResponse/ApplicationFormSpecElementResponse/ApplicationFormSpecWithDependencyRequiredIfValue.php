@@ -11,6 +11,9 @@ namespace Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\Ap
 
 use Resursbank\Ecom\Lib\Model\Model;
 
+/**
+ * @SuppressWarnings(PHPMD.LongClassName)
+ */
 class ApplicationFormSpecWithDependencyRequiredIfValue extends Model
 {
     public function __construct(
