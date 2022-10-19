@@ -25,4 +25,27 @@ class ApplicationFormSpecElementResponseCollection extends Collection
     {
         parent::__construct(data: $data, type: ApplicationFormSpecElementResponse::class);
     }
+
+    /**
+     * Filters out specified fields from collection
+     *
+     * @param string $property
+     * @param array $fields
+     * @return self
+     * @throws IllegalTypeException
+     */
+    public function filter(string $property, array $fields): self
+    {
+        $filtered = array_filter(
+            array: $this->getData(),
+            callback: static function ($element) use ($fields, $property) {
+                return !in_array(
+                    needle: $element->{$property},
+                    haystack: $fields,
+                    strict: true
+                );
+            }
+        );
+        return new self(data: $filtered);
+    }
 }
