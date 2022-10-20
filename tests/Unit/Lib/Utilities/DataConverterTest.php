@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Lib\Utilities\DataConverter\TestClasses;
+use Resursbank\EcomTest\Data\DataConverter as TestClasses;
 use stdClass;
 
 /**

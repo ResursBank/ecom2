@@ -26,6 +26,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
 /**
  * Integration tests for AnnuityFactors repository.
@@ -50,7 +51,7 @@ class RepositoryTest extends TestCase
     /**
      * @var string
      */
-    private string $annuityPaymentMethodId;
+    private string $paymentMethodId;
 
     /**
      * @return void
@@ -61,7 +62,7 @@ class RepositoryTest extends TestCase
     protected function setUp(): void
     {
         $this->storeId = (string) $_ENV['STORE_ID'];
-        $this->annuityPaymentMethodId = (string) $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
+        $this->paymentMethodId = (string) $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
 
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
@@ -76,7 +77,7 @@ class RepositoryTest extends TestCase
 
         $this->cache = Repository::getCache(
             storeId: $this->storeId,
-            annuityPaymentMethodId: $this->annuityPaymentMethodId
+            paymentMethodId: $this->paymentMethodId
         );
 
         $this->cache->clear();
@@ -103,7 +104,7 @@ class RepositoryTest extends TestCase
     {
         Repository::getAnnuityFactors(
             storeId: $this->storeId,
-            annuityPaymentMethodId: $this->annuityPaymentMethodId
+            paymentMethodId: $this->paymentMethodId
         );
 
         self::assertNotNull(actual: $this->cache->read());
@@ -128,13 +129,13 @@ class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testReadReturnsWithoutCache(): void
+    public function testGetAnnuityFactorsReturnsWithoutCache(): void
     {
         self::assertNull(actual: $this->cache->read());
         self::assertNotEmpty(
             actual: Repository::getAnnuityFactors(
                 storeId: $this->storeId,
-                annuityPaymentMethodId: $this->annuityPaymentMethodId
+                paymentMethodId: $this->paymentMethodId
             )
         );
     }
@@ -155,13 +156,13 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function testReadReturnsCache(): void
+    public function testGetAnnuityFactorsReturnsCache(): void
     {
         self::assertEmpty(actual: $this->cache->read());
 
         $data = Repository::getAnnuityFactors(
             storeId: $this->storeId,
-            annuityPaymentMethodId: $this->annuityPaymentMethodId
+            paymentMethodId: $this->paymentMethodId
         );
 
         self::assertNotEmpty(actual: $data);
@@ -169,5 +170,32 @@ class RepositoryTest extends TestCase
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
         self::assertEquals(expected: $data, actual: $this->cache->read());
+    }
+
+    /**
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @todo Compares lengths of original methods collection and the filtered
+     *      one. The filtered should have a shorter length.
+     */
+    public function testGetMethodsReturnsFilteredCollection(): void
+    {
+        $filteredMethods = Repository::getMethods(
+            storeId: $this->storeId,
+            paymentMethods: PaymentMethodRepository::getPaymentMethods(
+                storeId: $this->storeId
+            ),
+        );
+
+        self::assertNotEmpty(actual: $filteredMethods->toArray());
     }
 }

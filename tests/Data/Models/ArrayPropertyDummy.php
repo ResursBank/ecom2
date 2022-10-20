@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Model\TestClasses;
+namespace Resursbank\EcomTest\Data\Models;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -16,6 +16,10 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class ArrayPropertyDummy extends Model
 {
+    /**
+     * @param array $array
+     * @param string $message
+     */
     public function __construct(
         public array $array,
         public string $message

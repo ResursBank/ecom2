@@ -24,7 +24,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
-use Resursbank\Ecom\Module\PaymentMethod\Models\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
@@ -152,11 +152,13 @@ class RepositoryTest extends TestCase
 
         self::assertNotEmpty(actual: $data);
 
+        $data->rewind();
+
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
         self::assertEquals(
-            expected: $data->toArray(),
-            actual: $this->cache->read()->toArray()
+            expected: $data,
+            actual: $this->cache->read()
         );
     }
 
