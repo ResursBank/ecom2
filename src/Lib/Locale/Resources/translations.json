@@ -40,5 +40,15 @@
       "en": "No payment methods.",
       "sv": "Inga betalningsmetoder."
     }
+  },
+  {
+    "id": "default-unit",
+    "translation": {
+      "en": "pcs",
+      "fi": "pcs",
+      "sv": "st",
+      "da": "st",
+      "no": "st"
+    }
   }
 ]
