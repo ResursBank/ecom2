@@ -29,6 +29,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
@@ -309,6 +310,49 @@ class RepositoryTest extends TestCase
         self::assertTrue(
             condition: $response->hasfield('applicant-government-id')
         );
+    }
+
+    /**
+     * Assert that the getFieldsByType method only returns fields of requested type
+     *
+     * @return void
+     * @throws IllegalTypeException
+     * @throws Exception
+     */
+    public function testApplicationDataSpecificationGetFieldsByType(): void
+    {
+        $response = Repository::getApplicationDataSpecification(
+            storeId: $this->storeId,
+            paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
+            amount: 200
+        );
+        $headingFields = $response->getFieldsByType(type: Type::HEADING);
+
+        if (!isset($response->elements)) {
+            self::markTestSkipped(message: 'Skipping test as response collection is null');
+        }
+
+        self::assertFalse(
+            condition: $this->allFieldsOfType(fields: $response->elements, type: Type::HEADING)
+        );
+        self::assertTrue(
+            condition: $this->allFieldsOfType(fields: $headingFields, type: Type::HEADING)
+        );
+    }
+
+    /**
+     * @param ApplicationFormSpecElementResponseCollection $fields
+     * @param Type $type
+     * @return bool
+     */
+    private function allFieldsOfType(ApplicationFormSpecElementResponseCollection $fields, Type $type): bool
+    {
+        foreach ($fields as $field) {
+            if ($field->type !== $type) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
