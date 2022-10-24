@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 
@@ -20,5 +21,51 @@ class ApplicationFormSpecResponse extends Model
     public function __construct(
         public readonly ?ApplicationFormSpecElementResponseCollection $elements = null
     ) {
+    }
+
+    /**
+     * Check if response contains a field with the specified name
+     *
+     * @param string $fieldName
+     * @return bool
+     */
+    public function hasfield(string $fieldName): bool
+    {
+        if (!isset($this->elements)) {
+            return false;
+        }
+        foreach ($this->elements as $element) {
+            if ($element->fieldName === $fieldName) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Filters out specified fields from field collection
+     *
+     * @param string $property
+     * @param array $fields
+     * @return self
+     * @throws IllegalTypeException
+     */
+    public function filter(string $property, array $fields): self
+    {
+        if (!isset($this->elements)) {
+            return $this; // No point in filtering if we don't have a collection
+        }
+        $filtered = array_filter(
+            array: $this->elements->toArray(),
+            callback: static function ($element) use ($fields, $property) {
+                return !in_array(
+                    needle: $element->{$property},
+                    haystack: $fields,
+                    strict: true
+                );
+            }
+        );
+        return new self(elements: new ApplicationFormSpecElementResponseCollection(data: $filtered));
     }
 }
