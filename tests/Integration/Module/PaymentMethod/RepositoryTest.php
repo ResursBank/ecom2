@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\PaymentMethod;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -25,6 +26,8 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
 
@@ -282,5 +285,68 @@ class RepositoryTest extends TestCase
         );
 
         self::assertNull(actual: $paymentMethod);
+    }
+
+    /**
+     * Performs simple test of application_data_specification fetching
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testGetApplicationDataSpecification(): void
+    {
+        $response = Repository::getApplicationDataSpecification(
+            storeId: $this->storeId,
+            paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
+            amount: 200
+        );
+
+        if (!isset($response->elements)) {
+            self::markTestSkipped(message: 'Skipping test as response collection is null');
+        }
+
+        self::assertTrue(
+            condition: $response->hasfield('applicant-government-id')
+        );
+    }
+
+    /**
+     * Assert that the application_data_specification filter method works
+     *
+     * @return void
+     * @throws IllegalTypeException
+     * @throws Exception
+     */
+    public function testApplicationDataSpecificationFilter(): void
+    {
+        $response = Repository::getApplicationDataSpecification(
+            storeId: $this->storeId,
+            paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
+            amount: 200
+        );
+
+        if (!isset($response->elements)) {
+            self::markTestSkipped(message: 'Skipping test as response collection is null');
+        }
+
+        if (
+            count($response->elements) > 1 &&
+            $response->hasField(fieldName: 'applicant-government-id')
+        ) {
+            $filteredResponse = $response->filter(
+                property: 'fieldName',
+                fields: ['applicant-government-id']
+            );
+
+            self::assertCount(
+                expectedCount: count($response->elements) - 1,
+                haystack: $filteredResponse->elements ?? new ApplicationFormSpecElementResponseCollection(data: [])
+            );
+            self::assertFalse(
+                condition: $filteredResponse->hasfield(fieldName: 'applicant-government-id')
+            );
+        } else {
+            self::markTestSkipped(message: "Field required by test not found in response");
+        }
     }
 }
