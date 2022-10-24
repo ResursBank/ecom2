@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 
 /**
@@ -42,6 +43,25 @@ class ApplicationFormSpecResponse extends Model
         return false;
     }
 
+    /**
+     * Return a collection with only
+     * @throws IllegalTypeException
+     */
+    public function getFieldsByType(Type $type): ApplicationFormSpecElementResponseCollection
+    {
+        if (!isset($this->elements)) {
+            return new ApplicationFormSpecElementResponseCollection(data: []);
+        }
+
+        $fields = array_filter(
+            array: $this->elements->toArray(),
+            callback: static function ($element) use ($type) {
+                return $element->type === $type->value;
+            }
+        );
+
+        return new ApplicationFormSpecElementResponseCollection(data: $fields);
+    }
 
     /**
      * Filters out specified fields from field collection
