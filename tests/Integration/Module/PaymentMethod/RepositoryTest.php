@@ -299,7 +299,7 @@ class RepositoryTest extends TestCase
     {
         $response = Repository::getApplicationDataSpecification(
             storeId: $this->storeId,
-            paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
+            paymentMethodId: (string)$_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
             amount: 200
         );
 
@@ -323,7 +323,7 @@ class RepositoryTest extends TestCase
     {
         $response = Repository::getApplicationDataSpecification(
             storeId: $this->storeId,
-            paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
+            paymentMethodId: (string)$_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
             amount: 200
         );
         $headingFields = $response->getFieldsByType(type: Type::HEADING);
@@ -366,7 +366,7 @@ class RepositoryTest extends TestCase
     {
         $response = Repository::getApplicationDataSpecification(
             storeId: $this->storeId,
-            paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
+            paymentMethodId: (string)$_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
             amount: 200
         );
 
