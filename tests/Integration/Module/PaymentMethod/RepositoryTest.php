@@ -308,7 +308,7 @@ class RepositoryTest extends TestCase
         }
 
         self::assertTrue(
-            condition: $response->hasfield('applicant-government-id')
+            condition: $response->hasfield(fieldName: 'applicant-government-id')
         );
     }
 
