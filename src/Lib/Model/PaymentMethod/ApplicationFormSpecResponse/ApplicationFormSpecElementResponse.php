@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\Applicat
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Individual application data specification response item
+ * Individual application data specification response item (represents a single input field or label)
  */
 class ApplicationFormSpecElementResponse extends Model
 {
