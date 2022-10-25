@@ -26,6 +26,7 @@ use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
  * Tests Config class functionality
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.SuperGlobals)
  * 
  * @todo Improve test coverage.
  */
@@ -82,12 +83,15 @@ class ConfigTest extends TestCase
         Config::setup(
             logger: new StdoutLogger(),
             cache: new None(),
-            basicAuth: new Basic(username: $_ENV['BASIC_AUTH_USERNAME'], password: $_ENV['BASIC_AUTH_PASSWORD']),
+            basicAuth: new Basic(
+                username: (string)$_ENV['BASIC_AUTH_USERNAME'],
+                password: (string)$_ENV['BASIC_AUTH_PASSWORD']
+            ),
             jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
+                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
             ),
             logLevel: LogLevel::DEBUG,
             userAgent: 'Foo',
