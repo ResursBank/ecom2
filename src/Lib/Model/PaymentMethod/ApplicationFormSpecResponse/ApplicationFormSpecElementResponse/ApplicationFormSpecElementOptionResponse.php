@@ -14,7 +14,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Only on Type LIST
+ * Only used on elements of Type LIST. Represents one option in a multiple-choice input element.
  */
 class ApplicationFormSpecElementOptionResponse extends Model
 {
