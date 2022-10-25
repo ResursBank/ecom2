@@ -23,6 +23,6 @@ class ApplicationFormSpecElementOptionResponseCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct($data, ApplicationFormSpecElementOptionResponse::class);
+        parent::__construct(data: $data, type: ApplicationFormSpecElementOptionResponse::class);
     }
 }
