@@ -19,6 +19,9 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\Applicat
  */
 class ApplicationFormSpecResponse extends Model
 {
+    /**
+     * @param ApplicationFormSpecElementResponseCollection|null $elements
+     */
     public function __construct(
         public readonly ?ApplicationFormSpecElementResponseCollection $elements = null
     ) {
@@ -30,7 +33,7 @@ class ApplicationFormSpecResponse extends Model
      * @param string $fieldName
      * @return bool
      */
-    public function hasfield(string $fieldName): bool
+    public function hasField(string $fieldName): bool
     {
         if (!isset($this->elements)) {
             return false;
@@ -76,6 +79,7 @@ class ApplicationFormSpecResponse extends Model
         if (!isset($this->elements)) {
             return $this; // No point in filtering if we don't have a collection
         }
+
         $filtered = array_filter(
             array: $this->elements->toArray(),
             callback: static function ($element) use ($fields, $property) {
@@ -86,6 +90,7 @@ class ApplicationFormSpecResponse extends Model
                 );
             }
         );
+
         return new self(elements: new ApplicationFormSpecElementResponseCollection(data: $filtered));
     }
 }
