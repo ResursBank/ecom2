@@ -391,7 +391,7 @@ class RepositoryTest extends TestCase
                 condition: $filteredResponse->hasfield(fieldName: 'applicant-government-id')
             );
         } else {
-            self::markTestSkipped(message: "Field required by test not found in response");
+            self::markTestSkipped(message: 'Field required by test not found in response');
         }
     }
 }
