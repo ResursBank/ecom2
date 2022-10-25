@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse;
 
+/**
+ * Defines the different types of elements that can exist in an application_data_specification object
+ */
 enum Type: string
 {
     case TEXT = 'TEXT';
