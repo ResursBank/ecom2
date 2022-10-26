@@ -81,7 +81,7 @@ class DataConverter
                     $arguments[$name] = $dummyCollection;
                 } elseif (
                     $propertyType === 'array' &&
-                    gettype(value: $value) === 'object' &&
+                    is_object(value: $value) &&
                     get_class(object: $value) === 'stdClass' &&
                     empty((array)$value)
                 ) {
