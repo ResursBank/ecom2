@@ -29,8 +29,6 @@ class Cost extends Model
      * @param FloatValidation $floatValidation
      * @param IntValidation $intValidation
      * @throws IllegalValueException
-     * @todo Ask about validation rules for this. Can the floats be negative? empty? min / max val? decimals always 2?
-     * @todo Months is specified as int32, meaning I could get 2,147,483,647 back? Is that correct? ~179 million years.
      */
     public function __construct(
         public readonly float $interest,
