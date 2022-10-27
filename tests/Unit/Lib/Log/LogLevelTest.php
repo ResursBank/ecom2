@@ -53,6 +53,10 @@ class LogLevelTest extends TestCase
      */
     public function testLoggableWithoutConfigInstance(): void
     {
+        if (Config::hasInstance()) {
+            Config::unsetInstance();
+        }
+
         foreach (LogLevel::cases() as $logLevel) {
             $this->assertTrue(
                 condition: LogLevel::loggable(level: $logLevel)
