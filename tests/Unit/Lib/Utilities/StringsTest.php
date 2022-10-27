@@ -7,20 +7,21 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Lib\Utilities;
+namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use PHPUnit\Framework\TestCase;
 
 /**
  * String testing.
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class StringsTest extends TestCase
 {
     /**
-     * @test
+     * @return void
      */
-    public function testGetObfuscatedString()
+    public function testGetObfuscatedString(): void
     {
         $obfuscateFromSecondPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 2);
         $obfuscateFromThirdPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 3);
