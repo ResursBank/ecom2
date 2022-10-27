@@ -23,7 +23,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
  */
 final class Config
 {
-    public static Config $instance;
+    public static ?Config $instance;
 
     /**
      * @param LoggerInterface $logger
@@ -116,5 +116,25 @@ final class Config
     public static function hasJwtAuth(): bool
     {
         return isset(self::$instance->jwtAuth);
+    }
+
+    /**
+     * Checks if there is a Config instance
+     *
+     * @return bool
+     */
+    public static function hasInstance(): bool
+    {
+        return isset(self::$instance);
+    }
+
+    /**
+     * Clears active configuration
+     *
+     * @return void
+     */
+    public static function unsetInstance(): void
+    {
+        self::$instance = null;
     }
 }
