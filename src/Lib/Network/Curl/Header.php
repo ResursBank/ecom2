@@ -12,8 +12,9 @@ namespace Resursbank\Ecom\Lib\Network\Curl;
 use Exception;
 use InvalidArgumentException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Model\Header as HeaderModel;
+use Resursbank\Ecom\Lib\Model\Network\Header as HeaderModel;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
 use function strlen;
@@ -29,6 +30,7 @@ class Header
      * @param ContentType $contentType
      * @param bool $hasBodyData
      * @return array<array-key,HeaderModel>
+     * @throws EmptyValueException
      * @todo See constructor todo. If kept we should maybe change its visibility.
      * @psalm-suppress MixedReturnTypeCoercion
      */

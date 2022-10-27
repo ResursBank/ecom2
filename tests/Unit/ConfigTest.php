@@ -19,14 +19,14 @@ use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 
 /**
  * Tests Config class functionality
  *
  * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.SuperGlobals)
+ * @SuppressWarnings(PHPMD.Superglobals)
  * 
  * @todo Improve test coverage.
  */

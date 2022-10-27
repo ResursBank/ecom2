@@ -20,10 +20,9 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
-use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 use Resursbank\Ecom\Lib\Network\AuthType;
-use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
@@ -31,35 +30,28 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 
 /**
- * Generic functionality to perform a GET call against the Merchant API and
- * convert the response to model instance(s).
+ * Call to generate MAPI token and convert to Token model instance.
+ *
+ * @todo This class may prefer to be placed within a Module.
  */
-class Get
+class GenerateToken
 {
     use ExceptionLog;
     use ModelConverter;
     use DataResolver;
 
     /**
-     * @param class-string $model | Convert cached data to model instance(s).
-     * @param string $route
-     * @param array $params
-     * @param string $extractProperty
+     * @param Jwt $auth
      * @param Mapi $mapi
-     * @throws IllegalTypeException
      */
     public function __construct(
-        private readonly string $model,
-        private readonly string $route,
-        private readonly array $params = [],
-        private readonly string $extractProperty = '',
+        public readonly Jwt $auth,
         private readonly Mapi $mapi = new Mapi(),
     ) {
-        $this->validateModel(model: $model);
     }
 
     /**
-     * @return Collection|Model
+     * @return Token
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -69,27 +61,35 @@ class Get
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public function call(): Collection|Model
+    public function call(): Token
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: Mapi::COMMON_ROUTE . "/$this->route"
+                route: 'oauth2/token'
             ),
-            requestMethod: RequestMethod::GET,
-            payload: $this->params,
-            contentType: ContentType::URL,
-            authType: AuthType::JWT,
-            responseContentType: ContentType::JSON
+            requestMethod: RequestMethod::POST,
+            payload: [
+                'client_id' => $this->auth->clientId,
+                'client_secret' => $this->auth->clientSecret,
+                'grant_type' => $this->auth->grantType,
+                'scope' => $this->auth->scope,
+            ],
+            authType: AuthType::NONE
         );
 
-        $data = $curl->exec()->body;
-
-        return $this->convertToModel(
+        $result = $this->convertToModel(
             data: $this->resolveResponseData(
-                data: $data,
-                extractProperty: $this->extractProperty
+                data: $curl->exec()->body
             ),
-            model: $this->model
+            model: Token::class
         );
+
+        if (!$result instanceof Token) {
+            throw new ApiException(
+                message: 'Could not convert response to Token model.'
+            );
+        }
+
+        return $result;
     }
 }

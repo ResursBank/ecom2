@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\DigestConfiguration;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
