@@ -118,7 +118,7 @@ class ErrorHandlerTest extends TestCase
         try {
             $handler = new ErrorHandler(
                 ch: curl_init(),
-                body: '{"message": "This is a message"}',
+                body: '{"error": "This is a message"}',
                 contentType: ContentType::JSON
             );
 
@@ -126,7 +126,7 @@ class ErrorHandlerTest extends TestCase
             $handler->validate();
         } catch (CurlException $e) {
             self::assertSame(
-                expected: '{"message": "This is a message"}',
+                expected: '{"error": "This is a message"}',
                 actual: $e->body,
                 message: 'Body mismatch.'
             );

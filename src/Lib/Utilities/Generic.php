@@ -23,6 +23,8 @@ use function is_string;
 /**
  * Generic Utils Class for things that is good to have.
  * @version 1.0.0
+ *
+ * @todo Add constructor with property promotion. PropertyNotSetInConstructor currently suppressed by psalm config.
  */
 class Generic
 {

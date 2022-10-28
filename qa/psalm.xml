@@ -9,7 +9,12 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
-        <PropertyNotSetInConstructor errorLevel="suppress" />
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="../tests" />
+                <file name="../src/Lib/Utilities/Generic.php" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
         <MixedPropertyFetch>
             <errorLevel type="suppress">
                 <directory name="./" />
