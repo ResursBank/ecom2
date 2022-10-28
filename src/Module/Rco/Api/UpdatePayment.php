@@ -54,9 +54,10 @@ class UpdatePayment
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedInferredReturnType, MoreSpecificReturnType
      * @todo Check if ConfigException validation needs a test.
      * @todo Consider using the LogException trait instead.
+     * @todo Fix all psalm errors. Suppressed now since class has been discussed for refactoring.
      */
     public function call(Request $request, string $orderReference): Response
     {
@@ -73,10 +74,12 @@ class UpdatePayment
         }
 
         $responseObj = new stdClass();
+
+        /** @psalm-suppress PossiblyInvalidPropertyFetch */
         $responseObj->message = $response->body->message;
         $responseObj->code = $response->code;
 
-        /** @psalm-suppress MixedReturnStatement */
+        /** @psalm-suppress MixedReturnStatement, LessSpecificReturnStatement */
         return DataConverter::stdClassToType(
             object: $responseObj,
             type: Response::class

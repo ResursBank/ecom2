@@ -129,6 +129,7 @@ class Repository
             }
         }
 
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         return new PaymentMethodCollection(data: $result);
     }
 

@@ -52,9 +52,10 @@ class GetPayment
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedInferredReturnType, MoreSpecificReturnType
      * @todo Check if ConfigException validation needs a test.
      * @todo Consider using LogException trait instead.
+     * @todo Fix all psalm errors. Suppressed now since class has been discussed for refactoring.
      */
     public function call(string $orderReference): Response
     {
@@ -72,7 +73,7 @@ class GetPayment
             throw $exception;
         }
 
-        /** @psalm-suppress MixedReturnStatement */
+        /** @psalm-suppress MixedReturnStatement, PossiblyInvalidArgument, LessSpecificReturnStatement */
         return DataConverter::stdClassToType(
             object: $response->body,
             type: Response::class

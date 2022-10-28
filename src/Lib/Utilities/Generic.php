@@ -15,7 +15,10 @@ use ReflectionClass;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
 
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use function dirname;
+use function is_object;
+use function is_string;
 
 /**
  * Generic Utils Class for things that is good to have.
@@ -114,12 +117,17 @@ class Generic
     {
         $return = '';
 
+        // @todo Object should be defined as stdClass or mor specific object.
+        /** @psalm-suppress TypeDoesNotContainType */
         if (empty($this->composerData)) {
             $this->getComposerConfig(location: $location);
         }
 
-        if (isset($this->composerData->{$tag})) {
-            $return = $this->composerData->{$tag};
+        if (
+            isset($this->composerData->{$tag}) &&
+            is_string(value: $this->composerData->{$tag})
+        ) {
+            $return = (string) $this->composerData->{$tag};
         } elseif ($this->isOpenBaseDirException()) {
             $return = $this->getOpenBaseDirExceptionString();
         }
@@ -161,12 +169,17 @@ class Generic
         }
 
         $composerLocation = null;
+
         while ($maxDepth--) {
             $startAt .= '/..';
             if ($this->hasComposerFile(location: $startAt)) {
                 $composerLocation = $startAt;
                 break;
             }
+        }
+
+        if ($composerLocation === null) {
+            throw new IllegalValueException(message: 'No composer.json found');
         }
 
         $this->getComposerConfigData(location: $composerLocation);
@@ -265,14 +278,24 @@ class Generic
 
         $getFrom = sprintf('%s/composer.json', $location);
         if (file_exists(filename: $getFrom)) {
-            $this->composerData = json_decode(
-                json: file_get_contents(
-                    filename: $getFrom
-                ),
-                associative: false,
-                depth: 768,
-                flags: JSON_THROW_ON_ERROR
+            $data = null;
+            $json = file_get_contents(
+                filename: $getFrom
             );
+
+            if ($json !== false && $json !== '') {
+                /** @psalm-suppress MixedAssignment */
+                $data = json_decode(
+                    json: $json,
+                    associative: false,
+                    depth: 768,
+                    flags: JSON_THROW_ON_ERROR
+                );
+            }
+
+            if (is_object(value: $data)) {
+                $this->composerData = $data;
+            }
         }
     }
 
@@ -385,13 +408,14 @@ class Generic
                 if (preg_match(pattern: '/[\n\r]/', subject: $return)) {
                     $multiRowData = preg_split(pattern: '/[\n\r]/', subject: $return);
 
-                    // @tod multiRowData needs validation, possibly not array.
-                    $return = $multiRowData[0] ?? '';
+                    if ($multiRowData !== false) {
+                        $return = $multiRowData[0] ?? '';
+                    }
                 }
             }
         }
 
-        return (string)$return;
+        return $return;
     }
 
     /**
@@ -411,6 +435,7 @@ class Generic
             return '';
         }
 
+        /** @psalm-suppress InvalidNamedArgument */
         $doc = new ReflectionClass(objectOrClass: $className);
 
         if (empty($functionName)) {

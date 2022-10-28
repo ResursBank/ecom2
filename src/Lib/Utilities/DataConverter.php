@@ -39,10 +39,7 @@ class DataConverter
      * @throws ReflectionException
      * @throws ArgumentCountError
      * @throws IllegalTypeException
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress InvalidNamedArgument
-     * @psalm-suppress ArgumentTypeCoercion
-     * @psalm-suppress MixedMethodCall
+     * @todo This file is ignored by psalm configuration but shouldn't be. We should fix all errors we can instead.
      */
     public static function stdClassToType(object $object, string $type): Model
     {
@@ -89,7 +86,6 @@ class DataConverter
                     // to the enum value it represents.
                     $arguments[$name] = call_user_func(
                         $propertyType . '::from',
-                        /** @psalm-suppress MixedPropertyFetch */
                         is_object(value: $value) ? $value->value : $value
                     );
                 } elseif (is_object(value: $value)) {

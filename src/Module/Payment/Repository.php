@@ -58,6 +58,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @todo Shouldn't this return a PaymentCollection?
      */
     public static function search(
         string $storeId,

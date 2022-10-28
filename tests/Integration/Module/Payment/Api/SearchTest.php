@@ -202,6 +202,12 @@ class SearchTest extends TestCase
             governmentId: self::GOVERNMENT_ID
         )->toArray();
 
+        self::assertArrayHasKey(
+            key: 0,
+            array: $paymentCollection
+        );
+
+        /** @var Payment|null $fetched */
         $fetched = $paymentCollection[0] ?? null;
 
         self::assertSame(

@@ -51,6 +51,8 @@ class GetCallbacks
      * @todo Check if ConfigException validation needs a test.
      * @todo Consider using LogException trait instead.
      * @todo I dropped an EmptyValueException, ensure tests are fine.
+     * @todo Fix all psalm errors. Suppressed now since class has been discussed for refactoring.
+     * @psalm-suppress MoreSpecificReturnType
      */
     public function call(): CallbackCollection
     {
@@ -64,10 +66,13 @@ class GetCallbacks
 
         try {
             $response = $curl->exec();
+
+            /** @psalm-suppress PossiblyInvalidArgument, LessSpecificReturnStatement */
             return DataConverter::arrayToCollection(
                 data: $response->body,
                 targetType: Callback::class
             );
+
         } catch (CurlException $exception) {
             Config::getLogger()->error(message: $exception);
             throw $exception;

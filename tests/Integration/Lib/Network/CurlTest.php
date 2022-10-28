@@ -190,22 +190,20 @@ class CurlTest extends TestCase
             basicAuth: new Basic(username: $username, password: $password)
         );
 
-        if (!Config::hasInstance()) {
-            self::fail(message: 'Failed to instantiate config.');
-        }
+        $auth = Config::getBasicAuth();
 
-        if (Config::getBasicAuth() === null) {
+        if ($auth === null) {
             self::fail(message: 'Basic auth is not set.');
         }
 
         $this::assertSame(
             expected: $username,
-            actual: Config::getBasicAuth()->username
+            actual: $auth->username
         );
 
         $this::assertSame(
             expected: $password,
-            actual: Config::getBasicAuth()->password
+            actual: $auth->password
         );
     }
 

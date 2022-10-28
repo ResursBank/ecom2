@@ -150,10 +150,10 @@ class ErrorHandler
             }
 
             /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
-            $error = $content->message ?? null;
+            $error = $content->error ?? '';
 
-            if ($error !== null) {
-                $this->throwCurlException(jsonError: (string) ($content->error ?? ''));
+            if ($error !== '') {
+                $this->throwCurlException(jsonError: $error);
             }
         }
     }

@@ -58,17 +58,20 @@ class GenerateTokenTest extends TestCase
             )
         );
 
-        if (Config::getJwtAuth() === null) {
+        $auth = Config::getJwtAuth();
+
+        if ($auth === null) {
             self::fail(message: 'JWT auth is not configured');
         }
 
-        $token = (new GenerateToken(auth: Config::getJwtAuth()))->call();
+        $token = (new GenerateToken(auth: $auth))->call();
         $currentTime = time();
 
         self::assertSame(
             expected: 'Bearer',
             actual: $token->token_type
         );
+
         self::assertGreaterThan(
             expected: $currentTime,
             actual: $token->expires_in
@@ -102,13 +105,15 @@ class GenerateTokenTest extends TestCase
             )
         );
 
-        if (Config::getJwtAuth() === null) {
+        $auth = Config::getJwtAuth();
+
+        if ($auth === null) {
             self::fail(message: 'JWT auth is not configured');
         }
 
         $this->expectException(exception: AuthException::class);
 
-        (new GenerateToken(auth: Config::getJwtAuth()))->call();
+        (new GenerateToken(auth: $auth))->call();
     }
 
     /**
@@ -138,12 +143,14 @@ class GenerateTokenTest extends TestCase
             )
         );
 
-        if (Config::getJwtAuth() === null) {
+        $auth = Config::getJwtAuth();
+
+        if ($auth === null) {
             self::fail(message: 'JWT auth is not configured');
         }
 
         $this->expectException(exception: AuthException::class);
 
-        (new GenerateToken(auth: Config::getJwtAuth()))->call();
+        (new GenerateToken(auth: $auth))->call();
     }
 }

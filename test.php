@@ -1,7 +1,7 @@
 <?php
 
-$a = (string) 56.12903;
-$b =  substr($a, 0, strpos())
+$a = (object) ['majs' => 'bajs'];
 
-die(var_dump($b));
-
+if (is_string($a->majs)) {
+    echo 'OK';
+}

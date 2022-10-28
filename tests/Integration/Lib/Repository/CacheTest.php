@@ -111,14 +111,17 @@ final class CacheTest extends TestCase
             actual: $data
         );
 
+        /** @var Music $music */
+        $music = $data->current();
+
         self::assertInstanceOf(
             expected: Music::class,
-            actual: $data->current()
+            actual: $music
         );
 
         self::assertSame(
             expected: 'funk',
-            actual: $data->current()->genre
+            actual: $music->genre
         );
 
         self::assertCount(expectedCount: 4, haystack: $data);
