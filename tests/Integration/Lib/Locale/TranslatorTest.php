@@ -8,6 +8,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\TranslationException;
@@ -20,18 +21,18 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 /**
  * Test that phrases can be translated.
  *
- * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.Superglobals)
  */
 class TranslatorTest extends TestCase
 {
     /**
      * @return void
+     * @throws ConfigException
      */
     protected function setUp(): void
     {
         $this->setupConfig();
-        Config::$instance->cache->clear(key: 'resursbank-ecom-translations');
+        Config::getCache()->clear(key: 'resursbank-ecom-translations');
 
         parent::setUp();
     }
@@ -56,6 +57,7 @@ class TranslatorTest extends TestCase
      * @throws ReflectionException
      * @throws FilesystemException
      * @throws TranslationException
+     * @throws ConfigException
      */
     public function testTranslationWorks(): void
     {
@@ -63,7 +65,7 @@ class TranslatorTest extends TestCase
         self::assertSame(expected: 'Read More', actual: $result);
 
         // Test translating into swedish.
-        $this->setupConfig(Locale::sv);
+        $this->setupConfig(locale: Locale::sv);
         $result = Translator::translate(phraseId: 'read-more');
         self::assertSame(expected: 'Läs Mer', actual: $result);
     }
@@ -75,6 +77,7 @@ class TranslatorTest extends TestCase
      * @throws ReflectionException
      * @throws FilesystemException
      * @throws TranslationException
+     * @throws ConfigException
      */
     public function testTranslateThrowsWhenPhraseIdDoesNotExists(): void
     {
@@ -91,7 +94,7 @@ class TranslatorTest extends TestCase
     public function testDecodeDataThrowsIfDataIsFaulty(): void
     {
         $this->expectException(exception: JsonException::class);
-        Translator::decodeData(data: 'asdfsda');
+        Translator::decodeData(data: 'not-there');
     }
 
     /**
@@ -101,10 +104,11 @@ class TranslatorTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @throws ConfigException
      */
     public function testTranslateLoadsDataFromFile(): void
     {
-        $cachedData = Config::$instance->cache->read(
+        $cachedData = Config::getCache()->read(
             key: 'resursbank-ecom-translations'
         );
 
@@ -121,15 +125,16 @@ class TranslatorTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @throws ConfigException
      */
     public function testTranslateLoadsDataFromCache(): void
     {
         $phraseId = 'read-more';
-        $oldCache = Config::$instance->cache->read(
+        $oldCache = Config::getCache()->read(
             key: 'resursbank-ecom-translations'
         );
         $translatedString = Translator::translate(phraseId: $phraseId);
-        $newCache = Config::$instance->cache->read(
+        $newCache = Config::getCache()->read(
             key: 'resursbank-ecom-translations'
         );
 
@@ -142,7 +147,7 @@ class TranslatorTest extends TestCase
         foreach ($decodedCache->toArray() as $item) {
             if ($item->id === $phraseId) {
                 /** @var string $result */
-                $result = $item->translation->{Config::$instance->locale->value};
+                $result = $item->translation->{Config::getLocale()->value};
             }
         }
 

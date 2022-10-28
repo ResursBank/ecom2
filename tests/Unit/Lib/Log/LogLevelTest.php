@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Log;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /**
@@ -22,6 +23,7 @@ class LogLevelTest extends TestCase
      * Assert that only configured log level or higher show as loggable when there is a Config instance
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLoggableWithConfigInstance(): void
     {
@@ -29,19 +31,19 @@ class LogLevelTest extends TestCase
             logLevel: LogLevel::WARNING
         );
 
-        $this->assertFalse(
+        self::assertFalse(
             condition: LogLevel::loggable(level: LogLevel::DEBUG)
         );
-        $this->assertFalse(
+        self::assertFalse(
             condition: LogLevel::loggable(level: LogLevel::INFO)
         );
-        $this->assertTrue(
+        self::assertTrue(
             condition: LogLevel::loggable(level: LogLevel::WARNING)
         );
-        $this->assertTrue(
+        self::assertTrue(
             condition: LogLevel::loggable(level: LogLevel::ERROR)
         );
-        $this->assertTrue(
+        self::assertTrue(
             condition: LogLevel::loggable(level: LogLevel::EXCEPTION)
         );
     }
@@ -50,6 +52,7 @@ class LogLevelTest extends TestCase
      * Assert that all log levels show as loggable when there is no Config instance
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLoggableWithoutConfigInstance(): void
     {
@@ -58,7 +61,7 @@ class LogLevelTest extends TestCase
         }
 
         foreach (LogLevel::cases() as $logLevel) {
-            $this->assertTrue(
+            self::assertTrue(
                 condition: LogLevel::loggable(level: $logLevel)
             );
         }

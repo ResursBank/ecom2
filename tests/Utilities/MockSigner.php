@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Utilities;
 
-use CurlHandle;
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -41,10 +43,13 @@ class MockSigner
     /**
      * @param Payment $payment
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
@@ -68,11 +73,15 @@ class MockSigner
      * @param Payment $payment
      * @return string
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ApiException
+     * @throws IllegalValueException
      */
     private static function getSigningUrl(
         Payment $payment
@@ -129,6 +138,7 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     private static function waitForStatusUpdate(
         Payment $payment

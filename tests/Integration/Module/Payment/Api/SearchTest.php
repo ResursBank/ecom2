@@ -206,7 +206,7 @@ class SearchTest extends TestCase
 
         self::assertSame(
             expected: $payment->id,
-            actual: $fetched !== null ? $fetched->id : ''
+            actual: $fetched instanceof Payment ? $fetched->id : ''
         );
     }
 }

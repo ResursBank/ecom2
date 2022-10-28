@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Network\Curl;
 use Exception;
 use InvalidArgumentException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Model\Network\Header as HeaderModel;
@@ -147,8 +148,9 @@ class Header
 
     /**
      * @return string
-     * @throws Exception
+     * @throws ConfigException
      * @todo Add back what module class called Curl.
+     * @todo Check if ConfigException validation needs a test.
      */
     public static function getUserAgent(): string
     {
@@ -159,7 +161,7 @@ class Header
         }
 
         return implode(separator: ' +', array: array_filter(array: [
-            Config::$instance->userAgent,
+            Config::getUserAgent(),
             sprintf('ECom2-%s', $version),
             sprintf('PHP-%s', PHP_VERSION),
         ]));

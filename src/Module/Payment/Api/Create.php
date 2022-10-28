@@ -13,6 +13,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -66,6 +67,7 @@ class Create
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      * @noinspection PhpTooManyParametersInspection
      */
     public function call(

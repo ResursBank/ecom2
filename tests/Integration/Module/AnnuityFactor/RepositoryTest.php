@@ -16,6 +16,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -55,6 +56,7 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.Superglobals)
@@ -92,6 +94,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -119,15 +122,16 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ApiException
-     * @throws CacheException
-     * @throws EmptyValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetAnnuityFactorsReturnsWithoutCache(): void
     {
@@ -148,6 +152,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -184,6 +189,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      * @todo Compares lengths of original methods collection and the filtered
      *      one. The filtered should have a shorter length.
      */

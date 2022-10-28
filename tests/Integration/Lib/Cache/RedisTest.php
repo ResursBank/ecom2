@@ -20,7 +20,6 @@ use Redis as Server;
 /**
  * Assert the Redis cache implementation works as expected.
  *
- * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class RedisTest extends TestCase
@@ -70,6 +69,8 @@ class RedisTest extends TestCase
      * key contains illegal characters.
      *
      * @return void
+     * @throws RedisException
+     * @throws ValidationException
      */
     public function testWriteThrowsWithIllegalKeyCharacter(): void
     {
@@ -85,6 +86,8 @@ class RedisTest extends TestCase
      * Assert ValidationException occurs when calling write() with an empty key.
      *
      * @return void
+     * @throws RedisException
+     * @throws ValidationException
      */
     public function testWriteThrowsWithEmptyKey(): void
     {
@@ -116,6 +119,8 @@ class RedisTest extends TestCase
      * key contains illegal characters.
      *
      * @return void
+     * @throws RedisException
+     * @throws ValidationException
      */
     public function testReadThrowsWithIllegalKeyCharacter(): void
     {
@@ -127,6 +132,8 @@ class RedisTest extends TestCase
      * Assert ValidationException occurs when calling read() with an empty key.
      *
      * @return void
+     * @throws RedisException
+     * @throws ValidationException
      */
     public function testReadThrowsWithEmptyKey(): void
     {
@@ -138,6 +145,7 @@ class RedisTest extends TestCase
      * Assert that read() method returns NULL if no valid data was found.
      *
      * @return void
+     * @throws RedisException
      * @throws ValidationException
      */
     public function testReadReturnsNullForUndefinedData(): void
@@ -195,6 +203,8 @@ class RedisTest extends TestCase
      * key contains illegal characters.
      *
      * @return void
+     * @throws RedisException
+     * @throws ValidationException
      */
     public function testClearThrowsWithIllegalKeyCharacter(): void
     {
@@ -206,6 +216,8 @@ class RedisTest extends TestCase
      * Assert ValidationException occurs when calling clear() with an empty key.
      *
      * @return void
+     * @throws RedisException
+     * @throws ValidationException
      */
     public function testClearThrowsWithEmptyKey(): void
     {

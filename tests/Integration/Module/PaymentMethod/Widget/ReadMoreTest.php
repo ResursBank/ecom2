@@ -16,6 +16,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
@@ -28,6 +29,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
@@ -52,16 +54,17 @@ class ReadMoreTest extends TestCase
 
     /**
      * @return void
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
-     * @throws ValidationException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
@@ -88,6 +91,7 @@ class ReadMoreTest extends TestCase
 
         $this->method = $method;
 
+        /** @var LegalLink $link */
         foreach ($this->method->legalLinks as $link) {
             if ($link->type === Type::PRICE_INFO) {
                 $this->url = $link->url;
@@ -104,6 +108,7 @@ class ReadMoreTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testRenderReadMore(): void

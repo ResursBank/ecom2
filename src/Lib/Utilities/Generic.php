@@ -15,6 +15,8 @@ use ReflectionClass;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
 
+use function dirname;
+
 /**
  * Generic Utils Class for things that is good to have.
  * @version 1.0.0
@@ -72,6 +74,7 @@ class Generic
      * @param string $composerLocation Where composer.json are stored.
      * @return string
      * @throws Exception
+     * @noinspection PhpSameParameterValueInspection
      */
     private function getNameEntry(string $part, string $composerLocation): string
     {
@@ -151,9 +154,9 @@ class Generic
         if ($this->isOpenBaseDirException()) {
             return $this->getOpenBaseDirExceptionString();
         }
-        $startAt = dirname($location);
-        if ($this->hasComposerFile($startAt)) {
-            $this->getComposerConfigData($startAt);
+        $startAt = dirname(path: $location);
+        if ($this->hasComposerFile(location: $startAt)) {
+            $this->getComposerConfigData(location: $startAt);
             return $startAt;
         }
 
@@ -176,7 +179,7 @@ class Generic
      */
     private function setTemporaryInternalErrorHandler(): void
     {
-        if (!is_null($this->internalErrorHandler)) {
+        if ($this->internalErrorHandler !== null) {
             restore_error_handler();
         }
 
@@ -187,7 +190,7 @@ class Generic
                     $this->internalExceptionMessage = $errStr;
                 }
                 restore_error_handler();
-                return $errNo === 2 && str_contains($errStr, 'open_basedir');
+                return $errNo === 2 && str_contains(haystack: $errStr, needle: 'open_basedir');
             },
             error_levels: E_WARNING
         );
@@ -206,7 +209,10 @@ class Generic
 
         $return = $this->hasInternalException() &&
             $this->internalExceptionCode === 2 &&
-            str_contains($this->internalExceptionMessage, 'open_basedir');
+            str_contains(
+                haystack: $this->internalExceptionMessage,
+                needle: 'open_basedir'
+            );
 
         if ($return) {
             $this->openBaseDirExceptionTriggered = true;
@@ -241,7 +247,7 @@ class Generic
     {
         $return = false;
 
-        if (file_exists(sprintf('%s/composer.json', $location))) {
+        if (file_exists(filename: sprintf('%s/composer.json', $location))) {
             $return = true;
         }
 
@@ -258,10 +264,10 @@ class Generic
         $this->composerLocation = $location;
 
         $getFrom = sprintf('%s/composer.json', $location);
-        if (file_exists($getFrom)) {
+        if (file_exists(filename: $getFrom)) {
             $this->composerData = json_decode(
                 json: file_get_contents(
-                    $getFrom
+                    filename: $getFrom
                 ),
                 associative: false,
                 depth: 768,
@@ -378,6 +384,8 @@ class Generic
                 // Strip stuff after line breaks
                 if (preg_match(pattern: '/[\n\r]/', subject: $return)) {
                     $multiRowData = preg_split(pattern: '/[\n\r]/', subject: $return);
+
+                    // @tod multiRowData needs validation, possibly not array.
                     $return = $multiRowData[0] ?? '';
                 }
             }

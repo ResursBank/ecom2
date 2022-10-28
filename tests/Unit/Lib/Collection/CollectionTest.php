@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Collection;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
@@ -243,6 +244,7 @@ final class CollectionTest extends TestCase
      *
      * @return void
      * @throws IllegalTypeException
+     * @throws CollectionException
      */
     public function testCurrent(): void
     {

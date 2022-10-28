@@ -13,14 +13,16 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Verifies that the
- * @psalm-suppress PropertyNotSetInConstructor
  * @todo Completed test coverage.
  */
 class StdoutLoggerTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testLogDebug(): void
     {
-        $this->markTestSkipped(message: 'Marking skipped as I have yet to find a way of capturing STDOUT/STDERR '
+        self::markTestSkipped(message: 'Marking skipped as I have yet to find a way of capturing STDOUT/STDERR '
             . 'output reliably');
     }
 }

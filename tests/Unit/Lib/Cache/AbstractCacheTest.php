@@ -121,7 +121,7 @@ class AbstractCacheTest extends TestCase
     {
         self::assertSame(
             expected: AbstractCache::CACHE_KEY_PREFIX . 'test-key',
-            actual: AbstractCache::getKey('test-key')
+            actual: AbstractCache::getKey(key: 'test-key')
         );
     }
 }

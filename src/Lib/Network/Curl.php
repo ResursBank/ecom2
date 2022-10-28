@@ -13,6 +13,7 @@ use Exception;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
@@ -40,6 +41,7 @@ use function is_string;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  * @noinspection EfferentObjectCouplingInspection
+ * @todo Check if ConfigException validation need testing in class methods.
  */
 class Curl
 {
@@ -72,6 +74,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo $headers and associated methods should be moved to a collection model / service layer.
      */
@@ -185,6 +188,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public static function get(
         string $url,
@@ -216,6 +220,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public static function post(
         string $url,
@@ -245,6 +250,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public static function delete(
         string $url,
@@ -275,6 +281,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public static function put(
         string $url,
@@ -335,13 +342,15 @@ class Curl
             CURLOPT_URL => $this->generateUrl(url: $url, payload: $payload),
             CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
         ];
-        if (!empty(Config::$instance->proxy)) {
-            $options[CURLOPT_PROXY] = Config::$instance->proxy;
-            $options[CURLOPT_PROXYTYPE] = Config::$instance->proxyType;
+
+        if (!empty(Config::getProxy())) {
+            $options[CURLOPT_PROXY] = Config::getProxy();
+            $options[CURLOPT_PROXYTYPE] = Config::getProxyType();
         }
-        if (Config::$instance->timeout) {
-            $options[CURLOPT_CONNECTTIMEOUT] = ceil(num: Config::$instance->timeout) / 2;
-            $options[CURLOPT_TIMEOUT] = ceil(num: Config::$instance->timeout);
+
+        if (Config::getTimeout()) {
+            $options[CURLOPT_CONNECTTIMEOUT] = ceil(num: Config::getTimeout()) / 2;
+            $options[CURLOPT_TIMEOUT] = ceil(num: Config::getTimeout());
         }
 
         curl_setopt_array(handle: $ch, options: $options);
@@ -467,6 +476,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     private function setAuth(CurlHandle $ch): void
     {
@@ -485,14 +495,14 @@ class Curl
     /**
      * @param CurlHandle $ch
      * @return void
-     * @throws AuthException
+     * @throws ConfigException
      */
     private function setBasicAuth(CurlHandle $ch): void
     {
-        $auth = Config::$instance->basicAuth;
+        $auth = Config::getBasicAuth();
 
         if ($auth === null) {
-            throw new AuthException(message: 'Basic auth not configured.');
+            throw new ConfigException(message: 'Basic auth is not configured.');
         }
 
         curl_setopt(
@@ -513,13 +523,14 @@ class Curl
      * @throws ValidationException
      * @throws ReflectionException
      * @throws ApiException
+     * @throws ConfigException
      */
     private function setJwtAuth(CurlHandle $ch): void
     {
-        $auth = Config::$instance->jwtAuth;
+        $auth = Config::getJwtAuth();
 
         if ($auth === null) {
-            throw new AuthException(message: 'JWT auth not configured.');
+            throw new ConfigException(message: 'JWT auth is not configured.');
         }
 
         curl_setopt(
@@ -563,12 +574,14 @@ class Curl
      * Returns configured auth credentials as array
      *
      * @return array
+     * @throws ConfigException
+     * @todo Not sure why this returns an array? Shouldn't it return a Model instance?
      */
     public function getAuthentication(): array
     {
         return match ($this->authType) {
-            AuthType::BASIC => (array)Config::$instance->basicAuth,
-            AuthType::JWT => (array)Config::$instance->jwtAuth,
+            AuthType::BASIC => (array) Config::getBasicAuth(),
+            AuthType::JWT => (array) Config::getJwtAuth(),
             default => [],
         };
     }

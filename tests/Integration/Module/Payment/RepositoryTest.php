@@ -30,7 +30,6 @@ use Resursbank\Ecom\Module\Payment\Repository;
 /**
  * Integration tests for CreatePayment repository.
  *
- * @psalm-suppress PropertyNotSetInConstructor
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)

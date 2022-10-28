@@ -16,7 +16,6 @@ use ReflectionNamedType;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
 
@@ -85,13 +84,13 @@ class DataConverter
                     empty((array)$value)
                 ) {
                     $arguments[$name] = [];
-                } elseif (enum_exists($propertyType)) {
+                } elseif (enum_exists(enum: $propertyType)) {
                     // If our property is an enum we need to convert the value
                     // to the enum value it represents.
                     $arguments[$name] = call_user_func(
                         $propertyType . '::from',
                         /** @psalm-suppress MixedPropertyFetch */
-                        is_object($value) ? $value->value : $value
+                        is_object(value: $value) ? $value->value : $value
                     );
                 } elseif (is_object(value: $value)) {
                     $arguments[$name] = self::stdClassToType(

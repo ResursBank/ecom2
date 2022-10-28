@@ -17,6 +17,7 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -47,15 +48,16 @@ class Repository
      * @param float|null $amount
      * @return PaymentMethodCollection
      * @throws ApiException
+     * @throws AuthException
      * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
      * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
+     * @throws ConfigException
      */
     public static function getPaymentMethods(
         string $storeId,
@@ -151,6 +153,7 @@ class Repository
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException

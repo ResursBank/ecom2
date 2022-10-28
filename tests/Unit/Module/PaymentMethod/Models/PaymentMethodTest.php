@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
-use stdClass;
+use function is_array;
 
 /**
  * Test data integrity of payment method entity model.
@@ -41,6 +41,9 @@ class PaymentMethodTest extends TestCase
         'enabledForNaturalCustomer' => true
     ];
 
+    /**
+     * @return void
+     */
     protected function setUp(): void
     {
         self::$data['legalLinks'] = [
@@ -49,11 +52,11 @@ class PaymentMethodTest extends TestCase
                 'type' => 'GENERAL_TERMS',
                 'appendAmount' => false,
             ],
-            (object) array(
+            (object) [
                 'url' => 'https://www.resurs.com/price',
                 'type' => 'PRICE_INFO',
                 'appendAmount' => false,
-            ),
+            ],
             (object) [
                 'url' => 'https://www.resurs.com/secci',
                 'type' => 'SECCI',
@@ -291,6 +294,10 @@ class PaymentMethodTest extends TestCase
     public function testLegalLinksWasAssigned(): void
     {
         $item = $this->convert();
+
+        if (!is_array(value: self::$data['legalLinks'])) {
+            self::fail(message: 'Legal links is not an array.');
+        }
 
         self::assertCount(
             expectedCount: count(self::$data['legalLinks']),

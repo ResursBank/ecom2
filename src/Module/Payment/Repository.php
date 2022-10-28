@@ -14,9 +14,11 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
@@ -43,13 +45,16 @@ class Repository
 
     /**
      * @param string $storeId
-     * @param string $orderReference
-     * @param string $governmentId
+     * @param string|null $orderReference
+     * @param string|null $governmentId
      * @return Collection
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
@@ -70,10 +75,13 @@ class Repository
      * @param string $paymentId
      *
      * @return Payment
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
@@ -95,14 +103,26 @@ class Repository
     /**
      * Create payment
      *
-     * @throws IllegalTypeException
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws EmptyValueException
-     * @throws CurlException
-     * @throws JsonException
+     * @param string $storeId
+     * @param string $paymentMethodId
+     * @param OrderLineCollection $orderLines
+     * @param string|null $orderReference
+     * @param Application|null $application
+     * @param Customer|null $customer
+     * @param Metadata|null $metadata
+     * @param Options|null $options
+     * @return Payment
      * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
      * @throws ReflectionException
+     * @throws ValidationException
+     * @noinspection PhpTooManyParametersInspection
      */
     public static function create(
         string $storeId,
@@ -135,10 +155,13 @@ class Repository
      * @param string|null $transactionId
      * @param string|null $invoiceId
      * @return Payment
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
@@ -166,13 +189,16 @@ class Repository
      * @param ActionLogOrderLineCollection|null $orderLines
      * @param string|null $creator
      * @return Payment
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws IllegalValueException
      */
     public static function cancel(
         string $paymentId,
@@ -194,10 +220,13 @@ class Repository
      * @param string|null $creator
      * @param string|null $transactionId
      * @return Payment
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException

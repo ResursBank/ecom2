@@ -26,7 +26,6 @@ use stdClass;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.TooManyMethods)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class FilesystemTest extends TestCase
 {

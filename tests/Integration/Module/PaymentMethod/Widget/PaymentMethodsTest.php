@@ -16,6 +16,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
@@ -49,16 +50,17 @@ class PaymentMethodsTest extends TestCase
 
     /**
      * @return void
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
-     * @throws ValidationException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
@@ -83,6 +85,7 @@ class PaymentMethodsTest extends TestCase
 
     /**
      * @return void
+     * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -171,11 +174,12 @@ class PaymentMethodsTest extends TestCase
     }
 
     /**
-     * @throws TranslationException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
      * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testRenderPaymentMethodsWarning(): void

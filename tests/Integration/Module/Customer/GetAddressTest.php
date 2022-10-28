@@ -16,6 +16,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -143,6 +144,7 @@ class GetAddressTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws GetAddressException
@@ -180,6 +182,7 @@ class GetAddressTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws GetAddressException
@@ -217,6 +220,7 @@ class GetAddressTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws GetAddressException
@@ -252,6 +256,7 @@ class GetAddressTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testGetBadAddressByNatural(): void
     {

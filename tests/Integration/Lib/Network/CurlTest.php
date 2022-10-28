@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PsalmGlobal */
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -15,10 +13,13 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -35,8 +36,6 @@ use function is_string;
 /**
  * This class will test curl methods.
  *
- * @psalm-suppress PropertyNotSetInConstructor
- * @version 1.0.0
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
@@ -179,6 +178,7 @@ class CurlTest extends TestCase
      *
      * @return void
      * @throws EmptyValueException
+     * @throws ConfigException
      */
     public function testNormalAuthentication(): void
     {
@@ -190,23 +190,29 @@ class CurlTest extends TestCase
             basicAuth: new Basic(username: $username, password: $password)
         );
 
-        if (Config::$instance->basicAuth === null) {
+        if (!Config::hasInstance()) {
+            self::fail(message: 'Failed to instantiate config.');
+        }
+
+        if (Config::getBasicAuth() === null) {
             self::fail(message: 'Basic auth is not set.');
         }
 
         $this::assertSame(
             expected: $username,
-            actual: Config::$instance->basicAuth->username
+            actual: Config::getBasicAuth()->username
         );
+
         $this::assertSame(
             expected: $password,
-            actual: Config::$instance->basicAuth->password
+            actual: Config::getBasicAuth()->password
         );
     }
 
     /**
      * Purpose is to make the curl entity to set credentials automatically from test Config-class.
      * @throws EmptyValueException
+     * @throws ConfigException
      */
     public function testAuthenticationByConfiguration(): void
     {
@@ -238,9 +244,11 @@ class CurlTest extends TestCase
     /**
      * Test to make sure that remote requests really works.
      *
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      */
     public function testRealGetRequest(): void
@@ -271,9 +279,11 @@ class CurlTest extends TestCase
     /**
      * Test to make sure that remote requests really works.
      *
+     * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      */
@@ -312,12 +322,16 @@ class CurlTest extends TestCase
      * Test to make sure that remote requests really works.
      *
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testRealPostRequest(): void
     {
@@ -347,12 +361,16 @@ class CurlTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testRealPutRequest(): void
     {
@@ -382,12 +400,16 @@ class CurlTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testRealDeleteRequest(): void
     {
@@ -410,12 +432,16 @@ class CurlTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      * @noinspection SpellCheckingInspection
      */
     public function testTimeout(): void
@@ -457,8 +483,10 @@ class CurlTest extends TestCase
     /**
      * Verify that proxy connections work
      *
+     * @throws AuthException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @SuppressWarnings(PHPMD.superGlobals)
      */
@@ -509,11 +537,15 @@ class CurlTest extends TestCase
     /**
      * Verify that proxy connections work
      *
+     * @throws ApiException
      * @throws AuthException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testBadProxy(): void
     {
@@ -549,42 +581,68 @@ class CurlTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ApiException
+     * @throws IllegalValueException
+     * @throws ConfigException
      */
     public function testFileNotFound(): void
     {
-        $this->expectExceptionCode(code: 404);
+        $this->expectException(exception: CurlException::class);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class)
         );
 
-        Curl::get(
-            url: 'https://ipv4.netcurl.org/http.php?code=404',
-            authType: AuthType::NONE
-        );
+        try {
+            Curl::get(
+                url: 'https://ipv4.netcurl.org/http.php?code=404',
+                authType: AuthType::NONE
+            );
+        } catch (CurlException $e) {
+            self::assertSame(
+                expected: 404,
+                actual: $e->httpCode
+            );
+
+            throw $e;
+        }
     }
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testPermissionDenied(): void
     {
-        $this->expectExceptionCode(code: 403);
+        $this->expectException(exception: CurlException::class);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class)
         );
 
-        Curl::get(
-            url: 'https://ipv4.netcurl.org/http.php?code=403',
-            authType: AuthType::NONE
-        );
+        try {
+            Curl::get(
+                url: 'https://ipv4.netcurl.org/http.php?code=403',
+                authType: AuthType::NONE
+            );
+        } catch (CurlException $e) {
+            self::assertSame(
+                expected: 403,
+                actual: $e->httpCode
+            );
+
+            throw $e;
+        }
     }
 }

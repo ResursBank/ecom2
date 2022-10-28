@@ -15,6 +15,7 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -42,6 +43,7 @@ class GenerateTokenTest extends TestCase
      * @throws ApiException
      * @throws CurlException
      * @throws ValidationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testJwtTokenGenerates(): void
@@ -56,11 +58,11 @@ class GenerateTokenTest extends TestCase
             )
         );
 
-        if (Config::$instance->jwtAuth === null) {
+        if (Config::getJwtAuth() === null) {
             self::fail(message: 'JWT auth is not configured');
         }
 
-        $token = (new GenerateToken(auth: Config::$instance->jwtAuth))->call();
+        $token = (new GenerateToken(auth: Config::getJwtAuth()))->call();
         $currentTime = time();
 
         self::assertSame(
@@ -85,6 +87,7 @@ class GenerateTokenTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testInvalidClientIdThrows(): void
@@ -99,13 +102,13 @@ class GenerateTokenTest extends TestCase
             )
         );
 
-        if (Config::$instance->jwtAuth === null) {
+        if (Config::getJwtAuth() === null) {
             self::fail(message: 'JWT auth is not configured');
         }
 
         $this->expectException(exception: AuthException::class);
 
-        (new GenerateToken(auth: Config::$instance->jwtAuth))->call();
+        (new GenerateToken(auth: Config::getJwtAuth()))->call();
     }
 
     /**
@@ -120,6 +123,7 @@ class GenerateTokenTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testInvalidClientSecretThrows(): void
@@ -134,12 +138,12 @@ class GenerateTokenTest extends TestCase
             )
         );
 
-        if (Config::$instance->jwtAuth === null) {
+        if (Config::getJwtAuth() === null) {
             self::fail(message: 'JWT auth is not configured');
         }
 
         $this->expectException(exception: AuthException::class);
 
-        (new GenerateToken(auth: Config::$instance->jwtAuth))->call();
+        (new GenerateToken(auth: Config::getJwtAuth()))->call();
     }
 }

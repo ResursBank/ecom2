@@ -13,6 +13,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -48,14 +49,15 @@ class ApplicationDataSpecification
      * @param int $amount
      * @return ApplicationFormSpecResponse
      * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
      * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
+     * @throws ConfigException
      */
     public function call(
         string $storeId,

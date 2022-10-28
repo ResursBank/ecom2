@@ -22,8 +22,6 @@ use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 
 /**
  * This class will test the curl error handler.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class ErrorHandlerTest extends TestCase
 {

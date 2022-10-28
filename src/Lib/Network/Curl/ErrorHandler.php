@@ -20,6 +20,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use stdClass;
 
+use function is_array;
 use function is_int;
 use function is_string;
 
@@ -142,13 +143,13 @@ class ErrorHandler
                 flags: JSON_THROW_ON_ERROR
             );
 
-            if (!$content instanceof stdClass) {
+            if (!is_array(value: $content) && !$content instanceof stdClass) {
                 throw new IllegalValueException(
                     message: 'Decoded JSON body is not an object.'
                 );
             }
 
-            /** @psalm-suppress MixedAssignment */
+            /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
             $error = $content->message ?? null;
 
             if ($error !== null) {

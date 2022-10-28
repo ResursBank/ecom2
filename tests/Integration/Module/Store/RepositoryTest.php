@@ -16,6 +16,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -62,15 +63,16 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ApiException
+     * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws IllegalTypeException
+     * @throws ValidationException
      */
     public function testClearCache(): void
     {
@@ -87,6 +89,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -116,6 +119,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testReadReturnsCache(): void
     {
