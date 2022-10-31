@@ -10,10 +10,13 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
@@ -44,8 +47,8 @@ class Search
 
     /**
      * @param string $storeId
-     * @param string $orderReference
-     * @param string $governmentId
+     * @param string|null $orderReference
+     * @param string|null $governmentId
      * @return Collection
      * @throws AuthException
      * @throws CurlException
@@ -54,6 +57,9 @@ class Search
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ApiException
+     * @throws ConfigException
+     * @throws IllegalValueException
      */
     public function call(
         string $storeId,
@@ -61,10 +67,10 @@ class Search
         ?string $governmentId = null
     ): Collection {
         $payload = [];
-        if ($governmentId && trim($governmentId) !== '') {
+        if ($governmentId && trim(string: $governmentId) !== '') {
             $payload['governmentId'] = $governmentId;
         }
-        if ($orderReference && trim($orderReference) !== '') {
+        if ($orderReference && trim(string: $orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
         $payload['storeId'] = $storeId;

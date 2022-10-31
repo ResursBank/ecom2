@@ -26,7 +26,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Payment;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
@@ -202,11 +202,17 @@ class SearchTest extends TestCase
             governmentId: self::GOVERNMENT_ID
         )->toArray();
 
+        self::assertArrayHasKey(
+            key: 0,
+            array: $paymentCollection
+        );
+
+        /** @var Payment|null $fetched */
         $fetched = $paymentCollection[0] ?? null;
 
         self::assertSame(
             expected: $payment->id,
-            actual: $fetched !== null ? $fetched->id : ''
+            actual: $fetched instanceof Payment ? $fetched->id : ''
         );
     }
 }

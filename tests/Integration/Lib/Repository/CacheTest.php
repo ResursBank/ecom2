@@ -12,6 +12,8 @@ namespace Resursbank\EcomTest\Integration\Lib\Repository;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\CollectionException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
@@ -23,7 +25,6 @@ use Resursbank\EcomTest\Data\Models\MusicCollection;
  * Verifies that the Cache class works as intended.
  *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class CacheTest extends TestCase
 {
@@ -63,6 +64,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      */
     public function testWriteModel(): void
     {
@@ -87,6 +89,8 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws CollectionException
+     * @throws ConfigException
      * @throws IllegalTypeException
      */
     public function testWriteCollection(): void
@@ -106,16 +110,20 @@ final class CacheTest extends TestCase
             expected: MusicCollection::class,
             actual: $data
         );
+
+        /** @var Music $music */
+        $music = $data->current();
+
         self::assertInstanceOf(
             expected: Music::class,
-            actual: $data->current()
+            actual: $music
         );
 
-        /** @psalm-suppress MixedPropertyFetch */
         self::assertSame(
             expected: 'funk',
-            actual: $data->current()->genre
+            actual: $music->genre
         );
+
         self::assertCount(expectedCount: 4, haystack: $data);
     }
 
@@ -124,6 +132,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      */
     public function testExpiredTtlReturnsNull(): void
     {
@@ -153,6 +162,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      */
     public function testClearCache(): void
     {
@@ -173,6 +183,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      */
     public function testCacheSeparatesByKet(): void
     {

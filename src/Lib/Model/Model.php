@@ -35,7 +35,6 @@ class Model
 
         $raw = $raw ?: get_object_vars(object: $this);
 
-        /** phpstan-ignore-next-line */
         foreach ($raw as $name => $value) {
             if (is_object(value: $value)) {
                 // Skip DI.

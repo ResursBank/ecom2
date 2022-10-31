@@ -14,8 +14,8 @@ use Iterator;
 use Countable;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-
 use Resursbank\Ecom\Lib\Model\Model;
+
 use function is_object;
 
 /**
