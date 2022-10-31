@@ -152,7 +152,7 @@ class ErrorHandler
             /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
             $error = $content->error ?? '';
 
-            if ($error !== '') {
+            if (is_string(value: $error) && $error !== '') {
                 $this->throwCurlException(jsonError: $error);
             }
         }
