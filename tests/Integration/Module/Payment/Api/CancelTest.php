@@ -19,6 +19,7 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -42,17 +43,13 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as Act
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
 
 /**
- * Tests for MAPI Payment Cancel class
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.Superglobals)
+ * Tests for MAPI Payment Cancel class.
  */
 class CancelTest extends TestCase
 {
     /**
      * @throws EmptyValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {
@@ -62,10 +59,10 @@ class CancelTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
     }
@@ -92,17 +89,17 @@ class CancelTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @SuppressWarnings(PHPMD.Superglobals)
+     * @throws ValidationException
+     * @throws ConfigException
      */
     private function createPayment(string $orderReference): Payment
     {
         /** @noinspection DuplicatedCode */
         return Repository::create(
-            storeId: (string) $_ENV['STORE_ID'],
-            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',

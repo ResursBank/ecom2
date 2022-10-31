@@ -144,13 +144,9 @@ class Translator
     {
         $cachedData = Config::getCache()->read(key: self::$cacheKey);
 
-        if ($cachedData === null) {
-            $phrases = self::load();
-        } else {
-            $phrases = self::decodeData(data: $cachedData);
-        }
-
-        return $phrases;
+        return $cachedData === null
+            ? self::load()
+            : self::decodeData(data: $cachedData);
     }
 
     /**

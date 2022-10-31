@@ -37,8 +37,6 @@ use function is_string;
 /**
  * Curl wrapper.
  *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  * @noinspection EfferentObjectCouplingInspection
  * @todo Check if ConfigException validation need testing in class methods.
@@ -75,8 +73,9 @@ class Curl
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo $headers and associated methods should be moved to a collection model / service layer.
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         string $url,

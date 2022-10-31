@@ -29,9 +29,6 @@ use function is_string;
 
 /**
  * Verifies business logic of ModelConverter trait.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class CacheTest extends TestCase
 {

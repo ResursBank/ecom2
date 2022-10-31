@@ -37,10 +37,7 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdateRequest;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
 
 /**
- * Tests for RCO module Repository class
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Tests for RCO module Repository class.
  */
 final class RepositoryTest extends TestCase
 {
@@ -53,7 +50,7 @@ final class RepositoryTest extends TestCase
      * @return void
      * @throws IllegalTypeException
      * @throws Exception
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {
@@ -88,8 +85,8 @@ final class RepositoryTest extends TestCase
         );
 
         $basicAuth = new Basic(
-            username: (string) $_ENV['BASIC_AUTH_USERNAME'],
-            password: (string) $_ENV['BASIC_AUTH_PASSWORD']
+            username: $_ENV['BASIC_AUTH_USERNAME'],
+            password: $_ENV['BASIC_AUTH_PASSWORD']
         );
 
         Config::setup(

@@ -25,8 +25,6 @@ use function is_array;
 
 /**
  * Verifies that the FileLogger class works as intended.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class FileLoggerTest extends TestCase
 {
@@ -46,7 +44,7 @@ final class FileLoggerTest extends TestCase
      * @return void
      * @throws Exception
      * @noinspection PhpMissingParentCallCommonInspection
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {

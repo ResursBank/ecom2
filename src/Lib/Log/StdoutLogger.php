@@ -73,7 +73,7 @@ class StdoutLogger implements LoggerInterface
      * @return void
      * @throws IOException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+
      */
     private function log(LogLevel $level, string|Exception|Error $message): void
     {

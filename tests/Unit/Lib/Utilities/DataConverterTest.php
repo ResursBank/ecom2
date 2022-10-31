@@ -19,8 +19,6 @@ use stdClass;
 
 /**
  * Verifies that the DataConverter class works as intended.
- *
- *  @psalm-suppress PropertyNotSetInConstructor
  */
 final class DataConverterTest extends TestCase
 {
@@ -103,11 +101,11 @@ final class DataConverterTest extends TestCase
         );
         $expected = new TestClasses\ComplexDummy(
             int: 42,
-            simpleDummy: new TestClasses\SimpleDummy(
+            model: new TestClasses\SimpleDummy(
                 int: 127,
                 message: 'Foo'
             ),
-            simpleDummyCollection: new TestClasses\SimpleDummyCollection(data: [$childDummy])
+            collection: new TestClasses\SimpleDummyCollection(data: [$childDummy])
         );
 
         $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ComplexDummy::class);

@@ -33,8 +33,6 @@ use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
 
 /**
  * Interaction with Payment Method entities and related functionality.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {

@@ -31,8 +31,6 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/refund
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Refund
 {

@@ -20,9 +20,6 @@ use stdClass;
 
 /**
  * Test array validation methods.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class ArrayValidationTest extends TestCase
 {

@@ -14,6 +14,8 @@ namespace Resursbank\Ecom\Lib\Order;
 
 /**
  * Defines the ISO country codes an order can be specified with.
+ *
+ * @SuppressWarnings (PHPMD)
  */
 enum CountryCode: string
 {

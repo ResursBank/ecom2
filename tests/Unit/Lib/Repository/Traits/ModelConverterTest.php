@@ -15,6 +15,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\EcomTest\Data\Models\Instrument;
 use Resursbank\EcomTest\Data\Models\InstrumentCollection;
@@ -22,8 +23,6 @@ use stdClass;
 
 /**
  * Verifies business logic of ModelConverter trait.
- *
- *  @psalm-suppress PropertyNotSetInConstructor
  */
 final class ModelConverterTest extends TestCase
 {
@@ -81,6 +80,7 @@ final class ModelConverterTest extends TestCase
      *
      * @return void
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      */
@@ -98,6 +98,7 @@ final class ModelConverterTest extends TestCase
      *
      * @return void
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      */
@@ -111,8 +112,9 @@ final class ModelConverterTest extends TestCase
      * Assert convertToModel() converts JSON to request Model instance.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      */
     public function testConvertToModelConvertsJsonModel(): void
     {
@@ -131,8 +133,9 @@ final class ModelConverterTest extends TestCase
      * Assert convertToModel() converts JSON to request Model instance.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException
+     * @throws IllegalValueException
      * @throws JsonException
+     * @throws ReflectionException
      */
     public function testConvertToModelConvertsJsonArray(): void
     {
@@ -155,6 +158,7 @@ final class ModelConverterTest extends TestCase
      *
      * @return void
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      */
@@ -179,6 +183,7 @@ final class ModelConverterTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public function testConvertToModelConvertsStdclassArray(): void
     {

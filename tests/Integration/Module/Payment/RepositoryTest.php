@@ -15,6 +15,7 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -29,28 +30,23 @@ use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
  * Integration tests for CreatePayment repository.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.Superglobals)
  */
 class RepositoryTest extends TestCase
 {
     /**
      * @return void
      * @throws EmptyValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
 
@@ -59,15 +55,16 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws ValidationException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws ValidationException
+     * @throws ConfigException
      */
     public function testCreatePayment(): void
     {
@@ -90,8 +87,8 @@ class RepositoryTest extends TestCase
         );
 
         Repository::create(
-            storeId: (string) $_ENV['STORE_ID'],
-            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines
         );
     }

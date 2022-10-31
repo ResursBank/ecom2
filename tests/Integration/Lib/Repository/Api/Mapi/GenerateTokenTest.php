@@ -26,8 +26,6 @@ use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 
 /**
 * Test for JWT token generation.
-*
-* @psalm-suppress PropertyNotSetInConstructor
 */
 class GenerateTokenTest extends TestCase
 {
@@ -44,17 +42,17 @@ class GenerateTokenTest extends TestCase
      * @throws CurlException
      * @throws ValidationException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     public function testJwtTokenGenerates(): void
     {
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
             jwtAuth: new Jwt(
-                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
 
@@ -91,7 +89,7 @@ class GenerateTokenTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     public function testInvalidClientIdThrows(): void
     {
@@ -99,9 +97,9 @@ class GenerateTokenTest extends TestCase
             logger: $this->createMock(originalClassName: FileLogger::class),
             jwtAuth: new Jwt(
                 clientId: 'foo',
-                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
 
@@ -129,17 +127,17 @@ class GenerateTokenTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     public function testInvalidClientSecretThrows(): void
     {
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
             jwtAuth: new Jwt(
-                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: 'bar',
-                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
 

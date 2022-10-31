@@ -15,18 +15,16 @@ use Resursbank\Ecom\Lib\Model\Model;
  * To test stdClass conversion of objects specifying object properties.
  */
 class ComplexDummy extends Model
-
 {
     /**
      * @param int $int
-     * @param SimpleDummy $simpleDummy
-     * @param SimpleDummyCollection $simpleDummyCollection
-     * @noinspection MessDetectorValidationInspection
+     * @param SimpleDummy $model
+     * @param SimpleDummyCollection $collection
      */
     public function __construct(
         public int $int,
-        public SimpleDummy $simpleDummy,
-        public SimpleDummyCollection $simpleDummyCollection
+        public SimpleDummy $model,
+        public SimpleDummyCollection $collection
     ) {
     }
 }

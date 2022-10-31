@@ -20,8 +20,6 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 
 /**
  * Test that phrases can be translated.
- *
- * @SuppressWarnings(PHPMD.Superglobals)
  */
 class TranslatorTest extends TestCase
 {
@@ -46,7 +44,7 @@ class TranslatorTest extends TestCase
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             locale: $locale,
-            cache: new Redis(host: (string) $_ENV['REDIS_HOST'])
+            cache: new Redis(host: $_ENV['REDIS_HOST'])
         );
     }
 

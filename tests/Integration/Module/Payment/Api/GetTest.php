@@ -18,6 +18,7 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -39,16 +40,13 @@ use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
  * Tests that getPayment works.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class GetTest extends TestCase
 {
     /**
      * @return void
      * @throws EmptyValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {
@@ -58,10 +56,10 @@ class GetTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
     }
@@ -79,22 +77,24 @@ class GetTest extends TestCase
     }
 
     /**
-     * @throws ValidationException
+     * @param string $orderReference
+     * @return Payment
+     * @throws ApiException
      * @throws AuthException
-     * @throws EmptyValueException
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ApiException
      * @throws ReflectionException
-     * @SuppressWarnings(PHPMD.Superglobals)
+     * @throws ValidationException
+     * @throws ConfigException
      */
     private function createPayment(string $orderReference): Payment
     {
         return Repository::create(
-            storeId: (string) $_ENV['STORE_ID'],
-            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',

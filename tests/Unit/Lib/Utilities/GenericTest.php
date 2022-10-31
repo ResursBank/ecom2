@@ -17,7 +17,7 @@ use ReflectionException;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
 /**
- * @psalm-suppress PropertyNotSetInConstructor
+ * Test for Generic class.
  */
 class GenericTest extends TestCase
 {

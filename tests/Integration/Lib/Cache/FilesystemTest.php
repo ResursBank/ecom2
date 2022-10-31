@@ -22,10 +22,6 @@ use stdClass;
 
 /**
  * This class will test Filesystem cache methods.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class FilesystemTest extends TestCase
 {
@@ -74,7 +70,7 @@ class FilesystemTest extends TestCase
     /**
      * @return void
      * @throws Exception
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {

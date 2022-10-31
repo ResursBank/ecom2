@@ -13,13 +13,10 @@ namespace Resursbank\EcomTest\Unit\Lib\Locale;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Locale\Translation;
 
 /**
- * Tests for the Resursbank\Ecom\Lib\Locale\Translation class
- *
- * @psalm-suppress PropertyNotSetInConstructor
+ * Tests for the Resursbank\Ecom\Lib\Locale\Translation class.
  */
 class TranslationTest extends TestCase
 {

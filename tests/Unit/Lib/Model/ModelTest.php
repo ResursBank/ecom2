@@ -15,8 +15,7 @@ use Resursbank\EcomTest\Data\Models\ObjectPropertyDummy;
 use Resursbank\EcomTest\Data\Models\SimpleDummy;
 
 /**
- * Verifies that the Model class works as intended
- * @psalm-suppress PropertyNotSetInConstructor
+ * Verifies that the Model class works as intended.
  */
 final class ModelTest extends TestCase
 {

@@ -16,6 +16,9 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Metadata information class for payments. Currently, it does not have a proper collection.
+ *
+ * @todo Delete the PHPMD suppression when we've properly implemented this class.
+ * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
  */
 class Metadata extends Model
 {

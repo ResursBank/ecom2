@@ -37,9 +37,6 @@ use function count;
 
 /**
  * Integration tests for the PaymentMethods widget.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PaymentMethodsTest extends TestCase
 {
@@ -61,7 +58,7 @@ class PaymentMethodsTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     protected function setUp(): void
     {
@@ -69,15 +66,15 @@ class PaymentMethodsTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
             jwtAuth: new Jwt(
-                clientId: (string) $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string) $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string) $_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string) $_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
 
         $this->methods = Repository::getPaymentMethods(
-            storeId: (string) $_ENV['STORE_ID'],
+            storeId: $_ENV['STORE_ID'],
         );
 
         parent::setUp();
@@ -91,7 +88,7 @@ class PaymentMethodsTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     public function testRenderPaymentMethods(): void
     {
@@ -180,7 +177,7 @@ class PaymentMethodsTest extends TestCase
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.Superglobals)
+
      */
     public function testRenderPaymentMethodsWarning(): void
     {

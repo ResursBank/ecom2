@@ -16,8 +16,6 @@ use Resursbank\Ecom\Lib\Validation\BoolValidation;
 
 /**
  * Test boolean validation methods.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class BoolValidationTest extends TestCase
 {

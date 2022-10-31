@@ -85,7 +85,7 @@ class Payment extends Model
      * Validate country.
      *
      * @throws IllegalCharsetException
-     * @todo Solve problems with empty country code when using Search.
+     * @todo Solve problems with empty country code when using Search. Remove error suppression.
      * @noinspection PhpUnusedPrivateMethodInspection
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @phpstan-ignore-next-line
