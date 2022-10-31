@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
+use Resursbank\Ecom\Model\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
@@ -213,6 +214,26 @@ class Repository
             orderLines: $orderLines,
             creator: $creator,
             transactionId: $transactionId
+        );
+    }
+
+
+    /**
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     */
+    public static function setMetadata(
+        string $paymentId,
+        Metadata $metadata
+    ): Metadata {
+        return (new Put())->call(
+            paymentId: $paymentId,
+            metadata: $metadata
         );
     }
 }
