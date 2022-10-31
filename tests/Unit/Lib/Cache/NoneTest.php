@@ -87,7 +87,7 @@ class NoneTest extends TestCase
      */
     public function testReadReturnsNull(): void
     {
-        self::assertNull(actual: $this->cache->read(key: $this->key));
+        $this->assertNull(actual: $this->cache->read(key: $this->key));
     }
 
     /**

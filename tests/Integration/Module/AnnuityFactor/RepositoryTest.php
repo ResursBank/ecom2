@@ -107,11 +107,11 @@ class RepositoryTest extends TestCase
             paymentMethodId: $this->paymentMethodId
         );
 
-        self::assertNotNull(actual: $this->cache->read());
+        $this->assertNotNull(actual: $this->cache->read());
 
         $this->cache->clear();
 
-        self::assertNull(actual: $this->cache->read());
+        $this->assertNull(actual: $this->cache->read());
     }
 
     /**
@@ -131,8 +131,8 @@ class RepositoryTest extends TestCase
      */
     public function testGetAnnuityFactorsReturnsWithoutCache(): void
     {
-        self::assertNull(actual: $this->cache->read());
-        self::assertNotEmpty(
+        $this->assertNull(actual: $this->cache->read());
+        $this->assertNotEmpty(
             actual: Repository::getAnnuityFactors(
                 storeId: $this->storeId,
                 paymentMethodId: $this->paymentMethodId
@@ -158,18 +158,18 @@ class RepositoryTest extends TestCase
      */
     public function testGetAnnuityFactorsReturnsCache(): void
     {
-        self::assertEmpty(actual: $this->cache->read());
+        $this->assertEmpty(actual: $this->cache->read());
 
         $data = Repository::getAnnuityFactors(
             storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId
         );
 
-        self::assertNotEmpty(actual: $data);
+        $this->assertNotEmpty(actual: $data);
 
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
-        self::assertEquals(expected: $data, actual: $this->cache->read());
+        $this->assertEquals(expected: $data, actual: $this->cache->read());
     }
 
     /**
@@ -196,6 +196,6 @@ class RepositoryTest extends TestCase
             ),
         );
 
-        self::assertNotEmpty(actual: $filteredMethods->toArray());
+        $this->assertNotEmpty(actual: $filteredMethods->toArray());
     }
 }

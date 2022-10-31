@@ -126,7 +126,7 @@ final class RepositoryTest extends TestCase
         );
 
         if ($response->iframe === null) {
-            self::fail(message: 'No iframe found in response.');
+            $this->fail(message: 'No iframe found in response.');
         }
 
         $this::assertSame(

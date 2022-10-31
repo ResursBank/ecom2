@@ -73,7 +73,7 @@ final class BoolValidationTest extends TestCase
      */
     public function testGetKeyReturnsBool(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->boolValidation->getKey(
                 data: ['epoch' => true],
                 key: 'epoch'

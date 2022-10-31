@@ -176,17 +176,17 @@ class RefundTest extends TestCase
         $refundResponse = Repository::refund(paymentId: $payment->id);
 
         // Assert that entire payment has been refunded
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $refundResponse->order
         );
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $payment->order
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->order->totalOrderAmount,
             actual: $refundResponse->order->refundedAmount
         );
@@ -239,17 +239,17 @@ class RefundTest extends TestCase
         );
 
         // Assert that only specified order line has been refunded
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $refundResponse->order
         );
         /**
          * @psalm-suppress MixedPropertyFetch
          */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $orderLines[0]->totalAmountIncludingVat,
             actual: $refundResponse->order->refundedAmount
         );
@@ -291,15 +291,15 @@ class RefundTest extends TestCase
         );
 
         // Assert that transaction id is present in action log
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        self::assertNotNull(actual: $refundResponse->order);
+        $this->assertNotNull(actual: $refundResponse->order);
         /**
          * @psalm-suppress MixedPropertyFetch
          */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $transactionId,
             actual: $refundResponse->order->actionLog[2]->transactionId
         );
@@ -341,15 +341,15 @@ class RefundTest extends TestCase
         );
 
         // Assert that transaction id is present in action log
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $refundResponse->id
         );
-        self::assertNotNull(actual: $refundResponse->order);
+        $this->assertNotNull(actual: $refundResponse->order);
         /**
          * @psalm-suppress MixedPropertyFetch
          */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $creator,
             actual: $refundResponse->order->actionLog[2]->creator
         );

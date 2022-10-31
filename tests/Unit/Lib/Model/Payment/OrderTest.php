@@ -109,11 +109,11 @@ class OrderTest extends TestCase
             ])
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: true,
             actual: $cancelable->canCancel()
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: false,
             actual: $unCancelable->canCancel()
         );
@@ -140,11 +140,11 @@ class OrderTest extends TestCase
             ])
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: true,
             actual: $captureable->canCapture()
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: false,
             actual: $uncaptureable->canCapture()
         );
@@ -173,11 +173,11 @@ class OrderTest extends TestCase
             ])
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: true,
             actual: $refundable->canRefund()
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: false,
             actual: $nonRefundable->canRefund()
         );

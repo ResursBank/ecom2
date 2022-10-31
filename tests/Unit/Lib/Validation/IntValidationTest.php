@@ -74,7 +74,7 @@ final class IntValidationTest extends TestCase
      */
     public function testGetKeyReturnsInt(): void
     {
-        self::assertSame(
+        $this->assertSame(
             expected: 123,
             actual: $this->intValidation->getKey(
                 data: ['epic' => 123],
@@ -114,7 +114,7 @@ final class IntValidationTest extends TestCase
      */
     public function testIsPositiveReturnTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->intValidation->isPositive(value: 1)
         );
     }
@@ -141,7 +141,7 @@ final class IntValidationTest extends TestCase
      */
     public function testIsGtReturnTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->intValidation->isGt(value: 2, min: 1)
         );
     }
@@ -164,7 +164,7 @@ final class IntValidationTest extends TestCase
      */
     public function testInRangeReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->intValidation->inRange(
                 value: 5,
                 min: 0,

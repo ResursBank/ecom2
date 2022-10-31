@@ -37,7 +37,7 @@ class PhraseTest extends TestCase
      */
     public function testValidateIdIsValidWhenNotEmpty(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Phrase::class,
             actual: new Phrase(
                 id: 'asdf',

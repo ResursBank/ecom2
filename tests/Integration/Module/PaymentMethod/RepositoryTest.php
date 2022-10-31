@@ -99,11 +99,11 @@ class RepositoryTest extends TestCase
     {
         Repository::getPaymentMethods(storeId: $this->storeId);
 
-        self::assertNotNull(actual: $this->cache->read());
+        $this->assertNotNull(actual: $this->cache->read());
 
         $this->cache->clear();
 
-        self::assertNull(actual: $this->cache->read());
+        $this->assertNull(actual: $this->cache->read());
     }
 
     /**
@@ -123,8 +123,8 @@ class RepositoryTest extends TestCase
      */
     public function testGetPaymentMethodsReturnsWithoutCache(): void
     {
-        self::assertNull(actual: $this->cache->read());
-        self::assertNotEmpty(
+        $this->assertNull(actual: $this->cache->read());
+        $this->assertNotEmpty(
             actual: Repository::getPaymentMethods(
                 storeId: $this->storeId
             )
@@ -149,19 +149,19 @@ class RepositoryTest extends TestCase
      */
     public function testGetPaymentMethodsReturnsCache(): void
     {
-        self::assertEmpty(actual: $this->cache->read());
+        $this->assertEmpty(actual: $this->cache->read());
 
         $data = Repository::getPaymentMethods(
             storeId: $this->storeId
         );
 
-        self::assertNotEmpty(actual: $data);
+        $this->assertNotEmpty(actual: $data);
 
         $data->rewind();
 
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $data,
             actual: $this->cache->read()
         );
@@ -212,10 +212,10 @@ class RepositoryTest extends TestCase
             amount: $amount2
         )->read()->toArray();
 
-        self::assertEquals(expected: $apiData1, actual: $cacheData1);
-        self::assertEquals(expected: $apiData2, actual: $cacheData2);
-        self::assertNotEquals(expected: $apiData1, actual: $apiData2);
-        self::assertNotEquals(expected: $cacheData1, actual: $cacheData2);
+        $this->assertEquals(expected: $apiData1, actual: $cacheData1);
+        $this->assertEquals(expected: $apiData2, actual: $cacheData2);
+        $this->assertNotEquals(expected: $apiData1, actual: $apiData2);
+        $this->assertNotEquals(expected: $cacheData1, actual: $cacheData2);
     }
 
     /**
@@ -242,15 +242,15 @@ class RepositoryTest extends TestCase
         /** @var PaymentMethod|null $method */
         $method = $paymentMethods[0] ?? null;
 
-        self::assertNotNull(actual: $method);
+        $this->assertNotNull(actual: $method);
 
         $paymentMethod = Repository::getById(
             storeId: $this->storeId,
             paymentMethodId: $method->id
         );
 
-        self::assertNotNull(actual: $paymentMethod);
-        self::assertEquals(
+        $this->assertNotNull(actual: $paymentMethod);
+        $this->assertEquals(
             expected: $method->id,
             actual: $paymentMethod->id
         );
@@ -278,7 +278,7 @@ class RepositoryTest extends TestCase
         )->toArray();
 
         if (!isset($paymentMethods[0])) {
-            self::fail(message: 'No payment methods found');
+            $this->fail(message: 'No payment methods found');
         }
 
         $paymentMethod = Repository::getById(
@@ -286,7 +286,7 @@ class RepositoryTest extends TestCase
             paymentMethodId: 'Not-a-Method'
         );
 
-        self::assertNull(actual: $paymentMethod);
+        $this->assertNull(actual: $paymentMethod);
     }
 
     /**
@@ -304,10 +304,10 @@ class RepositoryTest extends TestCase
         );
 
         if (!isset($response->elements)) {
-            self::markTestSkipped(message: 'Skipping test as response collection is null');
+            $this->markTestSkipped(message: 'Skipping test as response collection is null');
         }
 
-        self::assertTrue(
+        $this->assertTrue(
             condition: $response->hasfield(fieldName: 'applicant-government-id')
         );
     }
@@ -329,13 +329,13 @@ class RepositoryTest extends TestCase
         $headingFields = $response->getFieldsByType(type: Type::HEADING);
 
         if (!isset($response->elements)) {
-            self::markTestSkipped(message: 'Skipping test as response collection is null');
+            $this->markTestSkipped(message: 'Skipping test as response collection is null');
         }
 
-        self::assertFalse(
+        $this->assertFalse(
             condition: $this->allFieldsOfType(fields: $response->elements, type: Type::HEADING)
         );
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->allFieldsOfType(fields: $headingFields, type: Type::HEADING)
         );
     }
@@ -371,7 +371,7 @@ class RepositoryTest extends TestCase
         );
 
         if (!isset($response->elements)) {
-            self::markTestSkipped(message: 'Skipping test as response collection is null');
+            $this->markTestSkipped(message: 'Skipping test as response collection is null');
         }
 
         if (
@@ -383,15 +383,15 @@ class RepositoryTest extends TestCase
                 fields: ['applicant-government-id']
             );
 
-            self::assertCount(
+            $this->assertCount(
                 expectedCount: count($response->elements) - 1,
                 haystack: $filteredResponse->elements ?? new ApplicationFormSpecElementResponseCollection(data: [])
             );
-            self::assertFalse(
+            $this->assertFalse(
                 condition: $filteredResponse->hasfield(fieldName: 'applicant-government-id')
             );
         } else {
-            self::markTestSkipped(message: 'Field required by test not found in response');
+            $this->markTestSkipped(message: 'Field required by test not found in response');
         }
     }
 }

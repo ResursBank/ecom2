@@ -78,7 +78,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testGetKeyReturnsArray(): void
     {
-        self::assertSame(
+        $this->assertSame(
             expected: ['test', 'a', 'test'],
             actual: $this->arrayValidation->getKey(
                 data: ['epic' => ['test', 'a', 'test']],
@@ -107,7 +107,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testIsSequentialReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->isSequential(
                 data: ['1', '2', '3']
             )
@@ -134,7 +134,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testIsAssocReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->isAssoc(
                 data: ['mb' => 'string', 'tb' => 'honest']
             )
@@ -198,7 +198,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testIsMultiDimensionalReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->isMultiDimensional(
                 data: [[], ['I'], ['am'], ['Array']],
                 depth: 1
@@ -214,7 +214,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testIsMultiDimensionalReturnsTrueAtDepth(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->isMultiDimensional(
                 data: [
                     [[
@@ -244,7 +244,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testIsMultiDimensionalReturnsTrueWithGreaterDepth(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->isMultiDimensional(
                 data: [[], ['test'], [['dynamite', 'clear']]],
                 depth: 1
@@ -274,7 +274,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testIsStdClassCollectionReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->isStdClassCollection(data: [
                 'test' => new stdClass(),
                 'test2' => new stdClass()
@@ -306,7 +306,7 @@ final class ArrayValidationTest extends TestCase
      */
     public function testAllowedKeysReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->arrayValidation->allowedKeys(
                 data: ['test' => 'test', 'test2' => 'test2'],
                 allowed: ['test', 'test2']

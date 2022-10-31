@@ -172,22 +172,22 @@ class CancelTest extends TestCase
         $response = Repository::cancel(paymentId: $payment->id);
 
         // Assert that cancel went through
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        self::assertNotNull(actual: $response->order);
-        self::assertNotNull(actual: $payment->order);
+        $this->assertNotNull(actual: $response->order);
+        $this->assertNotNull(actual: $payment->order);
         /** @psalm-suppress MixedPropertyFetch */
-        self::assertEquals(
+        $this->assertEquals(
             expected: ActionType::CANCEL,
             actual: $response->order->actionLog[1]->type
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->order->totalOrderAmount,
             actual: $response->order->totalOrderAmount
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $response->order->totalOrderAmount,
             actual: $response->order->canceledAmount
         );
@@ -235,17 +235,17 @@ class CancelTest extends TestCase
         );
 
         // Assert that cancel went through
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        self::assertNotNull(actual: $response->order);
-        self::assertNotNull(actual: $payment->order);
+        $this->assertNotNull(actual: $response->order);
+        $this->assertNotNull(actual: $payment->order);
         /**
          * @psalm-suppress MixedPropertyFetch
          * @psalm-suppress MixedArrayAccess
          */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->order->actionLog[0]->orderLines[0],
             actual: $response->order->actionLog[1]->orderLines[0]
         );
@@ -253,7 +253,7 @@ class CancelTest extends TestCase
          * @psalm-suppress MixedPropertyFetch
          * @psalm-suppress MixedArrayAccess
          */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
             actual: $response->order->canceledAmount
         );
@@ -291,15 +291,15 @@ class CancelTest extends TestCase
         );
 
         // Assert that creator argument is present in action log
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $response->order
         );
         /** @psalm-suppress MixedPropertyFetch */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $creator,
             actual: $response->order->actionLog[1]->creator
         );

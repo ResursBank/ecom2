@@ -28,7 +28,7 @@ class TranslationTest extends TestCase
      */
     public function testValidateTranslationIsValidWhenNotEmpty(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Translation::class,
             actual: new Translation(en: 'asdf', sv: 'asdf'),
         );
@@ -41,7 +41,7 @@ class TranslationTest extends TestCase
     {
         $this->expectException(exception: EmptyValueException::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Translation::class,
             actual: new Translation(en: 'asdf', sv: ''),
         );
@@ -54,7 +54,7 @@ class TranslationTest extends TestCase
     {
         $this->expectException(exception: EmptyValueException::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Translation::class,
             actual: new Translation(sv: 'asdf', en: ''),
         );

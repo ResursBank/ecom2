@@ -29,9 +29,9 @@ class StringsTest extends TestCase
         // Breaking rules.
         $obfuscateFromFifthAndBreakTheStrLenRules = Strings::getObfuscatedString(string: 'Just', startAt: 5, endAt: 5);
 
-        self::assertEquals(expected: 'Ju************.', actual: $obfuscateFromSecondPosition);
-        self::assertEquals(expected: 'Jus************.', actual: $obfuscateFromThirdPosition);
-        self::assertEquals(expected: 'Just************', actual: $obfuscateFromFourthPositionEndAtZero);
-        self::assertEquals(expected: 'Just', actual: $obfuscateFromFifthAndBreakTheStrLenRules);
+        $this->assertEquals(expected: 'Ju************.', actual: $obfuscateFromSecondPosition);
+        $this->assertEquals(expected: 'Jus************.', actual: $obfuscateFromThirdPosition);
+        $this->assertEquals(expected: 'Just************', actual: $obfuscateFromFourthPositionEndAtZero);
+        $this->assertEquals(expected: 'Just', actual: $obfuscateFromFifthAndBreakTheStrLenRules);
     }
 }

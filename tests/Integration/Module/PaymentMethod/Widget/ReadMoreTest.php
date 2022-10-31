@@ -83,7 +83,7 @@ class ReadMoreTest extends TestCase
         );
 
         if ($method === null) {
-            self::fail(message: 'No annuity payment method found.');
+            $this->fail(message: 'No annuity payment method found.');
         }
 
         $this->method = $method;
@@ -109,7 +109,7 @@ class ReadMoreTest extends TestCase
     public function testRenderReadMore(): void
     {
         if ((bool) $_ENV['IS_PIPELINE']) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Buffer does not work in pipeline, skipping.'
             );
         }
@@ -119,19 +119,19 @@ class ReadMoreTest extends TestCase
             amount: $this->method->maxPurchaseLimit
         );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'read-more'),
             haystack: $data->content,
             message: 'Read more link not found.'
         );
 
-        self::assertMatchesRegularExpression(
+        $this->assertMatchesRegularExpression(
             pattern: '/<div[^>]+class=["\'][^"\']*rb-rm/s',
             string: $data->content,
             message: 'Read more widget should contain a div with class rb-rm.'
         );
 
-        self::assertMatchesRegularExpression(
+        $this->assertMatchesRegularExpression(
             pattern: '/<div[^>]+class=["\'][^"\']*rb-rm-link/s',
             string: $data->content,
             message: 'Read more widget should contain a div with class rb-rm-link.'
@@ -143,40 +143,40 @@ class ReadMoreTest extends TestCase
             subject: $this->url
         );
 
-        self::assertMatchesRegularExpression(
+        $this->assertMatchesRegularExpression(
             pattern: "/<iframe[^>]+src=[\"']$testUrl/s",
             string: $data->content,
             message: 'Read more widget should contain an iframe with the correct URL.'
         );
 
-        self::assertMatchesRegularExpression(
+        $this->assertMatchesRegularExpression(
             pattern: "/<div[^>]+id=[\"']rb-rm-model-{$this->method->id}[\"']/s",
             string: $data->content,
             message: 'Read more widget should contain a div with the correct ID.'
         );
 
-        self::assertMatchesRegularExpression(
+        $this->assertMatchesRegularExpression(
             pattern: "/<div[^>]+id=[\"']rb-rm-model-{$this->method->id}[\"'][^>]+style=[\"'][^\"']*display:\s*none;/s",
             string: $data->content,
             message: 'Read more widget lightbox should be hidden by default.'
         );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: '.rb-rm-link p',
             haystack: $data->css,
             message: 'Read more widget CSS should contain section for the rb-rm-link class'
         );
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: '.rb-rm-background',
             haystack: $data->css,
             message: 'Read more widget CSS should contain section for the rb-rm-background class'
         );
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: '.rb-rm-iframe-container',
             haystack: $data->css,
             message: 'Read more widget CSS should contain section for the rb-rm-iframe-container class'
         );
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: '.rb-rm-iframe',
             haystack: $data->css,
             message: 'Read more widget CSS should contain section for the rb-rm-iframe class'

@@ -90,11 +90,11 @@ class PaymentTest extends TestCase
         $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
         $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: true,
             actual: $isFrozen->isFrozen()
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: false,
             actual: $notFrozen->isFrozen()
         );

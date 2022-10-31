@@ -132,7 +132,7 @@ class DeviceInfoTest extends TestCase
 //    public function testUserAgentWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->userAgent,
 //            actual: $this->item->userAgent
 //        );

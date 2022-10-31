@@ -75,7 +75,7 @@ class MapiTest extends TestCase
                 )];
             }
         } catch (Exception) {
-            self::fail(message: 'Failed to generate route.');
+            $this->fail(message: 'Failed to generate route.');
         }
 
         return $route;
@@ -116,7 +116,7 @@ class MapiTest extends TestCase
     {
         $route = $this->getRoute();
 
-        self::assertSame(
+        $this->assertSame(
             expected: $this->getExpectedUrl(route: $route),
             actual: $this->mapi->getUrl(route: $route)
         );
@@ -135,7 +135,7 @@ class MapiTest extends TestCase
 
         $route = $this->getRoute();
 
-        self::assertSame(
+        $this->assertSame(
             expected: $this->getExpectedUrl(
                 route: $route,
                 host: Mapi::URL_PROD

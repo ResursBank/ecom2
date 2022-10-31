@@ -93,40 +93,40 @@ class PaymentMethodsTest extends TestCase
     public function testRenderPaymentMethods(): void
     {
         if ((bool) $_ENV['IS_PIPELINE']) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Buffer does not work in pipeline, skipping.'
             );
         }
 
-        self::assertTrue(condition: count($this->methods) > 0);
+        $this->assertTrue(condition: count($this->methods) > 0);
 
         $data = new PaymentMethods(paymentMethods: $this->methods);
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'name'),
             haystack: $data->content,
             message: 'Name table header not found.'
         );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'min-total'),
             haystack: $data->content,
             message: 'Minimum total table header not found.'
         );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'max-total'),
             haystack: $data->content,
             message: 'Maximum total table header not found.'
         );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'sort-order'),
             haystack: $data->content,
             message: 'Sort order table header not found.'
         );
 
-        self::assertMatchesRegularExpression(
+        $this->assertMatchesRegularExpression(
             pattern: '/<div[^>]+class=["\'][^"\']*rb-payment-methods/s',
             string: $data->content,
             message: 'Payment methods widget should contain a div with class rb-payment-methods.'
@@ -134,34 +134,34 @@ class PaymentMethodsTest extends TestCase
 
         /** @var PaymentMethod $method */
         foreach ($this->methods as $method) {
-            self::assertMatchesRegularExpression(
+            $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\']>/s',
                 string: $data->content,
                 message: "Missing row matching payment method $method->id"
             );
 
-            self::assertMatchesRegularExpression(
+            $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
                     preg_quote(str: $method->name, delimiter: '/') . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing name column for payment method row matching $method->id"
             );
 
-            self::assertMatchesRegularExpression(
+            $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
                     $method->minPurchaseLimit . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing min purchase limit column for payment method row matching $method->id"
             );
 
-            self::assertMatchesRegularExpression(
+            $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
                     $method->maxPurchaseLimit . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing max purchase limit column for payment method row matching $method->id"
             );
 
-            self::assertMatchesRegularExpression(
+            $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
                     $method->sortOrder . '.*<\/td>/s',
                 string: $data->content,
@@ -181,7 +181,7 @@ class PaymentMethodsTest extends TestCase
     public function testRenderPaymentMethodsWarning(): void
     {
         if ((bool) $_ENV['IS_PIPELINE']) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Buffer does not work in pipeline, skipping.'
             );
         }
@@ -190,7 +190,7 @@ class PaymentMethodsTest extends TestCase
             paymentMethods: new PaymentMethodCollection(data: [])
         );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'no-payment-methods'),
             haystack: $data->content,
             message: 'No payment methods warning not found.'

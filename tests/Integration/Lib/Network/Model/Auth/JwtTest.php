@@ -46,17 +46,17 @@ class JwtTest extends TestCase
         );
 
         if (Config::$instance->jwtAuth === null) {
-            self::fail(message: 'JWT auth is not configured');
+            $this->fail(message: 'JWT auth is not configured');
         }
 
         $token = Config::$instance->jwtAuth->getToken();
         $currentTime = time();
 
-        self::assertSame(
+        $this->assertSame(
             expected: 'Bearer',
             actual: $token->tokenType
         );
-        self::assertGreaterThan(
+        $this->assertGreaterThan(
             expected: $currentTime,
             actual: $token->validUntil
         );
@@ -85,7 +85,7 @@ class JwtTest extends TestCase
         );
 
         if (Config::$instance->jwtAuth === null) {
-            self::fail(message: 'JWT auth is not configured');
+            $this->fail(message: 'JWT auth is not configured');
         }
 
         $this->expectException(exception: AuthException::class);

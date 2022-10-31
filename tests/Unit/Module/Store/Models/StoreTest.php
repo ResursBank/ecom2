@@ -104,7 +104,7 @@ class StoreTest extends TestCase
     public function testIdAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(expected: self::$data['id'], actual: $item->id);
+        $this->assertSame(expected: self::$data['id'], actual: $item->id);
     }
 
     /**
@@ -145,7 +145,7 @@ class StoreTest extends TestCase
     public function testNationalStoreIdWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: self::$data['nationalStoreId'],
             actual: $item->nationalStoreId
         );
@@ -161,7 +161,7 @@ class StoreTest extends TestCase
     public function testCountryCodeWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: Country::SE,
             actual: $item->countryCode
         );
@@ -190,7 +190,7 @@ class StoreTest extends TestCase
     public function testNameWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: self::$data['name'],
             actual: $item->name
         );

@@ -113,7 +113,7 @@ final class FileLoggerTest extends TestCase
     public function testLoggingFailure(): void
     {
         if ($this->isPipeline) {
-            self::markTestSkipped(message: 'This test cannot run as root.');
+            $this->markTestSkipped(message: 'This test cannot run as root.');
         }
 
         if (!chmod(filename: $this->filename, permissions: 0000)) {
@@ -157,7 +157,7 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: LogLevel::DEBUG->name . ': ' . $first . PHP_EOL,
             actual: $logged
         );
@@ -387,7 +387,7 @@ final class FileLoggerTest extends TestCase
     public function testValidatePathWhichIsUnwritable(): void
     {
         if ($this->isPipeline) {
-            self::markTestSkipped(message: 'This test cannot run as root.');
+            $this->markTestSkipped(message: 'This test cannot run as root.');
         }
 
         if (!chmod(filename: $this->path, permissions: 0400)) {

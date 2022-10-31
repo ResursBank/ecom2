@@ -124,7 +124,7 @@ class PaymentMethodTest extends TestCase
     public function testIdAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(expected: self::$data['id'], actual: $item->id);
+        $this->assertSame(expected: self::$data['id'], actual: $item->id);
     }
 
     /**
@@ -151,7 +151,7 @@ class PaymentMethodTest extends TestCase
     public function testNameWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: self::$data['name'],
             actual: $item->name
         );
@@ -181,7 +181,7 @@ class PaymentMethodTest extends TestCase
     public function testMinPurchaseLimitWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertEquals(
+        $this->assertEquals(
             expected: self::$data['minPurchaseLimit'],
             actual: $item->minPurchaseLimit
         );
@@ -211,7 +211,7 @@ class PaymentMethodTest extends TestCase
     public function testMaxPurchaseLimitWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertEquals(
+        $this->assertEquals(
             expected: self::$data['maxPurchaseLimit'],
             actual: $item->maxPurchaseLimit
         );
@@ -243,7 +243,7 @@ class PaymentMethodTest extends TestCase
     public function testMinApplicationLimitWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertEquals(
+        $this->assertEquals(
             expected: self::$data['minApplicationLimit'],
             actual: $item->minApplicationLimit
         );
@@ -275,7 +275,7 @@ class PaymentMethodTest extends TestCase
     public function testMaxApplicationLimitWasAssigned(): void
     {
         $item = $this->convert();
-        self::assertEquals(
+        $this->assertEquals(
             expected: self::$data['maxApplicationLimit'],
             actual: $item->maxApplicationLimit
         );
@@ -292,7 +292,7 @@ class PaymentMethodTest extends TestCase
     {
         $item = $this->convert();
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: count(self::$data['legalLinks']),
             haystack: $item->legalLinks,
             message: 'Legal links were not assigned.'
@@ -310,7 +310,7 @@ class PaymentMethodTest extends TestCase
     {
         $item = $this->convert(updates: ['legalLinks' => []]);
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 0,
             haystack: $item->legalLinks,
             message: 'Legal links were not assigned.'
@@ -327,7 +327,7 @@ class PaymentMethodTest extends TestCase
     public function testTypeAssigned(): void
     {
         $item = $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: Type::RESURS_INVOICE,
             actual: $item->type
         );

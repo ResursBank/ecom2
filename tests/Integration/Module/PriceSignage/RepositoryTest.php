@@ -129,11 +129,11 @@ class RepositoryTest extends TestCase
             amount: $this->amount
         );
 
-        self::assertNotNull(actual: $this->cache->read());
+        $this->assertNotNull(actual: $this->cache->read());
 
         $this->cache->clear();
 
-        self::assertNull(actual: $this->cache->read());
+        $this->assertNull(actual: $this->cache->read());
     }
 
     /**
@@ -153,8 +153,8 @@ class RepositoryTest extends TestCase
      */
     public function testGetPriceSignageReturnsWithoutCache(): void
     {
-        self::assertNull(actual: $this->cache->read());
-        self::assertNotEmpty(
+        $this->assertNull(actual: $this->cache->read());
+        $this->assertNotEmpty(
             actual: Repository::getPriceSignage(
                 storeId: $this->storeId,
                 paymentMethodId: $this->paymentMethodId,
@@ -181,7 +181,7 @@ class RepositoryTest extends TestCase
      */
     public function testGetPriceSignageReturnsCache(): void
     {
-        self::assertEmpty(actual: $this->cache->read());
+        $this->assertEmpty(actual: $this->cache->read());
 
         $data = Repository::getPriceSignage(
             storeId: $this->storeId,
@@ -189,11 +189,11 @@ class RepositoryTest extends TestCase
             amount: $this->amount
         );
 
-        self::assertNotEmpty(actual: $data);
+        $this->assertNotEmpty(actual: $data);
 
         /* Since we cannot mock the API adapter we will need to call the
             readCache() directly to ensure we don't fetch from the API again. */
-        self::assertEquals(expected: $data, actual: $this->cache->read());
+        $this->assertEquals(expected: $data, actual: $this->cache->read());
     }
 
     /**
@@ -228,8 +228,8 @@ class RepositoryTest extends TestCase
         $cache1->clear();
         $cache2->clear();
 
-        self::assertNull(actual: $cache1->read());
-        self::assertNull(actual: $cache2->read());
+        $this->assertNull(actual: $cache1->read());
+        $this->assertNull(actual: $cache2->read());
 
         $noCacheResponse1 = Repository::getPriceSignage(
             storeId: $this->storeId,
@@ -245,13 +245,13 @@ class RepositoryTest extends TestCase
             monthFilter: $months2
         );
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 1,
             haystack: $noCacheResponse1->costList,
             message: "Response should be filtered by $months1 months."
         );
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 1,
             haystack: $noCacheResponse2->costList,
             message: "Response should be filtered by $months2 months."
@@ -260,37 +260,37 @@ class RepositoryTest extends TestCase
         $cacheData1 = $cache1->read();
         $cacheData2 = $cache2->read();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: PriceSignage::class,
             actual: $cacheData1,
             message: 'The cache should contain a PriceSignage object.'
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: PriceSignage::class,
             actual: $cacheData2,
             message: 'The cache should contain a PriceSignage object.'
         );
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 1,
             haystack: $cacheData1->costList,
             message: "Cache should be filtered by $months1 months."
         );
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 1,
             haystack: $cacheData2->costList,
             message: "Cache should be filtered by $months2 months."
         );
 
-        self::assertSame(
+        $this->assertSame(
             expected: $months1,
             actual: $cacheData1->costList[0]->months,
             message: "Cache should be filtered by $months1 months."
         );
 
-        self::assertSame(
+        $this->assertSame(
             expected: $months2,
             actual: $cacheData2->costList[0]->months,
             message: "Cache should be filtered by $months2 months."

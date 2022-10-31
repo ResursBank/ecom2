@@ -373,7 +373,7 @@ class OrderLineTest extends TestCase
     public function testDescriptionWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->description,
             actual: $this->item->description
         );
@@ -390,7 +390,7 @@ class OrderLineTest extends TestCase
     public function testReferenceWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->reference,
             actual: $this->item->reference
         );
@@ -407,8 +407,8 @@ class OrderLineTest extends TestCase
     public function testTypeWasAssigned(): void
     {
         $this->convert();
-        self::assertNotNull(actual: $this->item->type);
-        self::assertSame(
+        $this->assertNotNull(actual: $this->item->type);
+        $this->assertSame(
             expected: $this->data->type,
             actual: $this->item->type->value
         );
@@ -425,7 +425,7 @@ class OrderLineTest extends TestCase
     public function testQuantityUnitWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->quantityUnit,
             actual: $this->item->quantityUnit
         );
@@ -442,7 +442,7 @@ class OrderLineTest extends TestCase
     public function testQuantityWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->quantity,
             actual: $this->item->quantity
         );
@@ -459,7 +459,7 @@ class OrderLineTest extends TestCase
     public function testVatRateWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->vatRate,
             actual: $this->item->vatRate
         );
@@ -476,7 +476,7 @@ class OrderLineTest extends TestCase
     public function testUnitAmountIncludingVatWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->unitAmountIncludingVat,
             actual: $this->item->unitAmountIncludingVat
         );
@@ -493,7 +493,7 @@ class OrderLineTest extends TestCase
     public function testTotalAmountIncludingVatWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->totalAmountIncludingVat,
             actual: $this->item->totalAmountIncludingVat
         );
@@ -510,7 +510,7 @@ class OrderLineTest extends TestCase
     public function testTotalVatAmountWasAssigned(): void
     {
         $this->convert();
-        self::assertSame(
+        $this->assertSame(
             expected: $this->data->totalVatAmount,
             actual: $this->item->totalVatAmount
         );
