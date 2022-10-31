@@ -16,14 +16,17 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Module\Rco\Models\Address;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Customer;
 use Resursbank\Ecom\Module\Rco\Models\OrderLine;
@@ -103,13 +106,16 @@ final class RepositoryTest extends TestCase
      * Verify that InitPayment works
      *
      * @return void
-     * @throws CurlException
-     * @throws ReflectionException
-     * @throws IllegalTypeException
-     * @throws JsonException
+     * @throws ApiException
      * @throws AuthException
-     * @throws ValidationException
+     * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testInitPayment(): void
     {
@@ -145,8 +151,10 @@ final class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws IllegalTypeException
      * @throws ValidationException
+     * @throws ApiException
+     * @throws ConfigException
+     * @throws IllegalValueException
      */
     public function testUpdatePayment(): void
     {
@@ -215,12 +223,20 @@ final class RepositoryTest extends TestCase
             )
         );
 
-        $this->expectExceptionCode(code: 404);
+        $this->expectException(exception: CurlException::class);
 
-        Repository::updatePayment(
-            request: $request,
-            orderReference: $this->orderReference . bin2hex(string: random_bytes(length: 8))
-        );
+        try {
+            Repository::updatePayment(
+                request: $request,
+                orderReference: $this->orderReference . bin2hex(string: random_bytes(length: 8))
+            );
+        } catch (CurlException $e) {
+            $this::assertSame(
+                expected: 404,
+                actual: $e->httpCode
+            );
+            throw $e;
+        }
     }
 
     /**

@@ -13,6 +13,8 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\CollectionException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
@@ -42,7 +44,7 @@ final class CacheTest extends TestCase
      * We call the actual Config::setup() method to initiate mocked objects
      * to be utilised in tests against the static methods available on our
      * subject class. The methods on our subject class (such as readCache())
-     * will make calls to object such as Config::$instance->cache, and we wish
+     * will make calls to object such as Config::getCache(), and we wish
      * to test behaviour when the results from the API / Cache differ.
      *
      * @return void
@@ -78,7 +80,7 @@ final class CacheTest extends TestCase
     }
 
     /**
-     * Helper method to assign result from Config::$instance->cache->read()
+     * Helper method to assign result from Config::getCache()->read()
      *
      * @param mixed $data
      * @return void
@@ -104,6 +106,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      */
     public function testReadReturnsNull(): void
     {
@@ -115,6 +118,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      * @throws JsonException
      */
     public function testReadReturnsNullWithEmptyArray(): void
@@ -129,6 +133,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      * @throws JsonException
      */
     public function testReadThrowsCacheExceptionForInvalidJson(): void
@@ -146,6 +151,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      * @throws JsonException
      */
     public function testReadThrowsCacheExceptionWithoutJson(): void
@@ -160,6 +166,7 @@ final class CacheTest extends TestCase
      *
      * @return void
      * @throws CacheException
+     * @throws ConfigException
      * @throws JsonException
      */
     public function testReadConvertsModel(): void
@@ -182,6 +189,8 @@ final class CacheTest extends TestCase
      * @return void
      * @throws CacheException
      * @throws JsonException
+     * @throws CollectionException
+     * @throws ConfigException
      */
     public function testReadConvertsCollection(): void
     {

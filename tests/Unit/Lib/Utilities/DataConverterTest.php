@@ -28,6 +28,7 @@ final class DataConverterTest extends TestCase
      * Verify that the stdClass converter is able to convert object containing simple scalar types
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      */
     public function testSimpleConversion(): void
@@ -53,6 +54,7 @@ final class DataConverterTest extends TestCase
      * Verify that the stdClass converter properly converts arrays to arrays
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      */
     public function testConvertWithArrays(): void
@@ -121,6 +123,7 @@ final class DataConverterTest extends TestCase
      * quietly removes them.
      *
      * @return void
+     * @throws IllegalTypeException
      * @throws ReflectionException
      */
     public function testConvertObjectWithExtraProperties(): void
@@ -147,7 +150,7 @@ final class DataConverterTest extends TestCase
      * Verify that if there are missing properties the stdClass converter will throw the appropriate exception.
      *
      * @return void
-     * @throws ArgumentCountError
+     * @throws IllegalTypeException
      * @throws ReflectionException
      */
     public function testConvertObjectWithMissingProperties(): void

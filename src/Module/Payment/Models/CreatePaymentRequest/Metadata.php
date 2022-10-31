@@ -24,7 +24,6 @@ class Metadata extends Model
      * @param array|null $custom
      * @param StringValidation $stringValidation
      * @param ArrayValidation $arrayValidation
-     * @throws IllegalValueException
      */
     public function __construct(
         public readonly ?string $creator = null,

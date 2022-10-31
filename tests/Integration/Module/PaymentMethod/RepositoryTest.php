@@ -5,8 +5,6 @@
  * See LICENSE for license details.
  */
 
-/** @noinspection PhpMultipleClassDeclarationsInspection */
-
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\PaymentMethod;
@@ -19,6 +17,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -26,8 +25,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
@@ -55,6 +55,7 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.Superglobals)
@@ -87,6 +88,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -111,15 +113,16 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ApiException
-     * @throws CacheException
-     * @throws EmptyValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetPaymentMethodsReturnsWithoutCache(): void
     {
@@ -139,6 +142,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -175,6 +179,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -205,12 +210,20 @@ class RepositoryTest extends TestCase
         $cacheData1 = Repository::getCache(
             storeId: $storeId,
             amount: $amount1
-        )->read()->toArray();
+        )->read();
+
+        self::assertNotNull(actual: $cacheData1);
+
+        $cacheData1 = $cacheData1->toArray();
 
         $cacheData2 = Repository::getCache(
             storeId: $storeId,
             amount: $amount2
-        )->read()->toArray();
+        )->read();
+
+        self::assertNotNull(actual: $cacheData2);
+
+        $cacheData2 = $cacheData2->toArray();
 
         self::assertEquals(expected: $apiData1, actual: $cacheData1);
         self::assertEquals(expected: $apiData2, actual: $cacheData2);
@@ -225,6 +238,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -270,6 +284,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testGetByIdReturnsNull(): void
     {
@@ -308,7 +323,7 @@ class RepositoryTest extends TestCase
         }
 
         self::assertTrue(
-            condition: $response->hasfield(fieldName: 'applicant-government-id')
+            condition: $response->hasField(fieldName: 'applicant-government-id')
         );
     }
 
@@ -344,9 +359,13 @@ class RepositoryTest extends TestCase
      * @param ApplicationFormSpecElementResponseCollection $fields
      * @param Type $type
      * @return bool
+     * @noinspection PhpSameParameterValueInspection
      */
-    private function allFieldsOfType(ApplicationFormSpecElementResponseCollection $fields, Type $type): bool
-    {
+    private function allFieldsOfType(
+        ApplicationFormSpecElementResponseCollection $fields,
+        Type $type
+    ): bool {
+        /** @var ApplicationFormSpecElementResponse $field */
         foreach ($fields as $field) {
             if ($field->type !== $type) {
                 return false;
@@ -388,7 +407,7 @@ class RepositoryTest extends TestCase
                 haystack: $filteredResponse->elements ?? new ApplicationFormSpecElementResponseCollection(data: [])
             );
             self::assertFalse(
-                condition: $filteredResponse->hasfield(fieldName: 'applicant-government-id')
+                condition: $filteredResponse->hasField(fieldName: 'applicant-government-id')
             );
         } else {
             self::markTestSkipped(message: 'Field required by test not found in response');

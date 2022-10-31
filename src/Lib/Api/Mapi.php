@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Api;
 
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -57,6 +58,8 @@ class Mapi
      * @return string
      * @throws ValidationException
      * @throws EmptyValueException
+     * @throws ConfigException
+     * @todo Check if ConfigException validation needs a test.
      */
     public function getUrl(
         string $route
@@ -64,7 +67,7 @@ class Mapi
         $this->stringValidation->notEmpty(value: $route);
 
         return (
-            (Config::$instance->isProduction ? self::URL_PROD : self::URL_TEST) .
+            (Config::isProduction() ? self::URL_PROD : self::URL_TEST) .
             $route
         );
     }
