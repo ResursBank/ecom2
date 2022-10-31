@@ -12,7 +12,9 @@ namespace Resursbank\Ecom\Module\Customer\Api;
 use Exception;
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -48,6 +50,7 @@ class GetAddress
      * @param CustomerType $customerType
      * @return Address
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws GetAddressException
@@ -55,6 +58,7 @@ class GetAddress
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ApiException
      */
     public function call(
         string $storeId,

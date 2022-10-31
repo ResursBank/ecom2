@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
-use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\EcomTest\Data\Models\Instrument;
@@ -59,7 +58,7 @@ final class ModelConverterTest extends TestCase
     {
         $this->expectException(exception: InvalidArgumentException::class);
 
-        /** @spalm-suppress ArgumentTypeCoercion|UndefinedClass */
+        /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
         $this->validateModel(model: 'ThereIsNoSpoon');
     }
 
@@ -89,7 +88,7 @@ final class ModelConverterTest extends TestCase
     {
         $this->expectException(exception: InvalidArgumentException::class);
 
-        /** @spalm-suppress ArgumentTypeCoercion | UndefinedClass */
+        /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
         $this->convertToModel(data: new stdClass(), model: 'Witch');
     }
 

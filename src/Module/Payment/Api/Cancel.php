@@ -11,10 +11,13 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
@@ -46,13 +49,16 @@ class Cancel
      * @param OrderLineCollection|null $orderLines
      * @param string|null $creator
      * @return Payment
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ApiException
+     * @throws ConfigException
+     * @throws IllegalValueException
      */
     public function call(
         string $paymentId,

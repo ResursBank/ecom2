@@ -13,13 +13,16 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Basic;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\DigestConfiguration;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 use Resursbank\Ecom\Module\RcoCallback\Repository;
@@ -34,12 +37,16 @@ class RepositoryTest extends TestCase
 {
     /**
      * @return void
-     * @throws EmptyValueException
-     * @throws JsonException
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
-     * @throws ValidationException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
@@ -64,11 +71,15 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws JsonException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws ValidationException
      */
     protected function tearDown(): void
@@ -86,25 +97,30 @@ class RepositoryTest extends TestCase
      * Verify that we can register, fetch and delete callbacks
      *
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
-     * @throws JsonException
      * @throws IllegalTypeException
-     * @throws ValidationException
+     * @throws IllegalValueException
+     * @throws JsonException
      * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testRegisterGetAndDeleteCallback(): void
     {
-        if (Config::$instance->basicAuth === null) {
+        $auth = Config::getBasicAuth();
+
+        if ($auth === null) {
             $this->fail(message: 'Basic auth is not configured.');
         }
 
         $eventName = 'BOOKED';
         $request = new Request(
             uriTemplate: 'https://example.com/dummy?id={paymentId}&amp;hash={digest}',
-            basicAuthUserName: Config::$instance->basicAuth->username,
-            basicAuthPassword: Config::$instance->basicAuth->password,
+            basicAuthUserName: $auth->username,
+            basicAuthPassword: $auth->password,
             digestConfiguration: new DigestConfiguration(
                 digestAlgorithm: 'SHA1',
                 digestSalt: 'FOO',
@@ -140,25 +156,30 @@ class RepositoryTest extends TestCase
      * Verify that fetching all registered callbacks works
      *
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws IllegalTypeException
      * @throws ValidationException
      */
     public function testGetCallbacks(): void
     {
-        if (Config::$instance->basicAuth === null) {
+        $auth = Config::getBasicAuth();
+
+        if ($auth === null) {
             $this->fail(message: 'Basic auth is not configured.');
         }
 
         $eventNames = ['BOOKED', 'UPDATE'];
         $request = new Request(
             uriTemplate: 'https://example.com/dummy?id={paymentId}&amp;hash={digest}',
-            basicAuthUserName: Config::$instance->basicAuth->username,
-            basicAuthPassword: Config::$instance->basicAuth->password,
+            basicAuthUserName: $auth->username,
+            basicAuthPassword: $auth->password,
             digestConfiguration: new DigestConfiguration(
                 digestAlgorithm: 'SHA1',
                 digestSalt: 'FOO',
@@ -188,12 +209,15 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws IllegalTypeException
      * @throws ValidationException
+     * @throws ApiException
+     * @throws IllegalValueException
      */
     public function testGetCallbackFailure(): void
     {

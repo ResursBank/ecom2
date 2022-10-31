@@ -13,6 +13,7 @@ use Error;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
@@ -26,7 +27,6 @@ use function is_array;
  * Verifies that the FileLogger class works as intended.
  *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class FileLoggerTest extends TestCase
 {
@@ -109,6 +109,7 @@ final class FileLoggerTest extends TestCase
      * Verify that a FilesystemException is thrown if we attempt to write to an unwritable file.
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLoggingFailure(): void
     {
@@ -120,14 +121,9 @@ final class FileLoggerTest extends TestCase
             $this::markTestSkipped(message: 'Failed to set file permissions');
         }
 
-        $className = false;
-        try {
-            Config::$instance->logger->debug(message: $this->message);
-        } catch (Exception $e) {
-            $className = get_class(object: $e);
-        }
+        $this->expectException(exception: FilesystemException::class);
 
-        $this::assertSame(expected: FilesystemException::class, actual: $className);
+        Config::getLogger()->debug(message: $this->message);
     }
 
     /**
@@ -138,20 +134,21 @@ final class FileLoggerTest extends TestCase
      * @throws EmptyValueException
      * @throws FilesystemException
      * @throws FormatException
+     * @throws ConfigException
      */
     public function testTooLowLogLevel(): void
     {
         $first = 'first';
         $second = 'second';
 
-        Config::$instance->logger->debug(message: $first);
+        Config::getLogger()->debug(message: $first);
 
         Config::setup(
             logger: new FileLogger(path: $this->path),
             logLevel: LogLevel::WARNING
         );
 
-        Config::$instance->logger->debug(message: $second);
+        Config::getLogger()->debug(message: $second);
 
         $logged = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
@@ -167,10 +164,11 @@ final class FileLoggerTest extends TestCase
      * Verify that debug logging works
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLogDebug(): void
     {
-        Config::$instance->logger->debug(message: $this->message);
+        Config::getLogger()->debug(message: $this->message);
         $loggedDebug = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -182,10 +180,11 @@ final class FileLoggerTest extends TestCase
      * Verify that info logging works
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLogInfo(): void
     {
-        Config::$instance->logger->info(message: $this->message);
+        Config::getLogger()->info(message: $this->message);
         $loggedInfo = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -197,10 +196,11 @@ final class FileLoggerTest extends TestCase
      * Verify that warning logging works
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLogWarning(): void
     {
-        Config::$instance->logger->warning(message: $this->message);
+        Config::getLogger()->warning(message: $this->message);
         $loggedWarning = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -215,10 +215,11 @@ final class FileLoggerTest extends TestCase
      * Verify that error logging works
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLogError(): void
     {
-        Config::$instance->logger->error(message: $this->message);
+        Config::getLogger()->error(message: $this->message);
         $loggedError = substr(
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
@@ -230,11 +231,12 @@ final class FileLoggerTest extends TestCase
      * Verify that Exceptions get logged
      *
      * @return void
+     * @throws ConfigException
      */
     public function testLogException(): void
     {
         $exception = new Exception();
-        Config::$instance->logger->debug(message: $exception);
+        Config::getLogger()->debug(message: $exception);
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
@@ -245,11 +247,12 @@ final class FileLoggerTest extends TestCase
      * Assert log() will log Error objects.
      *
      * @return void
+     * @throws ConfigException
      */
     public function testDebugLogsError(): void
     {
         $error = new Error();
-        Config::$instance->logger->debug(message: $error);
+        Config::getLogger()->debug(message: $error);
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;

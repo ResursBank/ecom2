@@ -21,6 +21,7 @@ class PriceSignage extends Model
      * @param UriLinkCollection $generalTermsLinks
      * @param CostCollection $costList
      * @todo These are all specified as required properties, but it does not state whether they can be empty?
+     * @todo Think sekkiLinks should be called $secciLinks?
      */
     public function __construct(
         public readonly UriLinkCollection $sekkiLinks,

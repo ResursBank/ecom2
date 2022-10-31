@@ -28,10 +28,10 @@ class GenericTest extends TestCase
     public function getVersionByDocBlockTest(): void
     {
         $this->assertTrue(
-            version_compare(
-                (new Generic())->getVersionByClassDoc(Generic::class),
-                '1.0.0',
-                '>='
+            condition: version_compare(
+                version1: (new Generic())->getVersionByClassDoc(className: Generic::class),
+                version2: '1.0.0',
+                operator: '>='
             )
         );
     }
@@ -45,13 +45,13 @@ class GenericTest extends TestCase
         $generic = $this->createMock(
             originalClassName: Generic::class
         );
-        $generic->method('getVersionByComposer')->willReturn('1.0.0');
+        $generic->method('getVersionByComposer')->willReturn(value: '1.0.0');
         // composer.json in our package may not contain version numbers.
         $this->assertTrue(
-            version_compare(
-                $generic->getVersionByComposer(__DIR__),
-                '1.0.0',
-                '>='
+            condition: version_compare(
+                version1: $generic->getVersionByComposer(location: __DIR__),
+                version2: '1.0.0',
+                operator: '>='
             )
         );
     }
@@ -65,12 +65,12 @@ class GenericTest extends TestCase
         $generic = $this->createMock(
             originalClassName: Generic::class
         );
-        $generic->method('getVersionByAny')->willReturn('1.0.0');
+        $generic->method('getVersionByAny')->willReturn(value: '1.0.0');
         $this->assertTrue(
-            version_compare(
-                $generic->getVersionByAny(__DIR__, 3, Generic::class),
-                '1.0.0',
-                '>='
+            condition: version_compare(
+                version1: $generic->getVersionByAny(composerLocation: __DIR__, composerDepth: 3, className: Generic::class),
+                version2: '1.0.0',
+                operator: '>='
             )
         );
     }
@@ -84,8 +84,8 @@ class GenericTest extends TestCase
         $willReturn = 'resursbank/ecom';
 
         $this->assertSame(
-            $willReturn,
-            (new Generic())->getComposerTag(__DIR__, 'name')
+            expected: $willReturn,
+            actual: (new Generic())->getComposerTag(location: __DIR__, tag: 'name')
         );
     }
 
@@ -96,8 +96,8 @@ class GenericTest extends TestCase
     public function getVendorTest(): void
     {
         $this->assertSame(
-            'resursbank',
-            (new Generic())->getComposerVendor(__DIR__)
+            expected: 'resursbank',
+            actual: (new Generic())->getComposerVendor(composerLocation: __DIR__)
         );
     }
 }

@@ -21,6 +21,8 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 use DateTime;
+use function chr;
+use function ord;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Model\Payment class
@@ -37,7 +39,11 @@ class PaymentTest extends TestCase
         $data = random_bytes(length: 16);
         $data[6] = chr(codepoint: ord(character: $data[6]) & 0x0f | 0x40);
         $data[8] = chr(codepoint: ord(character: $data[8]) & 0x3f | 0x80);
-        return vsprintf(format: '%s%s-%s-%s-%s-%s%s%s', values: str_split(string: bin2hex($data), length: 4));
+
+        return vsprintf(
+            format: '%s%s-%s-%s-%s-%s%s%s',
+            values: str_split(string: bin2hex(string: $data), length: 4)
+        );
     }
 
     /**

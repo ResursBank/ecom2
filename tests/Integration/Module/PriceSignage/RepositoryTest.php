@@ -16,6 +16,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -23,7 +24,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use Resursbank\Ecom\Lib\Network\Model\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\PriceSignage\Models\PriceSignage;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
@@ -60,6 +61,7 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.Superglobals)
@@ -120,6 +122,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testClearCache(): void
     {
@@ -141,15 +144,16 @@ class RepositoryTest extends TestCase
      *
      * @return void
      * @throws ApiException
-     * @throws CacheException
-     * @throws EmptyValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function testGetPriceSignageReturnsWithoutCache(): void
     {
@@ -171,6 +175,7 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -197,16 +202,17 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws ValidationException
-     * @throws EmptyValueException
+     * @throws ApiException
      * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ApiException
      * @throws ReflectionException
-     * @throws CacheException
+     * @throws ValidationException
      */
     public function testGetPriceSignageFilterByMonth(): void
     {
@@ -257,7 +263,10 @@ class RepositoryTest extends TestCase
             message: "Response should be filtered by $months2 months."
         );
 
+        /** @var PriceSignage $cacheData1 */
         $cacheData1 = $cache1->read();
+
+        /** @var PriceSignage $cacheData2 */
         $cacheData2 = $cache2->read();
 
         $this->assertInstanceOf(
@@ -284,12 +293,14 @@ class RepositoryTest extends TestCase
             message: "Cache should be filtered by $months2 months."
         );
 
+        /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months1,
             actual: $cacheData1->costList[0]->months,
             message: "Cache should be filtered by $months1 months."
         );
 
+        /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months2,
             actual: $cacheData2->costList[0]->months,

@@ -12,12 +12,12 @@ namespace Resursbank\EcomTest\Unit\Lib\Api;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use stdClass;
 
 use function strlen;
 
@@ -97,6 +97,8 @@ class MapiTest extends TestCase
      * Assert getUrl() throws EmptyValueException without $route value.
      *
      * @return void
+     * @throws ConfigException
+     * @throws EmptyValueException
      * @throws ValidationException
      */
     public function testGetUrlThrowsWithEmptyRoute(): void
@@ -109,6 +111,7 @@ class MapiTest extends TestCase
      * Assert getUrl() returns URL to test endpoint.
      *
      * @return void
+     * @throws ConfigException
      * @throws EmptyValueException
      * @throws ValidationException
      */
@@ -128,6 +131,7 @@ class MapiTest extends TestCase
      * @return void
      * @throws EmptyValueException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testGetUrlReturnsProdUrl(): void
     {
