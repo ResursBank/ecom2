@@ -26,6 +26,8 @@ use stdClass;
  */
 final class ModelConverterTest extends TestCase
 {
+    use ModelConverter;
+
     /**
      * @var array|array[]
      */
@@ -43,8 +45,6 @@ final class ModelConverterTest extends TestCase
             'name' => 'Violin',
         ],
     ];
-
-    use ModelConverter;
 
     /**
      * Assert validateModel() throws InvalidArgumentException when supplied a

@@ -25,6 +25,10 @@ cat <<EOT >> $HOOK_FILE
 docker-compose exec -T $service psalm -c $dir/qa/psalm/psalm.xml --show-info=true
 docker-compose exec -T $service phpmd $dir/src text $dir/qa/phpmd/src.xml
 docker-compose exec -T $service phpmd $dir/tests text $dir/qa/phpmd/tests.xml
+docker-compose exec -T php phpcbf --standard=PSR12 /web/src
+docker-compose exec -T php phpcbf --standard=PSR12 /web/tests
+docker-compose exec -T php phpcs --standard=PSR12 /web/src
+docker-compose exec -T php phpcs --standard=PSR12 /web/tests
 EOT
 
 if [ ! -d ./qa/psalm/cache ]; then

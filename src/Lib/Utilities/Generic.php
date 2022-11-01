@@ -14,8 +14,8 @@ use JsonException;
 use ReflectionClass;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
-
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+
 use function dirname;
 use function is_object;
 use function is_string;
