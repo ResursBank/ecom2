@@ -148,7 +148,6 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws Exception
-
      */
     public function testSearchOrderReference(): void
     {
@@ -182,7 +181,6 @@ class SearchTest extends TestCase
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws Exception
-
      */
     public function testSearchWithGovernmentId(): void
     {

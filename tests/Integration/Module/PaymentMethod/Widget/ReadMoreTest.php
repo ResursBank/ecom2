@@ -105,7 +105,6 @@ class ReadMoreTest extends TestCase
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ConfigException
-
      */
     public function testRenderReadMore(): void
     {

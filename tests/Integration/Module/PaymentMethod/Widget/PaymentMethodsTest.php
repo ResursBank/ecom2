@@ -87,7 +87,6 @@ class PaymentMethodsTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
-
      */
     public function testRenderPaymentMethods(): void
     {
@@ -176,7 +175,6 @@ class PaymentMethodsTest extends TestCase
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ConfigException
-
      */
     public function testRenderPaymentMethodsWarning(): void
     {

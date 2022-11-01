@@ -70,7 +70,6 @@ class FilesystemTest extends TestCase
     /**
      * @return void
      * @throws Exception
-
      */
     protected function setUp(): void
     {
