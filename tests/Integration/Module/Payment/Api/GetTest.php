@@ -162,7 +162,7 @@ class GetTest extends TestCase
         $fetched = Repository::get(paymentId: $payment->id);
 
         // Assert that the fetched order is the one we created
-        self::assertSame(
+        $this->assertSame(
             expected: $payment->id,
             actual: $fetched->id
         );

@@ -109,7 +109,7 @@ class RepositoryTest extends TestCase
         $auth = Config::getBasicAuth();
 
         if ($auth === null) {
-            self::fail(message: 'Basic auth is not configured.');
+            $this->fail(message: 'Basic auth is not configured.');
         }
 
         $eventName = 'BOOKED';
@@ -135,14 +135,14 @@ class RepositoryTest extends TestCase
 
         $deleteResponse = Repository::deleteCallback(eventName: $eventName);
 
-        self::assertSame(
+        $this->assertSame(
             expected: $eventName,
             actual: $registeredCallback->eventType
         );
-        self::assertNotEmpty(
+        $this->assertNotEmpty(
             actual: $registeredCallback->uriTemplate
         );
-        self::assertSame(
+        $this->assertSame(
             expected: 200,
             actual: $deleteResponse
         );
@@ -168,7 +168,7 @@ class RepositoryTest extends TestCase
         $auth = Config::getBasicAuth();
 
         if ($auth === null) {
-            self::fail(message: 'Basic auth is not configured.');
+            $this->fail(message: 'Basic auth is not configured.');
         }
 
         $eventNames = ['BOOKED', 'UPDATE'];
@@ -194,7 +194,7 @@ class RepositoryTest extends TestCase
 
         $response = Repository::getCallbacks();
 
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 2,
             haystack: $response->toArray()
         );

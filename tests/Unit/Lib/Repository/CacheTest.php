@@ -106,7 +106,7 @@ final class CacheTest extends TestCase
      */
     public function testReadReturnsNull(): void
     {
-        self::assertNull(actual: $this->getCache()->read());
+        $this->assertNull(actual: $this->getCache()->read());
     }
 
     /**
@@ -120,7 +120,7 @@ final class CacheTest extends TestCase
     public function testReadReturnsNullWithEmptyArray(): void
     {
         $this->setCacheReadReturn(data: []);
-        self::assertNull(actual: $this->getCache()->read());
+        $this->assertNull(actual: $this->getCache()->read());
     }
 
     /**
@@ -173,7 +173,7 @@ final class CacheTest extends TestCase
 
         $this->setCacheReadReturn(data: $data);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $this->getCache()->read()
         );
@@ -198,17 +198,17 @@ final class CacheTest extends TestCase
         /** @var MusicCollection $data */
         $data = $this->getCache()->read();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: MusicCollection::class,
             actual: $data
         );
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 2,
             haystack: $data
         );
 
         /** @psalm-suppress MixedPropertyFetch */
-        self::assertSame(
+        $this->assertSame(
             expected: 1,
             actual: $data->current()->id
         );

@@ -72,11 +72,11 @@ final class CacheTest extends TestCase
         /** @var Music $data */
         $data = $cache->read();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $data
         );
-        self::assertSame(
+        $this->assertSame(
             expected: 'music',
             actual: $data->genre
         );
@@ -104,7 +104,7 @@ final class CacheTest extends TestCase
         /** @var MusicCollection $data */
         $data = $cache->read();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: MusicCollection::class,
             actual: $data
         );
@@ -112,17 +112,17 @@ final class CacheTest extends TestCase
         /** @var Music $music */
         $music = $data->current();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $music
         );
 
-        self::assertSame(
+        $this->assertSame(
             expected: 'funk',
             actual: $music->genre
         );
 
-        self::assertCount(expectedCount: 4, haystack: $data);
+        $this->assertCount(expectedCount: 4, haystack: $data);
     }
 
     /**
@@ -140,11 +140,11 @@ final class CacheTest extends TestCase
         /** @var Music $data */
         $data = $cache->read();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $data
         );
-        self::assertSame(
+        $this->assertSame(
             expected: 'funk',
             actual: $data->genre
         );
@@ -152,7 +152,7 @@ final class CacheTest extends TestCase
         sleep(seconds: 2);
 
         $data = $cache->read();
-        self::assertNull(actual: $data);
+        $this->assertNull(actual: $data);
     }
 
     /**
@@ -167,13 +167,13 @@ final class CacheTest extends TestCase
         $cache = $this->getCache();
         $cache->write(data: new Music(id: 1, genre: 'funk'));
         $data = $cache->read();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $data
         );
         $cache->clear();
         $data = $cache->read();
-        self::assertNull(actual: $data);
+        $this->assertNull(actual: $data);
     }
 
     /**
@@ -194,23 +194,23 @@ final class CacheTest extends TestCase
         $cache2->write(data: $music2);
         $data1 = $cache1->read();
         $data2 = $cache2->read();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $data1
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Music::class,
             actual: $data2
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $music1,
             actual: $data1
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $music2,
             actual: $data2
         );
-        self::assertNotEquals(
+        $this->assertNotEquals(
             expected: $data1,
             actual: $data2
         );

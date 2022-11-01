@@ -168,14 +168,14 @@ class CaptureTest extends TestCase
         $response = Repository::capture(paymentId: $originalId);
 
         // Assert that payment has been captured in full
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $response->order
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $originalId,
             actual: $response->id
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $response->order->totalOrderAmount,
             actual: $response->order->capturedAmount
         );
@@ -216,14 +216,14 @@ class CaptureTest extends TestCase
         );
 
         // Assert that only this order line has been captured
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $response->order
         );
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog
         );
@@ -261,14 +261,14 @@ class CaptureTest extends TestCase
         );
 
         // Verify that capture worked as intended
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $response->order
         );
 
         /**
          * @psalm-suppress MixedPropertyFetch
          */
-        self::assertEquals(
+        $this->assertEquals(
             expected: $transactionId,
             actual: $response->order->actionLog[1]->transactionId
         );
@@ -320,14 +320,14 @@ class CaptureTest extends TestCase
         );
 
         // Verify that capture worked as intended
-        self::assertNotNull(
+        $this->assertNotNull(
             actual: $response->order
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payment->id,
             actual: $response->id
         );
-        self::assertCount(
+        $this->assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog
         );

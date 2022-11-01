@@ -71,9 +71,9 @@ class RepositoryTest extends TestCase
     public function testClearCache(): void
     {
         Repository::getStores();
-        self::assertNotNull(actual: Repository::getCache()->read());
+        $this->assertNotNull(actual: Repository::getCache()->read());
         Repository::getCache()->clear();
-        self::assertNull(actual: Repository::getCache()->read());
+        $this->assertNull(actual: Repository::getCache()->read());
     }
 
     /**
@@ -94,8 +94,8 @@ class RepositoryTest extends TestCase
      */
     public function testReadReturnsWithoutCache(): void
     {
-        self::assertNull(actual: Repository::getCache()->read());
-        self::assertNotEmpty(actual: Repository::getStores());
+        $this->assertNull(actual: Repository::getCache()->read());
+        $this->assertNotEmpty(actual: Repository::getStores());
     }
 
     /**
@@ -118,8 +118,8 @@ class RepositoryTest extends TestCase
     public function testReadReturnsCache(): void
     {
         Repository::getCache()->clear();
-        self::assertNull(actual: Repository::getCache()->read());
+        $this->assertNull(actual: Repository::getCache()->read());
         Repository::getStores();
-        self::assertNotNull(actual: Repository::getCache()->read());
+        $this->assertNotNull(actual: Repository::getCache()->read());
     }
 }

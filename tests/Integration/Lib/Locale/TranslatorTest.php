@@ -60,12 +60,12 @@ class TranslatorTest extends TestCase
     public function testTranslationWorks(): void
     {
         $result = Translator::translate(phraseId: 'read-more');
-        self::assertSame(expected: 'Read More', actual: $result);
+        $this->assertSame(expected: 'Read More', actual: $result);
 
         // Test translating into swedish.
         $this->setupConfig(locale: Locale::sv);
         $result = Translator::translate(phraseId: 'read-more');
-        self::assertSame(expected: 'Läs Mer', actual: $result);
+        $this->assertSame(expected: 'Läs Mer', actual: $result);
     }
 
     /**
@@ -112,8 +112,8 @@ class TranslatorTest extends TestCase
 
         $translatedData = Translator::translate(phraseId: 'read-more');
 
-        self::assertNull(actual: $cachedData);
-        self::assertNotEmpty(actual: $translatedData);
+        $this->assertNull(actual: $cachedData);
+        $this->assertNotEmpty(actual: $translatedData);
     }
 
     /**
@@ -136,7 +136,7 @@ class TranslatorTest extends TestCase
             key: 'resursbank-ecom-translations'
         );
 
-        self::assertNotNull(actual: $newCache);
+        $this->assertNotNull(actual: $newCache);
 
         $decodedCache = Translator::decodeData(data: $newCache);
         $result = null;
@@ -149,7 +149,7 @@ class TranslatorTest extends TestCase
             }
         }
 
-        self::assertNull(actual: $oldCache);
-        self::assertSame(expected: $translatedString, actual: $result);
+        $this->assertNull(actual: $oldCache);
+        $this->assertSame(expected: $translatedString, actual: $result);
     }
 }

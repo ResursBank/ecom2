@@ -70,7 +70,7 @@ class CurlTest extends TestCase
         Response $response
     ): stdClass {
         if (!($response->body instanceof stdClass)) {
-            self::fail(message: 'Response body is not an object.');
+            $this->fail(message: 'Response body is not an object.');
         }
 
         return $response->body;
@@ -88,10 +88,10 @@ class CurlTest extends TestCase
         $body = $this->getRequestBodyObject(response: $response);
 
         if (!isset($body->REQUEST_METHOD)) {
-            self::fail(message: 'No REQUEST_METHOD found in response body.');
+            $this->fail(message: 'No REQUEST_METHOD found in response body.');
         }
 
-        self::assertSame(
+        $this->assertSame(
             expected: $expected,
             actual: $body->REQUEST_METHOD
         );
@@ -109,16 +109,16 @@ class CurlTest extends TestCase
         $body = $this->getRequestBodyObject(response: $response);
 
         if (!isset($body->HTTP_USER_AGENT)) {
-            self::fail(message: 'No HTTP_USER_AGENT found in response body.');
+            $this->fail(message: 'No HTTP_USER_AGENT found in response body.');
         }
 
         if (!is_string(value: $body->HTTP_USER_AGENT)) {
-            self::fail(
+            $this->fail(
                 message: 'HTTP_USER_AGENT in response body is not a string.'
             );
         }
 
-        self::assertTrue(
+        $this->assertTrue(
             condition: str_starts_with(
                 haystack: $body->HTTP_USER_AGENT,
                 needle: $startsWith
@@ -136,11 +136,11 @@ class CurlTest extends TestCase
         $body = $this->getRequestBodyObject(response: $response);
 
         if (!isset($body->input)) {
-            self::fail(message: 'No input found in response body.');
+            $this->fail(message: 'No input found in response body.');
         }
 
         if (!is_string(value: $body->input)) {
-            self::fail(
+            $this->fail(
                 message: 'input in response body is not a string.'
             );
         }
@@ -158,11 +158,11 @@ class CurlTest extends TestCase
         $body = $this->getRequestBodyObject(response: $response);
 
         if (!isset($body->ip)) {
-            self::fail(message: 'No ip found in response body.');
+            $this->fail(message: 'No ip found in response body.');
         }
 
         if (!is_string(value: $body->ip)) {
-            self::fail(
+            $this->fail(
                 message: 'ip in response body is not a string.'
             );
         }
@@ -190,7 +190,7 @@ class CurlTest extends TestCase
         $auth = Config::getBasicAuth();
 
         if ($auth === null) {
-            self::fail(message: 'Basic auth is not set.');
+            $this->fail(message: 'Basic auth is not set.');
         }
 
         $this::assertSame(
@@ -265,7 +265,7 @@ class CurlTest extends TestCase
         $this->validateUserAgent(response: $response, startsWith: self::class);
         $this->validateRequestMethod(response: $response, expected: 'GET');
 
-        self::assertSame(
+        $this->assertSame(
             expected: 200,
             actual: $response->code
         );
@@ -307,7 +307,7 @@ class CurlTest extends TestCase
         );
         $this->validateRequestMethod(response: $response, expected: 'GET');
 
-        self::assertSame(
+        $this->assertSame(
             expected: 200,
             actual: $response->code
         );
@@ -343,7 +343,7 @@ class CurlTest extends TestCase
 
         $this->validateRequestMethod(response: $response, expected: 'POST');
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payload,
             actual: json_decode(
                 json: $this->getInput(response: $response),
@@ -382,7 +382,7 @@ class CurlTest extends TestCase
 
         $this->validateRequestMethod(response: $response, expected: 'PUT');
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: $payload,
             actual: json_decode(
                 json: $this->getInput(response: $response),
@@ -419,7 +419,7 @@ class CurlTest extends TestCase
 
         $this->validateRequestMethod(response: $response, expected: 'DELETE');
 
-        self::assertSame(
+        $this->assertSame(
             expected: 200,
             actual: $response->code
         );
@@ -494,7 +494,7 @@ class CurlTest extends TestCase
         }
 
         if ((bool) $_ENV['IS_PIPELINE']) {
-            self::markTestSkipped(message: 'Pipeline does not support proxies.');
+            $this->markTestSkipped(message: 'Pipeline does not support proxies.');
         }
 
         Config::setup(
@@ -514,12 +514,12 @@ class CurlTest extends TestCase
             $response = $curl->exec();
 
             // Request should reflect the proxy ip, not your own.
-            self::assertSame(
+            $this->assertSame(
                 expected: $this->proxyHost,
                 actual: $this->getIp(response: $response),
             );
         } catch (CurlException $e) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: sprintf(
                     'Can not run proxy test! Caught error (%d) from remote server: %s.',
                     $e->getCode(),
@@ -557,7 +557,7 @@ class CurlTest extends TestCase
                 authType: AuthType::NONE
             );
         } catch (CurlException $e) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: sprintf(
                     'Can not run proxy test! Caught error (%d) from remote server: %s.',
                     $e->getCode(),
