@@ -19,8 +19,6 @@ use Redis as Server;
 
 /**
  * Assert the Redis cache implementation works as expected.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class RedisTest extends TestCase
 {
@@ -42,7 +40,7 @@ class RedisTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->redis = new Redis(host: (string) $_ENV['REDIS_HOST']);
+        $this->redis = new Redis(host: $_ENV['REDIS_HOST']);
 
         // NOTE: Simply using time() is unsafe, tests run too quickly.
         $this->key = AbstractCache::getKey(
@@ -55,11 +53,12 @@ class RedisTest extends TestCase
     /**
      * @return Server
      * @throws RedisException
+     * @SuppressWarnings(PHPMD.MissingImport)
      */
     private function getRedisConnection(): Server
     {
         $server = new Server();
-        $server->connect(host: (string) $_ENV['REDIS_HOST']);
+        $server->connect(host: $_ENV['REDIS_HOST']);
 
         return $server;
     }

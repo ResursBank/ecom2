@@ -36,8 +36,6 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Response as UpdateP
 
 /**
  * Main entrypoint for interfacing with the RCO API programmatically.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {

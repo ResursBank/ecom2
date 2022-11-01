@@ -24,10 +24,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test data integrity of DeviceInfo entity model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class DeviceInfoTest extends TestCase
 {

@@ -30,10 +30,6 @@ use function json_encode;
 
 /**
  * Test data integrity of order entity model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class OrderTest extends TestCase
 {

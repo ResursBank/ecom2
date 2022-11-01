@@ -15,8 +15,6 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 
 /**
  * Tests for Basic credentials model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class BasicTest extends TestCase
 {

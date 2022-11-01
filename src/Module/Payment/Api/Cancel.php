@@ -31,8 +31,6 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/cancel
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Cancel
 {

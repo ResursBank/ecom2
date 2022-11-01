@@ -27,10 +27,7 @@ use function chr;
 use function ord;
 
 /**
- * Tests for the Order class
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Tests for the Order class.
  */
 class OrderTest extends TestCase
 {

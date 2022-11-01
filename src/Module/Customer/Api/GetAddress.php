@@ -59,6 +59,7 @@ class GetAddress
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ApiException
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function call(
         string $storeId,

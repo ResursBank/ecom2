@@ -35,8 +35,6 @@ use function sleep;
 
 /**
  * Handles mock signing in dev.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class MockSigner
 {
@@ -131,14 +129,16 @@ class MockSigner
      *
      * @param Payment $payment
      * @return void
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
      */
     private static function waitForStatusUpdate(
         Payment $payment

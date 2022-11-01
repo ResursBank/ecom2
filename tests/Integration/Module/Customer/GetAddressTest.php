@@ -33,16 +33,12 @@ use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 
 /**
  * Tests for the API call getAddress.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class GetAddressTest extends TestCase
 {
     /**
      * @return void
      * @throws EmptyValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -52,10 +48,10 @@ class GetAddressTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
     }
@@ -72,11 +68,10 @@ class GetAddressTest extends TestCase
      * @throws ApiException
      * @throws CacheException
      * @throws IllegalValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function getStoreId(): string
     {
-        $return = (string)($_ENV['STORE_ID'] ?? '');
+        $return = $_ENV['STORE_ID'] ?? '';
 
         /** @var Store $store */
         foreach (StoreRepository::getStores() as $store) {

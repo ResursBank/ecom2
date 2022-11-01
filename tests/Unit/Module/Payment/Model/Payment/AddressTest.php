@@ -25,9 +25,6 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test data integrity of Address entity model.
  *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class AddressTest extends TestCase
 {

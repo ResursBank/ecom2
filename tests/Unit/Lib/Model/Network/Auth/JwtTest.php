@@ -15,8 +15,6 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 
 /**
  * Tests for JWT credentials model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class JwtTest extends TestCase
 {

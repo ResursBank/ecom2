@@ -15,8 +15,6 @@ use Resursbank\Ecom\Lib\Model\Network\Header;
 
 /**
  * Tests for request Header model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class HeaderTest extends TestCase
 {

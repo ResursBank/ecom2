@@ -35,9 +35,6 @@ use function is_string;
 
 /**
  * This class will test curl methods.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CurlTest extends TestCase
 {
@@ -61,9 +58,9 @@ class CurlTest extends TestCase
      * If you ever change the $badProxyHost, make sure you match the errors returned from the server by changing
      * this value.
      *
-     * @var int $expectBadProxyStatusCode
+     * @var int $badProxyCode
      */
-    private int $expectBadProxyStatusCode = 400;
+    private int $badProxyCode = 400;
 
     /**
      * @param Response $response
@@ -441,6 +438,7 @@ class CurlTest extends TestCase
      * @throws ValidationException
      * @throws ConfigException
      * @noinspection SpellCheckingInspection
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function testTimeout(): void
     {
@@ -486,7 +484,6 @@ class CurlTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @SuppressWarnings(PHPMD.superGlobals)
      */
     public function testProxy(): void
     {
@@ -547,7 +544,7 @@ class CurlTest extends TestCase
      */
     public function testBadProxy(): void
     {
-        $this->expectExceptionCode(code: $this->expectBadProxyStatusCode);
+        $this->expectExceptionCode(code: $this->badProxyCode);
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
