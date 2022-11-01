@@ -93,7 +93,6 @@ final class CacheTest extends TestCase
         /**
          * @psalm-suppress UndefinedMethod
          * @psalm-suppress MixedMethodCall
-         * @phpstan-ignore-next-line
          */
         $this->cacheDriver->method('read')->willReturn(value: $data);
     }
