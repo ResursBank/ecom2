@@ -22,7 +22,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use function strlen;
 
 /**
- * @psalm-suppress PropertyNotSetInConstructor
+ * Tests for the Resursbank\Ecom\Lib\Api\Mapi class.
  */
 class MapiTest extends TestCase
 {
@@ -46,6 +46,7 @@ class MapiTest extends TestCase
     /**
      * @param bool $prod
      * @return void
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     private function setupConfig(
         bool $prod = false

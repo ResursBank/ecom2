@@ -72,7 +72,6 @@ class GetCallbacks
                 data: $response->body,
                 targetType: Callback::class
             );
-
         } catch (CurlException $exception) {
             Config::getLogger()->error(message: $exception);
             throw $exception;

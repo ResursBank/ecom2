@@ -19,8 +19,6 @@ use stdClass;
 
 /**
  * Verifies that the DataConverter class works as intended.
- *
- *  @psalm-suppress PropertyNotSetInConstructor
  */
 final class DataConverterTest extends TestCase
 {

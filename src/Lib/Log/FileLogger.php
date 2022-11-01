@@ -134,18 +134,18 @@ class FileLogger implements LoggerInterface
             $timestamp = new DateTime();
             $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
 
-            if ($this->logIsWritable()) {
-                if (
-                    !file_put_contents(
-                        filename: $this->getFilename(),
-                        data: $formattedMessage . PHP_EOL,
-                        flags: FILE_APPEND | LOCK_EX
-                    )
-                ) {
-                    throw new FilesystemException(message: self::WRITE_ERROR);
-                }
-            } else {
+            if (!$this->logIsWritable()) {
                 throw new FilesystemException(message: self::ERR_UNWRITABLE);
+            }
+
+            if (
+                !file_put_contents(
+                    filename: $this->getFilename(),
+                    data: $formattedMessage . PHP_EOL,
+                    flags: FILE_APPEND | LOCK_EX
+                )
+            ) {
+                throw new FilesystemException(message: self::WRITE_ERROR);
             }
         }
     }

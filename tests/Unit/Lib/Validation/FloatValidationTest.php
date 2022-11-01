@@ -19,9 +19,6 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
 
 /**
  * Test float validation methods.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class FloatValidationTest extends TestCase
 {

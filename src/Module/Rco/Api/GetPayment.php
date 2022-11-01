@@ -32,8 +32,6 @@ use Resursbank\Ecom\Module\Rco\Models\GetPayment\Response;
 
 /**
  * Handles fetching of RCO payment sessions.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class GetPayment
 {

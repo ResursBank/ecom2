@@ -30,8 +30,6 @@ use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 
 /**
  * Interaction with Store entities and related functionality.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {

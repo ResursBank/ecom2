@@ -23,8 +23,6 @@ use Resursbank\EcomTest\Data\Models\MusicCollection;
 
 /**
  * Verifies that the Cache class works as intended.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class CacheTest extends TestCase
 {

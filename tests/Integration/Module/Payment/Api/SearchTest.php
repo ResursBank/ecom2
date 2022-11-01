@@ -18,6 +18,7 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -39,9 +40,6 @@ use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
  * Test that searchPayment works.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class SearchTest extends TestCase
 {
@@ -49,7 +47,6 @@ class SearchTest extends TestCase
 
     /**
      * @throws EmptyValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -59,10 +56,10 @@ class SearchTest extends TestCase
             logger: $this->createMock(originalClassName: LoggerInterface::class),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
-                clientId: (string)$_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: (string)$_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: (string)$_ENV['JWT_AUTH_SCOPE'],
-                grantType: (string)$_ENV['JWT_AUTH_GRANT_TYPE']
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
     }
@@ -81,22 +78,22 @@ class SearchTest extends TestCase
     /**
      * @param string $orderReference
      * @return Payment
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ApiException
-     * @throws IllegalValueException
-     * @SuppressWarnings(PHPMD.Superglobals)
+     * @throws ConfigException
      */
     private function createPayment(string $orderReference): Payment
     {
         return Repository::create(
-            storeId: (string) $_ENV['STORE_ID'],
-            paymentMethodId: (string) $_ENV['PAYMENT_METHOD_ID'],
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
                     description: 'Android',
@@ -151,7 +148,6 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws Exception
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testSearchOrderReference(): void
     {
@@ -163,7 +159,7 @@ class SearchTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         $paymentCollection = Repository::search(
-            storeId: (string) $_ENV['STORE_ID'],
+            storeId: $_ENV['STORE_ID'],
             orderReference: $orderReference
         )->toArray();
 
@@ -185,7 +181,6 @@ class SearchTest extends TestCase
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws Exception
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function testSearchWithGovernmentId(): void
     {
@@ -197,7 +192,7 @@ class SearchTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         $paymentCollection = Repository::search(
-            storeId: (string) $_ENV['STORE_ID'],
+            storeId: $_ENV['STORE_ID'],
             orderReference: $orderReference,
             governmentId: self::GOVERNMENT_ID
         )->toArray();

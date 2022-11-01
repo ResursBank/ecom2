@@ -35,8 +35,6 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/create
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Create
 {

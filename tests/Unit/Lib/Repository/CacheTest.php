@@ -29,9 +29,6 @@ use function is_string;
 
 /**
  * Verifies business logic of ModelConverter trait.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class CacheTest extends TestCase
 {
@@ -96,7 +93,6 @@ final class CacheTest extends TestCase
         /**
          * @psalm-suppress UndefinedMethod
          * @psalm-suppress MixedMethodCall
-         * @phpstan-ignore-next-line
          */
         $this->cacheDriver->method('read')->willReturn(value: $data);
     }

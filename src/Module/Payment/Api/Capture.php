@@ -31,8 +31,6 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/capture
- *
- * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
  */
 class Capture
 {

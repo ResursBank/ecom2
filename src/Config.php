@@ -23,6 +23,8 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
  * API communication object.
  *
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 final class Config
 {

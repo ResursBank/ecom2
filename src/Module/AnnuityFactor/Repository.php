@@ -33,8 +33,6 @@ use Resursbank\Ecom\Lib\Repository\Cache;
 
 /**
  * Interaction with Annuity factor entities and related functionality.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {

@@ -33,8 +33,6 @@ use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response;
 
 /**
  * Handles updates of RCO payment sessions.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class UpdatePayment
 {

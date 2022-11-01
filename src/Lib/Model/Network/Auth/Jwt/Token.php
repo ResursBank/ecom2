@@ -15,6 +15,10 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Describes JWT token.
+ *
+ * @SuppressWarnings(PHPMD.CamelCasePropertyName)
+ * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+ * @SuppressWarnings(PHPMD.CamelCaseParameterName)
  */
 class Token extends Model
 {

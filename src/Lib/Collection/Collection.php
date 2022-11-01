@@ -19,8 +19,9 @@ use Resursbank\Ecom\Lib\Model\Model;
 use function is_object;
 
 /**
- * Base collection class
+ * Base collection class.
  *
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class Collection implements ArrayAccess, Iterator, Countable
@@ -142,6 +143,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      *
      * @param bool $full
      * @return array
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function toArray(
         bool $full = false
@@ -163,6 +165,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      * @param mixed $value
      * @return void
      * @throws IllegalTypeException
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {

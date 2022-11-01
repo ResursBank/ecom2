@@ -22,10 +22,6 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCo
 
 /**
  * Test data integrity of order entity model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class OrderTest extends TestCase
 {
@@ -132,7 +128,7 @@ class OrderTest extends TestCase
      */
     public function testValidateOrderReferenceThrowsUsingIllegalCharacters(): void
     {
-        $test = new Order\OrderLineCollection(
+        new Order\OrderLineCollection(
             data: array_fill(
                 start_index: 0,
                 count: 5,

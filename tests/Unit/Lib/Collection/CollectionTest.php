@@ -19,9 +19,6 @@ use function get_class;
 
 /**
  * Verifies that the Collection class works as intended.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class CollectionTest extends TestCase
 {
