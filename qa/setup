@@ -22,15 +22,94 @@ cat <<EOT >> $HOOK_FILE
 
 # @todo Make sure PHP is available, otherwise let us know so the commit does not fail silently.
 
+PURPLE='\035[0;32m'
+BLUE='\033[1;34m'
+NC='\033[0m'
+
+echo "${PURPLE}Running tests.${NC}"
+
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing Psalm tests.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service psalm -c $dir/qa/psalm/psalm.xml --show-info=true
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHPMD tests on source files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpmd $dir/src text $dir/qa/phpmd/src.xml
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHPMD tests on test files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpmd $dir/tests text $dir/qa/phpmd/tests.xml
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHP CBF for source files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpcbf --standard=PSR12 $dir/src
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHP CBF for test files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpcbf --standard=PSR12 $dir/tests
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHPCS for source files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpcs --standard=PSR12 $dir/src
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHPCS for test files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpcs --standard=PSR12 $dir/tests
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHPStan for source files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpstan analyse $dir/src
+echo ""
+echo ""
+echo "=========================================================="
+echo ""
+echo ""
+echo "${BLUE}Executing PHPStan for test files.${NC}"
+echo ""
+echo ""
 docker-compose exec -T $service phpstan analyse $dir/tests
+echo ""
+echo ""
+echo "=========================================================="
 EOT
 
 if [ ! -d ./qa/psalm/cache ]; then
