@@ -20,9 +20,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Test string validation methods.
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class StringValidationTest extends TestCase
 {

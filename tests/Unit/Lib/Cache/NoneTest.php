@@ -17,8 +17,6 @@ use Resursbank\Ecom\Lib\Cache\None;
 
 /**
  * Assert the None cache driver works as expected.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class NoneTest extends TestCase
 {

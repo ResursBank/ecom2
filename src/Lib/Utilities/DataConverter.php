@@ -40,6 +40,9 @@ class DataConverter
      * @throws ArgumentCountError
      * @throws IllegalTypeException
      * @todo This file is ignored by psalm configuration but shouldn't be. We should fix all errors we can instead.
+     * @todo This is starting to become a bit too complex, consider refactoring.
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public static function stdClassToType(object $object, string $type): Model
     {
@@ -66,11 +69,11 @@ class DataConverter
                 if (is_subclass_of(object_or_class: $propertyType, class: Collection::class)) {
                     $converted = [];
                     $dummyCollection = new $propertyType(data: []);
-                    $dummyCollectionMemberType = $dummyCollection->getType();
+                    $dummyCollectionType = $dummyCollection->getType();
                     foreach ($value as $item) {
                         $converted[] = self::stdClassToType(
                             object: $item,
-                            type: $dummyCollectionMemberType
+                            type: $dummyCollectionType
                         );
                     }
                     $dummyCollection->setData(data: $converted);
@@ -118,6 +121,15 @@ class DataConverter
                 type: $targetType
             );
         }
-        return new ($targetType . 'Collection')(data: $convertedData);
+
+        $class = $targetType . 'Collection';
+
+        if (!class_exists(class: $class)) {
+            throw new IllegalTypeException(
+                message: 'Collection class ' . $class . ' does not exist.'
+            );
+        }
+
+        return new $class(data: $convertedData);
     }
 }

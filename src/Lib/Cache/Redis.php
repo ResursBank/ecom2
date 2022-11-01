@@ -35,6 +35,7 @@ class Redis extends AbstractCache implements CacheInterface
     /**
      * @return Server
      * @throws RedisException
+     * @SuppressWarnings(PHPMD.MissingImport)
      */
     private function connect(): Server
     {

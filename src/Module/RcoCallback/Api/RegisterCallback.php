@@ -31,8 +31,6 @@ use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 
 /**
  * Handles callback registration.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RegisterCallback
 {

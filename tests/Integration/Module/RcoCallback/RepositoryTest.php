@@ -29,9 +29,6 @@ use Resursbank\Ecom\Module\RcoCallback\Repository;
 
 /**
  * Tests for RCO callback module Repository class.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RepositoryTest extends TestCase
 {
@@ -47,7 +44,6 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     protected function setUp(): void
     {
@@ -55,8 +51,8 @@ class RepositoryTest extends TestCase
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
             basicAuth: new Basic(
-                username: (string)$_ENV['BASIC_AUTH_USERNAME'],
-                password: (string)$_ENV['BASIC_AUTH_PASSWORD']
+                username: $_ENV['BASIC_AUTH_USERNAME'],
+                password: $_ENV['BASIC_AUTH_PASSWORD']
             )
         );
 

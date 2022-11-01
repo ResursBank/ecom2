@@ -23,10 +23,6 @@ use Resursbank\Ecom\Module\Store\Enum\Country;
 
 /**
  * Test data integrity of store entity model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class StoreTest extends TestCase
 {

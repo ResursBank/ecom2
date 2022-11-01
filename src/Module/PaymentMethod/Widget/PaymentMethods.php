@@ -52,7 +52,7 @@ class PaymentMethods extends Widget
     /**
      * @var string
      */
-    public readonly string $missingMethodsWarning;
+    public readonly string $missingWarning;
 
     /**
      * @param PaymentMethodCollection $paymentMethods
@@ -70,7 +70,7 @@ class PaymentMethods extends Widget
         $this->minTotalLabel = Translator::translate(phraseId: 'min-total');
         $this->maxTotalLabel = Translator::translate(phraseId: 'max-total');
         $this->sortOrderLabel = Translator::translate(phraseId: 'sort-order');
-        $this->missingMethodsWarning = Translator::translate(phraseId: 'no-payment-methods');
+        $this->missingWarning = Translator::translate(phraseId: 'no-payment-methods');
         $this->content = $this->render(file: __DIR__ . '/payment-methods.phtml');
     }
 }

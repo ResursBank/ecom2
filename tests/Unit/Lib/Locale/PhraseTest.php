@@ -17,9 +17,7 @@ use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Locale\Translation;
 
 /**
- * Tests for the Resursbank\Ecom\Lib\Locale\Phrase class
- *
- * @psalm-suppress PropertyNotSetInConstructor
+ * Tests for the Resursbank\Ecom\Lib\Locale\Phrase class.
  */
 class PhraseTest extends TestCase
 {

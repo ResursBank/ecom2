@@ -24,10 +24,6 @@ use stdClass;
 
 /**
  * Test data integrity of order line entity model.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class OrderLineTest extends TestCase
 {

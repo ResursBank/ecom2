@@ -16,8 +16,6 @@ use Exception;
 
 /**
  * This class will test general cache methods.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class AbstractCacheTest extends TestCase
 {

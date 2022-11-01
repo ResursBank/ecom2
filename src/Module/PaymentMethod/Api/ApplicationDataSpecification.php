@@ -29,9 +29,7 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 
 /**
- * Application data specification
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Application data specification.
  */
 class ApplicationDataSpecification
 {

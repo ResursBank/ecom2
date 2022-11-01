@@ -33,8 +33,6 @@ use Resursbank\Ecom\Module\Rco\Repository;
 
 /**
  * Handles updates of the RCO payment reference
- *
- * @SuppressWarnings (PHPMD.CouplingBetweenObjects)
  */
 class UpdatePaymentReference
 {

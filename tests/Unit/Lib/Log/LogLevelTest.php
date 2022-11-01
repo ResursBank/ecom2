@@ -15,7 +15,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /**
- * Verifies that the LogLevel enum works as intended
+ * Verifies that the LogLevel enum works as intended.
  */
 class LogLevelTest extends TestCase
 {

@@ -14,8 +14,8 @@ use JsonException;
 use ReflectionClass;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
-
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+
 use function dirname;
 use function is_object;
 use function is_string;
@@ -25,6 +25,9 @@ use function is_string;
  * @version 1.0.0
  *
  * @todo Add constructor with property promotion. PropertyNotSetInConstructor currently suppressed by psalm config.
+ * @todo This class is overall very complex and should be refactored.
+ * @SuppressWarnings(PHPMD.LongVariable)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Generic
 {
@@ -48,6 +51,7 @@ class Generic
     /**
      * If open_basedir-warnings has been triggered once, we store that here.
      * @var bool
+     * @todo We should use our FS classes instead to check for readability.
      */
     private bool $openBaseDirExceptionTriggered = false;
 
@@ -142,6 +146,10 @@ class Generic
      * @param int $maxDepth How deep the search for a composer.json will be. Usually you should not need more than 3.
      * @return string
      * @throws Exception
+     *
+     * @todo This method is too complex. Refactor it.
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getComposerConfig(string $location, int $maxDepth = 3): string
     {
@@ -360,6 +368,7 @@ class Generic
      * @param string $className
      * @return string
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public function getVersionByClassDoc(string $className = ''): string
     {
@@ -375,6 +384,7 @@ class Generic
      * @param string $className
      * @return string
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public function getDocBlockItem(string $item, string $functionName = '', string $className = ''): string
     {
@@ -397,6 +407,8 @@ class Generic
         $return = '';
 
         if (!empty($doc)) {
+            $docBlock = [];
+
             preg_match_all(
                 pattern: sprintf('/%s\s(\w.+)\n/s', $item),
                 subject: $doc,
@@ -425,27 +437,27 @@ class Generic
      * @param string $className
      * @return string
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     private function getExtractedDocBlock(
         string $functionName,
         string $className = ''
     ): string {
-        if (empty($className)) {
+        if ($className === '') {
             $className = __CLASS__;
         }
+
         if (!class_exists(class: $className)) {
-            return '';
+            throw new IllegalValueException(
+                message: "Class $className does not exist"
+            );
         }
 
         /** @psalm-suppress InvalidNamedArgument */
         $doc = new ReflectionClass(objectOrClass: $className);
 
-        if (empty($functionName)) {
-            $return = $doc->getDocComment();
-        } else {
-            $return = $doc->getMethod(name: $functionName)->getDocComment();
-        }
-
-        return (string)$return;
+        return $functionName === '' ?
+            (string) $doc->getDocComment() :
+            (string) $doc->getMethod(name: $functionName)->getDocComment();
     }
 }

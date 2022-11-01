@@ -5,8 +5,6 @@
  * See LICENSE for license details.
  */
 
-/** @noinspection PhpMultipleClassDeclarationsInspection */
-
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\PaymentMethod\Models\PaymentMethod;
@@ -18,8 +16,6 @@ use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 
 /**
  * Test data integrity of legal link object attached to payment methods.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class LegalLinkTest extends TestCase
 {

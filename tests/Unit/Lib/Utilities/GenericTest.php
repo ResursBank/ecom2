@@ -17,7 +17,7 @@ use ReflectionException;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
 /**
- * @psalm-suppress PropertyNotSetInConstructor
+ * Test for Generic class.
  */
 class GenericTest extends TestCase
 {
@@ -68,7 +68,11 @@ class GenericTest extends TestCase
         $generic->method('getVersionByAny')->willReturn(value: '1.0.0');
         $this->assertTrue(
             condition: version_compare(
-                version1: $generic->getVersionByAny(composerLocation: __DIR__, composerDepth: 3, className: Generic::class),
+                version1: $generic->getVersionByAny(
+                    composerLocation: __DIR__,
+                    composerDepth: 3,
+                    className: Generic::class
+                ),
                 version2: '1.0.0',
                 operator: '>='
             )

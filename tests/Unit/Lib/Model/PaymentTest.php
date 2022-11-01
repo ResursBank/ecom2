@@ -25,7 +25,7 @@ use function chr;
 use function ord;
 
 /**
- * Tests for the Resursbank\Ecom\Lib\Model\Payment class
+ * Tests for the Resursbank\Ecom\Lib\Model\Payment class.
  */
 class PaymentTest extends TestCase
 {

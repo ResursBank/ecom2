@@ -17,8 +17,6 @@ use Resursbank\Ecom\Lib\Validation\IntValidation;
 
 /**
  * Test integer validation methods.
- *
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class IntValidationTest extends TestCase
 {

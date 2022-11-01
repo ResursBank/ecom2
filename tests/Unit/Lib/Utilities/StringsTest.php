@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * String testing.
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class StringsTest extends TestCase
 {
