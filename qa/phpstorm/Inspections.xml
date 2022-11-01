@@ -144,7 +144,6 @@
     <inspection_tool class="PhpVariableVariableInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PropertyCanBeStaticInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PsalmGlobal" enabled="false" level="WEAK WARNING" enabled_by_default="false">
-      <option name="config" value="/etc/waddle/project/website/src/psalm.xml" />
       <option name="showInfo" value="true" />
       <option name="findUnusedCode" value="true" />
       <option name="findUnusedSuppress" value="true" />
