@@ -42,7 +42,6 @@ class GenerateTokenTest extends TestCase
      * @throws CurlException
      * @throws ValidationException
      * @throws ConfigException
-
      */
     public function testJwtTokenGenerates(): void
     {
@@ -89,7 +88,6 @@ class GenerateTokenTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-
      */
     public function testInvalidClientIdThrows(): void
     {
@@ -127,7 +125,6 @@ class GenerateTokenTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-
      */
     public function testInvalidClientSecretThrows(): void
     {

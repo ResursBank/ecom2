@@ -39,7 +39,6 @@ class GetAddressTest extends TestCase
     /**
      * @return void
      * @throws EmptyValueException
-
      */
     protected function setUp(): void
     {
@@ -69,7 +68,6 @@ class GetAddressTest extends TestCase
      * @throws ApiException
      * @throws CacheException
      * @throws IllegalValueException
-
      */
     private function getStoreId(): string
     {

@@ -484,7 +484,6 @@ class CurlTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-
      */
     public function testProxy(): void
     {

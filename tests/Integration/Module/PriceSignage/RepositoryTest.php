@@ -59,7 +59,6 @@ class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalValueException
-
      */
     protected function setUp(): void
     {

@@ -49,7 +49,6 @@ class CancelTest extends TestCase
 {
     /**
      * @throws EmptyValueException
-
      */
     protected function setUp(): void
     {

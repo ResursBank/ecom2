@@ -44,7 +44,6 @@ final class FileLoggerTest extends TestCase
      * @return void
      * @throws Exception
      * @noinspection PhpMissingParentCallCommonInspection
-
      */
     protected function setUp(): void
     {

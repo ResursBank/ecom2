@@ -23,7 +23,6 @@ class Event implements EventInterface
      *
      * @param string $name
      * @param array<SubscriberInterface> $subscribers
-
      */
     public function __construct(
         private string $name,

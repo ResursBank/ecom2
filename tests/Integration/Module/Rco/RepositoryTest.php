@@ -50,7 +50,6 @@ final class RepositoryTest extends TestCase
      * @return void
      * @throws IllegalTypeException
      * @throws Exception
-
      */
     protected function setUp(): void
     {

@@ -46,7 +46,6 @@ class GetTest extends TestCase
     /**
      * @return void
      * @throws EmptyValueException
-
      */
     protected function setUp(): void
     {

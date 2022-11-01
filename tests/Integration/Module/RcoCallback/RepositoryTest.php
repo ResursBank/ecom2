@@ -44,7 +44,6 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-
      */
     protected function setUp(): void
     {

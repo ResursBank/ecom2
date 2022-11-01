@@ -49,7 +49,6 @@ class RefundTest extends TestCase
     /**
      * @return void
      * @throws EmptyValueException
-
      */
     protected function setUp(): void
     {
