@@ -13,18 +13,20 @@ use Resursbank\Ecom\Lib\Model\Model;
 
 /**
  * To test stdClass conversion of objects specifying object properties.
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 class ComplexDummy extends Model
 {
     /**
      * @param int $int
-     * @param SimpleDummy $model
-     * @param SimpleDummyCollection $collection
+     * @param SimpleDummy $simpleDummy
+     * @param SimpleDummyCollection $simpleDummyCollection
      */
     public function __construct(
         public int $int,
-        public SimpleDummy $model,
-        public SimpleDummyCollection $collection
+        public SimpleDummy $simpleDummy,
+        public SimpleDummyCollection $simpleDummyCollection
     ) {
     }
 }

@@ -20,6 +20,8 @@ chmod +x $HOOK_FILE
 cat <<EOT >> $HOOK_FILE
 #!/bin/sh -e
 
+# @todo Make sure PHP is available, otherwise let us know so the commit does not fail silently.
+
 docker-compose exec -T $service psalm -c $dir/qa/psalm/psalm.xml --show-info=true
 docker-compose exec -T $service phpmd $dir/src text $dir/qa/phpmd/src.xml
 docker-compose exec -T $service phpmd $dir/tests text $dir/qa/phpmd/tests.xml

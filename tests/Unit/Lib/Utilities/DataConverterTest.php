@@ -101,11 +101,11 @@ final class DataConverterTest extends TestCase
         );
         $expected = new TestClasses\ComplexDummy(
             int: 42,
-            model: new TestClasses\SimpleDummy(
+            simpleDummy: new TestClasses\SimpleDummy(
                 int: 127,
                 message: 'Foo'
             ),
-            collection: new TestClasses\SimpleDummyCollection(data: [$childDummy])
+            simpleDummyCollection: new TestClasses\SimpleDummyCollection(data: [$childDummy])
         );
 
         $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ComplexDummy::class);
