@@ -77,7 +77,6 @@ class ErrorHandler
     {
         $code = curl_getinfo(handle: $this->ch, option: CURLINFO_RESPONSE_CODE);
 
-        /* @phpstan-ignore-next-line */
         if (is_string(value: $code) && is_numeric(value: $code)) {
             $code = (int) $code;
         }
