@@ -176,7 +176,7 @@ class Repository
         );
 
         return new PriceSignage(
-            sekkiLinks: $result->sekkiLinks,
+            secciLinks: $result->secciLinks,
             generalTermsLinks: $result->generalTermsLinks,
             costList: new CostCollection(data: $costs)
         );
