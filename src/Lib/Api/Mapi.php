@@ -33,7 +33,7 @@ class Mapi
     /**
      * Common prefix route name for all API calls.
      */
-    public const COMMON_ROUTE = 'v2/stores';
+    public const STORE_ROUTE = 'v2/stores';
 
     /**
      * Prefix route name for payment based API calls.
