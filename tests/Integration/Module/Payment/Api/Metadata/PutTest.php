@@ -158,7 +158,12 @@ class PutTest extends TestCase
      */
     public function testSimplePut(): void
     {
-        $custom = ['foo' => 'bar'];
+        $custom = [
+            new Metadata\Entry(
+                key: 'foo',
+                value: 'bar'
+            )
+        ];
 
         // Create payment
         $payment = $this->createPayment(orderReference: $this->generateOrderReference());
@@ -170,7 +175,7 @@ class PutTest extends TestCase
         $setMetadataResponse = Repository::setMetadata(
             paymentId: $payment->id,
             metadata: new Metadata(
-                custom: $custom
+                custom: new Metadata\EntryCollection(data: $custom)
             )
         );
 
@@ -180,14 +185,14 @@ class PutTest extends TestCase
         // Assert that the metadata exists on the fetched payment
         $this->assertEqualsCanonicalizing(
             expected: $custom,
-            actual: $setMetadataResponse->custom
+            actual: $setMetadataResponse->custom->toArray()
         );
         $this->assertNotNull(
             actual: $fetchedPayment->metadata
         );
         $this->assertEqualsCanonicalizing(
             expected: $custom,
-            actual: $fetchedPayment->metadata->custom
+            actual: $fetchedPayment->metadata->custom->toArray()
         );
     }
 }

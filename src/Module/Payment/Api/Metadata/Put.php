@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 
 /**
@@ -78,8 +79,15 @@ class Put
 
         $content = ($data instanceof stdClass) ? $data : new stdClass();
 
-        return new Metadata(
-            custom: (array)$content->custom
+        $result = DataConverter::stdClassToType(
+            object: $content,
+            type: Metadata::class
         );
+
+        if (!$result instanceof Metadata) {
+            throw new IllegalTypeException(message: 'Expected Metadata');
+        }
+
+        return $result;
     }
 }
