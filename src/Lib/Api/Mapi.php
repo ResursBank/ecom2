@@ -23,27 +23,27 @@ class Mapi
     /**
      * Production endpoint.
      */
-    public const URL_PROD = 'https://apigw.resurs.com/api/';
+    public const URL_PROD = 'https://merchant-api.resurs.com/';
 
     /**
      * Test endpoint.
      */
-    public const URL_TEST = 'https://apigw.integration.resurs.com/api/';
+    public const URL_TEST = 'https://web-integration-mock-merchant-api-portal.integration.resurs.com/';
 
     /**
      * Common prefix route name for all API calls.
      */
-    public const COMMON_ROUTE = 'mock_merchant_stores_v2';
+    public const COMMON_ROUTE = 'v2/stores';
 
     /**
      * Prefix route name for payment based API calls.
      */
-    public const PAYMENT_ROUTE = 'mock_merchant_payments_v2';
+    public const PAYMENT_ROUTE = 'v2/payments';
 
     /**
      * Prefix route name for payment based API calls.
      */
-    public const CUSTOMER_ROUTE = 'mock_merchant_customers_v2';
+    public const CUSTOMER_ROUTE = 'v2/customers';
 
     /**
      * @param StringValidation $stringValidation

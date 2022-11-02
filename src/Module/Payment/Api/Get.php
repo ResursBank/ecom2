@@ -59,7 +59,7 @@ class Get
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s', Mapi::PAYMENT_ROUTE, $paymentId)
+                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId
             ),
             requestMethod: RequestMethod::GET,
             authType: AuthType::JWT,

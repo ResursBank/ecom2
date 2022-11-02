@@ -103,7 +103,7 @@ class Create
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: Mapi::PAYMENT_ROUTE . '/payments'
+                route: Mapi::PAYMENT_ROUTE
             ),
             requestMethod: RequestMethod::POST,
             payload: $params,
