@@ -290,7 +290,7 @@ class PaymentMethodTest extends TestCase
     public function testLegalLinksWasAssigned(): void
     {
         $item = $this->convert();
-        
+
         if (!is_array(value: self::$data['legalLinks'])) {
             self::fail(message: 'Legal links is not an array.');
         }

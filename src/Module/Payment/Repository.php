@@ -249,7 +249,7 @@ class Repository
             transactionId: $transactionId
         );
     }
-    
+
     /**
      * Set Metadata on payment
      *
