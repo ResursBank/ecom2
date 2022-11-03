@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Unit\Module\Payment\Model;
 
 //use JsonException;
 use PHPUnit\Framework\TestCase;
+
 //use ReflectionException;
 //use Resursbank\Ecom\Exception\TestException;
 //use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
