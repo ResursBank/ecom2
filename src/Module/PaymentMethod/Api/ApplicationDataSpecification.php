@@ -64,7 +64,7 @@ class ApplicationDataSpecification
     ): ApplicationFormSpecResponse {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: Mapi::COMMON_ROUTE . '/stores/' . $storeId . '/payment_methods/' . $paymentMethodId .
+                route: Mapi::STORE_ROUTE . '/' . $storeId . '/payment_methods/' . $paymentMethodId .
                 '/application_data_specification'
             ),
             requestMethod: RequestMethod::GET,

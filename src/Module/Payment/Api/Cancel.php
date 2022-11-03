@@ -73,7 +73,7 @@ class Cancel
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s/cancel', Mapi::PAYMENT_ROUTE, $paymentId)
+                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/cancel'
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,

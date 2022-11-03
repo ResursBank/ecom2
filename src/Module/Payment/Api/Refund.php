@@ -78,7 +78,7 @@ class Refund
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s/refund', Mapi::PAYMENT_ROUTE, $paymentId)
+                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/refund'
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,

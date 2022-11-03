@@ -66,7 +66,7 @@ class Put
         $payload = $metadata->toArray();
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: Mapi::PAYMENT_ROUTE . '/payments/' . $paymentId . '/metadata'
+                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/metadata'
             ),
             requestMethod: RequestMethod::PUT,
             payload: $payload,

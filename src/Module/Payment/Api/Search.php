@@ -78,7 +78,7 @@ class Search
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/search', Mapi::PAYMENT_ROUTE)
+                route: Mapi::PAYMENT_ROUTE . '/search'
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,
