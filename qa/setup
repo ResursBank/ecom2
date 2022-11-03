@@ -29,80 +29,46 @@ touch $HOOK_FILE
 chmod +x $HOOK_FILE
 
 cat <<EOT >> $HOOK_FILE
-#!/bin/sh -eu
+#!/usr/bin/env -S bash -eu
 
-PURPLE='\e[0;32m'
-BLUE='\e[1;34m'
-NC='\e[0m'
-
-echo ""
-echo "\${PURPLE}Running tests.\${NC}"
-echo ""
-echo ""
 echo "=========================================================="
+echo "Running tests."
 echo ""
-echo "\${BLUE}Executing Psalm tests.\${NC}"
-echo ""
+echo "---==( Executing Psalm tests. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/psalm -c $dir/qa/psalm/psalm.xml --show-info=true
 echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHPMD tests on source files.\${NC}"
-echo ""
+echo "---==( Executing PHPMD tests on source files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml
 echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHPMD tests on test files.\${NC}"
-echo ""
+echo "---==( Executing PHPMD tests on test files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml
 echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHP CBF for source files.\${NC}"
-echo ""
+echo "---==( Executing PHP CBF for source files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 $dir/src
 echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHP CBF for test files.\${NC}"
-echo ""
+echo "---==( Executing PHP CBF for test files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 $dir/tests
 echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHPCS for source files.\${NC}"
-echo ""
+echo "---==( Executing PHPCS for source files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $dir/src
 echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHPCS for test files.\${NC}"
-echo ""
+echo "---==( Executing PHPCS for test files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $dir/tests
 echo ""
-echo "=========================================================="
+echo "---==( Executing PHPStan for source files. )==---"
 echo ""
-echo "\${BLUE}Executing PHPStan for source files.\${NC}"
+$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $dir/src
 echo ""
+echo "---==( Executing PHPStan for test files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpstan analyse $dir/src
-echo ""
-echo "=========================================================="
-echo ""
-echo "\${BLUE}Executing PHPStan for test files.\${NC}"
-echo ""
-echo ""
-$phpCmd $dir/vendor/bin/phpstan analyse $dir/tests
-echo ""
-echo "=========================================================="
+$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $dir/tests
 EOT
 
 if [ ! -d ./qa/psalm/cache ]; then

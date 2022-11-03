@@ -19,12 +19,17 @@ class StringsTest extends TestCase
 {
     /**
      * @return void
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function testGetObfuscatedString(): void
     {
         $obfuscateFromSecondPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 2);
         $obfuscateFromThirdPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 3);
-        $obfuscateFromFourthPositionEndAtZero = Strings::getObfuscatedString(string: 'Just a string.', startAt: 4, endAt: 0);
+        $obfuscateFromFourthPositionEndAtZero = Strings::getObfuscatedString(
+            string: 'Just a string.',
+            startAt: 4,
+            endAt: 0
+        );
         // Breaking rules.
         $obfuscateFromFifthAndBreakTheStrLenRules = Strings::getObfuscatedString(string: 'Just', startAt: 5, endAt: 5);
 
