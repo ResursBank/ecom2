@@ -69,10 +69,22 @@ echo ""
 echo "---==( Executing PHPStan for test files. )==---"
 echo ""
 $phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $dir/tests
+echo ""
+echo "---==( Executing PHP CS Fixer for source files. )==---"
+echo ""
+$phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/src
+echo ""
+echo "---==( Executing PHP CS Fixer for test files. )==---"
+echo ""
+$phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/tests
 EOT
 
 if [ ! -d ./qa/psalm/cache ]; then
   mkdir ./qa/psalm/cache
+fi
+
+if [ ! -f ./qa/php-cs-fixer/.php-cs-fixer.cache ]; then
+  touch ./qa/php-cs-fixer/.php-cs-fixer.cache
 fi
 
 echo OK

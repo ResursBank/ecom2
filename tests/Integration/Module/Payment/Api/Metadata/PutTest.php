@@ -185,14 +185,18 @@ class PutTest extends TestCase
         // Assert that the metadata exists on the fetched payment
         $this->assertEqualsCanonicalizing(
             expected: $custom,
-            actual: $setMetadataResponse->custom->toArray()
+            actual: $setMetadataResponse->custom !== null ?
+                    $setMetadataResponse->custom->toArray() :
+                    []
         );
         $this->assertNotNull(
             actual: $fetchedPayment->metadata
         );
         $this->assertEqualsCanonicalizing(
             expected: $custom,
-            actual: $fetchedPayment->metadata->custom->toArray()
+            actual: $fetchedPayment->metadata->custom !== null ?
+                $fetchedPayment->metadata->custom->toArray() :
+                []
         );
     }
 }
