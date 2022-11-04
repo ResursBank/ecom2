@@ -34,6 +34,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
 
 use function count;
+use function number_format;
 
 /**
  * Integration tests for the PaymentMethods widget.
