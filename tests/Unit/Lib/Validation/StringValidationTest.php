@@ -217,31 +217,6 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isDate() throws IllegalValueException when the value isn't a date.
-     *
-     * @return void
-     * @throws IllegalValueException
-     */
-    public function testIsDateThrows(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->stringValidation->isDate(value: 'not-a-date');
-    }
-
-    /**
-     * Assert isDate() return TRUE when supplied a date.
-     *
-     * @return void
-     * @throws IllegalValueException
-     */
-    public function testIsDateReturnsTrue(): void
-    {
-        $this->assertTrue(
-            condition: $this->stringValidation->isDate(value: '2007-07-12')
-        );
-    }
-
-    /**
      * Assert length() return TRUE when supplied a string within length.
      *
      * @return void
@@ -377,24 +352,55 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Verify that the ISO 8601 validation method properly validates known good date strings
+     * Assert that isTimestampDate accepts various values.
      *
      * @return void
      * @throws IllegalValueException
      */
-    public function testIsIso8601DateTimeWithValidDates(): void
+    public function testIsTimestampConvertable(): void
     {
-        $validDates = [
-            '2022-09-29T11:19:02.015',
-            '2022-10-06T10:51:12Z',
-            '2022-10-06T10:51:12+00:00',
-            '2022-10-06T12:48:11+00:00'
-        ];
+        $date = '2022-10-11T10:12:15';
+        $date2 = '2022-10-11T10:12:15+01:10';
+        $date3 = '2022-10-11T10:12:15.1';
+        $date4 = '2022-10-11T10:12:15.123';
+        $date5 = '2022-10-11T10:12:15.123123123';
 
-        foreach ($validDates as $validDate) {
-            $this->assertTrue(
-                condition: $this->stringValidation->isIso8601DateTime(value: $validDate)
-            );
-        }
+        $this->assertNotFalse(
+            condition: $this->stringValidation->isTimestampDate(value: $date),
+            message: "$date is not timestamp compatible."
+        );
+
+        $this->assertNotFalse(
+            condition: $this->stringValidation->isTimestampDate(value: $date2),
+            message: "$date2 is not timestamp compatible."
+        );
+
+        $this->assertNotFalse(
+            condition: $this->stringValidation->isTimestampDate(value: $date3),
+            message: "$date3 is not timestamp compatible."
+        );
+
+        $this->assertNotFalse(
+            condition: $this->stringValidation->isTimestampDate(value: $date4),
+            message: "$date4 is not timestamp compatible."
+        );
+
+        $this->assertNotFalse(
+            condition: $this->stringValidation->isTimestampDate(value: $date5),
+            message: "$date5 is not timestamp compatible."
+        );
+    }
+
+    /**
+     * Assert isTimestampDate throws IllegalValueException when supplied a
+     * string that can not be converted to a timestamp.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsTimestampConvertableThrows(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isTimestampDate(value: '{"sneaky": "object"}');
     }
 }

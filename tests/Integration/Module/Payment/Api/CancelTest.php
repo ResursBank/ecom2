@@ -36,11 +36,9 @@ use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 
 /**
  * Tests for MAPI Payment Cancel class.
@@ -214,7 +212,7 @@ class CancelTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         // Cancel one order line
-        $orderLine = new ActionLogOrderLine(
+        $orderLine = new OrderLine(
             description: 'Android',
             reference: 'T-800',
             quantityUnit: 'st',
@@ -227,7 +225,7 @@ class CancelTest extends TestCase
         );
         $response = Repository::cancel(
             paymentId: $payment->id,
-            orderLines: new ActionLogOrderLineCollection(data: [$orderLine])
+            orderLines: new OrderLineCollection(data: [$orderLine])
         );
 
         // Assert that cancel went through

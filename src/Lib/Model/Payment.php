@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Payment\Application;
+use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\CoApplicant;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Information;
@@ -21,6 +21,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
+use Resursbank\Ecom\Lib\Utilities\Date;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
@@ -38,7 +39,7 @@ class Payment extends Model
      * with empty defaults.
      *
      * @param string $id
-     * @param string $created Stringed timestamp.
+     * @param string $created
      * @param string $storeId
      * @param string $paymentMethodId
      * @param Customer $customer
@@ -46,7 +47,7 @@ class Payment extends Model
      * @param array $paymentActions
      * @param CountryCode|null $countryCode
      * @param Order|null $order
-     * @param Application|null $application
+     * @param ApplicationResponse|null $application
      * @param Information|null $information
      * @param Metadata|null $metadata
      * @param CoApplicant|null $coApplicant
@@ -67,7 +68,7 @@ class Payment extends Model
         public readonly array $paymentActions = [],
         public readonly ?CountryCode $countryCode = null,
         public readonly ?Order $order = null,
-        public readonly ?Application $application = null,
+        public readonly ?ApplicationResponse $application = null,
         public readonly ?Information $information = null,
         public readonly ?Metadata $metadata = null,
         public readonly ?CoApplicant $coApplicant = null,
@@ -100,11 +101,16 @@ class Payment extends Model
     }
 
     /**
+     * NOTE: We cannot test date format because Resurs Bank will return
+     * inconsistent values for the same properties (sometimes ATOM compatible,
+     * sometimes containing a up to 9 digit microsecond suffix).
+     *
+     * @return void
      * @throws IllegalValueException
      */
     private function validateCreated(): void
     {
-        $this->stringValidation->isIso8601DateTime(value: $this->created);
+        $this->stringValidation->isTimestampDate(value: $this->created);
     }
 
     /**

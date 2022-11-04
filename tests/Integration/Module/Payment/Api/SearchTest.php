@@ -34,8 +34,8 @@ use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**

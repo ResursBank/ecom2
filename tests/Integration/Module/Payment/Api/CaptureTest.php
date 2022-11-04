@@ -35,10 +35,8 @@ use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -195,8 +193,8 @@ class CaptureTest extends TestCase
 
         MockSigner::approve(payment: $payment);
 
-        $orderLines = new ActionLogOrderLineCollection(data: [
-            new ActionLogOrderLine(
+        $orderLines = new OrderLineCollection(data: [
+            new OrderLine(
                 description: 'Android',
                 reference: 'T-800',
                 quantityUnit: 'st',
@@ -300,8 +298,8 @@ class CaptureTest extends TestCase
 
         // Capture and specify transaction id
         $invoiceId = $this->generateOrderReference();
-        $orderLines = new ActionLogOrderLineCollection(data: [
-            new ActionLogOrderLine(
+        $orderLines = new OrderLineCollection(data: [
+            new OrderLine(
                 quantity: 2.00,
                 vatRate: 25.00,
                 totalAmountIncludingVat: 301.5,
