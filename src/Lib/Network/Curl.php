@@ -556,6 +556,7 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function getJwtToken(
         Jwt $auth

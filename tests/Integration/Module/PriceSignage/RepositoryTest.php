@@ -301,4 +301,42 @@ class RepositoryTest extends TestCase
             message: "Cache should be filtered by $months2 months."
         );
     }
+
+    /**
+     * Assert getPriceSignage() throws if the supplied amount is less than
+     * supplied payment method min. purchase amount.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testGetPriceSignageThrowsWithLowAmount(): void
+    {
+        $this->expectException(exception: CurlException::class);
+
+        try {
+            Repository::getPriceSignage(
+                storeId: $this->storeId,
+                paymentMethodId: $this->paymentMethodId,
+                amount: 0.1
+            );
+        } catch (CurlException $e) {
+            $this->assertSame(
+                expected: 400,
+                actual: $e->httpCode,
+                message: "Expected HTTP code 400, got $e->httpCode"
+            );
+
+            throw $e;
+        }
+    }
 }
