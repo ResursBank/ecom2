@@ -108,6 +108,7 @@ class Curl
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws IllegalValueException
+     * @throws ConfigException
      */
     public function exec(): Response
     {
@@ -124,9 +125,11 @@ class Curl
         $errorHandler->validate();
 
         if (!is_string(value: $body)) {
-            throw new IllegalTypeException(
-                message: 'Curl response type is ' . gettype($body) . ', expected string.'
+            $exception = new IllegalTypeException(
+                message: 'Curl response type is ' . gettype($body) . ', expected string'
             );
+            Config::getLogger()->error(message: $exception->getMessage());
+            throw $exception;
         }
 
         $code = (int)curl_getinfo(
@@ -150,9 +153,11 @@ class Curl
         }
 
         if (!($body instanceof stdClass) && !is_array(value: $body)) {
-            throw new IllegalTypeException(
+            $exception = new IllegalTypeException(
                 message: 'Curl response body is not an object or an array.'
             );
+            Config::getLogger()->error(message: $exception->getMessage());
+            throw $exception;
         }
 
         curl_close(handle: $this->ch);
@@ -377,6 +382,7 @@ class Curl
      * @return string
      * @throws JsonException
      * @throws ValidationException
+     * @throws ConfigException
      * @todo Add URL prefix based on $this->authType?
      */
     public function generateUrl(string $url, array $payload): string
@@ -386,7 +392,9 @@ class Curl
             '?' . $this->getPayloadData(payload: $payload);
 
         if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
-            throw new ValidationException(message: 'Invalid URL requested (' . $url . ').');
+            $exception = new ValidationException(message: 'Invalid URL requested (' . $url . ').');
+            Config::getLogger()->error(message: $exception->getMessage());
+            throw $exception;
         }
 
         return $url;
@@ -501,7 +509,9 @@ class Curl
         $auth = Config::getBasicAuth();
 
         if ($auth === null) {
-            throw new ConfigException(message: 'Basic auth is not configured.');
+            $exception = new ConfigException(message: 'Basic auth is not configured.');
+            Config::getLogger()->error(message: $exception->getMessage());
+            throw $exception;
         }
 
         curl_setopt(
@@ -529,7 +539,9 @@ class Curl
         $auth = Config::getJwtAuth();
 
         if ($auth === null) {
-            throw new ConfigException(message: 'JWT auth is not configured.');
+            $exception = new ConfigException(message: 'JWT auth is not configured.');
+            Config::getLogger()->error(message: $exception->getMessage());
+            throw $exception;
         }
 
         curl_setopt(
