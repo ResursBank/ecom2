@@ -558,7 +558,7 @@ class Curl
      * @throws ValidationException
      * @throws ConfigException
      */
-    public function getJwtToken(
+    private function getJwtToken(
         Jwt $auth
     ): Token {
         $result = $auth->getToken();
@@ -568,21 +568,5 @@ class Curl
         }
 
         return $result;
-    }
-
-    /**
-     * Returns configured auth credentials as array
-     *
-     * @return array
-     * @throws ConfigException
-     * @todo Not sure why this returns an array? Shouldn't it return a Model instance?
-     */
-    public function getAuthentication(): array
-    {
-        return match ($this->authType) {
-            AuthType::BASIC => (array) Config::getBasicAuth(),
-            AuthType::JWT => (array) Config::getJwtAuth(),
-            default => [],
-        };
     }
 }
