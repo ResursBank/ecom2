@@ -101,6 +101,64 @@ class Curl
     }
 
     /**
+     * @param string $url
+     * @param array $headers
+     * @param array $payload
+     * @return CurlHandle
+     * @throws JsonException
+     * @throws ValidationException
+     * @throws Exception
+     * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
+     */
+    private function init(
+        string $url,
+        array $headers,
+        array $payload
+    ): CurlHandle {
+        /** @noinspection DuplicatedCode */
+        $ch = curl_init();
+
+        $options = [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_FAILONERROR => false, // Don't treat HTTP code 400+ as error.
+            CURLOPT_AUTOREFERER => true, // Follow redirects.
+            CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
+            CURLOPT_HEADER => false, // Do not include header in output.
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_USERAGENT => Header::getUserAgent(),
+            CURLOPT_HTTPHEADER => Header::getHeadersData(
+                headers: Header::generateHeaders(
+                    headers: $headers,
+                    payloadData: $this->getPayloadData(payload: $payload),
+                    contentType: $this->contentType,
+                    hasBodyData: $this->hasBodyData()
+                )
+            ),
+            CURLOPT_CUSTOMREQUEST => $this->getCustomRequestValue(),
+            CURLOPT_URL => $this->generateUrl(url: $url, payload: $payload),
+            CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
+        ];
+
+        if (!empty(Config::getProxy())) {
+            $options[CURLOPT_PROXY] = Config::getProxy();
+            $options[CURLOPT_PROXYTYPE] = Config::getProxyType();
+        }
+
+        if (Config::getTimeout()) {
+            $options[CURLOPT_CONNECTTIMEOUT] = ceil(num: Config::getTimeout()) / 2;
+            $options[CURLOPT_TIMEOUT] = ceil(num: Config::getTimeout());
+        }
+
+        curl_setopt_array(handle: $ch, options: $options);
+
+        $this->setContent(ch: $ch, payload: $payload);
+
+        return $ch;
+    }
+
+    /**
      * @return Response
      * @throws AuthException
      * @throws CurlException
@@ -304,64 +362,6 @@ class Curl
         );
 
         return $curl->exec();
-    }
-
-    /**
-     * @param string $url
-     * @param array $headers
-     * @param array $payload
-     * @return CurlHandle
-     * @throws JsonException
-     * @throws ValidationException
-     * @throws Exception
-     * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
-     */
-    private function init(
-        string $url,
-        array $headers,
-        array $payload
-    ): CurlHandle {
-        /** @noinspection DuplicatedCode */
-        $ch = curl_init();
-
-        $options = [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_FAILONERROR => false, // Don't treat HTTP code 400+ as error.
-            CURLOPT_AUTOREFERER => true, // Follow redirects.
-            CURLINFO_HEADER_OUT => true, // Track outgoing headers for debugging.
-            CURLOPT_HEADER => false, // Do not include header in output.
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_USERAGENT => Header::getUserAgent(),
-            CURLOPT_HTTPHEADER => Header::getHeadersData(
-                headers: Header::generateHeaders(
-                    headers: $headers,
-                    payloadData: $this->getPayloadData(payload: $payload),
-                    contentType: $this->contentType,
-                    hasBodyData: $this->hasBodyData()
-                )
-            ),
-            CURLOPT_CUSTOMREQUEST => $this->getCustomRequestValue(),
-            CURLOPT_URL => $this->generateUrl(url: $url, payload: $payload),
-            CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
-        ];
-
-        if (!empty(Config::getProxy())) {
-            $options[CURLOPT_PROXY] = Config::getProxy();
-            $options[CURLOPT_PROXYTYPE] = Config::getProxyType();
-        }
-
-        if (Config::getTimeout()) {
-            $options[CURLOPT_CONNECTTIMEOUT] = ceil(num: Config::getTimeout()) / 2;
-            $options[CURLOPT_TIMEOUT] = ceil(num: Config::getTimeout());
-        }
-
-        curl_setopt_array(handle: $ch, options: $options);
-
-        $this->setContent(ch: $ch, payload: $payload);
-
-        return $ch;
     }
 
     /**
