@@ -168,8 +168,11 @@ class GetAddressTest extends TestCase
             customerType: CustomerType::NATURAL
         );
 
-        // Testing similarities by intersect.
-        $this->assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
+        $this->assertEquals(
+            expected: $expect,
+            actual: $address->toArray(),
+            message: 'Fetched address does not match expected result.'
+        );
     }
 
     /**
@@ -195,7 +198,9 @@ class GetAddressTest extends TestCase
             'postalArea' => 'Helsingborg',
             'postalCode' => '25024',
             'countryCode' => 'SE',
-            'addressRow2' => ''
+            'addressRow2' => '',
+            'firstName' => null,
+            'lastName' => null
         ];
 
         $address = Repository::getAddress(
@@ -204,8 +209,11 @@ class GetAddressTest extends TestCase
             customerType: CustomerType::LEGAL
         );
 
-        // Testing similarities by intersect.
-        $this->assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
+        $this->assertEquals(
+            expected: $expect,
+            actual: $address->toArray(),
+            message: 'Fetched address does not match expected result.'
+        );
     }
 
     /**

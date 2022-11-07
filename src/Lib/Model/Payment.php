@@ -10,18 +10,15 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
-use Resursbank\Ecom\Lib\Model\Payment\CoApplicant;
+use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Information;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Utilities\Date;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
@@ -48,15 +45,14 @@ class Payment extends Model
      * @param CountryCode|null $countryCode
      * @param Order|null $order
      * @param ApplicationResponse|null $application
-     * @param Information|null $information
      * @param Metadata|null $metadata
      * @param CoApplicant|null $coApplicant
      * @param TaskRedirectionUrls|null $taskRedirectionUrls
      * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @todo Solve problems with empty country code when using Search.
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @todo Missing unit tests ECP-254
      */
     public function __construct(
         public readonly string $id,
@@ -69,7 +65,6 @@ class Payment extends Model
         public readonly ?CountryCode $countryCode = null,
         public readonly ?Order $order = null,
         public readonly ?ApplicationResponse $application = null,
-        public readonly ?Information $information = null,
         public readonly ?Metadata $metadata = null,
         public readonly ?CoApplicant $coApplicant = null,
         public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
@@ -79,25 +74,6 @@ class Payment extends Model
         $this->validateCreated();
         $this->validateStoreId();
         $this->validatePaymentMethodId();
-        // Validation on country code will fail when request is running through the Search call.
-    }
-
-    /**
-     * Validate country.
-     *
-     * @throws IllegalCharsetException
-     * @todo Solve problems with empty country code when using Search. Remove error suppression.
-     * @noinspection PhpUnusedPrivateMethodInspection
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function validateCountryCode(): void
-    {
-        if ($this->countryCode !== null) {
-            $this->stringValidation->matchRegex(
-                value: $this->countryCode->value,
-                pattern: '/^[A-Z]{2}$/'
-            );
-        }
     }
 
     /**
