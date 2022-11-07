@@ -176,9 +176,11 @@ class Header
     ): void {
         foreach ($headers as $header) {
             if (!$header instanceof HeaderModel) {
-                throw new InvalidArgumentException(
+                $exception = new InvalidArgumentException(
                     message: 'Header must be an instance of Header.'
                 );
+                Config::getLogger()->error(message: $exception->getMessage());
+                throw $exception;
             }
         }
     }
