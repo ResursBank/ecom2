@@ -72,7 +72,7 @@ final class StringValidationTest extends TestCase
      */
     public function testGetKeyReturnsTrue(): void
     {
-        self::assertSame(
+        $this->assertSame(
             expected: 'thatValue',
             actual: $this->stringValidation->getKey(
                 data: ['thisKey' => 'thatValue'],
@@ -129,7 +129,7 @@ final class StringValidationTest extends TestCase
      */
     public function testNotEmptyReturnsTrue(): void
     {
-        self::assertTrue(condition: $this->stringValidation->notEmpty(value: 'test'));
+        $this->assertTrue(condition: $this->stringValidation->notEmpty(value: 'test'));
     }
 
     /**
@@ -154,7 +154,7 @@ final class StringValidationTest extends TestCase
      */
     public function testMatchRegexReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->matchRegex(
                 value: 'Hello World',
                 pattern: '/^[a-z\s]+$/i'
@@ -182,7 +182,7 @@ final class StringValidationTest extends TestCase
      */
     public function testOneOfReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->oneOf(
                 value: 'some',
                 set: ['Some', 'SOME', 'some']
@@ -211,7 +211,7 @@ final class StringValidationTest extends TestCase
      */
     public function testIsIntReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->isInt(value: '1234234456567789')
         );
     }
@@ -236,7 +236,7 @@ final class StringValidationTest extends TestCase
      */
     public function testIsDateReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->isDate(value: '2007-07-12')
         );
     }
@@ -249,21 +249,21 @@ final class StringValidationTest extends TestCase
      */
     public function testLengthReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->length(
                 value: '',
                 min: 0,
                 max: 5
             )
         );
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->length(
                 value: '123',
                 min: 0,
                 max: 5
             )
         );
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->length(
                 value: '12345',
                 min: 0,
@@ -344,7 +344,7 @@ final class StringValidationTest extends TestCase
      */
     public function testIsUuidReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->isUuid(
                 value: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
             )
@@ -359,7 +359,7 @@ final class StringValidationTest extends TestCase
      */
     public function testIsEmailReturnsTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->stringValidation->isEmail(value: 'foo@example.com')
         );
     }
@@ -392,7 +392,7 @@ final class StringValidationTest extends TestCase
         ];
 
         foreach ($validDates as $validDate) {
-            self::assertTrue(
+            $this->assertTrue(
                 condition: $this->stringValidation->isIso8601DateTime(value: $validDate)
             );
         }

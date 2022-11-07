@@ -152,12 +152,12 @@ class FilesystemTest extends TestCase
      */
     public function testWriteCreatesWritableDir(): void
     {
-        self::assertDirectoryDoesNotExist(directory: $this->path);
+        $this->assertDirectoryDoesNotExist(directory: $this->path);
 
         $this->fileSystem->write(key: $this->key, data: 'something', ttl: 0);
 
-        self::assertDirectoryExists(directory: $this->path);
-        self::assertDirectoryIsWritable(directory: $this->path);
+        $this->assertDirectoryExists(directory: $this->path);
+        $this->assertDirectoryIsWritable(directory: $this->path);
     }
 
     /**
@@ -171,7 +171,7 @@ class FilesystemTest extends TestCase
     {
         touch(filename: $this->path);
 
-        self::assertFileExists(filename: $this->path);
+        $this->assertFileExists(filename: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
         $this->fileSystem->write(key: $this->key, data: 'my data set?', ttl: 0);
@@ -188,8 +188,8 @@ class FilesystemTest extends TestCase
     {
         mkdir(directory: $this->path, permissions: 0500, recursive: true);
 
-        self::assertDirectoryExists(directory: $this->path);
-        self::assertDirectoryIsNotWritable(directory: $this->path);
+        $this->assertDirectoryExists(directory: $this->path);
+        $this->assertDirectoryIsNotWritable(directory: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
         $this->fileSystem->write(
@@ -209,11 +209,11 @@ class FilesystemTest extends TestCase
     {
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
 
-        self::assertDirectoryExists(directory: $this->path);
+        $this->assertDirectoryExists(directory: $this->path);
 
         $this->fileSystem->write(key: $this->key, data: '', ttl: 99);
 
-        self::assertFileExists(filename: $this->file);
+        $this->assertFileExists(filename: $this->file);
     }
 
     /**
@@ -253,7 +253,7 @@ class FilesystemTest extends TestCase
      */
     public function testWriteCreatesDirectory(): void
     {
-        self::assertDirectoryDoesNotExist(directory: $this->path);
+        $this->assertDirectoryDoesNotExist(directory: $this->path);
 
         $this->fileSystem->write(
             key: $this->key,
@@ -261,7 +261,7 @@ class FilesystemTest extends TestCase
             ttl: 0
         );
 
-        self::assertDirectoryExists(directory: $this->path);
+        $this->assertDirectoryExists(directory: $this->path);
     }
 
     /**
@@ -273,11 +273,11 @@ class FilesystemTest extends TestCase
      */
     public function testWriteCreatesFile(): void
     {
-        self::assertFileDoesNotExist(filename: $this->file);
+        $this->assertFileDoesNotExist(filename: $this->file);
 
         $this->fileSystem->write(key: $this->key, data: 'nada', ttl: 0);
 
-        self::assertFileExists(filename: $this->file);
+        $this->assertFileExists(filename: $this->file);
     }
 
     /**
@@ -292,11 +292,11 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755);
         touch(filename: $this->file);
 
-        self::assertFileExists(filename: $this->file);
+        $this->assertFileExists(filename: $this->file);
 
         $this->fileSystem->write(key: $this->key, data: 'some data', ttl: 99);
 
-        self::assertFileExists(filename: $this->file);
+        $this->assertFileExists(filename: $this->file);
     }
 
     /**
@@ -310,7 +310,7 @@ class FilesystemTest extends TestCase
     public function testWriteThrowsIfCacheFileIsNotWritable(): void
     {
         if ($this->isPipeline) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
         }
@@ -319,8 +319,8 @@ class FilesystemTest extends TestCase
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0500);
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsNotWritable(file: $this->file);
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsNotWritable(file: $this->file);
         $this->expectException(exception: FilesystemException::class);
         $this->expectExceptionMessage(message: "$this->file is not writable.");
 
@@ -345,7 +345,7 @@ class FilesystemTest extends TestCase
     public function testWriteThrowsWithExistingDirectory(): void
     {
         if ($this->isPipeline) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
         }
@@ -353,8 +353,8 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0700);
         mkdir(directory: $this->file, permissions: 0500);
 
-        self::assertDirectoryExists(directory: $this->file);
-        self::assertDirectoryIsNotWritable(directory: $this->file);
+        $this->assertDirectoryExists(directory: $this->file);
+        $this->assertDirectoryIsNotWritable(directory: $this->file);
         $this->expectException(exception: FilesystemException::class);
         $this->expectExceptionMessage(message: "$this->file is not a file.");
 
@@ -380,8 +380,8 @@ class FilesystemTest extends TestCase
     {
         $this->fileSystem->write(key: $this->key, data: 'Empty', ttl: 55);
 
-        self::assertFileExists(filename: $this->file);
-        self::assertNotEmpty(actual: file_get_contents(filename: $this->file));
+        $this->assertFileExists(filename: $this->file);
+        $this->assertNotEmpty(actual: file_get_contents(filename: $this->file));
     }
 
     /**
@@ -419,7 +419,7 @@ class FilesystemTest extends TestCase
      */
     public function testReadWithoutCacheFileReturnsNull(): void
     {
-        self::assertNull(actual: $this->fileSystem->read(key: $this->getKey()));
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->getKey()));
     }
 
     /**
@@ -434,8 +434,8 @@ class FilesystemTest extends TestCase
     {
         mkdir(directory: $this->file, permissions: 0755, recursive: true);
 
-        self::assertDirectoryExists(directory: $this->file);
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertDirectoryExists(directory: $this->file);
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -449,7 +449,7 @@ class FilesystemTest extends TestCase
     public function testReadWithUnreadableCacheFileReturnsNull(): void
     {
         if ($this->isPipeline) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
         }
@@ -458,9 +458,9 @@ class FilesystemTest extends TestCase
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0000);
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsNotReadable(file: $this->file);
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsNotReadable(file: $this->file);
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -476,9 +476,9 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: 'some data');
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -494,9 +494,9 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: '0|whatever');
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -511,9 +511,9 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: '95.4|whatever');
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -528,9 +528,9 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: '0|');
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -548,9 +548,9 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: "$ttl|data");
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertSame(
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertSame(
             expected: 'data',
             actual: $this->fileSystem->read(key: $this->key)
         );
@@ -572,13 +572,13 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: $data);
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertStringEqualsFile(
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertStringEqualsFile(
             expectedFile: $this->file,
             actualString: $data
         );
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -596,9 +596,9 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: "$ttl|$data");
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertSame(
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertSame(
             expected: $data,
             actual: $this->fileSystem->read(key: $this->key)
         );
@@ -621,13 +621,13 @@ class FilesystemTest extends TestCase
             data: "$ttl|My big test | success"
         );
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertStringEqualsFile(
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertStringEqualsFile(
             expectedFile: $this->file,
             actualString: "$ttl|My big test | success"
         );
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -642,13 +642,13 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: '');
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsReadable(file: $this->file);
-        self::assertStringEqualsFile(
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertStringEqualsFile(
             expectedFile: $this->file,
             actualString: ''
         );
-        self::assertNull(actual: $this->fileSystem->read(key: $this->key));
+        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
 
     /**
@@ -688,7 +688,7 @@ class FilesystemTest extends TestCase
      */
     public function testClearWithoutCacheFile(): void
     {
-        self::assertFileDoesNotExist(filename: $this->file);
+        $this->assertFileDoesNotExist(filename: $this->file);
 
         $this->fileSystem->clear(
             key: AbstractCache::getKey(key: 'some-bamboozle_not-exist')
@@ -708,7 +708,7 @@ class FilesystemTest extends TestCase
     {
         mkdir(directory: $this->file, permissions: 0755, recursive: true);
 
-        self::assertDirectoryExists(directory: $this->file);
+        $this->assertDirectoryExists(directory: $this->file);
         $this->expectException(exception: FilesystemException::class);
 
         $this->fileSystem->clear(key: $this->key);
@@ -725,7 +725,7 @@ class FilesystemTest extends TestCase
     public function testClearThrowsWhenFileNotWritable(): void
     {
         if ($this->isPipeline) {
-            self::markTestSkipped(
+            $this->markTestSkipped(
                 message: 'Pipeline runs as root, privileges breaks this tests.'
             );
         }
@@ -734,8 +734,8 @@ class FilesystemTest extends TestCase
         touch(filename: $this->file);
         chmod(filename: $this->file, permissions: 0500);
 
-        self::assertFileExists(filename: $this->file);
-        self::assertFileIsNotWritable(file: $this->file);
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsNotWritable(file: $this->file);
         $this->expectException(exception: FilesystemException::class);
 
         $this->fileSystem->clear(key: $this->key);
@@ -754,10 +754,10 @@ class FilesystemTest extends TestCase
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         touch(filename: $this->file);
 
-        self::assertFileExists(filename: $this->file);
+        $this->assertFileExists(filename: $this->file);
 
         $this->fileSystem->clear(key: $this->key);
 
-        self::assertFileDoesNotExist(filename: $this->file);
+        $this->assertFileDoesNotExist(filename: $this->file);
     }
 }

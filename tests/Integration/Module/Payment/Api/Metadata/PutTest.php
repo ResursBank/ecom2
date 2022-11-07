@@ -6,10 +6,11 @@
  */
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
+/** @noinspection EfferentObjectCouplingInspection */
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
+namespace Resursbank\EcomTest\Integration\Module\Payment\Api\Metadata;
 
 use Exception;
 use JsonException;
@@ -26,25 +27,27 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
- * Tests that getPayment works.
+ * Tests for Metadata updates
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GetTest extends TestCase
+class PutTest extends TestCase
 {
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -64,18 +67,8 @@ class GetTest extends TestCase
     }
 
     /**
-     * Generate a dummy order reference
+     * Make API call to create payment
      *
-     * @return string
-     * @throws Exception
-     * @throws Exception
-     */
-    private function generateOrderReference(): string
-    {
-        return bin2hex(string: random_bytes(length: 12));
-    }
-
-    /**
      * @param string $orderReference
      * @return Payment
      * @throws ApiException
@@ -91,6 +84,7 @@ class GetTest extends TestCase
      */
     private function createPayment(string $orderReference): Payment
     {
+        /** @noinspection DuplicatedCode */
         return Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
@@ -116,7 +110,7 @@ class GetTest extends TestCase
                     totalAmountIncludingVat: 301.5,
                     totalVatAmount: 60.3,
                     type: OrderLineType::PHYSICAL_GOODS
-                )
+                ),
             ]),
             orderReference: $orderReference,
             customer: new Customer(
@@ -137,34 +131,72 @@ class GetTest extends TestCase
     }
 
     /**
-     * Verify that getting payments works
+     * Generate a dummy order reference
      *
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws ApiException
+     * @return string
      * @throws Exception
      */
-    public function testGetPayment(): void
+    private function generateOrderReference(): string
     {
+        return bin2hex(string: random_bytes(length: 12));
+    }
+
+    /**
+     * Verify that Metadata updates work
+     *
+     * @throws ValidationException
+     * @throws CurlException
+     * @throws IllegalValueException
+     * @throws IllegalTypeException
+     * @throws AuthException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ConfigException
+     * @throws ApiException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testSimplePut(): void
+    {
+        $custom = [
+            new Metadata\Entry(
+                key: 'foo',
+                value: 'bar'
+            )
+        ];
+
         // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
+        $payment = $this->createPayment(orderReference: $this->generateOrderReference());
 
         // Sign
         MockSigner::approve(payment: $payment);
 
-        // Call getPayment
-        $fetched = Repository::get(paymentId: $payment->id);
+        // Add metadata
+        $setMetadataResponse = Repository::setMetadata(
+            paymentId: $payment->id,
+            metadata: new Metadata(
+                custom: new Metadata\EntryCollection(data: $custom)
+            )
+        );
 
-        // Assert that the fetched order is the one we created
-        $this->assertSame(
-            expected: $payment->id,
-            actual: $fetched->id
+        // Get payment
+        $fetchedPayment = Repository::get(paymentId: $payment->id);
+
+        // Assert that the metadata exists on the fetched payment
+        $this->assertEqualsCanonicalizing(
+            expected: $custom,
+            actual: $setMetadataResponse->custom !== null ?
+                    $setMetadataResponse->custom->toArray() :
+                    []
+        );
+        $this->assertNotNull(
+            actual: $fetchedPayment->metadata
+        );
+        $this->assertEqualsCanonicalizing(
+            expected: $custom,
+            actual: $fetchedPayment->metadata->custom !== null ?
+                $fetchedPayment->metadata->custom->toArray() :
+                []
         );
     }
 }

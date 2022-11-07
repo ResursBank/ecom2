@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
@@ -137,7 +138,7 @@ class Repository
 
         return new Get(
             model: PaymentMethod::class,
-            route: "stores/$storeId/payment_methods",
+            route: Mapi::STORE_ROUTE . '/' . $storeId . '/payment_methods',
             params: compact('storeId', 'amount'),
             extractProperty: 'content'
         );

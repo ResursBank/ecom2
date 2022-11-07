@@ -85,7 +85,7 @@ class Capture
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/payments/%s/capture', Mapi::PAYMENT_ROUTE, $paymentId)
+                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/capture'
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,

@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Unit\Module\Payment\Model;
 
 //use JsonException;
 use PHPUnit\Framework\TestCase;
+
 //use ReflectionException;
 //use Resursbank\Ecom\Exception\TestException;
 //use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -128,7 +129,7 @@ class DeviceInfoTest extends TestCase
 //    public function testUserAgentWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->userAgent,
 //            actual: $this->item->userAgent
 //        );

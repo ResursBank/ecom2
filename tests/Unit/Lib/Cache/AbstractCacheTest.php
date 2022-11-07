@@ -117,7 +117,7 @@ class AbstractCacheTest extends TestCase
      */
     public function testGetKeyReturnsPrefixedKey(): void
     {
-        self::assertSame(
+        $this->assertSame(
             expected: AbstractCache::CACHE_KEY_PREFIX . 'test-key',
             actual: AbstractCache::getKey(key: 'test-key')
         );

@@ -74,7 +74,7 @@ final class FloatValidationTest extends TestCase
      */
     public function testGetKeyReturnsFloat(): void
     {
-        self::assertSame(
+        $this->assertSame(
             expected: 10.55,
             actual: $this->floatValidation->getKey(
                 data: ['epic' => 10.55],
@@ -116,7 +116,7 @@ final class FloatValidationTest extends TestCase
      */
     public function testInRangeReturnsTrueWhenValueInRange(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->floatValidation->inRange(
                 value: 10.0,
                 min: 5,
@@ -171,7 +171,7 @@ final class FloatValidationTest extends TestCase
      */
     public function testLengthReturnsTrueWhenValueInRange(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->floatValidation->length(
                 value: 10.123,
                 min: 2,
@@ -200,7 +200,7 @@ final class FloatValidationTest extends TestCase
      */
     public function testIsPositiveReturnTrue(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: $this->floatValidation->isPositive(value: 1)
         );
     }

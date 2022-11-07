@@ -77,7 +77,7 @@ class GetAddress
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: sprintf('%s/customers/address/by_government_id', Mapi::CUSTOMER_ROUTE)
+                route: Mapi::CUSTOMER_ROUTE . '/address/by_government_id'
             ),
             requestMethod: RequestMethod::POST,
             payload: $payload,

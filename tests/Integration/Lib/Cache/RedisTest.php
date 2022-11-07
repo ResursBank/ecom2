@@ -107,7 +107,7 @@ class RedisTest extends TestCase
 
         $this->redis->write(key: $this->key, data: $data, ttl: 9999);
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: $data,
             actual: $this->getRedisConnection()->get(key: $this->key)
         );
@@ -149,7 +149,7 @@ class RedisTest extends TestCase
      */
     public function testReadReturnsNullForUndefinedData(): void
     {
-        self::assertNull(actual: $this->redis->read(key: $this->key));
+        $this->assertNull(actual: $this->redis->read(key: $this->key));
     }
 
     /**
@@ -165,7 +165,7 @@ class RedisTest extends TestCase
 
         $this->getRedisConnection()->set(key: $this->key, value: $data);
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: $data,
             actual: $this->redis->read(key: $this->key)
         );
@@ -190,11 +190,11 @@ class RedisTest extends TestCase
             value: $data
         );
 
-        self::assertSame(expected: $data, actual: $conn->get(key: $this->key));
+        $this->assertSame(expected: $data, actual: $conn->get(key: $this->key));
 
         sleep(seconds: 3);
 
-        self::assertNull(actual: $this->redis->read(key: $this->key));
+        $this->assertNull(actual: $this->redis->read(key: $this->key));
     }
 
     /**
@@ -239,10 +239,10 @@ class RedisTest extends TestCase
 
         $conn->set(key: $this->key, value: $data);
 
-        self::assertEquals(expected: $data, actual: $conn->get(key: $this->key));
+        $this->assertEquals(expected: $data, actual: $conn->get(key: $this->key));
 
         $this->redis->clear(key: $this->key);
 
-        self::assertFalse(condition: $conn->get(key: $this->key));
+        $this->assertFalse(condition: $conn->get(key: $this->key));
     }
 }

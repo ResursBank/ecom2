@@ -27,7 +27,7 @@ class GenericTest extends TestCase
      */
     public function getVersionByDocBlockTest(): void
     {
-        self::assertTrue(
+        $this->assertTrue(
             condition: version_compare(
                 version1: (new Generic())->getVersionByClassDoc(className: Generic::class),
                 version2: '1.0.0',
@@ -47,7 +47,7 @@ class GenericTest extends TestCase
         );
         $generic->method('getVersionByComposer')->willReturn(value: '1.0.0');
         // composer.json in our package may not contain version numbers.
-        self::assertTrue(
+        $this->assertTrue(
             condition: version_compare(
                 version1: $generic->getVersionByComposer(location: __DIR__),
                 version2: '1.0.0',
@@ -66,7 +66,7 @@ class GenericTest extends TestCase
             originalClassName: Generic::class
         );
         $generic->method('getVersionByAny')->willReturn(value: '1.0.0');
-        self::assertTrue(
+        $this->assertTrue(
             condition: version_compare(
                 version1: $generic->getVersionByAny(
                     composerLocation: __DIR__,
@@ -87,7 +87,7 @@ class GenericTest extends TestCase
     {
         $willReturn = 'resursbank/ecom';
 
-        self::assertSame(
+        $this->assertSame(
             expected: $willReturn,
             actual: (new Generic())->getComposerTag(location: __DIR__, tag: 'name')
         );
@@ -99,7 +99,7 @@ class GenericTest extends TestCase
      */
     public function getVendorTest(): void
     {
-        self::assertSame(
+        $this->assertSame(
             expected: 'resursbank',
             actual: (new Generic())->getComposerVendor(composerLocation: __DIR__)
         );

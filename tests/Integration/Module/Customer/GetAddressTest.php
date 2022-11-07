@@ -106,7 +106,7 @@ class GetAddressTest extends TestCase
 //    public function testGetAddress(): void
 //    {
 //        if ($this->isPipeline()) {
-//            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
+//            $this->markTestSkipped(message: 'This test is currently unavailable from pipelines.');
 //            return;
 //
 //        }
@@ -131,7 +131,7 @@ class GetAddressTest extends TestCase
 //        );
 //
 //        // Testing similarities by intersect.
-//        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
+//        $this->assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
 //    }
 
     /**
@@ -169,7 +169,7 @@ class GetAddressTest extends TestCase
         );
 
         // Testing similarities by intersect.
-        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
+        $this->assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
     }
 
     /**
@@ -205,7 +205,7 @@ class GetAddressTest extends TestCase
         );
 
         // Testing similarities by intersect.
-        static::assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
+        $this->assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
     }
 
     /**
@@ -278,7 +278,7 @@ class GetAddressTest extends TestCase
 //    public function testMismatchAddress(): void
 //    {
 //        if ($this->isPipeline()) {
-//            static::markTestSkipped(message: 'This test is currently unavailable from pipelines.');
+//            $this->markTestSkipped(message: 'This test is currently unavailable from pipelines.');
 //            return;
 //        }
 //        $expect = [
@@ -298,6 +298,6 @@ class GetAddressTest extends TestCase
 //            customerType: 'NATURAL',
 //        );
 //
-//        static::assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));
+//        $this->assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));
 //    }
 }

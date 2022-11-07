@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Unit\Module\Payment\Model;
 
 //use JsonException;
 use PHPUnit\Framework\TestCase;
+
 //use ReflectionException;
 //use Resursbank\Ecom\Exception\TestException;
 //use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -292,7 +293,7 @@ class AddressTest extends TestCase
 //    public function testFullNameWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->fullName,
 //            actual: $this->item->fullName
 //        );
@@ -309,7 +310,7 @@ class AddressTest extends TestCase
 //    public function testFirstNameWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->firstName,
 //            actual: $this->item->firstName
 //        );
@@ -326,7 +327,7 @@ class AddressTest extends TestCase
 //    public function testLastNameWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->lastName,
 //            actual: $this->item->lastName
 //        );
@@ -343,7 +344,7 @@ class AddressTest extends TestCase
 //    public function testAddressRow1WasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->addressRow1,
 //            actual: $this->item->addressRow1
 //        );
@@ -360,7 +361,7 @@ class AddressTest extends TestCase
 //    public function testAddressRow2WasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->addressRow2,
 //            actual: $this->item->addressRow2
 //        );
@@ -377,7 +378,7 @@ class AddressTest extends TestCase
 //    public function testPostalAreaWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->postalArea,
 //            actual: $this->item->postalArea
 //        );
@@ -394,7 +395,7 @@ class AddressTest extends TestCase
 //    public function testPostalCodeWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->postalCode,
 //            actual: $this->item->postalCode
 //        );
@@ -411,7 +412,7 @@ class AddressTest extends TestCase
 //    public function testCountryCodeWasAssigned(): void
 //    {
 //        $this->convert();
-//        self::assertSame(
+//        $this->assertSame(
 //            expected: $this->data->countryCode,
 //            actual: $this->item->countryCode
 //        );

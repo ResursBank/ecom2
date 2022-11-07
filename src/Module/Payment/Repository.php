@@ -5,6 +5,8 @@
  * See LICENSE for license details.
  */
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment;
@@ -28,16 +30,18 @@ use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
 use Resursbank\Ecom\Module\Payment\Api\Get;
+use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Metadata;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 
 /**
  * Payment repository.
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
 {
@@ -243,6 +247,33 @@ class Repository
             orderLines: $orderLines,
             creator: $creator,
             transactionId: $transactionId
+        );
+    }
+
+    /**
+     * Set Metadata on payment
+     *
+     * @param string $paymentId
+     * @param Metadata $metadata
+     * @return Metadata
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function setMetadata(
+        string $paymentId,
+        Metadata $metadata
+    ): Metadata {
+        return (new Put())->call(
+            paymentId: $paymentId,
+            metadata: $metadata
         );
     }
 }

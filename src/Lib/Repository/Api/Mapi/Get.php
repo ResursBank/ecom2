@@ -75,7 +75,7 @@ class Get
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: Mapi::COMMON_ROUTE . "/$this->route"
+                route: $this->route
             ),
             requestMethod: RequestMethod::GET,
             payload: $this->params,

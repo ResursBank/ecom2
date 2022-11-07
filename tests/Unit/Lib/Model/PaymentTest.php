@@ -21,6 +21,7 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 use DateTime;
+
 use function chr;
 use function ord;
 
@@ -96,11 +97,11 @@ class PaymentTest extends TestCase
         $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
         $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
 
-        self::assertEquals(
+        $this->assertEquals(
             expected: true,
             actual: $isFrozen->isFrozen()
         );
-        self::assertEquals(
+        $this->assertEquals(
             expected: false,
             actual: $notFrozen->isFrozen()
         );

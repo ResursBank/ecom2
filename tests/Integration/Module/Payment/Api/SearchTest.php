@@ -166,7 +166,7 @@ class SearchTest extends TestCase
         /** @var Payment|null $fetched */
         $fetched = $paymentCollection[0] ?? null;
 
-        self::assertSame(
+        $this->assertSame(
             expected: $payment->id,
             actual: $fetched !== null ? $fetched->id : ''
         );
@@ -205,7 +205,7 @@ class SearchTest extends TestCase
         /** @var Payment|null $fetched */
         $fetched = $paymentCollection[0] ?? null;
 
-        self::assertSame(
+        $this->assertSame(
             expected: $payment->id,
             actual: $fetched instanceof Payment ? $fetched->id : ''
         );

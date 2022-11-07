@@ -126,7 +126,7 @@ final class ModelConverterTest extends TestCase
             model: Instrument::class,
         );
 
-        self::assertInstanceOf(expected: Instrument::class, actual: $result);
+        $this->assertInstanceOf(expected: Instrument::class, actual: $result);
     }
 
     /**
@@ -147,7 +147,7 @@ final class ModelConverterTest extends TestCase
             model: Instrument::class,
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: InstrumentCollection::class,
             actual: $result
         );
@@ -169,7 +169,7 @@ final class ModelConverterTest extends TestCase
             model: Instrument::class,
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: Instrument::class,
             actual: $result
         );
@@ -192,7 +192,7 @@ final class ModelConverterTest extends TestCase
             model: Instrument::class,
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: InstrumentCollection::class,
             actual: $result
         );
