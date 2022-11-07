@@ -136,7 +136,7 @@ class ErrorHandlerTest extends TestCase
     }
 
     /**
-     * Assert validate() throws CurlException when HTTP response code is 404.
+     * Assert validate() throws CurlException when HTTP response code is 0.
      *
      * @return void
      * @throws AuthException
@@ -146,12 +146,12 @@ class ErrorHandlerTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      */
-    public function testValidateThrowsWithHttpCode404(): void
+    public function testValidateThrowsWithHttpCode0(): void
     {
         $this->expectException(exception: CurlException::class);
 
         $ch = curl_init(
-            url: Mapi::URL_TEST . '/404'
+            url: 'nowhere.loc/404'
         );
         curl_exec(handle: $ch);
 

@@ -17,8 +17,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 
 /**
  * Test data integrity of order entity model.
@@ -61,7 +61,7 @@ class OrderTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
 
         new Order(
-            orderLines: new Order\OrderLineCollection(
+            orderLines: new OrderLineCollection(
                 data: array_fill(
                     start_index: 0,
                     count: 1001,
@@ -83,7 +83,7 @@ class OrderTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         new Order(
-            orderLines: new Order\OrderLineCollection(
+            orderLines: new OrderLineCollection(
                 data: array_fill(
                     start_index: 0,
                     count: 5,
@@ -128,7 +128,7 @@ class OrderTest extends TestCase
      */
     public function testValidateOrderReferenceThrowsUsingIllegalCharacters(): void
     {
-        new Order\OrderLineCollection(
+        new OrderLineCollection(
             data: array_fill(
                 start_index: 0,
                 count: 5,
@@ -138,7 +138,7 @@ class OrderTest extends TestCase
 
         $this->expectException(exception: IllegalCharsetException::class);
         new Order(
-            orderLines: new Order\OrderLineCollection(
+            orderLines: new OrderLineCollection(
                 data: array_fill(
                     start_index: 0,
                     count: 5,
