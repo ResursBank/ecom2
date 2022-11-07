@@ -30,8 +30,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine as RequestOrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection as RequestOrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -73,9 +71,9 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
-        $orderLines = new RequestOrderLineCollection(
+        $orderLines = new OrderLineCollection(
             data: [
-                new RequestOrderLine(
+                new OrderLine(
                     description: 'asdasdasd',
                     reference: 'T-800',
                     quantityUnit: 'st',
@@ -151,9 +149,9 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePaymentWithMetadata(): void
     {
-        $orderLines = new RequestOrderLineCollection(
+        $orderLines = new OrderLineCollection(
             data: [
-                new RequestOrderLine(
+                new OrderLine(
                     description: 'asdasdasd',
                     reference: 'T-800',
                     quantityUnit: 'st',

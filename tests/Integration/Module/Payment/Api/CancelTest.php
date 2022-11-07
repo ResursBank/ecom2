@@ -27,6 +27,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
@@ -34,13 +35,11 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 
 /**
  * Tests for MAPI Payment Cancel class.
@@ -125,7 +124,7 @@ class CancelTest extends TestCase
             ]),
             orderReference: $orderReference,
             customer: new Customer(
-                deliveryAddress: new DeliveryAddress(
+                deliveryAddress: new Address(
                     addressRow1: 'Glassgatan 15',
                     postalArea: 'Göteborg',
                     postalCode: '41655',
@@ -136,7 +135,7 @@ class CancelTest extends TestCase
                 email: 'test@hosted.resurs',
                 governmentId: '198305147715',
                 mobilePhone: '46701234567',
-                deviceInfo: new Customer\DeviceInfo()
+                deviceInfo: new DeviceInfo()
             )
         );
     }
@@ -214,7 +213,7 @@ class CancelTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         // Cancel one order line
-        $orderLine = new ActionLogOrderLine(
+        $orderLine = new OrderLine(
             description: 'Android',
             reference: 'T-800',
             quantityUnit: 'st',
@@ -227,7 +226,7 @@ class CancelTest extends TestCase
         );
         $response = Repository::cancel(
             paymentId: $payment->id,
-            orderLines: new ActionLogOrderLineCollection(data: [$orderLine])
+            orderLines: new OrderLineCollection(data: [$orderLine])
         );
 
         // Assert that cancel went through

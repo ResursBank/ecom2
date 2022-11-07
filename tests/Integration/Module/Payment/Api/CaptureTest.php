@@ -27,19 +27,18 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\EcomTest\Utilities\MockSigner;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Customer;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\DeliveryAddress;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as ActionLogOrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 
 /**
  * Tests for MAPI Payment Capture class.
@@ -125,7 +124,7 @@ class CaptureTest extends TestCase
             ]),
             orderReference: $orderReference,
             customer: new Customer(
-                deliveryAddress: new DeliveryAddress(
+                deliveryAddress: new Address(
                     addressRow1: 'Glassgatan 15',
                     postalArea: 'Göteborg',
                     postalCode: '41655',
@@ -136,7 +135,7 @@ class CaptureTest extends TestCase
                 email: 'test@hosted.resurs',
                 governmentId: '198305147715',
                 mobilePhone: '46701234567',
-                deviceInfo: new Customer\DeviceInfo()
+                deviceInfo: new DeviceInfo()
             )
         );
     }
@@ -195,8 +194,8 @@ class CaptureTest extends TestCase
 
         MockSigner::approve(payment: $payment);
 
-        $orderLines = new ActionLogOrderLineCollection(data: [
-            new ActionLogOrderLine(
+        $orderLines = new OrderLineCollection(data: [
+            new OrderLine(
                 description: 'Android',
                 reference: 'T-800',
                 quantityUnit: 'st',
@@ -300,8 +299,8 @@ class CaptureTest extends TestCase
 
         // Capture and specify transaction id
         $invoiceId = $this->generateOrderReference();
-        $orderLines = new ActionLogOrderLineCollection(data: [
-            new ActionLogOrderLine(
+        $orderLines = new OrderLineCollection(data: [
+            new OrderLine(
                 quantity: 2.00,
                 vatRate: 25.00,
                 totalAmountIncludingVat: 301.5,

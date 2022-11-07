@@ -186,7 +186,7 @@ class ErrorHandler
      */
     private function validateHttpCode(): void
     {
-        if (curl_getinfo(handle: $this->ch, option: CURLINFO_HTTP_CODE) >= 400) {
+        if ($this->httpCode >= 400 || $this->httpCode < 100) {
             $this->throwCurlException();
         }
     }
