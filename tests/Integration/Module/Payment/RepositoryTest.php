@@ -25,9 +25,13 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
+use Resursbank\Ecom\Lib\Model\Payment\Order;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine as RequestOrderLine;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection as RequestOrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -69,9 +73,9 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
-        $orderLines = new OrderLineCollection(
+        $orderLines = new RequestOrderLineCollection(
             data: [
-                new OrderLine(
+                new RequestOrderLine(
                     description: 'asdasdasd',
                     reference: 'T-800',
                     quantityUnit: 'st',
@@ -85,29 +89,46 @@ class RepositoryTest extends TestCase
             ]
         );
 
-        $createdOrder = Repository::create(
+        $createdPayment = Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines
         );
 
-        if (!isset($createdOrder->order->actionLog[0])) {
+        /** @var Order $order */
+        $order = $createdPayment->order;
+
+        /** @var ActionLogCollection $actionLog */
+        $actionLog = $order->actionLog;
+        if (empty($actionLog->toArray())) {
             throw new MissingKeyException(message: 'actionLog contains no entries');
         }
 
-        /** @var \Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine $createdOrderLine */
-        $createdOrderLine = $createdOrder->order->actionLog[0]->orderLines->toArray()[0];
+        /** @var Order\ActionLog $actionLogEntry */
+        $actionLogEntry = $actionLog[0];
+
+        /** @var OrderlineCollection $orderLines */
+        $orderLines = $actionLogEntry->orderLines;
+        if (!isset($orderLines[0])) {
+            throw new MissingKeyException(message: 'orderLines contains no entries');
+        }
+
+        /** @var OrderLine $orderLine */
+        $orderLine = $orderLines[0];
+
+        /** @var OrderLine $createdOrderLine */
+        $createdOrderLine = $orderLines[0];
 
         $this->assertEquals(
-            expected: $orderLines[0]->description,
+            expected: $orderLine->description,
             actual: $createdOrderLine->description
         );
         $this->assertEquals(
-            expected: $orderLines[0]->vatRate,
+            expected: $orderLine->vatRate,
             actual: $createdOrderLine->vatRate
         );
         $this->assertEquals(
-            expected: $orderLines[0]->reference,
+            expected: $orderLine->reference,
             actual: $createdOrderLine->reference
         );
     }
@@ -130,9 +151,9 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePaymentWithMetadata(): void
     {
-        $orderLines = new OrderLineCollection(
+        $orderLines = new RequestOrderLineCollection(
             data: [
-                new OrderLine(
+                new RequestOrderLine(
                     description: 'asdasdasd',
                     reference: 'T-800',
                     quantityUnit: 'st',
@@ -171,11 +192,19 @@ class RepositoryTest extends TestCase
             throw new MissingKeyException(message: 'actionLog contains no entries');
         }
 
+        /** @var Metadata $createdMetadata */
         $createdMetadata = $createdOrder->metadata;
+
+        if ($metadata->custom === null) {
+            throw new MissingKeyException(message: '$metadata contains no custom property');
+        }
+        if ($createdMetadata->custom === null) {
+            throw new MissingKeyException(message: '$createdMetadata contains no custom property');
+        }
 
         $this->assertEqualsCanonicalizing(
             expected: $metadata->custom->toArray(),
-            actual: $createdMetadata->custom !== null ? $createdMetadata->custom->toArray() : []
+            actual: $createdMetadata->custom->toArray()
         );
     }
 }

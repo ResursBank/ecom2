@@ -99,7 +99,9 @@ class Create
             // @todo Find a prettier solution to the issue of Metadata::custom being turned into an empty object
             //   when passed through json_encode.
             $params['metadata'] = new stdClass();
-            $params['metadata']->custom = $metadata->custom->toArray();
+            if (isset($metadata->custom)) {
+                $params['metadata']->custom = $metadata->custom->toArray();
+            }
         }
         if ($options) {
             $params['options'] = $options;
