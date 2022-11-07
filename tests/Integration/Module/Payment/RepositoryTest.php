@@ -20,12 +20,16 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
+use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
+use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -67,8 +71,6 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $orderLines = new OrderLineCollection(
             data: [
                 new OrderLine(
@@ -85,10 +87,122 @@ class RepositoryTest extends TestCase
             ]
         );
 
-        Repository::create(
+        $createdPayment = Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines
+        );
+
+        /** @var Order $order */
+        $order = $createdPayment->order;
+
+        /** @var ActionLogCollection $actionLog */
+        $actionLog = $order->actionLog;
+        if (empty($actionLog->toArray())) {
+            throw new MissingKeyException(message: 'actionLog contains no entries');
+        }
+
+        /** @var Order\ActionLog $actionLogEntry */
+        $actionLogEntry = $actionLog[0];
+
+        /** @var OrderlineCollection $orderLines */
+        $orderLines = $actionLogEntry->orderLines;
+        if (!isset($orderLines[0])) {
+            throw new MissingKeyException(message: 'orderLines contains no entries');
+        }
+
+        /** @var OrderLine $orderLine */
+        $orderLine = $orderLines[0];
+
+        /** @var OrderLine $createdOrderLine */
+        $createdOrderLine = $orderLines[0];
+
+        $this->assertEquals(
+            expected: $orderLine->description,
+            actual: $createdOrderLine->description
+        );
+        $this->assertEquals(
+            expected: $orderLine->vatRate,
+            actual: $createdOrderLine->vatRate
+        );
+        $this->assertEquals(
+            expected: $orderLine->reference,
+            actual: $createdOrderLine->reference
+        );
+    }
+
+    /**
+     * Assert that it's possible to create a new payment with metadata on it.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testCreatePaymentWithMetadata(): void
+    {
+        $orderLines = new OrderLineCollection(
+            data: [
+                new OrderLine(
+                    description: 'asdasdasd',
+                    reference: 'T-800',
+                    quantityUnit: 'st',
+                    quantity: 2.00,
+                    vatRate: 25.00,
+                    unitAmountIncludingVat: 150.75,
+                    totalAmountIncludingVat: 301.5,
+                    totalVatAmount: 60.3,
+                    type: OrderLineType::PHYSICAL_GOODS
+                )
+            ]
+        );
+        $metadata = new Metadata(
+            custom: new Metadata\EntryCollection(
+                data: [
+                    new Metadata\Entry(
+                        key: 'foo',
+                        value: 'bar'
+                    ),
+                    new Metadata\Entry(
+                        key: 'fnord',
+                        value: 'baz'
+                    )
+                ]
+            )
+        );
+
+        $createdOrder = Repository::create(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            orderLines: $orderLines,
+            metadata: $metadata
+        );
+
+        if (!isset($createdOrder->order->actionLog[0])) {
+            throw new MissingKeyException(message: 'actionLog contains no entries');
+        }
+
+        /** @var Metadata $createdMetadata */
+        $createdMetadata = $createdOrder->metadata;
+
+        if ($metadata->custom === null) {
+            throw new MissingKeyException(message: '$metadata contains no custom property');
+        }
+        if ($createdMetadata->custom === null) {
+            throw new MissingKeyException(message: '$createdMetadata contains no custom property');
+        }
+
+        $this->assertEqualsCanonicalizing(
+            expected: $metadata->custom->toArray(),
+            actual: $createdMetadata->custom->toArray()
         );
     }
 }

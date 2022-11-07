@@ -34,6 +34,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
 
 use function count;
+use function number_format;
 
 /**
  * Integration tests for the PaymentMethods widget.
@@ -147,14 +148,14 @@ class PaymentMethodsTest extends TestCase
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    $method->minPurchaseLimit . '.*<\/td>/s',
+                    number_format(num: $method->minPurchaseLimit, decimals: 2) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing min purchase limit column for payment method row matching $method->id"
             );
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    $method->maxPurchaseLimit . '.*<\/td>/s',
+                    number_format(num: $method->maxPurchaseLimit, decimals: 2) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing max purchase limit column for payment method row matching $method->id"
             );

@@ -205,38 +205,6 @@ class CurlTest extends TestCase
     }
 
     /**
-     * Purpose is to make the curl entity to set credentials automatically from test Config-class.
-     * @throws EmptyValueException
-     * @throws ConfigException
-     */
-    public function testAuthenticationByConfiguration(): void
-    {
-        $username = 'username_config';
-        $password = 'password_config';
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: new Basic(username: $username, password: $password)
-        );
-
-        $curl = new Curl(
-            url: 'https://ipv4.netcurl.org',
-            requestMethod: RequestMethod::GET,
-            authType: AuthType::BASIC
-        );
-
-        $this::assertSame(
-            expected: $username,
-            actual: $curl->getAuthentication()['username']
-        );
-
-        $this::assertSame(
-            expected: $password,
-            actual: $curl->getAuthentication()['password']
-        );
-    }
-
-    /**
      * Test to make sure that remote requests really works.
      *
      * @throws AuthException
