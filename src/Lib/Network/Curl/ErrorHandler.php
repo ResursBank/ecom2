@@ -13,6 +13,7 @@ use CurlHandle;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -41,6 +42,7 @@ class ErrorHandler
      * @param ContentType $contentType
      * @param StringValidation $stringValidation
      * @throws IllegalTypeException
+     * @throws ConfigException
      */
     public function __construct(
         public readonly string|bool $body,
@@ -59,6 +61,7 @@ class ErrorHandler
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws ConfigException
      */
     public function validate(): void
     {
@@ -73,6 +76,7 @@ class ErrorHandler
     /**
      * @return int
      * @throws IllegalTypeException
+     * @throws ConfigException
      */
     private function getHttpCode(): int
     {
@@ -87,6 +91,7 @@ class ErrorHandler
                 message: 'Curl http code is not an integer'
             );
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
@@ -98,6 +103,7 @@ class ErrorHandler
      * @return void
      * @throws AuthException
      * @throws CurlException
+     * @throws ConfigException
      */
     private function throwCurlException(string $jsonError = ''): void
     {
@@ -109,6 +115,7 @@ class ErrorHandler
                 message: 'Access denied. Please verify user credentials.'
             );
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
@@ -119,6 +126,7 @@ class ErrorHandler
             httpCode: $this->httpCode
         );
         Config::getLogger()->error(message: $exception->getMessage());
+        Config::getLogger()->error(message: $exception);
         throw $exception;
     }
 
@@ -130,6 +138,7 @@ class ErrorHandler
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws ConfigException
      */
     private function validateBody(): void
     {
@@ -156,6 +165,7 @@ class ErrorHandler
                     message: 'Decoded JSON body is not an object.'
                 );
                 Config::getLogger()->error(message: $exception->getMessage());
+                Config::getLogger()->error(message: $exception);
                 throw $exception;
             }
 
@@ -172,6 +182,7 @@ class ErrorHandler
      * @return void
      * @throws AuthException
      * @throws CurlException
+     * @throws ConfigException
      */
     private function validateHttpCode(): void
     {

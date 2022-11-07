@@ -187,6 +187,7 @@ class Curl
                 message: 'Curl response type is ' . gettype($body) . ', expected string'
             );
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
@@ -215,6 +216,7 @@ class Curl
                 message: 'Curl response body is not an object or an array.'
             );
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
@@ -394,6 +396,7 @@ class Curl
         if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
             $exception = new ValidationException(message: 'Invalid URL requested (' . $url . ').');
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
@@ -511,6 +514,7 @@ class Curl
         if ($auth === null) {
             $exception = new ConfigException(message: 'Basic auth is not configured.');
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
@@ -541,6 +545,7 @@ class Curl
         if ($auth === null) {
             $exception = new ConfigException(message: 'JWT auth is not configured.');
             Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
             throw $exception;
         }
 
