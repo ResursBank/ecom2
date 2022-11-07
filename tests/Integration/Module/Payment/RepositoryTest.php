@@ -20,9 +20,11 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLine;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order\OrderLineCollection;
@@ -67,8 +69,6 @@ class RepositoryTest extends TestCase
      */
     public function testCreatePayment(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $orderLines = new OrderLineCollection(
             data: [
                 new OrderLine(
@@ -85,10 +85,97 @@ class RepositoryTest extends TestCase
             ]
         );
 
-        Repository::create(
+        $createdOrder = Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines
+        );
+
+        if (!isset($createdOrder->order->actionLog[0])) {
+            throw new MissingKeyException(message: 'actionLog contains no entries');
+        }
+
+        /** @var \Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine $createdOrderLine */
+        $createdOrderLine = $createdOrder->order->actionLog[0]->orderLines->toArray()[0];
+
+        $this->assertEquals(
+            expected: $orderLines[0]->description,
+            actual: $createdOrderLine->description
+        );
+        $this->assertEquals(
+            expected: $orderLines[0]->vatRate,
+            actual: $createdOrderLine->vatRate
+        );
+        $this->assertEquals(
+            expected: $orderLines[0]->reference,
+            actual: $createdOrderLine->reference
+        );
+    }
+
+    /**
+     * Assert that it's possible to create a new payment with metadata on it.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testCreatePaymentWithMetadata(): void
+    {
+        $orderLines = new OrderLineCollection(
+            data: [
+                new OrderLine(
+                    description: 'asdasdasd',
+                    reference: 'T-800',
+                    quantityUnit: 'st',
+                    quantity: 2.00,
+                    vatRate: 25.00,
+                    unitAmountIncludingVat: 150.75,
+                    totalAmountIncludingVat: 301.5,
+                    totalVatAmount: 60.3,
+                    type: OrderLineType::PHYSICAL_GOODS
+                )
+            ]
+        );
+        $metadata = new Metadata(
+            custom: new Metadata\EntryCollection(
+                data: [
+                    new Metadata\Entry(
+                        key: 'foo',
+                        value: 'bar'
+                    ),
+                    new Metadata\Entry(
+                        key: 'fnord',
+                        value: 'baz'
+                    )
+                ]
+            )
+        );
+
+        $createdOrder = Repository::create(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            orderLines: $orderLines,
+            metadata: $metadata
+        );
+
+        if (!isset($createdOrder->order->actionLog[0])) {
+            throw new MissingKeyException(message: 'actionLog contains no entries');
+        }
+
+        $createdMetadata = $createdOrder->metadata;
+
+        $this->assertEqualsCanonicalizing(
+            expected: $metadata->custom->toArray(),
+            actual: $createdMetadata->custom !== null ? $createdMetadata->custom->toArray() : []
         );
     }
 }
