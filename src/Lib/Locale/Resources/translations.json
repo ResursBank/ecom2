@@ -143,5 +143,21 @@
       "en": "Failed to encode data.",
       "sv": "Kunde inte enkoda data."
     }
+  },
+  {
+    "id": "get-address-could-not-fetch-address",
+    "translation": {
+      "en": "Could not fetch an address for the given ID. Please update the ID or refresh the page and try again.",
+      "fi": "",
+      "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen uppdatera värdet eller ladda om sidan och försök igen. "
+    }
+  },
+  {
+    "id": "get-address-no-callback-function",
+    "translation": {
+      "en": "The address was fetched, but could not be handled properly. Please contact the store owner if the problem persists.",
+      "fi": "",
+      "sv": "Address blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiksägaren ifall problemet kvarstår."
+    }
   }
 ]
