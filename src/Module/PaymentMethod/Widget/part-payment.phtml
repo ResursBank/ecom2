@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+$logo = $this->logo;
+$infoText = $this->infoText;
+$startingAt = $this->startingAt;
+$readMore = $this->readMore;
+$iframeUrl = $this->iframeUrl;
+?>
+
+<div class="rb-pp">
+  <!-- Logo -->
+  <div id="rb-pp-logo-container"><?= $logo ?></div>
+  <!-- Pay in installments -->
+  <div id="rb-pp-info"><p><?= $infoText ?></p></div>
+  <!-- Example line here -->
+  <div id="rb-pp-example"><p><?= $startingAt ?></p></div>
+  <!-- Read More link -->
+  <div id="rb-pp-readmore">
+    <p onClick="document.getElementById('rb-pp-hidden').style.display='block';"><?= $readMore ?></p>
+  </div>
+  <div id="rb-pp-hidden" style="display:none;">
+    <div id="rb-pp-background" onclick="document.getElementById('rb-pp-hidden').style.display='none';"></div>
+    <div id="rb-pp-iframe-container">
+      <iframe id="rb-pp-iframe" src="<?= $iframeUrl ?>" loading="eager"></iframe>
+    </div>
+  </div>
+</div>
