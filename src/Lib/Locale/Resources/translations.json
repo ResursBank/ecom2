@@ -108,5 +108,40 @@
       "fi": "laivaus",
       "sv": "frakt"
     }
+  },
+  {
+    "id": "unknown-error",
+    "translation": {
+      "en": "An unknown error occurred.",
+      "sv": "Ett okänt fel har inträffat."
+    }
+  },
+  {
+    "id": "missing-post-param",
+    "translation": {
+      "en": "Missing POST param",
+      "sv": "Saknar POST parameter"
+    }
+  },
+  {
+    "id": "missing-post-param",
+    "translation": {
+      "en": "Missing POST param",
+      "sv": "Saknar POST parameter"
+    }
+  },
+  {
+    "id": "empty-post-param",
+    "translation": {
+      "en": "Empty POST param",
+      "sv": "Tom POST parameter"
+    }
+  },
+  {
+    "id": "failed-to-encode-error",
+    "translation": {
+      "en": "Failed to encode data.",
+      "sv": "Kunde inte enkoda data."
+    }
   }
 ]

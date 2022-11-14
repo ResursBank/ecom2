@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Validation;
 
-use DateTime;
-use DateTimeInterface;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -212,6 +210,76 @@ class StringValidation
     {
         if (!empty($value) && !str_contains(haystack: $value, needle: '@')) {
             throw new IllegalValueException(message: $value . ' is not an email address.');
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isSwedishSsn(
+        string $value
+    ): bool {
+        if (
+            !preg_match(
+                pattern: '/^(18\d{2}|19\d{2}|20\d{2}|\d{2})' .
+                '(0[1-9]|1[0-2])' .
+                '(0[1-9]|[1-2][0-9]|3[0-1])' .
+                '([-+])?(\d{4})$/',
+                subject: $value
+            )
+        ) {
+            throw new IllegalValueException(
+                message: "$value is not a properly formatted Swedish SSN."
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isSwedishOrg(
+        string $value
+    ): bool {
+        if (
+            !preg_match(
+                pattern: '/^(16\d{2}|18\d{2}|19\d{2}|20\d{2}|\d{2})' .
+                '(\d{2})(\d{2})([-+])?(\d{4})$/',
+                subject: $value
+            )
+        ) {
+            throw new IllegalValueException(
+                message: "$value is not a properly formatted Swedish org. nr."
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     * @throws IllegalValueException
+     */
+    public function isNorwegianPhone(
+        string $value
+    ): bool {
+        if (
+            !preg_match(
+                pattern: '/^(\+47|0047|)?[ |-]?[2-9]([ |-]?\d){7}$/',
+                subject: $value
+            )
+        ) {
+            throw new IllegalValueException(
+                message: "$value is not a properly formatted Norwegian phone number."
+            );
         }
 
         return true;
