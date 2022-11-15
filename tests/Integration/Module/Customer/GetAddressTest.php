@@ -272,6 +272,53 @@ class GetAddressTest extends TestCase
         );
     }
 
+
+    /**
+     * Assert getAddress with inaccurate SSN results in a CurlException with
+     * httpCode 400, morphing to a GetAddressException.
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws GetAddressException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ConfigException
+     */
+    public function testInaccurateSsnYieldsHttpCode400(): void
+    {
+        $this->expectException(exception: GetAddressException::class);
+
+        try {
+            Repository::getAddress(
+                storeId: $this->getStoreId(),
+                governmentId: '1980010100012',
+                customerType: CustomerType::NATURAL
+            );
+        } catch (GetAddressException $e) {
+            $curlException = $e->getPrevious();
+
+            if (!$curlException instanceof CurlException) {
+                $this->fail(
+                    message: 'Expected CurlException to occur before GetAddressException'
+                );
+            }
+
+            $this->assertSame(
+                expected: 400,
+                actual: $curlException->httpCode,
+                message: "Expected HTTP code 400 got $curlException->httpCode"
+            );
+
+            throw $e;
+        }
+    }
 //    /**
 //     * @return void
 //     * @throws AuthException
