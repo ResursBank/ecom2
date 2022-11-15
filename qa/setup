@@ -31,52 +31,61 @@ chmod +x $HOOK_FILE
 cat <<EOT >> $HOOK_FILE
 #!/usr/bin/env -S bash -eu
 
+AFFECTED=`git diff --cached --name-only --diff-filter=ACM`
+AFFECTED_STRING=${AFFECTED[@]}
+
+if [ -z "$AFFECTED_STRING" ]
+then
+  echo "No files staged for commit!"
+  exit 1
+fi
+
 echo "=========================================================="
 echo "Running tests."
 echo ""
 echo "---==( Executing Psalm tests. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/psalm -c $dir/qa/psalm/psalm.xml --show-info=true
+$phpCmd $dir/vendor/bin/psalm -c $dir/qa/psalm/psalm.xml --show-info=true $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHPMD tests on source files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml
+$phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHPMD tests on test files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml
+$phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHP CBF for source files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 $dir/src
+$phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHP CBF for test files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 $dir/tests
+$phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHPCS for source files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $dir/src
+$phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHPCS for test files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $dir/tests
+$phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHPStan for source files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $dir/src
+$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHPStan for test files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $dir/tests
+$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHP CS Fixer for source files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/src
+$phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $AFFECTED_STRING
 echo ""
 echo "---==( Executing PHP CS Fixer for test files. )==---"
 echo ""
-$phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/tests
+$phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $AFFECTED_STRING
 EOT
 
 if [ ! -d ./qa/psalm/cache ]; then
