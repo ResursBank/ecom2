@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 /**
  * String testing.
@@ -37,5 +37,33 @@ class StringsTest extends TestCase
         $this->assertEquals(expected: 'Jus************.', actual: $obfuscateFromThirdPosition);
         $this->assertEquals(expected: 'Just************', actual: $obfuscateFromFourthPositionEndAtZero);
         $this->assertEquals(expected: 'Just', actual: $obfuscateFromFifthAndBreakTheStrLenRules);
+    }
+
+    /**
+     * Encode string that is not url-safe.
+     *
+     * @return void
+     * @see https://stackoverflow.com/questions/11449577/why-is-base64-encode-adding-a-slash-in-the-result
+     */
+    public function testBase64urlEncode(): void
+    {
+        // Real base64 string looks like c3ViamVjdHM/X2Q9MQ
+        $this->assertEquals(
+            expected: 'c3ViamVjdHM_X2Q9MQ',
+            actual: Strings::base64urlEncode(data: 'subjects?_d=1')
+        );
+    }
+
+    /**
+     * Decode string that is not url-safe.
+     * @return void
+     * @see https://stackoverflow.com/questions/11449577/why-is-base64-encode-adding-a-slash-in-the-result
+     */
+    public function testBase64urlDecode(): void
+    {
+        $this->assertEquals(
+            expected: 'subjects?_d=1',
+            actual: Strings::base64urlDecode(data: 'c3ViamVjdHM_X2Q9MQ')
+        );
     }
 }
