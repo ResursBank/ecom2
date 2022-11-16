@@ -34,7 +34,9 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
                 name="<?= $customerTypeRadioName ?>"
                 value="<?= CustomerType::NATURAL->name ?>"
             >
-            <span>Natural</span>
+            <span>
+                <?= Translator::translate(phraseId: 'customer-type-natural') ?>
+            </span>
         </label>
         <label for="<?= $radioLegalId ?>">
             <input
@@ -43,7 +45,9 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
                 name="<?= $customerTypeRadioName ?>"
                 value="<?= CustomerType::LEGAL->name ?>"
             >
-            <span>Legal</span>
+            <span>
+                <?= Translator::translate(phraseId: 'customer-type-legal') ?>
+            </span>
         </label>
     </div>
     <div class="rb-customer-widget-getAddress-inputArea">
@@ -203,9 +207,6 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
                 setFetchAddressMessage(
                     <?= Translator::translate(phraseId: 'get-address-no-callback-function') ?>,
                     true
-                );
-                console.error(
-                    ''
                 );
             } else {
                 CALLBACK_FETCH_ADDRESS(data);

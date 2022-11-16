@@ -157,5 +157,19 @@
       "en": "Fetch address",
       "sv": "Hämta adress"
     }
+  },
+  {
+    "id": "customer-type-natural",
+    "translation": {
+      "en": "SSN",
+      "sv": "Personnummer"
+    }
+  },
+  {
+    "id": "customer-type-legal",
+    "translation": {
+      "en": "SSN",
+      "sv": "Personnummer"
+    }
   }
 ]
