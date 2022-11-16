@@ -10,7 +10,6 @@ declare(strict_types=1);
 /** @var Resursbank\Ecom\Module\Customer\Widget\GetAddress $this */
 
 use Resursbank\Ecom\Lib\Locale\Translator;
-use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 
 $customerTypeRadioName = 'rbCustomerWidgetGetAddressCustomerType';
@@ -54,7 +53,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
             value="<?= $this->govId ?>"
         >
         <button type="button" id="<?= $btnFetchAddressId ?>">
-            <span class="rb-customer-widget-getAddress-fetching-title">Fetch Address</span>
+            <span class="rb-customer-widget-getAddress-fetching-title"><?= Translator::translate(phraseId: 'fetch-address') ?></span>
             <span class="rb-customer-widget-getAddress-inputArea-fetching-icon">
                 <span class="rb-customer-widget-getAddress-inputArea-fetching-icon-shard"></span>
                 <span class="rb-customer-widget-getAddress-inputArea-fetching-icon-shard"></span>
@@ -70,7 +69,6 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         'use strict';
 
         const INIT_CUSTOMER_TYPE = '<?= $this->customerType->name ?>';
-        const COUNTRY_CODE_STORE = '<?= $this->countryCode->name ?>';
         const URL_FETCH_ADDRESS = '<?= $this->fetchUrl ?>';
         const CALLBACK_FETCH_ADDRESS = <?= $this->jsCallback ?>;
 
@@ -86,45 +84,6 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         const EL_WIDGET = document.getElementsByClassName(
             'rb-customer-widget-getAddress'
         )[0];
-
-        /**
-         * @param {string} countryCode
-         * @returns {boolean}
-         */
-        const isSweden = (countryCode) =>
-            countryCode === '<?= CountryCode::SE->name ?>';
-
-        /**
-         * @param {string} countryCode
-         * @returns {boolean}
-         */
-        const isFinland = (countryCode) =>
-            countryCode === '<?= CountryCode::FI->name ?>';
-
-        /**
-         * @param {string} countryCode
-         * @returns {boolean}
-         */
-        const isNorway = (countryCode) =>
-            countryCode === '<?= CountryCode::NO->name ?>';
-
-        /**
-         * @param {string} countryCode
-         * @returns {boolean}
-         */
-        const isDenmark = (countryCode) =>
-            countryCode === '<?= CountryCode::DK->name ?>';
-
-        /**
-         * @param {string} countryCode
-         * @returns {boolean}
-         */
-        const isCountryAllowed = (countryCode) => {
-            return isSweden(countryCode) ||
-                isFinland(countryCode) ||
-                isNorway(countryCode) ||
-                isDenmark(countryCode);
-        };
 
         /**
          * @param {unknown} value
@@ -149,74 +108,40 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         /**
          * Validates an organisation number.
          *
-         * NOTE: Validates for Sweden, Norway and Finland ONLY.
-         *
          * @param {string} govId
-         * @param {string} countryCode
          * @returns {boolean}
          */
-        const validateOrg = (govId, countryCode) => {
-            let result = false;
-            const finland = /^((\d{7})(\-)?\d)$/;
+        const validateOrg = (govId) => {
             const sweden = /^(16\d{2}|18\d{2}|19\d{2}|20\d{2}|\d{2})(\d{2})(\d{2})(\-|\+)?([\d]{4})$/;
-            const norway = /^([89]([ |-]?[0-9]){8})$/;
 
-            if (isSweden(countryCode)) {
-                result = sweden.test(govId);
-            } else if (isNorway(countryCode)) {
-                result = norway.test(govId);
-            } else if (isFinland(countryCode)) {
-                result = finland.test(govId);
-            }
-
-            return result;
+            return sweden.test(govId);
         };
 
         /**
          * Validates an SSN.
          *
-         * NOTE: Validates for Sweden, Norway and Finland ONLY.
-         *
          * @param {string} ssn
-         * @param {string} countryCode
          * @returns {boolean}
          */
-        const validateSsn = (ssn, countryCode) => {
-            let result = false;
-            const norway = /^([0][1-9]|[1-2][0-9]|3[0-1])(0[1-9]|1[0-2])(\d{2})(\-)?([\d]{5})$/;
-            const finland = /^([\d]{6})[\+-A]([\d]{3})([0123456789ABCDEFHJKLMNPRSTUVWXY])$/;
+        const validateSsn = (ssn) => {
             const sweden = /^(18\d{2}|19\d{2}|20\d{2}|\d{2})(0[1-9]|1[0-2])([0][1-9]|[1-2][0-9]|3[0-1])(\-|\+)?([\d]{4})$/;
-            const denmark = /^((3[0-1])|([1-2][0-9])|(0[1-9]))((1[0-2])|(0[1-9]))(\d{2})(\-)?([\d]{4})$/;
 
-            if (isSweden(countryCode)) {
-                result = sweden.test(ssn);
-            } else if (isNorway(countryCode)) {
-                result = norway.test(ssn);
-            } else if (isFinland(countryCode)) {
-                result = finland.test(ssn);
-            } else if (isDenmark(countryCode)) {
-                result = denmark.test(ssn);
-            }
-
-            return result;
+            return sweden.test(ssn);
         };
 
         /**
          * @param {string} govId
-         * @param {string} countryCode
          * @param {"NATURAL"|"LEGAL"} customerType
          * @returns {boolean}
          */
-        const validateGovId = (govId, countryCode, customerType) => {
+        const validateGovId = (govId, customerType) => {
             let result = false;
 
             if (govId !== '') {
-                if (isCountryAllowed(countryCode)) {
-                    if (isLegal(customerType)) {
-                        validateOrg(govId, countryCode);
-                    } else if (isNatural(customerType)) {
-                        validateSsn(govId, countryCode)
-                    }
+                if (isLegal(customerType)) {
+                    validateOrg(govId);
+                } else if (isNatural(customerType)) {
+                    validateSsn(govId)
                 }
             }
 
@@ -262,7 +187,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         const handleFetchAddressResponse = (response) => {
             if (!response.ok) {
                 setFetchAddressMessage(
-                    <?= Translator::translate('get-address-could-not-fetch-address') ?>,
+                    <?= Translator::translate(phraseId: 'get-address-could-not-fetch-address') ?>,
                     true
                 );
             } else {
@@ -276,7 +201,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         const handleFetchAddressCallback = (data) => {
             if (typeof CALLBACK_FETCH_ADDRESS !== 'function') {
                 setFetchAddressMessage(
-                    <?= Translator::translate('get-address-no-callback-function') ?>,
+                    <?= Translator::translate(phraseId: 'get-address-no-callback-function') ?>,
                     true
                 );
                 console.error(
@@ -292,7 +217,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
          */
         const handleFetchAddressFatalError = (error) => {
             if (error instanceof Error) {
-                // Handle network/JS errors.
+                // @todo Handle network/JS errors.
             }
         }
 
@@ -356,7 +281,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
             const value = event.target.value;
 
             setInputState(
-                validateGovId(INPUT_GOV_ID.value, COUNTRY_CODE_STORE, value)
+                validateGovId(INPUT_GOV_ID.value, value)
             );
         };
 
@@ -377,13 +302,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
                 const selectedCustomerType = getCustomerType();
 
                 if (isCustomerType(selectedCustomerType)) {
-                    setInputState(
-                        validateGovId(
-                            value,
-                            COUNTRY_CODE_STORE,
-                            selectedCustomerType
-                        )
-                    );
+                    setInputState(validateGovId(value, selectedCustomerType));
                 }
             }, false);
         }

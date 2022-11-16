@@ -22,7 +22,6 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Customer\Widget\GetAddress;
 
@@ -64,7 +63,6 @@ class GetAddressTest extends TestCase
     {
         $data = new GetAddress(
             govId: '',
-            countryCode: CountryCode::SE,
             customerType: CustomerType::NATURAL,
             fetchUrl:  ''
         );
@@ -102,13 +100,6 @@ class GetAddressTest extends TestCase
             string: $data->content,
             message: 'Get address widget should contain an input with id ' .
             'rb-customer-widget-getAddress-customerType-legal.'
-        );
-
-        static::assertMatchesRegularExpression(
-            pattern: '/const isFinland = \(countryCode\) =>/s',
-            string: $data->content,
-            message: 'Get address widget should contain a Javascript ' .
-                'function called isFinland'
         );
     }
 }

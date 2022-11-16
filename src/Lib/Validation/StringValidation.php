@@ -262,26 +262,4 @@ class StringValidation
 
         return true;
     }
-
-    /**
-     * @param string $value
-     * @return bool
-     * @throws IllegalValueException
-     */
-    public function isNorwegianPhone(
-        string $value
-    ): bool {
-        if (
-            !preg_match(
-                pattern: '/^(\+47|0047|)?[ |-]?[2-9]([ |-]?\d){7}$/',
-                subject: $value
-            )
-        ) {
-            throw new IllegalValueException(
-                message: "$value is not a properly formatted Norwegian phone number."
-            );
-        }
-
-        return true;
-    }
 }

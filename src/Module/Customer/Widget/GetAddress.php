@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Customer\Widget;
 
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -29,7 +28,6 @@ class GetAddress extends Widget
 
     /**
      * @param string $govId
-     * @param CountryCode $countryCode
      * @param CustomerType $customerType
      * @param string $fetchUrl
      * @param string $jsCallback
@@ -37,7 +35,6 @@ class GetAddress extends Widget
      */
     public function __construct(
         public string $govId,
-        public CountryCode $countryCode,
         public CustomerType $customerType,
         public string $fetchUrl,
         public string $jsCallback = 'rbHandleFetchAddressResponse',

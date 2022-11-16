@@ -65,8 +65,6 @@ class GetAddressControllerTest extends TestCase
      */
     public function testExec(): void
     {
-        $this->setPostData();
-
         $data = $this->callController();
 
         $this->assertResponseContains(needle: 'addressRow1', haystack: $data);
@@ -102,9 +100,7 @@ class GetAddressControllerTest extends TestCase
      */
     public function testExecFailure(): void
     {
-        $this->setPostData(govId: '169468958195');
-
-        $data = $this->callController();
+        $data = $this->callController(govId: '169468958195');
 
         $this->assertResponseContains(needle: 'error', haystack: $data);
 
@@ -127,35 +123,25 @@ class GetAddressControllerTest extends TestCase
      * NOTE: This will manipulate headers. This will cause an error since
      * PHPUnit has already set a header. Suppressing is the only way.
      *
+     * @param string $govId
+     * @param CustomerType $customerType
      * @return string
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      */
-    private function callController(): string
-    {
+    private function callController(
+        string $govId = '198001010001',
+        CustomerType $customerType = CustomerType::NATURAL
+    ): string {
         ob_start();
 
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         @$this->controller->exec(
             storeId: $this->storeId,
-            country: Country::SE
+            govId: $govId,
+            customerType: $customerType->value
         );
 
         return ob_get_clean();
-    }
-
-    /**
-     * Simulate incoming data from POSTed form.
-     *
-     * @param string $govId
-     * @param CustomerType $customerType
-     * @return void
-     */
-    private function setPostData(
-        string $govId = '198001010001',
-        CustomerType $customerType = CustomerType::NATURAL
-    ): void {
-        $_POST[Controller::PARAM_GOV_ID] = $govId;
-        $_POST[Controller::PARAM_CUSTOMER_TYPE] = $customerType->value;
     }
 
     /**

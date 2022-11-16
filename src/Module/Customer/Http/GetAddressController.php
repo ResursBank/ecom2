@@ -10,13 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Customer\Http;
 
 use Exception;
-use Resursbank\Ecom\Exception\HttpException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Customer\Repository;
-use Resursbank\Ecom\Module\Store\Enum\Country;
 
 /**
  * Base controller class to handle operations associated with address fetching.
@@ -28,7 +25,7 @@ use Resursbank\Ecom\Module\Store\Enum\Country;
 class GetAddressController extends Controller
 {
     /**
-     * Name of government id field.
+     * Name of government ID field.
      */
     public const PARAM_GOV_ID = 'govId';
 
@@ -47,25 +44,29 @@ class GetAddressController extends Controller
 
     /**
      * @param string $storeId
-     * @param Country $country
+     * @param string $govId
+     * @param string $customerType
      * @return void
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function exec(
         string $storeId,
-        Country $country
+        string $govId,
+        string $customerType
     ): void {
+        $type = CustomerType::from(value: $customerType);
+
         try {
-            $customerType = CustomerType::from(
-                value: $this->getPostParam(param: self::PARAM_CUSTOMER_TYPE)
-            );
+            if ($type === CustomerType::NATURAL) {
+                $this->stringValidation->isSwedishSsn(value: $govId);
+            } else {
+                $this->stringValidation->isSwedishOrg(value: $govId);
+            }
 
             $address = Repository::getAddress(
                 storeId: $storeId,
-                governmentId: $this->getGovId(
-                    country: $country,
-                    customerType: $customerType
-                ),
-                customerType: $customerType
+                governmentId: $govId,
+                customerType: $type
             );
 
             $this->respond(data: $address->toArray());
@@ -76,39 +77,5 @@ class GetAddressController extends Controller
                 data: ['error' => $this->getErrorMessage(exception: $e)]
             );
         }
-    }
-
-    /**
-     * Resolve government ID from
-     *
-     * @param Country $country
-     * @param CustomerType $customerType
-     * @return string
-     * @throws HttpException
-     * @throws IllegalValueException
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    public function getGovId(
-        Country $country,
-        CustomerType $customerType
-    ): string {
-        $result = $this->getPostParam(param: self::PARAM_GOV_ID);
-
-        switch ($country) {
-            case Country::SE:
-                if ($customerType === CustomerType::NATURAL) {
-                    $this->stringValidation->isSwedishSsn(value: $result);
-                } else {
-                    $this->stringValidation->isSwedishOrg(value: $result);
-                }
-                break;
-            case Country::NO:
-                $this->stringValidation->isNorwegianPhone(value: $result);
-                break;
-            default:
-                break;
-        }
-
-        return $result;
     }
 }
