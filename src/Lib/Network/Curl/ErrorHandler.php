@@ -11,7 +11,9 @@ namespace Resursbank\Ecom\Lib\Network\Curl;
 
 use CurlHandle;
 use JsonException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -23,6 +25,7 @@ use stdClass;
 use function is_array;
 use function is_int;
 use function is_string;
+use function is_object;
 
 /**
  * Error handling of curl requests.
@@ -40,6 +43,7 @@ class ErrorHandler
      * @param ContentType $contentType
      * @param StringValidation $stringValidation
      * @throws IllegalTypeException
+     * @throws ConfigException
      */
     public function __construct(
         public readonly string|bool $body,
@@ -58,6 +62,7 @@ class ErrorHandler
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws ConfigException
      */
     public function validate(): void
     {
@@ -72,6 +77,7 @@ class ErrorHandler
     /**
      * @return int
      * @throws IllegalTypeException
+     * @throws ConfigException
      */
     private function getHttpCode(): int
     {
@@ -82,9 +88,12 @@ class ErrorHandler
         }
 
         if (!is_int(value: $code)) {
-            throw new IllegalTypeException(
+            $exception = new IllegalTypeException(
                 message: 'Curl http code is not an integer'
             );
+            Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
+            throw $exception;
         }
 
         return $code;
@@ -95,6 +104,8 @@ class ErrorHandler
      * @return void
      * @throws AuthException
      * @throws CurlException
+     * @throws ConfigException
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function throwCurlException(string $jsonError = ''): void
     {
@@ -102,17 +113,67 @@ class ErrorHandler
             $this->httpCode === 401 ||
             ($this->httpCode === 400 && $jsonError === 'invalid_client')
         ) {
-            throw new AuthException(
+            $exception = new AuthException(
                 message: 'Access denied. Please verify user credentials.'
             );
+            Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
+            throw $exception;
         }
 
-        throw new CurlException(
-            message: curl_error(handle: $this->ch),
+        $message = $this->getMessageFromErrorBody();
+        $exception = new CurlException(
+            message: !empty($message) ? $message : curl_error(handle: $this->ch),
             code: curl_errno(handle: $this->ch),
             body: $this->body,
             httpCode: $this->httpCode
         );
+        Config::getLogger()->error(message: $exception->getMessage());
+        Config::getLogger()->error(message: $exception);
+        throw $exception;
+    }
+
+    /**
+     * Attempts to parse an error message from $this->body if the HTTP response code is >= 400.
+     *
+     * @return string
+     * @throws ConfigException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
+    private function getMessageFromErrorBody(): string
+    {
+        if ($this->httpCode >= 400 && is_string(value: $this->body)) {
+            try {
+                $decoded = json_decode(
+                    json: $this->body,
+                    associative: false,
+                    depth: 768,
+                    flags: JSON_THROW_ON_ERROR
+                );
+                if (!is_object(value: $decoded)) {
+                    throw new JsonException(message: 'json_decode did not produce an object');
+                }
+            } catch (JsonException $jsonException) {
+                Config::getLogger()->error(message: $jsonException->getMessage());
+                Config::getLogger()->error(message: $jsonException);
+            }
+        }
+
+        $message = '';
+        if (isset($decoded) && is_object(value: $decoded)) {
+            if (isset($decoded->code) && (is_string(value: $decoded->code) || is_numeric(value: $decoded->code))) {
+                $message .= $decoded->code;
+            }
+            if (isset($decoded->message) && is_string(value: $decoded->message)) {
+                $message .= (!empty($message) ? ', ' : '') . $decoded->message . ' ';
+            }
+            if (isset($decoded->traceId) && is_string(value: $decoded->traceId)) {
+                $message .= (!empty($message) ? ', ' : '') . '[Trace ID: ' . $decoded->traceId . ']';
+            }
+        }
+
+        return $message;
     }
 
     /**
@@ -123,14 +184,17 @@ class ErrorHandler
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws ConfigException
      */
     private function validateBody(): void
     {
         if ($this->contentType === ContentType::JSON) {
             if (!is_string(value: $this->body)) {
-                throw new IllegalTypeException(
+                $exception = new IllegalTypeException(
                     message: 'Body is not a string, but should be for JSON content type.'
                 );
+                Config::getLogger()->error(message: $exception->getMessage());
+                throw $exception;
             }
 
             $this->stringValidation->notEmpty(value: $this->body);
@@ -143,9 +207,12 @@ class ErrorHandler
             );
 
             if (!is_array(value: $content) && !$content instanceof stdClass) {
-                throw new IllegalValueException(
+                $exception = new IllegalValueException(
                     message: 'Decoded JSON body is not an object.'
                 );
+                Config::getLogger()->error(message: $exception->getMessage());
+                Config::getLogger()->error(message: $exception);
+                throw $exception;
             }
 
             /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
@@ -161,6 +228,7 @@ class ErrorHandler
      * @return void
      * @throws AuthException
      * @throws CurlException
+     * @throws ConfigException
      */
     private function validateHttpCode(): void
     {

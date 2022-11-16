@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Lib\Network\Curl;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -25,6 +26,15 @@ use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
  */
 class ErrorHandlerTest extends TestCase
 {
+    /**
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::setup();
+    }
+
     /**
      * Assert validate() throws IllegalTypeException when body isn't string.
      *
