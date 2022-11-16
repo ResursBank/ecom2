@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Customer\Http;
 
 use Exception;
+use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -77,5 +78,27 @@ class GetAddressController extends Controller
                 data: ['error' => $this->getErrorMessage(exception: $e)]
             );
         }
+    }
+
+    /**
+     * Helper method to extract supplied government ID from POST.
+     *
+     * @return string
+     * @throws HttpException
+     */
+    public function getGovId(): string
+    {
+        return $this->getPostParam(param: self::PARAM_GOV_ID);
+    }
+
+    /**
+     * Helper method to extract selected customer type from POST.
+     *
+     * @return string
+     * @throws HttpException
+     */
+    public function getCustomerType(): string
+    {
+        return $this->getPostParam(param: self::PARAM_CUSTOMER_TYPE);
     }
 }

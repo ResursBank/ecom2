@@ -13,6 +13,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
@@ -21,7 +22,6 @@ use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Customer\Http\GetAddressController as Controller;
 
 /**
@@ -115,6 +115,34 @@ class GetAddressControllerTest extends TestCase
 
         $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
         $this->assertNotEmpty(actual: $obj->error);
+    }
+
+    /**
+     * @return void
+     * @throws HttpException
+     */
+    public function testGetGovId(): void
+    {
+        $_POST[Controller::PARAM_GOV_ID] = '169468958195';
+
+        $this->assertSame(
+            expected: '169468958195',
+            actual: $this->controller->getGovId()
+        );
+    }
+
+    /**
+     * @return void
+     * @throws HttpException
+     */
+    public function testGetCustomerType(): void
+    {
+        $_POST[Controller::PARAM_CUSTOMER_TYPE] = CustomerType::NATURAL->value;
+
+        $this->assertSame(
+            expected: CustomerType::NATURAL->value,
+            actual: $this->controller->getCustomerType()
+        );
     }
 
     /**
