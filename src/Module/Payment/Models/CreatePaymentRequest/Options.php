@@ -26,6 +26,7 @@ class Options extends Model
      * @param bool|null $initiatedOnCustomerDevice
      * @param bool|null $handleManualInspection
      * @param bool|null $handleFrozenPayments
+     * @param bool|null $automaticCapture
      * @param RedirectionUrls|null $redirectionUrls
      * @param Callbacks|null $callbacks
      * @param int|null $timeToLiveInMinutes
@@ -33,15 +34,17 @@ class Options extends Model
      * @throws IllegalValueException
      */
     public function __construct(
-        public readonly ?bool $initiatedOnCustomerDevice,
-        public readonly ?bool $handleManualInspection,
-        public readonly ?bool $handleFrozenPayments,
-        public readonly ?RedirectionUrls $redirectionUrls,
-        public readonly ?Callbacks $callbacks,
-        public readonly ?int $timeToLiveInMinutes,
+        public readonly ?bool $initiatedOnCustomerDevice = null,
+        public readonly ?bool $handleManualInspection = null,
+        public readonly ?bool $handleFrozenPayments = null,
+        public readonly ?bool $automaticCapture = null,
+        public readonly ?RedirectionUrls $redirectionUrls = null,
+        public readonly ?Callbacks $callbacks = null,
+        public readonly ?int $timeToLiveInMinutes = null,
         public readonly IntValidation $intValidation = new IntValidation()
     ) {
         $this->validateTimeToLiveInMinutes();
+        $this->validateAutomaticCapture();
     }
 
     /**
@@ -52,6 +55,19 @@ class Options extends Model
     {
         if ($this->timeToLiveInMinutes !== null) {
             $this->intValidation->inRange(value: $this->timeToLiveInMinutes, min: 1, max: 43200);
+        }
+    }
+
+    /**
+     * @return void
+     * @throws IllegalValueException
+     */
+    private function validateAutomaticCapture(): void
+    {
+        if ($this->handleFrozenPayments && $this->automaticCapture) {
+            throw new IllegalValueException(
+                message: 'automaticCapture cannot be set to true when handleFrozenPayments is set to true'
+            );
         }
     }
 }
