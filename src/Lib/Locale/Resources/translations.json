@@ -110,6 +110,69 @@
     }
   },
   {
+    "id": "unknown-error",
+    "translation": {
+      "en": "An unknown error occurred.",
+      "sv": "Ett okänt fel har inträffat."
+    }
+  },
+  {
+    "id": "missing-post-param",
+    "translation": {
+      "en": "Missing POST param",
+      "sv": "Saknar POST parameter"
+    }
+  },
+  {
+    "id": "empty-post-param",
+    "translation": {
+      "en": "Empty POST param",
+      "sv": "Tom POST parameter"
+    }
+  },
+  {
+    "id": "failed-to-encode-error",
+    "translation": {
+      "en": "Failed to encode data.",
+      "sv": "Kunde inte enkoda data."
+    }
+  },
+  {
+    "id": "get-address-could-not-fetch-address",
+    "translation": {
+      "en": "Could not fetch an address for the given value. Please update the value or refresh the page and try again.",
+      "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen uppdatera värdet eller ladda om sidan och försök igen. "
+    }
+  },
+  {
+    "id": "get-address-no-callback-function",
+    "translation": {
+      "en": "The address was fetched, but could not be handled properly. Please contact the store owner if the problem persists.",
+      "sv": "Address blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiksägaren ifall problemet kvarstår."
+    }
+  },
+  {
+    "id": "fetch-address",
+    "translation": {
+      "en": "Fetch address",
+      "sv": "Hämta adress"
+    }
+  },
+  {
+    "id": "customer-type-natural",
+    "translation": {
+      "en": "SSN",
+      "sv": "Personnummer"
+    }
+  },
+  {
+    "id": "customer-type-legal",
+    "translation": {
+      "en": "SSN",
+      "sv": "Personnummer"
+    }
+  },
+  {
     "id": "pay-in-installments-with-resurs-bank",
     "translation": {
       "en": "Pay in installments with Resurs Bank",

@@ -403,4 +403,190 @@ final class StringValidationTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->stringValidation->isTimestampDate(value: '{"sneaky": "object"}');
     }
+
+    /**
+     * Assert isSwedishSsn throws IllegalValueException when supplied an invalid
+     * SSN value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishSsnThrowsInIllegal(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishSsn(value: '192099992222');
+    }
+
+    /**
+     * Assert isSwedishSsn returns TRUE for properly formatted SSN.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishSsn(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishSsn(value: '198001010001')
+        );
+    }
+
+    /**
+     * Assert isSwedishSsn returns TRUE when the last 4 digits are separated by
+     * a hyphen.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishSsnAcceptsHyphen(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishSsn(value: '19800101-0001')
+        );
+    }
+
+    /**
+     * Assert isSwedishSsn throws IllegalValueException if the hyphen is in the
+     * wrong place.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishSsnThrowsWithInaccurateHyphen(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishSsn(value: '198001010-001');
+    }
+
+    /**
+     * Assert isSwedishSsn throws IllegalValueException when supplied an
+     * alphanumeric value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishSsnThrowsOnAlpha(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishSsn(value: '1980010a0001');
+    }
+
+    /**
+     * Assert isSwedishSsn throws IllegalValueException when not prefixed with
+     * 16, 18, 19 or 20. Assert all valid prefixes return TRUE.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishSsnPrefix(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishSsn(value: '188001010001')
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishSsn(value: '198001010001')
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishSsn(value: '208001010001')
+        );
+
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishSsn(value: '178001010001');
+    }
+
+    /**
+     * Assert isSwedishOrg throws IllegalValueException when supplied an invalid
+     * ORG value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishOrgThrowsInIllegal(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishOrg(value: '999997368573');
+    }
+
+    /**
+     * Assert isSwedishOrg returns TRUE for properly formatted ORG.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishOrg(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishOrg(value: '166997368573')
+        );
+    }
+
+    /**
+     * Assert isSwedishOrg returns TRUE when the last 4 digits are separated by
+     * a hyphen.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishOrgAcceptsHyphen(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishOrg(value: '16699736-8573')
+        );
+    }
+
+    /**
+     * Assert isSwedishOrg throws IllegalValueException if the hyphen is in the
+     * wrong place.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishOrgThrowsWithInaccurateHyphen(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishOrg(value: '166997368-573');
+    }
+
+    /**
+     * Assert isSwedishOrg throws IllegalValueException when supplied an
+     * alphanumeric value.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishOrgThrowsOnAlpha(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishOrg(value: '1669973a8573');
+    }
+
+    /**
+     * Assert isSwedishOrg throws IllegalValueException when not prefixed with
+     * 16, 18, 19 or 20. Assert all valid prefixes return TRUE.
+     *
+     * @return void
+     * @throws IllegalValueException
+     */
+    public function testIsSwedishOrgPrefix(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishOrg(value: '166997368573')
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishOrg(value: '188997368573')
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishOrg(value: '198997368573')
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isSwedishOrg(value: '208997368573')
+        );
+
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isSwedishOrg(value: '158997368573');
+    }
 }

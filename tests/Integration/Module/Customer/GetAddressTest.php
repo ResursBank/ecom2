@@ -319,6 +319,7 @@ class GetAddressTest extends TestCase
             throw $e;
         }
     }
+
 //    /**
 //     * @return void
 //     * @throws AuthException

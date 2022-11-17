@@ -139,6 +139,7 @@ class ErrorHandler
      * @return string
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function getMessageFromErrorBody(): string
     {
