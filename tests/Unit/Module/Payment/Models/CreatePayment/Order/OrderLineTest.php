@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Payment\Model\CreatePayment\Order;
+namespace Resursbank\EcomTest\Unit\Module\Payment\Models\CreatePayment\Order;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
