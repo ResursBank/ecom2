@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Locale;
 
+use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -110,8 +111,9 @@ class Translator
      * @throws ConfigException
      * @see Config::$locale
      */
-    public static function translate(string $phraseId): string
-    {
+    public static function translate(
+		string $phraseId
+    ): string {
         $phrases = self::getData();
         $result = null;
 

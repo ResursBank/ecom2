@@ -12,8 +12,7 @@ namespace Resursbank\Ecom\Module\Customer\Http;
 use Exception;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Customer\Model\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
 
 /**
@@ -35,70 +34,47 @@ class GetAddressController extends Controller
      */
     public const PARAM_CUSTOMER_TYPE = 'customerType';
 
-    /**
-     * @param StringValidation $stringValidation
-     */
-    public function __construct(
-        private readonly StringValidation $stringValidation = new StringValidation()
-    ) {
-    }
-
-    /**
-     * @param string $storeId
-     * @param string $govId
-     * @param string $customerType
-     * @return void
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
+	/**
+	 * @param string $storeId
+	 * @param GetAddressRequest $data
+	 * @return void
+	 * @SuppressWarnings(PHPMD.ElseExpression)
+	 */
     public function exec(
         string $storeId,
-        string $govId,
-        string $customerType
+        GetAddressRequest $data
     ): void {
-        $type = CustomerType::from(value: $customerType);
-
         try {
-            if ($type === CustomerType::NATURAL) {
-                $this->stringValidation->isSwedishSsn(value: $govId);
-            } else {
-                $this->stringValidation->isSwedishOrg(value: $govId);
-            }
-
             $address = Repository::getAddress(
                 storeId: $storeId,
-                governmentId: $govId,
-                customerType: $type
+                governmentId: $data->govId,
+                customerType: $data->customerType
             );
 
             $this->respond(data: $address->toArray());
         } catch (Exception $e) {
-            $this->log(exception: $e);
-            $this->respond(
-                code: 400,
-                data: ['error' => $this->getErrorMessage(exception: $e)]
-            );
+            $this->respondWithError(exception: $e);
         }
     }
 
-    /**
-     * Helper method to extract supplied government ID from POST.
-     *
-     * @return string
-     * @throws HttpException
-     */
-    public function getGovId(): string
-    {
-        return $this->getPostParam(param: self::PARAM_GOV_ID);
-    }
+	/**
+	 * @return GetAddressRequest
+	 * @throws HttpException
+	 * @todo Add tests. See ECP-273
+	 */
+	public function getRequestData(): GetAddressRequest
+	{
+		$result = $this->getRequestModel(
+			model: GetAddressRequest::class
+		);
 
-    /**
-     * Helper method to extract selected customer type from POST.
-     *
-     * @return string
-     * @throws HttpException
-     */
-    public function getCustomerType(): string
-    {
-        return $this->getPostParam(param: self::PARAM_CUSTOMER_TYPE);
-    }
+		if (!$result instanceof GetAddressRequest) {
+			throw new HttpException(
+				message: $this->translateError('invalid-post-data'),
+				code: 415
+			);
+		}
+
+		return $result;
+	}
 }

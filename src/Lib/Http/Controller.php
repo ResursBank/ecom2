@@ -10,11 +10,14 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Http;
 
 use Exception;
+use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
-use function is_string;
+use function file_get_contents;
 use function strlen;
 
 /**
@@ -48,6 +51,21 @@ class Controller
         echo $result;
     }
 
+	/**
+	 * Shorthand method to log an Exception and create an error response.
+	 *
+	 * @param Exception $exception
+	 * @return void
+	 */
+	public function respondWithError(Exception $exception): void
+	{
+		$this->log(exception: $exception);
+		$this->respond(
+			data: ['error' => $this->getErrorMessage(exception: $exception)],
+			code: 400
+		);
+	}
+
     /**
      * Mask messages from exceptions other than HttpException instances, to
      * ensure sensitive information is never rendered to the end client.
@@ -63,35 +81,53 @@ class Controller
             $this->translateError(phraseId: 'unknown-error');
     }
 
-    /**
-     * Resolve none-empty POST parameter.
-     *
-     * @param string $param
-     * @return string
-     * @throws HttpException
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    public function getPostParam(
-        string $param
-    ): string {
-        if (!isset($_POST[$param])) {
-            throw new HttpException(
-                message: $this->translateError(phraseId: 'missing-post-param') . " $param",
-                code: 404
-            );
-        }
+	/**
+	 * Resolve decoded input data.
+	 *
+	 * @param string $model
+	 *
+	 * @return Model
+	 * @throws HttpException
+	 * @todo Write tests for this. See ECP-271
+	 */
+	public function getRequestModel(
+		string $model
+	): Model {
+		$data = file_get_contents(filename: 'php://input');
 
-        $result = is_string(value: $_POST[$param]) ? $_POST[$param] : '';
+		if (false === $data) {
+			throw new HttpException(
+				message: $this->translateError(phraseId: 'missing-post-data'),
+				code: 400
+			);
+		}
 
-        if ($result === '') {
-            throw new HttpException(
-                message: $this->translateError(phraseId: 'empty-post-param') . " $param",
-                code: 411
-            );
-        }
+		try {
+			$data = json_decode(
+				json: $data,
+				associative: false,
+				depth: 512,
+				flags: JSON_THROW_ON_ERROR
+			);
+		} catch (JsonException) {
+			throw new HttpException(
+				message: $this->translateError(phraseId: 'malformed-post-data'),
+				code: 406
+			);
+		}
 
-        return $result;
-    }
+		try {
+			return DataConverter::stdClassToType(
+				object: $data,
+				type: $model
+			);
+		} catch (Exception) {
+			throw new HttpException(
+				message: $this->translateError(phraseId: 'invalid-post-data'),
+				code: 415
+			);
+		}
+	}
 
     /**
      * @param Exception $exception
