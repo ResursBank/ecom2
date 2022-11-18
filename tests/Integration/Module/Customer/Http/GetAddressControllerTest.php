@@ -23,7 +23,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Http\GetAddressController as Controller;
-use Resursbank\Ecom\Module\Customer\Model\GetAddressRequest;
+use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 
 /**
  * Tests for the API call getAddress.
@@ -56,16 +56,16 @@ class GetAddressControllerTest extends TestCase
         $this->storeId = $_ENV['STORE_ID'];
     }
 
-	/**
-	 * Assert exec() fetches address data.
-	 *
-	 * @return void
-	 * @throws EmptyValueException
-	 * @throws IllegalTypeException
-	 * @throws IllegalValueException
-	 * @throws JsonException
-	 * @throws ReflectionException
-	 */
+    /**
+     * Assert exec() fetches address data.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
     public function testExec(): void
     {
         $data = $this->callController();
@@ -94,15 +94,15 @@ class GetAddressControllerTest extends TestCase
         );
     }
 
-	/**
-	 * Assert exec() outputs an error if you attempt to fetch company address
-	 * with NATURAL customer type specified.
-	 *
-	 * @return void
-	 * @throws EmptyValueException
-	 * @throws IllegalValueException
-	 * @throws JsonException
-	 */
+    /**
+     * Assert exec() outputs an error if you attempt to fetch company address
+     * with NATURAL customer type specified.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @throws JsonException
+     */
     public function testExecFailure(): void
     {
         $data = $this->callController(govId: '169468958195');
@@ -122,20 +122,21 @@ class GetAddressControllerTest extends TestCase
         $this->assertNotEmpty(actual: $obj->error);
     }
 
-	/**
-	 * Simulate calling the controller and getting JSON output.
-	 *
-	 * NOTE: This will manipulate headers. This will cause an error since
-	 * PHPUnit has already set a header. Suppressing is the only way.
-	 *
-	 * @param string $govId
-	 * @param CustomerType $customerType
-	 *
-	 * @return string
-	 * @throws EmptyValueException
-	 * @throws IllegalValueException
-	 * @SuppressWarnings(PHPMD.ErrorControlOperator)
-	 */
+    /**
+     * Simulate calling the controller and getting JSON output.
+     *
+     * NOTE: This will manipulate headers. This will cause an error since
+     * PHPUnit has already set a header. Suppressing is the only way.
+     *
+     * @param string $govId
+     * @param CustomerType $customerType
+     *
+     * @return string
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @noinspection PhpSameParameterValueInspection
+     */
     private function callController(
         string $govId = '198001010001',
         CustomerType $customerType = CustomerType::NATURAL
@@ -145,10 +146,10 @@ class GetAddressControllerTest extends TestCase
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         @$this->controller->exec(
             storeId: $this->storeId,
-	        data: new GetAddressRequest(
-		        govId: $govId,
-		        customerType: $customerType
-	        )
+            data: new GetAddressRequest(
+                govId: $govId,
+                customerType: $customerType
+            )
         );
 
         return ob_get_clean();

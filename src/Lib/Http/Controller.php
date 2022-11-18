@@ -16,6 +16,7 @@ use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use stdClass;
 
 use function file_get_contents;
 use function strlen;
@@ -51,20 +52,20 @@ class Controller
         echo $result;
     }
 
-	/**
-	 * Shorthand method to log an Exception and create an error response.
-	 *
-	 * @param Exception $exception
-	 * @return void
-	 */
-	public function respondWithError(Exception $exception): void
-	{
-		$this->log(exception: $exception);
-		$this->respond(
-			data: ['error' => $this->getErrorMessage(exception: $exception)],
-			code: 400
-		);
-	}
+    /**
+     * Shorthand method to log an Exception and create an error response.
+     *
+     * @param Exception $exception
+     * @return void
+     */
+    public function respondWithError(Exception $exception): void
+    {
+        $this->log(exception: $exception);
+        $this->respond(
+            data: ['error' => $this->getErrorMessage(exception: $exception)],
+            code: 400
+        );
+    }
 
     /**
      * Mask messages from exceptions other than HttpException instances, to
@@ -81,53 +82,57 @@ class Controller
             $this->translateError(phraseId: 'unknown-error');
     }
 
-	/**
-	 * Resolve decoded input data.
-	 *
-	 * @param string $model
-	 *
-	 * @return Model
-	 * @throws HttpException
-	 * @todo Write tests for this. See ECP-271
-	 */
-	public function getRequestModel(
-		string $model
-	): Model {
-		$data = file_get_contents(filename: 'php://input');
+    /**
+     * Resolve decoded input data.
+     *
+     * @param class-string $model
+     * @return Model
+     * @throws HttpException
+     * @todo Write tests for this. See ECP-271
+     */
+    public function getRequestModel(
+        string $model
+    ): Model {
+        $data = file_get_contents(filename: 'php://input');
 
-		if (false === $data) {
-			throw new HttpException(
-				message: $this->translateError(phraseId: 'missing-post-data'),
-				code: 400
-			);
-		}
+        if (false === $data) {
+            throw new HttpException(
+                message: $this->translateError(phraseId: 'missing-post-data'),
+                code: 400
+            );
+        }
 
-		try {
-			$data = json_decode(
-				json: $data,
-				associative: false,
-				depth: 512,
-				flags: JSON_THROW_ON_ERROR
-			);
-		} catch (JsonException) {
-			throw new HttpException(
-				message: $this->translateError(phraseId: 'malformed-post-data'),
-				code: 406
-			);
-		}
+        try {
+            /** @var stdClass $result */
+            $obj = json_decode(
+                json: $data,
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
 
-		try {
-			return DataConverter::stdClassToType(
-				object: $data,
-				type: $model
-			);
-		} catch (Exception) {
-			throw new HttpException(
-				message: $this->translateError(phraseId: 'invalid-post-data'),
-				code: 415
-			);
-		}
-	}
+            if (!$obj instanceof stdClass) {
+                throw new JsonException(message: 'Malformed data.');
+            }
+        } catch (JsonException) {
+            throw new HttpException(
+                message: $this->translateError(phraseId: 'malformed-post-data'),
+                code: 406
+            );
+        }
+
+        try {
+            return DataConverter::stdClassToType(
+                object: $obj,
+                type: $model
+            );
+        } catch (Exception) {
+            throw new HttpException(
+                message: $this->translateError(phraseId: 'invalid-post-data'),
+                code: 415
+            );
+        }
+    }
 
     /**
      * @param Exception $exception

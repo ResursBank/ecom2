@@ -34,7 +34,7 @@ class GetAddress extends Widget
      * @throws FilesystemException
      */
     public function __construct(
-	    public string $fetchUrl,
+        public string $fetchUrl,
         public string $govId = '',
         public CustomerType $customerType = CustomerType::NATURAL,
         public string $jsCallback = 'rbHandleFetchAddressResponse',

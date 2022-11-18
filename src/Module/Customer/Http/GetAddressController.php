@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Customer\Http;
 use Exception;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
-use Resursbank\Ecom\Module\Customer\Model\GetAddressRequest;
+use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
 
 /**
@@ -34,12 +34,12 @@ class GetAddressController extends Controller
      */
     public const PARAM_CUSTOMER_TYPE = 'customerType';
 
-	/**
-	 * @param string $storeId
-	 * @param GetAddressRequest $data
-	 * @return void
-	 * @todo Design new integration tests.
-	 */
+    /**
+     * @param string $storeId
+     * @param GetAddressRequest $data
+     * @return void
+     * @todo Design new integration tests.
+     */
     public function exec(
         string $storeId,
         GetAddressRequest $data
@@ -57,24 +57,24 @@ class GetAddressController extends Controller
         }
     }
 
-	/**
-	 * @return GetAddressRequest
-	 * @throws HttpException
-	 * @todo Add tests. See ECP-273
-	 */
-	public function getRequestData(): GetAddressRequest
-	{
-		$result = $this->getRequestModel(
-			model: GetAddressRequest::class
-		);
+    /**
+     * @return GetAddressRequest
+     * @throws HttpException
+     * @todo Add tests. See ECP-273
+     */
+    public function getRequestData(): GetAddressRequest
+    {
+        $result = $this->getRequestModel(
+            model: GetAddressRequest::class
+        );
 
-		if (!$result instanceof GetAddressRequest) {
-			throw new HttpException(
-				message: $this->translateError('invalid-post-data'),
-				code: 415
-			);
-		}
+        if (!$result instanceof GetAddressRequest) {
+            throw new HttpException(
+                message: $this->translateError('invalid-post-data'),
+                code: 415
+            );
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 }

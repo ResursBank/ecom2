@@ -58,8 +58,11 @@ class Strings
     public static function base64urlDecode(string $data): string
     {
         return (string)base64_decode(
-            string: str_pad(string: strtr($data, '-_', '+/'),
-                length: strlen($data) % 4, pad_string: '=')
+            string: str_pad(
+                string: strtr($data, '-_', '+/'),
+                length: strlen($data) % 4,
+                pad_string: '='
+            )
         );
     }
 }

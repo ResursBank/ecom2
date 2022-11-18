@@ -112,7 +112,7 @@ class Translator
      * @see Config::$locale
      */
     public static function translate(
-		string $phraseId
+        string $phraseId
     ): string {
         $phrases = self::getData();
         $result = null;
