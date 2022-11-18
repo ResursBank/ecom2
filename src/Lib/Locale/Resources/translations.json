@@ -117,27 +117,6 @@
     }
   },
   {
-    "id": "missing-post-param",
-    "translation": {
-      "en": "Missing POST param",
-      "sv": "Saknar POST parameter"
-    }
-  },
-  {
-    "id": "empty-post-param",
-    "translation": {
-      "en": "Empty POST param",
-      "sv": "Tom POST parameter"
-    }
-  },
-  {
-    "id": "failed-to-encode-error",
-    "translation": {
-      "en": "Failed to encode data.",
-      "sv": "Kunde inte enkoda data."
-    }
-  },
-  {
     "id": "get-address-could-not-fetch-address",
     "translation": {
       "en": "Could not fetch an address for the given value. Please update the value or refresh the page and try again.",
@@ -184,6 +163,34 @@
     "translation": {
       "en": "Starting at %1 per month, for %2 months",
       "sv": "Från %1 per månad, i %2 månader"
+    }
+  },
+  {
+    "id": "invalid-post-data",
+    "translation": {
+      "en": "Invalid POST data.",
+      "sv": "Ogiltig POST data."
+    }
+  },
+  {
+    "id": "missing-post-data",
+    "translation": {
+      "en": "Missing POST data.",
+      "sv": "POST data saknas."
+    }
+  },
+  {
+    "id": "malformed-post-data",
+    "translation": {
+      "en": "Malformed POST data.",
+      "sv": "POST data är felaktigt formaterad."
+    }
+  },
+  {
+    "id": "malformed-post-data",
+    "translation": {
+      "en": "Malformed POST data.",
+      "sv": "POST data är felaktigt formaterad."
     }
   }
 ]

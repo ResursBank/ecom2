@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
-use Resursbank\Ecom\Lib\Locale\Locale;
 
 /**
  * Test basic controller methods.
@@ -30,7 +29,7 @@ class ControllerTest extends TestCase
     {
         parent::setUp();
 
-        Config::setup(locale: Locale::en);
+        Config::setup();
 
         $this->controller = new Controller();
     }
@@ -87,80 +86,6 @@ class ControllerTest extends TestCase
             actual: $this->controller->getErrorMessage(
                 exception: new Exception(message: 'My Message')
             )
-        );
-    }
-
-    /**
-     * Assert getPostParam() throws HttpException with code 404 if the
-     * requested key is not defined.
-     *
-     * @return void
-     * @throws HttpException
-     */
-    public function testGetPostParamThrowsWhenMissing(): void
-    {
-        $this->expectException(exception: HttpException::class);
-        $this->expectExceptionCode(code: 404);
-
-        $this->controller->getPostParam(
-            param: 'something'
-        );
-    }
-
-    /**
-     * Assert getPostParam() throws HttpException with code 411 if the specified
-     * key is empty.
-     *
-     * @return void
-     * @throws HttpException
-     */
-    public function testGetPostParamThrowsWhenEmpty(): void
-    {
-        $this->expectException(exception: HttpException::class);
-        $this->expectExceptionCode(code: 411);
-
-        $_POST['something'] = '';
-
-        $this->controller->getPostParam(
-            param: 'something'
-        );
-    }
-
-    /**
-     * Assert getPostParam() throws HttpException with code 411 if the specified
-     * key is not a string.
-     *
-     * @return void
-     * @throws HttpException
-     */
-    public function testGetPostParamThrowsWithoutString(): void
-    {
-        $this->expectException(exception: HttpException::class);
-        $this->expectExceptionCode(code: 411);
-
-        $_POST['something'] = 211;
-
-        $this->controller->getPostParam(
-            param: 'something'
-        );
-    }
-
-    /**
-     * Assert getPostParam() method returns value of specified key.
-     *
-     * @return void
-     * @throws HttpException
-     */
-    public function testGetPostParamReturns(): void
-    {
-        $_POST['something'] = 'else';
-
-        $this->assertSame(
-            expected: 'else',
-            actual: $this->controller->getPostParam(
-                param: 'something'
-            ),
-            message: 'Failed to extract value from POST variable.'
         );
     }
 

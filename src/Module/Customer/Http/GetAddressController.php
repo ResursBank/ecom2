@@ -38,7 +38,7 @@ class GetAddressController extends Controller
 	 * @param string $storeId
 	 * @param GetAddressRequest $data
 	 * @return void
-	 * @SuppressWarnings(PHPMD.ElseExpression)
+	 * @todo Design new integration tests.
 	 */
     public function exec(
         string $storeId,
