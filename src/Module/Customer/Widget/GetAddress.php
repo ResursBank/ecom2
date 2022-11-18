@@ -27,16 +27,16 @@ class GetAddress extends Widget
     public readonly string $content;
 
     /**
+     * @param string $fetchUrl
      * @param string $govId
      * @param CustomerType $customerType
-     * @param string $fetchUrl
      * @param string $jsCallback
      * @throws FilesystemException
      */
     public function __construct(
-        public string $govId,
-        public CustomerType $customerType,
         public string $fetchUrl,
+        public string $govId = '',
+        public CustomerType $customerType = CustomerType::NATURAL,
         public string $jsCallback = 'rbHandleFetchAddressResponse',
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-address.phtml');

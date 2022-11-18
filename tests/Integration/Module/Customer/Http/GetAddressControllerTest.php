@@ -13,9 +13,9 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
@@ -23,6 +23,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Http\GetAddressController as Controller;
+use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 
 /**
  * Tests for the API call getAddress.
@@ -59,7 +60,9 @@ class GetAddressControllerTest extends TestCase
      * Assert exec() fetches address data.
      *
      * @return void
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      */
@@ -92,60 +95,6 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
-     * Assert exec() outputs an error if you attempt to fetch company address
-     * with NATURAL customer type specified.
-     *
-     * @return void
-     * @throws JsonException
-     */
-    public function testExecFailure(): void
-    {
-        $data = $this->callController(govId: '169468958195');
-
-        $this->assertResponseContains(needle: 'error', haystack: $data);
-
-        $obj = json_decode(
-            json: $data,
-            associative: false,
-            depth: 512,
-            flags: JSON_THROW_ON_ERROR
-        );
-
-        $this->assertIsObject(actual: $obj);
-
-        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
-        $this->assertNotEmpty(actual: $obj->error);
-    }
-
-    /**
-     * @return void
-     * @throws HttpException
-     */
-    public function testGetGovId(): void
-    {
-        $_POST[Controller::PARAM_GOV_ID] = '169468958195';
-
-        $this->assertSame(
-            expected: '169468958195',
-            actual: $this->controller->getGovId()
-        );
-    }
-
-    /**
-     * @return void
-     * @throws HttpException
-     */
-    public function testGetCustomerType(): void
-    {
-        $_POST[Controller::PARAM_CUSTOMER_TYPE] = CustomerType::NATURAL->value;
-
-        $this->assertSame(
-            expected: CustomerType::NATURAL->value,
-            actual: $this->controller->getCustomerType()
-        );
-    }
-
-    /**
      * Simulate calling the controller and getting JSON output.
      *
      * NOTE: This will manipulate headers. This will cause an error since
@@ -153,8 +102,12 @@ class GetAddressControllerTest extends TestCase
      *
      * @param string $govId
      * @param CustomerType $customerType
+     *
      * @return string
+     * @throws EmptyValueException
+     * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @noinspection PhpSameParameterValueInspection
      */
     private function callController(
         string $govId = '198001010001',
@@ -165,8 +118,10 @@ class GetAddressControllerTest extends TestCase
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         @$this->controller->exec(
             storeId: $this->storeId,
-            govId: $govId,
-            customerType: $customerType->value
+            data: new GetAddressRequest(
+                govId: $govId,
+                customerType: $customerType
+            )
         );
 
         return ob_get_clean();

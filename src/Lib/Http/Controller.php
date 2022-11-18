@@ -10,11 +10,15 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Http;
 
 use Exception;
+use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use stdClass;
 
-use function is_string;
+use function file_get_contents;
 use function strlen;
 
 /**
@@ -49,6 +53,21 @@ class Controller
     }
 
     /**
+     * Shorthand method to log an Exception and create an error response.
+     *
+     * @param Exception $exception
+     * @return void
+     */
+    public function respondWithError(Exception $exception): void
+    {
+        $this->log(exception: $exception);
+        $this->respond(
+            data: ['error' => $this->getErrorMessage(exception: $exception)],
+            code: 400
+        );
+    }
+
+    /**
      * Mask messages from exceptions other than HttpException instances, to
      * ensure sensitive information is never rendered to the end client.
      *
@@ -64,33 +83,55 @@ class Controller
     }
 
     /**
-     * Resolve none-empty POST parameter.
+     * Resolve decoded input data.
      *
-     * @param string $param
-     * @return string
+     * @param class-string $model
+     * @return Model
      * @throws HttpException
-     * @SuppressWarnings(PHPMD.Superglobals)
+     * @todo Write tests for this. See ECP-271
      */
-    public function getPostParam(
-        string $param
-    ): string {
-        if (!isset($_POST[$param])) {
+    public function getRequestModel(
+        string $model
+    ): Model {
+        $data = file_get_contents(filename: 'php://input');
+
+        if (false === $data) {
             throw new HttpException(
-                message: $this->translateError(phraseId: 'missing-post-param') . " $param",
-                code: 404
+                message: $this->translateError(phraseId: 'missing-post-data'),
+                code: 400
             );
         }
 
-        $result = is_string(value: $_POST[$param]) ? $_POST[$param] : '';
+        try {
+            /** @var stdClass $result */
+            $obj = json_decode(
+                json: $data,
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
 
-        if ($result === '') {
+            if (!$obj instanceof stdClass) {
+                throw new JsonException(message: 'Malformed data.');
+            }
+        } catch (JsonException) {
             throw new HttpException(
-                message: $this->translateError(phraseId: 'empty-post-param') . " $param",
-                code: 411
+                message: $this->translateError(phraseId: 'malformed-post-data'),
+                code: 406
             );
         }
 
-        return $result;
+        try {
+            return DataConverter::stdClassToType(
+                object: $obj,
+                type: $model
+            );
+        } catch (Exception) {
+            throw new HttpException(
+                message: $this->translateError(phraseId: 'invalid-post-data'),
+                code: 415
+            );
+        }
     }
 
     /**
