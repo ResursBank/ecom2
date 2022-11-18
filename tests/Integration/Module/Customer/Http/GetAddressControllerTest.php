@@ -95,34 +95,6 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
-     * Assert exec() outputs an error if you attempt to fetch company address
-     * with NATURAL customer type specified.
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     * @throws JsonException
-     */
-    public function testExecFailure(): void
-    {
-        $data = $this->callController(govId: '169468958195');
-
-        $this->assertResponseContains(needle: 'error', haystack: $data);
-
-        $obj = json_decode(
-            json: $data,
-            associative: false,
-            depth: 512,
-            flags: JSON_THROW_ON_ERROR
-        );
-
-        $this->assertIsObject(actual: $obj);
-
-        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
-        $this->assertNotEmpty(actual: $obj->error);
-    }
-
-    /**
      * Simulate calling the controller and getting JSON output.
      *
      * NOTE: This will manipulate headers. This will cause an error since

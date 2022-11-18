@@ -38,7 +38,7 @@ class GetAddressController extends Controller
      * @param string $storeId
      * @param GetAddressRequest $data
      * @return void
-     * @todo Design new integration tests.
+     * @todo Design new integration tests. See ECP-275
      */
     public function exec(
         string $storeId,
