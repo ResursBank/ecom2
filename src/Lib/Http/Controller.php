@@ -36,7 +36,6 @@ class Controller
      * @param array $data
      * @param int $code
      * @return void
-     * @todo This method lacks some test coverage since PHPUnit prevents testing methods that manipulate headers.
      */
     public function respond(
         array $data,
@@ -48,9 +47,12 @@ class Controller
             $result = '{"error":"' . $this->translateError(phraseId: 'failed-to-encode') . '"}';
         }
 
-        header(header: 'Content-Type: application/json');
-        header(header: 'Content-Length: ' . strlen(string: $result));
-        http_response_code(response_code: $code);
+        $this->setHeader(key: 'Content-Type', val: 'application/json');
+        $this->setHeader(
+            key: 'Content-Length',
+            val: (string) strlen(string: $result)
+        );
+        $this->setResponseCode(code: $code);
 
         echo $result;
     }
@@ -68,6 +70,31 @@ class Controller
             data: ['error' => $this->getErrorMessage(exception: $exception)],
             code: $this->getErrorResponseCode(exception: $exception)
         );
+    }
+
+    /**
+     * Wrapper for header() method. Required to mek this class more testable
+     * since applying headers will break unit tests.
+     *
+     * @param string $key
+     * @param string $val
+     * @return void
+     */
+    public function setHeader(string $key, string $val): void
+    {
+        header(header: "$key: $val");
+    }
+
+    /**
+     * Wrapper for http_response_code() method. Required to mek this class more
+     * testable since applying headers will break unit tests.
+     *
+     * @param int $code
+     * @return void
+     */
+    public function setResponseCode(int $code): void
+    {
+        http_response_code(response_code: $code);
     }
 
     /**
