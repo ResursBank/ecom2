@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Exception;
 use Exception;
 
 /**
- * Exception triggered when the callback type  is invalid.
+ * Exception triggered when the callback type is invalid.
  */
 class CallbackTypeException extends Exception
 {
