@@ -30,6 +30,10 @@
   opacity:0.7;
 }
 
+#rb-pp-hidden {
+  display:none;
+}
+
 #rb-pp-iframe-container {
   z-index:1000;
   position:fixed;
