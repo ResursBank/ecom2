@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Http;
 
+use Error;
 use Exception;
 use JsonException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -19,6 +21,7 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 
 use function file_get_contents;
+use function get_class;
 use function strlen;
 
 /**
@@ -63,8 +66,21 @@ class Controller
         $this->log(exception: $exception);
         $this->respond(
             data: ['error' => $this->getErrorMessage(exception: $exception)],
-            code: 400
+            code: $this->getErrorResponseCode(exception: $exception)
         );
+    }
+
+    /**
+     * @param Exception $exception
+     * @return int
+     */
+    public function getErrorResponseCode(Exception $exception): int
+    {
+        return match (get_class(object: $exception)) {
+            HttpException::class => $exception->getCode(),
+            CurlException::class => $exception->httpCode,
+            default => 400
+        };
     }
 
     /**
@@ -88,24 +104,14 @@ class Controller
      * @param class-string $model
      * @return Model
      * @throws HttpException
-     * @todo Write tests for this. See ECP-271
      */
     public function getRequestModel(
         string $model
     ): Model {
-        $data = file_get_contents(filename: 'php://input');
-
-        if (false === $data) {
-            throw new HttpException(
-                message: $this->translateError(phraseId: 'missing-post-data'),
-                code: 400
-            );
-        }
-
         try {
             /** @var stdClass $result */
             $obj = json_decode(
-                json: $data,
+                json: $this->getInputData(),
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
@@ -126,12 +132,30 @@ class Controller
                 object: $obj,
                 type: $model
             );
-        } catch (Exception) {
+        } catch (Exception | Error) {
             throw new HttpException(
                 message: $this->translateError(phraseId: 'invalid-post-data'),
                 code: 415
             );
         }
+    }
+
+    /**
+     * @return string
+     * @throws HttpException
+     */
+    public function getInputData(): string
+    {
+        $data = file_get_contents(filename: 'php://input');
+
+        if (false === $data || $data === '') {
+            throw new HttpException(
+                message: $this->translateError(phraseId: 'missing-post-data'),
+                code: 400
+            );
+        }
+
+        return $data;
     }
 
     /**
