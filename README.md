@@ -212,3 +212,21 @@ stores through the **Repository** class. You will need your store(s) for
 subsequent API calls to fetch payment methods for example. The **Repository**
 class will return a **Collection** of **Store** objects read either from cache
 or directly from the API.
+
+## Callbacks
+
+Incoming callbacks are not explicitly handled by the SDK. However, it can still handle the data models for the callbacks sent from Resurs. 
+
+Callbacks are handled by the repository located under **src/Lib/Module/Callback**.
+
+In its simplest form, you can use the following code to fetch the model (where the repository itself handles the data received via php://input) :
+
+```php
+use Resursbank\Ecom\Module\Callback\Repository;
+$this->callbackModel = (new Repository($this->callbackType))->getCallbackModel();
+```
+
+The models are based on the data sent from Resurs (which you can read about [here](https://merchant-api.integration.resurs.com/docs/v2/merchant_payments_v2/options#callbacks) and they are stored at **src/Lib/Model/Callback** as the two below:
+
+* Authorization
+* Management
