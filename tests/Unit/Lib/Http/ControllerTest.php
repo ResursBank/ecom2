@@ -10,12 +10,15 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Http;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\EcomTest\Data\Models\Instrument;
+
+use function strlen;
 
 /**
  * Test basic controller methods.
@@ -44,9 +47,8 @@ class ControllerTest extends TestCase
      * @param string $data
      * @return Controller
      */
-    private function getControllerWithMockedInputData(
-        string $data
-    ): Controller {
+    private function getControllerWithMockedInputData(string $data): Controller
+    {
         $controller = $this->createPartialMock(
             originalClassName: Controller::class,
             methods: ['getInputData']
@@ -61,24 +63,92 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Create a mocked version of the Controller class where the setHeader()
+     * and setResponseCode() methods are never executed, making the respond()
+     * method testable (since manipulating headers will break unit testing).
+     *
+     * This method also asserts that setHeader() is called twice, and that
+     * setResponseCode() is called with the same code as supplied by $code.
+     *
+     * @param int $code
+     * @param array $data
+     * @return Controller
+     * @throws JsonException
+     */
+    private function getControllerWithoutHeaderManipulation(
+        int $code,
+        array $data
+    ): Controller {
+        $controller = $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['setHeader', 'setResponseCode', 'log']
+        );
+
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+        $controller->expects($this->exactly(count: 2))
+            ->method(constraint: 'setHeader')
+            ->withConsecutive(
+                ['Content-Type', 'application/json'],
+                ['Content-Length', (string) strlen(json_encode(value: $data, flags: JSON_THROW_ON_ERROR))]
+            );
+
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+        $controller->expects($this->once())
+            ->method(constraint: 'setResponseCode')
+            ->with($code);
+
+        return $controller;
+    }
+
+    /**
      * Assert respond() will echo JSON encoded data from supplied array.
      *
      * @return void
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @throws JsonException
      */
-    public function testRespondContent(): void
+    public function testRespond(): void
     {
-        ob_start();
+        $data = ['some' => 'aha'];
+        $controller = $this->getControllerWithoutHeaderManipulation(
+            code: 200,
+            data: $data
+        );
 
-        // PHPUnit does not support testing code that manipulate headers.
-        /** @noinspection PhpUsageOfSilenceOperatorInspection */
-        @$this->controller->respond(
-            data: ['data' => 'aha']
+        ob_start();
+        $controller->respond(data: $data);
+        $result = ob_get_clean();
+
+        $this->assertSame(
+            expected: json_encode(value: $data, flags: JSON_THROW_ON_ERROR),
+            actual: $result,
+            message: 'Unexpected output data.'
+        );
+    }
+
+    /**
+     * Assert respondWithError() will echo JSON encoded data including Exception
+     * message. Also asserts that the http response code matching the expected
+     * error code.
+     *
+     * @return void
+     * @throws JsonException
+     */
+    public function testRespondWithError(): void
+    {
+        $data = ['error' => 'Magic math'];
+        $controller = $this->getControllerWithoutHeaderManipulation(
+            code: 418,
+            data: $data
+        );
+
+        ob_start();
+        $controller->respondWithError(
+            exception: new HttpException(message: 'Magic math', code: 418)
         );
         $result = ob_get_clean();
 
         $this->assertSame(
-            expected: '{"data":"aha"}',
+            expected: json_encode(value: $data, flags: JSON_THROW_ON_ERROR),
             actual: $result,
             message: 'Unexpected output data.'
         );
