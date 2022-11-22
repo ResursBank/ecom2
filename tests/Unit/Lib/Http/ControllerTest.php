@@ -25,6 +25,9 @@ use function strlen;
  */
 class ControllerTest extends TestCase
 {
+    /**
+     * @var Controller
+     */
     private Controller $controller;
 
     /**
