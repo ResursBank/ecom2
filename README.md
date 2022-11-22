@@ -9,7 +9,7 @@ complete API coverage.
 
 The **Config::setup()** must always be called before performing any API call.
 This method creates a configured instance of the ECom library with all necessary
-information to execute API calls and perform related actions (such as logging, 
+information to execute API calls and perform related actions (such as logging,
 caching, data persistence etc.). **Config** acts as a singleton and the instance
 is stored in **Config::$instance**.
 
@@ -134,7 +134,8 @@ Data and logic specifically related to the Simplified API.
 Generic functionality that does not belong to any specific library.
 
 * Generic | Methods to extract Composer and Docblock information.
-* DataConverter | Helps us convert anonymous arrays to known objects. Also lets us convert multidimensional arrays to collections.
+* DataConverter | Helps us convert anonymous arrays to known objects. Also lets us convert multidimensional arrays to
+  collections.
 * DataConverter/TestClasses | Test classes for DataConverter.
 
 ### Validation
@@ -170,7 +171,7 @@ Integration of **payment methods**, currently incomplete. Work in progress.
 
 Implementation of the Checkout API (iframe based checkout).
 
-* Repository | Repository for RCO. 
+* Repository | Repository for RCO.
 * Api/GetPayment::call() | Fetch payment information from the API.
 * Api/InitPayment::call() | Initialize payment session (iframe) with the API.
 * Api/UpdatePayment::call() | Update payment session in the API.
@@ -215,18 +216,22 @@ or directly from the API.
 
 ## Callbacks
 
-Incoming callbacks are not explicitly handled by the SDK. However, it can still handle the data models for the callbacks sent from Resurs. 
+Incoming callbacks are not explicitly handled by the SDK. However, it can still handle the data models for the callbacks
+sent from Resurs.
 
 Callbacks are handled by the repository located under **src/Lib/Module/Callback**.
 
-In its simplest form, you can use the following code to fetch the model (where the repository itself handles the data received via php://input) :
+In its simplest form (as the callback types are not auto discovered), you can use the following code to fetch the proper
+callback model for Authorization (where the repository itself also handles the data received via php://input).
 
 ```php
 use Resursbank\Ecom\Module\Callback\Repository;
-$this->callbackModel = (new Repository($this->callbackType))->getCallbackModel();
+$this->callbackModel = (new Repository(CallbackType::AUTHORIZATION))->getCallbackModel();
 ```
 
-The models are based on the data sent from Resurs (which you can read about [here](https://merchant-api.integration.resurs.com/docs/v2/merchant_payments_v2/options#callbacks) and they are stored at **src/Lib/Model/Callback** as the two below:
+The models are based on the data sent from Resurs (which you can read
+about [here,](https://merchant-api.integration.resurs.com/docs/v2/merchant_payments_v2/options#callbacks) and they are
+stored at **src/Lib/Model/Callback** as the two below:
 
 * Authorization
 * Management
