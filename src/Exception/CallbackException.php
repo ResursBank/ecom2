@@ -13,5 +13,4 @@ use Exception;
 
 class CallbackException extends Exception
 {
-
 }
