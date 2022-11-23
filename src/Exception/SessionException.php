@@ -12,8 +12,8 @@ namespace Resursbank\Ecom\Exception;
 use Exception;
 
 /**
- * Test could not be conducted.
+ * Specifies a problem when communicating with PHP session.
  */
-class TestException extends Exception
+class SessionException extends Exception
 {
 }

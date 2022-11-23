@@ -27,15 +27,19 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
 use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
+use Resursbank\EcomTest\Utilities\MockSessionTrait;
 
 /**
  * Tests for the API call getAddress.
  */
-class GetAddressTest extends TestCase
+class RepositoryTest extends TestCase
 {
+    use MockSessionTrait;
+
     /**
      * @return void
      * @throws EmptyValueException
@@ -54,6 +58,8 @@ class GetAddressTest extends TestCase
                 grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
         );
+
+        $this->setupSession(test: $this);
     }
 
     /**
@@ -83,56 +89,6 @@ class GetAddressTest extends TestCase
 
         return $return;
     }
-
-//    /**
-//     * @return string
-//     */
-//    private function getHappyFlowCustomer(): string
-//    {
-//        return (string)($_ENV['GOVERNMENT_ID_HAPPY_NATURAL'] ?? '');
-//    }
-//
-//    /**
-//     * @return void
-//     * @throws AuthException
-//     * @throws CurlException
-//     * @throws EmptyValueException
-//     * @throws GetAddressException
-//     * @throws IllegalTypeException
-//     * @throws JsonException
-//     * @throws ReflectionException
-//     * @throws ValidationException
-//     */
-//    public function testGetAddress(): void
-//    {
-//        if ($this->isPipeline()) {
-//            $this->markTestSkipped(message: 'This test is currently unavailable from pipelines.');
-//            return;
-//
-//        }
-//        // Using another "customerIp" so that we can trace requests in central.
-//        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
-//
-//        $expect = [
-//            'fullName' => 'Vincent Williamsson Alexandersson',
-//            'addressRow1' => 'Glassgatan 15',
-//            'postalArea' => 'Göteborg',
-//            'postalCode' => '41655',
-//            'countryCode' => 'SE',
-//            'firstName' => 'Vincent',
-//            'lastName' => 'Alexandersson',
-//            'addressRow2' => ''
-//        ];
-//
-//        $address = Repository::getAddress(
-//            storeId: $this->getStoreId(),
-//            governmentId: $this->getHappyFlowCustomer(),
-//            customerType: 'NATURAL'
-//        );
-//
-//        // Testing similarities by intersect.
-//        $this->assertCount(expectedCount: 8, haystack: array_intersect((array)$address, $expect));
-//    }
 
     /**
      * @return void
@@ -320,40 +276,169 @@ class GetAddressTest extends TestCase
         }
     }
 
-//    /**
-//     * @return void
-//     * @throws AuthException
-//     * @throws CurlException
-//     * @throws EmptyValueException
-//     * @throws GetAddressException
-//     * @throws IllegalTypeException
-//     * @throws JsonException
-//     * @throws ReflectionException
-//     * @throws ValidationException
-//     */
-//    public function testMismatchAddress(): void
-//    {
-//        if ($this->isPipeline()) {
-//            $this->markTestSkipped(message: 'This test is currently unavailable from pipelines.');
-//            return;
-//        }
-//        $expect = [
-//            'fullName' => 'Something Else',
-//            'addressRow1' => 'Glassgatan 15',
-//            'postalArea' => 'Göteborg',
-//            'postalCode' => '41655',
-//            'countryCode' => 'SE',
-//            'firstName' => 'Vincent',
-//            'lastName' => 'Alexandersson',
-//            'addressRow2' => ''
-//        ];
-//
-//        $address = Repository::getAddress(
-//            storeId: $this->getStoreId(),
-//            governmentId: $this->getHappyFlowCustomer(),
-//            customerType: 'NATURAL',
-//        );
-//
-//        $this->assertCount(expectedCount: 7, haystack: array_intersect((array)$address, $expect));
-//    }
+    /**
+     * Assert setSsnData() adds data to PHP session.
+     *
+     * @return void
+     * @throws ConfigException
+     * @throws JsonException
+     */
+    public function testSetSsnData(): void
+    {
+        $this->enableSession();
+
+        $data = new GetAddressRequest(
+            govId: '198001010001',
+            customerType: CustomerType::NATURAL
+        );
+
+        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+
+        $key = $this->session->getKey(key: Repository::SESSION_KEY_SSN_DATA);
+
+        $this->assertTrue(condition: isset($_SESSION));
+        $this->assertArrayHasKey(key: $key, array: $_SESSION);
+
+        // To suppress psalm report.
+        if (!isset($_SESSION[$key])) {
+            $this->fail(message: "$key not set in session.");
+        }
+
+        $this->assertSame(
+            expected: json_encode(value: $data, flags: JSON_THROW_ON_ERROR),
+            actual: $_SESSION[$key]
+        );
+    }
+
+
+    /**
+     * Assert setSsnData() won't cause an Exception if it cannot store data in
+     * PHP session.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testSetSsnFailSilentlyWithoutSession(): void
+    {
+        $this->disableSession();
+
+        $data = new GetAddressRequest(
+            govId: '198001010001',
+            customerType: CustomerType::NATURAL
+        );
+
+        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+
+        $this->assertFalse(condition: isset($_SESSION));
+    }
+
+    /**
+     * Assert setSsnData() throws ConfigException if Exception cannot be logged.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testSetSsnDataThrowsWithoutConfig(): void
+    {
+        $this->disableSession();
+
+        $data = new GetAddressRequest(
+            govId: '198001010001',
+            customerType: CustomerType::NATURAL
+        );
+
+        $this->expectException(exception: ConfigException::class);
+
+        Config::unsetInstance();
+
+        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+    }
+
+    /**
+     * Assert getSsnData() returns data stored in session.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testGetSsnData(): void
+    {
+        $this->enableSession();
+
+        $data = new GetAddressRequest(
+            govId: '166997368573',
+            customerType: CustomerType::LEGAL
+        );
+
+        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+
+        $this->assertEquals(
+            expected: $data,
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
+    }
+
+    /**
+     * Assert getSsnData() returns NULL without data in session.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testGetSsnDataReturnsNull(): void
+    {
+        $this->enableSession();
+
+        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+    }
+
+    /**
+     * Assert getSsnData() returns NULL when session is disabled.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testGetSsnDataReturnsNullWithoutSession(): void
+    {
+        $this->disableSession();
+
+        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+    }
+
+    /**
+     * Assert getSsnData() returns NULL if session data is malformed.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testGetSsnDataReturnsNullWithMalformedData(): void
+    {
+        $this->enableSession();
+
+        $key = $this->session->getKey(key: Repository::SESSION_KEY_SSN_DATA);
+
+        // Invalid JSON data.
+        $_SESSION[$key] = 'not-json-data';
+        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+
+        // Invalid object structure.
+        $_SESSION[$key] = '{"harmony":32}';
+        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+
+        // Invalid object data.
+        $_SESSION[$key] = '{"govId":"166997368573", "customerType":"NATURAL"}';
+        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+    }
+
+    /**
+     * Assert getSsnData() throws ConfigException if Exception cannot be logged.
+     *
+     * @return void
+     * @throws ConfigException
+     */
+    public function testGetSsnDataThrowsWithoutConfig(): void
+    {
+        $this->disableSession();
+        $this->expectException(exception: ConfigException::class);
+        Config::unsetInstance();
+        Repository::getSsnData(sessionHandler: $this->session);
+    }
 }

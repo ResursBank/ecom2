@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Customer\Http;
 
 use Exception;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
+use Resursbank\Ecom\Lib\Utilities\Session;
 use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
 
@@ -25,15 +27,23 @@ use Resursbank\Ecom\Module\Customer\Repository;
 class GetAddressController extends Controller
 {
     /**
+     * NOTE: $sessionHandler to support testing with mocked session handler.
+     *
      * @param string $storeId
      * @param GetAddressRequest $data
+     * @param Session $sessionHandler
      * @return void
      */
     public function exec(
         string $storeId,
-        GetAddressRequest $data
+        GetAddressRequest $data,
+        Session $sessionHandler = new Session()
     ): void {
         try {
+            // Store supplied government id in session.
+            Repository::setSsnData(data: $data, sessionHandler: $sessionHandler);
+
+            // Fetch address.
             $address = Repository::getAddress(
                 storeId: $storeId,
                 governmentId: $data->govId,

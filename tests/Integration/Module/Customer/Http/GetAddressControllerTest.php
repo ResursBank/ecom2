@@ -13,6 +13,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -25,13 +26,17 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Http\GetAddressController as Controller;
 use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
+use Resursbank\Ecom\Module\Customer\Repository;
 use Resursbank\EcomTest\Data\Models\Instrument;
+use Resursbank\EcomTest\Utilities\MockSessionTrait;
 
 /**
  * Tests for the API call getAddress.
  */
 class GetAddressControllerTest extends TestCase
 {
+    use MockSessionTrait;
+
     /**
      * @var Controller
      */
@@ -66,6 +71,7 @@ class GetAddressControllerTest extends TestCase
             methods: ['setHeader', 'setResponseCode', 'log']
         );
         $this->storeId = $_ENV['STORE_ID'];
+        $this->setupSession(test: $this);
     }
 
     /**
@@ -86,6 +92,8 @@ class GetAddressControllerTest extends TestCase
         CustomerType $customerType,
         string $storeId
     ): string {
+        $this->enableSession();
+
         ob_start();
 
         $this->controller->exec(
@@ -93,7 +101,8 @@ class GetAddressControllerTest extends TestCase
             data: new GetAddressRequest(
                 govId: $govId,
                 customerType: $customerType
-            )
+            ),
+            sessionHandler: $this->session
         );
 
         return ob_get_clean();
@@ -148,12 +157,16 @@ class GetAddressControllerTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws ConfigException
      */
     public function testExec(): void
     {
+        $govId = '198001010001';
+        $customerType = CustomerType::NATURAL;
+
         $data = $this->callController(
-            govId: '198001010001',
-            customerType: CustomerType::NATURAL,
+            govId: $govId,
+            customerType: $customerType,
             storeId: $this->storeId
         );
 
@@ -176,6 +189,17 @@ class GetAddressControllerTest extends TestCase
 
         $this->assertInstanceOf(expected: Address::class, actual: $address);
         $this->assertSame(expected: 'Göteborg', actual: $address->postalArea);
+
+        // Assert our controller stored the SSN data in the session.
+        $request = new GetAddressRequest(
+            govId: $govId,
+            customerType: $customerType
+        );
+
+        $this->assertEquals(
+            expected: $request,
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
     }
 
     /**
