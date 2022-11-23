@@ -74,7 +74,18 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
 
         const INIT_CUSTOMER_TYPE = '<?= $this->customerType->name ?>';
         const URL_FETCH_ADDRESS = '<?= $this->fetchUrl ?>';
-        const CALLBACK_FETCH_ADDRESS = <?= $this->jsCallback ?>;
+        let CALLBACK_FETCH_ADDRESS;
+
+        try {
+            CALLBACK_FETCH_ADDRESS = <?= $this->jsCallback ?>;
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error(
+                    'Resurs Bank GetAddress: JS callback was not found.\n\n',
+                    e
+                );
+            }
+        }
 
         /** @type {HTMLInputElement[]} */
         const CUSTOMER_TYPE_RADIOS = Array.from(document.getElementsByName(
@@ -175,7 +186,6 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
          * @return {Promise<Response>}
          */
         const fetchAddress = (govId, customerType) => {
-            console.log(govId, customerType);
             return fetch(URL_FETCH_ADDRESS, {
                 method: 'POST',
                 headers: {
@@ -192,7 +202,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         const handleFetchAddressResponse = (response) => {
             if (!response.ok) {
                 setFetchAddressMessage(
-                    "<?= Translator::translate(phraseId: 'get-address-could-not-fetch-address') ?>",
+                    "<?= Translator::translate(phraseId: 'get-address-server-error') ?>",
                     true
                 );
             } else {
@@ -203,8 +213,15 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         /**
          * @param {any} data
          */
-        const handleFetchAddressCallback = (data) => {
-            if (typeof CALLBACK_FETCH_ADDRESS !== 'function') {
+        const handleFetchAddressData = (data) => {
+            if (data.error) {
+                if (data.error === 'Invalid POST data.') {
+                    setFetchAddressMessage(
+                        "<?= Translator::translate(phraseId: 'get-address-could-not-fetch-address') ?>",
+                        true
+                    );
+                }
+            } else if (typeof CALLBACK_FETCH_ADDRESS !== 'function') {
                 setFetchAddressMessage(
                     "<?= Translator::translate(phraseId: 'get-address-no-callback-function') ?>",
                     true
@@ -262,8 +279,14 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         const disableWidget = (state) => {
             const value = String(state);
 
-            INPUT_GOV_ID.setAttribute('disabled', value);
-            BTN_FETCH_ADDRESS.setAttribute('disabled', value);
+            if (state) {
+                INPUT_GOV_ID.setAttribute('disabled', '');
+                BTN_FETCH_ADDRESS.setAttribute('disabled', '');
+            } else {
+                INPUT_GOV_ID.removeAttribute('disabled');
+                BTN_FETCH_ADDRESS.removeAttribute('disabled');
+            }
+
             CUSTOMER_TYPE_RADIOS.forEach((radio) => radio.disabled = state);
         };
 
@@ -278,52 +301,106 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
             }
         };
 
-        // Initializing customer type radios.
-        const onCustomerTypeChange = (event) => {
-            const value = event.target.value;
+        /**
+         * Stores a customer type value on the client.
+         *
+         * @param {string} value
+         */
+        const saveCustomerType = (value) =>
+            window.localStorage.setItem('rbGetAddressCustomerType', value);
 
-            setInputState(
-                validateGovId(INPUT_GOV_ID.value, value)
-            );
+        /**
+         * Retrieves the stored customer type from the client.
+         *
+         * @returns {string|null}
+         */
+        const loadCustomerType = () =>
+            window.localStorage.getItem('rbGetAddressCustomerType');
+
+        /**
+         * =====================================================
+         * Init function for customer types.
+         * =====================================================
+         *
+         * Only meant to be called once.
+         * Only created for structuring purposes.
+         */
+        const InitCustomerType = () => {
+            const storedCustomerType = loadCustomerType();
+            const onCustomerTypeChange = (event) => {
+                const value = event.target.value;
+
+                setInputState(
+                    validateGovId(INPUT_GOV_ID.value, value)
+                );
+                saveCustomerType(value);
+            };
+
+            CUSTOMER_TYPE_RADIOS
+                .filter((radio) => radio instanceof HTMLInputElement && radio.type === 'radio')
+                .forEach((radio) => {
+                    if (radio.value === storedCustomerType ||
+                        radio.value === INIT_CUSTOMER_TYPE
+                    ) {
+                        radio.checked = true;
+                    }
+
+                    radio.addEventListener('change', onCustomerTypeChange);
+                });
         };
 
-        CUSTOMER_TYPE_RADIOS
-            .filter((radio) => radio instanceof HTMLInputElement && radio.type === 'radio')
-            .forEach((radio) => {
-                if (radio.value === INIT_CUSTOMER_TYPE) {
-                    radio.checked = true;
-                }
+        /**
+         * =====================================================
+         * Init function for the government ID input.
+         * =====================================================
+         *
+         * Only meant to be called once.
+         * Only created for structuring purposes.
+         */
+        const InitGovIdInput = () => {
+            if (INPUT_GOV_ID instanceof HTMLInputElement && INPUT_GOV_ID.type === 'text') {
+                INPUT_GOV_ID.addEventListener('blur', () => {
+                    const value = INPUT_GOV_ID.value;
+                    const selectedCustomerType = getCustomerType();
 
-                radio.addEventListener('change', onCustomerTypeChange);
-            });
+                    if (isCustomerType(selectedCustomerType)) {
+                        setInputState(validateGovId(value, selectedCustomerType));
+                    }
+                }, false);
+            }
+        };
 
-        // Initialize government ID input.
-        if (INPUT_GOV_ID instanceof HTMLInputElement && INPUT_GOV_ID.type === 'text') {
-            INPUT_GOV_ID.addEventListener('blur', () => {
-                const value = INPUT_GOV_ID.value;
-                const selectedCustomerType = getCustomerType();
+        /**
+         * =====================================================
+         * Init function for the fetch button.
+         * =====================================================
+         *
+         * Only meant to be called once.
+         * Only created for structuring purposes.
+         */
+        const InitFetchButton = () => {
+            if (BTN_FETCH_ADDRESS instanceof HTMLButtonElement) {
+                BTN_FETCH_ADDRESS.addEventListener('click', () => {
+                    const customerType = getCustomerType();
 
-                if (isCustomerType(selectedCustomerType)) {
-                    setInputState(validateGovId(value, selectedCustomerType));
-                }
-            }, false);
-        }
+                    if (INPUT_GOV_ID instanceof HTMLInputElement && customerType) {
+                        disableWidget(true);
+                        setWidgetFetchingState(true);
+                        fetchAddress(INPUT_GOV_ID.value, customerType)
+                            .then(handleFetchAddressResponse)
+                            .then(handleFetchAddressData)
+                            .then(() => {
+                                disableWidget(false);
+                                setWidgetFetchingState(false);
+                            })
+                            .catch(handleFetchAddressFatalError);
+                    }
+                }, false);
+            }
+        };
 
-        // Initialize fetch address button.
-        if (BTN_FETCH_ADDRESS instanceof HTMLButtonElement) {
-            BTN_FETCH_ADDRESS.addEventListener('click', () => {
-                const customerType = getCustomerType();
-
-                if (INPUT_GOV_ID instanceof HTMLInputElement && customerType) {
-                    disableWidget(true);
-                    setWidgetFetchingState(true);
-                    fetchAddress(INPUT_GOV_ID.value, customerType)
-                        .then(handleFetchAddressResponse)
-                        .then(handleFetchAddressCallback)
-                        .then(() => disableWidget(false))
-                        .catch(handleFetchAddressFatalError);
-                }
-            }, false);
-        }
+        InitCustomerType();
+        InitFetchButton();
+        InitGovIdInput();
     }());
 </script>
