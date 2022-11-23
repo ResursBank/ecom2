@@ -13,6 +13,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -24,13 +25,21 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Http\GetAddressController as Controller;
 use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
+use Resursbank\EcomTest\Data\Models\Instrument;
 
 /**
  * Tests for the API call getAddress.
  */
 class GetAddressControllerTest extends TestCase
 {
+    /**
+     * @var Controller
+     */
     private Controller $controller;
+
+    /**
+     * @var string
+     */
     private string $storeId;
 
     /**
@@ -52,46 +61,11 @@ class GetAddressControllerTest extends TestCase
             )
         );
 
-        $this->controller = new Controller();
+        $this->controller = $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['setHeader', 'setResponseCode', 'log']
+        );
         $this->storeId = $_ENV['STORE_ID'];
-    }
-
-    /**
-     * Assert exec() fetches address data.
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     */
-    public function testExec(): void
-    {
-        $data = $this->callController();
-
-        $this->assertResponseContains(needle: 'addressRow1', haystack: $data);
-
-        $obj = json_decode(
-            json: $data,
-            associative: false,
-            depth: 512,
-            flags: JSON_THROW_ON_ERROR
-        );
-
-        $this->assertIsObject(actual: $obj);
-
-        // Attempt object conversion to ensure we did get an Address back.
-        $address = DataConverter::stdClassToType(
-            object: $obj,
-            type: Address::class
-        );
-
-        $this->assertInstanceOf(
-            expected: Address::class,
-            actual: $address,
-            message: 'Failed to convert fetched data to Address instance.'
-        );
     }
 
     /**
@@ -102,22 +76,20 @@ class GetAddressControllerTest extends TestCase
      *
      * @param string $govId
      * @param CustomerType $customerType
-     *
+     * @param string $storeId
      * @return string
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
-     * @noinspection PhpSameParameterValueInspection
      */
     private function callController(
-        string $govId = '198001010001',
-        CustomerType $customerType = CustomerType::NATURAL
+        string $govId,
+        CustomerType $customerType,
+        string $storeId
     ): string {
         ob_start();
 
-        /** @noinspection PhpUsageOfSilenceOperatorInspection */
-        @$this->controller->exec(
-            storeId: $this->storeId,
+        $this->controller->exec(
+            storeId: $storeId,
             data: new GetAddressRequest(
                 govId: $govId,
                 customerType: $customerType
@@ -141,5 +113,238 @@ class GetAddressControllerTest extends TestCase
     ): void {
         $this->assertNotEmpty(actual: $haystack);
         $this->assertStringContainsString(needle: $needle, haystack: $haystack);
+    }
+
+    /**
+     * Create a mocked version of the Controller class, setting the return value
+     * of the getInputData method, in an effort to replicate behaviour with
+     * incoming input data to PHP (faking the contents of php://input).
+     *
+     * @param array $data
+     * @return Controller
+     * @throws JsonException
+     */
+    private function getControllerWithMockedInputData(array $data): Controller
+    {
+        $controller = $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['getInputData']
+        );
+
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+        $controller->expects($this->once())
+            ->method(constraint: 'getInputData')
+            ->willReturn(value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR));
+
+        return $controller;
+    }
+
+    /**
+     * Assert exec() fetches address data.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testExec(): void
+    {
+        $data = $this->callController(
+            govId: '198001010001',
+            customerType: CustomerType::NATURAL,
+            storeId: $this->storeId
+        );
+
+        $this->assertResponseContains(needle: 'addressRow1', haystack: $data);
+
+        $obj = json_decode(
+            json: $data,
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        $this->assertIsObject(actual: $obj);
+
+        // Attempt object conversion to ensure we did get an Address back.
+        $address = DataConverter::stdClassToType(
+            object: $obj,
+            type: Address::class
+        );
+
+        $this->assertInstanceOf(expected: Address::class, actual: $address);
+        $this->assertSame(expected: 'Göteborg', actual: $address->postalArea);
+    }
+
+    /**
+     * Assert exec() responds with an stdClass instance containing a non-empty
+     * error property when we use a none existing store id (simulating a failed
+     * API call to fetch address data).
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @throws JsonException
+     */
+    public function testExecWithInvalidStoreId(): void
+    {
+        $data = $this->callController(
+            govId: '198001010001',
+            customerType: CustomerType::NATURAL,
+            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
+        );
+
+        $this->assertResponseContains(needle: 'error', haystack: $data);
+
+        $obj = json_decode(
+            json: $data,
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        $this->assertIsObject(actual: $obj);
+        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
+        $this->assertNotEmpty(actual: $obj->error);
+    }
+
+    /**
+     * Assert exec() fetches address data for company customer.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testExecForCompany(): void
+    {
+        $data = $this->callController(
+            govId: '166997368573',
+            customerType: CustomerType::LEGAL,
+            storeId: $this->storeId
+        );
+
+        $this->assertResponseContains(needle: 'addressRow1', haystack: $data);
+
+        $obj = json_decode(
+            json: $data,
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        $this->assertIsObject(actual: $obj);
+
+        // Attempt object conversion to ensure we did get an Address back.
+        $address = DataConverter::stdClassToType(
+            object: $obj,
+            type: Address::class
+        );
+
+        $this->assertInstanceOf(expected: Address::class, actual: $address);
+        $this->assertSame(expected: 'Helsingborg', actual: $address->postalArea);
+    }
+
+    /**
+     * Assert that getRequestData() throws HttpException with code 415 when
+     * supplied that does not convert to a GetAddressRequest instance.
+     *
+     * @return void
+     * @throws HttpException
+     * @throws JsonException
+     */
+    public function testGetRequestDataThrowsWithInaccurateData(): void
+    {
+        $controller = $this->getControllerWithMockedInputData(
+            data: ['priceless' => 'precision']
+        );
+
+        $this->expectException(exception: HttpException::class);
+        $this->expectExceptionCode(code: 415);
+
+        $controller->getRequestData();
+    }
+
+    /**
+     * Assert that getRequestData() throws HttpException with code 415 when
+     * supplied data that would cause an IllegalValueException when attempting
+     * to convert to GetAddressRequest instance.
+     *
+     * @return void
+     * @throws HttpException
+     * @throws JsonException
+     */
+    public function testGetRequestDataThrowsWithIllegalValues(): void
+    {
+        $controller = $this->getControllerWithMockedInputData(
+            data: [
+                'govId' => '166997368573',
+                'customerType' => CustomerType::NATURAL->value
+            ]
+        );
+
+        $this->expectException(exception: HttpException::class);
+        $this->expectExceptionCode(code: 415);
+
+        $controller->getRequestData();
+    }
+
+    /**
+     * Assert that getRequestData() throws HttpException with code 415 when
+     * getRequestModel() returns an unexpected instance of Model.
+     *
+     * @return void
+     * @throws HttpException
+     */
+    public function testGetRequestDataThrowsWithInvalidConversion(): void
+    {
+        $controller = $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['getRequestModel']
+        );
+
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+        $controller->expects($this->once())
+            ->method(constraint: 'getRequestModel')
+            ->willReturn(value: new Instrument(id: 5, name: 'Bass'));
+
+        $this->expectException(exception: HttpException::class);
+        $this->expectExceptionCode(code: 415);
+
+        $controller->getRequestData();
+    }
+
+    /**
+     * Assert that getRequestData() returns input data unaffected in forms of
+     * GetAddressRequest instance.
+     *
+     * @return void
+     * @throws HttpException
+     * @throws JsonException
+     */
+    public function testGetRequestData(): void
+    {
+        $controller = $this->getControllerWithMockedInputData(
+            data: [
+                'govId' => '198001010001',
+                'customerType' => CustomerType::NATURAL->value
+            ]
+        );
+
+        $data = $controller->getRequestData();
+
+        $this->assertSame(
+            expected: CustomerType::NATURAL,
+            actual: $data->customerType
+        );
+
+        $this->assertSame(
+            expected: '198001010001',
+            actual: $data->govId
+        );
     }
 }

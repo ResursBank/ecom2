@@ -25,20 +25,9 @@ use Resursbank\Ecom\Module\Customer\Repository;
 class GetAddressController extends Controller
 {
     /**
-     * Name of government ID field.
-     */
-    public const PARAM_GOV_ID = 'govId';
-
-    /**
-     * Name of customer type field.
-     */
-    public const PARAM_CUSTOMER_TYPE = 'customerType';
-
-    /**
      * @param string $storeId
      * @param GetAddressRequest $data
      * @return void
-     * @todo Design new integration tests. See ECP-275
      */
     public function exec(
         string $storeId,
@@ -60,7 +49,6 @@ class GetAddressController extends Controller
     /**
      * @return GetAddressRequest
      * @throws HttpException
-     * @todo Add tests. See ECP-273
      */
     public function getRequestData(): GetAddressRequest
     {
@@ -70,7 +58,7 @@ class GetAddressController extends Controller
 
         if (!$result instanceof GetAddressRequest) {
             throw new HttpException(
-                message: $this->translateError('invalid-post-data'),
+                message: $this->translateError(phraseId: 'invalid-post-data'),
                 code: 415
             );
         }
