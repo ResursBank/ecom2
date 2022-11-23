@@ -6,6 +6,7 @@
         <directory name="../../tests" />
         <ignoreFiles>
             <file name="../../src/Lib/Utilities/DataConverter.php" />
+            <file name="../../tests/Utilities/MockSessionTrait.php" />
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>

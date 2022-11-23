@@ -9,11 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Exception;
 
-use Exception;
-
 /**
- * Test could not be conducted.
+ * Specifies a problem with a value stored in PHP session.
  */
-class TestException extends Exception
+class SessionValueException extends SessionException
 {
 }
