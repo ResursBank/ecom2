@@ -38,7 +38,8 @@ class GetAddressController extends Controller
         string $storeId,
         GetAddressRequest $data,
         Session $sessionHandler = new Session()
-    ): void {
+    ): string {
+        $response = '';
         try {
             // Store supplied government id in session.
             Repository::setSsnData(data: $data, sessionHandler: $sessionHandler);
@@ -50,10 +51,12 @@ class GetAddressController extends Controller
                 customerType: $data->customerType
             );
 
-            $this->respond(data: $address->toArray());
+            $response = $this->respond(data: $address->toArray());
         } catch (Exception $e) {
-            $this->respondWithError(exception: $e);
+            $response = $this->respondWithError(exception: $e);
         }
+
+        return $response;
     }
 
     /**
