@@ -84,21 +84,8 @@ class ControllerTest extends TestCase
     ): Controller {
         $controller = $this->createPartialMock(
             originalClassName: Controller::class,
-            methods: ['setHeader', 'setResponseCode', 'log']
+            methods: ['log']
         );
-
-        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
-        $controller->expects($this->exactly(count: 2))
-            ->method(constraint: 'setHeader')
-            ->withConsecutive(
-                ['Content-Type', 'application/json'],
-                ['Content-Length', (string) strlen(json_encode(value: $data, flags: JSON_THROW_ON_ERROR))]
-            );
-
-        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
-        $controller->expects($this->once())
-            ->method(constraint: 'setResponseCode')
-            ->with($code);
 
         return $controller;
     }
@@ -117,9 +104,7 @@ class ControllerTest extends TestCase
             data: $data
         );
 
-        ob_start();
-        $controller->respond(data: $data);
-        $result = ob_get_clean();
+        $result = $controller->respond(data: $data);
 
         $this->assertSame(
             expected: json_encode(value: $data, flags: JSON_THROW_ON_ERROR),
@@ -144,11 +129,9 @@ class ControllerTest extends TestCase
             data: $data
         );
 
-        ob_start();
-        $controller->respondWithError(
+        $result = $controller->respondWithError(
             exception: new HttpException(message: 'Magic math', code: 418)
         );
-        $result = ob_get_clean();
 
         $this->assertSame(
             expected: json_encode(value: $data, flags: JSON_THROW_ON_ERROR),
