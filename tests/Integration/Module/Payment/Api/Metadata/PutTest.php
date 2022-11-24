@@ -36,6 +36,7 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
@@ -91,29 +92,33 @@ class PutTest extends TestCase
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
                     description: 'Android',
                     reference: 'T-800',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
+                    type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
+                    totalVatAmount: 60.3
                 ),
                 new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
                     description: 'Robot',
                     reference: 'T-1000',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
+                    type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
+                    totalVatAmount: 60.3
                 ),
             ]),
             orderReference: $orderReference,
+            application: new Application(
+                requestedCreditLimit: null,
+                applicationData: null
+            ),
             customer: new Customer(
                 deliveryAddress: new Address(
                     addressRow1: 'Glassgatan 15',
