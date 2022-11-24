@@ -68,7 +68,7 @@ class GetAddressControllerTest extends TestCase
 
         $this->controller = $this->createPartialMock(
             originalClassName: Controller::class,
-            methods: ['setHeader', 'setResponseCode', 'log']
+            methods: ['log']
         );
         $this->storeId = $_ENV['STORE_ID'];
         $this->setupSession(test: $this);
@@ -94,9 +94,7 @@ class GetAddressControllerTest extends TestCase
     ): string {
         $this->enableSession();
 
-        ob_start();
-
-        $this->controller->exec(
+        return $this->controller->exec(
             storeId: $storeId,
             data: new GetAddressRequest(
                 govId: $govId,
@@ -104,8 +102,6 @@ class GetAddressControllerTest extends TestCase
             ),
             sessionHandler: $this->session
         );
-
-        return ob_get_clean();
     }
 
     /**

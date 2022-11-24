@@ -22,7 +22,6 @@ use stdClass;
 
 use function file_get_contents;
 use function get_class;
-use function strlen;
 
 /**
  * Base controller class for JSON implementation. Execute arbitrary code,
@@ -34,67 +33,32 @@ class Controller
      * Output JSON data.
      *
      * @param array $data
-     * @param int $code
-     * @return void
+     * @return string
      */
     public function respond(
-        array $data,
-        int $code = 200,
-    ): void {
+        array $data
+    ): string {
         try {
             $result = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
         } catch (Exception) {
             $result = '{"error":"' . $this->translateError(phraseId: 'failed-to-encode') . '"}';
         }
 
-        $this->setHeader(key: 'Content-Type', val: 'application/json');
-        $this->setHeader(
-            key: 'Content-Length',
-            val: (string) strlen(string: $result)
-        );
-        $this->setResponseCode(code: $code);
-
-        echo $result;
+        return $result;
     }
 
     /**
      * Shorthand method to log an Exception and create an error response.
      *
      * @param Exception $exception
-     * @return void
+     * @return string
      */
-    public function respondWithError(Exception $exception): void
+    public function respondWithError(Exception $exception): string
     {
         $this->log(exception: $exception);
-        $this->respond(
-            data: ['error' => $this->getErrorMessage(exception: $exception)],
-            code: $this->getErrorResponseCode(exception: $exception)
+        return $this->respond(
+            data: ['error' => $this->getErrorMessage(exception: $exception)]
         );
-    }
-
-    /**
-     * Wrapper for header() method. Required to mek this class more testable
-     * since applying headers will break unit tests.
-     *
-     * @param string $key
-     * @param string $val
-     * @return void
-     */
-    public function setHeader(string $key, string $val): void
-    {
-        header(header: "$key: $val");
-    }
-
-    /**
-     * Wrapper for http_response_code() method. Required to mek this class more
-     * testable since applying headers will break unit tests.
-     *
-     * @param int $code
-     * @return void
-     */
-    public function setResponseCode(int $code): void
-    {
-        http_response_code(response_code: $code);
     }
 
     /**
