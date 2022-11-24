@@ -73,21 +73,14 @@ class ControllerTest extends TestCase
      * This method also asserts that setHeader() is called twice, and that
      * setResponseCode() is called with the same code as supplied by $code.
      *
-     * @param int $code
-     * @param array $data
      * @return Controller
-     * @throws JsonException
      */
-    private function getControllerWithoutHeaderManipulation(
-        int $code,
-        array $data
-    ): Controller {
-        $controller = $this->createPartialMock(
+    private function getControllerWithoutHeaderManipulation(): Controller
+    {
+        return $this->createPartialMock(
             originalClassName: Controller::class,
             methods: ['log']
         );
-
-        return $controller;
     }
 
     /**
@@ -99,10 +92,7 @@ class ControllerTest extends TestCase
     public function testRespond(): void
     {
         $data = ['some' => 'aha'];
-        $controller = $this->getControllerWithoutHeaderManipulation(
-            code: 200,
-            data: $data
-        );
+        $controller = $this->getControllerWithoutHeaderManipulation();
 
         $result = $controller->respond(data: $data);
 
@@ -124,10 +114,7 @@ class ControllerTest extends TestCase
     public function testRespondWithError(): void
     {
         $data = ['error' => 'Magic math'];
-        $controller = $this->getControllerWithoutHeaderManipulation(
-            code: 418,
-            data: $data
-        );
+        $controller = $this->getControllerWithoutHeaderManipulation();
 
         $result = $controller->respondWithError(
             exception: new HttpException(message: 'Magic math', code: 418)
