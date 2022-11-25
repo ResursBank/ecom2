@@ -30,6 +30,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -74,15 +75,15 @@ class RepositoryTest extends TestCase
         $orderLines = new OrderLineCollection(
             data: [
                 new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
                     description: 'asdasdasd',
                     reference: 'T-800',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
+                    type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
+                    totalVatAmount: 60.3
                 )
             ]
         );
@@ -90,7 +91,11 @@ class RepositoryTest extends TestCase
         $createdPayment = Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: $orderLines
+            orderLines: $orderLines,
+            application: new Application(
+                requestedCreditLimit: null,
+                applicationData: null
+            ),
         );
 
         /** @var Order $order */
@@ -152,15 +157,15 @@ class RepositoryTest extends TestCase
         $orderLines = new OrderLineCollection(
             data: [
                 new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
                     description: 'asdasdasd',
                     reference: 'T-800',
-                    quantityUnit: 'st',
-                    quantity: 2.00,
-                    vatRate: 25.00,
+                    type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
-                    totalAmountIncludingVat: 301.5,
-                    totalVatAmount: 60.3,
-                    type: OrderLineType::PHYSICAL_GOODS
+                    totalVatAmount: 60.3
                 )
             ]
         );
@@ -183,7 +188,11 @@ class RepositoryTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines,
-            metadata: $metadata
+            application: new Application(
+                requestedCreditLimit: null,
+                applicationData: null
+            ),
+            metadata: $metadata,
         );
 
         if (!isset($createdOrder->order->actionLog[0])) {

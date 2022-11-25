@@ -18,8 +18,6 @@ use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\EcomTest\Data\Models\Instrument;
 
-use function strlen;
-
 /**
  * Test basic controller methods.
  */
