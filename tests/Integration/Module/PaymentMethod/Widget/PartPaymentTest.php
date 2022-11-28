@@ -59,14 +59,6 @@ class PartPaymentTest extends TestCase
     }
 
     /**
-     * @return void
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
-    /**
      * Verify that Part payment widget appears to contain correct data
      *
      * @return void
@@ -90,7 +82,7 @@ class PartPaymentTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
-        if (is_null(value: $paymentMethod)) {
+        if ($paymentMethod === null) {
             throw new EmptyValueException(message: 'Payment method failed to load');
         }
 
@@ -134,6 +126,49 @@ class PartPaymentTest extends TestCase
             pattern: "/<iframe[^>]+src=[\"']$testUrl/s",
             string: $widget->content,
             message: 'Read more widget should contain an iframe with the correct URL.'
+        );
+    }
+
+    /**
+     * Verify that the part payment widget contains the starting at value returned by getStartingAtCost
+     *
+     * @return void
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function testGetStartingAtCost(): void
+    {
+        $paymentMethod = Repository::getById(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
+        );
+        if ($paymentMethod === null) {
+            throw new EmptyValueException(message: 'Payment method failed to load');
+        }
+
+        $widget = new PartPayment(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethod: $paymentMethod,
+            months: 3,
+            amount: 1200
+        );
+        $startingAt = $widget->getStartingAtCost();
+
+        $this->assertStringContainsString(
+            needle: $startingAt,
+            haystack: $widget->content,
+            message: 'Widget should contain starting at cost'
         );
     }
 }

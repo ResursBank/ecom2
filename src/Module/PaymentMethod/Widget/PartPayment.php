@@ -148,14 +148,24 @@ class PartPayment extends Widget
         return str_replace(
             search: ['%1', '%2'],
             replace: [
-                (string)(round(
-                    num: $this->amount * $this->annuity->annuityFactor + $this->annuity->monthlyAdminFee,
-                    precision: 2
-                )),
+                $this->getStartingAtCost(),
                 (string)$this->annuity->durationInMonths
             ],
             subject: Translator::translate(phraseId: 'starting-at')
         );
+    }
+
+    /**
+     * Returns the starting at value, public visibility so that just the value can be extracted for AJAX purposes.
+     *
+     * @return string
+     */
+    public function getStartingAtCost(): string
+    {
+        return (string)(round(
+            num: $this->amount * $this->annuity->annuityFactor + $this->annuity->monthlyAdminFee,
+            precision: 2
+        ));
     }
 
     /**
