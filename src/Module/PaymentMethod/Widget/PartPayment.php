@@ -92,7 +92,7 @@ class PartPayment extends Widget
         $this->startingAt = $this->getStartingAt();
         $this->readMore = Translator::translate(phraseId: 'read-more');
         $this->iframeUrl = $this->getIframeUrl();
-        $this->error = Translator::translate(phraseId: 'unknown-error');
+        $this->error = Translator::translate(phraseId: 'part-payment-general-error');
 
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
