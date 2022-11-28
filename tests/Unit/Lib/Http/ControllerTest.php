@@ -72,16 +72,13 @@ class ControllerTest extends TestCase
      * setResponseCode() is called with the same code as supplied by $code.
      *
      * @return Controller
-     * @throws JsonException
      */
     private function getControllerWithoutHeaderManipulation(): Controller
     {
-        $controller = $this->createPartialMock(
+        return $this->createPartialMock(
             originalClassName: Controller::class,
             methods: ['log']
         );
-
-        return $controller;
     }
 
     /**

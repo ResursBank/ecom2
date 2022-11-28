@@ -119,15 +119,22 @@
   {
     "id": "get-address-could-not-fetch-address",
     "translation": {
-      "en": "Could not fetch an address for the given value. Please update the value or refresh the page and try again.",
+      "en": "Could not fetch an address for the given value. Please update the value and try again.",
       "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen uppdatera värdet eller ladda om sidan och försök igen. "
+    }
+  },
+  {
+    "id": "get-address-server-error",
+    "translation": {
+      "en": "Something went wrong when fetching the address. Please refresh the page and try again. If the problem persists, please contact the store.",
+      "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen ladda om sidan och försök igen. Om problemet kvarstår, vänligen kontakta butiken."
     }
   },
   {
     "id": "get-address-no-callback-function",
     "translation": {
-      "en": "The address was fetched, but could not be handled properly. Please contact the store owner if the problem persists.",
-      "sv": "Address blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiksägaren ifall problemet kvarstår."
+      "en": "The address was fetched, but could not be handled properly. Please contact the store if the problem persists.",
+      "sv": "Address blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiken ifall problemet kvarstår."
     }
   },
   {
@@ -147,8 +154,8 @@
   {
     "id": "customer-type-legal",
     "translation": {
-      "en": "SSN",
-      "sv": "Personnummer"
+      "en": "Organization number",
+      "sv": "Organisationsnummer"
     }
   },
   {
