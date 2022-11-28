@@ -117,6 +117,13 @@
     }
   },
   {
+    "id": "part-payment-general-error",
+    "translation": {
+      "en": "An error occurred when updating the part payment data",
+      "sv": "Ett fel uppstod när delbetalningsdata uppdaterades"
+    }
+  },
+  {
     "id": "get-address-could-not-fetch-address",
     "translation": {
       "en": "Could not fetch an address for the given value. Please update the value and try again.",

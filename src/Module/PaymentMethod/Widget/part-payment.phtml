@@ -7,6 +7,11 @@
 
 declare(strict_types=1);
 
+/** @var PartPayment $this */
+/** @psalm-scope-this \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment */
+
+use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
+
 ?>
 
 <?php if ($this->iframeUrl !== ''): ?>
@@ -17,6 +22,8 @@ declare(strict_types=1);
   <div id="rb-pp-info"><p><?= $this->infoText ?></p></div>
   <!-- Example line here -->
   <div id="rb-pp-example"><p><?= $this->startingAt ?></p></div>
+  <!-- Error message -->
+  <div id="rb-pp-error" style="display:none;"><p><?= $this->error ?></p></div>
   <!-- Read More link -->
   <div id="rb-pp-readmore">
     <p>
