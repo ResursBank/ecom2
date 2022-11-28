@@ -19,16 +19,6 @@ use Resursbank\Ecom\Lib\Model\Callback\Management;
 class ManagementController extends Controller
 {
     /**
-     // * @param Management $data
-     * @return void
-     */
-    public function exec(
-        // Management $data
-    ): void {
-        // Execute management callback.
-    }
-
-    /**
      * @return Management
      * @throws HttpException
      */

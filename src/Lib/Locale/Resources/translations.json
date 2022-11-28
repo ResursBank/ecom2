@@ -199,5 +199,12 @@
       "en": "Malformed POST data.",
       "sv": "POST data är felaktigt formaterad."
     }
+  },
+  {
+    "id": "updated-status-by-callback",
+    "translation": {
+      "en": "Callback from Resurs Bank updated the order status.",
+      "sv": "Callback från Resurs uppdaterade orderns status."
+    }
   }
 ]

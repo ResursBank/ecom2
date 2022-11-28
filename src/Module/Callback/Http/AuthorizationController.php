@@ -18,15 +18,6 @@ use Resursbank\Ecom\Lib\Model\Callback\Authorization;
  */
 class AuthorizationController extends Controller
 {
-    /**
-     // * @param Authorization $data
-     * @return void
-     */
-    public function exec(
-        // Authorization $data
-    ): void {
-        // Execute management callback.
-    }
 
     /**
      * @return Authorization
