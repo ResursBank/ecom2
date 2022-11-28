@@ -75,11 +75,11 @@ if [ -n "\$AFFECTED_STRING" ]; then
   echo ""
   echo "---==( Executing PHP CS Fixer for source files. )==---"
   echo ""
-  $phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix \$AFFECTED_STRING
+  $phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/src
   echo ""
   echo "---==( Executing PHP CS Fixer for test files. )==---"
   echo ""
-  $phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix \$AFFECTED_STRING
+  $phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/tests
 fi
 EOT
 
