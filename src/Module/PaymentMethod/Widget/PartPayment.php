@@ -158,7 +158,7 @@ class PartPayment extends Widget
         return str_replace(
             search: ['%1', '%2'],
             replace: [
-                $this->getStartingAtCost(),
+                '<span id="rb-pp-starting-at">' . $this->getStartingAtCost() . '</span>',
                 (string)$this->annuity->durationInMonths
             ],
             subject: Translator::translate(phraseId: 'starting-at')
