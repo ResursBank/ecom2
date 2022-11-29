@@ -58,6 +58,9 @@ class PartPayment extends Widget
     /** @var string  */
     public readonly string $error;
 
+    /** @var string  */
+    public readonly string $js;
+
     /** @var AnnuityInformation */
     private readonly AnnuityInformation $annuity;
 
@@ -66,25 +69,27 @@ class PartPayment extends Widget
      * @param PaymentMethod $paymentMethod
      * @param int $months
      * @param float $amount
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
+     * @param string $apiUrl
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
-     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws ValidationException
      */
     public function __construct(
         private readonly string $storeId,
         private readonly PaymentMethod $paymentMethod,
         private readonly int $months,
-        private readonly float $amount
+        private readonly float $amount,
+        public readonly string $apiUrl
     ) {
         $this->annuity = $this->getAnnuityFactor();
         $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
@@ -96,6 +101,7 @@ class PartPayment extends Widget
 
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
+        $this->js = $this->render(file: __DIR__ . '/part-payment-js.phtml');
     }
 
     /**
@@ -152,7 +158,7 @@ class PartPayment extends Widget
         return str_replace(
             search: ['%1', '%2'],
             replace: [
-                $this->getStartingAtCost(),
+                '<span id="rb-pp-starting-at">' . $this->getStartingAtCost() . '</span>',
                 (string)$this->annuity->durationInMonths
             ],
             subject: Translator::translate(phraseId: 'starting-at')
