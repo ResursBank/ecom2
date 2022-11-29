@@ -28,7 +28,7 @@ class Customer extends Model
      * @param CustomerType|null $customerType
      * @param string|null $contactPerson
      * @param string|null $email
-     * @param string|null $governmentId
+     * @param string|null $governmentId Removable if empty, since payment methods can have it present in such cases.
      * @param string|null $mobilePhone
      * @param DeviceInfo|null $deviceInfo
      * @param StringValidation $stringValidation
@@ -43,7 +43,7 @@ class Customer extends Model
         public readonly ?CustomerType $customerType = null,
         public readonly ?string $contactPerson = null,
         public readonly ?string $email = null,
-        public readonly ?string $governmentId = null,
+        public ?string $governmentId = null,
         public readonly ?string $mobilePhone = null,
         public readonly ?DeviceInfo $deviceInfo = null,
         protected readonly StringValidation $stringValidation = new StringValidation()

@@ -92,6 +92,11 @@ class Create
             $params['application'] = $application;
         }
         if ($customer) {
+            // If governmentId is empty or null, remove it from the payload.
+            // Some payment methods require this field to be removed, if empty.
+            if (empty($customer->governmentId)) {
+                unset($customer->governmentId);
+            }
             $params['customer'] = $customer;
         }
         if ($metadata) {
