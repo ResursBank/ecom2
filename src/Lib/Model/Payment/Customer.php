@@ -28,7 +28,7 @@ class Customer extends Model
      * @param CustomerType|null $customerType
      * @param string|null $contactPerson
      * @param string|null $email
-     * @param string|null $governmentId Removable if empty, since payment methods can have it present in such cases.
+     * @param string|null $governmentId Must be removable if empty, since payment methods can't have it present in such cases.
      * @param string|null $mobilePhone
      * @param DeviceInfo|null $deviceInfo
      * @param StringValidation $stringValidation
