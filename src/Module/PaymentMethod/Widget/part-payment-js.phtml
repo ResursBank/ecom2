@@ -24,6 +24,11 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
                     "Content-Type": "application/json"
                 }
             });
-            return await response.json();
+            await response.json().then(resp => {
+                document.getElementById('rb-pp-error').style.display = 'none';
+                document.getElementById('rb-pp-starting-at').innerHTML = resp.startingAt;
+            }).catch(function() {
+                document.getElementById('rb-pp-error').style.display = 'block';
+            });
         };
 <?php endif; ?>
