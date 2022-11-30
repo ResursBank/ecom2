@@ -98,7 +98,8 @@ class PartPaymentTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethod: $paymentMethod,
             months: 3,
-            amount: 1200
+            amount: 1200,
+            apiUrl: 'https://example.com'
         );
 
         $this->assertStringContainsString(
@@ -161,7 +162,8 @@ class PartPaymentTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethod: $paymentMethod,
             months: 3,
-            amount: 1200
+            amount: 1200,
+            apiUrl: 'https://example.com'
         );
         $startingAt = $widget->getStartingAtCost();
 
