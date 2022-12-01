@@ -25,9 +25,9 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
-use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
-use Resursbank\Ecom\Module\AnnuityFactor\Repository;
+use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
+use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 
 /**
  * Renders Part payment widget HTML and CSS
@@ -61,8 +61,8 @@ class PartPayment extends Widget
     /** @var string  */
     public readonly string $js;
 
-    /** @var AnnuityInformation */
-    private readonly AnnuityInformation $annuity;
+    /** @var Cost  */
+    public readonly Cost $cost;
 
     /**
      * @param string $storeId
@@ -91,7 +91,7 @@ class PartPayment extends Widget
         private readonly float $amount,
         public readonly string $apiUrl
     ) {
-        $this->annuity = $this->getAnnuityFactor();
+        $this->cost = $this->getCost();
         $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
         $this->infoText = Translator::translate(phraseId: 'pay-in-installments-with-resurs-bank');
         $this->startingAt = $this->getStartingAt();
@@ -105,9 +105,9 @@ class PartPayment extends Widget
     }
 
     /**
-     * Fetches the relevant annuity factor
+     * Fetch a Cost object from the Price signage API
      *
-     * @return AnnuityInformation
+     * @return Cost
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -120,26 +120,24 @@ class PartPayment extends Widget
      * @throws ReflectionException
      * @throws ValidationException
      */
-    private function getAnnuityFactor(): AnnuityInformation
+    private function getCost(): Cost
     {
-        $annuityFactors = Repository::getAnnuityFactors(
+        $costs = SignageRepository::getPriceSignage(
             storeId: $this->storeId,
-            paymentMethodId: $this->paymentMethod->id
+            paymentMethodId: $this->paymentMethod->id,
+            amount: $this->amount,
+            monthFilter: $this->months
         );
 
-        $annuity = null;
-        /** @var AnnuityInformation $annuityFactor */
-        foreach ($annuityFactors->content as $annuityFactor) {
-            if ($annuityFactor->durationInMonths === $this->months) {
-                $annuity = $annuityFactor;
-                break;
-            }
+        if (empty($costs->costList->toArray())) {
+            throw new EmptyValueException(message: 'Returned CostCollection appears to be empty');
         }
-        if (!$annuity) {
-            throw new EmptyValueException(message: 'Unable to find matching annuity information object');
+        if (sizeof($costs->costList) > 1) {
+            throw new IllegalValueException(message: 'Returned CostCollection contains more than one Cost');
         }
 
-        return $annuity;
+        /** @var Cost */
+        return $costs->costList[0];
     }
 
     /**
@@ -159,7 +157,7 @@ class PartPayment extends Widget
             search: ['%1', '%2'],
             replace: [
                 '<span id="rb-pp-starting-at">' . $this->getStartingAtCost() . '</span>',
-                (string)$this->annuity->durationInMonths
+                (string)$this->cost->months
             ],
             subject: Translator::translate(phraseId: 'starting-at')
         );
@@ -173,7 +171,7 @@ class PartPayment extends Widget
     public function getStartingAtCost(): string
     {
         return (string)(round(
-            num: $this->amount * $this->annuity->annuityFactor + $this->annuity->monthlyAdminFee,
+            num: $this->cost->monthlyCost,
             precision: 2
         ));
     }
