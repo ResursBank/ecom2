@@ -213,5 +213,33 @@
       "en": "Callback from Resurs Bank updated the order status.",
       "sv": "Callback från Resurs uppdaterade orderns status."
     }
+  },
+  {
+    "id": "part-payment-widget-enabled",
+    "translation": {
+      "en": "Part payment widget enabled",
+      "sv": "Delbetalningswidget aktiverad"
+    }
+  },
+  {
+    "id": "payment-method",
+    "translation": {
+      "en": "Payment method",
+      "sv": "Betalningsmetod"
+    }
+  },
+  {
+    "id": "annuity-period",
+    "translation": {
+      "en": "Annuity period",
+      "sv": "Avbetalningstid"
+    }
+  },
+  {
+    "id": "months",
+    "translation": {
+      "en": "months",
+      "sv": "månader"
+    }
   }
 ]
