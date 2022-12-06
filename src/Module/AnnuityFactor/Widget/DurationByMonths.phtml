@@ -15,7 +15,7 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationBymonths;
 ?>
 
 <?php if ($this->endpointUrl !== null): ?>
-  async function getStartingAtCost(paymentMethodId) {
+  async function getDurationsForPaymentMethodId(paymentMethodId) {
     let url ='<?= $this->endpointUrl ?><?= $this->separator ?>paymentMethodId=' + paymentMethodId;
 
     let response = await fetch(url, {
