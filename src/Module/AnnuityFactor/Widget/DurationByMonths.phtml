@@ -18,16 +18,17 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationBymonths;
   async function getDurationsForPaymentMethodId(paymentMethodId) {
     let url ='<?= $this->endpointUrl ?><?= $this->separator ?>paymentMethodId=' + paymentMethodId;
 
-    let response = await fetch(url, {
+    let result;
+    await fetch(url, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json"
       }
-    });
-    return await response.json().then(resp => {
-      return resp.options;
-    }).catch(function() {
-      return {};
-    });
+    })
+    .then(response => response.json())
+    .then(response => result = { status: 'success', response})
+    .catch(error => result = { status: 'error', error});
+
+    return result
   };
 <?php endif; ?>
