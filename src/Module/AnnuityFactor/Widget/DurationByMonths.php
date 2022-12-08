@@ -5,14 +5,14 @@
  * See LICENSE for license details.
  */
 
-/** @noinspection PhpMultipleClassDeclarationsInspection */
-
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\AnnuityFactor\Widget;
 
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Widget\Widget;
+
+use function str_contains;
 
 /**
  * Generates script intended to fetch duration in months options for PartPayment widget configuration

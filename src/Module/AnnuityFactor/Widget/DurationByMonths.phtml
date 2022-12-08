@@ -15,20 +15,21 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationBymonths;
 ?>
 
 <?php if ($this->endpointUrl !== null): ?>
-  async function getDurationsForPaymentMethodId(paymentMethodId) {
-    let url ='<?= $this->endpointUrl ?><?= $this->separator ?>paymentMethodId=' + paymentMethodId;
+    async function rbGetDurationsForPaymentMethodId(paymentMethodId) {
+        let url ='<?= $this->endpointUrl ?>';
 
-    let result;
-    await fetch(url, {
-      method: 'GET',
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => response.json())
-    .then(response => result = { status: 'success', response})
-    .catch(error => result = { status: 'error', error});
+        let result;
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ paymentMethodId })
+        })
+        .then(response => response.json())
+        .then(response => result = { status: 'success', response})
+        .catch(error => result = { status: 'error', error});
 
-    return result
-  };
+        return result;
+    };
 <?php endif; ?>
