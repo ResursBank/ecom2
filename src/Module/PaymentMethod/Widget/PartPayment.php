@@ -137,7 +137,7 @@ class PartPayment extends Widget
         }
 
         /** @var Cost */
-        return $costs->costList[0];
+        return array_values($costs->costList->toArray())[0];
     }
 
     /**
