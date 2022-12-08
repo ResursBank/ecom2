@@ -64,10 +64,10 @@ class OrderTest extends TestCase
             id: $this->generateUuid(),
             created: (new DateTime())->format(format: 'c'),
             storeId: $this->generateUuid(),
-            paymentMethodId: $this->generateUuid(),
             customer: new Payment\Customer(
                 customerType: CustomerType::NATURAL
             ),
+            paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
             status: Status::ACCEPTED,
             paymentActions: [],
             order: new Payment\Order(

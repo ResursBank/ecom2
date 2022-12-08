@@ -35,25 +35,25 @@ use Resursbank\Ecom\Module\Customer\Repository;
  */
 class GetAddressController extends Controller
 {
-	/**
-	 * NOTE: $sessionHandler to support testing with mocked session handler.
-	 *
-	 * @param string $storeId
-	 * @param GetAddressRequest $data
-	 * @param Session $sessionHandler
-	 *
-	 * @return string
-	 * @throws ConfigException
-	 * @throws JsonException
-	 * @throws ReflectionException
-	 * @throws ApiException
-	 * @throws AuthException
-	 * @throws CurlException
-	 * @throws GetAddressException
-	 * @throws ValidationException
-	 * @throws EmptyValueException
-	 * @throws IllegalTypeException
-	 */
+    /**
+     * NOTE: $sessionHandler to support testing with mocked session handler.
+     *
+     * @param string $storeId
+     * @param GetAddressRequest $data
+     * @param Session $sessionHandler
+     *
+     * @return string
+     * @throws ConfigException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws GetAddressException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     */
     public function exec(
         string $storeId,
         GetAddressRequest $data,
