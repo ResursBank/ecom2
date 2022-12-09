@@ -18,6 +18,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
+use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
@@ -38,10 +39,10 @@ class Payment extends Model
      * @param string $id
      * @param string $created
      * @param string $storeId
-     * @param string $paymentMethodId
      * @param Customer $customer
      * @param Status $status
      * @param array $paymentActions
+     * @param PaymentMethod|null $paymentMethod
      * @param CountryCode|null $countryCode
      * @param Order|null $order
      * @param ApplicationResponse|null $application
@@ -58,10 +59,10 @@ class Payment extends Model
         public readonly string $id,
         public readonly string $created,
         public readonly string $storeId,
-        public readonly string $paymentMethodId,
         public readonly Customer $customer,
         public readonly Status $status,
         public readonly array $paymentActions = [],
+        public readonly ?PaymentMethod $paymentMethod = null,
         public readonly ?CountryCode $countryCode = null,
         public readonly ?Order $order = null,
         public readonly ?ApplicationResponse $application = null,
@@ -73,7 +74,6 @@ class Payment extends Model
         $this->validateId();
         $this->validateCreated();
         $this->validateStoreId();
-        $this->validatePaymentMethodId();
     }
 
     /**
@@ -87,16 +87,6 @@ class Payment extends Model
     private function validateCreated(): void
     {
         $this->stringValidation->isTimestampDate(value: $this->created);
-    }
-
-    /**
-     * @return void
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validatePaymentMethodId(): void
-    {
-        $this->validateUuid(uuid: $this->paymentMethodId);
     }
 
     /**

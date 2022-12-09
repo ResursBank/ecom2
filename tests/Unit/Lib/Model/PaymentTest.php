@@ -66,7 +66,7 @@ class PaymentTest extends TestCase
             id: $this->generateUuid(),
             created: (new DateTime())->format(format: 'c'),
             storeId: $this->generateUuid(),
-            paymentMethodId: $this->generateUuid(),
+            paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
             customer: new Payment\Customer(
                 customerType: CustomerType::NATURAL
             ),
