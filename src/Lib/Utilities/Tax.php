@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Utilities;
 
-use function strlen;
-
 /**
  * Tax related methods.
  */
