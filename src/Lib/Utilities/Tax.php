@@ -17,15 +17,15 @@ class Tax
     /**
      * Calculate tax rate based on supplied values.
      *
-     * @param float $amount1
-     * @param float $amount2
+     * @param float $taxAmount
+     * @param float $totalInclTax
      * @return float
      * @todo Should return Enum since API only accepts specific values. ECP-308
      */
-    public static function getRate(float $amount1, float $amount2): float
+    public static function getRate(float $taxAmount, float $totalInclTax): float
     {
-        return $amount1 === 0.0 || $amount2 === 0.0 ? 0.0 : round(
-                num: $amount1 / $amount2,
+        return $taxAmount === 0.0 || $totalInclTax === 0.0 ? 0.0 : round(
+                num: $taxAmount / $totalInclTax,
                 precision: 2
             ) * 100;
     }
