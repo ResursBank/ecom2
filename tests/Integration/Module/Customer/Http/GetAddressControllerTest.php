@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Customer;
+namespace Resursbank\EcomTest\Integration\Module\Customer\Http;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
