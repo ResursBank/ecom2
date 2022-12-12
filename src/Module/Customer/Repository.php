@@ -45,6 +45,11 @@ class Repository
     public const SESSION_KEY_SSN_DATA = 'ssn_data';
 
     /**
+     * Session key (without prefix) for customer type.
+     */
+    public const SESSION_KEY_CUSTOMER_TYPE = 'customer_type';
+
+    /**
      * @param string $storeId
      * @param string $governmentId
      * @param CustomerType $customerType
