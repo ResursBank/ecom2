@@ -27,7 +27,6 @@ use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
 use Resursbank\Ecom\Module\AnnuityFactor\Models\DurationsByMonthRequest;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
-use ResursBank\Service\WordPress;
 
 use function json_encode;
 
@@ -56,8 +55,7 @@ class DurationsByMonthController extends Controller
     public function exec(
         string $storeId,
         string $paymentMethodId
-    ): string
-    {
+    ): string {
         $stringValidation = new StringValidation();
         $return = [];
 
@@ -77,7 +75,6 @@ class DurationsByMonthController extends Controller
                 $return[$annuityFactor->durationInMonths] = $annuityFactor->paymentPlanName;
             }
         } catch (Exception $exception) {
-            WordPress::setGenericError(exception: $exception);
             throw $exception;
         }
 
