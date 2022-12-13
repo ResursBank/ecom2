@@ -16,7 +16,7 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationBymonths;
 
 <?php if ($this->endpointUrl !== null): ?>
     async function rbGetDurationsForPaymentMethodId(paymentMethodId) {
-        let url ='<?= $this->endpointUrl ?>';
+        let url = '<?= $this->endpointUrl ?>';
 
         let result;
         await fetch(url, {
