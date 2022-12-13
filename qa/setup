@@ -87,6 +87,9 @@ if [ ! -d ./qa/psalm/cache ]; then
   mkdir ./qa/psalm/cache
 fi
 
+if [ ! -d ./qa/php-cs-fixer ]; then
+  mkdir ./qa/php-cs-fixer
+fi
 if [ ! -f ./qa/php-cs-fixer/.php-cs-fixer.cache ]; then
   touch ./qa/php-cs-fixer/.php-cs-fixer.cache
 fi

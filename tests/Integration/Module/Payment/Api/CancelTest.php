@@ -124,10 +124,6 @@ class CancelTest extends TestCase
                 )
             ]),
             orderReference: $orderReference,
-            application: new Application(
-                requestedCreditLimit: null,
-                applicationData: null
-            ),
             customer: new Customer(
                 deliveryAddress: new Address(
                     addressRow1: 'Glassgatan 15',
