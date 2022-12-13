@@ -26,6 +26,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 
@@ -89,6 +90,8 @@ class PartPayment extends Widget
         private readonly PaymentMethod $paymentMethod,
         private readonly int $months,
         private readonly float $amount,
+        public readonly string $currencySymbol,
+        public readonly CurrencyFormat $currencyFormat,
         public readonly string $apiUrl
     ) {
         $this->cost = $this->getCost();
@@ -156,11 +159,25 @@ class PartPayment extends Widget
         return str_replace(
             search: ['%1', '%2'],
             replace: [
-                '<span id="rb-pp-starting-at">' . $this->getStartingAtCost() . '</span>',
+                '<span id="rb-pp-starting-at">' . $this->getFormattedStartingAtCost() . '</span>',
                 (string)$this->cost->months
             ],
             subject: Translator::translate(phraseId: 'starting-at')
         );
+    }
+
+    /**
+     * Fetches formatted starting at cost with currency symbol
+     *
+     * @return string
+     */
+    public function getFormattedStartingAtCost(): string
+    {
+        if ($this->currencyFormat === CurrencyFormat::SYMBOL_FIRST) {
+            return $this->currencySymbol . ' ' . $this->getStartingAtCost();
+        }
+
+        return $this->getStartingAtCost() . ' ' . $this->currencySymbol;
     }
 
     /**

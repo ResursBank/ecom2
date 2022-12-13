@@ -25,8 +25,8 @@ class Tax
     public static function getRate(float $taxAmount, float $totalInclTax): float
     {
         return $taxAmount === 0.0 || $totalInclTax === 0.0 ? 0.0 : round(
-                num: $taxAmount / $totalInclTax,
-                precision: 2
-            ) * 100;
+            num: $taxAmount / $totalInclTax,
+            precision: 2
+        ) * 100;
     }
 }

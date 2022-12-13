@@ -53,7 +53,7 @@ class DurationByMonthsTest extends TestCase
         $widget = new DurationByMonths(endpointUrl: $url);
 
         $this->assertStringContainsString(
-            needle: $url . '?paymentMethodId=',
+            needle: "let url = '" . $url,
             haystack: $widget->getScript(),
             message: 'Generated URL not found'
         );
