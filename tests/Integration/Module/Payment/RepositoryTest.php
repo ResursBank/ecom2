@@ -91,11 +91,7 @@ class RepositoryTest extends TestCase
         $createdPayment = Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: $orderLines,
-            application: new Application(
-                requestedCreditLimit: null,
-                applicationData: null
-            ),
+            orderLines: $orderLines
         );
 
         /** @var Order $order */
@@ -188,10 +184,6 @@ class RepositoryTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines,
-            application: new Application(
-                requestedCreditLimit: null,
-                applicationData: null
-            ),
             metadata: $metadata,
         );
 
