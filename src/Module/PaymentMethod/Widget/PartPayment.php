@@ -229,10 +229,15 @@ class PartPayment extends Widget
      */
     public function getStartingAtCost(): string
     {
-        return (string)(round(
-            num: $this->cost->monthlyCost,
-            precision: 2
-        ));
+        return number_format(
+            num: round(
+                num: $this->cost->monthlyCost,
+                precision: 2
+            ),
+            decimals: 2,
+            decimal_separator: ',',
+            thousands_separator: ' '
+        );
     }
 
     /**
