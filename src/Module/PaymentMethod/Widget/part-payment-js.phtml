@@ -26,7 +26,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
             });
             await response.json().then(resp => {
                 document.getElementById('rb-pp-error').style.display = 'none';
-                document.getElementById('rb-pp-starting-at').innerHTML = resp.startingAt;
+                document.getElementById('rb-pp-example').innerHTML = resp.startingAt;
             }).catch(function() {
                 document.getElementById('rb-pp-error').style.display = 'block';
             });
