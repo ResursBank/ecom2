@@ -196,10 +196,8 @@ class PartPayment extends Widget
      * @throws ReflectionException
      * @throws TranslationException
      */
-    private function getStartingAt(): string
+    public function getStartingAt(): string
     {
-
-
         return str_replace(
             search: ['%1', '%2'],
             replace: [
