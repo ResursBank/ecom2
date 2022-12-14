@@ -47,16 +47,23 @@
   position:fixed;
   left:50%;
   top:50%;
-  margin-left:-512px;
-  margin-top:-400px;
+  max-width:95vw;
+  max-height:90vh;
+  transform: translate(-50%, -50%);
 }
 
 #rb-pp-iframe {
-  width:1024px;
-  height:800px;
+  width:95vw;
+  height:90vh;
   border:0;
   -moz-border-radius:2%;
   -webkit-border-radius:2%;
   border-radius:2%;
   overflow:hidden;
+}
+
+@media screen and (min-width: 1280px) {
+  #rb-pp-iframe {
+    width:1214px;
+  }
 }
