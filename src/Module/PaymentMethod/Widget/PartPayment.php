@@ -121,6 +121,16 @@ class PartPayment extends Widget
     }
 
     /**
+     * Return payment method
+     *
+     * @return PaymentMethod
+     */
+    public function getPaymentMethod(): PaymentMethod
+    {
+        return $this->paymentMethod;
+    }
+
+    /**
      * Fetch a Cost object from the Price signage API
      *
      * @return Cost
