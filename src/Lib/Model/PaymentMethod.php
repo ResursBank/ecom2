@@ -67,6 +67,16 @@ class PaymentMethod extends Model
     }
 
     /**
+     * Checks if payment method is eligible for part payment
+     *
+     * @return bool
+     */
+    public function isPartPayment(): bool
+    {
+        return $this->type === Type::RESURS_PART_PAYMENT || $this->type === Type::RESURS_REVOLVING_CREDIT;
+    }
+
+    /**
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
