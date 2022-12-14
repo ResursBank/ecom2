@@ -21,11 +21,14 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
+use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
+use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
@@ -65,12 +68,18 @@ class PartPayment extends Widget
     /** @var Cost  */
     public readonly Cost $cost;
 
+    /** @var AnnuityInformation  */
+    private readonly AnnuityInformation $annuityInformation;
+
     /**
      * @param string $storeId
      * @param PaymentMethod $paymentMethod
      * @param int $months
      * @param float $amount
+     * @param string $currencySymbol
+     * @param CurrencyFormat $currencyFormat
      * @param string $apiUrl
+     *
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -94,6 +103,7 @@ class PartPayment extends Widget
         public readonly CurrencyFormat $currencyFormat,
         public readonly string $apiUrl
     ) {
+        $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
         $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
         $this->infoText = Translator::translate(phraseId: 'pay-in-installments-with-resurs-bank');
@@ -105,6 +115,38 @@ class PartPayment extends Widget
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
         $this->js = $this->render(file: __DIR__ . '/part-payment-js.phtml');
+    }
+
+    /**
+     * @return AnnuityInformation
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    private function getAnnuityInformation(): AnnuityInformation
+    {
+        $annuityFactors = Repository::getAnnuityFactors(
+            storeId: $this->storeId,
+            paymentMethodId: $this->paymentMethod->id
+        );
+
+        /** @var AnnuityInformation $annuityFactor */
+        foreach ($annuityFactors->content as $annuityFactor) {
+            if ($annuityFactor->durationInMonths === $this->months) {
+                return $annuityFactor;
+            }
+        }
+
+        throw new MissingKeyException(message: 'Could not find matching payment plan');
     }
 
     /**
@@ -156,11 +198,13 @@ class PartPayment extends Widget
      */
     private function getStartingAt(): string
     {
+
+
         return str_replace(
             search: ['%1', '%2'],
             replace: [
                 '<span id="rb-pp-starting-at">' . $this->getFormattedStartingAtCost() . '</span>',
-                (string)$this->cost->months
+                $this->annuityInformation->paymentPlanName
             ],
             subject: Translator::translate(phraseId: 'starting-at')
         );
