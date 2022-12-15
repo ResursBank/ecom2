@@ -70,7 +70,10 @@ class PartPayment extends Widget
      * @param PaymentMethod $paymentMethod
      * @param int $months
      * @param float $amount
+     * @param string $currencySymbol
+     * @param CurrencyFormat $currencyFormat
      * @param string $apiUrl
+     *
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -105,6 +108,26 @@ class PartPayment extends Widget
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
         $this->js = $this->render(file: __DIR__ . '/part-payment-js.phtml');
+    }
+
+    /**
+     * Return total amount of product
+     *
+     * @return float
+     */
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Return payment method
+     *
+     * @return PaymentMethod
+     */
+    public function getPaymentMethod(): PaymentMethod
+    {
+        return $this->paymentMethod;
     }
 
     /**
