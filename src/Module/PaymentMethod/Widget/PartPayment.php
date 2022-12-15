@@ -21,11 +21,14 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
+use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
+use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
@@ -65,6 +68,9 @@ class PartPayment extends Widget
     /** @var Cost  */
     public readonly Cost $cost;
 
+    /** @var AnnuityInformation  */
+    private readonly AnnuityInformation $annuityInformation;
+
     /**
      * @param string $storeId
      * @param PaymentMethod $paymentMethod
@@ -97,6 +103,7 @@ class PartPayment extends Widget
         public readonly CurrencyFormat $currencyFormat,
         public readonly string $apiUrl
     ) {
+        $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
         $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
         $this->infoText = Translator::translate(phraseId: 'pay-in-installments-with-resurs-bank');
@@ -111,6 +118,37 @@ class PartPayment extends Widget
     }
 
     /**
+     * @return AnnuityInformation
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    private function getAnnuityInformation(): AnnuityInformation
+    {
+        $annuityFactors = Repository::getAnnuityFactors(
+            storeId: $this->storeId,
+            paymentMethodId: $this->paymentMethod->id
+        );
+
+        /** @var AnnuityInformation $annuityFactor */
+        foreach ($annuityFactors->content as $annuityFactor) {
+            if ($annuityFactor->durationInMonths === $this->months) {
+                return $annuityFactor;
+            }
+        }
+
+        throw new MissingKeyException(message: 'Could not find matching payment plan');
+    }
+    /*
      * Return total amount of product
      *
      * @return float
@@ -163,7 +201,7 @@ class PartPayment extends Widget
         }
 
         /** @var Cost */
-        return array_values($costs->costList->toArray())[0];
+        return array_values(array: $costs->costList->toArray())[0];
     }
 
     /**
@@ -177,13 +215,13 @@ class PartPayment extends Widget
      * @throws ReflectionException
      * @throws TranslationException
      */
-    private function getStartingAt(): string
+    public function getStartingAt(): string
     {
         return str_replace(
             search: ['%1', '%2'],
             replace: [
                 '<span id="rb-pp-starting-at">' . $this->getFormattedStartingAtCost() . '</span>',
-                (string)$this->cost->months
+                $this->annuityInformation->paymentPlanName
             ],
             subject: Translator::translate(phraseId: 'starting-at')
         );
@@ -210,10 +248,15 @@ class PartPayment extends Widget
      */
     public function getStartingAtCost(): string
     {
-        return (string)(round(
-            num: $this->cost->monthlyCost,
-            precision: 2
-        ));
+        return number_format(
+            num: round(
+                num: $this->cost->monthlyCost,
+                precision: 2
+            ),
+            decimals: 2,
+            decimal_separator: ',',
+            thousands_separator: ' '
+        );
     }
 
     /**

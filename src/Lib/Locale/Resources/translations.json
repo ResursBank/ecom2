@@ -175,8 +175,8 @@
   {
     "id": "starting-at",
     "translation": {
-      "en": "Starting at %1 per month, for %2 months",
-      "sv": "Från %1 per månad, i %2 månader"
+      "en": "Starting at %1 per month, for %2",
+      "sv": "Från %1 per månad, i %2"
     }
   },
   {
