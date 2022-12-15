@@ -19,7 +19,7 @@ use Throwable;
 interface LoggerInterface
 {
     /**
-     * @param string|Exception|Error $message
+     * @param string|Throwable|Exception|Error $message
      * @return void
      */
     public function debug(string|Throwable|Exception|Error $message): void;

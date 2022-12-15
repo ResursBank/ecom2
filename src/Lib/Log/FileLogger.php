@@ -51,10 +51,10 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level DEBUG
      *
-     * @param string|Exception|Error $message
+     * @param string|Throwable|Exception|Error $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
     public function debug(string|Throwable|Exception|Error $message): void
     {
@@ -64,10 +64,10 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level INFO
      *
-     * @param string|Exception $message
+     * @param string|Throwable|Exception|Error $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
     public function info(string|Throwable|Exception|Error $message): void
     {
@@ -77,10 +77,10 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level WARNING
      *
-     * @param string|Exception $message
+     * @param string|Throwable|Exception|Error $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
     public function warning(string|Throwable|Exception|Error $message): void
     {
@@ -90,10 +90,10 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level ERROR
      *
-     * @param string|Exception $message
+     * @param string|Throwable|Exception|Error $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
     public function error(string|Throwable|Exception|Error $message): void
     {
@@ -167,7 +167,7 @@ class FileLogger implements LoggerInterface
      * @throws FilesystemException
      * @throws ConfigException
      */
-    private function logException(Throwable|Exception $exception): void
+    private function logException(Throwable|Exception|Error $exception): void
     {
         $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
     }

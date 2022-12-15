@@ -15,6 +15,7 @@ use Exception;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\IOException;
 
+use Throwable;
 use function get_class;
 use function is_object;
 
@@ -30,7 +31,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function debug(Exception|string|Error $message): void
+    public function debug(string|Throwable|Exception|Error $message): void
     {
         $this->log(level: LogLevel::DEBUG, message: $message);
     }
@@ -40,7 +41,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function info(Exception|string $message): void
+    public function info(string|Throwable|Exception|Error $message): void
     {
         $this->log(level: LogLevel::INFO, message: $message);
     }
@@ -50,7 +51,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function warning(Exception|string $message): void
+    public function warning(string|Throwable|Exception|Error $message): void
     {
         $this->log(level: LogLevel::WARNING, message: $message);
     }
@@ -60,7 +61,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function error(Exception|string $message): void
+    public function error(string|Throwable|Exception|Error $message): void
     {
         $this->log(level: LogLevel::ERROR, message: $message);
     }
@@ -69,12 +70,12 @@ class StdoutLogger implements LoggerInterface
      * Write log entry to STDOUT/STDERR (depending on log level)
      *
      * @param LogLevel $level
-     * @param string|Exception|Error $message
+     * @param string|Throwable|Exception|Error $message
      * @return void
-     * @throws IOException
      * @throws ConfigException
+     * @throws IOException
      */
-    private function log(LogLevel $level, string|Exception|Error $message): void
+    private function log(LogLevel $level, string|Throwable|Exception|Error $message): void
     {
         /**
          * @psalm-suppress RedundantCondition
