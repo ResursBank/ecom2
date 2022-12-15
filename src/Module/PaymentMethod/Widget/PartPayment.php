@@ -148,6 +148,25 @@ class PartPayment extends Widget
 
         throw new MissingKeyException(message: 'Could not find matching payment plan');
     }
+    /*
+     * Return total amount of product
+     *
+     * @return float
+     */
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Return payment method
+     *
+     * @return PaymentMethod
+     */
+    public function getPaymentMethod(): PaymentMethod
+    {
+        return $this->paymentMethod;
+    }
 
     /**
      * Fetch a Cost object from the Price signage API
@@ -182,7 +201,7 @@ class PartPayment extends Widget
         }
 
         /** @var Cost */
-        return array_values($costs->costList->toArray())[0];
+        return array_values(array: $costs->costList->toArray())[0];
     }
 
     /**
