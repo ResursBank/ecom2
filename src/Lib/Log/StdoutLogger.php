@@ -116,12 +116,12 @@ class StdoutLogger implements LoggerInterface
     /**
      * Log Exception object by converting it to a string and feeding it to the log method.
      *
-     * @param Exception $exception
+     * @param Throwable|Exception $exception
      * @return void
-     * @throws IOException
      * @throws ConfigException
+     * @throws IOException
      */
-    private function logException(Exception $exception): void
+    private function logException(Throwable|Exception $exception): void
     {
         $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
     }
