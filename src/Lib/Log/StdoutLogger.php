@@ -31,7 +31,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function debug(string|Throwable|Exception|Error $message): void
+    public function debug(string|Throwable $message): void
     {
         $this->log(level: LogLevel::DEBUG, message: $message);
     }
@@ -41,7 +41,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function info(string|Throwable|Exception|Error $message): void
+    public function info(string|Throwable $message): void
     {
         $this->log(level: LogLevel::INFO, message: $message);
     }
@@ -51,7 +51,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function warning(string|Throwable|Exception|Error $message): void
+    public function warning(string|Throwable $message): void
     {
         $this->log(level: LogLevel::WARNING, message: $message);
     }
@@ -61,7 +61,7 @@ class StdoutLogger implements LoggerInterface
      * @throws IOException
      * @throws ConfigException
      */
-    public function error(string|Throwable|Exception|Error $message): void
+    public function error(string|Throwable $message): void
     {
         $this->log(level: LogLevel::ERROR, message: $message);
     }
@@ -75,7 +75,7 @@ class StdoutLogger implements LoggerInterface
      * @throws ConfigException
      * @throws IOException
      */
-    private function log(LogLevel $level, string|Throwable|Exception|Error $message): void
+    private function log(LogLevel $level, string|Throwable $message): void
     {
         /**
          * @psalm-suppress RedundantCondition

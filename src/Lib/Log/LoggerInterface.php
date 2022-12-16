@@ -19,26 +19,26 @@ use Throwable;
 interface LoggerInterface
 {
     /**
-     * @param string|Throwable|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function debug(string|Throwable|Exception|Error $message): void;
+    public function debug(string|Throwable $message): void;
 
     /**
-     * @param string|Throwable|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function info(string|Throwable|Exception|Error $message): void;
+    public function info(string|Throwable $message): void;
 
     /**
-     * @param string|Throwable|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function warning(string|Throwable|Exception|Error $message): void;
+    public function warning(string|Throwable $message): void;
 
     /**
-     * @param string|Throwable|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function error(string|Throwable|Exception|Error $message): void;
+    public function error(string|Throwable $message): void;
 }
