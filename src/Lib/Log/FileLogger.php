@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 
+use Throwable;
 use function get_class;
 use function is_object;
 
@@ -50,12 +51,12 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level DEBUG
      *
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
-    public function debug(string|Exception|Error $message): void
+    public function debug(string|Throwable $message): void
     {
         $this->log(level: LogLevel::DEBUG, message: $message);
     }
@@ -63,12 +64,12 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level INFO
      *
-     * @param string|Exception $message
+     * @param string|Throwable $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
-    public function info(string|Exception $message): void
+    public function info(string|Throwable $message): void
     {
         $this->log(level: LogLevel::INFO, message: $message);
     }
@@ -76,12 +77,12 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level WARNING
      *
-     * @param string|Exception $message
+     * @param string|Throwable $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
-    public function warning(string|Exception $message): void
+    public function warning(string|Throwable $message): void
     {
         $this->log(level: LogLevel::WARNING, message: $message);
     }
@@ -89,12 +90,12 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level ERROR
      *
-     * @param string|Exception $message
+     * @param string|Throwable $message
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
-    public function error(string|Exception $message): void
+    public function error(string|Throwable $message): void
     {
         $this->log(level: LogLevel::ERROR, message: $message);
     }
@@ -103,13 +104,13 @@ class FileLogger implements LoggerInterface
      * Write log entry to file on disk.
      *
      * @param LogLevel $level
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      * @throws FilesystemException
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function log(LogLevel $level, string|Exception|Error $message): void
+    private function log(LogLevel $level, string|Throwable $message): void
     {
         /**
          * @psalm-suppress RedundantCondition
@@ -127,6 +128,14 @@ class FileLogger implements LoggerInterface
             (
                 get_class(object: $message) === Error::class ||
                 is_subclass_of(object_or_class: $message, class: Error::class)
+            )
+        ) {
+            $this->logError(error: $message);
+        } elseif (
+            is_object(value: $message) &&
+            (
+                get_class(object: $message) === Throwable::class ||
+                is_subclass_of(object_or_class: $message, class: Throwable::class)
             )
         ) {
             $this->logError(error: $message);
@@ -153,12 +162,12 @@ class FileLogger implements LoggerInterface
     /**
      * Log Exception object by converting it to a string and feeding it to the log method.
      *
-     * @param Exception $exception
+     * @param Throwable $exception
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
-    private function logException(Exception $exception): void
+    private function logException(Throwable $exception): void
     {
         $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
     }
@@ -166,12 +175,12 @@ class FileLogger implements LoggerInterface
     /**
      * Log Error object by converting it to a string and feeding it to the log method.
      *
-     * @param Error $error
+     * @param Throwable|Error $error
      * @return void
-     * @throws FilesystemException
      * @throws ConfigException
+     * @throws FilesystemException
      */
-    private function logError(Error $error): void
+    private function logError(Throwable|Error $error): void
     {
         $this->log(level: LogLevel::ERROR, message: $error->getTraceAsString());
     }

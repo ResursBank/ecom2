@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Log;
 
 use Error;
 use Exception;
+use Throwable;
 
 /**
  * Logs nothing.
@@ -25,34 +26,34 @@ class NoneLogger implements LoggerInterface
     }
 
     /**
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function debug(string|Exception|Error $message): void
+    public function debug(string|Throwable $message): void
     {
     }
 
     /**
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function info(string|Exception|Error $message): void
+    public function info(string|Throwable $message): void
     {
     }
 
     /**
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function warning(string|Exception|Error $message): void
+    public function warning(string|Throwable $message): void
     {
     }
 
     /**
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function error(string|Exception|Error $message): void
+    public function error(string|Throwable $message): void
     {
     }
 }

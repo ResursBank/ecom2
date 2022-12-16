@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Log;
 
 use Error;
 use Exception;
+use Throwable;
 
 /**
  * Contract for a logger implementation.
@@ -18,26 +19,26 @@ use Exception;
 interface LoggerInterface
 {
     /**
-     * @param string|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function debug(string|Exception|Error $message): void;
+    public function debug(string|Throwable $message): void;
 
     /**
-     * @param string|Exception $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function info(string|Exception $message): void;
+    public function info(string|Throwable $message): void;
 
     /**
-     * @param string|Exception $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function warning(string|Exception $message): void;
+    public function warning(string|Throwable $message): void;
 
     /**
-     * @param string|Exception $message
+     * @param string|Throwable $message
      * @return void
      */
-    public function error(string|Exception $message): void;
+    public function error(string|Throwable $message): void;
 }
