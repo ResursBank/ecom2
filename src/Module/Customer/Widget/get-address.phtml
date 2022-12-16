@@ -187,6 +187,7 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
          * @return {Promise<Response>}
          */
         const fetchAddress = (govId, customerType) => {
+            setFetchAddressMessage('', false);
             return fetch(URL_FETCH_ADDRESS, {
                 method: 'POST',
                 headers: {
