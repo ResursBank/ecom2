@@ -255,5 +255,54 @@
       "en": "Minimum product price the widget is displayed for",
       "sv": "Lägsta produktpris som widgeten visas för"
     }
+  },
+  {
+    "id": "limist-missing-store-id",
+    "translation": {
+      "en": "Can't configure Part payment widget without a configured store id",
+      "sv": "Kan inte konfigurera delbetalningswidget utan konfigurerat butiks-ID"
+    }
+  },
+  {
+    "id": "limit-missing-payment-method",
+    "translation": {
+      "en": "Can't configure a limit without specifying the payment method to use",
+      "sv": "Kan inte konfigurera gränsvärde utan att ange vilken betalningsmetod som skall användas"
+    }
+  },
+  {
+    "id": "limit-failed-to-load-payment-method",
+    "translation": {
+      "en": "Failed to load the configured payment method",
+      "sv": "Kunde inte ladda den konfigurerade betalningsmetoden"
+    }
+  },
+  {
+    "id": "limit-missing-period",
+    "translation": {
+      "en": "Can't configure a limit without specifying the duration to use",
+      "sv": "Kan inte konfigurera gränsvärde utan att ange vilken avbetalningstid som skall användas"
+    }
+  },
+  {
+    "id": "limit-new-value-not-numeric",
+    "translation": {
+      "en": "The specified limit is not a number",
+      "sv": "Det angivna gränsvärdet är inte ett nummer"
+    }
+  },
+  {
+    "id": "limit-new-value-not-positive",
+    "translation": {
+      "en": "The specified limit is not a positive number",
+      "sv": "Det angivna gränsvärdet är inte ett positivt nummer"
+    }
+  },
+  {
+    "id": "limit-new-value-above-max",
+    "translation": {
+      "en": "The specified limit is above the payment method's max purchase limit (%1)",
+      "sv": "Det angivna gränsvärdet är över betalningsmetodens högsta tillåtna köpsumma (%1)"
+    }
   }
 ]
