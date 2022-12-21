@@ -16,8 +16,8 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
-
 use Throwable;
+
 use function get_class;
 use function is_object;
 

@@ -14,8 +14,8 @@ use Error;
 use Exception;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\IOException;
-
 use Throwable;
+
 use function get_class;
 use function is_object;
 
