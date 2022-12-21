@@ -21,10 +21,10 @@ class Cost extends Model
 {
     /**
      * @param float $interest
-     * @param int $months
+     * @param int $durationMonths
      * @param float $totalCost
      * @param float $monthlyCost
-     * @param float $agreementFee
+     * @param float $administrationFee
      * @param float $effectiveInterest
      * @param FloatValidation $floatValidation
      * @param IntValidation $intValidation
@@ -32,19 +32,19 @@ class Cost extends Model
      */
     public function __construct(
         public readonly float $interest,
-        public readonly int $months,
+        public readonly int $durationMonths,
         public readonly float $totalCost,
         public readonly float $monthlyCost,
-        public readonly float $agreementFee,
+        public readonly float $administrationFee,
         public readonly float $effectiveInterest,
         private readonly FloatValidation $floatValidation = new FloatValidation(),
         private readonly IntValidation $intValidation = new IntValidation()
     ) {
         $this->validateInterest();
-        $this->validateMonths();
+        $this->validateDurationMonths();
         $this->validateTotalCost();
         $this->validateMonthlyCost();
-        $this->validateAgreementFee();
+        $this->validateAdministrationFee();
         $this->validateEffectiveInterest();
     }
 
@@ -61,9 +61,9 @@ class Cost extends Model
      * @return void
      * @throws IllegalValueException
      */
-    private function validateMonths(): void
+    private function validateDurationMonths(): void
     {
-        $this->intValidation->isPositive(value: $this->months);
+        $this->intValidation->isPositive(value: $this->durationMonths);
     }
 
     /**
@@ -88,9 +88,9 @@ class Cost extends Model
      * @return void
      * @throws IllegalValueException
      */
-    private function validateAgreementFee(): void
+    private function validateAdministrationFee(): void
     {
-        $this->floatValidation->isPositive(value: $this->agreementFee);
+        $this->floatValidation->isPositive(value: $this->administrationFee);
     }
 
     /**

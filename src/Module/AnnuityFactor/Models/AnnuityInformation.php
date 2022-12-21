@@ -19,15 +19,15 @@ class AnnuityInformation extends Model
     /**
      * @param string $paymentPlanName
      * @param float $annuityFactor
-     * @param int $durationInMonths
-     * @param float $monthlyAdminFee
+     * @param int $durationMonths
+     * @param float $administrationFee
      * @param float $setupFee
      */
     public function __construct(
         public readonly string $paymentPlanName,
         public readonly float $annuityFactor,
-        public readonly int $durationInMonths,
-        public readonly float $monthlyAdminFee,
+        public readonly int $durationMonths,
+        public readonly float $administrationFee,
         public readonly float $setupFee
     ) {
     }

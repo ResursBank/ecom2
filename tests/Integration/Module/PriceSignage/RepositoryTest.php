@@ -290,14 +290,14 @@ class RepositoryTest extends TestCase
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months1,
-            actual: $cacheData1->costList[0]->months,
+            actual: $cacheData1->costList[0]->durationMonths,
             message: "Cache should be filtered by $months1 months."
         );
 
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months2,
-            actual: $cacheData2->costList[0]->months,
+            actual: $cacheData2->costList[0]->durationMonths,
             message: "Cache should be filtered by $months2 months."
         );
     }

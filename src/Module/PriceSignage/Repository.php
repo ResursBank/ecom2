@@ -173,7 +173,7 @@ class Repository
     ): PriceSignage {
         $costs = array_filter(
             array: $result->costList->toArray(),
-            callback: static fn ($cost) => $cost instanceof Cost && $cost->months === $monthFilter
+            callback: static fn ($cost) => $cost instanceof Cost && $cost->durationMonths === $monthFilter
         );
 
         return new PriceSignage(
