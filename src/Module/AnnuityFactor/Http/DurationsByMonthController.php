@@ -72,7 +72,7 @@ class DurationsByMonthController extends Controller
 
             /** @var AnnuityInformation $annuityFactor */
             foreach ($annuityFactors->content as $annuityFactor) {
-                $return[$annuityFactor->durationInMonths] = $annuityFactor->paymentPlanName;
+                $return[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
             }
         } catch (Exception $exception) {
             throw $exception;

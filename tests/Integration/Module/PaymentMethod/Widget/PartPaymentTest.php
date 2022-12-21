@@ -30,6 +30,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 
@@ -99,6 +100,8 @@ class PartPaymentTest extends TestCase
             paymentMethod: $paymentMethod,
             months: 3,
             amount: 1200,
+            currencyFormat: CurrencyFormat::SYMBOL_LAST,
+            currencySymbol: 'kr',
             apiUrl: 'https://example.com'
         );
 
@@ -163,6 +166,8 @@ class PartPaymentTest extends TestCase
             paymentMethod: $paymentMethod,
             months: 3,
             amount: 1200,
+            currencyFormat: CurrencyFormat::SYMBOL_LAST,
+            currencySymbol: 'kr',
             apiUrl: 'https://example.com'
         );
         $startingAt = $widget->getStartingAtCost();

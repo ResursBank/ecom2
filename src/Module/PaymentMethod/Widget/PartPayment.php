@@ -141,7 +141,7 @@ class PartPayment extends Widget
 
         /** @var AnnuityInformation $annuityFactor */
         foreach ($annuityFactors->content as $annuityFactor) {
-            if ($annuityFactor->durationInMonths === $this->months) {
+            if ($annuityFactor->durationMonths === $this->months) {
                 return $annuityFactor;
             }
         }
