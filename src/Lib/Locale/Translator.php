@@ -121,7 +121,7 @@ class Translator
         foreach ($phrases as $item) {
             if ($item->id === $phraseId) {
                 /** @var string $result */
-                $result = $item->translation->{Config::getLocale()->value};
+                $result = $item->translation->{Config::getLanguage()->value};
             }
         }
 

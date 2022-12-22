@@ -268,7 +268,7 @@ final class Config
      * @return Language
      * @throws ConfigException
      */
-    public static function getLocale(): Language
+    public static function getLanguage(): Language
     {
         self::validateInstance();
         return self::$instance->language;

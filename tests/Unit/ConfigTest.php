@@ -67,7 +67,7 @@ class ConfigTest extends TestCase
         );
         self::assertEquals(
             expected: Language::en,
-            actual: Config::getLocale()
+            actual: Config::getLanguage()
         );
     }
 
@@ -135,7 +135,7 @@ class ConfigTest extends TestCase
         );
         self::assertEquals(
             expected: Language::sv,
-            actual: Config::getLocale()
+            actual: Config::getLanguage()
         );
     }
 
