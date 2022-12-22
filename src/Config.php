@@ -12,7 +12,8 @@ namespace Resursbank\Ecom;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Locale\Locale;
+use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
@@ -47,7 +48,8 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param Locale $locale
+     * @param Language $language
+     * @param Location $location
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -62,7 +64,8 @@ final class Config
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
         public readonly int $timeout = 60,
-        public readonly Locale $locale = Locale::en,
+        public readonly Language $language = Language::en,
+        public readonly Location $location = Location::SE
     ) {
     }
 
@@ -77,7 +80,8 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param Locale $locale
+     * @param Language $language
+     * @param Location $location
      * @return void
      * @noinspection PhpTooManyParametersInspection
      * @todo Consider making userAgent an object instead.
@@ -94,7 +98,8 @@ final class Config
         string $proxy = '',
         int $proxyType = 0,
         int $timeout = 0,
-        Locale $locale = Locale::en,
+        Language $language = Language::en,
+        Location $location = Location::SE
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -107,7 +112,8 @@ final class Config
             proxy: $proxy,
             proxyType: $proxyType,
             timeout: $timeout,
-            locale: $locale
+            language: $language,
+            location: $location
         );
     }
 
@@ -265,12 +271,22 @@ final class Config
     }
 
     /**
-     * @return Locale
+     * @return Language
      * @throws ConfigException
      */
-    public static function getLocale(): Locale
+    public static function getLanguage(): Language
     {
         self::validateInstance();
-        return self::$instance->locale;
+        return self::$instance->language;
+    }
+
+    /**
+     * @return Location
+     * @throws ConfigException
+     */
+    public static function getLocation(): Location
+    {
+        self::validateInstance();
+        return self::$instance->location;
     }
 }

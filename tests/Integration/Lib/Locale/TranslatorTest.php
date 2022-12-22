@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Lib\Cache\Redis;
-use Resursbank\Ecom\Lib\Locale\Locale;
+use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Locale\Translator;
@@ -36,14 +36,14 @@ class TranslatorTest extends TestCase
     }
 
     /**
-     * @param Locale $locale
+     * @param Language $locale
      * @return void
      */
-    private function setupConfig(Locale $locale = Locale::en): void
+    private function setupConfig(Language $locale = Language::en): void
     {
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
-            locale: $locale,
+            language: $locale,
             cache: new Redis(host: $_ENV['REDIS_HOST'])
         );
     }
@@ -63,7 +63,7 @@ class TranslatorTest extends TestCase
         $this->assertSame(expected: 'Read More', actual: $result);
 
         // Test translating into swedish.
-        $this->setupConfig(locale: Locale::sv);
+        $this->setupConfig(locale: Language::sv);
         $result = Translator::translate(phraseId: 'read-more');
         $this->assertSame(expected: 'Läs Mer', actual: $result);
     }
@@ -145,7 +145,7 @@ class TranslatorTest extends TestCase
         foreach ($decodedCache->toArray() as $item) {
             if ($item->id === $phraseId) {
                 /** @var string $result */
-                $result = $item->translation->{Config::getLocale()->value};
+                $result = $item->translation->{Config::getLanguage()->value};
             }
         }
 

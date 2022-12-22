@@ -15,7 +15,8 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Locale\Locale;
+use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
@@ -66,9 +67,13 @@ class ConfigTest extends TestCase
             actual: Config::getTimeout()
         );
         self::assertEquals(
-            expected: Locale::en,
-            actual: Config::getLocale()
+            expected: Language::en,
+            actual: Config::getLanguage()
         );
+        self::assertEquals(
+            expected: Location::SE,
+            actual: Config::getLocation()
+        );  
     }
 
     /**
@@ -96,7 +101,7 @@ class ConfigTest extends TestCase
             logLevel: LogLevel::DEBUG,
             userAgent: 'Foo',
             timeout: 42,
-            locale: Locale::sv
+            language: Language::sv
         );
 
         self::assertInstanceOf(
@@ -134,8 +139,8 @@ class ConfigTest extends TestCase
             actual: Config::getTimeout()
         );
         self::assertEquals(
-            expected: Locale::sv,
-            actual: Config::getLocale()
+            expected: Language::sv,
+            actual: Config::getLanguage()
         );
     }
 

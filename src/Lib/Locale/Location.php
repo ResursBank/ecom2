@@ -12,11 +12,11 @@ namespace Resursbank\Ecom\Lib\Locale;
 /**
  * @codingStandardsIgnoreStart
  */
-enum Locale: string
+enum Location: string
 {
-    case en = 'en';
-    case sv = 'sv';
-    case da = 'da';
-    case no = 'no';
-    case fi = 'fi';
+    case SE = 'SE';
+    case DK = 'DK';
+    case NO = 'NO';
+    case FI = 'FI';
+    case AX = 'AX';
 }
