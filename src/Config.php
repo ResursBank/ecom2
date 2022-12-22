@@ -12,7 +12,7 @@ namespace Resursbank\Ecom;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Locale\Locale;
+use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
@@ -47,7 +47,7 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param Locale $locale
+     * @param Language $locale
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -62,7 +62,7 @@ final class Config
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
         public readonly int $timeout = 60,
-        public readonly Locale $locale = Locale::en,
+        public readonly Language $locale = Language::en,
     ) {
     }
 
@@ -77,7 +77,7 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param Locale $locale
+     * @param Language $locale
      * @return void
      * @noinspection PhpTooManyParametersInspection
      * @todo Consider making userAgent an object instead.
@@ -94,7 +94,7 @@ final class Config
         string $proxy = '',
         int $proxyType = 0,
         int $timeout = 0,
-        Locale $locale = Locale::en,
+        Language $locale = Language::en,
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -265,10 +265,10 @@ final class Config
     }
 
     /**
-     * @return Locale
+     * @return Language
      * @throws ConfigException
      */
-    public static function getLocale(): Locale
+    public static function getLocale(): Language
     {
         self::validateInstance();
         return self::$instance->locale;

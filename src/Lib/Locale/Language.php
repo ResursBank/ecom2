@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Locale;
 /**
  * @codingStandardsIgnoreStart
  */
-enum Locale: string
+enum Language: string
 {
     case en = 'en';
     case sv = 'sv';
