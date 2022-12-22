@@ -304,5 +304,19 @@
       "en": "The specified limit is above the payment method's max purchase limit (%1)",
       "sv": "Det angivna gränsvärdet är över betalningsmetodens högsta tillåtna köpsumma (%1)"
     }
+  },
+  {
+    "id": "log-level",
+    "translation": {
+      "en": "Log level",
+      "sv": "Loggningsnivå"
+    }
+  },
+  {
+    "id": "log-level-description",
+    "translation": {
+      "en": "Minimum log level, messages below this level will not be logged.",
+      "sv": "Lägstanivå för loggning, meddelanden under denna nivå kommer ej att loggas."
+    }
   }
 ]
