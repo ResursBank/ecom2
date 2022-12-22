@@ -304,5 +304,12 @@
       "en": "The specified limit is above the payment method's max purchase limit (%1)",
       "sv": "Det angivna gränsvärdet är över betalningsmetodens högsta tillåtna köpsumma (%1)"
     }
+  },
+  {
+    "id": "please-select-a-store",
+    "translation": {
+      "en": "Please select a store in the API settings",
+      "sv": "Vänligen välj en butik i API-inställingarna"
+    }
   }
 ]
