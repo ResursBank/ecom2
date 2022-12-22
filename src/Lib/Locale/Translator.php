@@ -24,7 +24,7 @@ use function json_decode;
 use function is_string;
 
 /**
- * Methods to extract locale specific phrases. The intention is to maintain
+ * Methods to extract language-specific phrases. The intention is to maintain
  * consistent terminology between implementations.
  *
  * @todo Check if ConfigException require test.
@@ -98,8 +98,7 @@ class Translator
     }
 
     /**
-     * Takes an english phrase and translates it to the language of the
-     * configured locale.
+     * Takes an english phrase and translates it to the configured language.
      *
      * @param string $phraseId
      * @return string

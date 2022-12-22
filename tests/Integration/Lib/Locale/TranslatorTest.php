@@ -43,7 +43,7 @@ class TranslatorTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(originalClassName: LoggerInterface::class),
-            locale: $locale,
+            language: $locale,
             cache: new Redis(host: $_ENV['REDIS_HOST'])
         );
     }

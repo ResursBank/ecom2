@@ -96,7 +96,7 @@ class ConfigTest extends TestCase
             logLevel: LogLevel::DEBUG,
             userAgent: 'Foo',
             timeout: 42,
-            locale: Language::sv
+            language: Language::sv
         );
 
         self::assertInstanceOf(

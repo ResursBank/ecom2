@@ -77,7 +77,7 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param Language $locale
+     * @param Language $language
      * @return void
      * @noinspection PhpTooManyParametersInspection
      * @todo Consider making userAgent an object instead.
@@ -94,7 +94,7 @@ final class Config
         string $proxy = '',
         int $proxyType = 0,
         int $timeout = 0,
-        Language $locale = Language::en,
+        Language $language = Language::en,
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -107,7 +107,7 @@ final class Config
             proxy: $proxy,
             proxyType: $proxyType,
             timeout: $timeout,
-            language: $locale
+            language: $language
         );
     }
 
