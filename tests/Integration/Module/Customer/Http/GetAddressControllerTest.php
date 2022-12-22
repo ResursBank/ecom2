@@ -267,7 +267,7 @@ class GetAddressControllerTest extends TestCase
         );
 
         $this->assertInstanceOf(expected: Address::class, actual: $address);
-        $this->assertSame(expected: 'Malmö', actual: $address->postalArea);
+        $this->assertSame(expected: 'Helsingborg', actual: $address->postalArea);
     }
 
     /**

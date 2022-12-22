@@ -109,11 +109,11 @@ class RepositoryTest extends TestCase
     {
         $expect = [
             'fullName' => 'Oliver Liamsson Williamsson',
-            'addressRow1' => 'Makadamg 13',
+            'addressRow1' => 'Makadamg 1',
             'postalArea' => 'Helsingborg',
             'postalCode' => '25024',
             'countryCode' => 'SE',
-            'firstName' => 'Oliver Liamsson',
+            'firstName' => 'Oliver',
             'lastName' => 'Williamsson',
             'addressRow2' => ''
         ];
