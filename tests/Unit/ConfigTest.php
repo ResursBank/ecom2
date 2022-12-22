@@ -16,6 +16,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
@@ -69,6 +70,10 @@ class ConfigTest extends TestCase
             expected: Language::en,
             actual: Config::getLanguage()
         );
+        self::assertEquals(
+            expected: Location::SE,
+            actual: Config::getLocation()
+        );  
     }
 
     /**

@@ -279,4 +279,14 @@ final class Config
         self::validateInstance();
         return self::$instance->language;
     }
+
+    /**
+     * @return Location
+     * @throws ConfigException
+     */
+    public static function getLocation(): Location
+    {
+        self::validateInstance();
+        return self::$instance->location;
+    }
 }
