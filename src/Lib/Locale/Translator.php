@@ -109,7 +109,7 @@ class Translator
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ConfigException
-     * @see Config::$locale
+     * @see Config::$language
      */
     public static function translate(
         string $phraseId

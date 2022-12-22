@@ -47,7 +47,7 @@ final class Config
      * @param string $proxy
      * @param int $proxyType
      * @param int $timeout
-     * @param Language $locale
+     * @param Language $language
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -62,7 +62,7 @@ final class Config
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
         public readonly int $timeout = 60,
-        public readonly Language $locale = Language::en,
+        public readonly Language $language = Language::en,
     ) {
     }
 
@@ -107,7 +107,7 @@ final class Config
             proxy: $proxy,
             proxyType: $proxyType,
             timeout: $timeout,
-            locale: $locale
+            language: $locale
         );
     }
 
@@ -271,6 +271,6 @@ final class Config
     public static function getLocale(): Language
     {
         self::validateInstance();
-        return self::$instance->locale;
+        return self::$instance->language;
     }
 }
