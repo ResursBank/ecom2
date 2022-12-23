@@ -32,6 +32,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
@@ -169,10 +170,18 @@ class CancelTest extends TestCase
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
+        $this->assertTrue(
+            condition: isset($response->order->actionLog[1])
+        );
+
+        $actionLog = $response->order->actionLog[1];
+
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
+
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertEquals(
             expected: ActionType::CANCEL,
-            actual: $response->order->actionLog[1]->type
+            actual: $actionLog->type
         );
         $this->assertEquals(
             expected: $payment->order->totalOrderAmount,
@@ -228,20 +237,34 @@ class CancelTest extends TestCase
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
+        $this->assertTrue(condition: isset($payment->order->actionLog[0]));
+        $this->assertTrue(condition: isset($response->order->actionLog[1]));
+
+        $actionLog1 = $payment->order->actionLog[0];
+        $actionLog2 = $response->order->actionLog[1];
+
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog1);
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog2);
+        $this->assertTrue(condition: isset($actionLog1->orderLines[0]));
+        $this->assertTrue(condition: isset($actionLog2->orderLines[0]));
+
+        $orderLine1 = $actionLog1->orderLines[0];
+        $orderLine2 = $actionLog2->orderLines[0];
+
+        $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine1);
+        $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine2);
+
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        $this->assertEquals(expected: $orderLine1, actual: $orderLine2);
         /**
          * @psalm-suppress MixedPropertyFetch
          * @psalm-suppress MixedArrayAccess
          */
         $this->assertEquals(
-            expected: $payment->order->actionLog[0]->orderLines[0],
-            actual: $response->order->actionLog[1]->orderLines[0]
-        );
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         * @psalm-suppress MixedArrayAccess
-         */
-        $this->assertEquals(
-            expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
+            expected: $orderLine1->totalAmountIncludingVat,
             actual: $response->order->canceledAmount
         );
     }
@@ -276,13 +299,16 @@ class CancelTest extends TestCase
             creator: $creator
         );
 
+        $this->assertTrue(condition: isset($response->order->actionLog[1]));
+
+        $actionLog = $response->order->actionLog[1];
+
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
+
         // Assert that creator argument is present in action log
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         /** @psalm-suppress MixedPropertyFetch */
-        $this->assertEquals(
-            expected: $creator,
-            actual: $response->order->actionLog[1]->creator
-        );
+        $this->assertEquals(expected: $creator, actual: $actionLog->creator);
     }
 }

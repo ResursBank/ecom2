@@ -43,7 +43,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * @param array $updates
+     * @param array<string, mixed> $updates
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException

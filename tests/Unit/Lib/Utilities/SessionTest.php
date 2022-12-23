@@ -22,6 +22,9 @@ class SessionTest extends TestCase
 {
     use MockSessionTrait;
 
+    /**
+     * Prepare tests.
+     */
     protected function setUp(): void
     {
         $this->setupSession(test: $this);

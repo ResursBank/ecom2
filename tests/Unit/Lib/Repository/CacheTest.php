@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Repository;
 
 use JsonException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CacheException;
@@ -32,7 +33,7 @@ use function is_string;
  */
 final class CacheTest extends TestCase
 {
-    private None $cacheDriver;
+    private MockObject&None $cacheDriver;
 
     /**
      * We call the actual Config::setup() method to initiate mocked objects
@@ -183,11 +184,12 @@ final class CacheTest extends TestCase
         );
         $this->assertCount(expectedCount: 2, haystack: $data);
 
+        $current = $data->current();
+
+        $this->assertInstanceOf(expected: Music::class, actual: $current);
+
         /** @psalm-suppress MixedPropertyFetch */
-        $this->assertSame(
-            expected: 1,
-            actual: $data->current()->id
-        );
+        $this->assertSame(expected: 1, actual: $current->id);
     }
 
     /**

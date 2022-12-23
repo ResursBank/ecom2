@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Utilities;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Lib\Utilities\Session;
 
@@ -19,7 +20,7 @@ use Resursbank\Ecom\Lib\Utilities\Session;
  */
 trait MockSessionTrait
 {
-    private Session $session;
+    private MockObject&Session $session;
 
     /**
      * PHPUnit sends headers before this executes, thus we cannot manipulate

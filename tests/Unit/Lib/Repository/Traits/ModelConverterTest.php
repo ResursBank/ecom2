@@ -28,7 +28,7 @@ final class ModelConverterTest extends TestCase
 {
     use ModelConverter;
 
-    /** @var array<array> */
+    /** @var array<array<string, mixed>> */
     private static array $data = [
         [
             'id' => 1,
@@ -55,7 +55,7 @@ final class ModelConverterTest extends TestCase
         $this->expectException(exception: InvalidArgumentException::class);
 
         /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
-        $this->validateModel(model: 'ThereIsNoSpoon');
+        $this->validateModel(model: DateTime::class);
     }
 
     /**
@@ -84,7 +84,7 @@ final class ModelConverterTest extends TestCase
         $this->expectException(exception: InvalidArgumentException::class);
 
         /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
-        $this->convertToModel(data: new stdClass(), model: 'Witch');
+        $this->convertToModel(data: new stdClass(), model: DateTime::class);
     }
 
     /**

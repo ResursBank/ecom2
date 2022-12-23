@@ -26,7 +26,7 @@ use Resursbank\Ecom\Module\Store\Models\Store;
  */
 class StoreTest extends TestCase
 {
-    /** @var array */
+    /** @var array<string, mixed> */
     private static array $data = [
         'id' => 'db51fe4f-a74d-4025-9d1d-a49b7aa0fde5',
         'nationalStoreId' => 8902,
@@ -35,7 +35,7 @@ class StoreTest extends TestCase
     ];
 
     /**
-     * @param array $updates
+     * @param array<string, mixed> $updates
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException

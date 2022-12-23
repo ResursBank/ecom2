@@ -22,6 +22,9 @@ use function get_class;
  */
 final class CollectionTest extends TestCase
 {
+    /**
+     * @var array<string>
+     */
     private array $data;
 
     /**
