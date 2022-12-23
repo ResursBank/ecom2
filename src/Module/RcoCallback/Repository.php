@@ -18,16 +18,16 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Module\RcoCallback\Models\Callback;
-use Resursbank\Ecom\Module\RcoCallback\Models\CallbackCollection;
+use Resursbank\Ecom\Module\RcoCallback\Api\DeleteCallback;
 use Resursbank\Ecom\Module\RcoCallback\Api\GetCallback;
 use Resursbank\Ecom\Module\RcoCallback\Api\GetCallbacks;
-use Resursbank\Ecom\Module\RcoCallback\Api\DeleteCallback;
 use Resursbank\Ecom\Module\RcoCallback\Api\RegisterCallback;
+use Resursbank\Ecom\Module\RcoCallback\Models\Callback;
+use Resursbank\Ecom\Module\RcoCallback\Models\CallbackCollection;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 
 /**
@@ -41,9 +41,6 @@ class Repository
     /**
      * Registers a new callback
      *
-     * @param string $eventName
-     * @param Request $request
-     * @return void
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -64,8 +61,6 @@ class Repository
     /**
      * Gets a named callback
      *
-     * @param string $eventName
-     * @return Callback
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -86,7 +81,6 @@ class Repository
     /**
      * Gets all registered callbacks
      *
-     * @return CallbackCollection
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -107,8 +101,6 @@ class Repository
     /**
      * Deletes a callback
      *
-     * @param string $eventName
-     * @return int
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -129,7 +121,6 @@ class Repository
     /**
      * Gets API hostname
      *
-     * @return string
      * @throws ConfigException
      * @todo Check if ConfigException validation needs a test.
      */

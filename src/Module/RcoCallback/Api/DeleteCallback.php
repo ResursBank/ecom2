@@ -18,8 +18,8 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -34,8 +34,6 @@ use Resursbank\Ecom\Module\RcoCallback\Repository;
 class DeleteCallback
 {
     /**
-     * @param string $eventName
-     * @return int
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -70,8 +68,6 @@ class DeleteCallback
     /**
      * Gets the API URL to use
      *
-     * @param string $eventName
-     * @return string
      * @throws ConfigException
      */
     private function getApiUrl(string $eventName): string

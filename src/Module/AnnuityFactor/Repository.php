@@ -27,10 +27,10 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Exception;
-use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityFactors;
 use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityFactors;
+use Throwable;
 
 /**
  * Interaction with Annuity factor entities and related functionality.
@@ -43,9 +43,6 @@ class Repository
      * NOTE: Parameters must be validated since they are utilized for our cache
      * keys.
      *
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @return AnnuityFactors
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -82,7 +79,7 @@ class Repository
 
                 $cache->write(data: $result);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
 
             throw $e;
@@ -92,9 +89,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param PaymentMethodCollection $paymentMethods
-     * @return PaymentMethodCollection
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -111,10 +105,10 @@ class Repository
         string $storeId,
         PaymentMethodCollection $paymentMethods
     ): PaymentMethodCollection {
-        /** @var PaymentMethod[] $arr */
+        /** @var array<PaymentMethod> $arr */
         $arr = $paymentMethods->toArray();
 
-        /** @var PaymentMethod[] $result */
+        /** @var array<PaymentMethod> $result */
         $result = [];
 
         foreach ($arr as $method) {
@@ -123,9 +117,11 @@ class Repository
                 paymentMethodId: $method->id
             );
 
-            if ($factors->content->count() !== 0) {
-                $result[] = $method;
+            if ($factors->content->count() === 0) {
+                continue;
             }
+
+            $result[] = $method;
         }
 
         /** @psalm-suppress MixedArgumentTypeCoercion */
@@ -133,9 +129,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @return Cache
      * @throws IllegalValueException
      */
     public static function getCache(
@@ -154,9 +147,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @return Get
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
@@ -169,13 +159,11 @@ class Repository
         return new Get(
             model: AnnuityFactors::class,
             route: Mapi::STORE_ROUTE . "/$storeId/payment_methods/$paymentMethodId/annuity_factors",
-            params: compact('storeId', 'paymentMethodId'),
+            params: compact('storeId', 'paymentMethodId')
         );
     }
 
     /**
-     * @param string $storeId
-     * @return void
      * @throws IllegalValueException
      */
     private static function validateStoreId(

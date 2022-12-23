@@ -17,9 +17,6 @@ use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
  */
 class Request extends Model
 {
-    /**
-     * @param OrderLineCollection $orderLines
-     */
     public function __construct(
         public OrderLineCollection $orderLines
     ) {

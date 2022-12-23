@@ -40,29 +40,8 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 class PartPaymentTest extends TestCase
 {
     /**
-     * @return void
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new None(),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-    }
-
-    /**
      * Verify that Part payment widget appears to contain correct data
      *
-     * @return void
      * @throws JsonException
      * @throws ReflectionException
      * @throws ApiException
@@ -83,16 +62,22 @@ class PartPaymentTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
+
         if ($paymentMethod === null) {
-            throw new EmptyValueException(message: 'Payment method failed to load');
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
         }
 
         $expectedUrl = '';
+
         /** @var LegalLink $legalLink */
         foreach ($paymentMethod->legalLinks as $legalLink) {
-            if ($legalLink->type === Type::PRICE_INFO) {
-                $expectedUrl = $legalLink->url;
+            if ($legalLink->type !== Type::PRICE_INFO) {
+                continue;
             }
+
+            $expectedUrl = $legalLink->url;
         }
 
         $widget = new PartPayment(
@@ -136,7 +121,6 @@ class PartPaymentTest extends TestCase
     /**
      * Verify that the part payment widget contains the starting at value returned by getStartingAtCost
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -157,8 +141,11 @@ class PartPaymentTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
+
         if ($paymentMethod === null) {
-            throw new EmptyValueException(message: 'Payment method failed to load');
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
         }
 
         $widget = new PartPayment(
@@ -176,6 +163,27 @@ class PartPaymentTest extends TestCase
             needle: $startingAt,
             haystack: $widget->content,
             message: 'Widget should contain starting at cost'
+        );
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new None(),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
         );
     }
 }

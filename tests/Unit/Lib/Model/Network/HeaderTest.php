@@ -20,8 +20,6 @@ class HeaderTest extends TestCase
 {
     /**
      * Assert EmptyValueException is thrown when key is empty.
-     *
-     * @return void
      */
     public function testValidateKeyThrowsWhenEmpty(): void
     {

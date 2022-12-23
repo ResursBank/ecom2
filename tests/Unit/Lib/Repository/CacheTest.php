@@ -32,75 +32,11 @@ use function is_string;
  */
 final class CacheTest extends TestCase
 {
-    /**
-     * @var None
-     */
     private None $cacheDriver;
-
-    /**
-     * We call the actual Config::setup() method to initiate mocked objects
-     * to be utilised in tests against the static methods available on our
-     * subject class. The methods on our subject class (such as readCache())
-     * will make calls to object such as Config::getCache(), and we wish
-     * to test behaviour when the results from the API / Cache differ.
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        $this->cacheDriver = $this->createMock(
-            originalClassName: None::class
-        );
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: $this->cacheDriver
-        );
-
-        parent::setUp();
-    }
-
-    /**
-     * Get instance of Cache repository.
-     *
-     * @return Cache
-     */
-    private function getCache(): Cache
-    {
-        return new Cache(
-            key: 'test',
-            model: Music::class,
-            ttl: 3600
-        );
-    }
-
-    /**
-     * Helper method to assign result from Config::getCache()->read()
-     *
-     * @param mixed $data
-     * @return void
-     * @throws JsonException
-     */
-    private function setCacheReadReturn(
-        mixed $data
-    ): void {
-        if (!is_string(value: $data)) {
-            $data = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
-        }
-
-        /**
-         * @psalm-suppress UndefinedMethod
-         * @psalm-suppress MixedMethodCall
-         */
-        $this->cacheDriver->method('read')->willReturn(value: $data);
-    }
 
     /**
      * Assert that read() returns NULL without any data.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      */
@@ -112,7 +48,6 @@ final class CacheTest extends TestCase
     /**
      * Assert read() returns NULL if cache is an empty array.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      * @throws JsonException
@@ -127,7 +62,6 @@ final class CacheTest extends TestCase
      * Assert read() throws CacheException when cache is invalid JSON encoded
      * data.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      * @throws JsonException
@@ -145,7 +79,6 @@ final class CacheTest extends TestCase
     /**
      * Assert read() throws CacheException when cache isn't JSON encoded data.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      * @throws JsonException
@@ -160,7 +93,6 @@ final class CacheTest extends TestCase
     /**
      * Assert read() converts stdClass to Model.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      * @throws JsonException
@@ -182,7 +114,6 @@ final class CacheTest extends TestCase
     /**
      * Assert read() converts array to Collection.
      *
-     * @return void
      * @throws CacheException
      * @throws JsonException
      * @throws CollectionException
@@ -202,10 +133,7 @@ final class CacheTest extends TestCase
             expected: MusicCollection::class,
             actual: $data
         );
-        $this->assertCount(
-            expectedCount: 2,
-            haystack: $data
-        );
+        $this->assertCount(expectedCount: 2, haystack: $data);
 
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
@@ -218,7 +146,6 @@ final class CacheTest extends TestCase
      * Assert write() throws CacheException when passed a Model instance not
      * matching the model class of the Cache instance (see getCache()).
      *
-     * @return void
      * @throws CacheException
      */
     public function testWriteThrowsWithInvalidModel(): void
@@ -227,13 +154,10 @@ final class CacheTest extends TestCase
         $this->getCache()->write(data: new Instrument(id: 1, name: 'guitar'));
     }
 
-
-
     /**
      * Assert write() throws CacheException when passed a Collection instance
      * not matching the model class of the Cache instance (see getCache()).
      *
-     * @return void
      * @throws CacheException
      * @throws IllegalTypeException
      */
@@ -244,7 +168,55 @@ final class CacheTest extends TestCase
             new Instrument(id: 1, name: 'guitar'),
             new Instrument(id: 1, name: 'guitar'),
             new Instrument(id: 1, name: 'guitar'),
-            new Instrument(id: 1, name: 'guitar')
+            new Instrument(id: 1, name: 'guitar'),
         ]));
+    }
+
+    /**
+     * We call the actual Config::setup() method to initiate mocked objects
+     * to be utilised in tests against the static methods available on our
+     * subject class. The methods on our subject class (such as readCache())
+     * will make calls to object such as Config::getCache(), and we wish
+     * to test behaviour when the results from the API / Cache differ.
+     */
+    protected function setUp(): void
+    {
+        $this->cacheDriver = $this->createMock(originalClassName: None::class);
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->cacheDriver
+        );
+
+        parent::setUp();
+    }
+
+    /**
+     * Get instance of Cache repository.
+     */
+    private function getCache(): Cache
+    {
+        return new Cache(key: 'test', model: Music::class, ttl: 3600);
+    }
+
+    /**
+     * Helper method to assign result from Config::getCache()->read()
+     *
+     * @throws JsonException
+     */
+    private function setCacheReadReturn(
+        mixed $data
+    ): void {
+        if (!is_string(value: $data)) {
+            $data = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
+        }
+
+        /**
+         * @psalm-suppress UndefinedMethod
+         * @psalm-suppress MixedMethodCall
+         */
+        $this->cacheDriver->method('read')->willReturn(value: $data);
     }
 }

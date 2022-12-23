@@ -18,11 +18,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class ComplexDummy extends Model
 {
-    /**
-     * @param int $int
-     * @param SimpleDummy $simpleDummy
-     * @param SimpleDummyCollection $simpleDummyCollection
-     */
     public function __construct(
         public int $int,
         public SimpleDummy $simpleDummy,

@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Callback\Enum;
 
 /**
  * Possible order statuses during callback.
+ *
  * @see https://merchant-api.integration.resurs.com/docs/v2/merchant_payments_v2/options#callbacks
  */
 enum Status: string

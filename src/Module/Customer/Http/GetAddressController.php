@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Customer\Http;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -38,11 +37,6 @@ class GetAddressController extends Controller
     /**
      * NOTE: $sessionHandler to support testing with mocked session handler.
      *
-     * @param string $storeId
-     * @param GetAddressRequest $data
-     * @param Session $sessionHandler
-     *
-     * @return string
      * @throws ConfigException
      * @throws JsonException
      * @throws ReflectionException
@@ -73,14 +67,11 @@ class GetAddressController extends Controller
     }
 
     /**
-     * @return GetAddressRequest
      * @throws HttpException
      */
     public function getRequestData(): GetAddressRequest
     {
-        $result = $this->getRequestModel(
-            model: GetAddressRequest::class
-        );
+        $result = $this->getRequestModel(model: GetAddressRequest::class);
 
         if (!$result instanceof GetAddressRequest) {
             throw new HttpException(

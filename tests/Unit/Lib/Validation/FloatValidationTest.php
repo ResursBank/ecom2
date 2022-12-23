@@ -22,26 +22,12 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
  */
 final class FloatValidationTest extends TestCase
 {
-    /**
-     * @var FloatValidation
-     */
     private FloatValidation $floatValidation;
-
-    /**
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        $this->floatValidation = new FloatValidation();
-
-        parent::setUp();
-    }
 
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -55,7 +41,6 @@ final class FloatValidationTest extends TestCase
      * Assert getKey() throws IllegalTypeException when the needle exists but
      * is not a float.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -68,7 +53,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert getKey() return validated float value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -86,7 +70,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert inRange() throws IllegalValueException when max is less than min.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testInRangeThrowsIfMaxIsLessThanMin(): void
@@ -99,7 +82,6 @@ final class FloatValidationTest extends TestCase
      * Assert inRange() throws IllegalValueException when the value is out of
      * range.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testInRangeThrowsIfValueIsOutOfRange(): void
@@ -111,7 +93,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert inRange() returns true when the value is in the given range.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testInRangeReturnsTrueWhenValueInRange(): void
@@ -120,7 +101,7 @@ final class FloatValidationTest extends TestCase
             condition: $this->floatValidation->inRange(
                 value: 10.0,
                 min: 5,
-                max: 10,
+                max: 10
             )
         );
     }
@@ -128,7 +109,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert length() throws IllegalValueException when max is less than min.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsIfMaxIsLessThanMin(): void
@@ -141,7 +121,6 @@ final class FloatValidationTest extends TestCase
      * Assert length() throws IllegalValueException when given a min value that
      * is negative.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsIfMinIsNegative(): void
@@ -154,7 +133,6 @@ final class FloatValidationTest extends TestCase
      * Assert length() throws IllegalValueException when the value is out of
      * range.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsIfValueIsOutOfRange(): void
@@ -166,7 +144,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert length() returns true when the value is in the given range.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthReturnsTrueWhenValueInRange(): void
@@ -175,7 +152,7 @@ final class FloatValidationTest extends TestCase
             condition: $this->floatValidation->length(
                 value: 10.123,
                 min: 2,
-                max: 5,
+                max: 5
             )
         );
     }
@@ -183,7 +160,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert isPositive() throws IllegalValueException when the value is negative.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsPositiveThrowsOnNegative(): void
@@ -195,7 +171,6 @@ final class FloatValidationTest extends TestCase
     /**
      * Assert isPositive() returns true when the value is positive.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsPositiveReturnTrue(): void
@@ -203,5 +178,12 @@ final class FloatValidationTest extends TestCase
         $this->assertTrue(
             condition: $this->floatValidation->isPositive(value: 1)
         );
+    }
+
+    protected function setUp(): void
+    {
+        $this->floatValidation = new FloatValidation();
+
+        parent::setUp();
     }
 }

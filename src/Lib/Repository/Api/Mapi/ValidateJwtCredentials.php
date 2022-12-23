@@ -28,7 +28,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 class ValidateJwtCredentials
 {
     /**
-     * @return bool
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

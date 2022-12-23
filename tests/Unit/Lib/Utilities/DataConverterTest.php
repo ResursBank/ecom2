@@ -25,7 +25,6 @@ final class DataConverterTest extends TestCase
     /**
      * Verify that the stdClass converter is able to convert object containing simple scalar types
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      */
@@ -35,23 +34,19 @@ final class DataConverterTest extends TestCase
         $data->int = 42;
         $data->message = 'Foobar';
 
-        $expected = new TestClasses\SimpleDummy(
-            int: 42,
-            message: 'Foobar'
+        $expected = new TestClasses\SimpleDummy(int: 42, message: 'Foobar');
+
+        $output = DataConverter::stdClassToType(
+            object: $data,
+            type: TestClasses\SimpleDummy::class
         );
 
-        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
-
-        $this::assertEquals(
-            expected: $expected,
-            actual: $output
-        );
+        $this::assertEquals(expected: $expected, actual: $output);
     }
 
     /**
      * Verify that the stdClass converter properly converts arrays to arrays
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      */
@@ -66,18 +61,17 @@ final class DataConverterTest extends TestCase
             arr: [1, 2, 3]
         );
 
-        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ArrayDummy::class);
-
-        $this::assertEquals(
-            expected: $expected,
-            actual: $output
+        $output = DataConverter::stdClassToType(
+            object: $data,
+            type: TestClasses\ArrayDummy::class
         );
+
+        $this::assertEquals(expected: $expected, actual: $output);
     }
 
     /**
      * Verify that the stdClass converter can handle conversion of objects within objects
      *
-     * @return void
      * @throws ReflectionException
      * @throws IllegalTypeException
      */
@@ -91,36 +85,34 @@ final class DataConverterTest extends TestCase
         $data->simpleDummyCollection = [
             (object)[
                 'int' => 31,
-                'message' => 'Bar'
-            ]
+                'message' => 'Bar',
+            ],
         ];
 
-        $childDummy = new TestClasses\SimpleDummy(
-            int: 31,
-            message: 'Bar'
-        );
+        $childDummy = new TestClasses\SimpleDummy(int: 31, message: 'Bar');
         $expected = new TestClasses\ComplexDummy(
             int: 42,
             simpleDummy: new TestClasses\SimpleDummy(
                 int: 127,
                 message: 'Foo'
             ),
-            simpleDummyCollection: new TestClasses\SimpleDummyCollection(data: [$childDummy])
+            simpleDummyCollection: new TestClasses\SimpleDummyCollection(
+                data: [$childDummy]
+            )
         );
 
-        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\ComplexDummy::class);
-
-        $this::assertEquals(
-            expected: $expected,
-            actual: $output
+        $output = DataConverter::stdClassToType(
+            object: $data,
+            type: TestClasses\ComplexDummy::class
         );
+
+        $this::assertEquals(expected: $expected, actual: $output);
     }
 
     /**
      * Verify that the stdClass converter doesn't fail when original stdClass object has extra properties but instead
      * quietly removes them.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      */
@@ -131,23 +123,19 @@ final class DataConverterTest extends TestCase
         $data->message = 'Foobar';
         $data->other = 'baz';
 
-        $expected = new TestClasses\SimpleDummy(
-            int: 42,
-            message: 'Foobar'
+        $expected = new TestClasses\SimpleDummy(int: 42, message: 'Foobar');
+
+        $output = DataConverter::stdClassToType(
+            object: $data,
+            type: TestClasses\SimpleDummy::class
         );
 
-        $output = DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
-
-        $this::assertEquals(
-            expected: $expected,
-            actual: $output
-        );
+        $this::assertEquals(expected: $expected, actual: $output);
     }
 
     /**
      * Verify that if there are missing properties the stdClass converter will throw the appropriate exception.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      */
@@ -157,6 +145,9 @@ final class DataConverterTest extends TestCase
         $data->int = 42;
 
         $this->expectException(exception: ArgumentCountError::class);
-        DataConverter::stdClassToType(object: $data, type: TestClasses\SimpleDummy::class);
+        DataConverter::stdClassToType(
+            object: $data,
+            type: TestClasses\SimpleDummy::class
+        );
     }
 }

@@ -19,22 +19,17 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Phrase extends Model
 {
     /**
-     * @param string $id
-     * @param Translation $translation
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      */
     public function __construct(
         public string $id,
         public Translation $translation,
-        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateId(value: $this->id);
     }
 
     /**
-     * @param string $value
-     * @return void
      * @throws EmptyValueException
      */
     public function validateId(string $value): void

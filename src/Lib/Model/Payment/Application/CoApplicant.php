@@ -20,11 +20,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class CoApplicant extends Model
 {
     /**
-     * @param string $governmentId
-     * @param string|null $mobilePhone
-     * @param string|null $phone
-     * @param string|null $email
-     * @param StringValidation $stringValidation
      * @throws IllegalValueException
      * @throws EmptyValueException
      */
@@ -49,7 +44,6 @@ class CoApplicant extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateGovernmentId(): void
@@ -58,13 +52,14 @@ class CoApplicant extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateEmail(): void
     {
-        if ($this->email) {
-            $this->stringValidation->isEmail(value: $this->email);
+        if (!$this->email) {
+            return;
         }
+
+        $this->stringValidation->isEmail(value: $this->email);
     }
 }

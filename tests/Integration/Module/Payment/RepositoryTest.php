@@ -30,7 +30,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
@@ -39,26 +38,6 @@ use Resursbank\Ecom\Module\Payment\Repository;
 class RepositoryTest extends TestCase
 {
     /**
-     * @return void
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        parent::setUp();
-    }
-
-    /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -84,7 +63,7 @@ class RepositoryTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]
         );
 
@@ -99,8 +78,11 @@ class RepositoryTest extends TestCase
 
         /** @var ActionLogCollection $actionLog */
         $actionLog = $order->actionLog;
+
         if (empty($actionLog->toArray())) {
-            throw new MissingKeyException(message: 'actionLog contains no entries');
+            throw new MissingKeyException(
+                message: 'actionLog contains no entries'
+            );
         }
 
         /** @var Order\ActionLog $actionLogEntry */
@@ -108,8 +90,11 @@ class RepositoryTest extends TestCase
 
         /** @var OrderlineCollection $orderLines */
         $orderLines = $actionLogEntry->orderLines;
+
         if (!isset($orderLines[0])) {
-            throw new MissingKeyException(message: 'orderLines contains no entries');
+            throw new MissingKeyException(
+                message: 'orderLines contains no entries'
+            );
         }
 
         /** @var OrderLine $orderLine */
@@ -135,7 +120,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert that it's possible to create a new payment with metadata on it.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -162,7 +146,7 @@ class RepositoryTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]
         );
         $metadata = new Metadata(
@@ -175,7 +159,7 @@ class RepositoryTest extends TestCase
                     new Metadata\Entry(
                         key: 'fnord',
                         value: 'baz'
-                    )
+                    ),
                 ]
             )
         );
@@ -184,26 +168,53 @@ class RepositoryTest extends TestCase
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines,
-            metadata: $metadata,
+            metadata: $metadata
         );
 
         if (!isset($createdOrder->order->actionLog[0])) {
-            throw new MissingKeyException(message: 'actionLog contains no entries');
+            throw new MissingKeyException(
+                message: 'actionLog contains no entries'
+            );
         }
 
         /** @var Metadata $createdMetadata */
         $createdMetadata = $createdOrder->metadata;
 
         if ($metadata->custom === null) {
-            throw new MissingKeyException(message: '$metadata contains no custom property');
+            throw new MissingKeyException(
+                message: '$metadata contains no custom property'
+            );
         }
+
         if ($createdMetadata->custom === null) {
-            throw new MissingKeyException(message: '$createdMetadata contains no custom property');
+            throw new MissingKeyException(
+                message: '$createdMetadata contains no custom property'
+            );
         }
 
         $this->assertEqualsCanonicalizing(
             expected: $metadata->custom->toArray(),
             actual: $createdMetadata->custom->toArray()
         );
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        parent::setUp();
     }
 }

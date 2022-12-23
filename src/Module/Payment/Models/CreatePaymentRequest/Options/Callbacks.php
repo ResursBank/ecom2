@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Callbacks extends Model
 {
-    /**
-     * @param Callback|null $authorization
-     * @param Callback|null $management
-     */
     public function __construct(
         /**
          * @todo Don't know how to validate urls.
@@ -28,7 +24,7 @@ class Callbacks extends Model
         /**
          * @todo Don't know how to validate urls.
          */
-        public readonly ?Callback $management,
+        public readonly ?Callback $management
     ) {
     }
 }

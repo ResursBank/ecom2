@@ -15,10 +15,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Validation\ArrayValidation;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines an order.
@@ -26,10 +26,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 class Order extends Model
 {
     /**
-     * @param OrderLineCollection $orderLines
-     * @param string|null $orderReference
-     * @param StringValidation $stringValidation
-     * @param ArrayValidation $arrayValidation
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -38,7 +34,7 @@ class Order extends Model
         public readonly OrderLineCollection $orderLines,
         public readonly ?string $orderReference = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
+        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
     ) {
         $this->validateOrderLines();
         $this->validateOrderReference();
@@ -50,7 +46,9 @@ class Order extends Model
      */
     private function validateOrderLines(): void
     {
-        $this->arrayValidation->isSequential(data: $this->orderLines->getData());
+        $this->arrayValidation->isSequential(
+            data: $this->orderLines->getData()
+        );
         $this->arrayValidation->length(
             data: $this->orderLines->getData(),
             min: 1,
@@ -59,7 +57,7 @@ class Order extends Model
         $this->arrayValidation->isOfType(
             data: $this->orderLines->getData(),
             type: OrderLine::class,
-            compareFn: fn (mixed $value) => $value instanceof OrderLine
+            compareFn: static fn (mixed $value) => $value instanceof OrderLine
         );
     }
 
@@ -69,17 +67,19 @@ class Order extends Model
      */
     private function validateOrderReference(): void
     {
-        if ($this->orderReference !== null) {
-            $this->stringValidation->length(
-                value: $this->orderReference,
-                min: 1,
-                max: 32
-            );
-
-            $this->stringValidation->matchRegex(
-                value: $this->orderReference,
-                pattern: '/[\w\-_]+/'
-            );
+        if ($this->orderReference === null) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->orderReference,
+            min: 1,
+            max: 32
+        );
+
+        $this->stringValidation->matchRegex(
+            value: $this->orderReference,
+            pattern: '/[\w\-_]+/'
+        );
     }
 }

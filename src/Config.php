@@ -23,9 +23,9 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 /**
  * API communication object.
  *
- * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  */
 final class Config
 {
@@ -38,27 +38,16 @@ final class Config
     private static ?Config $instance;
 
     /**
-     * @param LoggerInterface $logger
-     * @param CacheInterface $cache
-     * @param Basic|null $basicAuth
-     * @param Jwt|null $jwtAuth
-     * @param LogLevel $logLevel
-     * @param string $userAgent
-     * @param bool $isProduction
-     * @param string $proxy
-     * @param int $proxyType
-     * @param int $timeout
-     * @param Language $language
-     * @param Location $location
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
         public readonly LoggerInterface $logger,
         public readonly CacheInterface $cache,
-        public readonly Basic|null $basicAuth,
-        public readonly Jwt|null $jwtAuth,
-        public readonly LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
+        public readonly ?Basic $basicAuth,
+        public readonly ?Jwt $jwtAuth,
+        // Only log info messages.
+        public readonly LogLevel $logLevel = LogLevel::INFO,
         public readonly string $userAgent = '',
         public readonly bool $isProduction = false,
         public readonly string $proxy = '',
@@ -70,19 +59,6 @@ final class Config
     }
 
     /**
-     * @param LoggerInterface $logger
-     * @param CacheInterface $cache
-     * @param Basic|null $basicAuth
-     * @param Jwt|null $jwtAuth
-     * @param LogLevel $logLevel
-     * @param string $userAgent
-     * @param bool $isProduction
-     * @param string $proxy
-     * @param int $proxyType
-     * @param int $timeout
-     * @param Language $language
-     * @param Location $location
-     * @return void
      * @noinspection PhpTooManyParametersInspection
      * @todo Consider making userAgent an object instead.
      * @todo Consider moving proxy, proxyType and timeout to a separate object.
@@ -90,9 +66,10 @@ final class Config
     public static function setup(
         LoggerInterface $logger = new NoneLogger(),
         CacheInterface $cache = new None(),
-        Basic|null $basicAuth = null,
-        Jwt|null $jwtAuth = null,
-        LogLevel $logLevel = LogLevel::INFO,   // Only log info messages.
+        ?Basic $basicAuth = null,
+        ?Jwt $jwtAuth = null,
+        // Only log info messages.
+        LogLevel $logLevel = LogLevel::INFO,
         string $userAgent = '',
         bool $isProduction = false,
         string $proxy = '',
@@ -119,8 +96,6 @@ final class Config
 
     /**
      * Checks if Basic auth is configured
-     *
-     * @return bool
      */
     public static function hasBasicAuth(): bool
     {
@@ -129,8 +104,6 @@ final class Config
 
     /**
      * Checks if JWT auth is configured
-     *
-     * @return bool
      */
     public static function hasJwtAuth(): bool
     {
@@ -139,8 +112,6 @@ final class Config
 
     /**
      * Checks if there is a Config instance
-     *
-     * @return bool
      */
     public static function hasInstance(): bool
     {
@@ -149,8 +120,6 @@ final class Config
 
     /**
      * Clears active configuration
-     *
-     * @return void
      */
     public static function unsetInstance(): void
     {
@@ -158,7 +127,6 @@ final class Config
     }
 
     /**
-     * @return void
      * @throws ConfigException
      */
     public static function validateInstance(): void
@@ -171,7 +139,6 @@ final class Config
     }
 
     /**
-     * @return LoggerInterface
      * @throws ConfigException
      */
     public static function getLogger(): LoggerInterface
@@ -181,7 +148,6 @@ final class Config
     }
 
     /**
-     * @return CacheInterface
      * @throws ConfigException
      */
     public static function getCache(): CacheInterface
@@ -191,27 +157,24 @@ final class Config
     }
 
     /**
-     * @return Basic|null
      * @throws ConfigException
      */
-    public static function getBasicAuth(): Basic|null
+    public static function getBasicAuth(): ?Basic
     {
         self::validateInstance();
         return self::$instance->basicAuth;
     }
 
     /**
-     * @return Jwt|null
      * @throws ConfigException
      */
-    public static function getJwtAuth(): Jwt|null
+    public static function getJwtAuth(): ?Jwt
     {
         self::validateInstance();
         return self::$instance->jwtAuth;
     }
 
     /**
-     * @return LogLevel
      * @throws ConfigException
      */
     public static function getLogLevel(): LogLevel
@@ -221,7 +184,6 @@ final class Config
     }
 
     /**
-     * @return string
      * @throws ConfigException
      */
     public static function getUserAgent(): string
@@ -231,7 +193,6 @@ final class Config
     }
 
     /**
-     * @return bool
      * @throws ConfigException
      */
     public static function isProduction(): bool
@@ -241,7 +202,6 @@ final class Config
     }
 
     /**
-     * @return string
      * @throws ConfigException
      */
     public static function getProxy(): string
@@ -251,7 +211,6 @@ final class Config
     }
 
     /**
-     * @return int
      * @throws ConfigException
      */
     public static function getProxyType(): int
@@ -261,7 +220,6 @@ final class Config
     }
 
     /**
-     * @return int
      * @throws ConfigException
      */
     public static function getTimeout(): int
@@ -271,7 +229,6 @@ final class Config
     }
 
     /**
-     * @return Language
      * @throws ConfigException
      */
     public static function getLanguage(): Language
@@ -281,7 +238,6 @@ final class Config
     }
 
     /**
-     * @return Location
      * @throws ConfigException
      */
     public static function getLocation(): Location

@@ -20,40 +20,27 @@ class TokenTest extends TestCase
 {
     /**
      * Assert EmptyValueException is thrown when accessToken is empty.
-     *
-     * @return void
      */
     public function testValidateAccessTokenThrowsOnEmptyValue(): void
     {
         $this->expectException(exception: EmptyValueException::class);
 
-        new Token(
-            access_token: '',
-            token_type: 'Bearer',
-            expires_in: 0,
-        );
+        new Token(access_token: '', token_type: 'Bearer', expires_in: 0);
     }
 
     /**
      * Assert EmptyValueException is thrown when token type is empty.
-     *
-     * @return void
      */
     public function testValidateTokenTypeThrowsOnEmptyValue(): void
     {
         $this->expectException(exception: EmptyValueException::class);
 
-        new Token(
-            access_token: 'foo',
-            token_type: '',
-            expires_in: 0,
-        );
+        new Token(access_token: 'foo', token_type: '', expires_in: 0);
     }
 
     /**
      * Assert current timestamp is automatically appended to validUntil prop.
      *
-     * @return void
      * @throws EmptyValueException
      */
     public function testExpiresInAppendsTimestamp(): void
@@ -61,12 +48,12 @@ class TokenTest extends TestCase
         $token = new Token(
             access_token: 'foo',
             token_type: 'Bearer',
-            expires_in: 0,
+            expires_in: 0
         );
 
         self::assertSame(
             expected: time(),
-            actual: $token->expires_in,
+            actual: $token->expires_in
         );
     }
 }

@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class ObjectPropertyDummy extends Model
 {
-    /**
-     * @param SimpleDummy $object
-     * @param string $message
-     */
     public function __construct(
         public SimpleDummy $object,
         public string $message

@@ -27,18 +27,17 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\EcomTest\Utilities\MockSigner;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
  * Test that searchPayment works.
@@ -48,6 +47,74 @@ class SearchTest extends TestCase
     private const GOVERNMENT_ID = '198305147715';
 
     /**
+     * Reference is currently required to have if we want to run live tests.
+     *
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testSearchOrderReference(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        $paymentCollection = Repository::search(
+            storeId: $_ENV['STORE_ID'],
+            orderReference: $orderReference
+        )->toArray();
+
+        /** @var Payment|null $fetched */
+        $fetched = $paymentCollection[0] ?? null;
+
+        $this->assertSame(expected: $payment->id, actual: $fetched?->id ?? '');
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testSearchWithGovernmentId(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        $paymentCollection = Repository::search(
+            storeId: $_ENV['STORE_ID'],
+            orderReference: $orderReference,
+            governmentId: self::GOVERNMENT_ID
+        )->toArray();
+
+        self::assertArrayHasKey(key: 0, array: $paymentCollection);
+
+        /** @var Payment|null $fetched */
+        $fetched = $paymentCollection[0] ?? null;
+
+        $this->assertSame(
+            expected: $payment->id,
+            actual: $fetched instanceof Payment ? $fetched->id : ''
+        );
+    }
+
+    /**
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -55,7 +122,9 @@ class SearchTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -69,7 +138,6 @@ class SearchTest extends TestCase
     /**
      * Generate a dummy order reference
      *
-     * @return string
      * @throws Exception
      */
     private function generateOrderReference(): string
@@ -78,8 +146,6 @@ class SearchTest extends TestCase
     }
 
     /**
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -118,7 +184,7 @@ class SearchTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]),
             orderReference: $orderReference,
             customer: new Customer(
@@ -135,81 +201,6 @@ class SearchTest extends TestCase
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
             )
-        );
-    }
-
-    /**
-     * Reference is currently required to have if we want to run live tests.
-     *
-     * @return void
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function testSearchOrderReference(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference
-        )->toArray();
-
-        /** @var Payment|null $fetched */
-        $fetched = $paymentCollection[0] ?? null;
-
-        $this->assertSame(
-            expected: $payment->id,
-            actual: $fetched !== null ? $fetched->id : ''
-        );
-    }
-
-    /**
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testSearchWithGovernmentId(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference,
-            governmentId: self::GOVERNMENT_ID
-        )->toArray();
-
-        self::assertArrayHasKey(
-            key: 0,
-            array: $paymentCollection
-        );
-
-        /** @var Payment|null $fetched */
-        $fetched = $paymentCollection[0] ?? null;
-
-        $this->assertSame(
-            expected: $payment->id,
-            actual: $fetched instanceof Payment ? $fetched->id : ''
         );
     }
 }

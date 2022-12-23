@@ -20,10 +20,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class LegalLink extends Model
 {
     /**
-     * @param string $url
-     * @param Type $type
-     * @param bool $appendAmount
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @todo $url validation could be improved to confirm string is a URL.
      */
@@ -37,7 +33,6 @@ class LegalLink extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateUrl(): void

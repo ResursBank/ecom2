@@ -17,17 +17,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class SpecLine extends Model
 {
-    /**
-     * @param string $id
-     * @param string $artNo
-     * @param string $description
-     * @param float $quantity
-     * @param string $unitMeasure
-     * @param float $unitAmountWithoutVat
-     * @param float $vatPct
-     * @param float $totalVatAmount
-     * @param float $totalAmount
-     */
     public function __construct(
         public string $id,
         public string $artNo,

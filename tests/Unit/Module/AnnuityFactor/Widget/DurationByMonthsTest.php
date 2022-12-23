@@ -24,27 +24,6 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationByMonths;
 class DurationByMonthsTest extends TestCase
 {
     /**
-     * @return void
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new None(),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-    }
-
-    /**
-     * @return void
      * @throws FilesystemException
      */
     public function testRenderDurationByMonthsScript(): void
@@ -56,6 +35,27 @@ class DurationByMonthsTest extends TestCase
             needle: "let url = '" . $url,
             haystack: $widget->getScript(),
             message: 'Generated URL not found'
+        );
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new None(),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
         );
     }
 }

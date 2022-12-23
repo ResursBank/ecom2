@@ -32,7 +32,6 @@ class GenerateTokenTest extends TestCase
     /**
      * Assert JWT token is generated during request.
      *
-     * @return void
      * @throws AuthException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -64,10 +63,7 @@ class GenerateTokenTest extends TestCase
         $token = (new GenerateToken(auth: $auth))->call();
         $currentTime = time();
 
-        self::assertSame(
-            expected: 'Bearer',
-            actual: $token->token_type
-        );
+        self::assertSame(expected: 'Bearer', actual: $token->token_type);
 
         self::assertGreaterThan(
             expected: $currentTime,
@@ -78,7 +74,6 @@ class GenerateTokenTest extends TestCase
     /**
      * Assert AuthException is thrown when JWT auth has invalid client id.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -115,7 +110,6 @@ class GenerateTokenTest extends TestCase
     /**
      * Assert AuthException is thrown when JWT auth has invalid client secret.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException

@@ -23,9 +23,6 @@ class SpecLineCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: SpecLine::class
-        );
+        parent::__construct(data: $data, type: SpecLine::class);
     }
 }

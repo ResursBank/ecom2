@@ -33,17 +33,12 @@ use stdClass;
  */
 class Get
 {
-    /**
-     * @param Mapi $mapi
-     */
     public function __construct(
         private readonly Mapi $mapi = new Mapi()
     ) {
     }
 
     /**
-     * @param string $paymentId
-     * @return Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -73,8 +68,12 @@ class Get
         ) ? $data : new stdClass();
 
         // @todo psalm suppression should be sorted when metadata has been fixed in the API.
+
         /** @psalm-suppress MixedPropertyAssignment, MixedPropertyFetch */
-        if (isset($content->metadata->custom) && $content->metadata->custom instanceof stdClass) {
+        if (
+            isset($content->metadata->custom) &&
+            $content->metadata->custom instanceof stdClass
+        ) {
             $content->metadata->custom = (array) $content->metadata->custom;
         }
 
@@ -84,7 +83,9 @@ class Get
         );
 
         if (!$result instanceof Payment) {
-            throw new IllegalTypeException(message: 'Expected PaymentCollection.');
+            throw new IllegalTypeException(
+                message: 'Expected PaymentCollection.'
+            );
         }
 
         return $result;

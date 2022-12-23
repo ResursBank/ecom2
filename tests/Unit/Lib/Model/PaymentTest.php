@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model;
 
+use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -20,7 +21,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
-use DateTime;
 
 use function chr;
 use function ord;
@@ -32,6 +32,29 @@ use function ord;
  */
 class PaymentTest extends TestCase
 {
+    /**
+     * Verify that the isFrozen method works as intended
+     *
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsFrozen(): void
+    {
+        $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
+        $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
+
+        $this->assertEquals(
+            expected: true,
+            actual: $isFrozen->isFrozen()
+        );
+        $this->assertEquals(
+            expected: false,
+            actual: $notFrozen->isFrozen()
+        );
+    }
+
     /**
      * Generate a bogus UUID
      *
@@ -52,8 +75,6 @@ class PaymentTest extends TestCase
     /**
      * Create a dummy Payment object with the specified status
      *
-     * @param Status $status
-     * @return Payment
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
@@ -75,37 +96,15 @@ class PaymentTest extends TestCase
             order: new Payment\Order(
                 orderReference: $this->generateUuid(),
                 actionLog: new Payment\Order\ActionLogCollection(data: []),
-                possibleActions: new Payment\Order\PossibleActionCollection(data: []),
+                possibleActions: new Payment\Order\PossibleActionCollection(
+                    data: []
+                ),
                 totalOrderAmount: 100.00,
                 canceledAmount: 0.00,
                 authorizedAmount: 100.00,
                 capturedAmount: 0.00,
                 refundedAmount: 0.00
             )
-        );
-    }
-
-    /**
-     * Verify that the isFrozen method works as intended
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws IllegalCharsetException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    public function testIsFrozen(): void
-    {
-        $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
-        $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
-
-        $this->assertEquals(
-            expected: true,
-            actual: $isFrozen->isFrozen()
-        );
-        $this->assertEquals(
-            expected: false,
-            actual: $notFrozen->isFrozen()
         );
     }
 }

@@ -12,8 +12,8 @@ namespace Resursbank\Ecom\Lib\Model;
 use BackedEnum;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
-use function is_object;
 use function is_array;
+use function is_object;
 
 /**
  * Defines the basic structure of an Ecom model.
@@ -25,7 +25,6 @@ class Model
     /**
      * Converts the object to an array suitable for use with the Curl library.
      *
-     * @param bool $full
      * @param array $raw
      * @return array
      * @SuppressWarnings(PHPMD.ElseExpression)

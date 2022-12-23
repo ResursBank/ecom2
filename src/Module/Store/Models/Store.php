@@ -23,11 +23,6 @@ class Store extends Model
 {
     /**
      * @param string $id | API identifier.
-     * @param int $nationalStoreId
-     * @param Country $countryCode
-     * @param string $name
-     * @param StringValidation $stringValidation
-     * @param IntValidation $intValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @todo $name will get a max length but that is not yet defined.
@@ -55,7 +50,6 @@ class Store extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateNationalStoreId(): void
@@ -64,7 +58,6 @@ class Store extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateName(): void

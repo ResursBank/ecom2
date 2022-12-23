@@ -20,45 +20,13 @@ use Resursbank\Ecom\Lib\Cache\None;
  */
 class NoneTest extends TestCase
 {
-    /**
-     * @var None
-     */
     private None $cache;
 
-    /**
-     * @var string
-     */
     private string $key;
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        $this->cache = new None();
-        $this->key = $this->getKey();
-
-        parent::setUp();
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     */
-    private function getKey(): string
-    {
-        // NOTE: Simply using time() is unsafe, tests run too quickly.
-        return AbstractCache::getKey(
-            key: 'none-cache-' . random_int(min: 0, max: 999999999) . time()
-        );
-    }
 
     /**
      * Assert that method read() throws instance of ValidationException if our
      * key contains illegal characters.
-     *
-     * @return void
      */
     public function testReadThrowsWithIllegalKeyCharacter(): void
     {
@@ -68,8 +36,6 @@ class NoneTest extends TestCase
 
     /**
      * Assert ValidationException occurs when calling read() with an empty key.
-     *
-     * @return void
      */
     public function testReadThrowsWithEmptyKey(): void
     {
@@ -80,7 +46,6 @@ class NoneTest extends TestCase
     /**
      * Assert that read() method will always return null.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testReadReturnsNull(): void
@@ -91,8 +56,6 @@ class NoneTest extends TestCase
     /**
      * Assert that method write() throws instance of ValidationException if our
      * key contains illegal characters.
-     *
-     * @return void
      */
     public function testWriteThrowsWithIllegalKeyCharacter(): void
     {
@@ -106,8 +69,6 @@ class NoneTest extends TestCase
 
     /**
      * Assert ValidationException occurs when calling write() with an empty key.
-     *
-     * @return void
      */
     public function testWriteThrowsWithEmptyKey(): void
     {
@@ -118,7 +79,6 @@ class NoneTest extends TestCase
     /**
      * Assert that write() method is callable but doesn't do anything.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testWriteDoesNothing(): void
@@ -130,8 +90,6 @@ class NoneTest extends TestCase
     /**
      * Assert that method clear() throws instance of ValidationException if our
      * key contains illegal characters.
-     *
-     * @return void
      */
     public function testClearThrowsWithIllegalKeyCharacter(): void
     {
@@ -141,8 +99,6 @@ class NoneTest extends TestCase
 
     /**
      * Assert ValidationException occurs when calling clear() with an empty key.
-     *
-     * @return void
      */
     public function testClearThrowsWithEmptyKey(): void
     {
@@ -153,12 +109,33 @@ class NoneTest extends TestCase
     /**
      * Assert that clear() method is callable but doesn't do anything.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testClearDoesNothing(): void
     {
         $this->cache->clear(key: $this->key);
         $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->cache = new None();
+        $this->key = $this->getKey();
+
+        parent::setUp();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'none-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
     }
 }

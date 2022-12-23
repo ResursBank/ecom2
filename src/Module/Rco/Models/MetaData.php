@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class MetaData extends Model
 {
-    /**
-     * @param string $key
-     * @param string $value
-     */
     public function __construct(
         public string $key = '',
         public string $value = ''

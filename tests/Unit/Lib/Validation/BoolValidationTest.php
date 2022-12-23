@@ -19,26 +19,12 @@ use Resursbank\Ecom\Lib\Validation\BoolValidation;
  */
 final class BoolValidationTest extends TestCase
 {
-    /**
-     * @var BoolValidation
-     */
     private BoolValidation $boolValidation;
-
-    /**
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        $this->boolValidation = new BoolValidation();
-
-        parent::setUp();
-    }
 
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -52,7 +38,6 @@ final class BoolValidationTest extends TestCase
      * Assert getKey() throws IllegalTypeException when the needle exists but
      * is not boolean.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -65,7 +50,6 @@ final class BoolValidationTest extends TestCase
     /**
      * Assert getKey() return validated boolean value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -77,5 +61,12 @@ final class BoolValidationTest extends TestCase
                 key: 'epoch'
             )
         );
+    }
+
+    protected function setUp(): void
+    {
+        $this->boolValidation = new BoolValidation();
+
+        parent::setUp();
     }
 }

@@ -19,7 +19,6 @@ use Resursbank\Ecom\Lib\Model\Callback\Management;
 class ManagementController extends Controller
 {
     /**
-     * @return Management
      * @throws HttpException
      */
     public function getRequestData(): Management

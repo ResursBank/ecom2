@@ -23,9 +23,6 @@ class PaymentDiffCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: PaymentDiff::class
-        );
+        parent::__construct(data: $data, type: PaymentDiff::class);
     }
 }

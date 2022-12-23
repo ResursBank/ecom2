@@ -22,15 +22,6 @@ use function is_string;
 class Address extends Model
 {
     /**
-     * @param string $addressRow1
-     * @param string $postalArea
-     * @param string $postalCode
-     * @param CountryCode|null $countryCode
-     * @param string|null $fullName
-     * @param string|null $firstName
-     * @param string|null $lastName
-     * @param string|null $addressRow2
-     * @param StringValidation $stringValidation
      * @throws IllegalCharsetException
      * @throws IllegalValueException
      */
@@ -59,13 +50,15 @@ class Address extends Model
      */
     private function validateFullName(): void
     {
-        if (is_string(value: $this->fullName)) {
-            $this->stringValidation->length(
-                value: $this->fullName,
-                min: 0,
-                max: 50
-            );
+        if (!is_string(value: $this->fullName)) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->fullName,
+            min: 0,
+            max: 50
+        );
     }
 
     /**
@@ -73,13 +66,15 @@ class Address extends Model
      */
     private function validateFirstName(): void
     {
-        if (is_string(value: $this->firstName)) {
-            $this->stringValidation->length(
-                value: $this->firstName,
-                min: 0,
-                max: 50
-            );
+        if (!is_string(value: $this->firstName)) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->firstName,
+            min: 0,
+            max: 50
+        );
     }
 
     /**
@@ -87,13 +82,15 @@ class Address extends Model
      */
     private function validateLastName(): void
     {
-        if (is_string(value: $this->lastName)) {
-            $this->stringValidation->length(
-                value: $this->lastName,
-                min: 0,
-                max: 50
-            );
+        if (!is_string(value: $this->lastName)) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->lastName,
+            min: 0,
+            max: 50
+        );
     }
 
     /**
@@ -113,13 +110,15 @@ class Address extends Model
      */
     private function validateAddressRow2(): void
     {
-        if (is_string(value: $this->addressRow2)) {
-            $this->stringValidation->length(
-                value: $this->addressRow2,
-                min: 0,
-                max: 100
-            );
+        if (!is_string(value: $this->addressRow2)) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->addressRow2,
+            min: 0,
+            max: 100
+        );
     }
 
     /**

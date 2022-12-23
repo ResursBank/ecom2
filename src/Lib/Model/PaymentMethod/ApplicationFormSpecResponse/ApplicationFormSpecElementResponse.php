@@ -24,20 +24,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class ApplicationFormSpecElementResponse extends Model
 {
     /**
-     * @param Type $type
-     * @param string $label
-     * @param string|null $fieldName
-     * @param string|null $description
-     * @param bool|null $required
-     * @param string|null $pattern
-     * @param string|null $patternValidationErrorMessage
-     * @param string|null $defaultValue
-     * @param ApplicationFormSpecElementOptionResponseCollection|null $options
-     * @param int|null $maxLength
-     * @param int|null $min
-     * @param int|null $max
-     * @param ApplicationFormSpecWithDependencyRequiredIfValue|null $requiredIfValue
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -61,7 +47,6 @@ class ApplicationFormSpecElementResponse extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateLabel(): void

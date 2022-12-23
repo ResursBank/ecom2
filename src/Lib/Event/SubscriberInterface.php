@@ -18,7 +18,6 @@ interface SubscriberInterface
 {
     /**
      * @param array $data
-     * @return bool
      */
     public function validate(array $data): bool;
 
@@ -26,9 +25,7 @@ interface SubscriberInterface
      * NOTE: The Event dispatcher at Resursbank\Ecom\Lib\Event\Hub will execute
      * the validate method before calling this method.
      *
-     * @param Config $config
      * @param array $data
-     * @return void
      */
     public function execute(Config $config, array $data): void;
 }

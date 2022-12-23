@@ -11,10 +11,9 @@ namespace Resursbank\Ecom\Lib\Log;
 
 use DateTime;
 use Error;
-use Exception;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Throwable;
 
@@ -37,7 +36,6 @@ class FileLogger implements LoggerInterface
     private const ERR_UNWRITABLE = 'Log file appears to be unwritable';
 
     /**
-     * @param string $path
      * @throws FilesystemException
      * @throws EmptyValueException
      * @throws FormatException
@@ -51,8 +49,6 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level DEBUG
      *
-     * @param string|Throwable $message
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      */
@@ -64,8 +60,6 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level INFO
      *
-     * @param string|Throwable $message
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      */
@@ -77,8 +71,6 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level WARNING
      *
-     * @param string|Throwable $message
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      */
@@ -90,8 +82,6 @@ class FileLogger implements LoggerInterface
     /**
      * Logs message with log level ERROR
      *
-     * @param string|Throwable $message
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      */
@@ -103,9 +93,6 @@ class FileLogger implements LoggerInterface
     /**
      * Write log entry to file on disk.
      *
-     * @param LogLevel $level
-     * @param string|Throwable $message
-     * @return void
      * @throws FilesystemException
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -118,8 +105,11 @@ class FileLogger implements LoggerInterface
         if (
             is_object(value: $message) &&
             (
-                get_class(object: $message) === Exception::class ||
-                is_subclass_of(object_or_class: $message, class: Exception::class)
+                get_class(object: $message) === Throwable::class ||
+                is_subclass_of(
+                    object_or_class: $message,
+                    class: Throwable::class
+                )
             )
         ) {
             $this->logException(exception: $message);
@@ -135,13 +125,18 @@ class FileLogger implements LoggerInterface
             is_object(value: $message) &&
             (
                 get_class(object: $message) === Throwable::class ||
-                is_subclass_of(object_or_class: $message, class: Throwable::class)
+                is_subclass_of(
+                    object_or_class: $message,
+                    class: Throwable::class
+                )
             )
         ) {
             $this->logError(error: $message);
         } elseif (LogLevel::loggable(level: $level)) {
             $timestamp = new DateTime();
-            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
+            $formattedMessage = $timestamp->format(
+                format: 'c'
+            ) . ' ' . $level->name . ': ' . $message;
 
             if (!$this->logIsWritable()) {
                 throw new FilesystemException(message: self::ERR_UNWRITABLE);
@@ -162,33 +157,33 @@ class FileLogger implements LoggerInterface
     /**
      * Log Exception object by converting it to a string and feeding it to the log method.
      *
-     * @param Throwable $exception
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      */
     private function logException(Throwable $exception): void
     {
-        $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
+        $this->log(
+            level: LogLevel::EXCEPTION,
+            message: $exception->getTraceAsString()
+        );
     }
 
     /**
      * Log Error object by converting it to a string and feeding it to the log method.
      *
-     * @param Throwable|Error $error
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      */
     private function logError(Throwable|Error $error): void
     {
-        $this->log(level: LogLevel::ERROR, message: $error->getTraceAsString());
+        $this->log(
+            level: LogLevel::ERROR,
+            message: $error->getTraceAsString()
+        );
     }
 
     /**
      * Returns absolute path to log file.
-     *
-     * @return string
      */
     private function getFilename(): string
     {
@@ -198,7 +193,6 @@ class FileLogger implements LoggerInterface
     /**
      * Validate logfile storage path.
      *
-     * @return bool
      * @throws EmptyValueException
      * @throws FilesystemException
      * @throws FormatException
@@ -208,20 +202,33 @@ class FileLogger implements LoggerInterface
         if ($this->path === '') {
             throw new EmptyValueException(message: self::PATH_ERR_EMPTY);
         }
+
         if ($this->path !== trim(string: $this->path)) {
             throw new FormatException(message: self::PATH_ERR_WHITESPACE);
         }
-        if (DIRECTORY_SEPARATOR === substr(string: $this->path, offset: -1)) {
-            throw new FormatException(message: self::PATH_ERR_TRAILING_SEPARATOR);
+
+        if (substr(string: $this->path, offset: -1) === DIRECTORY_SEPARATOR) {
+            throw new FormatException(
+                message: self::PATH_ERR_TRAILING_SEPARATOR
+            );
         }
+
         if (!file_exists(filename: $this->path)) {
-            throw new FilesystemException(message: self::PATH_ERR_FILE_DOES_NOT_EXIST);
+            throw new FilesystemException(
+                message: self::PATH_ERR_FILE_DOES_NOT_EXIST
+            );
         }
+
         if (!is_dir(filename: $this->path)) {
-            throw new FilesystemException(message: self::PATH_ERR_FILE_NOT_DIRECTORY);
+            throw new FilesystemException(
+                message: self::PATH_ERR_FILE_NOT_DIRECTORY
+            );
         }
+
         if (!is_writable(filename: $this->path)) {
-            throw new FilesystemException(message: self::PATH_ERR_FILE_NOT_WRITABLE);
+            throw new FilesystemException(
+                message: self::PATH_ERR_FILE_NOT_WRITABLE
+            );
         }
 
         return true;
@@ -229,8 +236,6 @@ class FileLogger implements LoggerInterface
 
     /**
      * Checks if the log file is writable.
-     *
-     * @return bool
      */
     private function logIsWritable(): bool
     {
@@ -239,12 +244,22 @@ class FileLogger implements LoggerInterface
         try {
             /** @noinspection NotOptimalIfConditionsInspection */
             if (
-                (file_exists(filename: $this->getFilename()) && is_writable(filename: $this->getFilename())) ||
-                (!file_exists(filename: $this->getFilename()) && $this->validatePath())
+                (
+                    file_exists(filename: $this->getFilename()) &&
+                    is_writable(
+                        filename: $this->getFilename()
+                    )
+                ) ||
+                (
+                    !file_exists(
+                        filename: $this->getFilename()
+                    ) &&
+                    $this->validatePath()
+                )
             ) {
                 return true;
             }
-        } catch (Exception) {
+        } catch (Throwable) {
             return false;
         }
 

@@ -23,9 +23,6 @@ class SimpleDummyCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: SimpleDummy::class
-        );
+        parent::__construct(data: $data, type: SimpleDummy::class);
     }
 }

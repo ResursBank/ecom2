@@ -45,17 +45,12 @@ class Mapi
      */
     public const CUSTOMER_ROUTE = 'v2/customers';
 
-    /**
-     * @param StringValidation $stringValidation
-     */
     public function __construct(
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
     }
 
     /**
-     * @param string $route
-     * @return string
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws ConfigException
@@ -66,9 +61,9 @@ class Mapi
     ): string {
         $this->stringValidation->notEmpty(value: $route);
 
-        return (
+        return
             (Config::isProduction() ? self::URL_PROD : self::URL_TEST) .
             $route
-        );
+        ;
     }
 }

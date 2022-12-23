@@ -22,16 +22,10 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 class Token extends Model
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     public readonly int $expires_in;
 
     /**
-     * @param string $access_token
-     * @param string $token_type
-     * @param int $expires_in
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @todo $tokenType should be an enum. See ECP-227
      */
@@ -47,16 +41,12 @@ class Token extends Model
         $this->expires_in = $expires_in + time();
     }
 
-    /**
-     * @return bool
-     */
     public function isExpired(): bool
     {
         return $this->expires_in < time();
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateAccessToken(): void
@@ -65,7 +55,6 @@ class Token extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateTokenType(): void

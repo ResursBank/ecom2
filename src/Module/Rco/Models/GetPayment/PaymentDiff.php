@@ -17,14 +17,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 class PaymentDiff extends Model
 {
     /**
-     * @param string $type
-     * @param string $created
-     * @param PaymentSpec $paymentSpec
      * @param array $documentNames
-     * @param string|null $createdBy
-     * @param string|null $orderId
-     * @param string|null $invoiceId
-     * @param string|null $transactionId
      */
     public function __construct(
         public string $type,
@@ -34,7 +27,7 @@ class PaymentDiff extends Model
         public ?string $createdBy = null,
         public ?string $orderId = null,
         public ?string $invoiceId = null,
-        public ?string $transactionId = null,
+        public ?string $transactionId = null
     ) {
     }
 }

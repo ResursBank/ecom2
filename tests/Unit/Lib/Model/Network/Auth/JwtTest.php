@@ -20,8 +20,6 @@ class JwtTest extends TestCase
 {
     /**
      * Assert EmptyValueException is thrown when clientId is empty.
-     *
-     * @return void
      */
     public function testThrowsOnEmptyClientId(): void
     {
@@ -37,8 +35,6 @@ class JwtTest extends TestCase
 
     /**
      * Assert EmptyValueException is thrown when clientSecret is empty.
-     *
-     * @return void
      */
     public function testThrowsOnEmptyClientSecret(): void
     {
@@ -54,8 +50,6 @@ class JwtTest extends TestCase
 
     /**
      * Assert EmptyValueException is thrown when scope is empty.
-     *
-     * @return void
      */
     public function testThrowsOnEmptyScope(): void
     {
@@ -71,8 +65,6 @@ class JwtTest extends TestCase
 
     /**
      * Assert EmptyValueException is thrown when grantType is empty.
-     *
-     * @return void
      */
     public function testThrowsOnEmptyGrantType(): void
     {

@@ -32,11 +32,11 @@ use stdClass;
 
 /**
  * Updates Metadata on Payment objects
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Put
 {
-    /** @var Mapi  */
     private Mapi $mapi;
 
     public function __construct()
@@ -45,9 +45,6 @@ class Put
     }
 
     /**
-     * @param string $paymentId
-     * @param Metadata $metadata
-     * @return Metadata
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -77,7 +74,7 @@ class Put
 
         $data = $curl->exec()->body;
 
-        $content = ($data instanceof stdClass) ? $data : new stdClass();
+        $content = $data instanceof stdClass ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
             object: $content,

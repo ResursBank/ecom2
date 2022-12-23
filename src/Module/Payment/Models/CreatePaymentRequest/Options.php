@@ -23,14 +23,6 @@ use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options\Redirecti
 class Options extends Model
 {
     /**
-     * @param bool|null $initiatedOnCustomerDevice
-     * @param bool|null $handleManualInspection
-     * @param bool|null $handleFrozenPayments
-     * @param bool|null $automaticCapture
-     * @param RedirectionUrls|null $redirectionUrls
-     * @param Callbacks|null $callbacks
-     * @param int|null $timeToLiveInMinutes
-     * @param IntValidation $intValidation
      * @throws IllegalValueException
      */
     public function __construct(
@@ -48,18 +40,22 @@ class Options extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateTimeToLiveInMinutes(): void
     {
-        if ($this->timeToLiveInMinutes !== null) {
-            $this->intValidation->inRange(value: $this->timeToLiveInMinutes, min: 1, max: 43200);
+        if ($this->timeToLiveInMinutes === null) {
+            return;
         }
+
+        $this->intValidation->inRange(
+            value: $this->timeToLiveInMinutes,
+            min: 1,
+            max: 43200
+        );
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateAutomaticCapture(): void

@@ -31,27 +31,6 @@ use Resursbank\Ecom\Module\Customer\Widget\GetAddress;
 class GetAddressTest extends TestCase
 {
     /**
-     * @return void
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        parent::setUp();
-    }
-
-    /**
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -64,18 +43,22 @@ class GetAddressTest extends TestCase
         $data = new GetAddress(
             govId: '',
             customerType: CustomerType::NATURAL,
-            fetchUrl:  ''
+            fetchUrl: ''
         );
 
         static::assertStringContainsString(
-            needle: Translator::translate(phraseId: 'get-address-could-not-fetch-address'),
+            needle: Translator::translate(
+                phraseId: 'get-address-could-not-fetch-address'
+            ),
             haystack: $data->content,
             message: 'Could not fetch an address for the given ID. Please ' .
                 'update the ID or refresh the page and try again.'
         );
 
         static::assertStringContainsString(
-            needle: Translator::translate(phraseId: 'get-address-no-callback-function'),
+            needle: Translator::translate(
+                phraseId: 'get-address-no-callback-function'
+            ),
             haystack: $data->content,
             message: 'The address was fetched, but could not be handled ' .
                 'properly. Please contact the store owner if the problem persists.'
@@ -101,5 +84,26 @@ class GetAddressTest extends TestCase
             message: 'Get address widget should contain an input with id ' .
             'rb-customer-widget-getAddress-customerType-legal.'
         );
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        parent::setUp();
     }
 }

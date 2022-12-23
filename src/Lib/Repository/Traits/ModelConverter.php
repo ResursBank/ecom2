@@ -32,9 +32,7 @@ trait ModelConverter
     /**
      * Convert JSON data to model instance(s).
      *
-     * @param string|array|stdClass $data
      * @param class-string $model
-     * @return Collection|Model
      * @throws JsonException
      * @throws ReflectionException
      * @throws IllegalTypeException
@@ -73,9 +71,7 @@ trait ModelConverter
         }
 
         if (!$result instanceof Model && !$result instanceof Collection) {
-            throw new IllegalValueException(
-                message: 'Invalid data type'
-            );
+            throw new IllegalValueException(message: 'Invalid data type');
         }
 
         return $result;
@@ -83,12 +79,11 @@ trait ModelConverter
 
     /**
      * @param class-string $model
-     * @return void
      * @throws IllegalTypeException
      * @throws InvalidArgumentException
      */
     public function validateModel(
-        string $model,
+        string $model
     ): void {
         if (!class_exists(class: $model)) {
             throw new InvalidArgumentException(

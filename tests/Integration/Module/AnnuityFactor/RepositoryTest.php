@@ -25,8 +25,8 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
 /**
@@ -34,57 +34,15 @@ use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
  */
 class RepositoryTest extends TestCase
 {
-    /**
-     * @var Cache
-     */
     private Cache $cache;
 
-    /**
-     * @var string
-     */
     private string $storeId;
 
-    /**
-     * @var string
-     */
     private string $paymentMethodId;
-
-    /**
-     * @return void
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    protected function setUp(): void
-    {
-        $this->storeId = $_ENV['STORE_ID'];
-        $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/annuityFactors/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->cache = Repository::getCache(
-            storeId: $this->storeId,
-            paymentMethodId: $this->paymentMethodId
-        );
-
-        $this->cache->clear();
-
-        parent::setUp();
-    }
 
     /**
      * Assert clearCache() clears cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -114,7 +72,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert read() returns data from the API when cache is empty.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -142,7 +99,6 @@ class RepositoryTest extends TestCase
      * Assert read() retrieves payment methods, paymentMethod them in cache, and
      * will later return the same paymentMethods from cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -172,7 +128,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -193,9 +148,44 @@ class RepositoryTest extends TestCase
             storeId: $this->storeId,
             paymentMethods: PaymentMethodRepository::getPaymentMethods(
                 storeId: $this->storeId
-            ),
+            )
         );
 
         $this->assertNotEmpty(actual: $filteredMethods->toArray());
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    protected function setUp(): void
+    {
+        $this->storeId = $_ENV['STORE_ID'];
+        $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/annuityFactors/' . time()
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->cache = Repository::getCache(
+            storeId: $this->storeId,
+            paymentMethodId: $this->paymentMethodId
+        );
+
+        $this->cache->clear();
+
+        parent::setUp();
     }
 }

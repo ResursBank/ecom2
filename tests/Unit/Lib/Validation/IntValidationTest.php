@@ -20,26 +20,12 @@ use Resursbank\Ecom\Lib\Validation\IntValidation;
  */
 final class IntValidationTest extends TestCase
 {
-    /**
-     * @var IntValidation
-     */
     private IntValidation $intValidation;
-
-    /**
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        $this->intValidation = new IntValidation();
-
-        parent::setUp();
-    }
 
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -53,7 +39,6 @@ final class IntValidationTest extends TestCase
      * Assert getKey() throws IllegalTypeException when the needle exists but
      * is not an integer.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -66,7 +51,6 @@ final class IntValidationTest extends TestCase
     /**
      * Assert getKey() return validated integer value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -85,7 +69,6 @@ final class IntValidationTest extends TestCase
      * Assert isPositive() throws IllegalValueException when the value is
      * negative.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsPositiveThrowsOnNegative(): void
@@ -107,7 +90,6 @@ final class IntValidationTest extends TestCase
      * Assert inRange() throws IllegalValueException when the max value is less
      * than the min value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsPositiveReturnTrue(): void
@@ -121,7 +103,6 @@ final class IntValidationTest extends TestCase
      * Assert isGt() throws IllegalValueException when the value is less than
      * supplied minimum.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsGtThrowsOnLessThan(): void
@@ -134,7 +115,6 @@ final class IntValidationTest extends TestCase
      * Assert isGt() returns true when the value is greater than supplied
      * minimum.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsGtReturnTrue(): void
@@ -157,7 +137,6 @@ final class IntValidationTest extends TestCase
     /**
      * Asserts that inRange() validates that the tested integer within range.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testInRangeReturnsTrue(): void
@@ -169,5 +148,12 @@ final class IntValidationTest extends TestCase
                 max: 10
             )
         );
+    }
+
+    protected function setUp(): void
+    {
+        $this->intValidation = new IntValidation();
+
+        parent::setUp();
     }
 }

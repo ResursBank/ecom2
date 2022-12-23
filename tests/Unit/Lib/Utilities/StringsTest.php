@@ -18,31 +18,51 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
 class StringsTest extends TestCase
 {
     /**
-     * @return void
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function testGetObfuscatedString(): void
     {
-        $obfuscateFromSecondPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 2);
-        $obfuscateFromThirdPosition = Strings::getObfuscatedString(string: 'Just a string.', startAt: 3);
+        $obfuscateFromSecondPosition = Strings::getObfuscatedString(
+            string: 'Just a string.',
+            startAt: 2
+        );
+        $obfuscateFromThirdPosition = Strings::getObfuscatedString(
+            string: 'Just a string.',
+            startAt: 3
+        );
         $obfuscateFromFourthPositionEndAtZero = Strings::getObfuscatedString(
             string: 'Just a string.',
             startAt: 4,
             endAt: 0
         );
         // Breaking rules.
-        $obfuscateFromFifthAndBreakTheStrLenRules = Strings::getObfuscatedString(string: 'Just', startAt: 5, endAt: 5);
+        $obfuscateFromFifthAndBreakTheStrLenRules = Strings::getObfuscatedString(
+            string: 'Just',
+            startAt: 5,
+            endAt: 5
+        );
 
-        $this->assertEquals(expected: 'Ju************.', actual: $obfuscateFromSecondPosition);
-        $this->assertEquals(expected: 'Jus************.', actual: $obfuscateFromThirdPosition);
-        $this->assertEquals(expected: 'Just************', actual: $obfuscateFromFourthPositionEndAtZero);
-        $this->assertEquals(expected: 'Just', actual: $obfuscateFromFifthAndBreakTheStrLenRules);
+        $this->assertEquals(
+            expected: 'Ju************.',
+            actual: $obfuscateFromSecondPosition
+        );
+        $this->assertEquals(
+            expected: 'Jus************.',
+            actual: $obfuscateFromThirdPosition
+        );
+        $this->assertEquals(
+            expected: 'Just************',
+            actual: $obfuscateFromFourthPositionEndAtZero
+        );
+        $this->assertEquals(
+            expected: 'Just',
+            actual: $obfuscateFromFifthAndBreakTheStrLenRules
+        );
     }
 
     /**
      * Encode string that is not url-safe.
      *
-     * @return void
      * @see https://stackoverflow.com/questions/11449577/why-is-base64-encode-adding-a-slash-in-the-result
      */
     public function testBase64urlEncode(): void
@@ -56,7 +76,7 @@ class StringsTest extends TestCase
 
     /**
      * Decode string that is not url-safe.
-     * @return void
+     *
      * @see https://stackoverflow.com/questions/11449577/why-is-base64-encode-adding-a-slash-in-the-result
      */
     public function testBase64urlDecode(): void

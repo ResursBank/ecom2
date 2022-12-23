@@ -21,63 +21,43 @@ class OptionsTest extends TestCase
     /**
      * Assert that an IllegalValueException is thrown when attempting to set a TTL which is too long.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testTooLongTimeToLive(): void
     {
-        $this->expectException(
-            exception: IllegalValueException::class
-        );
-        new Options(
-            timeToLiveInMinutes: 43201
-        );
+        $this->expectException(exception: IllegalValueException::class);
+        new Options(timeToLiveInMinutes: 43201);
     }
 
     /**
      * Assert that an IllegalValueException is thrown when attempting to set a TTL which is negative
-     * @return void
+     *
      * @throws IllegalValueException
      */
     public function testNegativeTimeToLive(): void
     {
-        $this->expectException(
-            exception: IllegalValueException::class
-        );
-        new Options(
-            timeToLiveInMinutes: -5
-        );
+        $this->expectException(exception: IllegalValueException::class);
+        new Options(timeToLiveInMinutes: -5);
     }
 
     /**
      * Assert that an IllegalValueException is thrown when attempting to set a TTL which is zero
-     * @return void
+     *
      * @throws IllegalValueException
      */
     public function testZeroTimeToLive(): void
     {
-        $this->expectException(
-            exception: IllegalValueException::class
-        );
-        new Options(
-            timeToLiveInMinutes: 0
-        );
+        $this->expectException(exception: IllegalValueException::class);
+        new Options(timeToLiveInMinutes: 0);
     }
 
     /**
      * Assert that an IllegalValueException is thrown if attempting to create an Options object with both
      * handleFrozenPayments and automaticCapture set to true.
-     *
-     * @return void
      */
     public function testAutomaticCaptureValidation(): void
     {
-        $this->expectException(
-            exception: IllegalValueException::class
-        );
-        new Options(
-            handleFrozenPayments: true,
-            automaticCapture: true
-        );
+        $this->expectException(exception: IllegalValueException::class);
+        new Options(handleFrozenPayments: true, automaticCapture: true);
     }
 }

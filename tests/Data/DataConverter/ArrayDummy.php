@@ -17,7 +17,6 @@ use Resursbank\Ecom\Lib\Model\Model;
 class ArrayDummy extends Model
 {
     /**
-     * @param int $int
      * @param array $arr
      */
     public function __construct(

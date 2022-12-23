@@ -26,9 +26,6 @@ use function is_int;
  */
 class OrderLine
 {
-    /**
-     * @var string
-     */
     public static string $data = <<<EOD
 [
     {
@@ -57,7 +54,6 @@ class OrderLine
 EOD;
 
     /**
-     * @return stdClass
      * @throws JsonException
      * @throws TestException
      */

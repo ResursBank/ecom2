@@ -23,26 +23,12 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 final class StringValidationTest extends TestCase
 {
-    /**
-     * @var StringValidation
-     */
     private StringValidation $stringValidation;
-
-    /**
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        $this->stringValidation = new StringValidation();
-
-        parent::setUp();
-    }
 
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testGetKeyThrowsWithMissing(): void
@@ -55,7 +41,6 @@ final class StringValidationTest extends TestCase
      * Assert getKey() throws IllegalTypeException when the needle exists but
      * is not a string.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testGetKeyThrowsWithInvalidProperty(): void
@@ -67,7 +52,6 @@ final class StringValidationTest extends TestCase
     /**
      * Assert getKey() returns resolved key.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testGetKeyReturnsTrue(): void
@@ -85,7 +69,6 @@ final class StringValidationTest extends TestCase
      * Assert notEmpty() throws EmptyValueException when supplied an empty
      * string.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testNotEmptyThrowsWithEmpty(): void
@@ -98,7 +81,6 @@ final class StringValidationTest extends TestCase
      * Assert notEmpty() throws EmptyValueException when supplied a string
      * containing only spaces.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testNotEmptyThrowsWithSpaces(): void
@@ -111,7 +93,6 @@ final class StringValidationTest extends TestCase
      * Assert notEmpty() throws EmptyValueException when supplied a string
      * containing only newline.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testNotEmptyThrowsWithNewLine(): void
@@ -124,32 +105,34 @@ final class StringValidationTest extends TestCase
      * Assert notEmpty() throws EmptyValueException when supplied an empty
      * string.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testNotEmptyReturnsTrue(): void
     {
-        $this->assertTrue(condition: $this->stringValidation->notEmpty(value: 'test'));
+        $this->assertTrue(
+            condition: $this->stringValidation->notEmpty(value: 'test')
+        );
     }
 
     /**
      * Assert matchRegex() throws IllegalCharsetException when supplied a
      * value containing an illegal character against the supplied pattern.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testMatchRegexThrowsOnIllegal(): void
     {
         $this->expectException(exception: IllegalCharsetException::class);
-        $this->stringValidation->matchRegex(value: 'Some', pattern: '/^[a-z]+$/');
+        $this->stringValidation->matchRegex(
+            value: 'Some',
+            pattern: '/^[a-z]+$/'
+        );
     }
 
     /**
      * Assert matchRegex() throws IllegalCharsetException when supplied a
      * value containing an illegal character against the supplied pattern.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testMatchRegexReturnsTrue(): void
@@ -165,7 +148,6 @@ final class StringValidationTest extends TestCase
     /**
      * Assert oneOf() throws InvalidValueException without a match.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testOneOfThrowsWithoutMatch(): void
@@ -177,7 +159,6 @@ final class StringValidationTest extends TestCase
     /**
      * Assert oneOf() returns TRUE with a match.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testOneOfReturnsTrue(): void
@@ -194,7 +175,6 @@ final class StringValidationTest extends TestCase
      * Assert isInt() throws IllegalCharsetException when supplied a value that
      * cannot be cast as an int.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testIsIntThrowsWithAlpha(): void
@@ -206,20 +186,20 @@ final class StringValidationTest extends TestCase
     /**
      * Assert isInt() return TRUE when value can be cast as an int.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testIsIntReturnsTrue(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isInt(value: '1234234456567789')
+            condition: $this->stringValidation->isInt(
+                value: '1234234456567789'
+            )
         );
     }
 
     /**
      * Assert length() return TRUE when supplied a string within length.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthReturnsTrue(): void
@@ -251,7 +231,6 @@ final class StringValidationTest extends TestCase
      * Assert length() throws IllegalValueException when the string is too
      * short.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsWhenTooShort(): void
@@ -263,7 +242,6 @@ final class StringValidationTest extends TestCase
     /**
      * Assert length() throws IllegalValueException when the string is too long.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsWhenTooLong(): void
@@ -276,7 +254,6 @@ final class StringValidationTest extends TestCase
      * Assert length() throws IllegalValueException when given a negative
      * minimum value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsWithNegativeMin(): void
@@ -289,7 +266,6 @@ final class StringValidationTest extends TestCase
      * Assert length() throws IllegalValueException when given a maximum value
      * that is less than the minimum.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsWithInvalidMax(): void
@@ -302,7 +278,6 @@ final class StringValidationTest extends TestCase
      * Assert isUuid() throws IllegalValueException when the value isn't an
      * uuid.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsUuidThrowsIllegalValue(): void
@@ -314,7 +289,6 @@ final class StringValidationTest extends TestCase
     /**
      * Assert isUuid() return TRUE when supplied a uuid.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsUuidReturnsTrue(): void
@@ -329,20 +303,20 @@ final class StringValidationTest extends TestCase
     /**
      * Assert that isEmail() returns true when supplied a string with an @ sign in it
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsEmailReturnsTrue(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isEmail(value: 'foo@example.com')
+            condition: $this->stringValidation->isEmail(
+                value: 'foo@example.com'
+            )
         );
     }
 
     /**
      * Assert that isEmail() throws an IllegalValueException when supplied with a string without an @ sign in it
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsEmailThrowsIllegalValue(): void
@@ -354,7 +328,6 @@ final class StringValidationTest extends TestCase
     /**
      * Assert that isTimestampDate accepts various values.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsTimestampConvertable(): void
@@ -395,20 +368,20 @@ final class StringValidationTest extends TestCase
      * Assert isTimestampDate throws IllegalValueException when supplied a
      * string that can not be converted to a timestamp.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsTimestampConvertableThrows(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->stringValidation->isTimestampDate(value: '{"sneaky": "object"}');
+        $this->stringValidation->isTimestampDate(
+            value: '{"sneaky": "object"}'
+        );
     }
 
     /**
      * Assert isSwedishSsn throws IllegalValueException when supplied an invalid
      * SSN value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishSsnThrowsInIllegal(): void
@@ -420,13 +393,14 @@ final class StringValidationTest extends TestCase
     /**
      * Assert isSwedishSsn returns TRUE for properly formatted SSN.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishSsn(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishSsn(value: '198001010001')
+            condition: $this->stringValidation->isSwedishSsn(
+                value: '198001010001'
+            )
         );
     }
 
@@ -434,13 +408,14 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishSsn returns TRUE when the last 4 digits are separated by
      * a hyphen.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishSsnAcceptsHyphen(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishSsn(value: '19800101-0001')
+            condition: $this->stringValidation->isSwedishSsn(
+                value: '19800101-0001'
+            )
         );
     }
 
@@ -448,7 +423,6 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishSsn throws IllegalValueException if the hyphen is in the
      * wrong place.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishSsnThrowsWithInaccurateHyphen(): void
@@ -461,7 +435,6 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishSsn throws IllegalValueException when supplied an
      * alphanumeric value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishSsnThrowsOnAlpha(): void
@@ -474,21 +447,26 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishSsn throws IllegalValueException when not prefixed with
      * 16, 18, 19 or 20. Assert all valid prefixes return TRUE.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishSsnPrefix(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishSsn(value: '188001010001')
+            condition: $this->stringValidation->isSwedishSsn(
+                value: '188001010001'
+            )
         );
 
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishSsn(value: '198001010001')
+            condition: $this->stringValidation->isSwedishSsn(
+                value: '198001010001'
+            )
         );
 
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishSsn(value: '208001010001')
+            condition: $this->stringValidation->isSwedishSsn(
+                value: '208001010001'
+            )
         );
 
         $this->expectException(exception: IllegalValueException::class);
@@ -499,7 +477,6 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishOrg throws IllegalValueException when supplied an invalid
      * ORG value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishOrgThrowsInIllegal(): void
@@ -511,13 +488,14 @@ final class StringValidationTest extends TestCase
     /**
      * Assert isSwedishOrg returns TRUE for properly formatted ORG.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishOrg(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishOrg(value: '166997368573')
+            condition: $this->stringValidation->isSwedishOrg(
+                value: '166997368573'
+            )
         );
     }
 
@@ -525,13 +503,14 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishOrg returns TRUE when the last 4 digits are separated by
      * a hyphen.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishOrgAcceptsHyphen(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishOrg(value: '16699736-8573')
+            condition: $this->stringValidation->isSwedishOrg(
+                value: '16699736-8573'
+            )
         );
     }
 
@@ -539,7 +518,6 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishOrg throws IllegalValueException if the hyphen is in the
      * wrong place.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishOrgThrowsWithInaccurateHyphen(): void
@@ -552,7 +530,6 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishOrg throws IllegalValueException when supplied an
      * alphanumeric value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishOrgThrowsOnAlpha(): void
@@ -565,28 +542,42 @@ final class StringValidationTest extends TestCase
      * Assert isSwedishOrg throws IllegalValueException when not prefixed with
      * 16, 18, 19 or 20. Assert all valid prefixes return TRUE.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSwedishOrgPrefix(): void
     {
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishOrg(value: '166997368573')
+            condition: $this->stringValidation->isSwedishOrg(
+                value: '166997368573'
+            )
         );
 
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishOrg(value: '188997368573')
+            condition: $this->stringValidation->isSwedishOrg(
+                value: '188997368573'
+            )
         );
 
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishOrg(value: '198997368573')
+            condition: $this->stringValidation->isSwedishOrg(
+                value: '198997368573'
+            )
         );
 
         $this->assertTrue(
-            condition: $this->stringValidation->isSwedishOrg(value: '208997368573')
+            condition: $this->stringValidation->isSwedishOrg(
+                value: '208997368573'
+            )
         );
 
         $this->expectException(exception: IllegalValueException::class);
         $this->stringValidation->isSwedishOrg(value: '158997368573');
+    }
+
+    protected function setUp(): void
+    {
+        $this->stringValidation = new StringValidation();
+
+        parent::setUp();
     }
 }

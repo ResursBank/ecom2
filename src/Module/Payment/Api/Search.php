@@ -38,19 +38,12 @@ use function is_array;
  */
 class Search
 {
-    /**
-     * @param Mapi $mapi
-     */
     public function __construct(
         private readonly Mapi $mapi = new Mapi()
     ) {
     }
 
     /**
-     * @param string $storeId
-     * @param string|null $orderReference
-     * @param string|null $governmentId
-     * @return Collection
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -68,12 +61,15 @@ class Search
         ?string $governmentId = null
     ): Collection {
         $payload = [];
+
         if ($governmentId && trim(string: $governmentId) !== '') {
             $payload['governmentId'] = $governmentId;
         }
+
         if ($orderReference && trim(string: $orderReference) !== '') {
             $payload['orderReference'] = $orderReference;
         }
+
         $payload['storeId'] = $storeId;
 
         $curl = new Curl(
@@ -101,7 +97,9 @@ class Search
         );
 
         if (!$result instanceof PaymentCollection) {
-            throw new InvalidTypeException(message: 'Expected PaymentCollection.');
+            throw new InvalidTypeException(
+                message: 'Expected PaymentCollection.'
+            );
         }
 
         return $result;

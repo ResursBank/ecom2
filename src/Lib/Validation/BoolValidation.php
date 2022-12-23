@@ -24,8 +24,6 @@ class BoolValidation
      * element contains a boolean value. Returns the validated boolean.
      *
      * @param array $data
-     * @param string $key
-     * @return bool
      * @throws MissingKeyException
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.BooleanGetMethodName)
@@ -39,9 +37,7 @@ class BoolValidation
         }
 
         if (!is_bool(value: $data[$key])) {
-            throw new IllegalTypeException(
-                message: "$key is not a bool."
-            );
+            throw new IllegalTypeException(message: "$key is not a bool.");
         }
 
         return $data[$key];

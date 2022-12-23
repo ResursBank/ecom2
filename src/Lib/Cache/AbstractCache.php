@@ -22,12 +22,18 @@ abstract class AbstractCache
     public const CACHE_KEY_PREFIX = 'resursbank-ecom-';
 
     /**
+     * Get prefixed cache key.
+     */
+    public static function getKey(string $key): string
+    {
+        return self::CACHE_KEY_PREFIX . $key;
+    }
+
+    /**
      * To ensure our keys will function regardless of cache implementation we
      * limit what characters may be utilised as part of the key. The key cannot
      * be empty.
      *
-     * @param string $key
-     * @return void
      * @throws ValidationException
      */
     public function validateKey(string $key): void
@@ -50,16 +56,5 @@ abstract class AbstractCache
                     self::CACHE_KEY_PREFIX
             );
         }
-    }
-
-    /**
-     * Get prefixed cache key.
-     *
-     * @param string $key
-     * @return string
-     */
-    public static function getKey(string $key): string
-    {
-        return self::CACHE_KEY_PREFIX . $key;
     }
 }

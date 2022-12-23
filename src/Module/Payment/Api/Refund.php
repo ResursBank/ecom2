@@ -34,7 +34,6 @@ use stdClass;
  */
 class Refund
 {
-    /** @var Mapi  */
     private Mapi $mapi;
 
     public function __construct()
@@ -43,11 +42,6 @@ class Refund
     }
 
     /**
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @return Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -66,12 +60,15 @@ class Refund
         ?string $transactionId = null
     ): Payment {
         $payload = [];
+
         if ($orderLines) {
             $payload['orderLines'] = $orderLines->toArray();
         }
+
         if ($creator) {
             $payload['creator'] = $creator;
         }
+
         if ($transactionId) {
             $payload['transactionId'] = $transactionId;
         }
@@ -89,7 +86,7 @@ class Refund
 
         $data = $curl->exec()->body;
 
-        $content = ($data instanceof stdClass) ? $data : new stdClass();
+        $content = $data instanceof stdClass ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
             object: $content,

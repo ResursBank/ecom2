@@ -14,10 +14,9 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 
@@ -27,18 +26,8 @@ use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 class ErrorHandlerTest extends TestCase
 {
     /**
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Config::setup();
-    }
-
-    /**
      * Assert validate() throws IllegalTypeException when body isn't string.
      *
-     * @return void
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -62,7 +51,6 @@ class ErrorHandlerTest extends TestCase
     /**
      * Assert validate() throws EmptyValueException when body is empty.
      *
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -86,7 +74,6 @@ class ErrorHandlerTest extends TestCase
     /**
      * Assert validate() throws JsonException when body isn't valid JSON.
      *
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -113,7 +100,6 @@ class ErrorHandlerTest extends TestCase
      *
      * Assert body property on CurlException is set.
      *
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -148,7 +134,6 @@ class ErrorHandlerTest extends TestCase
     /**
      * Assert validate() throws CurlException when HTTP response code is 0.
      *
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -160,9 +145,7 @@ class ErrorHandlerTest extends TestCase
     {
         $this->expectException(exception: CurlException::class);
 
-        $ch = curl_init(
-            url: 'nowhere.loc/404'
-        );
+        $ch = curl_init(url: 'nowhere.loc/404');
         curl_exec(handle: $ch);
 
         $handler = new ErrorHandler(
@@ -172,5 +155,11 @@ class ErrorHandlerTest extends TestCase
         );
 
         $handler->validate();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::setup();
     }
 }

@@ -13,16 +13,16 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Verifies that the
+ *
  * @todo Completed test coverage.
  */
 class StdoutLoggerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testLogDebug(): void
     {
-        self::markTestSkipped(message: 'Marking skipped as I have yet to find a way of capturing STDOUT/STDERR '
-            . 'output reliably');
+        self::markTestSkipped(
+            message: 'Marking skipped as I have yet to find a way of capturing STDOUT/STDERR '
+                . 'output reliably'
+        );
     }
 }

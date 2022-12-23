@@ -29,9 +29,6 @@ class FloatValidation
      * element contains a float. Returns the validated float.
      *
      * @param array $data
-     * @param string $key
-     * @param bool $parseInt
-     * @return float
      * @throws IllegalTypeException
      * @throws MissingKeyException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -52,17 +49,13 @@ class FloatValidation
         }
 
         if (!is_float(value: $data[$key])) {
-            throw new IllegalTypeException(
-                message: "$key is not a float."
-            );
+            throw new IllegalTypeException(message: "$key is not a float.");
         }
 
         return $data[$key];
     }
 
     /**
-     * @param float $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isPositive(
@@ -80,10 +73,6 @@ class FloatValidation
     /**
      * Validates that a float value is within the given min and max range.
      *
-     * @param float $value
-     * @param float $min
-     * @param float $max
-     * @return bool
      * @throws IllegalValueException
      */
     public function inRange(float $value, float $min, float $max): bool
@@ -109,10 +98,6 @@ class FloatValidation
      * Validates that a float value has a number of decimals within the given
      * min and max range.
      *
-     * @param float $value
-     * @param int $min
-     * @param int $max
-     * @return bool
      * @throws IllegalValueException
      */
     public function length(float $value, int $min, int $max): bool
@@ -145,9 +130,6 @@ class FloatValidation
     /**
      * Returns the decimal portion of a float value as an integer.
      * Example: getFraction(1.234) => 234
-     *
-     * @param float $num
-     * @return int
      */
     private function getFraction(float $num): int
     {

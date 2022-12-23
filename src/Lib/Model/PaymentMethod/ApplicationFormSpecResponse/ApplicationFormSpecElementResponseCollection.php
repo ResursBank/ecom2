@@ -25,6 +25,9 @@ class ApplicationFormSpecElementResponseCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(data: $data, type: ApplicationFormSpecElementResponse::class);
+        parent::__construct(
+            data: $data,
+            type: ApplicationFormSpecElementResponse::class
+        );
     }
 }

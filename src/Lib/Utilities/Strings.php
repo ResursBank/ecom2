@@ -18,11 +18,6 @@ class Strings
 {
     /**
      * Obfuscate strings between first and last character, just like RCO.
-     *
-     * @param string $string
-     * @param int $startAt
-     * @param int $endAt
-     * @return string
      */
     public static function getObfuscatedString(string $string, int $startAt = 1, int $endAt = 1): string
     {
@@ -39,8 +34,6 @@ class Strings
 
     /**
      * Base64-encoded data, but with URL-safe characters.
-     * @param string $data
-     * @return string
      */
     public static function base64urlEncode(string $data): string
     {
@@ -52,8 +45,6 @@ class Strings
 
     /**
      * Base64-decoded data, but with URL-safe characters.
-     * @param string $data
-     * @return string
      */
     public static function base64urlDecode(string $data): string
     {

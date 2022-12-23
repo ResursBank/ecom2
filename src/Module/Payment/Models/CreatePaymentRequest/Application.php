@@ -20,10 +20,7 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
 class Application extends Model
 {
     /**
-     * @param float|null $requestedCreditLimit
      * @param array|null $applicationData
-     * @param FloatValidation $floatValidation
-     * @param ArrayValidation $arrayValidation
      * @throws IllegalValueException
      */
     public function __construct(
@@ -37,28 +34,30 @@ class Application extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateRequestedCreditLimit(): void
     {
-        if ($this->requestedCreditLimit !== null) {
-            $this->floatValidation->inRange(
-                value: $this->requestedCreditLimit,
-                min: 1,
-                max: 9999999999
-            );
+        if ($this->requestedCreditLimit === null) {
+            return;
         }
+
+        $this->floatValidation->inRange(
+            value: $this->requestedCreditLimit,
+            min: 1,
+            max: 9999999999
+        );
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateApplicationData(): void
     {
-        if ($this->applicationData !== null) {
-            $this->arrayValidation->isAssoc(data: $this->applicationData);
+        if ($this->applicationData === null) {
+            return;
         }
+
+        $this->arrayValidation->isAssoc(data: $this->applicationData);
     }
 }

@@ -19,7 +19,6 @@ use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 class AuthorizationController extends Controller
 {
     /**
-     * @return Authorization
      * @throws HttpException
      */
     public function getRequestData(): Authorization

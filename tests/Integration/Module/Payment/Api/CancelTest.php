@@ -28,25 +28,171 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
  * Tests for MAPI Payment Cancel class.
  */
 class CancelTest extends TestCase
 {
+    /**
+     * Verify that canceling an entire payment works as intended
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testCancelEntirePayment(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Cancel payment
+        $response = Repository::cancel(paymentId: $payment->id);
+
+        // Assert that cancel went through
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
+        $this->assertNotNull(actual: $response->order);
+        $this->assertNotNull(actual: $payment->order);
+        /** @psalm-suppress MixedPropertyFetch */
+        $this->assertEquals(
+            expected: ActionType::CANCEL,
+            actual: $response->order->actionLog[1]->type
+        );
+        $this->assertEquals(
+            expected: $payment->order->totalOrderAmount,
+            actual: $response->order->totalOrderAmount
+        );
+        $this->assertEquals(
+            expected: $response->order->totalOrderAmount,
+            actual: $response->order->canceledAmount
+        );
+    }
+
+    /**
+     * Verify that cancelling a single order line works as intended
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testCancelWithOrderLines(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Cancel one order line
+        $orderLine = new OrderLine(
+            description: 'Android',
+            reference: 'T-800',
+            quantityUnit: 'st',
+            quantity: 2.00,
+            vatRate: 25.00,
+            unitAmountIncludingVat: 150.75,
+            totalAmountIncludingVat: 301.5,
+            totalVatAmount: 60.3,
+            type: OrderLineType::PHYSICAL_GOODS
+        );
+        $response = Repository::cancel(
+            paymentId: $payment->id,
+            orderLines: new OrderLineCollection(data: [$orderLine])
+        );
+
+        // Assert that cancel went through
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
+        $this->assertNotNull(actual: $response->order);
+        $this->assertNotNull(actual: $payment->order);
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        $this->assertEquals(
+            expected: $payment->order->actionLog[0]->orderLines[0],
+            actual: $response->order->actionLog[1]->orderLines[0]
+        );
+        /**
+         * @psalm-suppress MixedPropertyFetch
+         * @psalm-suppress MixedArrayAccess
+         */
+        $this->assertEquals(
+            expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
+            actual: $response->order->canceledAmount
+        );
+    }
+
+    /**
+     * Verify that canceling with creator argument results in specified creator value being present in action log
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testCancelWithCreator(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Cancel order
+        $creator = 'Foobar';
+        $response = Repository::cancel(
+            paymentId: $payment->id,
+            creator: $creator
+        );
+
+        // Assert that creator argument is present in action log
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
+        $this->assertNotNull(actual: $response->order);
+        /** @psalm-suppress MixedPropertyFetch */
+        $this->assertEquals(
+            expected: $creator,
+            actual: $response->order->actionLog[1]->creator
+        );
+    }
+
     /**
      * @throws EmptyValueException
      */
@@ -55,7 +201,9 @@ class CancelTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -69,7 +217,6 @@ class CancelTest extends TestCase
     /**
      * Generate a dummy order reference
      *
-     * @return string
      * @throws Exception
      */
     private function generateOrderReference(): string
@@ -80,8 +227,6 @@ class CancelTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -121,7 +266,7 @@ class CancelTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]),
             orderReference: $orderReference,
             customer: new Customer(
@@ -138,166 +283,6 @@ class CancelTest extends TestCase
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
             )
-        );
-    }
-
-    /**
-     * Verify that canceling an entire payment works as intended
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testCancelEntirePayment(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Cancel payment
-        $response = Repository::cancel(paymentId: $payment->id);
-
-        // Assert that cancel went through
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
-        $this->assertNotNull(actual: $response->order);
-        $this->assertNotNull(actual: $payment->order);
-        /** @psalm-suppress MixedPropertyFetch */
-        $this->assertEquals(
-            expected: ActionType::CANCEL,
-            actual: $response->order->actionLog[1]->type
-        );
-        $this->assertEquals(
-            expected: $payment->order->totalOrderAmount,
-            actual: $response->order->totalOrderAmount
-        );
-        $this->assertEquals(
-            expected: $response->order->totalOrderAmount,
-            actual: $response->order->canceledAmount
-        );
-    }
-
-    /**
-     * Verify that cancelling a single order line works as intended
-     *
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testCancelWithOrderLines(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Cancel one order line
-        $orderLine = new OrderLine(
-            description: 'Android',
-            reference: 'T-800',
-            quantityUnit: 'st',
-            quantity: 2.00,
-            vatRate: 25.00,
-            unitAmountIncludingVat: 150.75,
-            totalAmountIncludingVat: 301.5,
-            totalVatAmount: 60.3,
-            type: OrderLineType::PHYSICAL_GOODS
-        );
-        $response = Repository::cancel(
-            paymentId: $payment->id,
-            orderLines: new OrderLineCollection(data: [$orderLine])
-        );
-
-        // Assert that cancel went through
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
-        $this->assertNotNull(actual: $response->order);
-        $this->assertNotNull(actual: $payment->order);
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         * @psalm-suppress MixedArrayAccess
-         */
-        $this->assertEquals(
-            expected: $payment->order->actionLog[0]->orderLines[0],
-            actual: $response->order->actionLog[1]->orderLines[0]
-        );
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         * @psalm-suppress MixedArrayAccess
-         */
-        $this->assertEquals(
-            expected: $payment->order->actionLog[0]->orderLines[0]->totalAmountIncludingVat,
-            actual: $response->order->canceledAmount
-        );
-    }
-
-    /**
-     * Verify that canceling with creator argument results in specified creator value being present in action log
-     *
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function testCancelWithCreator(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Cancel order
-        $creator = 'Foobar';
-        $response = Repository::cancel(
-            paymentId: $payment->id,
-            creator: $creator
-        );
-
-        // Assert that creator argument is present in action log
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
-        $this->assertNotNull(
-            actual: $response->order
-        );
-        /** @psalm-suppress MixedPropertyFetch */
-        $this->assertEquals(
-            expected: $creator,
-            actual: $response->order->actionLog[1]->creator
         );
     }
 }

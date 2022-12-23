@@ -17,11 +17,11 @@ use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
-use Exception;
+use Throwable;
 use TypeError;
-use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 
 /**
  * Generic functionality for cache repository implementations.
@@ -44,7 +44,6 @@ class Cache
     }
 
     /**
-     * @return null|Collection|Model
      * @throws CacheException
      * @throws ConfigException
      * @todo Check if ConfigException validation needs a test.
@@ -68,7 +67,7 @@ class Cache
                     $result = null;
                 }
             }
-        } catch (TypeError | Exception $e) {
+        } catch (TypeError | Throwable $e) {
             throw new CacheException(
                 message: 'Failed reading from cache.',
                 previous: $e
@@ -79,7 +78,6 @@ class Cache
     }
 
     /**
-     * @return void
      * @throws ConfigException
      */
     public function clear(): void
@@ -90,7 +88,6 @@ class Cache
     }
 
     /**
-     * @param Collection|Model $data
      * @throws CacheException
      */
     public function write(
@@ -126,7 +123,7 @@ class Cache
                 ),
                 ttl: $this->ttl
             );
-        } catch (TypeError | Exception $e) {
+        } catch (TypeError | Throwable $e) {
             throw new CacheException(
                 message: 'Failed writing to cache.',
                 previous: $e

@@ -16,14 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Response extends Model
 {
-    /**
-     * @param string|null $paymentSessionId
-     * @param string|null $iframe
-     * @param string|null $script
-     * @param Customer|null $customer
-     * @param string|null $baseUrl
-     * @param string|null $html
-     */
     public function __construct(
         public readonly ?string $paymentSessionId = null,
         public readonly ?string $iframe = null,

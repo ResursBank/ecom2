@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Network\Curl;
 
-use Exception;
 use InvalidArgumentException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Model\Network\Header as HeaderModel;
+use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Utilities\Generic;
+use Throwable;
 
 use function strlen;
 
@@ -27,14 +27,11 @@ class Header
 {
     /**
      * @param array $headers
-     * @param string $payloadData
-     * @param ContentType $contentType
-     * @param bool $hasBodyData
      * @return array<array-key,HeaderModel>
      * @throws EmptyValueException
      * @throws ConfigException
-     * @todo See constructor todo. If kept we should maybe change its visibility.
      * @psalm-suppress MixedReturnTypeCoercion
+     * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function generateHeaders(
         array $headers,
@@ -51,7 +48,10 @@ class Header
             );
         }
 
-        if ($hasBodyData && !self::hasHeader(headers: $headers, key: 'content-length')) {
+        if (
+            $hasBodyData &&
+            !self::hasHeader(headers: $headers, key: 'content-length')
+        ) {
             $headers[] = new HeaderModel(
                 key: 'content-length',
                 value: strlen(string: $payloadData)
@@ -59,10 +59,7 @@ class Header
         }
 
         if (!self::hasHeader(headers: $headers, key: 'accept-language')) {
-            $headers[] = new HeaderModel(
-                key: 'accept-language',
-                value: 'en'
-            );
+            $headers[] = new HeaderModel(key: 'accept-language', value: 'en');
         }
 
         return $headers;
@@ -70,8 +67,6 @@ class Header
 
     /**
      * @param array $headers
-     * @param string $key
-     * @return bool
      * @throws ConfigException
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
@@ -89,12 +84,11 @@ class Header
      * using validateHeaderArray(), but Psalm does not see it.
      *
      * @param array $headers
-     * @param string $key
      * @return array
      * @throws ConfigException
-     * @todo See constructor todo. If kept we should maybe change its visibility.
      * @psalm-suppress MixedArgument
      * @psalm-suppress MixedPropertyFetch
+     * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function findHeaders(
         array $headers,
@@ -106,9 +100,9 @@ class Header
 
         return array_filter(
             array: $headers,
-            callback: static function ($header) use ($key) {
-                return strtolower(string: $header->key) === $key;
-            }
+            callback: static fn ($header) => strtolower(
+                string: $header->key
+            ) === $key
         );
     }
 
@@ -118,9 +112,9 @@ class Header
      *
      * @param array $headers
      * @return array
+     * @throws ConfigException
      * @psalm-suppress MixedOperand
      * @psalm-suppress MixedPropertyFetch
-     * @throws ConfigException
      */
     public static function getHeadersData(
         array $headers
@@ -138,20 +132,6 @@ class Header
     }
 
     /**
-     * @param ContentType $contentType
-     * @return string
-     */
-    private static function getContentType(ContentType $contentType): string
-    {
-        return match ($contentType) {
-            ContentType::EMPTY, ContentType::JSON => 'application/json; charset=utf-8',
-            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
-            ContentType::RAW => 'text/plain; charset=utf-8'
-        };
-    }
-
-    /**
-     * @return string
      * @throws ConfigException
      * @todo Add back what module class called Curl.
      * @todo Check if ConfigException validation needs a test.
@@ -159,8 +139,10 @@ class Header
     public static function getUserAgent(): string
     {
         try {
-            $version = (new Generic())->getVersionByComposer(location: __DIR__);
-        } catch (Exception) {
+            $version = (new Generic())->getVersionByComposer(
+                location: __DIR__
+            );
+        } catch (Throwable) {
             $version = 'composer.version.not.found';
         }
 
@@ -171,9 +153,17 @@ class Header
         ]));
     }
 
+    private static function getContentType(ContentType $contentType): string
+    {
+        return match ($contentType) {
+            ContentType::EMPTY, ContentType::JSON => 'application/json; charset=utf-8',
+            ContentType::URL => 'application/x-www-form-urlencoded; charset=utf-8',
+            ContentType::RAW => 'text/plain; charset=utf-8'
+        };
+    }
+
     /**
      * @param array $headers
-     * @return void
      * @throws ConfigException
      */
     private static function validateHeaderArray(

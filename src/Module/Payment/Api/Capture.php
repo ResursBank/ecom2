@@ -34,7 +34,6 @@ use stdClass;
  */
 class Capture
 {
-    /** @var Mapi  */
     private Mapi $mapi;
 
     public function __construct()
@@ -45,12 +44,6 @@ class Capture
     /**
      * Makes call to the API
      *
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @param string|null $invoiceId
-     * @return Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -67,18 +60,22 @@ class Capture
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
         ?string $transactionId = null,
-        ?string $invoiceId = null,
+        ?string $invoiceId = null
     ): Payment {
         $payload = [];
+
         if ($orderLines) {
             $payload['orderLines'] = $orderLines->toArray();
         }
+
         if ($creator) {
             $payload['creator'] = $creator;
         }
+
         if ($transactionId) {
             $payload['transactionId'] = $transactionId;
         }
+
         if ($invoiceId) {
             $payload['invoiceOptions'] = ['invoiceId' => $invoiceId];
         }
@@ -96,7 +93,7 @@ class Capture
 
         $data = $curl->exec()->body;
 
-        $content = ($data instanceof stdClass) ? $data : new stdClass();
+        $content = $data instanceof stdClass ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
             object: $content,

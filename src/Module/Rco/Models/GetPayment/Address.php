@@ -16,16 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Address extends Model
 {
-    /**
-     * @param string $fullName
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $addressRow1
-     * @param string $postalArea
-     * @param string $postalCode
-     * @param string $country
-     * @param string|null $addressRow2
-     */
     public function __construct(
         public string $fullName,
         public string $firstName,

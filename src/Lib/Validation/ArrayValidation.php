@@ -14,9 +14,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use stdClass;
 
+use function count;
 use function in_array;
 use function is_array;
-use function count;
 
 /**
  * Methods to validate arrays.
@@ -28,7 +28,6 @@ class ArrayValidation
      * element contains an array. Returns the validated array.
      *
      * @param array $data
-     * @param string $key
      * @return array
      * @throws MissingKeyException
      * @throws IllegalTypeException
@@ -42,9 +41,7 @@ class ArrayValidation
         }
 
         if (!is_array(value: $data[$key])) {
-            throw new IllegalTypeException(
-                message: "$key is not an array."
-            );
+            throw new IllegalTypeException(message: "$key is not an array.");
         }
 
         return $data[$key];
@@ -54,7 +51,6 @@ class ArrayValidation
      * Validate supplied array is sequential.
      *
      * @param array $data
-     * @return bool
      * @throws IllegalValueException
      */
     public function isSequential(array $data): bool
@@ -65,6 +61,7 @@ class ArrayValidation
         if ($keys !== $range) {
             throw new IllegalValueException(message: 'Array not sequential.');
         }
+
         return true;
     }
 
@@ -72,7 +69,6 @@ class ArrayValidation
      * Validate supplied array is associative.
      *
      * @param array $data
-     * @return bool
      * @throws IllegalValueException
      */
     public function isAssoc(array $data): bool
@@ -91,8 +87,6 @@ class ArrayValidation
      * Validate depth of multidimensional array.
      *
      * @param array $data
-     * @param int $depth
-     * @return bool
      * @throws IllegalTypeException
      */
     public function isMultiDimensional(array $data, int $depth): bool
@@ -105,9 +99,11 @@ class ArrayValidation
                     );
                 }
 
-                if ($depth - 1 > 0) {
-                    $this->isMultiDimensional(data: $el, depth: $depth - 1);
+                if ($depth - 1 <= 0) {
+                    continue;
                 }
+
+                $this->isMultiDimensional(data: $el, depth: $depth - 1);
             }
         }
 
@@ -118,7 +114,6 @@ class ArrayValidation
      * Validate one-dimensional array contains only stdClass instances.
      *
      * @param array $data
-     * @return bool
      * @throws IllegalTypeException
      */
     public function isStdClassCollection(
@@ -141,7 +136,6 @@ class ArrayValidation
      *
      * @param array $data
      * @param array $allowed
-     * @return bool
      * @throws IllegalValueException
      */
     public function allowedKeys(array $data, array $allowed): bool
@@ -162,9 +156,6 @@ class ArrayValidation
      * type.
      *
      * @param array $data
-     * @param string $type
-     * @param callable $compareFn
-     * @return bool
      * @throws IllegalTypeException
      */
     public function isOfType(
@@ -187,9 +178,6 @@ class ArrayValidation
 
     /**
      * @param array $data
-     * @param int $min
-     * @param int $max
-     * @return bool
      * @throws IllegalValueException
      */
     public function length(array $data, int $min, int $max): bool

@@ -16,15 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class OrderLine extends Model
 {
-    /**
-     * @param string $artNo
-     * @param string|null $description
-     * @param float $quantity
-     * @param string $unitMeasure
-     * @param float $unitAmountWithoutVat
-     * @param float $vatPct
-     * @param string|null $type
-     */
     public function __construct(
         public string $artNo,
         public ?string $description,

@@ -18,23 +18,7 @@ use Resursbank\Ecom\Module\Rco\Models\MetaDataCollection;
 class Response extends Model
 {
     /**
-     * @param string $id
-     * @param float $totalAmount
-     * @param float $limit
-     * @param Customer $customer
-     * @param Address $deliveryAddress
-     * @param string $booked
-     * @param string $paymentMethodId
-     * @param string $paymentMethodName
-     * @param bool $fraud
-     * @param bool $frozen
      * @param array $status
-     * @param string $storeId
-     * @param string $paymentMethodType
-     * @param int $totalBonusPoints
-     * @param ?string $finalized
-     * @param ?MetaDataCollection $metadata
-     * @param ?PaymentDiffCollection $paymentDiffs
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -54,7 +38,7 @@ class Response extends Model
         public int $totalBonusPoints,
         public ?string $finalized = null,
         public ?MetaDataCollection $metadata = null,
-        public ?PaymentDiffCollection $paymentDiffs = null,
+        public ?PaymentDiffCollection $paymentDiffs = null
     ) {
     }
 }

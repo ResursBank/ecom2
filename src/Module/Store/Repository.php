@@ -24,10 +24,10 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
-use Exception;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\Ecom\Module\Store\Models\StoreCollection;
+use Throwable;
 
 /**
  * Interaction with Store entities and related functionality.
@@ -37,10 +37,7 @@ class Repository
     use ExceptionLog;
 
     /**
-     * @param int $size
-     * @param int|null $page
      * @param array $sort
-     * @return StoreCollection
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -62,7 +59,11 @@ class Repository
             $result = $cache->read();
 
             if (!$result instanceof StoreCollection) {
-                $result = self::getApi(size: $size, page: $page, sort: $sort)->call();
+                $result = self::getApi(
+                    size: $size,
+                    page: $page,
+                    sort: $sort
+                )->call();
 
                 if (!$result instanceof StoreCollection) {
                     throw new ApiException(message: 'Invalid API response.');
@@ -70,7 +71,7 @@ class Repository
 
                 $cache->write(data: $result);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
 
             throw $e;
@@ -80,10 +81,7 @@ class Repository
     }
 
     /**
-     * @param int $size
-     * @param int|null $page
      * @param array $sort
-     * @return Cache
      */
     public static function getCache(
         int $size = 999999,
@@ -100,10 +98,7 @@ class Repository
     }
 
     /**
-     * @param int $size
-     * @param int|null $page
      * @param array $sort
-     * @return Get
      * @throws IllegalTypeException
      */
     public static function getApi(

@@ -41,47 +41,9 @@ use function number_format;
  */
 class PaymentMethodsTest extends TestCase
 {
-    /**
-     * @var PaymentMethodCollection
-     */
     private PaymentMethodCollection $methods;
 
     /**
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->methods = Repository::getPaymentMethods(
-            storeId: $_ENV['STORE_ID'],
-        );
-
-        parent::setUp();
-    }
-
-    /**
-     * @return void
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -141,21 +103,30 @@ class PaymentMethodsTest extends TestCase
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    preg_quote(str: $method->name, delimiter: '/') . '.*<\/td>/s',
+                    preg_quote(
+                        str: $method->name,
+                        delimiter: '/'
+                    ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing name column for payment method row matching $method->id"
             );
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    number_format(num: $method->minPurchaseLimit, decimals: 2) . '.*<\/td>/s',
+                    number_format(
+                        num: $method->minPurchaseLimit,
+                        decimals: 2
+                    ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing min purchase limit column for payment method row matching $method->id"
             );
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    number_format(num: $method->maxPurchaseLimit, decimals: 2) . '.*<\/td>/s',
+                    number_format(
+                        num: $method->maxPurchaseLimit,
+                        decimals: 2
+                    ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing max purchase limit column for payment method row matching $method->id"
             );
@@ -194,5 +165,42 @@ class PaymentMethodsTest extends TestCase
             haystack: $data->content,
             message: 'No payment methods warning not found.'
         );
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/paymentMethods/' . time()
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->methods = Repository::getPaymentMethods(
+            storeId: $_ENV['STORE_ID']
+        );
+
+        parent::setUp();
     }
 }

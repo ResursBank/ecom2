@@ -33,66 +33,8 @@ use Resursbank\Ecom\Module\RcoCallback\Repository;
 class RepositoryTest extends TestCase
 {
     /**
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    protected function setUp(): void
-    {
-        // Set up Config object
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: new Basic(
-                username: $_ENV['BASIC_AUTH_USERNAME'],
-                password: $_ENV['BASIC_AUTH_PASSWORD']
-            )
-        );
-
-        // Clear existing callbacks
-        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
-        foreach ($eventNames as $eventName) {
-            Repository::deleteCallback(eventName: $eventName);
-        }
-
-        parent::setUp();
-    }
-
-    /**
-     * @return void
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    protected function tearDown(): void
-    {
-        // Clear existing callbacks
-        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
-        foreach ($eventNames as $eventName) {
-            Repository::deleteCallback(eventName: $eventName);
-        }
-
-        parent::tearDown();
-    }
-
-    /**
      * Verify that we can register, fetch and delete callbacks
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -121,15 +63,12 @@ class RepositoryTest extends TestCase
                 digestAlgorithm: 'SHA1',
                 digestSalt: 'FOO',
                 digestParameters: [
-                    'paymentId'
+                    'paymentId',
                 ]
             )
         );
 
-        Repository::registerCallback(
-            eventName: $eventName,
-            request: $request
-        );
+        Repository::registerCallback(eventName: $eventName, request: $request);
 
         $registeredCallback = Repository::getCallback(eventName: $eventName);
 
@@ -139,19 +78,13 @@ class RepositoryTest extends TestCase
             expected: $eventName,
             actual: $registeredCallback->eventType
         );
-        $this->assertNotEmpty(
-            actual: $registeredCallback->uriTemplate
-        );
-        $this->assertSame(
-            expected: 200,
-            actual: $deleteResponse
-        );
+        $this->assertNotEmpty(actual: $registeredCallback->uriTemplate);
+        $this->assertSame(expected: 200, actual: $deleteResponse);
     }
 
     /**
      * Verify that fetching all registered callbacks works
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -180,7 +113,7 @@ class RepositoryTest extends TestCase
                 digestAlgorithm: 'SHA1',
                 digestSalt: 'FOO',
                 digestParameters: [
-                    'paymentId'
+                    'paymentId',
                 ]
             )
         );
@@ -203,7 +136,6 @@ class RepositoryTest extends TestCase
     /**
      * Verify that attempting to get an unregistered callback throws an EmptyValueException
      *
-     * @return void
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -217,9 +149,64 @@ class RepositoryTest extends TestCase
      */
     public function testGetCallbackFailure(): void
     {
-        $this->expectException(
-            exception: EmptyValueException::class
-        );
+        $this->expectException(exception: EmptyValueException::class);
         Repository::getCallback(eventName: 'UPDATE');
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    protected function setUp(): void
+    {
+        // Set up Config object
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            basicAuth: new Basic(
+                username: $_ENV['BASIC_AUTH_USERNAME'],
+                password: $_ENV['BASIC_AUTH_PASSWORD']
+            )
+        );
+
+        // Clear existing callbacks
+        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
+
+        foreach ($eventNames as $eventName) {
+            Repository::deleteCallback(eventName: $eventName);
+        }
+
+        parent::setUp();
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    protected function tearDown(): void
+    {
+        // Clear existing callbacks
+        $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
+
+        foreach ($eventNames as $eventName) {
+            Repository::deleteCallback(eventName: $eventName);
+        }
+
+        parent::tearDown();
     }
 }

@@ -17,14 +17,12 @@ use Resursbank\Ecom\Lib\Model\Model;
 class UriLink extends Model
 {
     /**
-     * @param string $uri
-     * @param string $language
      * @todo Can $language be empty? Is this an Enum value?
      * @todo Can $uri be empty? Is there a regex for this?
      */
     public function __construct(
         public readonly string $uri,
-        public readonly string $language,
+        public readonly string $language
     ) {
     }
 }

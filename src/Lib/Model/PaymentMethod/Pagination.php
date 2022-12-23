@@ -26,7 +26,7 @@ class Pagination extends Model
         public readonly int $number,
         public readonly int $size,
         public readonly int $totalElements,
-        public readonly int $totalPages,
+        public readonly int $totalPages
     ) {
     }
 }

@@ -19,8 +19,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class DurationsByMonthRequest extends Model
 {
     /**
-     * @param string $paymentMethodId
-     * @param StringValidation $stringValidator
      * @throws IllegalValueException
      */
     public function __construct(
@@ -31,7 +29,6 @@ class DurationsByMonthRequest extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validatePaymentMethodId(): void

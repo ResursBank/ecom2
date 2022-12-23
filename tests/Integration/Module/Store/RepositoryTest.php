@@ -33,29 +33,8 @@ use Resursbank\Ecom\Module\Store\Repository;
 class RepositoryTest extends TestCase
 {
     /**
-     * @return void
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/stores/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        parent::setUp();
-    }
-
-    /**
      * Assert clearCache() clears cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -79,7 +58,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert read() returns data from the API when cache is empty.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -102,7 +80,6 @@ class RepositoryTest extends TestCase
      * Assert read() retrieves stores, store them in cache, and will later
      * return the same stores from cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -121,5 +98,26 @@ class RepositoryTest extends TestCase
         $this->assertNull(actual: Repository::getCache()->read());
         Repository::getStores();
         $this->assertNotNull(actual: Repository::getCache()->read());
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/stores/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        parent::setUp();
     }
 }

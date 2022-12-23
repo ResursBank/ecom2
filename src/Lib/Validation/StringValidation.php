@@ -29,8 +29,6 @@ class StringValidation
      * element contains a string. Returns the validated string.
      *
      * @param array $data
-     * @param string $key
-     * @return string
      * @throws MissingKeyException
      * @throws IllegalTypeException
      */
@@ -43,9 +41,7 @@ class StringValidation
         }
 
         if (!is_string(value: $data[$key])) {
-            throw new IllegalTypeException(
-                message: "$key is not a string."
-            );
+            throw new IllegalTypeException(message: "$key is not a string.");
         }
 
         return $data[$key];
@@ -54,8 +50,6 @@ class StringValidation
     /**
      * Validates string is not empty.
      *
-     * @param string $value
-     * @return bool
      * @throws EmptyValueException
      */
     public function notEmpty(
@@ -71,9 +65,6 @@ class StringValidation
     /**
      * Validates string matches supplied regex.
      *
-     * @param string $value
-     * @param string $pattern
-     * @return bool
      * @throws IllegalCharsetException
      */
     public function matchRegex(
@@ -92,9 +83,7 @@ class StringValidation
     /**
      * Validates $value exists within $set.
      *
-     * @param string $value
      * @param array<string> $set
-     * @return bool
      * @throws IllegalValueException
      */
     public function oneOf(
@@ -113,8 +102,6 @@ class StringValidation
     }
 
     /**
-     * @param string $value
-     * @return bool
      * @throws IllegalCharsetException
      */
     public function isInt(string $value): bool
@@ -129,8 +116,6 @@ class StringValidation
     }
 
     /**
-     * @param string $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isTimestampDate(string $value): bool
@@ -147,10 +132,6 @@ class StringValidation
     }
 
     /**
-     * @param string $value
-     * @param int $min
-     * @param int $max
-     * @return bool
      * @throws IllegalValueException
      */
     public function length(string $value, int $min, int $max): bool
@@ -181,8 +162,6 @@ class StringValidation
     }
 
     /**
-     * @param string $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isUuid(string $value): bool
@@ -202,22 +181,20 @@ class StringValidation
     /**
      * Performs basic email address validation
      *
-     * @param string|null $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isEmail(?string $value): bool
     {
         if (!empty($value) && !str_contains(haystack: $value, needle: '@')) {
-            throw new IllegalValueException(message: $value . ' is not an email address.');
+            throw new IllegalValueException(
+                message: $value . ' is not an email address.'
+            );
         }
 
         return true;
     }
 
     /**
-     * @param string $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isSwedishSsn(
@@ -241,8 +218,6 @@ class StringValidation
     }
 
     /**
-     * @param string $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isSwedishOrg(

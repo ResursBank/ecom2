@@ -14,15 +14,12 @@ use Resursbank\Ecom\Lib\Model\Model;
 
 /**
  * Model for callback request management.
+ *
  * @see https://merchant-api.integration.resurs.com/docs/v2/merchant_payments_v2/options#callbacks
  */
 class Management extends Model
 {
     /**
-     * @param string $paymentId
-     * @param Action $action
-     * @param string $actionId
-     * @param string $created
      * @todo Missing validation of properties.
      */
     public function __construct(

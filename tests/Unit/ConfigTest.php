@@ -34,7 +34,6 @@ class ConfigTest extends TestCase
     /**
      * Assert that Config::$instance is properly set up when setup() is called with no parameters
      *
-     * @return void
      * @throws ConfigException
      */
     public function testSetupWithoutParameters(): void
@@ -73,13 +72,12 @@ class ConfigTest extends TestCase
         self::assertEquals(
             expected: Location::SE,
             actual: Config::getLocation()
-        );  
+        );
     }
 
     /**
      * Assert that Config::$instance is properly set up when setup() is called with parameters
      *
-     * @return void
      * @throws EmptyValueException
      * @throws ConfigException
      */
@@ -146,8 +144,6 @@ class ConfigTest extends TestCase
 
     /**
      * Verifies that the hasBasicAuth method behaves as expected
-     *
-     * @return void
      */
     public function testHasBasicAuth(): void
     {
@@ -171,8 +167,6 @@ class ConfigTest extends TestCase
 
     /**
      * Verifies that the hasJwtAuth method behaves as expected
-     *
-     * @return void
      */
     public function testHasJwtAuth(): void
     {
@@ -197,14 +191,10 @@ class ConfigTest extends TestCase
     /**
      * Assert that a FormatException is thrown and not caught along the way when attempting to run Config::setup with an
      * incorrectly formatted path
-     *
-     * @return void
      */
     public function testSetupWithFileLoggerAndTrailingSlash(): void
     {
-        $this->expectException(
-            exception: FormatException::class
-        );
+        $this->expectException(exception: FormatException::class);
 
         Config::setup(
             logger: new FileLogger(

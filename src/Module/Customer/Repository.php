@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Customer;
 
 use Error;
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -22,15 +21,15 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Session;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use stdClass;
+use Throwable;
 
 /**
  * Customer repository.
@@ -50,11 +49,6 @@ class Repository
     public const SESSION_KEY_CUSTOMER_TYPE = 'customer_type';
 
     /**
-     * @param string $storeId
-     * @param string $governmentId
-     * @param CustomerType $customerType
-     * @param GetAddress $api
-     * @return Address
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -78,7 +72,7 @@ class Repository
                 governmentId: $governmentId,
                 customerType: $customerType
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
 
             throw $e;
@@ -90,9 +84,6 @@ class Repository
      *
      * NOTE: $sessionHandler to support testing with mocked session handler.
      *
-     * @param GetAddressRequest $data
-     * @param Session $sessionHandler
-     * @return void
      * @throws ConfigException
      */
     public static function setSsnData(
@@ -104,7 +95,7 @@ class Repository
                 key: self::SESSION_KEY_SSN_DATA,
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
             // Failing is harmless, client can supply info on gateway.
         }
@@ -115,13 +106,11 @@ class Repository
      *
      * NOTE: $sessionHandler to support testing with mocked session handler.
      *
-     * @param Session $sessionHandler
-     * @return null|GetAddressRequest
      * @throws ConfigException
      */
     public static function getSsnData(
         Session $sessionHandler = new Session()
-    ): null|GetAddressRequest {
+    ): ?GetAddressRequest {
         $result = null;
 
         try {
@@ -149,7 +138,7 @@ class Repository
                     );
                 }
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
             // Failing is harmless, client can supply info on gateway.
         } catch (Error) {

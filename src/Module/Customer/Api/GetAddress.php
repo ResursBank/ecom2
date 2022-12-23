@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Customer\Api;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -26,29 +25,23 @@ use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use Throwable;
 
 /**
  * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
  */
 class GetAddress
 {
-    /**
-     * @param Mapi $mapi
-     */
     public function __construct(
         private readonly Mapi $mapi = new Mapi()
     ) {
     }
 
     /**
-     * @param string $storeId
-     * @param string $governmentId
-     * @param CustomerType $customerType
-     * @return Address
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -87,7 +80,7 @@ class GetAddress
 
         try {
             $data = $curl->exec()->body;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new GetAddressException(
                 message: sprintf(
                     'Customer address request error: %s (%d).',
@@ -109,7 +102,9 @@ class GetAddress
         );
 
         if (!$result instanceof Address) {
-            throw new InvalidTypeException(message: 'Expected PaymentCollection.');
+            throw new InvalidTypeException(
+                message: 'Expected PaymentCollection.'
+            );
         }
 
         return $result;

@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Log\Traits;
 use Exception;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
+use Throwable;
 
 /**
  * Write Exception to log file.
@@ -19,13 +20,11 @@ use Resursbank\Ecom\Exception\ConfigException;
 trait ExceptionLog
 {
     /**
-     * @param Exception $exception
-     * @return void
      * @throws ConfigException
      * @todo Check if ConfigException validation needs a test.
      */
     public static function logException(
-        Exception $exception
+        Throwable $exception
     ): void {
         Config::getLogger()->debug(message: '--------------------------');
         Config::getLogger()->debug(message: '[EXCEPTION]');

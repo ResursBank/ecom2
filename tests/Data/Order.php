@@ -23,9 +23,6 @@ use stdClass;
  */
 class Order
 {
-    /**
-     * @var string
-     */
     public static string $data = <<<EOD
 {
     "actionLog": [
@@ -81,7 +78,6 @@ class Order
 EOD;
 
     /**
-     * @return stdClass
      * @throws JsonException
      * @throws TestException
      */
@@ -95,9 +91,7 @@ EOD;
         );
 
         if (!$data instanceof stdClass) {
-            throw new TestException(
-                message: '$data is not a valid stdClass.'
-            );
+            throw new TestException(message: '$data is not a valid stdClass.');
         }
 
         return $data;

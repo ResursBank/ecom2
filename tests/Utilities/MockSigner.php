@@ -30,8 +30,8 @@ use Resursbank\Ecom\Module\Payment\Enum\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
 use RuntimeException;
 
-use function sprintf;
 use function sleep;
+use function sprintf;
 
 /**
  * Handles mock signing in dev.
@@ -39,8 +39,6 @@ use function sleep;
 class MockSigner
 {
     /**
-     * @param Payment $payment
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -68,8 +66,6 @@ class MockSigner
     }
 
     /**
-     * @param Payment $payment
-     * @return string
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -85,7 +81,9 @@ class MockSigner
         Payment $payment
     ): string {
         if (!$payment->taskRedirectionUrls) {
-            throw new EmptyValueException(message: 'No redirection URL object found');
+            throw new EmptyValueException(
+                message: 'No redirection URL object found'
+            );
         }
 
         if ($payment->customer->governmentId === null) {
@@ -98,7 +96,10 @@ class MockSigner
         while (!str_contains(haystack: $url, needle: 'authenticate')) {
             if ($elapsed >= 10) {
                 throw new RuntimeException(
-                    message: sprintf('Timeout waiting for signing URL (got %s).', $url)
+                    message: sprintf(
+                        'Timeout waiting for signing URL (got %s).',
+                        $url
+                    )
                 );
             }
 
@@ -127,8 +128,6 @@ class MockSigner
      * Continuously poll payment status until it matches the expected status.
      * Waits a maximum of 10 seconds before throwing an exception.
      *
-     * @param Payment $payment
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

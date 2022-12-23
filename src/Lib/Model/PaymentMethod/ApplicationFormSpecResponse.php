@@ -23,9 +23,6 @@ use function in_array;
  */
 class ApplicationFormSpecResponse extends Model
 {
-    /**
-     * @param ApplicationFormSpecElementResponseCollection|null $elements
-     */
     public function __construct(
         public readonly ?ApplicationFormSpecElementResponseCollection $elements = null
     ) {
@@ -33,9 +30,6 @@ class ApplicationFormSpecResponse extends Model
 
     /**
      * Check if response contains a field with the specified name
-     *
-     * @param string $fieldName
-     * @return bool
      */
     public function hasField(string $fieldName): bool
     {
@@ -55,6 +49,7 @@ class ApplicationFormSpecResponse extends Model
 
     /**
      * Return a collection with only
+     *
      * @throws IllegalTypeException
      */
     public function getFieldsByType(Type $type): ApplicationFormSpecElementResponseCollection
@@ -65,9 +60,7 @@ class ApplicationFormSpecResponse extends Model
 
         $fields = array_filter(
             array: $this->elements->toArray(),
-            callback: static function (ApplicationFormSpecElementResponse $element) use ($type) {
-                return $element->type === $type;
-            }
+            callback: static fn (ApplicationFormSpecElementResponse $element) => $element->type === $type
         );
 
         return new ApplicationFormSpecElementResponseCollection(data: $fields);
@@ -76,28 +69,29 @@ class ApplicationFormSpecResponse extends Model
     /**
      * Filters out specified fields from field collection
      *
-     * @param string $property
      * @param array $fields
-     * @return self
      * @throws IllegalTypeException
      */
     public function filter(string $property, array $fields): self
     {
         if (!isset($this->elements)) {
-            return $this; // No point in filtering if we don't have a collection
+            // No point in filtering if we don't have a collection
+            return $this;
         }
 
         $filtered = array_filter(
             array: $this->elements->toArray(),
-            callback: static function (ApplicationFormSpecElementResponse $element) use ($fields, $property) {
-                return !in_array(
-                    needle: $element->{$property},
-                    haystack: $fields,
-                    strict: true
-                );
-            }
+            callback: static fn (ApplicationFormSpecElementResponse $element) => !in_array(
+                needle: $element->{$property},
+                haystack: $fields,
+                strict: true
+            )
         );
 
-        return new self(elements: new ApplicationFormSpecElementResponseCollection(data: $filtered));
+        return new self(
+            elements: new ApplicationFormSpecElementResponseCollection(
+                data: $filtered
+            )
+        );
     }
 }

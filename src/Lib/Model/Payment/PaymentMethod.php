@@ -19,8 +19,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class PaymentMethod extends Model
 {
     /**
-     * @param string $name
-     * @param StringValidation $stringValidator
      * @throws EmptyValueException
      */
     public function __construct(
@@ -31,7 +29,6 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateName(): void

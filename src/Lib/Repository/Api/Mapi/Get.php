@@ -22,6 +22,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -29,7 +30,6 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
-use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 
 /**
  * Generic functionality to perform a GET call against the Merchant API and
@@ -43,10 +43,7 @@ class Get
 
     /**
      * @param class-string $model | Convert cached data to model instance(s).
-     * @param string $route
      * @param array $params
-     * @param string $extractProperty
-     * @param Mapi $mapi
      * @throws IllegalTypeException
      */
     public function __construct(
@@ -54,13 +51,12 @@ class Get
         private readonly string $route,
         private readonly array $params = [],
         private readonly string $extractProperty = '',
-        private readonly Mapi $mapi = new Mapi(),
+        private readonly Mapi $mapi = new Mapi()
     ) {
         $this->validateModel(model: $model);
     }
 
     /**
-     * @return Collection|Model
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException

@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Log;
 
-use Error;
-use Exception;
 use Throwable;
 
 /**
@@ -18,27 +16,11 @@ use Throwable;
  */
 interface LoggerInterface
 {
-    /**
-     * @param string|Throwable $message
-     * @return void
-     */
     public function debug(string|Throwable $message): void;
 
-    /**
-     * @param string|Throwable $message
-     * @return void
-     */
     public function info(string|Throwable $message): void;
 
-    /**
-     * @param string|Throwable $message
-     * @return void
-     */
     public function warning(string|Throwable $message): void;
 
-    /**
-     * @param string|Throwable $message
-     * @return void
-     */
     public function error(string|Throwable $message): void;
 }

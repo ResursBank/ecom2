@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Instrument extends Model
 {
-    /**
-     * @param int $id
-     * @param string $name
-     */
     public function __construct(
         public readonly int $id,
         public readonly string $name

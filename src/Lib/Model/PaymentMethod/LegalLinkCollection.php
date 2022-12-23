@@ -23,9 +23,6 @@ class LegalLinkCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: LegalLink::class
-        );
+        parent::__construct(data: $data, type: LegalLink::class);
     }
 }
