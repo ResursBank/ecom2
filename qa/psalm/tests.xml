@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<psalm
+    cacheDirectory="cache">
+    <projectFiles>
+        <directory name="../../tests" />
+        <ignoreFiles>
+            <file name="../../tests/Utilities/MockSessionTrait.php" />
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="../../tests" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+        <MixedPropertyFetch>
+            <errorLevel type="suppress">
+                <directory name="./" />
+            </errorLevel>
+        </MixedPropertyFetch>
+    </issueHandlers>
+</psalm>
