@@ -38,6 +38,8 @@ final class Config
     private static ?Config $instance;
 
     /**
+     * NOTE: By default we only log INFO level messages.
+     *
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -46,7 +48,6 @@ final class Config
         public readonly CacheInterface $cache,
         public readonly ?Basic $basicAuth,
         public readonly ?Jwt $jwtAuth,
-        // Only log info messages.
         public readonly LogLevel $logLevel = LogLevel::INFO,
         public readonly string $userAgent = '',
         public readonly bool $isProduction = false,
@@ -68,7 +69,6 @@ final class Config
         CacheInterface $cache = new None(),
         ?Basic $basicAuth = null,
         ?Jwt $jwtAuth = null,
-        // Only log info messages.
         LogLevel $logLevel = LogLevel::INFO,
         string $userAgent = '',
         bool $isProduction = false,
