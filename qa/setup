@@ -18,6 +18,17 @@ case "$localPhp" in
   * ) echo "Invalid response."; exit 1;;
 esac
 
+if [ ! -d ./qa/psalm/cache ]; then
+  mkdir ./qa/psalm/cache
+fi
+
+echo ""
+echo ""
+echo "--==( Setting up git pre-commit hook )==--"
+echo ""
+echo ""
+
+# Create git pre-commit hook file.
 HOOK_FILE=".git/hooks/pre-commit"
 
 if [ -f $HOOK_FILE ]; then
@@ -28,71 +39,124 @@ touch $HOOK_FILE
 chmod +x $HOOK_FILE
 
 cat <<EOT >> $HOOK_FILE
-#!/usr/bin/env -S bash -eu
+#!/usr/bin/env -S bash
 
-AFFECTED=\`git diff --cached --name-only --diff-filter=ACM\`
-AFFECTED_STRING=\${AFFECTED[@]}
+ERRORS=0
 
-if [ -n "\$AFFECTED_STRING" ]; then
-  echo "=========================================================="
-  echo "Running tests."
-  echo ""
-  echo "---==( Executing Psalm tests. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/psalm -c $dir/qa/psalm/psalm.xml --show-info=true \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHPMD tests on source files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHPMD tests on test files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHP CBF for source files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHP CBF for test files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpcbf --standard=PSR12 \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHPCS for source files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpcs --standard=PSR12 \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHPCS for test files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpcs --standard=PSR12 \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHPStan for source files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHPStan for test files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan.neon \$AFFECTED_STRING
-  echo ""
-  echo "---==( Executing PHP CS Fixer for source files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/src
-  echo ""
-  echo "---==( Executing PHP CS Fixer for test files. )==---"
-  echo ""
-  $phpCmd $dir/vendor/bin/php-cs-fixer --cache-file=$dir/qa/php-cs-fixer/.php-cs-fixer.cache fix $dir/tests
+echo "==========================================================="
+echo ""
+
+echo ""
+echo ""
+echo "==========================================================="
+echo "#                                                         #"
+echo "#                  SCANNING SOURCE FILES                  #"
+echo "#                                                         #"
+echo "==========================================================="
+echo ""
+echo ""
+
+echo "---==( Executing PHP CBF )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 $dir/src; then
+  ERRORS=1
+fi
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/ruleset.xml $dir/src; then
+  ERRORS=1
+fi
+echo ""
+
+echo "---==( Executing PHPCS )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=PSR12 $dir/src; then
+  ERRORS=1
+fi
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=qa/phpcs/ruleset.xml $dir/src; then
+  ERRORS=1
+fi
+echo ""
+
+echo "---==( Executing PHPMD )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml; then
+  ERRORS=1
+fi
+echo ""
+
+echo "---==( Executing PHPStan )==---"
+echo ""
+$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan/phpstan.neon $dir/src
+echo ""
+
+echo "---==( Executing Psalm )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/psalm -c $dir/qa/psalm/src.xml --show-info=true; then
+  ERRORS=1
+fi
+echo ""
+
+echo ""
+echo ""
+echo "==========================================================="
+echo "#                                                         #"
+echo "#                   SCANNING TEST FILES                   #"
+echo "#                                                         #"
+echo "==========================================================="
+echo ""
+echo ""
+
+echo "---==( Executing PHP CBF )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 $dir/tests; then
+  ERRORS=1
+fi
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/ruleset.xml $dir/tests; then
+  ERRORS=1
+fi
+echo ""
+
+echo "---==( Executing PHPCS )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=PSR12 $dir/tests; then
+  ERRORS=1
+fi
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=qa/phpcs/ruleset.xml $dir/tests; then
+  ERRORS=1
+fi
+echo ""
+
+echo "---==( Executing PHPMD )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml; then
+  ERRORS=1
+fi
+echo ""
+
+echo "---==( Executing PHPStan )==---"
+echo ""
+$phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan/phpstan.neon $dir/tests
+echo ""
+
+echo "---==( Executing Psalm )==---"
+echo ""
+if ! $phpCmd $dir/vendor/bin/psalm -c $dir/qa/psalm/tests.xml --show-info=true; then
+  ERRORS=1
+fi
+echo ""
+
+if [ "\${ERRORS}" = "1" ]; then
+  exec < /dev/tty
+  read -p "Continue commit despite remaining errors? (y/n)?" continueCommit
+  case "\$continueCommit" in
+    y|Y ) exit 0;;
+    * ) echo "Aborting."; exit 1;;
+  esac
 fi
 EOT
-
-if [ ! -d ./qa/psalm/cache ]; then
-  mkdir ./qa/psalm/cache
-fi
-
-if [ ! -d ./qa/php-cs-fixer ]; then
-  mkdir ./qa/php-cs-fixer
-fi
-if [ ! -f ./qa/php-cs-fixer/.php-cs-fixer.cache ]; then
-  touch ./qa/php-cs-fixer/.php-cs-fixer.cache
-fi
 
 echo OK
 exit 0

@@ -3,16 +3,13 @@
     cacheDirectory="cache">
     <projectFiles>
         <directory name="../../src" />
-        <directory name="../../tests" />
         <ignoreFiles>
             <file name="../../src/Lib/Utilities/DataConverter.php" />
-            <file name="../../tests/Utilities/MockSessionTrait.php" />
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
-                <directory name="../../tests" />
                 <file name="../../src/Lib/Utilities/Generic.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
