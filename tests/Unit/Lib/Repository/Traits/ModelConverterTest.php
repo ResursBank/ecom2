@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Repository\Traits;
 
+use DateTime;
 use InvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -67,7 +68,7 @@ final class ModelConverterTest extends TestCase
     public function testValidateThrowsWithoutModelClass(): void
     {
         $this->expectException(exception: IllegalTypeException::class);
-        $this->validateModel(model: Throwable::class);
+        $this->validateModel(model: DateTime::class);
     }
 
     /**
@@ -99,7 +100,7 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelThrowsWithoutModelClass(): void
     {
         $this->expectException(exception: IllegalTypeException::class);
-        $this->convertToModel(data: new stdClass(), model: Throwable::class);
+        $this->convertToModel(data: new stdClass(), model: DateTime::class);
     }
 
     /**
