@@ -306,6 +306,20 @@
     }
   },
   {
+    "id": "log-level",
+    "translation": {
+      "en": "Log level",
+      "sv": "Loggningsnivå"
+    }
+  },
+  {
+    "id": "log-level-description",
+    "translation": {
+      "en": "Minimum log level, messages below this level will not be logged.",
+      "sv": "Lägstanivå för loggning, meddelanden under denna nivå kommer ej att loggas."
+    }
+  },
+  {
     "id": "please-select-a-store",
     "translation": {
       "en": "Please select a store in the API settings",
