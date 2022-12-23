@@ -24,21 +24,6 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationByMonths;
 class DurationByMonthsTest extends TestCase
 {
     /**
-     * @throws FilesystemException
-     */
-    public function testRenderDurationByMonthsScript(): void
-    {
-        $url = 'https://www.example.com/foo';
-        $widget = new DurationByMonths(endpointUrl: $url);
-
-        $this->assertStringContainsString(
-            needle: "let url = '" . $url,
-            haystack: $widget->getScript(),
-            message: 'Generated URL not found'
-        );
-    }
-
-    /**
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -56,6 +41,21 @@ class DurationByMonthsTest extends TestCase
                 scope: $_ENV['JWT_AUTH_SCOPE'],
                 grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
             )
+        );
+    }
+
+    /**
+     * @throws FilesystemException
+     */
+    public function testRenderDurationByMonthsScript(): void
+    {
+        $url = 'https://www.example.com/foo';
+        $widget = new DurationByMonths(endpointUrl: $url);
+
+        $this->assertStringContainsString(
+            needle: "let url = '" . $url,
+            haystack: $widget->getScript(),
+            message: 'Generated URL not found'
         );
     }
 }

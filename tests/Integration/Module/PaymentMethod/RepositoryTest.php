@@ -43,6 +43,53 @@ class RepositoryTest extends TestCase
     private string $storeId;
 
     /**
+     * @throws ConfigException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    protected function setUp(): void
+    {
+        $this->storeId = $_ENV['STORE_ID'];
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/paymentMethods/' . time()
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->cache = Repository::getCache(storeId: $this->storeId);
+        $this->cache->clear();
+
+        parent::setUp();
+    }
+
+    /**
+     * @noinspection PhpSameParameterValueInspection
+     */
+    private function allFieldsOfType(
+        ApplicationFormSpecElementResponseCollection $fields,
+        Type $type
+    ): bool {
+        /** @var ApplicationFormSpecElementResponse $field */
+        foreach ($fields as $field) {
+            if ($field->type !== $type) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Assert clearCache() clears cache.
      *
      * @throws ApiException
@@ -361,52 +408,5 @@ class RepositoryTest extends TestCase
                 message: 'Field required by test not found in response'
             );
         }
-    }
-
-    /**
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    protected function setUp(): void
-    {
-        $this->storeId = $_ENV['STORE_ID'];
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(
-                path: '/tmp/ecom-test/paymentMethods/' . time()
-            ),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->cache = Repository::getCache(storeId: $this->storeId);
-        $this->cache->clear();
-
-        parent::setUp();
-    }
-
-    /**
-     * @noinspection PhpSameParameterValueInspection
-     */
-    private function allFieldsOfType(
-        ApplicationFormSpecElementResponseCollection $fields,
-        Type $type
-    ): bool {
-        /** @var ApplicationFormSpecElementResponse $field */
-        foreach ($fields as $field) {
-            if ($field->type !== $type) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

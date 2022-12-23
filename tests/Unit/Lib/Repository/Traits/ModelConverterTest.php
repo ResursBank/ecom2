@@ -20,7 +20,6 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\EcomTest\Data\Models\Instrument;
 use Resursbank\EcomTest\Data\Models\InstrumentCollection;
 use stdClass;
-use Throwable;
 
 /**
  * Verifies business logic of ModelConverter trait.

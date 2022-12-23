@@ -21,6 +21,11 @@ use Resursbank\Ecom\Lib\Locale\Translation;
  */
 class PhraseTest extends TestCase
 {
+    private function getTranslationInstance(): Translation
+    {
+        return new Translation(en: 'asdf', sv: 'asdf');
+    }
+
     /**
      * @throws EmptyValueException
      */
@@ -46,10 +51,5 @@ class PhraseTest extends TestCase
             id: '',
             translation: $this->getTranslationInstance()
         );
-    }
-
-    private function getTranslationInstance(): Translation
-    {
-        return new Translation(en: 'asdf', sv: 'asdf');
     }
 }

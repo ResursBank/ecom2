@@ -47,74 +47,6 @@ class SearchTest extends TestCase
     private const GOVERNMENT_ID = '198305147715';
 
     /**
-     * Reference is currently required to have if we want to run live tests.
-     *
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function testSearchOrderReference(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference
-        )->toArray();
-
-        /** @var Payment|null $fetched */
-        $fetched = $paymentCollection[0] ?? null;
-
-        $this->assertSame(expected: $payment->id, actual: $fetched?->id ?? '');
-    }
-
-    /**
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testSearchWithGovernmentId(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        $paymentCollection = Repository::search(
-            storeId: $_ENV['STORE_ID'],
-            orderReference: $orderReference,
-            governmentId: self::GOVERNMENT_ID
-        )->toArray();
-
-        self::assertArrayHasKey(key: 0, array: $paymentCollection);
-
-        /** @var Payment|null $fetched */
-        $fetched = $paymentCollection[0] ?? null;
-
-        $this->assertSame(
-            expected: $payment->id,
-            actual: $fetched instanceof Payment ? $fetched->id : ''
-        );
-    }
-
-    /**
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -201,6 +133,74 @@ class SearchTest extends TestCase
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
             )
+        );
+    }
+
+    /**
+     * Reference is currently required to have if we want to run live tests.
+     *
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testSearchOrderReference(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        $paymentCollection = Repository::search(
+            storeId: $_ENV['STORE_ID'],
+            orderReference: $orderReference
+        )->toArray();
+
+        /** @var Payment|null $fetched */
+        $fetched = $paymentCollection[0] ?? null;
+
+        $this->assertSame(expected: $payment->id, actual: $fetched?->id ?? '');
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testSearchWithGovernmentId(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        $paymentCollection = Repository::search(
+            storeId: $_ENV['STORE_ID'],
+            orderReference: $orderReference,
+            governmentId: self::GOVERNMENT_ID
+        )->toArray();
+
+        self::assertArrayHasKey(key: 0, array: $paymentCollection);
+
+        /** @var Payment|null $fetched */
+        $fetched = $paymentCollection[0] ?? null;
+
+        $this->assertSame(
+            expected: $payment->id,
+            actual: $fetched instanceof Payment ? $fetched->id : ''
         );
     }
 }

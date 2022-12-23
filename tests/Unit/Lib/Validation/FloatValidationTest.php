@@ -24,6 +24,13 @@ final class FloatValidationTest extends TestCase
 {
     private FloatValidation $floatValidation;
 
+    protected function setUp(): void
+    {
+        $this->floatValidation = new FloatValidation();
+
+        parent::setUp();
+    }
+
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
@@ -178,12 +185,5 @@ final class FloatValidationTest extends TestCase
         $this->assertTrue(
             condition: $this->floatValidation->isPositive(value: 1)
         );
-    }
-
-    protected function setUp(): void
-    {
-        $this->floatValidation = new FloatValidation();
-
-        parent::setUp();
     }
 }

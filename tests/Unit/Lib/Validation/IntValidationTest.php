@@ -22,6 +22,13 @@ final class IntValidationTest extends TestCase
 {
     private IntValidation $intValidation;
 
+    protected function setUp(): void
+    {
+        $this->intValidation = new IntValidation();
+
+        parent::setUp();
+    }
+
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
@@ -148,12 +155,5 @@ final class IntValidationTest extends TestCase
                 max: 10
             )
         );
-    }
-
-    protected function setUp(): void
-    {
-        $this->intValidation = new IntValidation();
-
-        parent::setUp();
     }
 }

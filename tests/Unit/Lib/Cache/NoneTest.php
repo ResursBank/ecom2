@@ -25,6 +25,28 @@ class NoneTest extends TestCase
     private string $key;
 
     /**
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->cache = new None();
+        $this->key = $this->getKey();
+
+        parent::setUp();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'none-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
+    }
+
+    /**
      * Assert that method read() throws instance of ValidationException if our
      * key contains illegal characters.
      */
@@ -115,27 +137,5 @@ class NoneTest extends TestCase
     {
         $this->cache->clear(key: $this->key);
         $this->expectNotToPerformAssertions();
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        $this->cache = new None();
-        $this->key = $this->getKey();
-
-        parent::setUp();
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getKey(): string
-    {
-        // NOTE: Simply using time() is unsafe, tests run too quickly.
-        return AbstractCache::getKey(
-            key: 'none-cache-' . random_int(min: 0, max: 999999999) . time()
-        );
     }
 }

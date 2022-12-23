@@ -50,58 +50,6 @@ use Resursbank\EcomTest\Utilities\MockSigner;
 class PutTest extends TestCase
 {
     /**
-     * Verify that Metadata updates work
-     *
-     * @throws ValidationException
-     * @throws CurlException
-     * @throws IllegalValueException
-     * @throws IllegalTypeException
-     * @throws AuthException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws ConfigException
-     * @throws ApiException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testSimplePut(): void
-    {
-        $custom = [
-            new Metadata\Entry(key: 'foo', value: 'bar'),
-        ];
-
-        // Create payment
-        $payment = $this->createPayment(
-            orderReference: $this->generateOrderReference()
-        );
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Add metadata
-        $setMetadataResponse = Repository::setMetadata(
-            paymentId: $payment->id,
-            metadata: new Metadata(
-                custom: new Metadata\EntryCollection(data: $custom)
-            )
-        );
-
-        // Get payment
-        $fetchedPayment = Repository::get(paymentId: $payment->id);
-
-        // Assert that the metadata exists on the fetched payment
-        $this->assertEqualsCanonicalizing(
-            expected: $custom,
-            actual: $setMetadataResponse->custom?->toArray() ?? []
-        );
-        $this->assertNotNull(actual: $fetchedPayment->metadata);
-        $this->assertEqualsCanonicalizing(
-            expected: $custom,
-            actual: $fetchedPayment->metadata->custom?->toArray() ?? []
-        );
-    }
-
-    /**
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -192,5 +140,57 @@ class PutTest extends TestCase
     private function generateOrderReference(): string
     {
         return bin2hex(string: random_bytes(length: 12));
+    }
+
+    /**
+     * Verify that Metadata updates work
+     *
+     * @throws ValidationException
+     * @throws CurlException
+     * @throws IllegalValueException
+     * @throws IllegalTypeException
+     * @throws AuthException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ConfigException
+     * @throws ApiException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function testSimplePut(): void
+    {
+        $custom = [
+            new Metadata\Entry(key: 'foo', value: 'bar'),
+        ];
+
+        // Create payment
+        $payment = $this->createPayment(
+            orderReference: $this->generateOrderReference()
+        );
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Add metadata
+        $setMetadataResponse = Repository::setMetadata(
+            paymentId: $payment->id,
+            metadata: new Metadata(
+                custom: new Metadata\EntryCollection(data: $custom)
+            )
+        );
+
+        // Get payment
+        $fetchedPayment = Repository::get(paymentId: $payment->id);
+
+        // Assert that the metadata exists on the fetched payment
+        $this->assertEqualsCanonicalizing(
+            expected: $custom,
+            actual: $setMetadataResponse->custom?->toArray() ?? []
+        );
+        $this->assertNotNull(actual: $fetchedPayment->metadata);
+        $this->assertEqualsCanonicalizing(
+            expected: $custom,
+            actual: $fetchedPayment->metadata->custom?->toArray() ?? []
+        );
     }
 }

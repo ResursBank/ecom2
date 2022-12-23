@@ -38,6 +38,26 @@ use Resursbank\Ecom\Module\Payment\Repository;
 class RepositoryTest extends TestCase
 {
     /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        parent::setUp();
+    }
+
+    /**
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -196,25 +216,5 @@ class RepositoryTest extends TestCase
             expected: $metadata->custom->toArray(),
             actual: $createdMetadata->custom->toArray()
         );
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        parent::setUp();
     }
 }

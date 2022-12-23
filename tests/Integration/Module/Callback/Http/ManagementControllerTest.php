@@ -29,6 +29,52 @@ use Resursbank\EcomTest\Data\Models\Instrument;
 class ManagementControllerTest extends TestCase
 {
     /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+    }
+
+    /**
+     * Create a mocked version of the Controller class, setting the return value
+     * of the getInputData method, in an effort to replicate behaviour with
+     * incoming input data to PHP (faking the contents of php://input).
+     *
+     * @param array $data
+     * @throws JsonException
+     */
+    private function getControllerWithMockedInputData(array $data): Controller
+    {
+        $controller = $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['getInputData']
+        );
+
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+        $controller->expects($this->once())
+            ->method(constraint: 'getInputData')
+            ->willReturn(
+                value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
+            );
+
+        return $controller;
+    }
+
+    /**
      * Assert that getRequestData() throws HttpException with code 415 when
      * supplied that does not convert to a Management instance.
      *
@@ -94,51 +140,5 @@ class ManagementControllerTest extends TestCase
         $this->assertSame(expected: Action::CAPTURE, actual: $data->action);
 
         $this->assertSame(expected: 'whatever', actual: $data->paymentId);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-    }
-
-    /**
-     * Create a mocked version of the Controller class, setting the return value
-     * of the getInputData method, in an effort to replicate behaviour with
-     * incoming input data to PHP (faking the contents of php://input).
-     *
-     * @param array $data
-     * @throws JsonException
-     */
-    private function getControllerWithMockedInputData(array $data): Controller
-    {
-        $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
-            methods: ['getInputData']
-        );
-
-        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
-        $controller->expects($this->once())
-            ->method(constraint: 'getInputData')
-            ->willReturn(
-                value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
-            );
-
-        return $controller;
     }
 }

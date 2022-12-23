@@ -35,6 +35,54 @@ final class CacheTest extends TestCase
     private None $cacheDriver;
 
     /**
+     * We call the actual Config::setup() method to initiate mocked objects
+     * to be utilised in tests against the static methods available on our
+     * subject class. The methods on our subject class (such as readCache())
+     * will make calls to object such as Config::getCache(), and we wish
+     * to test behaviour when the results from the API / Cache differ.
+     */
+    protected function setUp(): void
+    {
+        $this->cacheDriver = $this->createMock(originalClassName: None::class);
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->cacheDriver
+        );
+
+        parent::setUp();
+    }
+
+    /**
+     * Get instance of Cache repository.
+     */
+    private function getCache(): Cache
+    {
+        return new Cache(key: 'test', model: Music::class, ttl: 3600);
+    }
+
+    /**
+     * Helper method to assign result from Config::getCache()->read()
+     *
+     * @throws JsonException
+     */
+    private function setCacheReadReturn(
+        mixed $data
+    ): void {
+        if (!is_string(value: $data)) {
+            $data = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
+        }
+
+        /**
+         * @psalm-suppress UndefinedMethod
+         * @psalm-suppress MixedMethodCall
+         */
+        $this->cacheDriver->method('read')->willReturn(value: $data);
+    }
+
+    /**
      * Assert that read() returns NULL without any data.
      *
      * @throws CacheException
@@ -170,53 +218,5 @@ final class CacheTest extends TestCase
             new Instrument(id: 1, name: 'guitar'),
             new Instrument(id: 1, name: 'guitar'),
         ]));
-    }
-
-    /**
-     * We call the actual Config::setup() method to initiate mocked objects
-     * to be utilised in tests against the static methods available on our
-     * subject class. The methods on our subject class (such as readCache())
-     * will make calls to object such as Config::getCache(), and we wish
-     * to test behaviour when the results from the API / Cache differ.
-     */
-    protected function setUp(): void
-    {
-        $this->cacheDriver = $this->createMock(originalClassName: None::class);
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: $this->cacheDriver
-        );
-
-        parent::setUp();
-    }
-
-    /**
-     * Get instance of Cache repository.
-     */
-    private function getCache(): Cache
-    {
-        return new Cache(key: 'test', model: Music::class, ttl: 3600);
-    }
-
-    /**
-     * Helper method to assign result from Config::getCache()->read()
-     *
-     * @throws JsonException
-     */
-    private function setCacheReadReturn(
-        mixed $data
-    ): void {
-        if (!is_string(value: $data)) {
-            $data = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
-        }
-
-        /**
-         * @psalm-suppress UndefinedMethod
-         * @psalm-suppress MixedMethodCall
-         */
-        $this->cacheDriver->method('read')->willReturn(value: $data);
     }
 }

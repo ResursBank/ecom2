@@ -30,6 +30,32 @@ class AbstractCacheTest extends TestCase
     private string $key;
 
     /**
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->cache = $this->getMockForAbstractClass(
+            originalClassName: AbstractCache::class
+        );
+
+        $this->key = $this->getKey();
+
+        parent::setUp();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        return
+            AbstractCache::CACHE_KEY_PREFIX .
+            'test' .
+            random_int(min: 0, max: 999999)
+        ;
+    }
+
+    /**
      * Assert that a key containing a mixture of upper-, lowercase, hyphens and
      * underscores pass validation.
      *
@@ -83,31 +109,5 @@ class AbstractCacheTest extends TestCase
             expected: AbstractCache::CACHE_KEY_PREFIX . 'test-key',
             actual: AbstractCache::getKey(key: 'test-key')
         );
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        $this->cache = $this->getMockForAbstractClass(
-            originalClassName: AbstractCache::class
-        );
-
-        $this->key = $this->getKey();
-
-        parent::setUp();
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getKey(): string
-    {
-        return
-            AbstractCache::CACHE_KEY_PREFIX .
-            'test' .
-            random_int(min: 0, max: 999999)
-        ;
     }
 }

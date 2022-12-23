@@ -29,6 +29,61 @@ class OrderLineTest extends TestCase
     private static array $data = [];
 
     /**
+     * @throws JsonException
+     * @throws IllegalValueException
+     */
+    protected function setUp(): void
+    {
+        /** @var array $data */
+        $data = json_decode(
+            json: json_encode(
+                value: new OrderLine(
+                    description: 'Item',
+                    reference: 'I-200',
+                    quantityUnit: 'st',
+                    quantity: 1,
+                    vatRate: 10,
+                    unitAmountIncludingVat: 10,
+                    totalAmountIncludingVat: 11,
+                    totalVatAmount: 1,
+                    type: OrderLineType::NORMAL
+                ),
+                flags: JSON_THROW_ON_ERROR
+            ),
+            associative: true,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        self::$data = $data;
+
+        parent::setUp();
+    }
+
+    /**
+     * @param array $updates
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    private function convert(
+        array $updates = []
+    ): OrderLine {
+        $result = DataConverter::stdClassToType(
+            object: (object) array_merge(self::$data, $updates),
+            type: OrderLine::class
+        );
+
+        if (!$result instanceof OrderLine) {
+            throw new TestException(
+                message: 'Failed to convert stdClass to PaymentMethod.'
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
@@ -287,60 +342,5 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['totalVatAmount' => 99999999999]);
-    }
-
-    /**
-     * @throws JsonException
-     * @throws IllegalValueException
-     */
-    protected function setUp(): void
-    {
-        /** @var array $data */
-        $data = json_decode(
-            json: json_encode(
-                value: new OrderLine(
-                    description: 'Item',
-                    reference: 'I-200',
-                    quantityUnit: 'st',
-                    quantity: 1,
-                    vatRate: 10,
-                    unitAmountIncludingVat: 10,
-                    totalAmountIncludingVat: 11,
-                    totalVatAmount: 1,
-                    type: OrderLineType::NORMAL
-                ),
-                flags: JSON_THROW_ON_ERROR
-            ),
-            associative: true,
-            depth: 512,
-            flags: JSON_THROW_ON_ERROR
-        );
-
-        self::$data = $data;
-
-        parent::setUp();
-    }
-
-    /**
-     * @param array $updates
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    private function convert(
-        array $updates = []
-    ): OrderLine {
-        $result = DataConverter::stdClassToType(
-            object: (object) array_merge(self::$data, $updates),
-            type: OrderLine::class
-        );
-
-        if (!$result instanceof OrderLine) {
-            throw new TestException(
-                message: 'Failed to convert stdClass to PaymentMethod.'
-            );
-        }
-
-        return $result;
     }
 }

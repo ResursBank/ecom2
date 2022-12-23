@@ -28,58 +28,6 @@ class MapiTest extends TestCase
 {
     private Mapi $mapi;
 
-    /**
-     * Assert getUrl() throws EmptyValueException without $route value.
-     *
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlThrowsWithEmptyRoute(): void
-    {
-        $this->expectException(exception: EmptyValueException::class);
-        $this->mapi->getUrl(route: '');
-    }
-
-    /**
-     * Assert getUrl() returns URL to test endpoint.
-     *
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws ValidationException
-     */
-    public function testGetUrlReturnsTestUrl(): void
-    {
-        $route = $this->getRoute();
-
-        $this->assertSame(
-            expected: $this->getExpectedUrl(route: $route),
-            actual: $this->mapi->getUrl(route: $route)
-        );
-    }
-
-    /**
-     * Assert getUrl() returns URL to production endpoint.
-     *
-     * @throws EmptyValueException
-     * @throws ValidationException
-     * @throws ConfigException
-     */
-    public function testGetUrlReturnsProdUrl(): void
-    {
-        $this->setupConfig(prod: true);
-
-        $route = $this->getRoute();
-
-        $this->assertSame(
-            expected: $this->getExpectedUrl(
-                route: $route,
-                host: Mapi::URL_PROD
-            ),
-            actual: $this->mapi->getUrl(route: $route)
-        );
-    }
-
     protected function setUp(): void
     {
         $this->mapi = new Mapi();
@@ -133,5 +81,57 @@ class MapiTest extends TestCase
         string $host = Mapi::URL_TEST
     ): string {
         return "$host$route";
+    }
+
+    /**
+     * Assert getUrl() throws EmptyValueException without $route value.
+     *
+     * @throws ConfigException
+     * @throws EmptyValueException
+     * @throws ValidationException
+     */
+    public function testGetUrlThrowsWithEmptyRoute(): void
+    {
+        $this->expectException(exception: EmptyValueException::class);
+        $this->mapi->getUrl(route: '');
+    }
+
+    /**
+     * Assert getUrl() returns URL to test endpoint.
+     *
+     * @throws ConfigException
+     * @throws EmptyValueException
+     * @throws ValidationException
+     */
+    public function testGetUrlReturnsTestUrl(): void
+    {
+        $route = $this->getRoute();
+
+        $this->assertSame(
+            expected: $this->getExpectedUrl(route: $route),
+            actual: $this->mapi->getUrl(route: $route)
+        );
+    }
+
+    /**
+     * Assert getUrl() returns URL to production endpoint.
+     *
+     * @throws EmptyValueException
+     * @throws ValidationException
+     * @throws ConfigException
+     */
+    public function testGetUrlReturnsProdUrl(): void
+    {
+        $this->setupConfig(prod: true);
+
+        $route = $this->getRoute();
+
+        $this->assertSame(
+            expected: $this->getExpectedUrl(
+                route: $route,
+                host: Mapi::URL_PROD
+            ),
+            actual: $this->mapi->getUrl(route: $route)
+        );
     }
 }

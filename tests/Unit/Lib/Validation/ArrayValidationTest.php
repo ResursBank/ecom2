@@ -25,6 +25,13 @@ final class ArrayValidationTest extends TestCase
 {
     private ArrayValidation $arrayValidation;
 
+    protected function setUp(): void
+    {
+        $this->arrayValidation = new ArrayValidation();
+
+        parent::setUp();
+    }
+
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
@@ -313,12 +320,5 @@ final class ArrayValidationTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->arrayValidation->length(data: [1, 2, 3], min: 0, max: 2);
-    }
-
-    protected function setUp(): void
-    {
-        $this->arrayValidation = new ArrayValidation();
-
-        parent::setUp();
     }
 }

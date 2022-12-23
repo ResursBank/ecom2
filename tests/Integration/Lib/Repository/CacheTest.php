@@ -28,6 +28,25 @@ final class CacheTest extends TestCase
 {
     private const CACHE_PATH = '/tmp/ecom-test/repository/cache';
 
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: self::CACHE_PATH)
+        );
+
+        parent::setUp();
+    }
+
+    private function getCache(
+        string $key = 'music-cache',
+        int $ttl = 3600
+    ): Cache {
+        return new Cache(key: $key, model: Music::class, ttl: $ttl);
+    }
+
     /**
      * Assert write() writes the data to the cache.
      *
@@ -144,24 +163,5 @@ final class CacheTest extends TestCase
         $this->assertEquals(expected: $music1, actual: $data1);
         $this->assertEquals(expected: $music2, actual: $data2);
         $this->assertNotEquals(expected: $data1, actual: $data2);
-    }
-
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(path: self::CACHE_PATH)
-        );
-
-        parent::setUp();
-    }
-
-    private function getCache(
-        string $key = 'music-cache',
-        int $ttl = 3600
-    ): Cache {
-        return new Cache(key: $key, model: Music::class, ttl: $ttl);
     }
 }

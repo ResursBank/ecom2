@@ -32,6 +32,46 @@ class OrderLineTest extends TestCase
     private stdClass $data;
 
     /**
+     * @throws JsonException
+     * @throws TestException
+     */
+    protected function setUp(): void
+    {
+        $this->data = OrderLine::getRandomData();
+
+        parent::setUp();
+    }
+
+    /**
+     * @param array $updates
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    private function convert(
+        array $updates = []
+    ): void {
+        /** @psalm-suppress MixedAssignment */
+        foreach ($updates as $key => $val) {
+            $this->data->{$key} = $val;
+        }
+
+        $item = DataConverter::stdClassToType(
+            object: $this->data,
+            type: OrderLineModel::class
+        );
+
+        if (!$item instanceof OrderLineModel) {
+            throw new TestException(
+                message: 'Conversion succeeded but did not return ' .
+                    'Order Line instance.'
+            );
+        }
+
+        $this->item = $item;
+    }
+
+    /**
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
@@ -435,45 +475,5 @@ class OrderLineTest extends TestCase
             expected: $this->data->totalVatAmount,
             actual: $this->item->totalVatAmount
         );
-    }
-
-    /**
-     * @throws JsonException
-     * @throws TestException
-     */
-    protected function setUp(): void
-    {
-        $this->data = OrderLine::getRandomData();
-
-        parent::setUp();
-    }
-
-    /**
-     * @param array $updates
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    private function convert(
-        array $updates = []
-    ): void {
-        /** @psalm-suppress MixedAssignment */
-        foreach ($updates as $key => $val) {
-            $this->data->{$key} = $val;
-        }
-
-        $item = DataConverter::stdClassToType(
-            object: $this->data,
-            type: OrderLineModel::class
-        );
-
-        if (!$item instanceof OrderLineModel) {
-            throw new TestException(
-                message: 'Conversion succeeded but did not return ' .
-                    'Order Line instance.'
-            );
-        }
-
-        $this->item = $item;
     }
 }

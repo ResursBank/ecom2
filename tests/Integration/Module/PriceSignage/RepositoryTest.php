@@ -43,6 +43,53 @@ class RepositoryTest extends TestCase
     private float $amount = 1000.00;
 
     /**
+     * @throws ConfigException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    protected function setUp(): void
+    {
+        $this->storeId = $_ENV['STORE_ID'];
+        $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/priceSignage/' . time()
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->cache = $this->getCache();
+        $this->cache->clear();
+
+        parent::setUp();
+    }
+
+    /**
+     * @throws IllegalValueException
+     */
+    private function getCache(
+        ?string $paymentMethodId = null,
+        ?float $amount = null,
+        ?int $monthFilter = null
+    ): Cache {
+        return Repository::getCache(
+            storeId: $this->storeId,
+            paymentMethodId: $paymentMethodId ?? $this->paymentMethodId,
+            amount: $amount ?? $this->amount,
+            monthFilter: $monthFilter
+        );
+    }
+
+    /**
      * Assert clearCache() clears cache.
      *
      * @throws ApiException
@@ -274,52 +321,5 @@ class RepositoryTest extends TestCase
 
             throw $e;
         }
-    }
-
-    /**
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    protected function setUp(): void
-    {
-        $this->storeId = $_ENV['STORE_ID'];
-        $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(
-                path: '/tmp/ecom-test/priceSignage/' . time()
-            ),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->cache = $this->getCache();
-        $this->cache->clear();
-
-        parent::setUp();
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function getCache(
-        ?string $paymentMethodId = null,
-        ?float $amount = null,
-        ?int $monthFilter = null
-    ): Cache {
-        return Repository::getCache(
-            storeId: $this->storeId,
-            paymentMethodId: $paymentMethodId ?? $this->paymentMethodId,
-            amount: $amount ?? $this->amount,
-            monthFilter: $monthFilter
-        );
     }
 }

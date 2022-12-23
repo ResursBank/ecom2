@@ -45,35 +45,6 @@ use Resursbank\EcomTest\Utilities\MockSigner;
 class GetTest extends TestCase
 {
     /**
-     * Verify that getting payments works
-     *
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws Exception
-     */
-    public function testGetPayment(): void
-    {
-        // Create payment
-        $orderReference = $this->generateOrderReference();
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        // Sign
-        MockSigner::approve(payment: $payment);
-
-        // Call getPayment
-        $fetched = Repository::get(paymentId: $payment->id);
-
-        // Assert that the fetched order is the one we created
-        $this->assertSame(expected: $payment->id, actual: $fetched->id);
-    }
-
-    /**
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -162,5 +133,34 @@ class GetTest extends TestCase
                 deviceInfo: new DeviceInfo()
             )
         );
+    }
+
+    /**
+     * Verify that getting payments works
+     *
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws Exception
+     */
+    public function testGetPayment(): void
+    {
+        // Create payment
+        $orderReference = $this->generateOrderReference();
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::approve(payment: $payment);
+
+        // Call getPayment
+        $fetched = Repository::get(paymentId: $payment->id);
+
+        // Assert that the fetched order is the one we created
+        $this->assertSame(expected: $payment->id, actual: $fetched->id);
     }
 }

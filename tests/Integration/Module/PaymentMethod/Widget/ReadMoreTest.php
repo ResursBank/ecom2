@@ -44,6 +44,57 @@ class ReadMoreTest extends TestCase
     private string $url;
 
     /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $method = Repository::getById(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
+        );
+
+        if ($method === null) {
+            $this->fail(message: 'No annuity payment method found.');
+        }
+
+        $this->method = $method;
+
+        /** @var LegalLink $link */
+        foreach ($this->method->legalLinks as $link) {
+            if ($link->type !== Type::PRICE_INFO) {
+                continue;
+            }
+
+            $this->url = $link->url;
+        }
+
+        parent::setUp();
+    }
+
+    /**
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -126,56 +177,5 @@ class ReadMoreTest extends TestCase
             haystack: $data->css,
             message: 'Read more widget CSS should contain section for the rb-rm-iframe class'
         );
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $method = Repository::getById(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
-        );
-
-        if ($method === null) {
-            $this->fail(message: 'No annuity payment method found.');
-        }
-
-        $this->method = $method;
-
-        /** @var LegalLink $link */
-        foreach ($this->method->legalLinks as $link) {
-            if ($link->type !== Type::PRICE_INFO) {
-                continue;
-            }
-
-            $this->url = $link->url;
-        }
-
-        parent::setUp();
     }
 }

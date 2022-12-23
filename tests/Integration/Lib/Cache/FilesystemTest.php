@@ -58,6 +58,75 @@ class FilesystemTest extends TestCase
     private string $file;
 
     /**
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->isPipeline = (bool) $_ENV['IS_PIPELINE'];
+
+        // Create directory where all other directories / files will be created
+        // during our tests, to avoid bloating /tmp.
+        if (!is_dir(filename: self::BASE_PATH)) {
+            mkdir(
+                directory: self::BASE_PATH,
+                permissions: 0755,
+                recursive: true
+            );
+        }
+
+        $this->path = $this->getPath();
+        $this->fileSystem = $this->getFilesystem(path: $this->path);
+        $this->key = $this->getKey();
+        $this->file = "$this->path/$this->key.cache";
+
+        parent::setUp();
+    }
+
+    /**
+     * Tests are marked with this value if running from Bitbucket Pipelines.
+     */
+    protected function isPipeline(): bool
+    {
+        return $this->isPipeline;
+    }
+
+    /**
+     * Create new Filesystem instance.
+     */
+    private function getFilesystem(string $path): Filesystem
+    {
+        return new Filesystem(path: $path);
+    }
+
+    /**
+     * Generate unique path name, to ensure various tests which create files and
+     * directories won't interfere with each other.
+     *
+     * @throws Exception
+     */
+    private function getPath(): string
+    {
+        return
+            self::BASE_PATH .
+            '/ecom-' .
+            random_int(min: 0, max: 99999) .
+            time() .
+            random_int(min: 0, max: 99999)
+        ;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'fs-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
+    }
+
+    /**
      * Assert that write() creates a writable cache directory if none exist.
      *
      * @throws Exception
@@ -648,74 +717,5 @@ class FilesystemTest extends TestCase
         $this->fileSystem->clear(key: $this->key);
 
         $this->assertFileDoesNotExist(filename: $this->file);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        $this->isPipeline = (bool) $_ENV['IS_PIPELINE'];
-
-        // Create directory where all other directories / files will be created
-        // during our tests, to avoid bloating /tmp.
-        if (!is_dir(filename: self::BASE_PATH)) {
-            mkdir(
-                directory: self::BASE_PATH,
-                permissions: 0755,
-                recursive: true
-            );
-        }
-
-        $this->path = $this->getPath();
-        $this->fileSystem = $this->getFilesystem(path: $this->path);
-        $this->key = $this->getKey();
-        $this->file = "$this->path/$this->key.cache";
-
-        parent::setUp();
-    }
-
-    /**
-     * Tests are marked with this value if running from Bitbucket Pipelines.
-     */
-    protected function isPipeline(): bool
-    {
-        return $this->isPipeline;
-    }
-
-    /**
-     * Create new Filesystem instance.
-     */
-    private function getFilesystem(string $path): Filesystem
-    {
-        return new Filesystem(path: $path);
-    }
-
-    /**
-     * Generate unique path name, to ensure various tests which create files and
-     * directories won't interfere with each other.
-     *
-     * @throws Exception
-     */
-    private function getPath(): string
-    {
-        return
-            self::BASE_PATH .
-            '/ecom-' .
-            random_int(min: 0, max: 99999) .
-            time() .
-            random_int(min: 0, max: 99999)
-        ;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getKey(): string
-    {
-        // NOTE: Simply using time() is unsafe, tests run too quickly.
-        return AbstractCache::getKey(
-            key: 'fs-cache-' . random_int(min: 0, max: 999999999) . time()
-        );
     }
 }

@@ -25,6 +25,51 @@ class ControllerTest extends TestCase
 {
     private Controller $controller;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup();
+
+        $this->controller = new Controller();
+    }
+
+    /**
+     * Create a mocked version of the Controller class, setting the return value
+     * of the getInputData method, in an effort to replicate behaviour with
+     * incoming input data to PHP (faking the contents of php://input).
+     */
+    private function getControllerWithMockedInputData(string $data): Controller
+    {
+        $controller = $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['getInputData']
+        );
+
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+        $controller->expects($this->once())
+            ->method(constraint: 'getInputData')
+            ->willReturn(value: $data);
+
+        return $controller;
+    }
+
+    /**
+     * Create a mocked version of the Controller class where the setHeader()
+     * and setResponseCode() methods are never executed, making the respond()
+     * method testable (since manipulating headers will break unit testing).
+     *
+     * This method also asserts that setHeader() is called twice, and that
+     * setResponseCode() is called with the same code as supplied by $code.
+     */
+    private function getControllerWithoutHeaderManipulation(): Controller
+    {
+        return $this->createPartialMock(
+            originalClassName: Controller::class,
+            methods: ['log']
+        );
+    }
+
     /**
      * Assert respond() will echo JSON encoded data from supplied array.
      *
@@ -263,51 +308,6 @@ class ControllerTest extends TestCase
         $this->assertEquals(
             expected: new Instrument(id: 5, name: 'Bow'),
             actual: $result
-        );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup();
-
-        $this->controller = new Controller();
-    }
-
-    /**
-     * Create a mocked version of the Controller class, setting the return value
-     * of the getInputData method, in an effort to replicate behaviour with
-     * incoming input data to PHP (faking the contents of php://input).
-     */
-    private function getControllerWithMockedInputData(string $data): Controller
-    {
-        $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
-            methods: ['getInputData']
-        );
-
-        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
-        $controller->expects($this->once())
-            ->method(constraint: 'getInputData')
-            ->willReturn(value: $data);
-
-        return $controller;
-    }
-
-    /**
-     * Create a mocked version of the Controller class where the setHeader()
-     * and setResponseCode() methods are never executed, making the respond()
-     * method testable (since manipulating headers will break unit testing).
-     *
-     * This method also asserts that setHeader() is called twice, and that
-     * setResponseCode() is called with the same code as supplied by $code.
-     */
-    private function getControllerWithoutHeaderManipulation(): Controller
-    {
-        return $this->createPartialMock(
-            originalClassName: Controller::class,
-            methods: ['log']
         );
     }
 }

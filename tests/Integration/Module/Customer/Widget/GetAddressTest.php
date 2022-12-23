@@ -31,6 +31,27 @@ use Resursbank\Ecom\Module\Customer\Widget\GetAddress;
 class GetAddressTest extends TestCase
 {
     /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        parent::setUp();
+    }
+
+    /**
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -84,26 +105,5 @@ class GetAddressTest extends TestCase
             message: 'Get address widget should contain an input with id ' .
             'rb-customer-widget-getAddress-customerType-legal.'
         );
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        parent::setUp();
     }
 }

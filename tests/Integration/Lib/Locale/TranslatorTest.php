@@ -24,6 +24,28 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 class TranslatorTest extends TestCase
 {
     /**
+     * @throws ConfigException
+     */
+    protected function setUp(): void
+    {
+        $this->setupConfig();
+        Config::getCache()->clear(key: 'resursbank-ecom-translations');
+
+        parent::setUp();
+    }
+
+    private function setupConfig(Language $locale = Language::en): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            language: $locale,
+            cache: new Redis(host: $_ENV['REDIS_HOST'])
+        );
+    }
+
+    /**
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -123,27 +145,5 @@ class TranslatorTest extends TestCase
 
         $this->assertNull(actual: $oldCache);
         $this->assertSame(expected: $translatedString, actual: $result);
-    }
-
-    /**
-     * @throws ConfigException
-     */
-    protected function setUp(): void
-    {
-        $this->setupConfig();
-        Config::getCache()->clear(key: 'resursbank-ecom-translations');
-
-        parent::setUp();
-    }
-
-    private function setupConfig(Language $locale = Language::en): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            language: $locale,
-            cache: new Redis(host: $_ENV['REDIS_HOST'])
-        );
     }
 }

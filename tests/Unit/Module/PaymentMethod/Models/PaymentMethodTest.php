@@ -35,6 +35,52 @@ class PaymentMethodTest extends TestCase
         'enabledForNaturalCustomer' => true,
     ];
 
+    protected function setUp(): void
+    {
+        self::$data['legalLinks'] = [
+            (object) [
+                'url' => 'https://www.resurs.com/terms',
+                'type' => 'GENERAL_TERMS',
+                'appendAmount' => false,
+            ],
+            (object) [
+                'url' => 'https://www.resurs.com/price',
+                'type' => 'PRICE_INFO',
+                'appendAmount' => false,
+            ],
+            (object) [
+                'url' => 'https://www.resurs.com/secci',
+                'type' => 'SECCI',
+                'appendAmount' => false,
+            ],
+        ];
+
+        parent::setUp();
+    }
+
+    /**
+     * @param array $updates
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    private function convert(
+        array $updates = []
+    ): PaymentMethod {
+        $result = DataConverter::stdClassToType(
+            object: (object) array_merge(self::$data, $updates),
+            type: PaymentMethod::class
+        );
+
+        if (!$result instanceof PaymentMethod) {
+            throw new TestException(
+                message: 'Failed to convert stdClass to PaymentMethod.'
+            );
+        }
+
+        return $result;
+    }
+
     /**
      * Assert validateId() raises Error when id is empty.
      *
@@ -260,51 +306,5 @@ class PaymentMethodTest extends TestCase
     {
         $item = $this->convert();
         $this->assertSame(expected: Type::RESURS_INVOICE, actual: $item->type);
-    }
-
-    protected function setUp(): void
-    {
-        self::$data['legalLinks'] = [
-            (object) [
-                'url' => 'https://www.resurs.com/terms',
-                'type' => 'GENERAL_TERMS',
-                'appendAmount' => false,
-            ],
-            (object) [
-                'url' => 'https://www.resurs.com/price',
-                'type' => 'PRICE_INFO',
-                'appendAmount' => false,
-            ],
-            (object) [
-                'url' => 'https://www.resurs.com/secci',
-                'type' => 'SECCI',
-                'appendAmount' => false,
-            ],
-        ];
-
-        parent::setUp();
-    }
-
-    /**
-     * @param array $updates
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    private function convert(
-        array $updates = []
-    ): PaymentMethod {
-        $result = DataConverter::stdClassToType(
-            object: (object) array_merge(self::$data, $updates),
-            type: PaymentMethod::class
-        );
-
-        if (!$result instanceof PaymentMethod) {
-            throw new TestException(
-                message: 'Failed to convert stdClass to PaymentMethod.'
-            );
-        }
-
-        return $result;
     }
 }

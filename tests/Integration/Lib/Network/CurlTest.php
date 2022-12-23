@@ -56,6 +56,85 @@ class CurlTest extends TestCase
      */
     private int $badProxyCode = 400;
 
+    private function getRequestBodyObject(
+        Response $response
+    ): stdClass {
+        if (!($response->body instanceof stdClass)) {
+            $this->fail(message: 'Response body is not an object.');
+        }
+
+        return $response->body;
+    }
+
+    private function validateRequestMethod(
+        Response $response,
+        string $expected
+    ): void {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->REQUEST_METHOD)) {
+            $this->fail(message: 'No REQUEST_METHOD found in response body.');
+        }
+
+        $this->assertSame(expected: $expected, actual: $body->REQUEST_METHOD);
+    }
+
+    private function validateUserAgent(
+        Response $response,
+        string $startsWith
+    ): void {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->HTTP_USER_AGENT)) {
+            $this->fail(message: 'No HTTP_USER_AGENT found in response body.');
+        }
+
+        if (!is_string(value: $body->HTTP_USER_AGENT)) {
+            $this->fail(
+                message: 'HTTP_USER_AGENT in response body is not a string.'
+            );
+        }
+
+        $this->assertTrue(
+            condition: str_starts_with(
+                haystack: $body->HTTP_USER_AGENT,
+                needle: $startsWith
+            )
+        );
+    }
+
+    private function getInput(
+        Response $response
+    ): string {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->input)) {
+            $this->fail(message: 'No input found in response body.');
+        }
+
+        if (!is_string(value: $body->input)) {
+            $this->fail(message: 'input in response body is not a string.');
+        }
+
+        return $body->input;
+    }
+
+    private function getIp(
+        Response $response
+    ): string {
+        $body = $this->getRequestBodyObject(response: $response);
+
+        if (!isset($body->ip)) {
+            $this->fail(message: 'No ip found in response body.');
+        }
+
+        if (!is_string(value: $body->ip)) {
+            $this->fail(message: 'ip in response body is not a string.');
+        }
+
+        return $body->ip;
+    }
+
     /**
      * Verify that Basic auth properties are set when creating a Basic auth instance
      *
@@ -467,84 +546,5 @@ class CurlTest extends TestCase
 
             throw $e;
         }
-    }
-
-    private function getRequestBodyObject(
-        Response $response
-    ): stdClass {
-        if (!($response->body instanceof stdClass)) {
-            $this->fail(message: 'Response body is not an object.');
-        }
-
-        return $response->body;
-    }
-
-    private function validateRequestMethod(
-        Response $response,
-        string $expected
-    ): void {
-        $body = $this->getRequestBodyObject(response: $response);
-
-        if (!isset($body->REQUEST_METHOD)) {
-            $this->fail(message: 'No REQUEST_METHOD found in response body.');
-        }
-
-        $this->assertSame(expected: $expected, actual: $body->REQUEST_METHOD);
-    }
-
-    private function validateUserAgent(
-        Response $response,
-        string $startsWith
-    ): void {
-        $body = $this->getRequestBodyObject(response: $response);
-
-        if (!isset($body->HTTP_USER_AGENT)) {
-            $this->fail(message: 'No HTTP_USER_AGENT found in response body.');
-        }
-
-        if (!is_string(value: $body->HTTP_USER_AGENT)) {
-            $this->fail(
-                message: 'HTTP_USER_AGENT in response body is not a string.'
-            );
-        }
-
-        $this->assertTrue(
-            condition: str_starts_with(
-                haystack: $body->HTTP_USER_AGENT,
-                needle: $startsWith
-            )
-        );
-    }
-
-    private function getInput(
-        Response $response
-    ): string {
-        $body = $this->getRequestBodyObject(response: $response);
-
-        if (!isset($body->input)) {
-            $this->fail(message: 'No input found in response body.');
-        }
-
-        if (!is_string(value: $body->input)) {
-            $this->fail(message: 'input in response body is not a string.');
-        }
-
-        return $body->input;
-    }
-
-    private function getIp(
-        Response $response
-    ): string {
-        $body = $this->getRequestBodyObject(response: $response);
-
-        if (!isset($body->ip)) {
-            $this->fail(message: 'No ip found in response body.');
-        }
-
-        if (!is_string(value: $body->ip)) {
-            $this->fail(message: 'ip in response body is not a string.');
-        }
-
-        return $body->ip;
     }
 }

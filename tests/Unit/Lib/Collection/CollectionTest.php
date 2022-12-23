@@ -25,6 +25,21 @@ final class CollectionTest extends TestCase
     private array $data;
 
     /**
+     * Set up data variable
+     */
+    protected function setUp(): void
+    {
+        $this->data = [
+            'foo',
+            'bar',
+            'baz',
+            'baf',
+        ];
+
+        parent::setUp();
+    }
+
+    /**
      * Verify that creation of Collection works
      *
      * @throws IllegalTypeException
@@ -281,20 +296,5 @@ final class CollectionTest extends TestCase
 
         $this::assertTrue(condition: $shouldBeValid);
         $this::assertNotTrue(condition: $shouldBeInvalid);
-    }
-
-    /**
-     * Set up data variable
-     */
-    protected function setUp(): void
-    {
-        $this->data = [
-            'foo',
-            'bar',
-            'baz',
-            'baf',
-        ];
-
-        parent::setUp();
     }
 }

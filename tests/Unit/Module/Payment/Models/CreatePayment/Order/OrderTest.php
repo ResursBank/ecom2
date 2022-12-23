@@ -28,6 +28,26 @@ class OrderTest extends TestCase
     private static OrderLine $orderLine;
 
     /**
+     * @throws IllegalValueException
+     */
+    protected function setUp(): void
+    {
+        self::$orderLine = new OrderLine(
+            description: 'Item',
+            quantity: 1,
+            reference: 'I-200',
+            type: OrderLineType::NORMAL,
+            quantityUnit: 'st',
+            unitAmountIncludingVat: 10,
+            totalAmountIncludingVat: 11,
+            totalVatAmount: 1,
+            vatRate: 10
+        );
+
+        parent::setUp();
+    }
+
+    /**
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
@@ -122,25 +142,5 @@ class OrderTest extends TestCase
             ),
             orderReference: 'äåö'
         );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    protected function setUp(): void
-    {
-        self::$orderLine = new OrderLine(
-            description: 'Item',
-            quantity: 1,
-            reference: 'I-200',
-            type: OrderLineType::NORMAL,
-            quantityUnit: 'st',
-            unitAmountIncludingVat: 10,
-            totalAmountIncludingVat: 11,
-            totalVatAmount: 1,
-            vatRate: 10
-        );
-
-        parent::setUp();
     }
 }

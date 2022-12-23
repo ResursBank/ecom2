@@ -32,6 +32,56 @@ use function ord;
 class OrderTest extends TestCase
 {
     /**
+     * Generate a bogus UUID
+     *
+     * @throws Exception
+     */
+    private function generateUuid(): string
+    {
+        $data = random_bytes(length: 16);
+        $data[6] = chr(codepoint: ord(character: $data[6]) & 0x0f | 0x40);
+        $data[8] = chr(codepoint: ord(character: $data[8]) & 0x3f | 0x80);
+        return vsprintf(
+            format: '%s%s-%s-%s-%s-%s%s%s',
+            values: str_split(string: bin2hex(string: $data), length: 4)
+        );
+    }
+
+    /**
+     * Create a dummy Payment object with the specified possible actions
+     *
+     * @throws Exception
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    private function createDummyPayment(Payment\Order\PossibleActionCollection $possibleActions): Payment
+    {
+        return new Payment(
+            id: $this->generateUuid(),
+            created: (new DateTime())->format(format: 'c'),
+            storeId: $this->generateUuid(),
+            customer: new Payment\Customer(
+                customerType: CustomerType::NATURAL
+            ),
+            paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
+            status: Status::ACCEPTED,
+            paymentActions: [],
+            order: new Payment\Order(
+                orderReference: $this->generateUuid(),
+                actionLog: new Payment\Order\ActionLogCollection(data: []),
+                possibleActions: $possibleActions,
+                totalOrderAmount: 100.00,
+                canceledAmount: 0.00,
+                authorizedAmount: 100.00,
+                capturedAmount: 0.00,
+                refundedAmount: 0.00
+            )
+        );
+    }
+
+    /**
      * Verify that the canCancel method works as intended
      *
      * @throws EmptyValueException
@@ -151,56 +201,6 @@ class OrderTest extends TestCase
         $this->assertEquals(
             expected: false,
             actual: $nonRefundable->canRefund()
-        );
-    }
-
-    /**
-     * Generate a bogus UUID
-     *
-     * @throws Exception
-     */
-    private function generateUuid(): string
-    {
-        $data = random_bytes(length: 16);
-        $data[6] = chr(codepoint: ord(character: $data[6]) & 0x0f | 0x40);
-        $data[8] = chr(codepoint: ord(character: $data[8]) & 0x3f | 0x80);
-        return vsprintf(
-            format: '%s%s-%s-%s-%s-%s%s%s',
-            values: str_split(string: bin2hex(string: $data), length: 4)
-        );
-    }
-
-    /**
-     * Create a dummy Payment object with the specified possible actions
-     *
-     * @throws Exception
-     * @throws EmptyValueException
-     * @throws IllegalCharsetException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    private function createDummyPayment(Payment\Order\PossibleActionCollection $possibleActions): Payment
-    {
-        return new Payment(
-            id: $this->generateUuid(),
-            created: (new DateTime())->format(format: 'c'),
-            storeId: $this->generateUuid(),
-            customer: new Payment\Customer(
-                customerType: CustomerType::NATURAL
-            ),
-            paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
-            status: Status::ACCEPTED,
-            paymentActions: [],
-            order: new Payment\Order(
-                orderReference: $this->generateUuid(),
-                actionLog: new Payment\Order\ActionLogCollection(data: []),
-                possibleActions: $possibleActions,
-                totalOrderAmount: 100.00,
-                canceledAmount: 0.00,
-                authorizedAmount: 100.00,
-                capturedAmount: 0.00,
-                refundedAmount: 0.00
-            )
         );
     }
 }

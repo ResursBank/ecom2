@@ -35,6 +35,29 @@ class StoreTest extends TestCase
     ];
 
     /**
+     * @param array $updates
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    private function convert(
+        array $updates = []
+    ): Store {
+        $result = DataConverter::stdClassToType(
+            object: (object) array_merge(self::$data, $updates),
+            type: Store::class
+        );
+
+        if (!$result instanceof Store) {
+            throw new TestException(
+                message: 'Failed to convert stdClass to Store.'
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Assert validateId() throws EmptyValueException when id is empty.
      *
      * @throws ReflectionException
@@ -146,28 +169,5 @@ class StoreTest extends TestCase
     {
         $item = $this->convert();
         $this->assertSame(expected: self::$data['name'], actual: $item->name);
-    }
-
-    /**
-     * @param array $updates
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    private function convert(
-        array $updates = []
-    ): Store {
-        $result = DataConverter::stdClassToType(
-            object: (object) array_merge(self::$data, $updates),
-            type: Store::class
-        );
-
-        if (!$result instanceof Store) {
-            throw new TestException(
-                message: 'Failed to convert stdClass to Store.'
-            );
-        }
-
-        return $result;
     }
 }

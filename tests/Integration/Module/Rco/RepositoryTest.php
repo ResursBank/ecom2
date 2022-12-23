@@ -45,6 +45,59 @@ final class RepositoryTest extends TestCase
     private Request $request;
 
     /**
+     * Set up prerequisites for testing
+     *
+     * @throws IllegalTypeException
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->orderReference = bin2hex(string: random_bytes(length: 8));
+        $this->request = new Request(
+            orderLines: new OrderLineCollection(data: [
+                new OrderLine(
+                    artNo: 'sku123',
+                    description: 'My product',
+                    quantity: 1,
+                    unitMeasure: 'pc',
+                    unitAmountWithoutVat: 20,
+                    vatPct: 25
+                ),
+            ]),
+            customer: new Customer(
+                governmentId: '198305147715',
+                mobile: '46701234567',
+                email: 'test@hosted.resurs',
+                deliveryAddress: new Address(
+                    firstName: 'Vincent',
+                    lastName: 'Williamsson Alexandersson',
+                    addressRow1: 'Glassgatan 15',
+                    postalArea: 'Göteborg',
+                    postalCode: '41655',
+                    countryCode: 'SE'
+                )
+            ),
+            successUrl: 'https://example.com/success',
+            backUrl: 'https://example.com/checkout',
+            shopUrl: 'https://example.com'
+        );
+
+        $basicAuth = new Basic(
+            username: $_ENV['BASIC_AUTH_USERNAME'],
+            password: $_ENV['BASIC_AUTH_PASSWORD']
+        );
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            basicAuth: $basicAuth,
+            logLevel: LogLevel::DEBUG,
+            isProduction: false
+        );
+
+        parent::setUp();
+    }
+
+    /**
      * Verify that InitPayment works
      *
      * @throws ApiException
@@ -195,58 +248,5 @@ final class RepositoryTest extends TestCase
             orderReference: $this->orderReference
         );
         $this::assertSame(expected: 200, actual: $response->code);
-    }
-
-    /**
-     * Set up prerequisites for testing
-     *
-     * @throws IllegalTypeException
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        $this->orderReference = bin2hex(string: random_bytes(length: 8));
-        $this->request = new Request(
-            orderLines: new OrderLineCollection(data: [
-                new OrderLine(
-                    artNo: 'sku123',
-                    description: 'My product',
-                    quantity: 1,
-                    unitMeasure: 'pc',
-                    unitAmountWithoutVat: 20,
-                    vatPct: 25
-                ),
-            ]),
-            customer: new Customer(
-                governmentId: '198305147715',
-                mobile: '46701234567',
-                email: 'test@hosted.resurs',
-                deliveryAddress: new Address(
-                    firstName: 'Vincent',
-                    lastName: 'Williamsson Alexandersson',
-                    addressRow1: 'Glassgatan 15',
-                    postalArea: 'Göteborg',
-                    postalCode: '41655',
-                    countryCode: 'SE'
-                )
-            ),
-            successUrl: 'https://example.com/success',
-            backUrl: 'https://example.com/checkout',
-            shopUrl: 'https://example.com'
-        );
-
-        $basicAuth = new Basic(
-            username: $_ENV['BASIC_AUTH_USERNAME'],
-            password: $_ENV['BASIC_AUTH_PASSWORD']
-        );
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: $basicAuth,
-            logLevel: LogLevel::DEBUG,
-            isProduction: false
-        );
-
-        parent::setUp();
     }
 }

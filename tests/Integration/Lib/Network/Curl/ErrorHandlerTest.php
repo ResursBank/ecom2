@@ -25,6 +25,12 @@ use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
  */
 class ErrorHandlerTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::setup();
+    }
+
     /**
      * Assert validate() throws IllegalTypeException when body isn't string.
      *
@@ -155,11 +161,5 @@ class ErrorHandlerTest extends TestCase
         );
 
         $handler->validate();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Config::setup();
     }
 }

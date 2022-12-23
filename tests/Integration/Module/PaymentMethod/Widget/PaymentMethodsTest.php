@@ -44,6 +44,43 @@ class PaymentMethodsTest extends TestCase
     private PaymentMethodCollection $methods;
 
     /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/paymentMethods/' . time()
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->methods = Repository::getPaymentMethods(
+            storeId: $_ENV['STORE_ID']
+        );
+
+        parent::setUp();
+    }
+
+    /**
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -165,42 +202,5 @@ class PaymentMethodsTest extends TestCase
             haystack: $data->content,
             message: 'No payment methods warning not found.'
         );
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    protected function setUp(): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(
-                path: '/tmp/ecom-test/paymentMethods/' . time()
-            ),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->methods = Repository::getPaymentMethods(
-            storeId: $_ENV['STORE_ID']
-        );
-
-        parent::setUp();
     }
 }

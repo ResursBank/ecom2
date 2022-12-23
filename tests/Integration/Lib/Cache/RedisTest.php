@@ -27,6 +27,35 @@ class RedisTest extends TestCase
     private string $key;
 
     /**
+     * Setup filesystem cache instance.
+     *
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->redis = new Redis(host: $_ENV['REDIS_HOST']);
+
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        $this->key = AbstractCache::getKey(
+            key: 'redis-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
+
+        parent::setUp();
+    }
+
+    /**
+     * @throws RedisException
+     * @SuppressWarnings(PHPMD.MissingImport)
+     */
+    private function getRedisConnection(): Server
+    {
+        $server = new Server();
+        $server->connect(host: $_ENV['REDIS_HOST']);
+
+        return $server;
+    }
+
+    /**
      * Assert that method write() throws instance of ValidationException if our
      * key contains illegal characters.
      *
@@ -198,34 +227,5 @@ class RedisTest extends TestCase
         $this->redis->clear(key: $this->key);
 
         $this->assertFalse(condition: $conn->get(key: $this->key));
-    }
-
-    /**
-     * Setup filesystem cache instance.
-     *
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        $this->redis = new Redis(host: $_ENV['REDIS_HOST']);
-
-        // NOTE: Simply using time() is unsafe, tests run too quickly.
-        $this->key = AbstractCache::getKey(
-            key: 'redis-cache-' . random_int(min: 0, max: 999999999) . time()
-        );
-
-        parent::setUp();
-    }
-
-    /**
-     * @throws RedisException
-     * @SuppressWarnings(PHPMD.MissingImport)
-     */
-    private function getRedisConnection(): Server
-    {
-        $server = new Server();
-        $server->connect(host: $_ENV['REDIS_HOST']);
-
-        return $server;
     }
 }

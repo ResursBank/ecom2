@@ -33,29 +33,6 @@ use function ord;
 class PaymentTest extends TestCase
 {
     /**
-     * Verify that the isFrozen method works as intended
-     *
-     * @throws EmptyValueException
-     * @throws IllegalCharsetException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    public function testIsFrozen(): void
-    {
-        $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
-        $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
-
-        $this->assertEquals(
-            expected: true,
-            actual: $isFrozen->isFrozen()
-        );
-        $this->assertEquals(
-            expected: false,
-            actual: $notFrozen->isFrozen()
-        );
-    }
-
-    /**
      * Generate a bogus UUID
      *
      * @throws Exception
@@ -105,6 +82,29 @@ class PaymentTest extends TestCase
                 capturedAmount: 0.00,
                 refundedAmount: 0.00
             )
+        );
+    }
+
+    /**
+     * Verify that the isFrozen method works as intended
+     *
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsFrozen(): void
+    {
+        $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
+        $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
+
+        $this->assertEquals(
+            expected: true,
+            actual: $isFrozen->isFrozen()
+        );
+        $this->assertEquals(
+            expected: false,
+            actual: $notFrozen->isFrozen()
         );
     }
 }

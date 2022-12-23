@@ -22,6 +22,13 @@ class SessionTest extends TestCase
 {
     use MockSessionTrait;
 
+    protected function setUp(): void
+    {
+        $this->setupSession(test: $this);
+
+        parent::setUp();
+    }
+
     /**
      * Assert set() assigns value to PHP session.
      *
@@ -143,12 +150,5 @@ class SessionTest extends TestCase
             expected: Session::PREFIX . $key,
             actual: $this->session->getKey(key: $key)
         );
-    }
-
-    protected function setUp(): void
-    {
-        $this->setupSession(test: $this);
-
-        parent::setUp();
     }
 }

@@ -41,6 +41,41 @@ class RepositoryTest extends TestCase
     private string $paymentMethodId;
 
     /**
+     * @throws ConfigException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     */
+    protected function setUp(): void
+    {
+        $this->storeId = $_ENV['STORE_ID'];
+        $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/annuityFactors/' . time()
+            ),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->cache = Repository::getCache(
+            storeId: $this->storeId,
+            paymentMethodId: $this->paymentMethodId
+        );
+
+        $this->cache->clear();
+
+        parent::setUp();
+    }
+
+    /**
      * Assert clearCache() clears cache.
      *
      * @throws ApiException
@@ -152,40 +187,5 @@ class RepositoryTest extends TestCase
         );
 
         $this->assertNotEmpty(actual: $filteredMethods->toArray());
-    }
-
-    /**
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    protected function setUp(): void
-    {
-        $this->storeId = $_ENV['STORE_ID'];
-        $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(
-                path: '/tmp/ecom-test/annuityFactors/' . time()
-            ),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->cache = Repository::getCache(
-            storeId: $this->storeId,
-            paymentMethodId: $this->paymentMethodId
-        );
-
-        $this->cache->clear();
-
-        parent::setUp();
     }
 }

@@ -41,6 +41,56 @@ class RepositoryTest extends TestCase
     use MockSessionTrait;
 
     /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+
+        $this->setupSession(test: $this);
+    }
+
+    /**
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ApiException
+     * @throws CacheException
+     * @throws IllegalValueException
+     */
+    private function getStoreId(): string
+    {
+        $return = $_ENV['STORE_ID'] ?? '';
+
+        /** @var Store $store */
+        foreach (StoreRepository::getStores() as $store) {
+            if ($store->nationalStoreId === (int)$_ENV['NATIONAL_STORE_ID']) {
+                $return = $store->id;
+                break;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -385,55 +435,5 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: ConfigException::class);
         Config::unsetInstance();
         Repository::getSsnData(sessionHandler: $this->session);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-
-        $this->setupSession(test: $this);
-    }
-
-    /**
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ApiException
-     * @throws CacheException
-     * @throws IllegalValueException
-     */
-    private function getStoreId(): string
-    {
-        $return = $_ENV['STORE_ID'] ?? '';
-
-        /** @var Store $store */
-        foreach (StoreRepository::getStores() as $store) {
-            if ($store->nationalStoreId === (int)$_ENV['NATIONAL_STORE_ID']) {
-                $return = $store->id;
-                break;
-            }
-        }
-
-        return $return;
     }
 }

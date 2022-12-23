@@ -40,6 +40,27 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 class PartPaymentTest extends TestCase
 {
     /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new None(),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+    }
+
+    /**
      * Verify that Part payment widget appears to contain correct data
      *
      * @throws JsonException
@@ -163,27 +184,6 @@ class PartPaymentTest extends TestCase
             needle: $startingAt,
             haystack: $widget->content,
             message: 'Widget should contain starting at cost'
-        );
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new None(),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
         );
     }
 }

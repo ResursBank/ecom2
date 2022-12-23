@@ -39,33 +39,6 @@ use function sprintf;
 class MockSigner
 {
     /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public static function approve(Payment $payment): void
-    {
-        $curl = new Curl(
-            url: self::getSigningUrl(payment: $payment),
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::EMPTY,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-        $curl->exec();
-
-        // Wait for the payment to be processed at Resurs Bank.
-        self::waitForStatusUpdate(payment: $payment);
-    }
-
-    /**
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -160,5 +133,32 @@ class MockSigner
 
             $payment = Repository::get(paymentId: $payment->id);
         }
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function approve(Payment $payment): void
+    {
+        $curl = new Curl(
+            url: self::getSigningUrl(payment: $payment),
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::EMPTY,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::RAW
+        );
+        $curl->exec();
+
+        // Wait for the payment to be processed at Resurs Bank.
+        self::waitForStatusUpdate(payment: $payment);
     }
 }

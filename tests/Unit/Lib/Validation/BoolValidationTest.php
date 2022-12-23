@@ -21,6 +21,13 @@ final class BoolValidationTest extends TestCase
 {
     private BoolValidation $boolValidation;
 
+    protected function setUp(): void
+    {
+        $this->boolValidation = new BoolValidation();
+
+        parent::setUp();
+    }
+
     /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
@@ -61,12 +68,5 @@ final class BoolValidationTest extends TestCase
                 key: 'epoch'
             )
         );
-    }
-
-    protected function setUp(): void
-    {
-        $this->boolValidation = new BoolValidation();
-
-        parent::setUp();
     }
 }

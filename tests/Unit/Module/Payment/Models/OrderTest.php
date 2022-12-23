@@ -36,6 +36,43 @@ class OrderTest extends TestCase
     private stdClass $data;
 
     /**
+     * @throws JsonException
+     * @throws TestException
+     */
+    protected function setUp(): void
+    {
+        $this->data = Order::getData();
+
+        parent::setUp();
+    }
+
+    /**
+     * @param array $updates
+     * @throws ReflectionException
+     * @throws TestException
+     * @throws IllegalTypeException
+     */
+    private function convert(
+        array $updates = []
+    ): void {
+        /** @psalm-suppress MixedAssignment */
+        foreach ($updates as $key => $val) {
+            $this->data->{$key} = $val;
+        }
+
+        $item = DataConverter::stdClassToType(
+            object: $this->data,
+            type: OrderModel::class
+        );
+
+        if (!$item instanceof OrderModel) {
+            throw new TestException(
+                message: 'Conversion succeeded but did not return Order instance.'
+            );
+        }
+    }
+
+    /**
      * Assert validateOrderLines() throws IllegalValueException when its
      * length is too long.
      *
@@ -134,42 +171,5 @@ class OrderTest extends TestCase
         $this->convert(updates: [
             'orderReference' => 'Test!',
         ]);
-    }
-
-    /**
-     * @throws JsonException
-     * @throws TestException
-     */
-    protected function setUp(): void
-    {
-        $this->data = Order::getData();
-
-        parent::setUp();
-    }
-
-    /**
-     * @param array $updates
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    private function convert(
-        array $updates = []
-    ): void {
-        /** @psalm-suppress MixedAssignment */
-        foreach ($updates as $key => $val) {
-            $this->data->{$key} = $val;
-        }
-
-        $item = DataConverter::stdClassToType(
-            object: $this->data,
-            type: OrderModel::class
-        );
-
-        if (!$item instanceof OrderModel) {
-            throw new TestException(
-                message: 'Conversion succeeded but did not return Order instance.'
-            );
-        }
     }
 }

@@ -46,6 +46,99 @@ use Resursbank\EcomTest\Utilities\MockSigner;
 class CaptureTest extends TestCase
 {
     /**
+     * @throws EmptyValueException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: $_ENV['JWT_AUTH_SCOPE'],
+                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+            )
+        );
+    }
+
+    /**
+     * Generate a dummy order reference
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(): string
+    {
+        return bin2hex(string: random_bytes(length: 12));
+    }
+
+    /**
+     * Make API call to create payment
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ConfigException
+     */
+    private function createPayment(string $orderReference): Payment
+    {
+        /** @noinspection DuplicatedCode */
+        return Repository::create(
+            storeId: $_ENV['STORE_ID'],
+            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
+            orderLines: new OrderLineCollection(data: [
+                new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
+                    description: 'Android',
+                    reference: 'T-800',
+                    type: OrderLineType::PHYSICAL_GOODS,
+                    unitAmountIncludingVat: 150.75,
+                    totalVatAmount: 60.3
+                ),
+                new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
+                    description: 'Robot',
+                    reference: 'T-1000',
+                    type: OrderLineType::PHYSICAL_GOODS,
+                    unitAmountIncludingVat: 150.75,
+                    totalVatAmount: 60.3
+                ),
+            ]),
+            orderReference: $orderReference,
+            customer: new Customer(
+                deliveryAddress: new Address(
+                    addressRow1: 'Glassgatan 15',
+                    postalArea: 'Göteborg',
+                    postalCode: '41655',
+                    countryCode: CountryCode::SE
+                ),
+                customerType: CustomerType::NATURAL,
+                contactPerson: 'Vincent',
+                email: 'test@hosted.resurs',
+                governmentId: '198305147715',
+                mobilePhone: '46701234567',
+                deviceInfo: new DeviceInfo()
+            )
+        );
+    }
+
+    /**
      * Verify that capturing an entire order works
      *
      * @throws EmptyValueException
@@ -213,99 +306,6 @@ class CaptureTest extends TestCase
         $this->assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog
-        );
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
-            )
-        );
-    }
-
-    /**
-     * Generate a dummy order reference
-     *
-     * @throws Exception
-     */
-    private function generateOrderReference(): string
-    {
-        return bin2hex(string: random_bytes(length: 12));
-    }
-
-    /**
-     * Make API call to create payment
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ConfigException
-     */
-    private function createPayment(string $orderReference): Payment
-    {
-        /** @noinspection DuplicatedCode */
-        return Repository::create(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
-            orderLines: new OrderLineCollection(data: [
-                new OrderLine(
-                    quantity: 2.00,
-                    quantityUnit: 'st',
-                    vatRate: 25.00,
-                    totalAmountIncludingVat: 301.5,
-                    description: 'Android',
-                    reference: 'T-800',
-                    type: OrderLineType::PHYSICAL_GOODS,
-                    unitAmountIncludingVat: 150.75,
-                    totalVatAmount: 60.3
-                ),
-                new OrderLine(
-                    quantity: 2.00,
-                    quantityUnit: 'st',
-                    vatRate: 25.00,
-                    totalAmountIncludingVat: 301.5,
-                    description: 'Robot',
-                    reference: 'T-1000',
-                    type: OrderLineType::PHYSICAL_GOODS,
-                    unitAmountIncludingVat: 150.75,
-                    totalVatAmount: 60.3
-                ),
-            ]),
-            orderReference: $orderReference,
-            customer: new Customer(
-                deliveryAddress: new Address(
-                    addressRow1: 'Glassgatan 15',
-                    postalArea: 'Göteborg',
-                    postalCode: '41655',
-                    countryCode: CountryCode::SE
-                ),
-                customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
-                email: 'test@hosted.resurs',
-                governmentId: '198305147715',
-                mobilePhone: '46701234567',
-                deviceInfo: new DeviceInfo()
-            )
         );
     }
 }
