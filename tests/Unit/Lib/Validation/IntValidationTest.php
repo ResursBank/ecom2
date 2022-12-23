@@ -22,6 +22,9 @@ final class IntValidationTest extends TestCase
 {
     private IntValidation $intValidation;
 
+    /**
+     * Prepare tests.
+     */
     protected function setUp(): void
     {
         $this->intValidation = new IntValidation();

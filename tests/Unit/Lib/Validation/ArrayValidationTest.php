@@ -25,6 +25,9 @@ final class ArrayValidationTest extends TestCase
 {
     private ArrayValidation $arrayValidation;
 
+    /**
+     * Prepare tests.
+     */
     protected function setUp(): void
     {
         $this->arrayValidation = new ArrayValidation();

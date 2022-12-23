@@ -21,6 +21,9 @@ final class BoolValidationTest extends TestCase
 {
     private BoolValidation $boolValidation;
 
+    /**
+     * Prepare tests.
+     */
     protected function setUp(): void
     {
         $this->boolValidation = new BoolValidation();

@@ -24,6 +24,9 @@ final class FloatValidationTest extends TestCase
 {
     private FloatValidation $floatValidation;
 
+    /**
+     * Prepare tests.
+     */
     protected function setUp(): void
     {
         $this->floatValidation = new FloatValidation();

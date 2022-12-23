@@ -26,6 +26,16 @@ final class StringValidationTest extends TestCase
     private StringValidation $stringValidation;
 
     /**
+     * Prepare tests.
+     */
+    protected function setUp(): void
+    {
+        $this->stringValidation = new StringValidation();
+
+        parent::setUp();
+    }
+
+    /**
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
@@ -572,12 +582,5 @@ final class StringValidationTest extends TestCase
 
         $this->expectException(exception: IllegalValueException::class);
         $this->stringValidation->isSwedishOrg(value: '158997368573');
-    }
-
-    protected function setUp(): void
-    {
-        $this->stringValidation = new StringValidation();
-
-        parent::setUp();
     }
 }
