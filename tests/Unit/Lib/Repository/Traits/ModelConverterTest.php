@@ -55,7 +55,7 @@ final class ModelConverterTest extends TestCase
         $this->expectException(exception: InvalidArgumentException::class);
 
         /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
-        $this->validateModel(model: DateTime::class);
+        $this->validateModel(model: 'Nada');
     }
 
     /**
@@ -84,7 +84,7 @@ final class ModelConverterTest extends TestCase
         $this->expectException(exception: InvalidArgumentException::class);
 
         /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
-        $this->convertToModel(data: new stdClass(), model: DateTime::class);
+        $this->convertToModel(data: new stdClass(), model: 'Nope');
     }
 
     /**
