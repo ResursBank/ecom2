@@ -16,16 +16,11 @@ interface EventInterface
 {
     /**
      * Get event identifier.
-     *
-     * @return string
      */
     public function getName(): string;
 
     /**
      * Add an event subscriber.
-     *
-     * @param SubscriberInterface $subscriber
-     * @return void
      */
     public function addSubscriber(SubscriberInterface $subscriber): void;
 

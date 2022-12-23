@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\AnnuityFactor\Http;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -23,10 +22,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Http\Controller;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
 use Resursbank\Ecom\Module\AnnuityFactor\Models\DurationsByMonthRequest;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
+use Throwable;
 
 use function json_encode;
 
@@ -36,10 +36,6 @@ use function json_encode;
 class DurationsByMonthController extends Controller
 {
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     *
-     * @return string
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
@@ -61,8 +57,11 @@ class DurationsByMonthController extends Controller
 
         try {
             if ($storeId === '') {
-                throw new IllegalValueException(message: 'No storeId available');
+                throw new IllegalValueException(
+                    message: 'No storeId available'
+                );
             }
+
             $stringValidation->isUuid(value: $paymentMethodId);
 
             $annuityFactors = Repository::getAnnuityFactors(
@@ -74,7 +73,7 @@ class DurationsByMonthController extends Controller
             foreach ($annuityFactors->content as $annuityFactor) {
                 $return[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
             }
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             throw $exception;
         }
 
@@ -85,7 +84,6 @@ class DurationsByMonthController extends Controller
     }
 
     /**
-     * @return DurationsByMonthRequest
      * @throws HttpException
      */
     public function getRequestData(): DurationsByMonthRequest

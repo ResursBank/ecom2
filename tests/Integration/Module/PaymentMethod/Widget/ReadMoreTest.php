@@ -39,18 +39,11 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
  */
 class ReadMoreTest extends TestCase
 {
-    /**
-     * @var PaymentMethod
-     */
     private PaymentMethod $method;
 
-    /**
-     * @var string
-     */
     private string $url;
 
     /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -66,7 +59,9 @@ class ReadMoreTest extends TestCase
     protected function setUp(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -89,16 +84,17 @@ class ReadMoreTest extends TestCase
 
         /** @var LegalLink $link */
         foreach ($this->method->legalLinks as $link) {
-            if ($link->type === Type::PRICE_INFO) {
-                $this->url = $link->url;
+            if ($link->type !== Type::PRICE_INFO) {
+                continue;
             }
+
+            $this->url = $link->url;
         }
 
         parent::setUp();
     }
 
     /**
-     * @return void
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException

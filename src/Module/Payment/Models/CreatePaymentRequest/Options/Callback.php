@@ -16,16 +16,12 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Callback extends Model
 {
-    /**
-     * @param string|null $url
-     * @param string|null $description
-     */
     public function __construct(
         /**
          * @todo Don't know how to validate urls.
          */
         public readonly ?string $url,
-        public readonly ?string $description,
+        public readonly ?string $description
     ) {
     }
 }

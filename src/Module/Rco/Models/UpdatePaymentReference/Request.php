@@ -16,9 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Request extends Model
 {
-    /**
-     * @param string $paymentReference
-     */
     public function __construct(
         public string $paymentReference
     ) {

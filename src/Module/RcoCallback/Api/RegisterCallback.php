@@ -18,16 +18,16 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Module\RcoCallback\Repository;
 use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
+use Resursbank\Ecom\Module\RcoCallback\Repository;
 
 /**
  * Handles callback registration.
@@ -35,9 +35,6 @@ use Resursbank\Ecom\Module\RcoCallback\Models\RegisterCallback\Request;
 class RegisterCallback
 {
     /**
-     * @param string $eventName
-     * @param Request $request
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -73,8 +70,6 @@ class RegisterCallback
     /**
      * Gets the API URL to use
      *
-     * @param string $eventName
-     * @return string
      * @throws ConfigException
      */
     private function getApiUrl(string $eventName): string

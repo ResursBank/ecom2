@@ -20,40 +20,31 @@ use Resursbank\Ecom\Lib\Locale\Translation;
  */
 class TranslationTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testValidateTranslationIsValidWhenNotEmpty(): void
     {
         $this->assertInstanceOf(
             expected: Translation::class,
-            actual: new Translation(en: 'asdf', sv: 'asdf'),
+            actual: new Translation(en: 'asdf', sv: 'asdf')
         );
     }
 
-    /**
-     * @return void
-     */
     public function testValidateIdThrowsIfSvEmpty(): void
     {
         $this->expectException(exception: EmptyValueException::class);
 
         $this->assertInstanceOf(
             expected: Translation::class,
-            actual: new Translation(en: 'asdf', sv: ''),
+            actual: new Translation(en: 'asdf', sv: '')
         );
     }
 
-    /**
-     * @return void
-     */
     public function testValidateIdThrowsIfEnEmpty(): void
     {
         $this->expectException(exception: EmptyValueException::class);
 
         $this->assertInstanceOf(
             expected: Translation::class,
-            actual: new Translation(sv: 'asdf', en: ''),
+            actual: new Translation(sv: 'asdf', en: '')
         );
     }
 }

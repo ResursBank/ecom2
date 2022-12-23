@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Music extends Model
 {
-    /**
-     * @param int $id
-     * @param string $genre
-     */
     public function __construct(
         public readonly int $id,
         public readonly string $genre

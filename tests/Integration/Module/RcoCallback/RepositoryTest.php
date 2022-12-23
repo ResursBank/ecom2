@@ -33,7 +33,6 @@ use Resursbank\Ecom\Module\RcoCallback\Repository;
 class RepositoryTest extends TestCase
 {
     /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -58,6 +57,7 @@ class RepositoryTest extends TestCase
 
         // Clear existing callbacks
         $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
+
         foreach ($eventNames as $eventName) {
             Repository::deleteCallback(eventName: $eventName);
         }
@@ -66,7 +66,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -82,6 +81,7 @@ class RepositoryTest extends TestCase
     {
         // Clear existing callbacks
         $eventNames = ['TEST', 'UNFREEZE', 'BOOKED', 'UPDATE'];
+
         foreach ($eventNames as $eventName) {
             Repository::deleteCallback(eventName: $eventName);
         }
@@ -92,7 +92,6 @@ class RepositoryTest extends TestCase
     /**
      * Verify that we can register, fetch and delete callbacks
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -121,15 +120,12 @@ class RepositoryTest extends TestCase
                 digestAlgorithm: 'SHA1',
                 digestSalt: 'FOO',
                 digestParameters: [
-                    'paymentId'
+                    'paymentId',
                 ]
             )
         );
 
-        Repository::registerCallback(
-            eventName: $eventName,
-            request: $request
-        );
+        Repository::registerCallback(eventName: $eventName, request: $request);
 
         $registeredCallback = Repository::getCallback(eventName: $eventName);
 
@@ -139,19 +135,13 @@ class RepositoryTest extends TestCase
             expected: $eventName,
             actual: $registeredCallback->eventType
         );
-        $this->assertNotEmpty(
-            actual: $registeredCallback->uriTemplate
-        );
-        $this->assertSame(
-            expected: 200,
-            actual: $deleteResponse
-        );
+        $this->assertNotEmpty(actual: $registeredCallback->uriTemplate);
+        $this->assertSame(expected: 200, actual: $deleteResponse);
     }
 
     /**
      * Verify that fetching all registered callbacks works
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -180,7 +170,7 @@ class RepositoryTest extends TestCase
                 digestAlgorithm: 'SHA1',
                 digestSalt: 'FOO',
                 digestParameters: [
-                    'paymentId'
+                    'paymentId',
                 ]
             )
         );
@@ -203,7 +193,6 @@ class RepositoryTest extends TestCase
     /**
      * Verify that attempting to get an unregistered callback throws an EmptyValueException
      *
-     * @return void
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -217,9 +206,7 @@ class RepositoryTest extends TestCase
      */
     public function testGetCallbackFailure(): void
     {
-        $this->expectException(
-            exception: EmptyValueException::class
-        );
+        $this->expectException(exception: EmptyValueException::class);
         Repository::getCallback(eventName: 'UPDATE');
     }
 }

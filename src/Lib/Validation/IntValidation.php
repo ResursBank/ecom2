@@ -25,8 +25,6 @@ class IntValidation
      * element contains an integer. Returns the validated integer.
      *
      * @param array $data
-     * @param string $key
-     * @return int
      * @throws MissingKeyException
      * @throws IllegalTypeException
      */
@@ -39,17 +37,13 @@ class IntValidation
         }
 
         if (!is_int(value: $data[$key])) {
-            throw new IllegalTypeException(
-                message: "$key is not an int."
-            );
+            throw new IllegalTypeException(message: "$key is not an int.");
         }
 
         return $data[$key];
     }
 
     /**
-     * @param int $value
-     * @return bool
      * @throws IllegalValueException
      */
     public function isPositive(
@@ -65,9 +59,6 @@ class IntValidation
     }
 
     /**
-     * @param int $value
-     * @param int $min
-     * @return bool
      * @throws IllegalValueException
      */
     public function isGt(
@@ -84,10 +75,6 @@ class IntValidation
     }
 
     /**
-     * @param int $value
-     * @param int $min
-     * @param int $max
-     * @return bool
      * @throws IllegalValueException
      */
     public function inRange(int $value, int $min, int $max): bool

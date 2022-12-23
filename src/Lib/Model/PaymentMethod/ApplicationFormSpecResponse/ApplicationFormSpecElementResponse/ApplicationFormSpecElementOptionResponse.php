@@ -19,11 +19,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class ApplicationFormSpecElementOptionResponse extends Model
 {
     /**
-     * @param string $label
-     * @param string $value
-     * @param bool|null $checked
-     * @param string|null $description
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      */
     public function __construct(
@@ -38,7 +33,6 @@ class ApplicationFormSpecElementOptionResponse extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateLabel(): void
@@ -47,7 +41,6 @@ class ApplicationFormSpecElementOptionResponse extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateValue(): void

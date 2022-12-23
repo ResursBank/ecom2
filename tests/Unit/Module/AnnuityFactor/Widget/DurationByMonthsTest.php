@@ -24,7 +24,6 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationByMonths;
 class DurationByMonthsTest extends TestCase
 {
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -32,7 +31,9 @@ class DurationByMonthsTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: new None(),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -44,7 +45,6 @@ class DurationByMonthsTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws FilesystemException
      */
     public function testRenderDurationByMonthsScript(): void

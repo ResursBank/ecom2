@@ -16,11 +16,8 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class AnnuityFactors extends Model
 {
-    /**
-     * @param AnnuityInformationCollection $content
-     */
     public function __construct(
-        public readonly AnnuityInformationCollection $content,
+        public readonly AnnuityInformationCollection $content
     ) {
     }
 }

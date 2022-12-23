@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Payment;
 
+use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -18,7 +19,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment;
-use DateTime;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
@@ -50,8 +50,6 @@ class OrderTest extends TestCase
     /**
      * Create a dummy Payment object with the specified possible actions
      *
-     * @param Payment\Order\PossibleActionCollection $possibleActions
-     * @return Payment
      * @throws Exception
      * @throws EmptyValueException
      * @throws IllegalCharsetException
@@ -86,7 +84,6 @@ class OrderTest extends TestCase
     /**
      * Verify that the canCancel method works as intended
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
@@ -95,15 +92,25 @@ class OrderTest extends TestCase
     public function testCanCancel(): void
     {
         $cancelable = $this->createDummyPayment(
-            possibleActions: new Payment\Order\PossibleActionCollection(data: [
-                new Payment\Order\PossibleAction(action: PossibleAction::CANCEL)
-            ])
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::CANCEL
+                    ),
+                ]
+            )
         );
         $unCancelable = $this->createDummyPayment(
-            possibleActions: new Payment\Order\PossibleActionCollection(data: [
-                new Payment\Order\PossibleAction(action: PossibleAction::REFUND),
-                new Payment\Order\PossibleAction(action: PossibleAction::PARTIAL_REFUND)
-            ])
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::REFUND
+                    ),
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::PARTIAL_REFUND
+                    ),
+                ]
+            )
         );
 
         $this->assertEquals(
@@ -127,14 +134,22 @@ class OrderTest extends TestCase
     public function testCanCapture(): void
     {
         $captureable = $this->createDummyPayment(
-            possibleActions: new Payment\Order\PossibleActionCollection(data: [
-                new Payment\Order\PossibleAction(action: PossibleAction::CAPTURE)
-            ])
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::CAPTURE
+                    ),
+                ]
+            )
         );
         $uncaptureable = $this->createDummyPayment(
-            possibleActions: new Payment\Order\PossibleActionCollection(data: [
-                new Payment\Order\PossibleAction(action: PossibleAction::REFUND)
-            ])
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::REFUND
+                    ),
+                ]
+            )
         );
 
         $this->assertEquals(
@@ -150,7 +165,6 @@ class OrderTest extends TestCase
     /**
      * Verify that the canRefund method works as intended
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
@@ -159,15 +173,25 @@ class OrderTest extends TestCase
     public function testCanRefund(): void
     {
         $refundable = $this->createDummyPayment(
-            possibleActions: new Payment\Order\PossibleActionCollection(data: [
-                new Payment\Order\PossibleAction(action: PossibleAction::REFUND)
-            ])
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::REFUND
+                    ),
+                ]
+            )
         );
         $nonRefundable = $this->createDummyPayment(
-            possibleActions: new Payment\Order\PossibleActionCollection(data: [
-                new Payment\Order\PossibleAction(action: PossibleAction::CANCEL),
-                new Payment\Order\PossibleAction(action: PossibleAction::CAPTURE)
-            ])
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::CANCEL
+                    ),
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::CAPTURE
+                    ),
+                ]
+            )
         );
 
         $this->assertEquals(

@@ -18,10 +18,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class ApplicationFormSpecWithDependencyRequiredIfValue extends Model
 {
-    /**
-     * @param string|null $fieldName
-     * @param string|null $pattern
-     */
     public function __construct(
         public readonly ?string $fieldName = null,
         public readonly ?string $pattern = null

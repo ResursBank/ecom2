@@ -27,9 +27,6 @@ class Session
     public const PREFIX = 'resursbank_';
 
     /**
-     * @param string $key
-     * @param string $val
-     * @return void
      * @throws SessionException
      */
     public function set(string $key, string $val): void
@@ -42,8 +39,6 @@ class Session
     }
 
     /**
-     * @param string $key
-     * @return string
      * @throws SessionException
      */
     public function get(string $key): string
@@ -71,18 +66,11 @@ class Session
         return $_SESSION[$sessionKey];
     }
 
-    /**
-     * @param string $key
-     * @return string
-     */
     public function getKey(string $key): string
     {
         return self::PREFIX . $key;
     }
 
-    /**
-     * @return bool
-     */
     public function isAvailable(): bool
     {
         return session_status() === PHP_SESSION_ACTIVE;

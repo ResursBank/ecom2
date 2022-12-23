@@ -17,13 +17,9 @@ use Resursbank\Ecom\Lib\Model\Payment\Metadata\EntryCollection;
  */
 class Metadata extends Model
 {
-    /**
-     * @param string|null $creator
-     * @param ?EntryCollection $custom
-     */
     public function __construct(
         public readonly ?string $creator = null,
-        public readonly ?EntryCollection $custom = null,
+        public readonly ?EntryCollection $custom = null
     ) {
     }
 }

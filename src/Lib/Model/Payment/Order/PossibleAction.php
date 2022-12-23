@@ -17,11 +17,8 @@ use Resursbank\Ecom\Module\Payment\Enum\PossibleAction as ActionEnum;
  */
 class PossibleAction extends Model
 {
-    /**
-     * @param ActionEnum|null $action
-     */
     public function __construct(
-        public readonly ?ActionEnum $action = null,
+        public readonly ?ActionEnum $action = null
     ) {
     }
 }

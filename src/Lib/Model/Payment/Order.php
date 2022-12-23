@@ -22,15 +22,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Order extends Model
 {
     /**
-     * @param string $orderReference
-     * @param ActionLogCollection $actionLog
-     * @param PossibleActionCollection $possibleActions
-     * @param float $totalOrderAmount
-     * @param float $canceledAmount
-     * @param float $authorizedAmount
-     * @param float $capturedAmount
-     * @param float $refundedAmount
-     * @param StringValidation $stringValidation
      * @throws IllegalCharsetException
      * @throws IllegalValueException
      */
@@ -43,7 +34,7 @@ class Order extends Model
         public readonly float $authorizedAmount,
         public readonly float $capturedAmount,
         public readonly float $refundedAmount,
-        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateOrderReference();
     }

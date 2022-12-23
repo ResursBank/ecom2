@@ -19,22 +19,18 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Header extends Model
 {
     /**
-     * @param string $key
-     * @param string|int $value
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @todo Could be improved by fixing $value type (could just be string, int could be separate class if needed).
      */
     public function __construct(
         public readonly string $key,
         public readonly string|int $value,
-        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateKey();
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     private function validateKey(): void

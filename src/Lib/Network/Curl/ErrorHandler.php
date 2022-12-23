@@ -24,24 +24,18 @@ use stdClass;
 
 use function is_array;
 use function is_int;
-use function is_string;
 use function is_object;
+use function is_string;
 
 /**
  * Error handling of curl requests.
  */
 class ErrorHandler
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     public readonly int $httpCode;
 
     /**
-     * @param string|bool $body
-     * @param CurlHandle $ch
-     * @param ContentType $contentType
-     * @param StringValidation $stringValidation
      * @throws IllegalTypeException
      * @throws ConfigException
      */
@@ -49,13 +43,12 @@ class ErrorHandler
         public readonly string|bool $body,
         public readonly CurlHandle $ch,
         public readonly ContentType $contentType,
-        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->httpCode = $this->getHttpCode();
     }
 
     /**
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -75,13 +68,15 @@ class ErrorHandler
     }
 
     /**
-     * @return int
      * @throws IllegalTypeException
      * @throws ConfigException
      */
     private function getHttpCode(): int
     {
-        $code = curl_getinfo(handle: $this->ch, option: CURLINFO_RESPONSE_CODE);
+        $code = curl_getinfo(
+            handle: $this->ch,
+            option: CURLINFO_RESPONSE_CODE
+        );
 
         if (is_string(value: $code) && is_numeric(value: $code)) {
             $code = (int) $code;
@@ -100,8 +95,6 @@ class ErrorHandler
     }
 
     /**
-     * @param string $jsonError
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws ConfigException
@@ -111,7 +104,10 @@ class ErrorHandler
     {
         if (
             $this->httpCode === 401 ||
-            ($this->httpCode === 400 && $jsonError === 'invalid_client')
+            (
+                $this->httpCode === 400 &&
+                $jsonError === 'invalid_client'
+            )
         ) {
             $exception = new AuthException(
                 message: 'Access denied. Please verify user credentials.'
@@ -123,7 +119,9 @@ class ErrorHandler
 
         $message = $this->getMessageFromErrorBody();
         $exception = new CurlException(
-            message: !empty($message) ? $message : curl_error(handle: $this->ch),
+            message: !empty($message) ? $message : curl_error(
+                handle: $this->ch
+            ),
             code: curl_errno(handle: $this->ch),
             body: $this->body,
             httpCode: $this->httpCode
@@ -136,7 +134,6 @@ class ErrorHandler
     /**
      * Attempts to parse an error message from $this->body if the HTTP response code is >= 400.
      *
-     * @return string
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -151,24 +148,44 @@ class ErrorHandler
                     depth: 768,
                     flags: JSON_THROW_ON_ERROR
                 );
+
                 if (!is_object(value: $decoded)) {
-                    throw new JsonException(message: 'json_decode did not produce an object');
+                    throw new JsonException(
+                        message: 'json_decode did not produce an object'
+                    );
                 }
             } catch (JsonException $jsonException) {
-                Config::getLogger()->error(message: $jsonException->getMessage());
+                Config::getLogger()->error(
+                    message: $jsonException->getMessage()
+                );
                 Config::getLogger()->error(message: $jsonException);
             }
         }
 
         $message = '';
+
         if (isset($decoded) && is_object(value: $decoded)) {
-            if (isset($decoded->code) && (is_string(value: $decoded->code) || is_numeric(value: $decoded->code))) {
+            if (
+                isset($decoded->code) &&
+                (
+                    is_string(value: $decoded->code) ||
+                    is_numeric(value: $decoded->code)
+                )
+            ) {
                 $message .= $decoded->code;
             }
-            if (isset($decoded->message) && is_string(value: $decoded->message)) {
+
+            if (
+                isset($decoded->message) &&
+                is_string(value: $decoded->message)
+            ) {
                 $message .= (!empty($message) ? ', ' : '') . $decoded->message . ' ';
             }
-            if (isset($decoded->traceId) && is_string(value: $decoded->traceId)) {
+
+            if (
+                isset($decoded->traceId) &&
+                is_string(value: $decoded->traceId)
+            ) {
                 $message .= (!empty($message) ? ', ' : '') . '[Trace ID: ' . $decoded->traceId . ']';
             }
         }
@@ -177,7 +194,6 @@ class ErrorHandler
     }
 
     /**
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -188,52 +204,57 @@ class ErrorHandler
      */
     private function validateBody(): void
     {
-        if ($this->contentType === ContentType::JSON) {
-            if (!is_string(value: $this->body)) {
-                $exception = new IllegalTypeException(
-                    message: 'Body is not a string, but should be for JSON content type.'
-                );
-                Config::getLogger()->error(message: $exception->getMessage());
-                throw $exception;
-            }
-
-            $this->stringValidation->notEmpty(value: $this->body);
-
-            $content = json_decode(
-                json: $this->body,
-                associative: false,
-                depth: 512,
-                flags: JSON_THROW_ON_ERROR
-            );
-
-            if (!is_array(value: $content) && !$content instanceof stdClass) {
-                $exception = new IllegalValueException(
-                    message: 'Decoded JSON body is not an object.'
-                );
-                Config::getLogger()->error(message: $exception->getMessage());
-                Config::getLogger()->error(message: $exception);
-                throw $exception;
-            }
-
-            /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
-            $error = $content->error ?? '';
-
-            if (is_string(value: $error) && $error !== '') {
-                $this->throwCurlException(jsonError: $error);
-            }
+        if ($this->contentType !== ContentType::JSON) {
+            return;
         }
+
+        if (!is_string(value: $this->body)) {
+            $exception = new IllegalTypeException(
+                message: 'Body is not a string, but should be for JSON content type.'
+            );
+            Config::getLogger()->error(message: $exception->getMessage());
+            throw $exception;
+        }
+
+        $this->stringValidation->notEmpty(value: $this->body);
+
+        $content = json_decode(
+            json: $this->body,
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        if (!is_array(value: $content) && !$content instanceof stdClass) {
+            $exception = new IllegalValueException(
+                message: 'Decoded JSON body is not an object.'
+            );
+            Config::getLogger()->error(message: $exception->getMessage());
+            Config::getLogger()->error(message: $exception);
+            throw $exception;
+        }
+
+        /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
+        $error = $content->error ?? '';
+
+        if (!is_string(value: $error) || $error === '') {
+            return;
+        }
+
+        $this->throwCurlException(jsonError: $error);
     }
 
     /**
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws ConfigException
      */
     private function validateHttpCode(): void
     {
-        if ($this->httpCode >= 400 || $this->httpCode < 100) {
-            $this->throwCurlException();
+        if ($this->httpCode < 400 && $this->httpCode >= 100) {
+            return;
         }
+
+        $this->throwCurlException();
     }
 }

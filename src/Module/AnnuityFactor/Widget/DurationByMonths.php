@@ -19,14 +19,13 @@ use function str_contains;
  */
 class DurationByMonths extends Widget
 {
-    /** @var string  */
-    private readonly string $generatedScript;
-
-    /** @var string  */
+    /** @var string */
     public readonly string $separator;
 
+    /** @var string */
+    private readonly string $generatedScript;
+
     /**
-     * @param string $endpointUrl
      * @throws FilesystemException
      */
     public function __construct(
@@ -37,12 +36,12 @@ class DurationByMonths extends Widget
         } else {
             $this->separator = '?';
         }
-        $this->generatedScript = $this->render(file: __DIR__ . '/DurationByMonths.phtml');
+
+        $this->generatedScript = $this->render(
+            file: __DIR__ . '/DurationByMonths.phtml'
+        );
     }
 
-    /**
-     * @return string
-     */
     public function getScript(): string
     {
         return $this->generatedScript;

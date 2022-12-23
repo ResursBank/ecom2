@@ -17,13 +17,6 @@ use Throwable;
  */
 class CurlException extends Exception
 {
-    /**
-     * @param string $message
-     * @param int $code
-     * @param string|bool $body
-     * @param int $httpCode
-     * @param Throwable|null $previous
-     */
     public function __construct(
         string $message,
         int $code,

@@ -21,24 +21,23 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use stdClass;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
 
 /**
  * POST /payments/{payment_id}/create
  */
 class Create
 {
-    /** @var Mapi  */
     private Mapi $mapi;
 
     public function __construct()
@@ -47,15 +46,6 @@ class Create
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param OrderLineCollection $orderLines
-     * @param string|null $orderReference
-     * @param Application|null $application
-     * @param Customer|null $customer
-     * @param Metadata|null $metadata
-     * @param Options|null $options
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -82,32 +72,39 @@ class Create
             'storeId' => $storeId,
             'paymentMethodId' => $paymentMethodId,
             'order' => [
-                'orderLines' => $orderLines->toArray()
-            ]
+                'orderLines' => $orderLines->toArray(),
+            ],
         ];
+
         if ($orderReference) {
             $params['order']['orderReference'] = $orderReference;
         }
+
         if ($application) {
             $params['application'] = $application;
         }
+
         if ($customer) {
             // If governmentId is empty or null, remove it from the payload.
             // Some payment methods require this field to be removed, if empty.
             if (empty($customer->governmentId)) {
                 unset($customer->governmentId);
             }
+
             $params['customer'] = $customer;
         }
+
         if ($metadata) {
             //$params['metadata'] = $metadata;
             // @todo Find a prettier solution to the issue of Metadata::custom being turned into an empty object
             //   when passed through json_encode.
             $params['metadata'] = new stdClass();
+
             if (isset($metadata->custom)) {
                 $params['metadata']->custom = $metadata->custom->toArray();
             }
         }
+
         if ($options) {
             $params['options'] = $options;
         }
@@ -128,7 +125,7 @@ class Create
         if (!$data instanceof stdClass) {
             throw new ApiException(
                 message: 'Invalid response from API. Not an stdClass.',
-                code: 500,
+                code: 500
             );
         }
 

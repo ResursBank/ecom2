@@ -22,9 +22,6 @@ class SessionTest extends TestCase
 {
     use MockSessionTrait;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->setupSession(test: $this);
@@ -35,7 +32,6 @@ class SessionTest extends TestCase
     /**
      * Assert set() assigns value to PHP session.
      *
-     * @return void
      * @throws SessionException
      */
     public function testSet(): void
@@ -63,7 +59,6 @@ class SessionTest extends TestCase
     /**
      * Asset set() throws SessionException if session is not active.
      *
-     * @return void
      * @throws SessionException
      */
     public function testSetThrowsWithoutSession(): void
@@ -78,7 +73,6 @@ class SessionTest extends TestCase
     /**
      * Asset get() throws SessionException if session is not active.
      *
-     * @return void
      * @throws SessionException
      */
     public function testGetThrowsWithoutSession(): void
@@ -93,7 +87,6 @@ class SessionTest extends TestCase
     /**
      * Asset get() throws SessionValueException if key is not set in session.
      *
-     * @return void
      * @throws SessionException
      */
     public function testGetThrowsWithoutKey(): void
@@ -109,7 +102,6 @@ class SessionTest extends TestCase
     /**
      * Asset get() throws SessionValueException if value of key is not a string.
      *
-     * @return void
      * @throws SessionException
      */
     public function testGetThrowsWhenKeyNotString(): void
@@ -130,7 +122,6 @@ class SessionTest extends TestCase
     /**
      * Asset get() returns value from session.
      *
-     * @return void
      * @throws SessionException
      */
     public function testGet(): void
@@ -150,8 +141,6 @@ class SessionTest extends TestCase
 
     /**
      * Assert getKey() prefixes keys.
-     *
-     * @return void
      */
     public function testGetKey(): void
     {

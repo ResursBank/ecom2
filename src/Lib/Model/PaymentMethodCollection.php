@@ -23,9 +23,6 @@ class PaymentMethodCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: PaymentMethod::class
-        );
+        parent::__construct(data: $data, type: PaymentMethod::class);
     }
 }

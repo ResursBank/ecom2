@@ -23,9 +23,6 @@ class OrderLineCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: OrderLine::class
-        );
+        parent::__construct(data: $data, type: OrderLine::class);
     }
 }

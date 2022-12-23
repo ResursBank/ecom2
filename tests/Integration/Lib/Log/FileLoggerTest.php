@@ -14,11 +14,12 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
+use Throwable;
 
 use function get_class;
 use function is_array;
@@ -28,11 +29,11 @@ use function is_array;
  */
 final class FileLoggerTest extends TestCase
 {
-    private bool $isPipeline = false;
-
     private const BASE_PATH = '/tmp';
     private const PATH_PREFIX = 'phpunit_FileLoggerTest';
     private const LOG_FILENAME = 'ecom.log';
+
+    private bool $isPipeline = false;
 
     private string $path;
     private string $filename;
@@ -41,7 +42,6 @@ final class FileLoggerTest extends TestCase
     /**
      * Set up our required variables, directories and files.
      *
-     * @return void
      * @throws Exception
      * @noinspection PhpMissingParentCallCommonInspection
      */
@@ -51,7 +51,9 @@ final class FileLoggerTest extends TestCase
         $this->message = 'This is a test message';
 
         if (!is_writable(filename: self::BASE_PATH)) {
-            $this::markTestSkipped(message: self::BASE_PATH . ' directory is not writable, skipping test');
+            $this::markTestSkipped(
+                message: self::BASE_PATH . ' directory is not writable, skipping test'
+            );
         }
 
         $this->path = self::BASE_PATH . DIRECTORY_SEPARATOR . self::PATH_PREFIX . '_' .
@@ -75,37 +77,42 @@ final class FileLoggerTest extends TestCase
     /**
      * Clean up the files and directories we created
      *
-     * @return void
      * @noinspection PhpMissingParentCallCommonInspection
      */
     protected function tearDown(): void
     {
-        if (file_exists(filename: $this->filename) && !unlink(filename: $this->filename)) {
-            $this::markTestSkipped(message: 'Failed to delete the test log file');
+        if (
+            file_exists(filename: $this->filename) &&
+            !unlink(filename: $this->filename)
+        ) {
+            $this::markTestSkipped(
+                message: 'Failed to delete the test log file'
+            );
         }
-        if (!rmdir(directory: $this->path)) {
-            $this::markTestSkipped(message: 'Failed to delete test directory');
+
+        if (rmdir(directory: $this->path)) {
+            return;
         }
+
+        $this::markTestSkipped(message: 'Failed to delete test directory');
     }
 
     /**
      * Fetches the last line logged to specified file
-     *
-     * @param string $filename
-     * @return string
      */
     private function getLastLineFromFile(string $filename): string
     {
         $lines = file(filename: $filename);
 
         /** @noinspection OffsetOperationsInspection */
-        return is_array(value: $lines) && count($lines) >= 1 ? $lines[count($lines) - 1] : '';
+        return is_array(value: $lines) && count($lines) >= 1
+            ? $lines[count($lines) - 1]
+            : '';
     }
 
     /**
      * Verify that a FilesystemException is thrown if we attempt to write to an unwritable file.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLoggingFailure(): void
@@ -127,7 +134,6 @@ final class FileLoggerTest extends TestCase
      * Verify that attempting to log a message with a log level below the one configured results in no message
      * being logged.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws FilesystemException
      * @throws FormatException
@@ -160,7 +166,6 @@ final class FileLoggerTest extends TestCase
     /**
      * Verify that debug logging works
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLogDebug(): void
@@ -170,13 +175,15 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertSame(expected: LogLevel::DEBUG->name . ': ' . $this->message . PHP_EOL, actual: $loggedDebug);
+        $this::assertSame(
+            expected: LogLevel::DEBUG->name . ': ' . $this->message . PHP_EOL,
+            actual: $loggedDebug
+        );
     }
 
     /**
      * Verify that info logging works
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLogInfo(): void
@@ -186,13 +193,15 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertSame(expected: LogLevel::INFO->name . ': ' . $this->message . PHP_EOL, actual: $loggedInfo);
+        $this::assertSame(
+            expected: LogLevel::INFO->name . ': ' . $this->message . PHP_EOL,
+            actual: $loggedInfo
+        );
     }
 
     /**
      * Verify that warning logging works
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLogWarning(): void
@@ -211,7 +220,6 @@ final class FileLoggerTest extends TestCase
     /**
      * Verify that error logging works
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLogError(): void
@@ -221,13 +229,15 @@ final class FileLoggerTest extends TestCase
             string: $this->getLastLineFromFile(filename: $this->filename),
             offset: 26
         );
-        $this::assertSame(expected: LogLevel::ERROR->name . ': ' . $this->message . PHP_EOL, actual: $loggedError);
+        $this::assertSame(
+            expected: LogLevel::ERROR->name . ': ' . $this->message . PHP_EOL,
+            actual: $loggedError
+        );
     }
 
     /**
      * Verify that Exceptions get logged
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLogException(): void
@@ -243,7 +253,6 @@ final class FileLoggerTest extends TestCase
     /**
      * Assert log() will log Error objects.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testDebugLogsError(): void
@@ -259,16 +268,15 @@ final class FileLoggerTest extends TestCase
     /**
      * Verify that creating a FileLogger with an empty path throws an
      * EmptyValueException
-     *
-     * @return void
      */
     public function testValidatePathWithEmptyPath(): void
     {
         //$this->expectException(exception: EmptyValueException::class);
         $className = false;
+
         try {
             new FileLogger(path: '');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
@@ -280,60 +288,65 @@ final class FileLoggerTest extends TestCase
 
     /**
      * Verify that creating a FileLogger with a path with leading whitespace throws a ValidationException
-     *
-     * @return void
      */
     public function testValidatePathWithLeadingWhitespace(): void
     {
         $className = false;
+
         try {
             new FileLogger(path: '/tmp ');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: FormatException::class, actual: $className);
+        $this::assertSame(
+            expected: FormatException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that creating a FileLogger with a path with trailing whitespace throws a ValidationException
-     *
-     * @return void
      */
     public function testValidatePathWithTrailingWhitespace(): void
     {
         $className = false;
+
         try {
             new FileLogger(path: ' /tmp');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: FormatException::class, actual: $className);
+        $this::assertSame(
+            expected: FormatException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that creating a FileLogger with a path with a trailing directory separator character
      * throws a ValidationException
-     *
-     * @return void
      */
     public function testValidatePathWithTrailingSeparator(): void
     {
         $className = false;
+
         try {
             new FileLogger(path: '/tmp/');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: FormatException::class, actual: $className);
+        $this::assertSame(
+            expected: FormatException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that attempting to create a FileLogger using a non-existent path causes a ValidationException
      *
-     * @return void
      * @throws Exception
      */
     public function testValidatePathWhichDoesNotExist(): void
@@ -341,48 +354,58 @@ final class FileLoggerTest extends TestCase
         $fakePath = $this->path . bin2hex(string: random_bytes(length: 8));
 
         if (file_exists(filename: $fakePath)) {
-            $this::markTestSkipped(message: "Path exists when it shouldn't, skipping");
+            $this::markTestSkipped(
+                message: "Path exists when it shouldn't, skipping"
+            );
         }
 
         $className = false;
+
         try {
             new FileLogger(path: $fakePath);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: FilesystemException::class, actual: $className);
+        $this::assertSame(
+            expected: FilesystemException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that creating a FileLogger using a path which is not a directory causes a ValidationException
      *
-     * @return void
      * @throws Exception
      */
     public function testValidatePathWhichIsNotDirectory(): void
     {
-        $filePath = $this->path . DIRECTORY_SEPARATOR . bin2hex(string: random_bytes(length: 8));
+        $filePath = $this->path . DIRECTORY_SEPARATOR . bin2hex(
+            string: random_bytes(length: 8)
+        );
+
         if (!touch(filename: $filePath)) {
             $this::markTestSkipped(message: 'Failed to create file for test');
         }
 
         $className = false;
+
         try {
             new FileLogger(path: $filePath);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
         unlink(filename: $filePath);
 
-        $this::assertSame(expected: FilesystemException::class, actual: $className);
+        $this::assertSame(
+            expected: FilesystemException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that creating a FileLogger using a path which is unwritable causes a ValidationException
-     *
-     * @return void
      */
     public function testValidatePathWhichIsUnwritable(): void
     {
@@ -391,37 +414,47 @@ final class FileLoggerTest extends TestCase
         }
 
         if (!chmod(filename: $this->path, permissions: 0400)) {
-            $this::markTestSkipped(message: 'Failed to change path directory permissions');
+            $this::markTestSkipped(
+                message: 'Failed to change path directory permissions'
+            );
         }
 
         $className = false;
+
         try {
             new FileLogger(path: $this->path);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
         if (!chmod(filename: $this->path, permissions: 0755)) {
-            $this::markTestSkipped(message: 'Failed to change path directory permissions');
+            $this::markTestSkipped(
+                message: 'Failed to change path directory permissions'
+            );
         }
 
-        $this::assertSame(expected: FilesystemException::class, actual: $className);
+        $this::assertSame(
+            expected: FilesystemException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that creating a FileLogger using a valid path raises no exceptions
-     *
-     * @return void
      */
     public function testValidatePathWithNoErrors(): void
     {
         $logger = false;
+
         try {
             $logger = new FileLogger(path: $this->path);
-        } catch (Exception) {
+        } catch (Throwable) {
             $this::fail(message: 'Exception thrown with valid path');
         }
 
-        $this::assertSame(expected: FileLogger::class, actual: get_class(object: $logger));
+        $this::assertSame(
+            expected: FileLogger::class,
+            actual: get_class(object: $logger)
+        );
     }
 }

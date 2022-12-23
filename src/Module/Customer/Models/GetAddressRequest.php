@@ -22,9 +22,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class GetAddressRequest extends Model
 {
     /**
-     * @param string $govId
-     * @param CustomerType $customerType
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @todo Add tests. See ECP-272
@@ -38,7 +35,6 @@ class GetAddressRequest extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ElseExpression)

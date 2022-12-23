@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Http;
 
 use Error;
-use Exception;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -19,6 +18,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
+use Throwable;
 
 use function file_get_contents;
 use function get_class;
@@ -33,15 +33,16 @@ class Controller
      * Output JSON data.
      *
      * @param array $data
-     * @return string
      */
     public function respond(
         array $data
     ): string {
         try {
             $result = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
-        } catch (Exception) {
-            $result = '{"error":"' . $this->translateError(phraseId: 'failed-to-encode') . '"}';
+        } catch (Throwable) {
+            $result = '{"error":"' . $this->translateError(
+                phraseId: 'failed-to-encode'
+            ) . '"}';
         }
 
         return $result;
@@ -49,11 +50,8 @@ class Controller
 
     /**
      * Shorthand method to log an Exception and create an error response.
-     *
-     * @param Exception $exception
-     * @return string
      */
-    public function respondWithError(Exception $exception): string
+    public function respondWithError(Throwable $exception): string
     {
         $this->log(exception: $exception);
         return $this->respond(
@@ -61,11 +59,7 @@ class Controller
         );
     }
 
-    /**
-     * @param Exception $exception
-     * @return int
-     */
-    public function getErrorResponseCode(Exception $exception): int
+    public function getErrorResponseCode(Throwable $exception): int
     {
         return match (get_class(object: $exception)) {
             HttpException::class => $exception->getCode(),
@@ -77,12 +71,9 @@ class Controller
     /**
      * Mask messages from exceptions other than HttpException instances, to
      * ensure sensitive information is never rendered to the end client.
-     *
-     * @param Exception $exception
-     * @return string
      */
     public function getErrorMessage(
-        Exception $exception
+        Throwable $exception
     ): string {
         return $exception instanceof HttpException ?
             $exception->getMessage() :
@@ -93,7 +84,6 @@ class Controller
      * Resolve decoded input data.
      *
      * @param class-string $model
-     * @return Model
      * @throws HttpException
      */
     public function getRequestModel(
@@ -113,17 +103,16 @@ class Controller
             }
         } catch (JsonException) {
             throw new HttpException(
-                message: $this->translateError(phraseId: 'malformed-post-data'),
+                message: $this->translateError(
+                    phraseId: 'malformed-post-data'
+                ),
                 code: 406
             );
         }
 
         try {
-            return DataConverter::stdClassToType(
-                object: $obj,
-                type: $model
-            );
-        } catch (Exception | Error) {
+            return DataConverter::stdClassToType(object: $obj, type: $model);
+        } catch (Throwable | Error) {
             throw new HttpException(
                 message: $this->translateError(phraseId: 'invalid-post-data'),
                 code: 415
@@ -132,14 +121,13 @@ class Controller
     }
 
     /**
-     * @return string
      * @throws HttpException
      */
     public function getInputData(): string
     {
         $data = file_get_contents(filename: 'php://input');
 
-        if (false === $data || $data === '') {
+        if ($data === false || $data === '') {
             throw new HttpException(
                 message: $this->translateError(phraseId: 'missing-post-data'),
                 code: 400
@@ -149,32 +137,25 @@ class Controller
         return $data;
     }
 
-    /**
-     * @param Exception $exception
-     * @return void
-     */
     public function log(
-        Exception $exception
+        Throwable $exception
     ): void {
         try {
             Config::getLogger()->debug(message: $exception);
-        } catch (Exception) {
+        } catch (Throwable) {
             // Logging is optional. Silence.
         }
     }
 
     /**
      * Translate error message without tossing Exception.
-     *
-     * @param string $phraseId
-     * @return string
      */
     public function translateError(
         string $phraseId
     ): string {
         try {
             $result = Translator::translate(phraseId: $phraseId);
-        } catch (Exception) {
+        } catch (Throwable) {
             $result = 'Failed to translate error. Check debug log for info.';
         }
 

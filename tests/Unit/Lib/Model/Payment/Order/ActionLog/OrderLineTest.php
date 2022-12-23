@@ -27,18 +27,11 @@ use stdClass;
  */
 class OrderLineTest extends TestCase
 {
-    /**
-     * @var OrderLineModel
-     */
     private OrderLineModel $item;
 
-    /**
-     * @var stdClass
-     */
     private stdClass $data;
 
     /**
-     * @return void
      * @throws JsonException
      * @throws TestException
      */
@@ -51,7 +44,6 @@ class OrderLineTest extends TestCase
 
     /**
      * @param array $updates
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -83,7 +75,6 @@ class OrderLineTest extends TestCase
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -93,7 +84,7 @@ class OrderLineTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'description' => 'This text is way too long for this poor little ' .
-                'model property.'
+                'model property.',
         ]);
     }
 
@@ -101,7 +92,6 @@ class OrderLineTest extends TestCase
      * Assert validateReference() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -111,7 +101,7 @@ class OrderLineTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'reference' => 'This text is way too long for this poor little ' .
-                'model property.'
+                'model property.',
         ]);
     }
 
@@ -119,7 +109,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantityUnit() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -129,7 +118,7 @@ class OrderLineTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'quantityUnit' => 'This text is way too long for this poor little ' .
-                'model property.'
+                'model property.',
         ]);
     }
 
@@ -137,7 +126,6 @@ class OrderLineTest extends TestCase
      * Assert validateVatRate() throws IllegalValueException when its
      * value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -152,7 +140,6 @@ class OrderLineTest extends TestCase
      * Assert validateVatRate() throws IllegalValueException when its
      * value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -167,7 +154,6 @@ class OrderLineTest extends TestCase
      * Assert validateVatRate() throws IllegalValueException when its
      * value has more than 2 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -182,7 +168,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantity() throws IllegalValueException when its
      * value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -197,7 +182,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantity() throws IllegalValueException when its
      * value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -212,7 +196,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantity() throws IllegalValueException when its
      * value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -227,7 +210,6 @@ class OrderLineTest extends TestCase
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -242,7 +224,6 @@ class OrderLineTest extends TestCase
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -257,7 +238,6 @@ class OrderLineTest extends TestCase
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -272,7 +252,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -287,7 +266,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -302,7 +280,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -317,7 +294,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -332,7 +308,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -347,7 +322,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -361,7 +335,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -378,7 +351,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -395,7 +367,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -413,7 +384,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -430,7 +400,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -447,7 +416,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -464,7 +432,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -481,7 +448,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -498,7 +464,6 @@ class OrderLineTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException

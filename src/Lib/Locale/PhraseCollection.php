@@ -23,9 +23,6 @@ class PhraseCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: Phrase::class
-        );
+        parent::__construct(data: $data, type: Phrase::class);
     }
 }

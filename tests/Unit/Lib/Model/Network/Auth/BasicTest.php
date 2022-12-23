@@ -20,8 +20,6 @@ class BasicTest extends TestCase
 {
     /**
      * Assert EmptyValueException is thrown when username is empty.
-     *
-     * @return void
      */
     public function testEmptyUsernameThrows(): void
     {
@@ -31,8 +29,6 @@ class BasicTest extends TestCase
 
     /**
      * Assert EmptyValueException is thrown when password is empty.
-     *
-     * @return void
      */
     public function testEmptyPasswordThrows(): void
     {

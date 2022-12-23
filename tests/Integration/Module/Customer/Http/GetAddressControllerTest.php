@@ -37,18 +37,11 @@ class GetAddressControllerTest extends TestCase
 {
     use MockSessionTrait;
 
-    /**
-     * @var Controller
-     */
     private Controller $controller;
 
-    /**
-     * @var string
-     */
     private string $storeId;
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -56,7 +49,9 @@ class GetAddressControllerTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -80,10 +75,6 @@ class GetAddressControllerTest extends TestCase
      * NOTE: This will manipulate headers. This will cause an error since
      * PHPUnit has already set a header. Suppressing is the only way.
      *
-     * @param string $govId
-     * @param CustomerType $customerType
-     * @param string $storeId
-     * @return string
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
@@ -107,17 +98,16 @@ class GetAddressControllerTest extends TestCase
     /**
      * Assert output from controller contains some string. This is an attempt
      * to identify the response before proceeding with further value evaluation.
-     *
-     * @param string $needle
-     * @param string $haystack
-     * @return void
      */
     private function assertResponseContains(
         string $needle,
         string $haystack
     ): void {
         $this->assertNotEmpty(actual: $haystack);
-        $this->assertStringContainsString(needle: $needle, haystack: $haystack);
+        $this->assertStringContainsString(
+            needle: $needle,
+            haystack: $haystack
+        );
     }
 
     /**
@@ -126,7 +116,6 @@ class GetAddressControllerTest extends TestCase
      * incoming input data to PHP (faking the contents of php://input).
      *
      * @param array $data
-     * @return Controller
      * @throws JsonException
      */
     private function getControllerWithMockedInputData(array $data): Controller
@@ -139,7 +128,9 @@ class GetAddressControllerTest extends TestCase
         /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
         $controller->expects($this->once())
             ->method(constraint: 'getInputData')
-            ->willReturn(value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR));
+            ->willReturn(
+                value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
+            );
 
         return $controller;
     }
@@ -147,7 +138,6 @@ class GetAddressControllerTest extends TestCase
     /**
      * Assert exec() fetches address data.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -203,14 +193,15 @@ class GetAddressControllerTest extends TestCase
      * error property when we use a none existing store id (simulating a failed
      * API call to fetch address data).
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws JsonException
      */
     public function testExecWithInvalidStoreId(): void
     {
-        $this->markTestSkipped(message: 'This does not work, causes error. Disabled for now');
+        $this->markTestSkipped(
+            message: 'This does not work, causes error. Disabled for now'
+        );
         $data = $this->callController(
             govId: '198001010001',
             customerType: CustomerType::NATURAL,
@@ -234,7 +225,6 @@ class GetAddressControllerTest extends TestCase
     /**
      * Assert exec() fetches address data for company customer.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -267,14 +257,16 @@ class GetAddressControllerTest extends TestCase
         );
 
         $this->assertInstanceOf(expected: Address::class, actual: $address);
-        $this->assertSame(expected: 'Helsingborg', actual: $address->postalArea);
+        $this->assertSame(
+            expected: 'Helsingborg',
+            actual: $address->postalArea
+        );
     }
 
     /**
      * Assert that getRequestData() throws HttpException with code 415 when
      * supplied that does not convert to a GetAddressRequest instance.
      *
-     * @return void
      * @throws HttpException
      * @throws JsonException
      */
@@ -295,7 +287,6 @@ class GetAddressControllerTest extends TestCase
      * supplied data that would cause an IllegalValueException when attempting
      * to convert to GetAddressRequest instance.
      *
-     * @return void
      * @throws HttpException
      * @throws JsonException
      */
@@ -304,7 +295,7 @@ class GetAddressControllerTest extends TestCase
         $controller = $this->getControllerWithMockedInputData(
             data: [
                 'govId' => '166997368573',
-                'customerType' => CustomerType::NATURAL->value
+                'customerType' => CustomerType::NATURAL->value,
             ]
         );
 
@@ -318,7 +309,6 @@ class GetAddressControllerTest extends TestCase
      * Assert that getRequestData() throws HttpException with code 415 when
      * getRequestModel() returns an unexpected instance of Model.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestDataThrowsWithInvalidConversion(): void
@@ -343,7 +333,6 @@ class GetAddressControllerTest extends TestCase
      * Assert that getRequestData() returns input data unaffected in forms of
      * GetAddressRequest instance.
      *
-     * @return void
      * @throws HttpException
      * @throws JsonException
      */
@@ -352,7 +341,7 @@ class GetAddressControllerTest extends TestCase
         $controller = $this->getControllerWithMockedInputData(
             data: [
                 'govId' => '198001010001',
-                'customerType' => CustomerType::NATURAL->value
+                'customerType' => CustomerType::NATURAL->value,
             ]
         );
 
@@ -363,9 +352,6 @@ class GetAddressControllerTest extends TestCase
             actual: $data->customerType
         );
 
-        $this->assertSame(
-            expected: '198001010001',
-            actual: $data->govId
-        );
+        $this->assertSame(expected: '198001010001', actual: $data->govId);
     }
 }

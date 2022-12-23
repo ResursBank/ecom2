@@ -26,35 +26,27 @@ use stdClass;
 class FilesystemTest extends TestCase
 {
     /**
-     * Whether test is running on pipeline server.
-     *
-     * @var bool
-     */
-    private bool $isPipeline = false;
-
-    /**
      * Base path of the directories and files these tests will create.
      */
     private const BASE_PATH = '/tmp/resursbank-test';
 
     /**
+     * Whether test is running on pipeline server.
+     */
+    private bool $isPipeline = false;
+
+    /**
      * Unique filesystem path for each test method (reset between tests).
-     *
-     * @var string
      */
     private string $path;
 
     /**
      * Unique FileSystem instance for each test method (reset between tests).
-     *
-     * @var Filesystem
      */
     private Filesystem $fileSystem;
 
     /**
      * Unique cache key to be utilised in various tests (resets between tests).
-     *
-     * @var string
      */
     private string $key;
 
@@ -62,13 +54,10 @@ class FilesystemTest extends TestCase
      * Unique filesystem path to expected cache file (resets between tests).
      *
      * NOTE: Should be $this->path/$this->key
-     *
-     * @var string
      */
     private string $file;
 
     /**
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -95,8 +84,6 @@ class FilesystemTest extends TestCase
 
     /**
      * Tests are marked with this value if running from Bitbucket Pipelines.
-     *
-     * @return bool
      */
     protected function isPipeline(): bool
     {
@@ -105,9 +92,6 @@ class FilesystemTest extends TestCase
 
     /**
      * Create new Filesystem instance.
-     *
-     * @param string $path
-     * @return Filesystem
      */
     private function getFilesystem(string $path): Filesystem
     {
@@ -118,22 +102,20 @@ class FilesystemTest extends TestCase
      * Generate unique path name, to ensure various tests which create files and
      * directories won't interfere with each other.
      *
-     * @return string
      * @throws Exception
      */
     private function getPath(): string
     {
-        return (
+        return
             self::BASE_PATH .
             '/ecom-' .
             random_int(min: 0, max: 99999) .
             time() .
             random_int(min: 0, max: 99999)
-        );
+        ;
     }
 
     /**
-     * @return string
      * @throws Exception
      */
     private function getKey(): string
@@ -147,7 +129,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that write() creates a writable cache directory if none exist.
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteCreatesWritableDir(): void
@@ -164,7 +145,6 @@ class FilesystemTest extends TestCase
      * Asserts FilesystemException occur from write() when a file exists in the
      * place of the intended cache directory.
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteThrowsOnExistingFileAtPath(): void
@@ -174,14 +154,17 @@ class FilesystemTest extends TestCase
         $this->assertFileExists(filename: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fileSystem->write(key: $this->key, data: 'my data set?', ttl: 0);
+        $this->fileSystem->write(
+            key: $this->key,
+            data: 'my data set?',
+            ttl: 0
+        );
     }
 
     /**
      * Assert FilesystemException occurs from write() if the existing cache
      * directory isn't writable.
      *
-     * @return void
      * @throws Exception
      */
     public function tesWriteThrowsWhenCacheDirNotWritable(): void
@@ -202,7 +185,6 @@ class FilesystemTest extends TestCase
     /**
      * Asserts that write() method accepts existing writable cache directory.
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteAcceptsExistingCacheDir(): void
@@ -220,7 +202,6 @@ class FilesystemTest extends TestCase
      * Assert that method write() throws instance of ValidationException if our
      * key contains illegal characters.
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteThrowsWithIllegalKeyCharacter(): void
@@ -232,7 +213,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert ValidationException occurs when calling write() with an empty key.
      *
-     * @return void
      * @throws FilesystemException
      * @throws ValidationException
      * @throws Exception
@@ -246,7 +226,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that method write() creates the cache directory.
      *
-     * @return void
      * @throws FilesystemException
      * @throws ValidationException
      * @throws Exception
@@ -268,7 +247,6 @@ class FilesystemTest extends TestCase
      * Assert that when we call the method write() it will generate a cache file
      * if none already exist.
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteCreatesFile(): void
@@ -284,7 +262,6 @@ class FilesystemTest extends TestCase
      * Assert that the method write() will accept an existing file (meaning it
      * will not attempt to create a file if the file already exists).
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteAcceptsExistingFile(): void
@@ -304,7 +281,6 @@ class FilesystemTest extends TestCase
      * FilesystemException with the message "$file is not writable." if the
      * existing cache file isn't writable.
      *
-     * @return void
      * @throws Exception
      */
     public function testWriteThrowsIfCacheFileIsNotWritable(): void
@@ -336,7 +312,6 @@ class FilesystemTest extends TestCase
      * FilesystemException with the message "$file is not a file." if a
      * directory allocates the cache file location.
      *
-     * @return void
      * @throws FilesystemException
      * @throws ValidationException
      * @throws JsonException
@@ -371,7 +346,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that the method write() creates a file with contents.
      *
-     * @return void
      * @throws FilesystemException
      * @throws ValidationException
      * @throws Exception
@@ -381,14 +355,15 @@ class FilesystemTest extends TestCase
         $this->fileSystem->write(key: $this->key, data: 'Empty', ttl: 55);
 
         $this->assertFileExists(filename: $this->file);
-        $this->assertNotEmpty(actual: file_get_contents(filename: $this->file));
+        $this->assertNotEmpty(
+            actual: file_get_contents(filename: $this->file)
+        );
     }
 
     /**
      * Assert that method read() throws instance of ValidationException if our
      * key contains illegal characters.
      *
-     * @return void
      * @throws Exception
      */
     public function testReadThrowsWithIllegalKeyCharacter(): void
@@ -400,7 +375,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert ValidationException occurs when calling read() with an empty key.
      *
-     * @return void
      * @throws ValidationException
      */
     public function testReadThrowsWithEmptyKey(): void
@@ -413,20 +387,20 @@ class FilesystemTest extends TestCase
      * Assert that method read() will return NULL if there is no cache file
      * matching the supplied key.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
     public function testReadWithoutCacheFileReturnsNull(): void
     {
-        $this->assertNull(actual: $this->fileSystem->read(key: $this->getKey()));
+        $this->assertNull(
+            actual: $this->fileSystem->read(key: $this->getKey())
+        );
     }
 
     /**
      * Assert that method read() will return NULL if there is a directory in the
      * place of the intended cache file.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -442,7 +416,6 @@ class FilesystemTest extends TestCase
      * Assert that method read() will return NULL if the cache file isn't
      * readable.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -467,7 +440,6 @@ class FilesystemTest extends TestCase
      * Assert method read() will return NULL if the cache file isn't properly
      * formatted ("ttl|data").
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -485,7 +457,6 @@ class FilesystemTest extends TestCase
      * Assert method read() will return NULL if the cache file is properly
      * formatted ("ttl|data") but the specified TTL is "0".
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -502,7 +473,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert method read() will return NULL if cache file ttl isn't an integer.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -519,7 +489,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that method read() will return NULL if data is an empty string.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -537,7 +506,6 @@ class FilesystemTest extends TestCase
      * Assert method read() will return the data if the cache file is properly
      * formatted ("ttl|data").
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -559,7 +527,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that method read() will return a serialized object.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -584,7 +551,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert method read() will only split on the first available pipe.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -607,7 +573,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that method read() will return NULL if the cache has expired.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -633,7 +598,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that method read() will return NULL if the file is empty.
      *
-     * @return void
      * @throws ValidationException
      * @throws Exception
      */
@@ -655,7 +619,6 @@ class FilesystemTest extends TestCase
      * Assert that method clear() throws instance of ValidationException if our
      * key contains illegal characters.
      *
-     * @return void
      * @throws Exception
      */
     public function testClearThrowsWithIllegalKeyCharacter(): void
@@ -667,7 +630,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert ValidationException occurs when calling clear() with an empty key.
      *
-     * @return void
      * @throws ValidationException
      * @throws FilesystemException
      */
@@ -681,7 +643,6 @@ class FilesystemTest extends TestCase
      * Assert that clear() method will execute without error when cache file
      * does not exist (i.e. not cache = already cleared = do nothing).
      *
-     * @return void
      * @throws ValidationException
      * @throws FilesystemException
      * @throws Exception
@@ -699,7 +660,6 @@ class FilesystemTest extends TestCase
      * Assert FilesystemException occurs if we attempt to clear a cache file
      * that is actually a directory.
      *
-     * @return void
      * @throws ValidationException
      * @throws FilesystemException
      * @throws Exception
@@ -717,7 +677,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert FilesystemException occurs if the cache file isn't writable.
      *
-     * @return void
      * @throws ValidationException
      * @throws FilesystemException
      * @throws Exception
@@ -744,7 +703,6 @@ class FilesystemTest extends TestCase
     /**
      * Assert that clear() method will delete file.
      *
-     * @return void
      * @throws ValidationException
      * @throws FilesystemException
      * @throws Exception

@@ -29,7 +29,6 @@ use Resursbank\EcomTest\Data\Models\Instrument;
 class AuthorizationControllerTest extends TestCase
 {
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -37,7 +36,9 @@ class AuthorizationControllerTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -54,7 +55,6 @@ class AuthorizationControllerTest extends TestCase
      * incoming input data to PHP (faking the contents of php://input).
      *
      * @param array $data
-     * @return Controller
      * @throws JsonException
      */
     private function getControllerWithMockedInputData(array $data): Controller
@@ -67,7 +67,9 @@ class AuthorizationControllerTest extends TestCase
         /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
         $controller->expects($this->once())
             ->method(constraint: 'getInputData')
-            ->willReturn(value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR));
+            ->willReturn(
+                value: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
+            );
 
         return $controller;
     }
@@ -76,7 +78,6 @@ class AuthorizationControllerTest extends TestCase
      * Assert that getRequestData() throws HttpException with code 415 when
      * supplied that does not convert to a Authorization instance.
      *
-     * @return void
      * @throws HttpException
      * @throws JsonException
      */
@@ -96,7 +97,6 @@ class AuthorizationControllerTest extends TestCase
      * Assert that getRequestData() throws HttpException with code 415 when
      * getRequestModel() returns an unexpected instance of Model.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestDataThrowsWithInvalidConversion(): void
@@ -121,7 +121,6 @@ class AuthorizationControllerTest extends TestCase
      * Assert that getRequestData() returns input data unaffected in forms of
      * Model instance.
      *
-     * @return void
      * @throws HttpException
      * @throws JsonException
      */
@@ -131,20 +130,14 @@ class AuthorizationControllerTest extends TestCase
             data: [
                 'paymentId' => 'whatever',
                 'status' => Status::AUTHORIZED->value,
-                'created' => 'some-valid-date'
+                'created' => 'some-valid-date',
             ]
         );
 
         $data = $controller->getRequestData();
 
-        $this->assertSame(
-            expected: Status::AUTHORIZED,
-            actual: $data->status
-        );
+        $this->assertSame(expected: Status::AUTHORIZED, actual: $data->status);
 
-        $this->assertSame(
-            expected: 'whatever',
-            actual: $data->paymentId
-        );
+        $this->assertSame(expected: 'whatever', actual: $data->paymentId);
     }
 }

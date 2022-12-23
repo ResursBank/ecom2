@@ -25,12 +25,12 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
+use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Exception;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Models\CostCollection;
 use Resursbank\Ecom\Module\PriceSignage\Models\PriceSignage;
-use Resursbank\Ecom\Lib\Repository\Cache;
+use Throwable;
 
 /**
  * Interaction with Payment Method entities and related functionality.
@@ -43,11 +43,6 @@ class Repository
      * NOTE: Parameters must be validated since they are utilized for our cache
      * keys.
      *
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param float $amount
-     * @param int|null $monthFilter
-     * @return PriceSignage
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -95,7 +90,7 @@ class Repository
 
                 $cache->write(data: $result);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
 
             throw $e;
@@ -105,11 +100,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param float $amount
-     * @param int|null $monthFilter
-     * @return Cache
      * @throws IllegalValueException
      */
     public static function getCache(
@@ -138,13 +128,8 @@ class Repository
     }
 
     /**
-     * @todo If $amount is less than paymentMethod minimum purchase limit we get 401 atm.
-     *
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param float $amount
-     * @return Get
      * @throws IllegalValueException|IllegalTypeException
+     * @todo If $amount is less than paymentMethod minimum purchase limit we get 401 atm.
      */
     public static function getApi(
         string $storeId,
@@ -162,9 +147,6 @@ class Repository
     }
 
     /**
-     * @param PriceSignage $result
-     * @param int $monthFilter
-     * @return PriceSignage
      * @throws IllegalTypeException
      */
     private static function filterResultByMonth(
@@ -184,8 +166,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @return void
      * @throws IllegalValueException
      */
     private static function validateStoreId(
@@ -196,8 +176,6 @@ class Repository
     }
 
     /**
-     * @param string $paymentMethodId
-     * @return void
      * @throws IllegalValueException
      */
     private static function validatePaymentMethodId(

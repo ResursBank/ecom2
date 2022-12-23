@@ -11,12 +11,12 @@ namespace Resursbank\Ecom\Module\Payment\Models;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
 
 /**
  * Payment model used in a POST /payments request.
@@ -24,14 +24,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Customer;
 class CreatePaymentRequest extends Model
 {
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param Order $order
-     * @param Application|null $application
-     * @param Customer|null $customer
-     * @param Metadata|null $metadata
-     * @param Options|null $options
-     * @param StringValidation $stringValidation
      * @throws IllegalValueException
      */
     public function __construct(
@@ -42,14 +34,13 @@ class CreatePaymentRequest extends Model
         public readonly ?Customer $customer,
         public readonly ?Metadata $metadata,
         public readonly ?Options $options,
-        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateStoreId();
         $this->validatePaymentMethodId();
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateStoreId(): void
@@ -58,7 +49,6 @@ class CreatePaymentRequest extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validatePaymentMethodId(): void

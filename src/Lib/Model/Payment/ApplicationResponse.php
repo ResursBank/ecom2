@@ -18,16 +18,13 @@ use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
 class ApplicationResponse extends Model
 {
     /**
-     * @param float $requestedCreditLimit
-     * @param int|null $approvedCreditLimit
      * @param int|null $reference Credit application reference (int64).
-     * @param CoApplicant|null $coApplicant
      */
     public function __construct(
         public readonly float $requestedCreditLimit,
         public readonly ?int $approvedCreditLimit = null,
         public readonly ?int $reference = null,
-        public readonly ?CoApplicant $coApplicant = null,
+        public readonly ?CoApplicant $coApplicant = null
     ) {
     }
 }

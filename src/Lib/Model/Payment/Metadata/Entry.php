@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Entry extends Model
 {
-    /**
-     * @param string $key
-     * @param string $value
-     */
     public function __construct(
         public readonly string $key,
         public readonly string $value

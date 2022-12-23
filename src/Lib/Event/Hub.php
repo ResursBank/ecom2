@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Event;
 
 use JsonException;
-use Resursbank\Ecom\Exception\EventException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\EventException;
 use Resursbank\Ecom\Exception\EventSubscriberException;
 
 use function json_encode;
@@ -33,19 +33,13 @@ class Hub
     ) {
     }
 
-    /**
-     * @param EventInterface $event
-     * @return void
-     */
     public function addEvent(EventInterface $event): void
     {
         $this->events[] = $event;
     }
 
     /**
-     * @param string $name
      * @param array $data
-     * @return void
      * @throws EventException
      * @throws EventSubscriberException
      * @throws JsonException

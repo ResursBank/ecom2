@@ -17,8 +17,6 @@ use Resursbank\Ecom\Lib\Model\Model;
 class DigestConfiguration extends Model
 {
     /**
-     * @param string $digestAlgorithm
-     * @param string $digestSalt
      * @param array $digestParameters
      */
     public function __construct(

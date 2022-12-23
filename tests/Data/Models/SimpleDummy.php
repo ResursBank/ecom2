@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class SimpleDummy extends Model
 {
-    /**
-     * @param int $number
-     * @param string $message
-     */
     public function __construct(
         public int $number,
         public string $message

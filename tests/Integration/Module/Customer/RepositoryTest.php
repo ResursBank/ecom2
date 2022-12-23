@@ -41,7 +41,6 @@ class RepositoryTest extends TestCase
     use MockSessionTrait;
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -49,7 +48,9 @@ class RepositoryTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -63,7 +64,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @return string
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -91,7 +91,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -115,7 +114,7 @@ class RepositoryTest extends TestCase
             'countryCode' => 'SE',
             'firstName' => 'Oliver',
             'lastName' => 'Williamsson',
-            'addressRow2' => ''
+            'addressRow2' => '',
         ];
 
         $address = Repository::getAddress(
@@ -132,7 +131,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -156,7 +154,7 @@ class RepositoryTest extends TestCase
             'countryCode' => 'SE',
             'addressRow2' => '',
             'firstName' => null,
-            'lastName' => null
+            'lastName' => null,
         ];
 
         $address = Repository::getAddress(
@@ -175,7 +173,6 @@ class RepositoryTest extends TestCase
     /**
      * GetAddress resolving an organization but with NATURAL as customerType.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -203,7 +200,6 @@ class RepositoryTest extends TestCase
     /**
      * GetAddress resolving an organization but with NATURAL as customerType.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -228,12 +224,10 @@ class RepositoryTest extends TestCase
         );
     }
 
-
     /**
      * Assert getAddress with inaccurate SSN results in a CurlException with
      * httpCode 400, morphing to a GetAddressException.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -279,7 +273,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert setSsnData() adds data to PHP session.
      *
-     * @return void
      * @throws ConfigException
      * @throws JsonException
      */
@@ -310,12 +303,10 @@ class RepositoryTest extends TestCase
         );
     }
 
-
     /**
      * Assert setSsnData() won't cause an Exception if it cannot store data in
      * PHP session.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testSetSsnFailSilentlyWithoutSession(): void
@@ -335,7 +326,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert setSsnData() throws ConfigException if Exception cannot be logged.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testSetSsnDataThrowsWithoutConfig(): void
@@ -357,7 +347,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert getSsnData() returns data stored in session.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testGetSsnData(): void
@@ -380,33 +369,34 @@ class RepositoryTest extends TestCase
     /**
      * Assert getSsnData() returns NULL without data in session.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testGetSsnDataReturnsNull(): void
     {
         $this->enableSession();
 
-        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+        $this->assertNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
     }
 
     /**
      * Assert getSsnData() returns NULL when session is disabled.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testGetSsnDataReturnsNullWithoutSession(): void
     {
         $this->disableSession();
 
-        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+        $this->assertNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
     }
 
     /**
      * Assert getSsnData() returns NULL if session data is malformed.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testGetSsnDataReturnsNullWithMalformedData(): void
@@ -417,21 +407,26 @@ class RepositoryTest extends TestCase
 
         // Invalid JSON data.
         $_SESSION[$key] = 'not-json-data';
-        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+        $this->assertNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
 
         // Invalid object structure.
         $_SESSION[$key] = '{"harmony":32}';
-        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+        $this->assertNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
 
         // Invalid object data.
         $_SESSION[$key] = '{"govId":"166997368573", "customerType":"NATURAL"}';
-        $this->assertNull(actual: Repository::getSsnData(sessionHandler: $this->session));
+        $this->assertNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
     }
 
     /**
      * Assert getSsnData() throws ConfigException if Exception cannot be logged.
      *
-     * @return void
      * @throws ConfigException
      */
     public function testGetSsnDataThrowsWithoutConfig(): void

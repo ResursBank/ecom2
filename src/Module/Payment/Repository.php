@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -25,7 +24,10 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
@@ -34,13 +36,12 @@ use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Throwable;
 
 /**
  * Payment repository.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Repository
@@ -48,10 +49,6 @@ class Repository
     use ExceptionLog;
 
     /**
-     * @param string $storeId
-     * @param string|null $orderReference
-     * @param string|null $governmentId
-     * @return Collection
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -77,9 +74,6 @@ class Repository
     }
 
     /**
-     * @param string $paymentId
-     *
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -95,11 +89,10 @@ class Repository
         string $paymentId
     ): Payment {
         $api = new Get();
+
         try {
-            return $api->call(
-                paymentId: $paymentId
-            );
-        } catch (Exception $e) {
+            return $api->call(paymentId: $paymentId);
+        } catch (Throwable $e) {
             self::logException(exception: $e);
             throw $e;
         }
@@ -108,15 +101,6 @@ class Repository
     /**
      * Create payment
      *
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param OrderLineCollection $orderLines
-     * @param string|null $orderReference
-     * @param Application|null $application
-     * @param Customer|null $customer
-     * @param Metadata|null $metadata
-     * @param Options|null $options
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -154,12 +138,6 @@ class Repository
     /**
      * Capture payment
      *
-     * @param string $paymentId
-     * @param ActionLogOrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @param string|null $invoiceId
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -190,10 +168,6 @@ class Repository
     /**
      * Cancel payment
      *
-     * @param string $paymentId
-     * @param ActionLogOrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -220,11 +194,6 @@ class Repository
     /**
      * Refund payment
      *
-     * @param string $paymentId
-     * @param ActionLogOrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -253,9 +222,6 @@ class Repository
     /**
      * Set Metadata on payment
      *
-     * @param string $paymentId
-     * @param Metadata $metadata
-     * @return Metadata
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -271,9 +237,6 @@ class Repository
         string $paymentId,
         Metadata $metadata
     ): Metadata {
-        return (new Put())->call(
-            paymentId: $paymentId,
-            metadata: $metadata
-        );
+        return (new Put())->call(paymentId: $paymentId, metadata: $metadata);
     }
 }

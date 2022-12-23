@@ -25,9 +25,6 @@ trait DataResolver
     /**
      * Resolve data form API response.
      *
-     * @param string|array|stdClass $data
-     * @param string $extractProperty
-     * @return stdClass|array|string
      * @throws ApiException
      */
     public function resolveResponseData(
@@ -37,7 +34,7 @@ trait DataResolver
         if (!$data instanceof stdClass) {
             throw new ApiException(
                 message: 'Invalid response from API. Not an stdClass.',
-                code: 500,
+                code: 500
             );
         }
 
@@ -45,13 +42,13 @@ trait DataResolver
             if (
                 !property_exists(
                     object_or_class: $data,
-                    property:  $extractProperty
+                    property: $extractProperty
                 )
             ) {
                 throw new ApiException(
                     message: 'Invalid response from API. Missing property ' .
                     $extractProperty,
-                    code: 500,
+                    code: 500
                 );
             }
 
@@ -66,7 +63,7 @@ trait DataResolver
         ) {
             throw new ApiException(
                 message: 'Invalid response from API. Not an stdClass or array.',
-                code: 500,
+                code: 500
             );
         }
 

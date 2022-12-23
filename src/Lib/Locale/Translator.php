@@ -9,19 +9,18 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Locale;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 use function file_get_contents;
-use function json_decode;
 use function is_string;
+use function json_decode;
 
 /**
  * Methods to extract language-specific phrases. The intention is to maintain
@@ -33,15 +32,11 @@ class Translator
 {
     /**
      * Path to the translations file that holds all translations in Ecom.
-     *
-     * @var string
      */
     private static string $translationsFilePath = __DIR__ . '/Resources/translations.json';
 
     /**
      * Key to store cached translations under.
-     *
-     * @var string
      */
     private static string $cacheKey = 'resursbank-ecom-translations';
 
@@ -56,7 +51,6 @@ class Translator
      * Loads translations file from disk, decodes the result into a collection
      * and returns that collection, and caches the resulting collection.
      *
-     * @return PhraseCollection
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -100,8 +94,6 @@ class Translator
     /**
      * Takes an english phrase and translates it to the configured language.
      *
-     * @param string $phraseId
-     * @return string
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -118,10 +110,12 @@ class Translator
 
         /** @var Phrase $item */
         foreach ($phrases as $item) {
-            if ($item->id === $phraseId) {
-                /** @var string $result */
-                $result = $item->translation->{Config::getLanguage()->value};
+            if ($item->id !== $phraseId) {
+                continue;
             }
+
+            /** @var string $result */
+            $result = $item->translation->{Config::getLanguage()->value};
         }
 
         if ($result === null) {
@@ -134,7 +128,6 @@ class Translator
     }
 
     /**
-     * @return PhraseCollection
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -153,8 +146,6 @@ class Translator
     /**
      * Decodes JSON data into a collection of phrases.
      *
-     * @param string $data
-     * @return PhraseCollection
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -172,7 +163,7 @@ class Translator
         /** @var PhraseCollection $result */
         $result = DataConverter::arrayToCollection(
             data: $decode,
-            targetType: Phrase::class,
+            targetType: Phrase::class
         );
 
         return $result;

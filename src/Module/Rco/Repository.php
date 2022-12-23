@@ -18,8 +18,8 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Module\Rco\Api\GetPayment;
@@ -45,9 +45,6 @@ class Repository
     /**
      * Initialize a payment session.
      *
-     * @param InitPaymentRequest $request
-     * @param string $orderReference
-     * @return InitPaymentResponse
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -68,9 +65,6 @@ class Repository
     /**
      * Update an existing payment session.
      *
-     * @param UpdatePaymentRequest $request
-     * @param string $orderReference
-     * @return UpdatePaymentResponse
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -91,9 +85,6 @@ class Repository
     /**
      * Update the payment reference for a payment session.
      *
-     * @param UpdatePaymentReferenceRequest $request
-     * @param string $orderReference
-     * @return UpdatePaymentReferenceResponse
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -116,8 +107,6 @@ class Repository
     /**
      * Get existing payment session.
      *
-     * @param string $orderReference
-     * @return Response
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -139,7 +128,6 @@ class Repository
     /**
      * Gets API hostname.
      *
-     * @return string
      * @throws ConfigException
      * @todo Check if ConfigException validation needs a test.
      */

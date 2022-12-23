@@ -12,9 +12,9 @@ namespace Resursbank\Ecom\Lib\Model;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 
 /**
  * Defines payment method entity.
@@ -26,19 +26,6 @@ use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 class PaymentMethod extends Model
 {
     /**
-     * @param string $id
-     * @param string $name
-     * @param Type $type
-     * @param float $minPurchaseLimit
-     * @param float $maxPurchaseLimit
-     * @param float $minApplicationLimit
-     * @param float $maxApplicationLimit
-     * @param LegalLinkCollection $legalLinks
-     * @param bool $enabledForLegalCustomer
-     * @param bool $enabledForNaturalCustomer
-     * @param int $sortOrder
-     * @param StringValidation $stringValidation
-     * @param FloatValidation $floatValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -68,8 +55,6 @@ class PaymentMethod extends Model
 
     /**
      * Checks if payment method is eligible for part payment
-     *
-     * @return bool
      */
     public function isPartPayment(): bool
     {
@@ -96,7 +81,6 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateMinPurchaseLimit(): void
@@ -105,7 +89,6 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateMaxPurchaseLimit(): void
@@ -114,7 +97,6 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateMinApplicationLimit(): void
@@ -123,7 +105,6 @@ class PaymentMethod extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateMaxApplicationLimit(): void

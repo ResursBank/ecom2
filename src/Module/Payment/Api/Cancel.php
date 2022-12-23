@@ -34,7 +34,6 @@ use stdClass;
  */
 class Cancel
 {
-    /** @var Mapi  */
     private Mapi $mapi;
 
     public function __construct()
@@ -43,10 +42,6 @@ class Cancel
     }
 
     /**
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @return Payment
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -61,12 +56,14 @@ class Cancel
     public function call(
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
-        ?string $creator = null,
+        ?string $creator = null
     ): Payment {
         $payload = [];
+
         if ($orderLines) {
             $payload['orderLines'] = $orderLines->toArray();
         }
+
         if ($creator) {
             $payload['creator'] = $creator;
         }
@@ -84,7 +81,7 @@ class Cancel
 
         $data = $curl->exec()->body;
 
-        $content = ($data instanceof stdClass) ? $data : new stdClass();
+        $content = $data instanceof stdClass ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
             object: $content,

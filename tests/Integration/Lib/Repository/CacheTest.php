@@ -28,39 +28,28 @@ final class CacheTest extends TestCase
 {
     private const CACHE_PATH = '/tmp/ecom-test/repository/cache';
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: new Filesystem(path: self::CACHE_PATH)
         );
 
         parent::setUp();
     }
 
-    /**
-     * @param string $key
-     * @param int $ttl
-     * @return Cache
-     */
     private function getCache(
         string $key = 'music-cache',
         int $ttl = 3600
     ): Cache {
-        return new Cache(
-            key: $key,
-            model: Music::class,
-            ttl: $ttl
-        );
+        return new Cache(key: $key, model: Music::class, ttl: $ttl);
     }
 
     /**
      * Assert write() writes the data to the cache.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      */
@@ -72,20 +61,13 @@ final class CacheTest extends TestCase
         /** @var Music $data */
         $data = $cache->read();
 
-        $this->assertInstanceOf(
-            expected: Music::class,
-            actual: $data
-        );
-        $this->assertSame(
-            expected: 'music',
-            actual: $data->genre
-        );
+        $this->assertInstanceOf(expected: Music::class, actual: $data);
+        $this->assertSame(expected: 'music', actual: $data->genre);
     }
 
     /**
      * Assert write() writes the data to the cache.
      *
-     * @return void
      * @throws CacheException
      * @throws CollectionException
      * @throws ConfigException
@@ -98,7 +80,7 @@ final class CacheTest extends TestCase
             new Music(id: 1, genre: 'funk'),
             new Music(id: 2, genre: 'techno'),
             new Music(id: 3, genre: 'rock'),
-            new Music(id: 4, genre: 'trance')
+            new Music(id: 4, genre: 'trance'),
         ]));
 
         /** @var MusicCollection $data */
@@ -112,15 +94,9 @@ final class CacheTest extends TestCase
         /** @var Music $music */
         $music = $data->current();
 
-        $this->assertInstanceOf(
-            expected: Music::class,
-            actual: $music
-        );
+        $this->assertInstanceOf(expected: Music::class, actual: $music);
 
-        $this->assertSame(
-            expected: 'funk',
-            actual: $music->genre
-        );
+        $this->assertSame(expected: 'funk', actual: $music->genre);
 
         $this->assertCount(expectedCount: 4, haystack: $data);
     }
@@ -128,7 +104,6 @@ final class CacheTest extends TestCase
     /**
      * Assert read() returns null when ttl is expired.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      */
@@ -140,14 +115,8 @@ final class CacheTest extends TestCase
         /** @var Music $data */
         $data = $cache->read();
 
-        $this->assertInstanceOf(
-            expected: Music::class,
-            actual: $data
-        );
-        $this->assertSame(
-            expected: 'funk',
-            actual: $data->genre
-        );
+        $this->assertInstanceOf(expected: Music::class, actual: $data);
+        $this->assertSame(expected: 'funk', actual: $data->genre);
 
         sleep(seconds: 2);
 
@@ -158,7 +127,6 @@ final class CacheTest extends TestCase
     /**
      * Assert clear() clears the cache.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      */
@@ -167,10 +135,7 @@ final class CacheTest extends TestCase
         $cache = $this->getCache();
         $cache->write(data: new Music(id: 1, genre: 'funk'));
         $data = $cache->read();
-        $this->assertInstanceOf(
-            expected: Music::class,
-            actual: $data
-        );
+        $this->assertInstanceOf(expected: Music::class, actual: $data);
         $cache->clear();
         $data = $cache->read();
         $this->assertNull(actual: $data);
@@ -179,7 +144,6 @@ final class CacheTest extends TestCase
     /**
      * Assert cache is separated by key.
      *
-     * @return void
      * @throws CacheException
      * @throws ConfigException
      */
@@ -194,25 +158,10 @@ final class CacheTest extends TestCase
         $cache2->write(data: $music2);
         $data1 = $cache1->read();
         $data2 = $cache2->read();
-        $this->assertInstanceOf(
-            expected: Music::class,
-            actual: $data1
-        );
-        $this->assertInstanceOf(
-            expected: Music::class,
-            actual: $data2
-        );
-        $this->assertEquals(
-            expected: $music1,
-            actual: $data1
-        );
-        $this->assertEquals(
-            expected: $music2,
-            actual: $data2
-        );
-        $this->assertNotEquals(
-            expected: $data1,
-            actual: $data2
-        );
+        $this->assertInstanceOf(expected: Music::class, actual: $data1);
+        $this->assertInstanceOf(expected: Music::class, actual: $data2);
+        $this->assertEquals(expected: $music1, actual: $data1);
+        $this->assertEquals(expected: $music2, actual: $data2);
+        $this->assertNotEquals(expected: $data1, actual: $data2);
     }
 }

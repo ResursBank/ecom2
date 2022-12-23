@@ -23,14 +23,8 @@ use Resursbank\EcomTest\Data\Models\Instrument;
  */
 class ControllerTest extends TestCase
 {
-    /**
-     * @var Controller
-     */
     private Controller $controller;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -44,9 +38,6 @@ class ControllerTest extends TestCase
      * Create a mocked version of the Controller class, setting the return value
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
-     *
-     * @param string $data
-     * @return Controller
      */
     private function getControllerWithMockedInputData(string $data): Controller
     {
@@ -70,8 +61,6 @@ class ControllerTest extends TestCase
      *
      * This method also asserts that setHeader() is called twice, and that
      * setResponseCode() is called with the same code as supplied by $code.
-     *
-     * @return Controller
      */
     private function getControllerWithoutHeaderManipulation(): Controller
     {
@@ -84,7 +73,6 @@ class ControllerTest extends TestCase
     /**
      * Assert respond() will echo JSON encoded data from supplied array.
      *
-     * @return void
      * @throws JsonException
      */
     public function testRespond(): void
@@ -106,7 +94,6 @@ class ControllerTest extends TestCase
      * message. Also asserts that the http response code matching the expected
      * error code.
      *
-     * @return void
      * @throws JsonException
      */
     public function testRespondWithError(): void
@@ -127,8 +114,6 @@ class ControllerTest extends TestCase
 
     /**
      * Assert getErrorMessage() returns unmasked error message for HttpException.
-     *
-     * @return void
      */
     public function testGetErrorMessageReturnsUnmasked(): void
     {
@@ -143,8 +128,6 @@ class ControllerTest extends TestCase
 
     /**
      * Test getErrorMessage() will mask Exception messages.
-     *
-     * @return void
      */
     public function testGetErrorMessageReturnsMasked(): void
     {
@@ -158,8 +141,6 @@ class ControllerTest extends TestCase
 
     /**
      * Assert log() does not throw Exceptions.
-     *
-     * @return void
      */
     public function testLogIsSilent(): void
     {
@@ -171,14 +152,14 @@ class ControllerTest extends TestCase
 
     /**
      * Assert translateError() provides defaulted message if translation fails.
-     *
-     * @return void
      */
     public function testDefaultError(): void
     {
         $this->assertSame(
             expected: 'Failed to translate error. Check debug log for info.',
-            actual: $this->controller->translateError(phraseId: 'some-undefined-translation-995'),
+            actual: $this->controller->translateError(
+                phraseId: 'some-undefined-translation-995'
+            ),
             message: 'Unexpected default error message.'
         );
     }
@@ -186,8 +167,6 @@ class ControllerTest extends TestCase
     /**
      * Assert getErrorResponseCode extract HTTP response code from CurlException
      * instance.
-     *
-     * @return void
      */
     public function getErrorResponseCodeFromCurlException(): void
     {
@@ -208,8 +187,6 @@ class ControllerTest extends TestCase
     /**
      * Assert getErrorResponseCode extract HTTP response code from HttpException
      * instance.
-     *
-     * @return void
      */
     public function getErrorResponseCodeFromHttpException(): void
     {
@@ -227,8 +204,6 @@ class ControllerTest extends TestCase
 
     /**
      * Assert getErrorResponseCode defaults to 400.
-     *
-     * @return void
      */
     public function getErrorResponseCodeDefaultsTo400(): void
     {
@@ -248,7 +223,6 @@ class ControllerTest extends TestCase
      * Assert getInputData() throws HttpException with code 400 when there is
      * no input data present.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetInputDataThrowsWithoutData(): void
@@ -262,7 +236,6 @@ class ControllerTest extends TestCase
      * Assert getRequestModel() throws HttpException with code 406 when input
      * data is not correctly formatted JSON.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestModelThrowsWithoutJson(): void
@@ -278,7 +251,6 @@ class ControllerTest extends TestCase
      * Assert getRequestModel() throws HttpException with code 406 when input
      * data is does not resolve to an stdClass instance.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestModelThrowsWithoutObject(): void
@@ -294,7 +266,6 @@ class ControllerTest extends TestCase
      * Assert getRequestModel() throws HttpException with code 415 when input
      * data is does not resolve to request model class instance.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestModelThrowsWithoutModel(): void
@@ -311,7 +282,6 @@ class ControllerTest extends TestCase
      * data contains a property whose datatype is incompatible with the
      * corresponding property on the supplied model class.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestModelRespectsDataTypes(): void
@@ -326,7 +296,6 @@ class ControllerTest extends TestCase
     /**
      * Assert getRequestModel() converts input data to model.
      *
-     * @return void
      * @throws HttpException
      */
     public function testGetRequestModel(): void

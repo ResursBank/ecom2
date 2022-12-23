@@ -20,14 +20,6 @@ use Resursbank\Ecom\Lib\Validation\IntValidation;
 class Cost extends Model
 {
     /**
-     * @param float $interest
-     * @param int $durationMonths
-     * @param float $totalCost
-     * @param float $monthlyCost
-     * @param float $administrationFee
-     * @param float $effectiveInterest
-     * @param FloatValidation $floatValidation
-     * @param IntValidation $intValidation
      * @throws IllegalValueException
      */
     public function __construct(
@@ -49,7 +41,6 @@ class Cost extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateInterest(): void
@@ -58,7 +49,6 @@ class Cost extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateDurationMonths(): void
@@ -67,7 +57,6 @@ class Cost extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateTotalCost(): void
@@ -76,7 +65,6 @@ class Cost extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateMonthlyCost(): void
@@ -85,7 +73,6 @@ class Cost extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateAdministrationFee(): void
@@ -94,7 +81,6 @@ class Cost extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateEffectiveInterest(): void

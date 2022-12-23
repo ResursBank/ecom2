@@ -62,7 +62,7 @@ if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 $dir/src; 
   ERRORS=1
 fi
 echo ""
-if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/ruleset.xml $dir/src; then
+if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/src.xml $dir/src; then
   ERRORS=1
 fi
 echo ""
@@ -73,7 +73,7 @@ if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=PSR12 $dir/
   ERRORS=1
 fi
 echo ""
-if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=qa/phpcs/ruleset.xml $dir/src; then
+if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=qa/phpcs/src.xml $dir/src; then
   ERRORS=1
 fi
 echo ""
@@ -113,7 +113,7 @@ if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 $dir/tests
   ERRORS=1
 fi
 echo ""
-if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/ruleset.xml $dir/tests; then
+if ! $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/tests.xml $dir/tests; then
   ERRORS=1
 fi
 echo ""
@@ -124,7 +124,7 @@ if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=PSR12 $dir/
   ERRORS=1
 fi
 echo ""
-if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=qa/phpcs/ruleset.xml $dir/tests; then
+if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php,phtml --standard=qa/phpcs/tests.xml $dir/tests; then
   ERRORS=1
 fi
 echo ""

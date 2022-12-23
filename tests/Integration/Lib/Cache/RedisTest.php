@@ -9,33 +9,26 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Cache;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
+use Redis as Server;
 use RedisException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Cache\Redis;
-use Exception;
-use Redis as Server;
 
 /**
  * Assert the Redis cache implementation works as expected.
  */
 class RedisTest extends TestCase
 {
-    /**
-     * @var Redis
-     */
     private Redis $redis;
 
-    /**
-     * @var string
-     */
     private string $key;
 
     /**
      * Setup filesystem cache instance.
      *
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -51,7 +44,6 @@ class RedisTest extends TestCase
     }
 
     /**
-     * @return Server
      * @throws RedisException
      * @SuppressWarnings(PHPMD.MissingImport)
      */
@@ -67,7 +59,6 @@ class RedisTest extends TestCase
      * Assert that method write() throws instance of ValidationException if our
      * key contains illegal characters.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -84,7 +75,6 @@ class RedisTest extends TestCase
     /**
      * Assert ValidationException occurs when calling write() with an empty key.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -97,7 +87,6 @@ class RedisTest extends TestCase
     /**
      * Assert that write() will pass without failure.
      *
-     * @return void
      * @throws ValidationException
      * @throws RedisException
      */
@@ -117,7 +106,6 @@ class RedisTest extends TestCase
      * Assert that method read() throws instance of ValidationException if our
      * key contains illegal characters.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -130,7 +118,6 @@ class RedisTest extends TestCase
     /**
      * Assert ValidationException occurs when calling read() with an empty key.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -143,7 +130,6 @@ class RedisTest extends TestCase
     /**
      * Assert that read() method returns NULL if no valid data was found.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -155,7 +141,6 @@ class RedisTest extends TestCase
     /**
      * Assert that read() can fetch data from Redis.
      *
-     * @return void
      * @throws ValidationException
      * @throws RedisException
      */
@@ -174,7 +159,6 @@ class RedisTest extends TestCase
     /**
      * Assert that read() returns NULL when cached data has expired.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -184,13 +168,12 @@ class RedisTest extends TestCase
 
         $conn = $this->getRedisConnection();
 
-        $conn->setex(
-            key: $this->key,
-            expire: 2,
-            value: $data
-        );
+        $conn->setex(key: $this->key, expire: 2, value: $data);
 
-        $this->assertSame(expected: $data, actual: $conn->get(key: $this->key));
+        $this->assertSame(
+            expected: $data,
+            actual: $conn->get(key: $this->key)
+        );
 
         sleep(seconds: 3);
 
@@ -201,7 +184,6 @@ class RedisTest extends TestCase
      * Assert that method clear() throws instance of ValidationException if our
      * key contains illegal characters.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -214,7 +196,6 @@ class RedisTest extends TestCase
     /**
      * Assert ValidationException occurs when calling clear() with an empty key.
      *
-     * @return void
      * @throws RedisException
      * @throws ValidationException
      */
@@ -227,7 +208,6 @@ class RedisTest extends TestCase
     /**
      * Assert that clear() will delete data from Redis.
      *
-     * @return void
      * @throws ValidationException
      * @throws RedisException
      */
@@ -239,7 +219,10 @@ class RedisTest extends TestCase
 
         $conn->set(key: $this->key, value: $data);
 
-        $this->assertEquals(expected: $data, actual: $conn->get(key: $this->key));
+        $this->assertEquals(
+            expected: $data,
+            actual: $conn->get(key: $this->key)
+        );
 
         $this->redis->clear(key: $this->key);
 

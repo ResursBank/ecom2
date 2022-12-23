@@ -18,8 +18,8 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 
 use function chr;
-use function ord;
 use function in_array;
+use function ord;
 use function random_bytes;
 
 /**
@@ -47,8 +47,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Generate a dummy payment method with specified type
      *
-     * @param Type $type
-     * @return PaymentMethod
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -74,7 +72,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert that isPartPayment gives correct responses depending on the method's type
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -83,7 +80,7 @@ class PaymentMethodTest extends TestCase
     {
         $validCases = [
             Type::RESURS_REVOLVING_CREDIT,
-            Type::RESURS_PART_PAYMENT
+            Type::RESURS_PART_PAYMENT,
         ];
 
         foreach (Type::cases() as $case) {

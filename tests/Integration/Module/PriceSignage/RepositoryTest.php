@@ -25,37 +25,24 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PriceSignage\Models\PriceSignage;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
-use Resursbank\Ecom\Lib\Repository\Cache;
 
 /**
  * Integration tests for PriceSignage repository.
  */
 class RepositoryTest extends TestCase
 {
-    /**
-     * @var Cache
-     */
     private Cache $cache;
 
-    /**
-     * @var string
-     */
     private string $storeId;
 
-    /**
-     * @var string
-     */
     private string $paymentMethodId;
 
-    /**
-     * @var float
-     */
     private float $amount = 1000.00;
 
     /**
-     * @return void
      * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalValueException
@@ -66,8 +53,12 @@ class RepositoryTest extends TestCase
         $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/priceSignage/' . time()),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/priceSignage/' . time()
+            ),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -83,10 +74,6 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @param string|null $paymentMethodId
-     * @param float|null $amount
-     * @param int|null $monthFilter
-     * @return Cache
      * @throws IllegalValueException
      */
     private function getCache(
@@ -105,7 +92,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert clearCache() clears cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -136,7 +122,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert getPriceSignage() returns data from the API when cache is empty.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -165,7 +150,6 @@ class RepositoryTest extends TestCase
      * Assert getPriceSignage() retrieves payment methods, priceSignage them in
      * cache, and will later return the same priceSignage from cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -306,7 +290,6 @@ class RepositoryTest extends TestCase
      * Assert getPriceSignage() throws if the supplied amount is less than
      * supplied payment method min. purchase amount.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException

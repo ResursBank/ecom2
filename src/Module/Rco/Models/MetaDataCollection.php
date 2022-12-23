@@ -23,9 +23,6 @@ class MetaDataCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: MetaData::class
-        );
+        parent::__construct(data: $data, type: MetaData::class);
     }
 }

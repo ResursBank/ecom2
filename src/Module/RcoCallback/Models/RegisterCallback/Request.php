@@ -16,12 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Request extends Model
 {
-    /**
-     * @param string $uriTemplate
-     * @param string $basicAuthUserName
-     * @param string $basicAuthPassword
-     * @param DigestConfiguration $digestConfiguration
-     */
     public function __construct(
         public string $uriTemplate,
         public string $basicAuthUserName,

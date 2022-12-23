@@ -22,14 +22,11 @@ class LogLevelTest extends TestCase
     /**
      * Assert that only configured log level or higher show as loggable when there is a Config instance
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLoggableWithConfigInstance(): void
     {
-        Config::setup(
-            logLevel: LogLevel::WARNING
-        );
+        Config::setup(logLevel: LogLevel::WARNING);
 
         self::assertFalse(
             condition: LogLevel::loggable(level: LogLevel::DEBUG)
@@ -51,7 +48,6 @@ class LogLevelTest extends TestCase
     /**
      * Assert that all log levels show as loggable when there is no Config instance
      *
-     * @return void
      * @throws ConfigException
      */
     public function testLoggableWithoutConfigInstance(): void

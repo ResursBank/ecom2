@@ -16,15 +16,10 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class RedirectionUrls extends Model
 {
-    /**
-     * @param ParticipantRedirectionUrls|null $customer
-     * @param ParticipantRedirectionUrls|null $coApplicant
-     * @param ParticipantRedirectionUrls|null $merchant
-     */
     public function __construct(
         public readonly ?ParticipantRedirectionUrls $customer,
         public readonly ?ParticipantRedirectionUrls $coApplicant,
-        public readonly ?ParticipantRedirectionUrls $merchant,
+        public readonly ?ParticipantRedirectionUrls $merchant
     ) {
     }
 }

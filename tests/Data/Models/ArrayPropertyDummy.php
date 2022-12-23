@@ -18,7 +18,6 @@ class ArrayPropertyDummy extends Model
 {
     /**
      * @param array $array
-     * @param string $message
      */
     public function __construct(
         public array $array,

@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Collection;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Throwable;
 
 use function get_class;
 
@@ -26,8 +26,6 @@ final class CollectionTest extends TestCase
 
     /**
      * Set up data variable
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -35,7 +33,7 @@ final class CollectionTest extends TestCase
             'foo',
             'bar',
             'baz',
-            'baf'
+            'baf',
         ];
 
         parent::setUp();
@@ -44,7 +42,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that creation of Collection works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testCreateCollection(): void
@@ -59,31 +56,32 @@ final class CollectionTest extends TestCase
 
     /**
      * Verify that type verification works
-     *
-     * @return void
      */
     public function testCollectionTypeVerification(): void
     {
         $data = [
             'foo',
             42,
-            'bar'
+            'bar',
         ];
 
         $className = false;
+
         try {
             new Collection(data: $data, type: 'string');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(expected: IllegalTypeException::class, actual: $className);
+        $this::assertSame(
+            expected: IllegalTypeException::class,
+            actual: $className
+        );
     }
 
     /**
      * Verify that it's impossible to add an item of the wrong type to a collection
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testAddWrongTypeData(): void
@@ -91,9 +89,10 @@ final class CollectionTest extends TestCase
         $collection = new Collection(data: $this->data);
 
         $className = false;
+
         try {
             $collection[] = 42;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $className = get_class(object: $e);
         }
 
@@ -110,7 +109,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the toArray method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testToArray(): void
@@ -125,7 +123,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that type determination called in the Collection constructor works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testTypeDetermination(): void
@@ -142,7 +139,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the count method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testCount(): void
@@ -158,7 +154,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the offsetSet method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testOffsetSet(): void
@@ -168,16 +163,12 @@ final class CollectionTest extends TestCase
         $collection = new Collection(data: $data);
         $collection[1] = 'bar';
 
-        $this::assertSame(
-            expected: 'bar',
-            actual: $collection[1]
-        );
+        $this::assertSame(expected: 'bar', actual: $collection[1]);
     }
 
     /**
      * Verify that the offsetExists method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testOffsetExists(): void
@@ -190,7 +181,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the offsetUnset method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testOffsetUnset(): void
@@ -204,7 +194,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the offsetGet method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testOffsetGet(): void
@@ -220,7 +209,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the rewind method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testRewind(): void
@@ -239,7 +227,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the current method works
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws CollectionException
      */
@@ -257,7 +244,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the key method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testKey(): void
@@ -274,7 +260,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the next method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testNext(): void
@@ -285,10 +270,7 @@ final class CollectionTest extends TestCase
         $originalKey = $collection->key();
         $collection->next();
 
-        $this::assertSame(
-            expected: 0,
-            actual: $originalKey
-        );
+        $this::assertSame(expected: 0, actual: $originalKey);
         $this::assertSame(
             expected: 1,
             actual: $collection->key()
@@ -298,7 +280,6 @@ final class CollectionTest extends TestCase
     /**
      * Verify that the valid method works
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testValid(): void
@@ -306,9 +287,11 @@ final class CollectionTest extends TestCase
         $collection = new Collection(data: $this->data);
         $shouldBeValid = $collection->valid();
         $maxIndex = count(value: $this->data) - 1;
+
         for ($i = 0; $i <= $maxIndex; $i++) {
             $collection->next();
         }
+
         $shouldBeInvalid = $collection->valid();
 
         $this::assertTrue(condition: $shouldBeValid);

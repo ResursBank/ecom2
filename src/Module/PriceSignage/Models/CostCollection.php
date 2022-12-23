@@ -23,9 +23,6 @@ class CostCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: Cost::class
-        );
+        parent::__construct(data: $data, type: Cost::class);
     }
 }

@@ -19,18 +19,12 @@ use Resursbank\Ecom\Lib\Utilities\Session;
  */
 trait MockSessionTrait
 {
-    /**
-     * @var Session
-     */
     private Session $session;
 
     /**
      * PHPUnit sends headers before this executes, thus we cannot manipulate
      * our session handler (starting / stopping it to check the behaviour
      * of our methods). We mock the isAvailable method to fix that.
-     *
-     * @param TestCase $test
-     * @return void
      */
     public function setupSession(
         TestCase $test
@@ -47,9 +41,8 @@ trait MockSessionTrait
     /**
      * Make session appear enabled.
      *
-     * @return void
-     * @noinspection UnnecessaryAssertionInspection
      * @psalm-suppress
+     * @noinspection UnnecessaryAssertionInspection
      */
     public function enableSession(): void
     {
@@ -62,9 +55,8 @@ trait MockSessionTrait
     /**
      * Make session appear disabled.
      *
-     * @return void
-     * @noinspection UnnecessaryAssertionInspection
      * @psalm-suppress
+     * @noinspection UnnecessaryAssertionInspection
      */
     public function disableSession(): void
     {

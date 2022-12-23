@@ -10,9 +10,9 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 use function is_array;
 
@@ -21,9 +21,7 @@ use function is_array;
  */
 class PaymentMethodTest extends TestCase
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private static array $data = [
         'id' => '4fcf7608-59df-4c4b-b49d-11063c58be7a',
         'name' => 'Faktura',
@@ -34,12 +32,9 @@ class PaymentMethodTest extends TestCase
         'maxApplicationLimit' => 5000,
         'legalLinks' => [],
         'enabledForLegalCustomer' => true,
-        'enabledForNaturalCustomer' => true
+        'enabledForNaturalCustomer' => true,
     ];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         self::$data['legalLinks'] = [
@@ -65,7 +60,6 @@ class PaymentMethodTest extends TestCase
 
     /**
      * @param array $updates
-     * @return PaymentMethod
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
@@ -90,7 +84,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert validateId() raises Error when id is empty.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -103,7 +96,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert validateId() throws IllegalValueException when not a UUID.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -116,7 +108,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -130,7 +121,6 @@ class PaymentMethodTest extends TestCase
      * Assert validateName() throws EmptyValueException when name
      * is empty.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -143,24 +133,19 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
     public function testNameWasAssigned(): void
     {
         $item = $this->convert();
-        $this->assertSame(
-            expected: self::$data['name'],
-            actual: $item->name
-        );
+        $this->assertSame(expected: self::$data['name'], actual: $item->name);
     }
 
     /**
      * Assert validateMinPurchaseLimit() throws IllegalTypeException when
      * supplied a negative value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -173,7 +158,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -190,7 +174,6 @@ class PaymentMethodTest extends TestCase
      * Assert validateMaxPurchaseLimit() throws IllegalTypeException when
      * supplied a negative value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -203,7 +186,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -220,7 +202,6 @@ class PaymentMethodTest extends TestCase
      * Assert validateMinApplicationLimit() throws IllegalTypeException when
      * supplied a negative value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
@@ -234,7 +215,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
@@ -252,7 +232,6 @@ class PaymentMethodTest extends TestCase
      * Assert validateMaxApplicationLimit() throws IllegalTypeException when
      * supplied a negative value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
@@ -266,7 +245,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
@@ -283,7 +261,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -305,7 +282,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert legalLinks property accepts empty array.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
@@ -323,16 +299,12 @@ class PaymentMethodTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
      */
     public function testTypeAssigned(): void
     {
         $item = $this->convert();
-        $this->assertSame(
-            expected: Type::RESURS_INVOICE,
-            actual: $item->type
-        );
+        $this->assertSame(expected: Type::RESURS_INVOICE, actual: $item->type);
     }
 }

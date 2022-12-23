@@ -28,28 +28,21 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
-use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
 use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
 /**
  * Integration tests for PaymentMethods repository.
  */
 class RepositoryTest extends TestCase
 {
-    /**
-     * @var Cache
-     */
     private Cache $cache;
 
-    /**
-     * @var string
-     */
     private string $storeId;
 
     /**
-     * @return void
      * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalValueException
@@ -59,8 +52,12 @@ class RepositoryTest extends TestCase
         $this->storeId = $_ENV['STORE_ID'];
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
-            cache: new Filesystem(path: '/tmp/ecom-test/paymentMethods/' . time()),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(
+                path: '/tmp/ecom-test/paymentMethods/' . time()
+            ),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -76,9 +73,25 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * @noinspection PhpSameParameterValueInspection
+     */
+    private function allFieldsOfType(
+        ApplicationFormSpecElementResponseCollection $fields,
+        Type $type
+    ): bool {
+        /** @var ApplicationFormSpecElementResponse $field */
+        foreach ($fields as $field) {
+            if ($field->type !== $type) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Assert clearCache() clears cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -105,7 +118,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert getPaymentMethods() returns data from the API when cache is empty.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -132,7 +144,6 @@ class RepositoryTest extends TestCase
      * Assert getPaymentMethods() retrieves payment methods, paymentMethod them
      * in cache, and will later return the same paymentMethods from cache.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -149,9 +160,7 @@ class RepositoryTest extends TestCase
     {
         $this->assertEmpty(actual: $this->cache->read());
 
-        $data = Repository::getPaymentMethods(
-            storeId: $this->storeId
-        );
+        $data = Repository::getPaymentMethods(storeId: $this->storeId);
 
         $this->assertNotEmpty(actual: $data);
 
@@ -169,7 +178,6 @@ class RepositoryTest extends TestCase
      * Assert different datasets from the API for different amount values. Also
      * make sure the cache is kept separated by the same value.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -228,7 +236,6 @@ class RepositoryTest extends TestCase
     /**
      * Assert getById() returns a payment method by its ID.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -258,16 +265,12 @@ class RepositoryTest extends TestCase
         );
 
         $this->assertNotNull(actual: $paymentMethod);
-        $this->assertEquals(
-            expected: $method->id,
-            actual: $paymentMethod->id
-        );
+        $this->assertEquals(expected: $method->id, actual: $paymentMethod->id);
     }
 
     /**
      * Assert getById() returns NULL when no payment method is found.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -301,7 +304,6 @@ class RepositoryTest extends TestCase
     /**
      * Performs simple test of application_data_specification fetching
      *
-     * @return void
      * @throws Exception
      */
     public function testGetApplicationDataSpecification(): void
@@ -313,18 +315,21 @@ class RepositoryTest extends TestCase
         );
 
         if (!isset($response->elements)) {
-            $this->markTestSkipped(message: 'Skipping test as response collection is null');
+            $this->markTestSkipped(
+                message: 'Skipping test as response collection is null'
+            );
         }
 
         $this->assertTrue(
-            condition: $response->hasField(fieldName: 'applicant-government-id')
+            condition: $response->hasField(
+                fieldName: 'applicant-government-id'
+            )
         );
     }
 
     /**
      * Assert that the getFieldsByType method only returns fields of requested type
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws Exception
      */
@@ -338,40 +343,28 @@ class RepositoryTest extends TestCase
         $headingFields = $response->getFieldsByType(type: Type::HEADING);
 
         if (!isset($response->elements)) {
-            $this->markTestSkipped(message: 'Skipping test as response collection is null');
+            $this->markTestSkipped(
+                message: 'Skipping test as response collection is null'
+            );
         }
 
         $this->assertFalse(
-            condition: $this->allFieldsOfType(fields: $response->elements, type: Type::HEADING)
+            condition: $this->allFieldsOfType(
+                fields: $response->elements,
+                type: Type::HEADING
+            )
         );
         $this->assertTrue(
-            condition: $this->allFieldsOfType(fields: $headingFields, type: Type::HEADING)
+            condition: $this->allFieldsOfType(
+                fields: $headingFields,
+                type: Type::HEADING
+            )
         );
-    }
-
-    /**
-     * @param ApplicationFormSpecElementResponseCollection $fields
-     * @param Type $type
-     * @return bool
-     * @noinspection PhpSameParameterValueInspection
-     */
-    private function allFieldsOfType(
-        ApplicationFormSpecElementResponseCollection $fields,
-        Type $type
-    ): bool {
-        /** @var ApplicationFormSpecElementResponse $field */
-        foreach ($fields as $field) {
-            if ($field->type !== $type) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
      * Assert that the application_data_specification filter method works
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws Exception
      * @SuppressWarnings(PHPMD.ElseExpression)
@@ -385,7 +378,9 @@ class RepositoryTest extends TestCase
         );
 
         if (!isset($response->elements)) {
-            $this->markTestSkipped(message: 'Skipping test as response collection is null');
+            $this->markTestSkipped(
+                message: 'Skipping test as response collection is null'
+            );
         }
 
         if (
@@ -399,13 +394,19 @@ class RepositoryTest extends TestCase
 
             $this->assertCount(
                 expectedCount: count($response->elements) - 1,
-                haystack: $filteredResponse->elements ?? new ApplicationFormSpecElementResponseCollection(data: [])
+                haystack: $filteredResponse->elements ?? new ApplicationFormSpecElementResponseCollection(
+                    data: []
+                )
             );
             $this->assertFalse(
-                condition: $filteredResponse->hasField(fieldName: 'applicant-government-id')
+                condition: $filteredResponse->hasField(
+                    fieldName: 'applicant-government-id'
+                )
             );
         } else {
-            $this->markTestSkipped(message: 'Field required by test not found in response');
+            $this->markTestSkipped(
+                message: 'Field required by test not found in response'
+            );
         }
     }
 }

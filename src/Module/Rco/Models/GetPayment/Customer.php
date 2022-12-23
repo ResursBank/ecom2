@@ -16,13 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Customer extends Model
 {
-    /**
-     * @param string $governmentId
-     * @param Address $address
-     * @param string $phone
-     * @param string $email
-     * @param string $type
-     */
     public function __construct(
         public string $governmentId,
         public Address $address,

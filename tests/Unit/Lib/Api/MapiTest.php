@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Api;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -18,6 +17,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Throwable;
 
 use function strlen;
 
@@ -26,14 +26,8 @@ use function strlen;
  */
 class MapiTest extends TestCase
 {
-    /**
-     * @var Mapi
-     */
     private Mapi $mapi;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->mapi = new Mapi();
@@ -44,15 +38,15 @@ class MapiTest extends TestCase
     }
 
     /**
-     * @param bool $prod
-     * @return void
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     private function setupConfig(
         bool $prod = false
     ): void {
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             isProduction: $prod
         );
@@ -75,18 +69,13 @@ class MapiTest extends TestCase
                     max: strlen(string: $charset) - 1
                 )];
             }
-        } catch (Exception) {
+        } catch (Throwable) {
             $this->fail(message: 'Failed to generate route.');
         }
 
         return $route;
     }
 
-    /**
-     * @param string $route
-     * @param string $host
-     * @return string
-     */
     private function getExpectedUrl(
         string $route = '',
         string $host = Mapi::URL_TEST
@@ -97,7 +86,6 @@ class MapiTest extends TestCase
     /**
      * Assert getUrl() throws EmptyValueException without $route value.
      *
-     * @return void
      * @throws ConfigException
      * @throws EmptyValueException
      * @throws ValidationException
@@ -111,7 +99,6 @@ class MapiTest extends TestCase
     /**
      * Assert getUrl() returns URL to test endpoint.
      *
-     * @return void
      * @throws ConfigException
      * @throws EmptyValueException
      * @throws ValidationException
@@ -129,7 +116,6 @@ class MapiTest extends TestCase
     /**
      * Assert getUrl() returns URL to production endpoint.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws ValidationException
      * @throws ConfigException

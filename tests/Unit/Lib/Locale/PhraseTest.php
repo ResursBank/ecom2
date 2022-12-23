@@ -21,16 +21,12 @@ use Resursbank\Ecom\Lib\Locale\Translation;
  */
 class PhraseTest extends TestCase
 {
-    /**
-     * @return Translation
-     */
     private function getTranslationInstance(): Translation
     {
         return new Translation(en: 'asdf', sv: 'asdf');
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     public function testValidateIdIsValidWhenNotEmpty(): void
@@ -39,13 +35,12 @@ class PhraseTest extends TestCase
             expected: Phrase::class,
             actual: new Phrase(
                 id: 'asdf',
-                translation: $this->getTranslationInstance(),
-            ),
+                translation: $this->getTranslationInstance()
+            )
         );
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     public function testValidateIdThrowsIfEmpty(): void
@@ -54,7 +49,7 @@ class PhraseTest extends TestCase
 
         new Phrase(
             id: '',
-            translation: $this->getTranslationInstance(),
+            translation: $this->getTranslationInstance()
         );
     }
 }

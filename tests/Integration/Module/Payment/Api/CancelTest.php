@@ -28,19 +28,18 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\EcomTest\Utilities\MockSigner;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
  * Tests for MAPI Payment Cancel class.
@@ -55,7 +54,9 @@ class CancelTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -69,7 +70,6 @@ class CancelTest extends TestCase
     /**
      * Generate a dummy order reference
      *
-     * @return string
      * @throws Exception
      */
     private function generateOrderReference(): string
@@ -80,8 +80,6 @@ class CancelTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -121,7 +119,7 @@ class CancelTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]),
             orderReference: $orderReference,
             customer: new Customer(
@@ -143,7 +141,7 @@ class CancelTest extends TestCase
 
     /**
      * Verify that canceling an entire payment works as intended
-     * @return void
+     *
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -168,10 +166,7 @@ class CancelTest extends TestCase
         $response = Repository::cancel(paymentId: $payment->id);
 
         // Assert that cancel went through
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
         /** @psalm-suppress MixedPropertyFetch */
@@ -192,7 +187,6 @@ class CancelTest extends TestCase
     /**
      * Verify that cancelling a single order line works as intended
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -231,10 +225,7 @@ class CancelTest extends TestCase
         );
 
         // Assert that cancel went through
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
         /**
@@ -258,7 +249,6 @@ class CancelTest extends TestCase
     /**
      * Verify that canceling with creator argument results in specified creator value being present in action log
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -287,13 +277,8 @@ class CancelTest extends TestCase
         );
 
         // Assert that creator argument is present in action log
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
-        $this->assertNotNull(
-            actual: $response->order
-        );
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
+        $this->assertNotNull(actual: $response->order);
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertEquals(
             expected: $creator,

@@ -33,13 +33,9 @@ use function json_encode;
  */
 class OrderTest extends TestCase
 {
-    /**
-     * @var stdClass
-     */
     private stdClass $data;
 
     /**
-     * @return void
      * @throws JsonException
      * @throws TestException
      */
@@ -52,7 +48,6 @@ class OrderTest extends TestCase
 
     /**
      * @param array $updates
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -81,7 +76,6 @@ class OrderTest extends TestCase
      * Assert validateOrderLines() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -110,7 +104,7 @@ class OrderTest extends TestCase
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
-            )
+            ),
         ]);
     }
 
@@ -118,7 +112,6 @@ class OrderTest extends TestCase
      * Assert validateOrderLines() throws IllegalValueException when its
      * length is too short.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -127,7 +120,7 @@ class OrderTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'orderLines' => []
+            'orderLines' => [],
         ]);
     }
 
@@ -135,7 +128,6 @@ class OrderTest extends TestCase
      * Assert validateReference() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -145,7 +137,7 @@ class OrderTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'orderReference' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing elit. Pellentesque tempus gravida varius.'
+                'adipiscing elit. Pellentesque tempus gravida varius.',
         ]);
     }
 
@@ -153,7 +145,6 @@ class OrderTest extends TestCase
      * Assert validateReference() throws IllegalValueException when its
      * length is too short.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -162,7 +153,7 @@ class OrderTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'orderReference' => ''
+            'orderReference' => '',
         ]);
     }
 
@@ -170,7 +161,6 @@ class OrderTest extends TestCase
      * Assert validateReference() throws IllegalValueException when it uses
      * illegal characters.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -179,7 +169,7 @@ class OrderTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'orderReference' => 'Test!'
+            'orderReference' => 'Test!',
         ]);
     }
 }

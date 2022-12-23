@@ -27,18 +27,17 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\EcomTest\Utilities\MockSigner;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
  * Tests that getPayment works.
@@ -46,7 +45,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 class GetTest extends TestCase
 {
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -54,7 +52,9 @@ class GetTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -68,7 +68,6 @@ class GetTest extends TestCase
     /**
      * Generate a dummy order reference
      *
-     * @return string
      * @throws Exception
      * @throws Exception
      */
@@ -78,8 +77,6 @@ class GetTest extends TestCase
     }
 
     /**
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -118,7 +115,7 @@ class GetTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]),
             orderReference: $orderReference,
             customer: new Customer(
@@ -164,9 +161,6 @@ class GetTest extends TestCase
         $fetched = Repository::get(paymentId: $payment->id);
 
         // Assert that the fetched order is the one we created
-        $this->assertSame(
-            expected: $payment->id,
-            actual: $fetched->id
-        );
+        $this->assertSame(expected: $payment->id, actual: $fetched->id);
     }
 }

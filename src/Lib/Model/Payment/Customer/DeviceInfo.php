@@ -19,9 +19,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class DeviceInfo extends Model
 {
     /**
-     * @param string|null $ip
-     * @param string|null $userAgent
-     * @param StringValidation $stringValidation
      * @throws IllegalValueException
      */
     public function __construct(
@@ -40,8 +37,14 @@ class DeviceInfo extends Model
      */
     private function validateUserAgent(): void
     {
-        if ($this->userAgent !== null) {
-            $this->stringValidation->length(value: $this->userAgent, min: 1, max: 200);
+        if ($this->userAgent === null) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->userAgent,
+            min: 1,
+            max: 200
+        );
     }
 }

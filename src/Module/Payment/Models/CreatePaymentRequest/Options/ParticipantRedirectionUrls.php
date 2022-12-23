@@ -16,10 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class ParticipantRedirectionUrls extends Model
 {
-    /**
-     * @param string|null $failUrl
-     * @param string|null $successUrl
-     */
     public function __construct(
         /**
          * @todo Don't know how to validate urls.
@@ -28,7 +24,7 @@ class ParticipantRedirectionUrls extends Model
         /**
          * @todo Don't know how to validate urls.
          */
-        public readonly ?string $successUrl,
+        public readonly ?string $successUrl
     ) {
     }
 }

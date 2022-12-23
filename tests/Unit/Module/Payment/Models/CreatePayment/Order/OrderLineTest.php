@@ -17,9 +17,9 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 
 /**
  * Test data integrity of order line entity model.
@@ -29,7 +29,6 @@ class OrderLineTest extends TestCase
     private static array $data = [];
 
     /**
-     * @return void
      * @throws JsonException
      * @throws IllegalValueException
      */
@@ -63,7 +62,6 @@ class OrderLineTest extends TestCase
 
     /**
      * @param array $updates
-     * @return OrderLine
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -89,7 +87,6 @@ class OrderLineTest extends TestCase
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -99,7 +96,7 @@ class OrderLineTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'description' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing.'
+                'adipiscing.',
         ]);
     }
 
@@ -107,7 +104,6 @@ class OrderLineTest extends TestCase
      * Assert validateReference() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -117,7 +113,7 @@ class OrderLineTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'reference' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing.'
+                'adipiscing.',
         ]);
     }
 
@@ -125,7 +121,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantityUnit() throws IllegalValueException when its
      * length is too long.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -135,7 +130,7 @@ class OrderLineTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
             'quantityUnit' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing. '
+                'adipiscing. ',
         ]);
     }
 
@@ -143,7 +138,6 @@ class OrderLineTest extends TestCase
      * Assert validateVatRate() throws IllegalValueException when its
      * value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -158,7 +152,6 @@ class OrderLineTest extends TestCase
      * Assert validateVatRate() throws IllegalValueException when its
      * value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -173,7 +166,6 @@ class OrderLineTest extends TestCase
      * Assert validateVatRate() throws IllegalValueException when its
      * value has more than 2 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -188,7 +180,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantity() throws IllegalValueException when its
      * value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -203,7 +194,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantity() throws IllegalValueException when its
      * value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -218,7 +208,6 @@ class OrderLineTest extends TestCase
      * Assert validateQuantity() throws IllegalValueException when its
      * value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -233,7 +222,6 @@ class OrderLineTest extends TestCase
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -248,7 +236,6 @@ class OrderLineTest extends TestCase
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -263,7 +250,6 @@ class OrderLineTest extends TestCase
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -278,7 +264,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -293,7 +278,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -308,7 +292,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -323,7 +306,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value is negative.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -338,7 +320,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
@@ -353,7 +334,6 @@ class OrderLineTest extends TestCase
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value has more than 10 integer digits.
      *
-     * @return void
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException

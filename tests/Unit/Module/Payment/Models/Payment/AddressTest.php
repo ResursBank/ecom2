@@ -25,7 +25,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test data integrity of Address entity model.
- *
  */
 class AddressTest extends TestCase
 {

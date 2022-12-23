@@ -23,13 +23,10 @@ use stdClass;
  */
 final class ArrayValidationTest extends TestCase
 {
-    /**
-     * @var ArrayValidation
-     */
     private ArrayValidation $arrayValidation;
 
     /**
-     * @return void
+     * Prepare tests.
      */
     protected function setUp(): void
     {
@@ -42,7 +39,6 @@ final class ArrayValidationTest extends TestCase
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -56,7 +52,6 @@ final class ArrayValidationTest extends TestCase
      * Assert getKey() throws IllegalTypeException when the needle exists but
      * is not an integer.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -69,7 +64,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert getKey() return validated array value.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws MissingKeyException
      */
@@ -87,8 +81,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert isSequential() throws IllegalValueException if supplied array is
      * not sequential.
-     *
-     * @return void
      */
     public function testIsSequentialThrowsWithAssoc(): void
     {
@@ -99,7 +91,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert isSequential() returns TRUE.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsSequentialReturnsTrue(): void
@@ -114,8 +105,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert isAssoc() throws IllegalValueException if supplied array is not
      * associative.
-     *
-     * @return void
      */
     public function testIsAssocThrowsWithAssoc(): void
     {
@@ -126,7 +115,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert isAssoc() returns TRUE.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testIsAssocReturnsTrue(): void
@@ -142,7 +130,6 @@ final class ArrayValidationTest extends TestCase
      * Assert isMultiDimensional() throws IllegalTypeException when passed a
      * value containing an array with inconsistent depth.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testIsMultiDimensionalThrowsWithoutArrayAtDepth(): void
@@ -158,7 +145,6 @@ final class ArrayValidationTest extends TestCase
      * Assert isMultiDimensional() throws IllegalTypeException when passed a
      * one dimensional array with a greater depth expected.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testIsMultiDimensionalThrowsWithSingleDimension(): void
@@ -174,7 +160,6 @@ final class ArrayValidationTest extends TestCase
      * Assert isMultiDimensional() throws IllegalTypeException when passed an
      * accurate structure but with a consistently low depth.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testIsMultiDimensionalThrowsWithAssoc(): void
@@ -190,7 +175,6 @@ final class ArrayValidationTest extends TestCase
      * Assert isMultiDimensional() returns TRUE when passed a multidimensional
      * array with a depth of one.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testIsMultiDimensionalReturnsTrue(): void
@@ -217,14 +201,14 @@ final class ArrayValidationTest extends TestCase
                     [[
                         ['water', 'splashes', 'here'],
                         ['I', 'drank', 'many', 'beers', 'standing'],
-                        ['then', 'I', 'fell', 'over']
+                        ['then', 'I', 'fell', 'over'],
                     ]],
                     [[
                         ['no', 'more'],
-                        ['inline']
+                        ['inline'],
                     ]],
                     [[
-                        ['epics']
+                        ['epics'],
                     ]],
                 ],
                 depth: 3
@@ -236,7 +220,6 @@ final class ArrayValidationTest extends TestCase
      * Assert isMultiDimensional() returns TRUE when passed a multidimensional
      * array with a partial depth greater than the depth check.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testIsMultiDimensionalReturnsTrueWithGreaterDepth(): void
@@ -252,8 +235,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert isStdClassCollection() throws IllegalTypeException if the supplied
      * array contains an element that is not an instance of stdClass.
-     *
-     * @return void
      */
     public function testIsStdClassCollectionThrowsWithString(): void
     {
@@ -266,7 +247,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert isStdClassCollection() returns TRUE.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testIsStdClassCollectionReturnsTrue(): void
@@ -274,7 +254,7 @@ final class ArrayValidationTest extends TestCase
         $this->assertTrue(
             condition: $this->arrayValidation->isStdClassCollection(data: [
                 'test' => new stdClass(),
-                'test2' => new stdClass()
+                'test2' => new stdClass(),
             ])
         );
     }
@@ -283,7 +263,6 @@ final class ArrayValidationTest extends TestCase
      * Assert allowedKeys() throws IllegalValueException if the supplied array
      * which contains a key that is not in the supplied array of allowed keys.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testAllowedKeysThrowsWithIllegal(): void
@@ -298,7 +277,6 @@ final class ArrayValidationTest extends TestCase
     /**
      * Assert that allowedKeys() returns TRUE.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testAllowedKeysReturnsTrue(): void
@@ -315,7 +293,6 @@ final class ArrayValidationTest extends TestCase
      * Test that length() throws IllegalValueException when given a max value
      * that is lower than the given min value.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsIfMaxIsLessThanMin(): void
@@ -328,7 +305,6 @@ final class ArrayValidationTest extends TestCase
      * Test that length() throws IllegalValueException when given a min value
      * that is negative.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsIfMinIsNegative(): void
@@ -341,7 +317,6 @@ final class ArrayValidationTest extends TestCase
      * Test that length() throws IllegalValueException when the given array has
      * a length that does not fit into the specified min and max parameters.
      *
-     * @return void
      * @throws IllegalValueException
      */
     public function testLengthThrowsIfValueHasInvalidLength(): void

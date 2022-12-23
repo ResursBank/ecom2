@@ -20,9 +20,7 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\ValidateJwtCredentials;
 
 /**
@@ -33,7 +31,6 @@ class ValidateJwtCredentialsTest extends TestCase
     /**
      * Assert exec() throws AuthException with invalid username.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -63,7 +60,6 @@ class ValidateJwtCredentialsTest extends TestCase
     /**
      * Assert exec() throws AuthException with invalid password.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -93,7 +89,6 @@ class ValidateJwtCredentialsTest extends TestCase
     /**
      * Assert exec() throws ConfigException without any credentials.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -116,7 +111,6 @@ class ValidateJwtCredentialsTest extends TestCase
     /**
      * Assert exec() return TRUE with valid credentials configured.
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

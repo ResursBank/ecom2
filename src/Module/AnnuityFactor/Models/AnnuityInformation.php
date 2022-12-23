@@ -16,13 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class AnnuityInformation extends Model
 {
-    /**
-     * @param string $paymentPlanName
-     * @param float $annuityFactor
-     * @param int $durationMonths
-     * @param float $administrationFee
-     * @param float $setupFee
-     */
     public function __construct(
         public readonly string $paymentPlanName,
         public readonly float $annuityFactor,

@@ -30,22 +30,22 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 
 /**
  * Tests for Metadata updates
- * @psalm-suppress PropertyNotSetInConstructor
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class PutTest extends TestCase
 {
@@ -57,7 +57,9 @@ class PutTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -71,8 +73,6 @@ class PutTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -135,7 +135,6 @@ class PutTest extends TestCase
     /**
      * Generate a dummy order reference
      *
-     * @return string
      * @throws Exception
      */
     private function generateOrderReference(): string
@@ -161,14 +160,13 @@ class PutTest extends TestCase
     public function testSimplePut(): void
     {
         $custom = [
-            new Metadata\Entry(
-                key: 'foo',
-                value: 'bar'
-            )
+            new Metadata\Entry(key: 'foo', value: 'bar'),
         ];
 
         // Create payment
-        $payment = $this->createPayment(orderReference: $this->generateOrderReference());
+        $payment = $this->createPayment(
+            orderReference: $this->generateOrderReference()
+        );
 
         // Sign
         MockSigner::approve(payment: $payment);
@@ -187,18 +185,12 @@ class PutTest extends TestCase
         // Assert that the metadata exists on the fetched payment
         $this->assertEqualsCanonicalizing(
             expected: $custom,
-            actual: $setMetadataResponse->custom !== null ?
-                    $setMetadataResponse->custom->toArray() :
-                    []
+            actual: $setMetadataResponse->custom?->toArray() ?? []
         );
-        $this->assertNotNull(
-            actual: $fetchedPayment->metadata
-        );
+        $this->assertNotNull(actual: $fetchedPayment->metadata);
         $this->assertEqualsCanonicalizing(
             expected: $custom,
-            actual: $fetchedPayment->metadata->custom !== null ?
-                $fetchedPayment->metadata->custom->toArray() :
-                []
+            actual: $fetchedPayment->metadata->custom?->toArray() ?? []
         );
     }
 }

@@ -10,13 +10,13 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Cache\Redis;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Phrase;
-use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
 
 /**
  * Test that phrases can be translated.
@@ -24,7 +24,6 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 class TranslatorTest extends TestCase
 {
     /**
-     * @return void
      * @throws ConfigException
      */
     protected function setUp(): void
@@ -35,21 +34,18 @@ class TranslatorTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @param Language $locale
-     * @return void
-     */
     private function setupConfig(Language $locale = Language::en): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             language: $locale,
             cache: new Redis(host: $_ENV['REDIS_HOST'])
         );
     }
 
     /**
-     * @return void
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -69,7 +65,6 @@ class TranslatorTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -84,7 +79,6 @@ class TranslatorTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -96,7 +90,6 @@ class TranslatorTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -117,7 +110,6 @@ class TranslatorTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
@@ -143,10 +135,12 @@ class TranslatorTest extends TestCase
 
         /** @var Phrase $item */
         foreach ($decodedCache->toArray() as $item) {
-            if ($item->id === $phraseId) {
-                /** @var string $result */
-                $result = $item->translation->{Config::getLanguage()->value};
+            if ($item->id !== $phraseId) {
+                continue;
             }
+
+            /** @var string $result */
+            $result = $item->translation->{Config::getLanguage()->value};
         }
 
         $this->assertNull(actual: $oldCache);

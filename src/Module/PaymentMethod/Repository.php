@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
+use Throwable;
 
 /**
  * Interaction with Payment Method entities and related functionality.
@@ -43,9 +44,6 @@ class Repository
      * NOTE: Parameters must be validated since they are utilized for our cache
      * keys.
      *
-     * @param string $storeId
-     * @param float|null $amount
-     * @return PaymentMethodCollection
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -67,7 +65,10 @@ class Repository
             $result = $cache->read();
 
             if (!$result instanceof PaymentMethodCollection) {
-                $result = self::getApi(storeId: $storeId, amount: $amount)->call();
+                $result = self::getApi(
+                    storeId: $storeId,
+                    amount: $amount
+                )->call();
 
                 if (!$result instanceof PaymentMethodCollection) {
                     throw new ApiException(message: 'Invalid API response.');
@@ -76,7 +77,7 @@ class Repository
                 $result = self::setCollectionSortOrder(collection: $result);
                 $cache->write(data: $result);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
 
             throw $e;
@@ -87,9 +88,6 @@ class Repository
 
     /**
      * Updates sort order of fetched payment methods.
-     *
-     * @param PaymentMethodCollection $collection
-     * @return PaymentMethodCollection
      */
     public static function setCollectionSortOrder(
         PaymentMethodCollection $collection
@@ -103,9 +101,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param float|null $amount
-     * @return Cache
      * @throws IllegalValueException
      */
     public static function getCache(
@@ -124,9 +119,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param float|null $amount
-     * @return Get
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
@@ -145,10 +137,6 @@ class Repository
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param float|null $amount
-     * @return PaymentMethod|null
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -175,19 +163,17 @@ class Repository
 
         /** @var PaymentMethod $paymentMethod */
         foreach ($paymentMethods as $paymentMethod) {
-            if ($paymentMethod->id === $paymentMethodId) {
-                $result = $paymentMethod;
+            if ($paymentMethod->id !== $paymentMethodId) {
+                continue;
             }
+
+            $result = $paymentMethod;
         }
 
         return $result;
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param int $amount
-     * @return PaymentMethod\ApplicationFormSpecResponse
      * @throws Exception
      */
     public static function getApplicationDataSpecification(
@@ -201,15 +187,13 @@ class Repository
                 paymentMethodId: $paymentMethodId,
                 amount: $amount
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             self::logException(exception: $e);
             throw $e;
         }
     }
 
     /**
-     * @param string $storeId
-     * @return void
      * @throws IllegalValueException
      */
     private static function validateStoreId(

@@ -21,16 +21,10 @@ class LegalLinkTest extends TestCase
 {
     /**
      * Assert that a legal link can't be created with an empty url supplied.
-     *
-     * @return void
      */
     public function testValidateUrlThrowsWithEmpty(): void
     {
         $this->expectException(exception: EmptyValueException::class);
-        new LegalLink(
-            url: '',
-            type: Type::GENERAL_TERMS,
-            appendAmount: false
-        );
+        new LegalLink(url: '', type: Type::GENERAL_TERMS, appendAmount: false);
     }
 }

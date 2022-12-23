@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Repository\Traits;
 
-use Exception;
+use DateTime;
 use InvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -28,9 +28,7 @@ final class ModelConverterTest extends TestCase
 {
     use ModelConverter;
 
-    /**
-     * @var array|array[]
-     */
+    /** @var array<array> */
     private static array $data = [
         [
             'id' => 1,
@@ -50,7 +48,6 @@ final class ModelConverterTest extends TestCase
      * Assert validateModel() throws InvalidArgumentException when supplied a
      * value which is not a class.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testValidateModelThrowsWithoutClass(): void
@@ -65,20 +62,18 @@ final class ModelConverterTest extends TestCase
      * Assert validateModel() throws IllegalTypeException when supplied a class
      * that is not a subclass of Model.
      *
-     * @return void
      * @throws IllegalTypeException
      */
     public function testValidateThrowsWithoutModelClass(): void
     {
         $this->expectException(exception: IllegalTypeException::class);
-        $this->validateModel(model: Exception::class);
+        $this->validateModel(model: DateTime::class);
     }
 
     /**
      * Assert convertToModel() throws InvalidArgumentException when supplied a
      * model class that does not exist.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -96,7 +91,6 @@ final class ModelConverterTest extends TestCase
      * Assert convertToModel() throws InvalidArgumentException when supplied a
      * model class that does not exist.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -105,7 +99,7 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelThrowsWithoutModelClass(): void
     {
         $this->expectException(exception: IllegalTypeException::class);
-        $this->convertToModel(data: new stdClass(), model: Exception::class);
+        $this->convertToModel(data: new stdClass(), model: DateTime::class);
     }
 
     /**
@@ -123,7 +117,7 @@ final class ModelConverterTest extends TestCase
                 value: self::$data[0],
                 flags: JSON_THROW_ON_ERROR
             ),
-            model: Instrument::class,
+            model: Instrument::class
         );
 
         $this->assertInstanceOf(expected: Instrument::class, actual: $result);
@@ -144,7 +138,7 @@ final class ModelConverterTest extends TestCase
                 value: self::$data,
                 flags: JSON_THROW_ON_ERROR
             ),
-            model: Instrument::class,
+            model: Instrument::class
         );
 
         $this->assertInstanceOf(
@@ -156,7 +150,6 @@ final class ModelConverterTest extends TestCase
     /**
      * Assert convertToModel() converts stdClass instance to Model instance.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -165,21 +158,20 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelConvertsStdclass(): void
     {
         $result = $this->convertToModel(
-            data: json_encode(value: self::$data[1], flags: JSON_THROW_ON_ERROR),
-            model: Instrument::class,
+            data: json_encode(
+                value: self::$data[1],
+                flags: JSON_THROW_ON_ERROR
+            ),
+            model: Instrument::class
         );
 
-        $this->assertInstanceOf(
-            expected: Instrument::class,
-            actual: $result
-        );
+        $this->assertInstanceOf(expected: Instrument::class, actual: $result);
     }
 
     /**
      * Assert convertToModel() converts array of stdClass instances to Model
      * instances.
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -189,7 +181,7 @@ final class ModelConverterTest extends TestCase
     {
         $result = $this->convertToModel(
             data: json_encode(value: self::$data, flags: JSON_THROW_ON_ERROR),
-            model: Instrument::class,
+            model: Instrument::class
         );
 
         $this->assertInstanceOf(

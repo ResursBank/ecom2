@@ -28,17 +28,6 @@ use function is_string;
 class OrderLine extends Model
 {
     /**
-     * @param float $quantity
-     * @param string $quantityUnit
-     * @param float $vatRate
-     * @param float $totalAmountIncludingVat
-     * @param string|null $description
-     * @param string|null $reference
-     * @param OrderLineType|null $type
-     * @param float|null $unitAmountIncludingVat
-     * @param float|null $totalVatAmount
-     * @param StringValidation $stringValidation
-     * @param FloatValidation $floatValidation
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -53,7 +42,7 @@ class OrderLine extends Model
         public readonly ?float $unitAmountIncludingVat = null,
         public readonly ?float $totalVatAmount = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly FloatValidation $floatValidation = new FloatValidation(),
+        private readonly FloatValidation $floatValidation = new FloatValidation()
     ) {
         $this->validateDescription();
         $this->validateReference();
@@ -71,13 +60,15 @@ class OrderLine extends Model
      */
     private function validateDescription(): void
     {
-        if (is_string(value: $this->description)) {
-            $this->stringValidation->length(
-                value: $this->description,
-                min: 0,
-                max: 50
-            );
+        if (!is_string(value: $this->description)) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->description,
+            min: 0,
+            max: 50
+        );
     }
 
     /**
@@ -86,13 +77,15 @@ class OrderLine extends Model
      */
     private function validateReference(): void
     {
-        if (is_string(value: $this->reference)) {
-            $this->stringValidation->length(
-                value: $this->reference,
-                min: 0,
-                max: 50
-            );
+        if (!is_string(value: $this->reference)) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->reference,
+            min: 0,
+            max: 50
+        );
     }
 
     /**
@@ -114,11 +107,7 @@ class OrderLine extends Model
      */
     private function validateVatRate(): void
     {
-        $this->floatValidation->length(
-            value: $this->vatRate,
-            min: 0,
-            max: 2
-        );
+        $this->floatValidation->length(value: $this->vatRate, min: 0, max: 2);
 
         $this->floatValidation->inRange(
             value: $this->vatRate,
@@ -132,11 +121,7 @@ class OrderLine extends Model
      */
     private function validateQuantity(): void
     {
-        $this->floatValidation->length(
-            value: $this->quantity,
-            min: 0,
-            max: 2
-        );
+        $this->floatValidation->length(value: $this->quantity, min: 0, max: 2);
 
         $this->floatValidation->inRange(
             value: $this->quantity,
@@ -150,19 +135,21 @@ class OrderLine extends Model
      */
     private function validateUnitAmountIncludingVat(): void
     {
-        if (is_float(value: $this->unitAmountIncludingVat)) {
-            $this->floatValidation->length(
-                value: $this->unitAmountIncludingVat,
-                min: 0,
-                max: 2
-            );
-
-            $this->floatValidation->inRange(
-                value: $this->unitAmountIncludingVat,
-                min: 0,
-                max: 9999999999.99
-            );
+        if (!is_float(value: $this->unitAmountIncludingVat)) {
+            return;
         }
+
+        $this->floatValidation->length(
+            value: $this->unitAmountIncludingVat,
+            min: 0,
+            max: 2
+        );
+
+        $this->floatValidation->inRange(
+            value: $this->unitAmountIncludingVat,
+            min: 0,
+            max: 9999999999.99
+        );
     }
 
     /**
@@ -190,18 +177,20 @@ class OrderLine extends Model
      */
     private function validateTotalVatAmount(): void
     {
-        if (is_float(value: $this->totalVatAmount)) {
-            $this->floatValidation->length(
-                value: $this->totalVatAmount,
-                min: 0,
-                max: 2
-            );
-
-            $this->floatValidation->inRange(
-                value: $this->totalVatAmount,
-                min: 0,
-                max: 9999999999.99
-            );
+        if (!is_float(value: $this->totalVatAmount)) {
+            return;
         }
+
+        $this->floatValidation->length(
+            value: $this->totalVatAmount,
+            min: 0,
+            max: 2
+        );
+
+        $this->floatValidation->inRange(
+            value: $this->totalVatAmount,
+            min: 0,
+            max: 9999999999.99
+        );
     }
 }

@@ -29,12 +29,12 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Module\Rco\Models\Address;
 use Resursbank\Ecom\Module\Rco\Models\InitPayment\Customer;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request;
 use Resursbank\Ecom\Module\Rco\Models\OrderLine;
 use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
-use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request;
-use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdateRequest;
 use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
+use Resursbank\Ecom\Module\Rco\Repository;
 
 /**
  * Tests for RCO module Repository class.
@@ -47,7 +47,6 @@ final class RepositoryTest extends TestCase
     /**
      * Set up prerequisites for testing
      *
-     * @return void
      * @throws IllegalTypeException
      * @throws Exception
      */
@@ -63,7 +62,7 @@ final class RepositoryTest extends TestCase
                     unitMeasure: 'pc',
                     unitAmountWithoutVat: 20,
                     vatPct: 25
-                )
+                ),
             ]),
             customer: new Customer(
                 governmentId: '198305147715',
@@ -101,7 +100,6 @@ final class RepositoryTest extends TestCase
     /**
      * Verify that InitPayment works
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -122,9 +120,7 @@ final class RepositoryTest extends TestCase
 
         $this::assertSame(
             expected: $this->request->customer->governmentId,
-            actual: ($response->customer !== null) ?
-                $response->customer->governmentId :
-                ''
+            actual: $response->customer?->governmentId ?? ''
         );
 
         if ($response->iframe === null) {
@@ -140,7 +136,6 @@ final class RepositoryTest extends TestCase
     /**
      * Verify that a valid UpdatePayment request returns http 200 and the payment session id
      *
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -168,8 +163,8 @@ final class RepositoryTest extends TestCase
                         quantity: 2,
                         unitMeasure: 'pc',
                         unitAmountWithoutVat: 20,
-                        vatPct: 25,
-                    )
+                        vatPct: 25
+                    ),
                 ]
             )
         );
@@ -179,10 +174,7 @@ final class RepositoryTest extends TestCase
             orderReference: $this->orderReference
         );
 
-        $this::assertSame(
-            expected: 200,
-            actual: $response->code
-        );
+        $this::assertSame(expected: 200, actual: $response->code);
         $this::assertSame(
             expected: $session->paymentSessionId,
             actual: $response->message
@@ -192,7 +184,6 @@ final class RepositoryTest extends TestCase
     /**
      * Verify that a 404 response is given when attempting to update a nonexistent order.
      *
-     * @return void
      * @throws ReflectionException
      * @throws IllegalTypeException
      * @throws Exception
@@ -213,8 +204,8 @@ final class RepositoryTest extends TestCase
                         quantity: 2,
                         unitMeasure: 'pc',
                         unitAmountWithoutVat: 20,
-                        vatPct: 25,
-                    )
+                        vatPct: 25
+                    ),
                 ]
             )
         );
@@ -224,13 +215,12 @@ final class RepositoryTest extends TestCase
         try {
             Repository::updatePayment(
                 request: $request,
-                orderReference: $this->orderReference . bin2hex(string: random_bytes(length: 8))
+                orderReference: $this->orderReference . bin2hex(
+                    string: random_bytes(length: 8)
+                )
             );
         } catch (CurlException $e) {
-            $this::assertSame(
-                expected: 404,
-                actual: $e->httpCode
-            );
+            $this::assertSame(expected: 404, actual: $e->httpCode);
             throw $e;
         }
     }
@@ -238,7 +228,6 @@ final class RepositoryTest extends TestCase
     /**
      * Verify that a valid UpdatePaymentReference request returns HTTP 200 and the order reference
      *
-     * @return void
      * @throws ReflectionException
      * @throws Exception
      */
@@ -258,9 +247,6 @@ final class RepositoryTest extends TestCase
             request: $request,
             orderReference: $this->orderReference
         );
-        $this::assertSame(
-            expected: 200,
-            actual: $response->code
-        );
+        $this::assertSame(expected: 200, actual: $response->code);
     }
 }

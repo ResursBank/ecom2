@@ -21,6 +21,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -28,7 +29,6 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
-use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 
 /**
  * Call to generate MAPI token and convert to Token model instance.
@@ -41,18 +41,13 @@ class GenerateToken
     use ModelConverter;
     use DataResolver;
 
-    /**
-     * @param Jwt $auth
-     * @param Mapi $mapi
-     */
     public function __construct(
         public readonly Jwt $auth,
-        private readonly Mapi $mapi = new Mapi(),
+        private readonly Mapi $mapi = new Mapi()
     ) {
     }
 
     /**
-     * @return Token
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException

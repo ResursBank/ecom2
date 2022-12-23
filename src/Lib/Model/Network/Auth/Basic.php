@@ -19,9 +19,6 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Basic extends Model
 {
     /**
-     * @param string $username
-     * @param string $password
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @todo Add charset validation of username and password.
      */
@@ -35,7 +32,6 @@ class Basic extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     public function validateUsername(): void
@@ -44,7 +40,6 @@ class Basic extends Model
     }
 
     /**
-     * @return void
      * @throws EmptyValueException
      */
     public function validatePassword(): void

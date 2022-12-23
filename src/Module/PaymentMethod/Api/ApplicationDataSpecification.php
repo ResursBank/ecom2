@@ -33,7 +33,6 @@ use stdClass;
  */
 class ApplicationDataSpecification
 {
-    /** @var Mapi  */
     private Mapi $mapi;
 
     public function __construct()
@@ -42,10 +41,6 @@ class ApplicationDataSpecification
     }
 
     /**
-     * @param string $storeId
-     * @param string $paymentMethodId
-     * @param int $amount
-     * @return ApplicationFormSpecResponse
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException

@@ -28,18 +28,17 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\EcomTest\Utilities\MockSigner;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Lib\Model\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
  * Tests for MAPI Payment Capture class.
@@ -47,7 +46,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 class CaptureTest extends TestCase
 {
     /**
-     * @return void
      * @throws EmptyValueException
      */
     protected function setUp(): void
@@ -55,7 +53,9 @@ class CaptureTest extends TestCase
         parent::setUp();
 
         Config::setup(
-            logger: $this->createMock(originalClassName: LoggerInterface::class),
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
             cache: $this->createMock(originalClassName: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -69,7 +69,6 @@ class CaptureTest extends TestCase
     /**
      * Generate a dummy order reference
      *
-     * @return string
      * @throws Exception
      */
     private function generateOrderReference(): string
@@ -80,8 +79,6 @@ class CaptureTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -121,7 +118,7 @@ class CaptureTest extends TestCase
                     type: OrderLineType::PHYSICAL_GOODS,
                     unitAmountIncludingVat: 150.75,
                     totalVatAmount: 60.3
-                )
+                ),
             ]),
             orderReference: $orderReference,
             customer: new Customer(
@@ -144,7 +141,6 @@ class CaptureTest extends TestCase
     /**
      * Verify that capturing an entire order works
      *
-     * @return void
      * @throws EmptyValueException
      * @throws JsonException
      * @throws ReflectionException
@@ -168,13 +164,8 @@ class CaptureTest extends TestCase
         $response = Repository::capture(paymentId: $originalId);
 
         // Assert that payment has been captured in full
-        $this->assertNotNull(
-            actual: $response->order
-        );
-        $this->assertEquals(
-            expected: $originalId,
-            actual: $response->id
-        );
+        $this->assertNotNull(actual: $response->order);
+        $this->assertEquals(expected: $originalId, actual: $response->id);
         $this->assertEquals(
             expected: $response->order->totalOrderAmount,
             actual: $response->order->capturedAmount
@@ -184,7 +175,6 @@ class CaptureTest extends TestCase
     /**
      * Verify that capturing a single specified order line works
      *
-     * @return void
      * @throws Exception
      */
     public function testCaptureSingleOrderLine(): void
@@ -206,7 +196,7 @@ class CaptureTest extends TestCase
                 totalAmountIncludingVat: 301.5,
                 totalVatAmount: 60.3,
                 type: OrderLineType::PHYSICAL_GOODS
-            )
+            ),
         ]);
 
         // Capture single order line
@@ -216,13 +206,8 @@ class CaptureTest extends TestCase
         );
 
         // Assert that only this order line has been captured
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
-        $this->assertNotNull(
-            actual: $response->order
-        );
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
+        $this->assertNotNull(actual: $response->order);
         $this->assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog
@@ -232,7 +217,6 @@ class CaptureTest extends TestCase
     /**
      * Verify that capturing with a transaction ID works
      *
-     * @return void
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -261,9 +245,7 @@ class CaptureTest extends TestCase
         );
 
         // Verify that capture worked as intended
-        $this->assertNotNull(
-            actual: $response->order
-        );
+        $this->assertNotNull(actual: $response->order);
 
         /**
          * @psalm-suppress MixedPropertyFetch
@@ -277,7 +259,6 @@ class CaptureTest extends TestCase
     /**
      * Verify that capturing with an invoice ID works
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -311,7 +292,7 @@ class CaptureTest extends TestCase
                 type: OrderLineType::PHYSICAL_GOODS,
                 unitAmountIncludingVat: 150.75,
                 totalVatAmount: 60.3
-            )
+            ),
         ]);
         $response = Repository::capture(
             paymentId: $payment->id,
@@ -320,13 +301,8 @@ class CaptureTest extends TestCase
         );
 
         // Verify that capture worked as intended
-        $this->assertNotNull(
-            actual: $response->order
-        );
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $response->id
-        );
+        $this->assertNotNull(actual: $response->order);
+        $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertCount(
             expectedCount: 2,
             haystack: $response->order->actionLog

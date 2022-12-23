@@ -23,9 +23,6 @@ class StoreCollection extends Collection
      */
     public function __construct(array $data)
     {
-        parent::__construct(
-            data: $data,
-            type: Store::class
-        );
+        parent::__construct(data: $data, type: Store::class);
     }
 }

@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Widget;
 
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Locale\Translator;
 
 /**
  * Basic widget functionality.
@@ -18,8 +17,6 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 class Widget
 {
     /**
-     * @param string $file
-     * @return string
      * @throws FilesystemException
      */
     public function render(

@@ -11,14 +11,14 @@ namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
+use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
-use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
@@ -36,20 +36,7 @@ class Payment extends Model
      * Search compatible with the Payment model, we are temporary setting the missing fields
      * with empty defaults.
      *
-     * @param string $id
-     * @param string $created
-     * @param string $storeId
-     * @param Customer $customer
-     * @param Status $status
      * @param array $paymentActions
-     * @param PaymentMethod|null $paymentMethod
-     * @param CountryCode|null $countryCode
-     * @param Order|null $order
-     * @param ApplicationResponse|null $application
-     * @param Metadata|null $metadata
-     * @param CoApplicant|null $coApplicant
-     * @param TaskRedirectionUrls|null $taskRedirectionUrls
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -69,7 +56,7 @@ class Payment extends Model
         public readonly ?Metadata $metadata = null,
         public readonly ?CoApplicant $coApplicant = null,
         public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
-        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateId();
         $this->validateCreated();
@@ -77,11 +64,50 @@ class Payment extends Model
     }
 
     /**
+     * Checks if payment can be cancelled
+     */
+    public function canCancel(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::CANCEL);
+    }
+
+    /**
+     * Checks if payment can be captured
+     */
+    public function canCapture(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::CAPTURE);
+    }
+
+    /**
+     * Checks if payment can be refunded
+     */
+    public function canRefund(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::REFUND);
+    }
+
+    /**
+     * Alias for canRefund
+     */
+    public function canCredit(): bool
+    {
+        return $this->canRefund();
+    }
+
+    /**
+     * Returns true if payment is frozen
+     */
+    public function isFrozen(): bool
+    {
+        return $this->status === Status::FROZEN;
+    }
+
+    /**
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
      * sometimes containing a up to 9 digit microsecond suffix).
      *
-     * @return void
      * @throws IllegalValueException
      */
     private function validateCreated(): void
@@ -92,7 +118,6 @@ class Payment extends Model
     /**
      * Validate that an (uu)id exists on the payment.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
@@ -104,7 +129,6 @@ class Payment extends Model
     /**
      * Validate existing store (uu)id.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
@@ -116,8 +140,6 @@ class Payment extends Model
     /**
      * Validate that a string is an uuid and not empty.
      *
-     * @param string $uuid
-     * @return void
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
@@ -129,8 +151,6 @@ class Payment extends Model
 
     /**
      * Check if specified PossibleAction can be performed on this Payment
-     * @param PossibleAction $actionType
-     * @return bool
      */
     private function canPerformAction(PossibleAction $actionType): bool
     {
@@ -142,56 +162,7 @@ class Payment extends Model
                 }
             }
         }
+
         return false;
-    }
-
-    /**
-     * Checks if payment can be cancelled
-     *
-     * @return bool
-     */
-    public function canCancel(): bool
-    {
-        return $this->canPerformAction(actionType: PossibleAction::CANCEL);
-    }
-
-    /**
-     * Checks if payment can be captured
-     *
-     * @return bool
-     */
-    public function canCapture(): bool
-    {
-        return $this->canPerformAction(actionType: PossibleAction::CAPTURE);
-    }
-
-    /**
-     * Checks if payment can be refunded
-     *
-     * @return bool
-     */
-    public function canRefund(): bool
-    {
-        return $this->canPerformAction(actionType: PossibleAction::REFUND);
-    }
-
-    /**
-     * Alias for canRefund
-     *
-     * @return bool
-     */
-    public function canCredit(): bool
-    {
-        return $this->canRefund();
-    }
-
-    /**
-     * Returns true if payment is frozen
-     *
-     * @return bool
-     */
-    public function isFrozen(): bool
-    {
-        return $this->status === Status::FROZEN;
     }
 }

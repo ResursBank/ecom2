@@ -21,19 +21,14 @@ final class ModelTest extends TestCase
 {
     /**
      * Verify that simple un-nested conversion to array works
-     *
-     * @return void
      */
     public function testSimpleToArray(): void
     {
-        $object = new SimpleDummy(
-            number: 42,
-            message: 'Foo'
-        );
+        $object = new SimpleDummy(number: 42, message: 'Foo');
 
         $expected = [
             'number' => 42,
-            'message' => 'Foo'
+            'message' => 'Foo',
         ];
 
         $this::assertSame(
@@ -44,8 +39,6 @@ final class ModelTest extends TestCase
 
     /**
      * Verify that conversion to array works when object has object properties
-     *
-     * @return void
      */
     public function testWithObjectPropertiesToArray(): void
     {
@@ -60,9 +53,9 @@ final class ModelTest extends TestCase
         $expected = [
             'object' => [
                 'number' => 42,
-                'message' => 'Foo'
+                'message' => 'Foo',
             ],
-            'message' => 'bar'
+            'message' => 'bar',
         ];
 
         $this::assertSame(
@@ -73,8 +66,6 @@ final class ModelTest extends TestCase
 
     /**
      * Verify that conversion to array works when object has array properties
-     *
-     * @return void
      */
     public function testWithArrayPropertiesToArray(): void
     {
@@ -84,7 +75,7 @@ final class ModelTest extends TestCase
                     number: 127,
                     message: 'Foo'
                 ),
-                'number' => 42
+                'number' => 42,
             ],
             message: 'bar'
         );
@@ -93,11 +84,11 @@ final class ModelTest extends TestCase
             'array' => [
                 'object' => [
                     'number' => 127,
-                    'message' => 'Foo'
+                    'message' => 'Foo',
                 ],
-                'number' => 42
+                'number' => 42,
             ],
-            'message' => 'bar'
+            'message' => 'bar',
         ];
 
         $this::assertEquals(

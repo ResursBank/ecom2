@@ -27,14 +27,14 @@ enum LogLevel: int
      * Checks if supplied log level should be logged according to current configured logLevel.
      *
      * @param LogLevel $level
-     * @return bool
      * @throws ConfigException
      * @todo Check if ConfigException validation needs a test.
      */
     public static function loggable(self $level): bool
     {
         if (!Config::hasInstance()) {
-            return true; // If there's no Config instance there's no logLevel restriction to apply.
+            // If there's no Config instance there's no logLevel restriction to apply.
+            return true;
         }
 
         return Config::getLogLevel()->value <= $level->value;
