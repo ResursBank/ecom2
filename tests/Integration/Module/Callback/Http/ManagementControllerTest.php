@@ -54,7 +54,7 @@ class ManagementControllerTest extends TestCase
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
      *
-     * @param array $data
+     * @param array<string, string> $data
      * @throws JsonException
      */
     private function getControllerWithMockedInputData(array $data): Controller

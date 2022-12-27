@@ -115,7 +115,7 @@ class GetAddressControllerTest extends TestCase
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
      *
-     * @param array $data
+     * @param array<string, string> $data
      * @throws JsonException
      */
     private function getControllerWithMockedInputData(array $data): Controller
@@ -193,33 +193,34 @@ class GetAddressControllerTest extends TestCase
      * error property when we use a none existing store id (simulating a failed
      * API call to fetch address data).
      *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     * @throws JsonException
+//     * @throws EmptyValueException
+//     * @throws IllegalValueException
+//     * @throws JsonException
      */
     public function testExecWithInvalidStoreId(): void
     {
         $this->markTestSkipped(
             message: 'This does not work, causes error. Disabled for now'
         );
-        $data = $this->callController(
-            govId: '198001010001',
-            customerType: CustomerType::NATURAL,
-            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
-        );
 
-        $this->assertResponseContains(needle: 'error', haystack: $data);
-
-        $obj = json_decode(
-            json: $data,
-            associative: false,
-            depth: 512,
-            flags: JSON_THROW_ON_ERROR
-        );
-
-        $this->assertIsObject(actual: $obj);
-        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
-        $this->assertNotEmpty(actual: $obj->error);
+//        $data = $this->callController(
+//            govId: '198001010001',
+//            customerType: CustomerType::NATURAL,
+//            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
+//        );
+//
+//        $this->assertResponseContains(needle: 'error', haystack: $data);
+//
+//        $obj = json_decode(
+//            json: $data,
+//            associative: false,
+//            depth: 512,
+//            flags: JSON_THROW_ON_ERROR
+//        );
+//
+//        $this->assertIsObject(actual: $obj);
+//        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
+//        $this->assertNotEmpty(actual: $obj->error);
     }
 
     /**

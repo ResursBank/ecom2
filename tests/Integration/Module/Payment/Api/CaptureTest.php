@@ -32,6 +32,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
@@ -246,13 +247,20 @@ class CaptureTest extends TestCase
 
         // Verify that capture worked as intended
         $this->assertNotNull(actual: $response->order);
+        $this->assertTrue(
+            condition: isset($response->order->actionLog[1])
+        );
+
+        $actionLog = $response->order->actionLog[1];
+
+        $this->assertInstanceOf(expected: ActionLog::class, actual:$actionLog);
 
         /**
          * @psalm-suppress MixedPropertyFetch
          */
         $this->assertEquals(
             expected: $transactionId,
-            actual: $response->order->actionLog[1]->transactionId
+            actual: $actionLog->transactionId
         );
     }
 

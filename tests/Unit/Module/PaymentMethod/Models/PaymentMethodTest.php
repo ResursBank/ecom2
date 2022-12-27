@@ -21,7 +21,7 @@ use function is_array;
  */
 class PaymentMethodTest extends TestCase
 {
-    /** @var array */
+    /** @var array<string, mixed> */
     private static array $data = [
         'id' => '4fcf7608-59df-4c4b-b49d-11063c58be7a',
         'name' => 'Faktura',
@@ -35,6 +35,9 @@ class PaymentMethodTest extends TestCase
         'enabledForNaturalCustomer' => true,
     ];
 
+    /**
+     * Prepare tests.
+     */
     protected function setUp(): void
     {
         self::$data['legalLinks'] = [
@@ -59,7 +62,7 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * @param array $updates
+     * @param array<string, mixed> $updates
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException

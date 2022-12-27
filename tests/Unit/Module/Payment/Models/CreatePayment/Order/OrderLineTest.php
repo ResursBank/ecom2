@@ -26,6 +26,9 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
  */
 class OrderLineTest extends TestCase
 {
+    /**
+     * @var array<string, mixed>
+     */
     private static array $data = [];
 
     /**
@@ -34,7 +37,7 @@ class OrderLineTest extends TestCase
      */
     protected function setUp(): void
     {
-        /** @var array $data */
+        /** @var array<string, mixed> $data */
         $data = json_decode(
             json: json_encode(
                 value: new OrderLine(
@@ -61,7 +64,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * @param array $updates
+     * @param array<string, mixed> $updates
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException

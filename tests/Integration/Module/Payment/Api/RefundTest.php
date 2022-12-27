@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
@@ -231,11 +232,16 @@ class RefundTest extends TestCase
             actual: $refundResponse->id
         );
         $this->assertNotNull(actual: $refundResponse->order);
+
+        $orderLine = $orderLines[0];
+
+        $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine);
+
         /**
          * @psalm-suppress MixedPropertyFetch
          */
         $this->assertEquals(
-            expected: $orderLines[0]->totalAmountIncludingVat,
+            expected: $orderLine->totalAmountIncludingVat,
             actual: $refundResponse->order->refundedAmount
         );
     }
@@ -280,12 +286,20 @@ class RefundTest extends TestCase
             actual: $refundResponse->id
         );
         $this->assertNotNull(actual: $refundResponse->order);
+        $this->assertTrue(
+            condition: isset($refundResponse->order->actionLog[2])
+        );
+
+        $actionLog = $refundResponse->order->actionLog[2];
+
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
+
         /**
          * @psalm-suppress MixedPropertyFetch
          */
         $this->assertEquals(
             expected: $transactionId,
-            actual: $refundResponse->order->actionLog[2]->transactionId
+            actual: $actionLog->transactionId
         );
     }
 
@@ -329,12 +343,20 @@ class RefundTest extends TestCase
             actual: $refundResponse->id
         );
         $this->assertNotNull(actual: $refundResponse->order);
+        $this->assertTrue(
+            condition: isset($refundResponse->order->actionLog[2])
+        );
+
+        $actionLog = $refundResponse->order->actionLog[2];
+
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
+
         /**
          * @psalm-suppress MixedPropertyFetch
          */
         $this->assertEquals(
             expected: $creator,
-            actual: $refundResponse->order->actionLog[2]->creator
+            actual: $actionLog->creator
         );
     }
 }

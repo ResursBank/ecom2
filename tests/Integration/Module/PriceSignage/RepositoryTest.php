@@ -26,6 +26,7 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Models\PriceSignage;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
 
@@ -271,17 +272,23 @@ class RepositoryTest extends TestCase
             message: "Cache should be filtered by $months2 months."
         );
 
+        $cost1 = $cacheData1->costList[0];
+        $cost2 = $cacheData2->costList[0];
+
+        $this->assertInstanceOf(expected: Cost::class, actual: $cost1);
+        $this->assertInstanceOf(expected: Cost::class, actual: $cost2);
+
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months1,
-            actual: $cacheData1->costList[0]->durationMonths,
+            actual: $cost1->durationMonths,
             message: "Cache should be filtered by $months1 months."
         );
 
         /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months2,
-            actual: $cacheData2->costList[0]->durationMonths,
+            actual: $cost2->durationMonths,
             message: "Cache should be filtered by $months2 months."
         );
     }
