@@ -222,6 +222,27 @@
     }
   },
   {
+    "id": "part-payment-payment-method",
+    "translation": {
+      "en": "Payment method to use for part payment calculations.",
+      "sv": "Betalningsmetod att använda för delbetalningsberäkning."
+    }
+  },
+  {
+    "id": "part-payment-annuity-period",
+    "translation": {
+      "en": "Annuity period can only be selected if a payment method has first been selected.",
+      "sv": "Avbetalningsperiod kan endast väljas om en betalningsmetod redan har valts."
+    }
+  },
+  {
+    "id": "part-payment-limit",
+    "translation": {
+      "en": "Minimum product price the widget is displayed for.",
+      "sv": "Lägsta produktpris för vilket widgeten visas."
+    }
+  },
+  {
     "id": "payment-method",
     "translation": {
       "en": "Payment method",
