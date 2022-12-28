@@ -136,7 +136,6 @@ class PaymentInformationTest extends TestCase
     /**
      * Verify that widget renders
      *
-     * @return void
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
