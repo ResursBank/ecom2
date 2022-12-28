@@ -1,0 +1,173 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\Ecom\Module\Payment\Widget;
+
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Widget\Widget;
+use Resursbank\Ecom\Module\Payment\Repository;
+
+/**
+ * Renders Payment Information widget for use in admin panel order view
+ */
+class PaymentInformation extends Widget
+{
+    /** @var Payment */
+    public readonly Payment $payment;
+
+    /** @var string */
+    public readonly string $content;
+
+    /** @var string */
+    public readonly string $css;
+
+    /** @var string */
+    public readonly string $logo;
+
+    /**
+     * @param string $paymentId
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws FilesystemException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function __construct(public readonly string $paymentId)
+    {
+        $this->payment = Repository::get(paymentId: $this->paymentId);
+
+        $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $this->content = $this->render(file: __DIR__ . '/payment-information.phtml');
+        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
+    }
+
+    /**
+     * Fetch payment status
+     *
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->payment->status->name;
+    }
+
+    /**
+     * Fetch the name of the payment method used
+     *
+     * @return string
+     */
+    public function getPaymentMethodName(): string
+    {
+        return $this->payment->paymentMethod->name;
+    }
+
+    /**
+     * Fetch frozen status
+     *
+     * @return string
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function getFrozen(): string
+    {
+        return $this->payment->isFrozen() ?
+            Translator::translate(phraseId: 'yes') :
+            Translator::translate(phraseId: 'no');
+    }
+
+    /**
+     * Fetch fraud status
+     *
+     * @return string
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function getFraud(): string
+    {
+        // @todo Implement functionality
+        return 'STUB';
+        return $this->payment->isFraud() ?
+            Translator::translate(phraseId: 'yes') :
+            Translator::translate(phraseId: 'no');
+    }
+
+    /**
+     * Fetch customer name
+     *
+     * @return string
+     */
+    public function getCustomerName(): string
+    {
+        return $this->payment->customer->deliveryAddress->fullName;
+    }
+
+    /**
+     * Fetch formatted delivery address
+     *
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->payment->customer->deliveryAddress->addressRow1 . '<br />' . PHP_EOL .
+            ($this->payment->customer->deliveryAddress->addressRow2 ?
+                $this->payment->customer->deliveryAddress->addressRow2 . '<br />' . PHP_EOL :
+                ''
+            ) .
+            $this->payment->customer->deliveryAddress->postalArea . '<br />' . PHP_EOL .
+            $this->payment->customer->deliveryAddress->countryCode->value . ' - ' .
+            $this->payment->customer->deliveryAddress->postalCode;
+    }
+
+    /**
+     * Fetch customer mobile phone number from payment
+     *
+     * @return string
+     */
+    public function getTelephone(): string
+    {
+        return $this->payment->customer->mobilePhone;
+    }
+
+    /**
+     * Fetch customer email from payment
+     *
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->payment->customer->email;
+    }
+}
