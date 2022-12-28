@@ -44,7 +44,6 @@ class PaymentInformation extends Widget
     public readonly string $logo;
 
     /**
-     * @param string $paymentId
      * @throws JsonException
      * @throws ReflectionException
      * @throws ApiException
@@ -62,14 +61,14 @@ class PaymentInformation extends Widget
         $this->payment = Repository::get(paymentId: $this->paymentId);
 
         $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
-        $this->content = $this->render(file: __DIR__ . '/payment-information.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . '/payment-information.phtml'
+        );
         $this->css = $this->render(file: __DIR__ . '/payment-information.css');
     }
 
     /**
      * Fetch payment status
-     *
-     * @return string
      */
     public function getStatus(): string
     {
@@ -78,8 +77,6 @@ class PaymentInformation extends Widget
 
     /**
      * Fetch the name of the payment method used
-     *
-     * @return string
      */
     public function getPaymentMethodName(): string
     {
@@ -89,7 +86,6 @@ class PaymentInformation extends Widget
     /**
      * Fetch frozen status
      *
-     * @return string
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -107,7 +103,6 @@ class PaymentInformation extends Widget
     /**
      * Fetch fraud status
      *
-     * @return string
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -126,8 +121,6 @@ class PaymentInformation extends Widget
 
     /**
      * Fetch customer name
-     *
-     * @return string
      */
     public function getCustomerName(): string
     {
@@ -136,8 +129,6 @@ class PaymentInformation extends Widget
 
     /**
      * Fetch formatted delivery address
-     *
-     * @return string
      */
     public function getAddress(): string
     {
@@ -153,8 +144,6 @@ class PaymentInformation extends Widget
 
     /**
      * Fetch customer mobile phone number from payment
-     *
-     * @return string
      */
     public function getTelephone(): string
     {
@@ -163,8 +152,6 @@ class PaymentInformation extends Widget
 
     /**
      * Fetch customer email from payment
-     *
-     * @return string
      */
     public function getEmail(): string
     {
