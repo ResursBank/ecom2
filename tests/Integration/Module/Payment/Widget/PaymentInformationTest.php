@@ -168,7 +168,7 @@ class PaymentInformationTest extends TestCase
             message: 'Widget does not contain payment id cell'
         );
         $this->assertStringContainsString(
-            needle: '.rp-pi table td',
+            needle: '.rb-pi table td',
             haystack: $widget->css,
             message: 'Expected selector .rp-pi table td is missing from CSS'
         );
