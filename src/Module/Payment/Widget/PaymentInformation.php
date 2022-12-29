@@ -68,7 +68,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch payment status
+     * Fetch payment status.
      */
     public function getStatus(): string
     {
@@ -76,7 +76,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch the name of the payment method used
+     * Fetch the name of the payment method used.
      */
     public function getPaymentMethodName(): string
     {
@@ -84,7 +84,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch frozen status
+     * Fetch frozen status.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -101,7 +101,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch fraud status
+     * Fetch fraud status.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -120,7 +120,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch customer name
+     * Fetch customer name.
      */
     public function getCustomerName(): string
     {
@@ -128,7 +128,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch formatted delivery address
+     * Fetch formatted delivery address.
      */
     public function getAddress(): string
     {
@@ -143,7 +143,7 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch customer mobile phone number from payment
+     * Fetch customer mobile phone number from payment.
      */
     public function getTelephone(): string
     {
@@ -151,10 +151,18 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch customer email from payment
+     * Fetch customer email from payment.
      */
     public function getEmail(): string
     {
         return $this->payment->customer->email;
+    }
+
+    /**
+     * Fetches CSS without instantiating an object.
+     */
+    public static function getCss(): string
+    {
+        return file_get_contents(filename: __DIR__ . '/payment-information.css');
     }
 }
