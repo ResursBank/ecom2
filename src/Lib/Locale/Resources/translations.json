@@ -430,5 +430,40 @@
       "en": "No",
       "sv": "Nej"
     }
+  },
+  {
+    "id": "total-order-amount",
+    "translation": {
+      "en": "Total order amount",
+      "sv": "Total ordersumma"
+    }
+  },
+  {
+    "id": "authorized-amount",
+    "translation": {
+      "en": "Authorized amount",
+      "sv": "Auktoriserat belopp"
+    }
+  },
+  {
+    "id": "canceled-amount",
+    "translation": {
+      "en": "Canceled amount",
+      "sv": "Annullerat belopp"
+    }
+  },
+  {
+    "id": "captured-amount",
+    "translation": {
+      "en": "Captured amount",
+      "sv": "Debiterat belopp"
+    }
+  },
+  {
+    "id": "refunded-amount",
+    "translation": {
+      "en": "Refunded amount",
+      "sv": "Återbetalat belopp"
+    }
   }
 ]
