@@ -38,6 +38,7 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
@@ -155,7 +156,11 @@ class PaymentInformationTest extends TestCase
         MockSigner::approve(payment: $payment);
         $signedPayment = Repository::get(paymentId: $payment->id);
 
-        $widget = new PaymentInformation(paymentId: $signedPayment->id);
+        $widget = new PaymentInformation(
+            paymentId: $signedPayment->id,
+            currencySymbol: 'kr',
+            currencyFormat: CurrencyFormat::SYMBOL_LAST
+        );
 
         $this->assertEquals(
             expected: $signedPayment->id,
