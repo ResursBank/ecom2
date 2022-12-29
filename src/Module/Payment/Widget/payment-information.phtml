@@ -29,11 +29,11 @@ use Resursbank\Ecom\Lib\Locale\Translator;
     </tr>
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'amount') ?></td>
-      <td><?= $this->payment->order->totalOrderAmount ?></td>
+      <td><?= $this->getFormattedAmount(amount: $this->payment->order->totalOrderAmount) ?></td>
     </tr>
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'limit') ?></td>
-      <td><?= $this->payment->order->authorizedAmount ?></td>
+      <td><?= $this->getFormattedAmount(amount: $this->payment->order->authorizedAmount) ?></td>
     </tr>
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'status') ?></td>
@@ -42,10 +42,6 @@ use Resursbank\Ecom\Lib\Locale\Translator;
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'frozen') ?></td>
       <td><?= $this->getFrozen() ?></td>
-    </tr>
-    <tr>
-      <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'fraud') ?></td>
-      <td><?= $this->getFraud() ?></td>
     </tr>
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'payment-method') ?></td>

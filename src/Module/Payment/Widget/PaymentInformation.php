@@ -25,6 +25,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
@@ -56,8 +57,11 @@ class PaymentInformation extends Widget
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function __construct(public readonly string $paymentId)
-    {
+    public function __construct(
+        public readonly string $paymentId,
+        public readonly string $currencySymbol,
+        public readonly CurrencyFormat $currencyFormat,
+    ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
 
         $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
@@ -96,25 +100,6 @@ class PaymentInformation extends Widget
     public function getFrozen(): string
     {
         return $this->payment->isFrozen() ?
-            Translator::translate(phraseId: 'yes') :
-            Translator::translate(phraseId: 'no');
-    }
-
-    /**
-     * Fetch fraud status.
-     *
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
-     */
-    public function getFraud(): string
-    {
-        // @todo Implement functionality
-        return 'STUB';
-        return $this->payment->isFraud() ?
             Translator::translate(phraseId: 'yes') :
             Translator::translate(phraseId: 'no');
     }
@@ -164,5 +149,17 @@ class PaymentInformation extends Widget
     public static function getCss(): string
     {
         return file_get_contents(filename: __DIR__ . '/payment-information.css');
+    }
+
+    /**
+     * @param float $amount
+     */
+    public function getFormattedAmount(float $amount): string
+    {
+        if ($this->currencyFormat === CurrencyFormat::SYMBOL_FIRST) {
+            return $this->currencySymbol . ' ' . $amount;
+        }
+
+        return $amount . ' ' . $this->currencySymbol;
     }
 }
