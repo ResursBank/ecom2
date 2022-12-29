@@ -88,23 +88,6 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch frozen status.
-     *
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
-     */
-    public function getFrozen(): string
-    {
-        return $this->payment->isFrozen() ?
-            Translator::translate(phraseId: 'yes') :
-            Translator::translate(phraseId: 'no');
-    }
-
-    /**
      * Fetch customer name.
      */
     public function getCustomerName(): string
