@@ -78,6 +78,7 @@ class ErrorHandler
             option: CURLINFO_RESPONSE_CODE
         );
 
+        /* @phpstan-ignore-next-line */
         if (is_string(value: $code) && is_numeric(value: $code)) {
             $code = (int) $code;
         }
@@ -234,7 +235,6 @@ class ErrorHandler
             throw $exception;
         }
 
-        /** @psalm-suppress PossiblyInvalidPropertyFetch, MixedAssignment */
         $error = $content->error ?? '';
 
         if (!is_string(value: $error) || $error === '') {

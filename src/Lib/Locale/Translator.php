@@ -163,7 +163,7 @@ class Translator
         /** @var PhraseCollection $result */
         $result = DataConverter::arrayToCollection(
             data: $decode,
-            targetType: Phrase::class
+            type: Phrase::class
         );
 
         return $result;

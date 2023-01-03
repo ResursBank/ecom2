@@ -247,17 +247,11 @@ class CaptureTest extends TestCase
 
         // Verify that capture worked as intended
         $this->assertNotNull(actual: $response->order);
-        $this->assertTrue(
-            condition: isset($response->order->actionLog[1])
-        );
+        $this->assertTrue(condition: isset($response->order->actionLog[1]));
 
         $actionLog = $response->order->actionLog[1];
 
         $this->assertInstanceOf(expected: ActionLog::class, actual:$actionLog);
-
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         */
         $this->assertEquals(
             expected: $transactionId,
             actual: $actionLog->transactionId

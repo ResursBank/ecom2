@@ -31,11 +31,10 @@ class DurationByMonths extends Widget
     public function __construct(
         public readonly string $endpointUrl
     ) {
-        if (str_contains(haystack: $this->endpointUrl, needle: '?')) {
-            $this->separator = '&';
-        } else {
-            $this->separator = '?';
-        }
+        $this->separator = str_contains(
+            haystack: $this->endpointUrl,
+            needle: '?'
+        ) ? '&' : '?';
 
         $this->generatedScript = $this->render(
             file: __DIR__ . '/DurationByMonths.phtml'

@@ -45,7 +45,6 @@ use Resursbank\EcomTest\Utilities\MockSigner;
  * Tests for Metadata updates
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class PutTest extends TestCase
 {

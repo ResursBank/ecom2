@@ -163,7 +163,6 @@ class ArrayValidation
         string $type,
         callable $compareFn
     ): bool {
-        /** @psalm-suppress MixedAssignment */
         foreach ($data as $i => $item) {
             if (!$compareFn($item)) {
                 throw new IllegalTypeException(

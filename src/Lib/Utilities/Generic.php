@@ -25,7 +25,6 @@ use function is_string;
  *
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @todo Add constructor with property promotion. PropertyNotSetInConstructor currently suppressed by psalm config.
  * @todo This class is overall very complex and should be refactored.
  * @version 1.0.0
  */
@@ -79,7 +78,6 @@ class Generic
 
         // @todo Object should be defined as stdClass or mor specific object.
 
-        /** @psalm-suppress TypeDoesNotContainType */
         if (empty($this->composerData)) {
             $this->getComposerConfig(location: $location);
         }
@@ -118,10 +116,6 @@ class Generic
 
         if (!$this->openBaseDirExceptionTriggered && !$locationCheck) {
             throw new FilesystemException(message: 'Invalid path', code: 1013);
-        }
-
-        if ($this->isOpenBaseDirException()) {
-            return $this->getOpenBaseDirExceptionString();
         }
 
         if ($this->isOpenBaseDirException()) {
@@ -366,7 +360,6 @@ class Generic
         $json = file_get_contents(filename: $getFrom);
 
         if ($json !== false && $json !== '') {
-            /** @psalm-suppress MixedAssignment */
             $data = json_decode(
                 json: $json,
                 associative: false,
@@ -433,7 +426,6 @@ class Generic
             );
         }
 
-        /** @psalm-suppress InvalidNamedArgument */
         $doc = new ReflectionClass(objectOrClass: $className);
 
         return $functionName === '' ?

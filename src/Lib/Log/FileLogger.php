@@ -99,21 +99,7 @@ class FileLogger implements LoggerInterface
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
-        /**
-         * @psalm-suppress RedundantCondition
-         */
         if (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Throwable::class ||
-                is_subclass_of(
-                    object_or_class: $message,
-                    class: Throwable::class
-                )
-            )
-        ) {
-            $this->logException(exception: $message);
-        } elseif (
             is_object(value: $message) &&
             (
                 get_class(object: $message) === Error::class ||
@@ -121,17 +107,8 @@ class FileLogger implements LoggerInterface
             )
         ) {
             $this->logError(error: $message);
-        } elseif (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Throwable::class ||
-                is_subclass_of(
-                    object_or_class: $message,
-                    class: Throwable::class
-                )
-            )
-        ) {
-            $this->logError(error: $message);
+        } elseif ($message instanceof Throwable) {
+            $this->logException(exception: $message);
         } elseif (LogLevel::loggable(level: $level)) {
             $timestamp = new DateTime();
             $formattedMessage = $timestamp->format(

@@ -76,10 +76,6 @@ final class CacheTest extends TestCase
             $data = json_encode(value: $data, flags: JSON_THROW_ON_ERROR);
         }
 
-        /**
-         * @psalm-suppress UndefinedMethod
-         * @psalm-suppress MixedMethodCall
-         */
         $this->cacheDriver->method('read')->willReturn(value: $data);
     }
 
@@ -187,8 +183,6 @@ final class CacheTest extends TestCase
         $current = $data->current();
 
         $this->assertInstanceOf(expected: Music::class, actual: $current);
-
-        /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(expected: 1, actual: $current->id);
     }
 

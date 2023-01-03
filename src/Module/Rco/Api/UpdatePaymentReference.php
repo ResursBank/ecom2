@@ -49,10 +49,10 @@ class UpdatePaymentReference
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @psalm-suppress MixedInferredReturnType, MoreSpecificReturnType
      * @todo Check if ConfigException validation needs a test.
      * @todo Consider using the LogException trait instead.
-     * @todo Fix all psalm errors. Suppressed now since class has been discussed for refactoring.
+     * @todo Class has been discussed for refactoring.
+     * @todo Ensure the PHPStan suppressors are removed when we refactor.
      */
     public function call(Request $request, string $orderReference): Response
     {
@@ -70,11 +70,11 @@ class UpdatePaymentReference
 
         $responseObj = new stdClass();
 
-        /** @psalm-suppress PossiblyInvalidPropertyFetch */
+        /* @phpstan-ignore-next-line */
         $responseObj->message = $response->body->message;
         $responseObj->code = $response->code;
 
-        /** @psalm-suppress MixedReturnStatement, LessSpecificReturnStatement */
+        /* @phpstan-ignore-next-line */
         return DataConverter::stdClassToType(
             object: $responseObj,
             type: Response::class

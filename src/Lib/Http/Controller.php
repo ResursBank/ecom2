@@ -31,8 +31,6 @@ class Controller
 {
     /**
      * Output JSON data.
-     *
-     * @param array $data
      */
     public function respond(
         array $data
@@ -59,10 +57,14 @@ class Controller
         );
     }
 
+    /**
+     * Resolve error code from Exception
+     */
     public function getErrorResponseCode(Throwable $exception): int
     {
         return match (get_class(object: $exception)) {
             HttpException::class => $exception->getCode(),
+            /* @phpstan-ignore-next-line */
             CurlException::class => $exception->httpCode,
             default => 400
         };
@@ -90,7 +92,6 @@ class Controller
         string $model
     ): Model {
         try {
-            /** @var stdClass $result */
             $obj = json_decode(
                 json: $this->getInputData(),
                 associative: false,
