@@ -235,10 +235,7 @@ class RefundTest extends TestCase
 
         $orderLine = $orderLines[0];
 
-        $this->assertInstanceOf(
-            expected: OrderLine::class,
-            actual: $orderLine
-        );
+        $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine);
 
         $this->assertEquals(
             expected: $orderLine->totalAmountIncludingVat,
@@ -292,10 +289,7 @@ class RefundTest extends TestCase
 
         $actionLog = $refundResponse->order->actionLog[2];
 
-        $this->assertInstanceOf(
-            expected: ActionLog::class,
-            actual: $actionLog
-        );
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
         $this->assertEquals(
             expected: $transactionId,
@@ -349,10 +343,7 @@ class RefundTest extends TestCase
 
         $actionLog = $refundResponse->order->actionLog[2];
 
-        $this->assertInstanceOf(
-            expected: ActionLog::class,
-            actual: $actionLog
-        );
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
         $this->assertEquals(expected: $creator, actual: $actionLog->creator);
     }
