@@ -21,7 +21,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 class None extends AbstractCache implements CacheInterface
 {
     /**
-     * @inheritdoc
      * @throws ValidationException
      */
     public function read(string $key): ?string
@@ -33,9 +32,11 @@ class None extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @inheritdoc
+     * NOTE: Ignoring unused parameters marked by phpcs, required by interface.
+     *
      * @throws ValidationException
      */
+    // phpcs:ignore
     public function write(string $key, string $data, int $ttl): void
     {
         // Validate key to keep consistency with other implementations.
@@ -43,7 +44,6 @@ class None extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @inheritdoc
      * @throws ValidationException
      */
     public function clear(string $key): void

@@ -41,8 +41,9 @@ class DataConverter
      * @throws IllegalTypeException|IllegalValueException
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @todo This is starting to become a bit too complex, consider refactoring.
+     * @todo Refactor ECP-353
      */
+    // phpcs:ignore
     public static function stdClassToType(object $object, string $type): Model
     {
         if (!is_subclass_of(object_or_class: $type, class: Model::class)) {
@@ -75,20 +76,13 @@ class DataConverter
                 is_subclass_of(
                     object_or_class: $propertyType,
                     class: Collection::class
-                ) &&
-                $value instanceof Collection
+                )
             ) {
                 $converted = [];
                 $dummyCollection = new $propertyType(data: []);
                 $dummyCollectionType = $dummyCollection->getType();
 
                 foreach ($value as $item) {
-                    if (!$item instanceof Model) {
-                        throw new IllegalTypeException(
-                            message: 'Collection element is not a Model.'
-                        );
-                    }
-
                     $converted[] = self::stdClassToType(
                         object: $item,
                         type: $dummyCollectionType
@@ -142,10 +136,7 @@ class DataConverter
         $convertedData = [];
 
         foreach ($data as $item) {
-            $convertedData[] = self::stdClassToType(
-                object: $item,
-                type: $type
-            );
+            $convertedData[] = self::stdClassToType(object: $item, type: $type);
         }
 
         $class = $type . 'Collection';

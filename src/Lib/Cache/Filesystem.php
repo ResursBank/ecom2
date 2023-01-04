@@ -36,7 +36,6 @@ class Filesystem extends AbstractCache implements CacheInterface
      * directory, its content is invalid or corrupt etc. this method will simply
      * return null, meaning it will fail silently.
      *
-     * @inheritdoc
      * @throws ValidationException
      * @todo Consider adding logs.
      */
@@ -66,7 +65,6 @@ class Filesystem extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @inheritdoc
      * @throws ValidationException
      * @throws FilesystemException
      */
@@ -101,7 +99,6 @@ class Filesystem extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @inheritdoc
      * @throws FilesystemException
      * @throws ValidationException
      */
@@ -113,41 +110,37 @@ class Filesystem extends AbstractCache implements CacheInterface
         // Read cache file.
         $file = $this->getFile(key: $key);
 
-        if (file_exists(filename: $file)) {
-            if (!is_file(filename: $file)) {
-                throw new FilesystemException(
-                    message: "$file is not a regular file."
-                );
-            }
-
-            if (!is_writable(filename: $file)) {
-                throw new FilesystemException(
-                    message: "$file is not writable."
-                );
-            }
-
-            unlink(filename: $file);
+        if (!file_exists(filename: $file)) {
+            return;
         }
+
+        if (!is_file(filename: $file)) {
+            throw new FilesystemException(
+                message: "$file is not a regular file."
+            );
+        }
+
+        if (!is_writable(filename: $file)) {
+            throw new FilesystemException(message: "$file is not writable.");
+        }
+
+        unlink(filename: $file);
     }
 
     /**
      * Prepare directory where cache is stored by creating it if it doesn't
      * already exist and making sure it's writable.
      *
-     * @return void
      * @throws FilesystemException
      */
     private function createPath(): void
     {
-        if (
-            file_exists(filename: $this->path) &&
-            is_file(filename: $this->path)
-        ) {
+        if (is_file(filename: $this->path)) {
             throw new FilesystemException(message: "$this->path is a file.");
         }
 
         if (
-            !file_exists(filename: $this->path) &&
+            !is_dir(filename: $this->path) &&
             !mkdir(
                 directory: $this->path,
                 permissions: 0755,
@@ -156,7 +149,7 @@ class Filesystem extends AbstractCache implements CacheInterface
             !is_dir(filename: $this->path)
         ) {
             throw new FilesystemException(
-                message: "Failed to create cache dir $this->path"
+                message: "Failed to create directory $this->path"
             );
         }
 
@@ -169,9 +162,6 @@ class Filesystem extends AbstractCache implements CacheInterface
 
     /**
      * Convert key to cache file path.
-     *
-     * @param string $key
-     * @return string
      */
     private function getFile(string $key): string
     {
@@ -179,8 +169,7 @@ class Filesystem extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @param string $file
-     * @return string
+     * Get content from cache file.
      */
     private function getFileContent(
         string $file
@@ -199,8 +188,7 @@ class Filesystem extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @param string $content
-     * @return int
+     * Separate cache data and TTL from content.
      */
     private function getSplit(
         string $content

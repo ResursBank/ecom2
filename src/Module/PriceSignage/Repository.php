@@ -54,7 +54,9 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @todo Refactor ECP-355. Remove phpcs:ignore when done.
      */
+    // phpcs:ignore
     public static function getPriceSignage(
         string $storeId,
         string $paymentMethodId,

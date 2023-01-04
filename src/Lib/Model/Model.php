@@ -29,7 +29,9 @@ class Model
      * @return array
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @todo Refactor see ECP-354. Remove phpcs:ignore when done.
      */
+    // phpcs:ignore
     public function toArray(
         bool $full = false,
         array $raw = []

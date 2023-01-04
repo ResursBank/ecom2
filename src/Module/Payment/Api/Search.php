@@ -38,6 +38,9 @@ use function is_array;
  */
 class Search
 {
+    /**
+     * Assign properties.
+     */
     public function __construct(
         private readonly Mapi $mapi = new Mapi()
     ) {
@@ -54,7 +57,9 @@ class Search
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
+     * @todo Refactor ECP-357. Remove phpcs:ignore when done.
      */
+    // phpcs:ignore
     public function call(
         string $storeId,
         ?string $orderReference = null,

@@ -31,7 +31,10 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/capture
+ *
+ * @todo Refactor ECP-359
  */
+// phpcs:ignore
 class Capture
 {
     private Mapi $mapi;
@@ -54,7 +57,9 @@ class Capture
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
+     * @todo Remove phpcs:ignore after refactor.
      */
+    // phpcs:ignore
     public function call(
         string $paymentId,
         ?OrderLineCollection $orderLines = null,

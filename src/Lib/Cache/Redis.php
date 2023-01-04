@@ -21,9 +21,7 @@ use function is_string;
 class Redis extends AbstractCache implements CacheInterface
 {
     /**
-     * @param string $host
-     * @param int $port
-     * @param string $password
+     * Assign properties.
      */
     public function __construct(
         private readonly string $host,
@@ -33,25 +31,6 @@ class Redis extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @return Server
-     * @throws RedisException
-     * @SuppressWarnings(PHPMD.MissingImport)
-     */
-    private function connect(): Server
-    {
-        $result = new Server();
-        $result->connect(host: $this->host, port: $this->port);
-
-        if ($this->password !== '') {
-            // NOTE: Naming parameter won't work because of method signature.
-            $result->auth($this->password);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @inheritdoc
      * @throws ValidationException
      * @throws RedisException
      */
@@ -65,7 +44,6 @@ class Redis extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @inheritdoc
      * @throws ValidationException
      * @throws RedisException
      */
@@ -76,7 +54,6 @@ class Redis extends AbstractCache implements CacheInterface
     }
 
     /**
-     * @inheritdoc
      * @throws ValidationException
      * @throws RedisException
      */
@@ -85,6 +62,25 @@ class Redis extends AbstractCache implements CacheInterface
         $this->validateKey(key: $key);
 
         // NOTE: Naming parameter won't work because of method signature.
+        /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
         $this->connect()->del($key);
+    }
+
+    /**
+     * @throws RedisException
+     * @SuppressWarnings(PHPMD.MissingImport)
+     */
+    private function connect(): Server
+    {
+        $result = new Server();
+        $result->connect(host: $this->host, port: $this->port);
+
+        if ($this->password !== '') {
+            // NOTE: Naming parameter won't work because of method signature.
+            /** @noinspection PhpArgumentWithoutNamedIdentifierInspection */
+            $result->auth($this->password);
+        }
+
+        return $result;
     }
 }

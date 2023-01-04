@@ -23,11 +23,14 @@ use function is_string;
 /**
  * Generic Utils Class for things that is good to have.
  *
- * @SuppressWarnings(PHPMD.LongVariable)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @todo This class is overall very complex and should be refactored.
+// phpcs:ignore
  * @version 1.0.0
+ * @SuppressWarnings (PHPMD.LongVariable)
+ * @SuppressWarnings (PHPMD.ExcessiveClassComplexity)
+ * @todo Refactor entire class. See ECP-351. Remember to remove phpcs:ignore below when done.
+ * @todo There is a unit test that depends on the version annotation here. These annotations are however prohibited.
  */
+// phpcs:ignore
 class Generic
 {
     /**
@@ -48,7 +51,6 @@ class Generic
      * If open_basedir-warnings has been triggered once, we store that here.
      *
      * @todo We should use our FS classes instead to check for readability.
-     * @var bool
      */
     private bool $openBaseDirExceptionTriggered = false;
 
@@ -100,8 +102,9 @@ class Generic
      * @throws Exception
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @todo This method is too complex. Refactor it.
+     * @todo Refactor, see ECP-350. Remember to remove phpcs:ignore below when done.
      */
+    // phpcs:ignore
     public function getComposerConfig(string $location, int $maxDepth = 3): string
     {
         $this->setTemporaryInternalErrorHandler();
@@ -375,6 +378,12 @@ class Generic
         $this->composerData = $data;
     }
 
+    /**
+     * Extract docblock item.
+     *
+     * @todo Refactor, see ECP-352. Remember to remove phpcs:ignore below when done.
+     */
+    // phpcs:ignore
     private function getExtractedDocBlockItem(string $item, string $doc): string
     {
         $return = '';

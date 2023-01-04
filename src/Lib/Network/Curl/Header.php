@@ -26,7 +26,6 @@ use function strlen;
 class Header
 {
     /**
-     * @param array $headers
      * @return array<array-key,HeaderModel>
      * @throws EmptyValueException
      * @throws ConfigException
@@ -65,7 +64,6 @@ class Header
     }
 
     /**
-     * @param array $headers
      * @throws ConfigException
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
@@ -79,8 +77,6 @@ class Header
     /**
      * Retrieve list of headers where $key matches.
      *
-     * @param array $headers
-     * @return array
      * @throws ConfigException
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
@@ -128,9 +124,7 @@ class Header
     public static function getUserAgent(): string
     {
         try {
-            $version = (new Generic())->getVersionByComposer(
-                location: __DIR__
-            );
+            $version = (new Generic())->getVersionByComposer(location: __DIR__);
         } catch (Throwable) {
             $version = 'composer.version.not.found';
         }
@@ -142,6 +136,9 @@ class Header
         ]));
     }
 
+    /**
+     * Get content type.
+     */
     private static function getContentType(ContentType $contentType): string
     {
         return match ($contentType) {

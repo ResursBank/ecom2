@@ -154,12 +154,14 @@ class Payment extends Model
      */
     private function canPerformAction(PossibleAction $actionType): bool
     {
-        if ($this->order) {
-            /** @var PossibleActionModel $action */
-            foreach ($this->order->possibleActions as $action) {
-                if ($action->action === $actionType) {
-                    return true;
-                }
+        if (!$this->order) {
+            return false;
+        }
+
+        /** @var PossibleActionModel $action */
+        foreach ($this->order->possibleActions as $action) {
+            if ($action->action === $actionType) {
+                return true;
             }
         }
 

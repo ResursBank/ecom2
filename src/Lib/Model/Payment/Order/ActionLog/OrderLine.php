@@ -56,7 +56,6 @@ class OrderLine extends Model
 
     /**
      * @throws IllegalValueException
-     * @returns void
      */
     private function validateDescription(): void
     {
@@ -73,7 +72,6 @@ class OrderLine extends Model
 
     /**
      * @throws IllegalValueException
-     * @returns void
      */
     private function validateReference(): void
     {
@@ -90,7 +88,6 @@ class OrderLine extends Model
 
     /**
      * @throws IllegalValueException
-     * @returns void
      */
     private function validateQuantityUnit(): void
     {
@@ -103,7 +100,6 @@ class OrderLine extends Model
 
     /**
      * @throws IllegalValueException
-     * @returns void
      */
     private function validateVatRate(): void
     {
@@ -154,7 +150,6 @@ class OrderLine extends Model
 
     /**
      * @throws IllegalValueException
-     * @returns void
      */
     private function validateTotalAmountIncludingVat(): void
     {
@@ -173,7 +168,6 @@ class OrderLine extends Model
 
     /**
      * @throws IllegalValueException
-     * @returns void
      */
     private function validateTotalVatAmount(): void
     {
