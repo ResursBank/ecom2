@@ -24,12 +24,14 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
+use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type as PaymentMethodType;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
@@ -55,6 +57,7 @@ class RepositoryTest extends TestCase
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
             ),
+            language: Language::en,
             cache: new Filesystem(
                 path: '/tmp/ecom-test/paymentMethods/' . time()
             ),
@@ -408,5 +411,16 @@ class RepositoryTest extends TestCase
                 message: 'Field required by test not found in response'
             );
         }
+    }
+
+    /**
+     * Assert that USP fetcher works
+     */
+    public function testUniqueSellingPointFetching(): void
+    {
+        $this->assertEquals(
+            expected: 'USP not available in English',
+            actual: Repository::getUniqueSellingPoint(type: PaymentMethodType::RESURS_PART_PAYMENT)
+        );
     }
 }
