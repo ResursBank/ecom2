@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -191,6 +192,11 @@ class Repository
             self::logException(exception: $e);
             throw $e;
         }
+    }
+
+    public static function getUniqueSellingPoint(Type $type): string
+    {
+
     }
 
     /**
