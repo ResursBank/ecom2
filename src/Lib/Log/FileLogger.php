@@ -124,11 +124,7 @@ class FileLogger implements LoggerInterface
     {
         $this->log(
             level: LogLevel::ERROR,
-            message: $error->getMessage()
-        );
-        $this->log(
-            level: LogLevel::ERROR,
-            message: $error->getTraceAsString()
+            message: $error->getMessage() . ', ' . $error->getTraceAsString()
         );
     }
 
