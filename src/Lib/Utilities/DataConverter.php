@@ -76,20 +76,13 @@ class DataConverter
                 is_subclass_of(
                     object_or_class: $propertyType,
                     class: Collection::class
-                ) &&
-                $value instanceof Collection
+                )
             ) {
                 $converted = [];
                 $dummyCollection = new $propertyType(data: []);
                 $dummyCollectionType = $dummyCollection->getType();
 
                 foreach ($value as $item) {
-                    if (!$item instanceof Model) {
-                        throw new IllegalTypeException(
-                            message: 'Collection element is not a Model.'
-                        );
-                    }
-
                     $converted[] = self::stdClassToType(
                         object: $item,
                         type: $dummyCollectionType

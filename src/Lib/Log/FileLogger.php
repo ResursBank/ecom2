@@ -95,24 +95,24 @@ class FileLogger implements LoggerInterface
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
+        $this->validateLogFile();
+
         if ($message instanceof Error) {
             $this->logError(error: $message);
         } elseif ($message instanceof Throwable) {
             $this->logException(exception: $message);
-        } elseif (!LogLevel::loggable(level: $level)) {
-            return;
-        }
+        } elseif (LogLevel::loggable(level: $level)) {
+            $date = (new DateTime())->format(format: 'c');
 
-        $date = (new DateTime())->format(format: 'c');
-
-        if (
-            !file_put_contents(
-                filename: $this->getFilename(),
-                data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
-                flags: FILE_APPEND | LOCK_EX
-            )
-        ) {
-            throw new FilesystemException(message: self::WRITE_ERROR);
+            if (
+                !file_put_contents(
+                    filename: $this->getFilename(),
+                    data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
+                    flags: FILE_APPEND | LOCK_EX
+                )
+            ) {
+                throw new FilesystemException(message: self::WRITE_ERROR);
+            }
         }
     }
 
