@@ -1,0 +1,44 @@
+[
+  {
+    "id": "RESURS_INVOICE",
+    "translation": {
+      "sv":  "Betala senare utan avgift"
+    }
+  },
+  {
+    "id": "RESURS_PART_PAYMENT",
+    "translation": {
+      "sv": "Betala i din takt"
+    }
+  },
+  {
+    "id": "RESURS_CARD2",
+    "translation": {
+      "sv": "Köp nu, betala senare"
+    }
+  },
+  {
+    "id": "RESURS_CREDIT_CARD",
+    "translation": {
+      "sv": "Köp nu, betala senare"
+    }
+  },
+  {
+    "id": "RESURS_NEW_CARD",
+    "translation": {
+      "sv": "Betala allt eller dela upp"
+    }
+  },
+  {
+    "id": "RESURS_REVOLVING_CREDIT",
+    "translation": {
+      "sv": "Köp nu, betala senare",
+    }
+  },
+  {
+    "id": "RESURS_NEW_REVOLVING_CREDIT",
+    "translation": {
+      "sv": "Betala allt eller dela upp"
+    }
+  }
+]
