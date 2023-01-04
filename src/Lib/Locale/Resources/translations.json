@@ -460,5 +460,26 @@
       "en": "Refunded amount",
       "sv": "Återbetalat belopp"
     }
+  },
+  {
+    "id": "payment-status-on-hold",
+    "translation": {
+      "en": "Payment is waiting for more information from Resurs.",
+      "sv": "Betalningen inväntar mer information från Resurs."
+    }
+  },
+  {
+    "id": "payment-status-failed",
+    "translation": {
+      "en": "Payment rejected by Resurs.",
+      "sv": "Betalningen nekades av Resurs."
+    }
+  },
+  {
+    "id": "customer-landingpage-return",
+    "translation": {
+      "en": "Customer returned from external source.",
+      "sv": "Kund har återvänt från extern källa."
+    }
   }
 ]
