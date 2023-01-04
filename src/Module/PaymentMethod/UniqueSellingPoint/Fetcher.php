@@ -26,8 +26,6 @@ class Fetcher
     /**
      * Fetches the localized USP translation for a payment method type.
      *
-     * @param Type $paymentMethodType
-     *
      * @throws JsonException
      * @throws ReflectionException
      * @throws ConfigException

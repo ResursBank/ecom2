@@ -198,8 +198,6 @@ class Repository
 
     /**
      * Fetches the USP for specified payment method type
-     *
-     * @param Type $type
      */
     public static function getUniqueSellingPoint(Type $type): string
     {
