@@ -57,9 +57,10 @@ class Translator
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public static function load(): PhraseCollection
+    public static function load(?string $translationFile): PhraseCollection
     {
-        if (!file_exists(filename: self::$translationsFilePath)) {
+        $translationFilePath = $translationFile ?? self::$translationsFilePath;
+        if (!file_exists(filename: $translationFilePath)) {
             throw new FilesystemException(
                 message: 'Translations file could not be found on path: ' .
                     self::$translationsFilePath,
@@ -67,11 +68,11 @@ class Translator
             );
         }
 
-        $content = file_get_contents(filename: self::$translationsFilePath);
+        $content = file_get_contents(filename: $translationFilePath);
 
         if (!is_string(value: $content) || $content === '') {
             throw new FilesystemException(
-                message: 'Translation file ' . self::$translationsFilePath .
+                message: 'Translation file ' . $translationFilePath .
                     ' is empty.',
                 code: FilesystemException::CODE_FILE_EMPTY
             );
@@ -80,7 +81,7 @@ class Translator
         $result = self::decodeData(data: $content);
 
         Config::getCache()->write(
-            key: self::$cacheKey,
+            key: self::getCacheKey(translationFile: $translationFile),
             data: json_encode(
                 value: $result->toArray(),
                 flags: JSON_THROW_ON_ERROR
@@ -103,7 +104,8 @@ class Translator
      * @see Config::$language
      */
     public static function translate(
-        string $phraseId
+        string $phraseId,
+        ?string $translationFile = null
     ): string {
         $phrases = self::getData();
         $result = null;
@@ -134,12 +136,12 @@ class Translator
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public static function getData(): PhraseCollection
+    public static function getData(?string $translationFile): PhraseCollection
     {
-        $cachedData = Config::getCache()->read(key: self::$cacheKey);
+        $cachedData = Config::getCache()->read(key: self::getCacheKey(translationFile: $translationFile));
 
         return $cachedData === null
-            ? self::load()
+            ? self::load(translationFile: $translationFile)
             : self::decodeData(data: $cachedData);
     }
 
@@ -167,5 +169,18 @@ class Translator
         );
 
         return $result;
+    }
+
+    /**
+     * @param string|null $translationFile
+     *
+     * @return string
+     */
+    private static function getCacheKey(?string $translationFile): string
+    {
+        return ($translationFile ?
+            (self::$cacheKey . '-' . $translationFile) :
+            (self::$cacheKey . '-' . self::$translationsFilePath)
+        );
     }
 }
