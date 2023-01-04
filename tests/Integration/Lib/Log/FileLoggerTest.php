@@ -300,10 +300,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(
-            expected: FormatException::class,
-            actual: $className
-        );
+        $this::assertSame(expected: FormatException::class, actual: $className);
     }
 
     /**
@@ -319,10 +316,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(
-            expected: FormatException::class,
-            actual: $className
-        );
+        $this::assertSame(expected: FormatException::class, actual: $className);
     }
 
     /**
@@ -339,10 +333,7 @@ final class FileLoggerTest extends TestCase
             $className = get_class(object: $e);
         }
 
-        $this::assertSame(
-            expected: FormatException::class,
-            actual: $className
-        );
+        $this::assertSame(expected: FormatException::class, actual: $className);
     }
 
     /**

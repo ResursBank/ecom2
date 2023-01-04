@@ -16,12 +16,10 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -60,7 +58,7 @@ class PaymentInformation extends Widget
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat,
+        public readonly CurrencyFormat $currencyFormat
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
 
@@ -69,6 +67,16 @@ class PaymentInformation extends Widget
             file: __DIR__ . '/payment-information.phtml'
         );
         $this->css = $this->render(file: __DIR__ . '/payment-information.css');
+    }
+
+    /**
+     * Fetches CSS without instantiating an object.
+     */
+    public static function getCss(): string
+    {
+        return file_get_contents(
+            filename: __DIR__ . '/payment-information.css'
+        );
     }
 
     /**
@@ -126,17 +134,6 @@ class PaymentInformation extends Widget
         return $this->payment->customer->email;
     }
 
-    /**
-     * Fetches CSS without instantiating an object.
-     */
-    public static function getCss(): string
-    {
-        return file_get_contents(filename: __DIR__ . '/payment-information.css');
-    }
-
-    /**
-     * @param float $amount
-     */
     public function getFormattedAmount(float $amount): string
     {
         if ($this->currencyFormat === CurrencyFormat::SYMBOL_FIRST) {

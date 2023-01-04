@@ -383,9 +383,7 @@ final class StringValidationTest extends TestCase
     public function testIsTimestampConvertableThrows(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->stringValidation->isTimestampDate(
-            value: '{"sneaky": "object"}'
-        );
+        $this->stringValidation->isTimestampDate(value: '{"sneaky": "object"}');
     }
 
     /**
