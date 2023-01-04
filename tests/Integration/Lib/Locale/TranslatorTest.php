@@ -147,4 +147,24 @@ class TranslatorTest extends TestCase
         $this->assertNull(actual: $oldCache);
         $this->assertSame(expected: $translatedString, actual: $result);
     }
+
+    /**
+     * Verify that translating from alternate translation file works
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function testTranslateFromAlternateTranslationFile(): void
+    {
+        $source = __DIR__ . '/../../../Data/Translator/alternate.json';
+
+        $this->assertEquals(
+            expected: 'This is a test string',
+            actual: Translator::translate(phraseId: 'test-string', translationFile: $source),
+            message: 'Translated string does not match expected output'
+        );
+    }
 }
