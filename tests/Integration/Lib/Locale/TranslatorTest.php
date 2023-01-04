@@ -150,6 +150,7 @@ class TranslatorTest extends TestCase
 
     /**
      * Verify that translating from alternate translation file works
+     *
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -163,7 +164,10 @@ class TranslatorTest extends TestCase
 
         $this->assertEquals(
             expected: 'This is a test string',
-            actual: Translator::translate(phraseId: 'test-string', translationFile: $source),
+            actual: Translator::translate(
+                phraseId: 'test-string',
+                translationFile: $source
+            ),
             message: 'Translated string does not match expected output'
         );
     }
