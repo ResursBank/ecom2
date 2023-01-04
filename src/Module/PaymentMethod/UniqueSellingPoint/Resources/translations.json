@@ -2,42 +2,49 @@
   {
     "id": "RESURS_INVOICE",
     "translation": {
+      "en": "USP not available in English",
       "sv":  "Betala senare utan avgift"
     }
   },
   {
     "id": "RESURS_PART_PAYMENT",
     "translation": {
+      "en": "USP not available in English",
       "sv": "Betala i din takt"
     }
   },
   {
     "id": "RESURS_CARD2",
     "translation": {
+      "en": "USP not available in English",
       "sv": "Köp nu, betala senare"
     }
   },
   {
     "id": "RESURS_CREDIT_CARD",
     "translation": {
+      "en": "USP not available in English",
       "sv": "Köp nu, betala senare"
     }
   },
   {
     "id": "RESURS_NEW_CARD",
     "translation": {
+      "en": "USP not available in English",
       "sv": "Betala allt eller dela upp"
     }
   },
   {
     "id": "RESURS_REVOLVING_CREDIT",
     "translation": {
-      "sv": "Köp nu, betala senare",
+      "en": "USP not available in English",
+      "sv": "Köp nu, betala senare"
     }
   },
   {
     "id": "RESURS_NEW_REVOLVING_CREDIT",
     "translation": {
+      "en": "USP not available in English",
       "sv": "Betala allt eller dela upp"
     }
   }
