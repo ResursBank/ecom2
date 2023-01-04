@@ -162,7 +162,7 @@ class CurlTest extends TestCase
         );
 
         $curl = new Curl(
-            url: 'http://ipv4.netcurl.org',
+            url: 'https://ipv4.netcurl.org',
             requestMethod: RequestMethod::GET,
             contentType: ContentType::URL,
             authType: AuthType::NONE,
@@ -198,7 +198,7 @@ class CurlTest extends TestCase
         );
 
         $curl = new Curl(
-            url: 'http://ipv4.netcurl.org',
+            url: 'https://ipv4.netcurl.org',
             requestMethod: RequestMethod::GET,
             contentType: ContentType::URL,
             authType: AuthType::NONE,
@@ -237,7 +237,7 @@ class CurlTest extends TestCase
         $payload = new stdClass();
         $payload->customRow = 'Present';
         $response = Curl::post(
-            url: 'http://ipv4.netcurl.org',
+            url: 'https://ipv4.netcurl.org',
             payload: (array)$payload,
             authType: AuthType::NONE
         );
@@ -275,7 +275,7 @@ class CurlTest extends TestCase
         $payload = new stdClass();
         $payload->customRow = 'Present';
         $response = Curl::put(
-            url: 'http://ipv4.netcurl.org',
+            url: 'https://ipv4.netcurl.org',
             payload: (array)$payload,
             authType: AuthType::NONE
         );
@@ -312,7 +312,7 @@ class CurlTest extends TestCase
         );
 
         $response = Curl::delete(
-            url: 'http://ipv4.netcurl.org',
+            url: 'https://ipv4.netcurl.org',
             authType: AuthType::NONE
         );
 
@@ -395,7 +395,7 @@ class CurlTest extends TestCase
 
         try {
             Curl::get(
-                url: 'http://ipv4.netcurl.org/http.php?code=404',
+                url: 'https://ipv4.netcurl.org/http.php?code=404',
                 authType: AuthType::NONE
             );
         } catch (CurlException $e) {
@@ -427,7 +427,7 @@ class CurlTest extends TestCase
 
         try {
             Curl::get(
-                url: 'http://ipv4.netcurl.org/http.php?code=403',
+                url: 'https://ipv4.netcurl.org/http.php?code=403',
                 authType: AuthType::NONE
             );
         } catch (CurlException $e) {
