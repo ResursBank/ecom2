@@ -28,7 +28,7 @@ use function json_decode;
  *
  * @todo Check if ConfigException require test.
  */
-class Translator
+abstract class Translator
 {
     /**
      * Path to the translations file that holds all translations in Ecom.
@@ -41,13 +41,6 @@ class Translator
     private static string $cacheKey = 'resursbank-ecom-translations';
 
     /**
-     * Prevent object instantiation
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Loads translations file from disk, decodes the result into a collection
      * and returns that collection, and caches the resulting collection.
      *
@@ -57,9 +50,10 @@ class Translator
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public static function load(?string $translationFile): PhraseCollection
+    public static function load(?string $translationFile = null): PhraseCollection
     {
         $translationFilePath = $translationFile ?? self::$translationsFilePath;
+
         if (!file_exists(filename: $translationFilePath)) {
             throw new FilesystemException(
                 message: 'Translations file could not be found on path: ' .
@@ -107,7 +101,7 @@ class Translator
         string $phraseId,
         ?string $translationFile = null
     ): string {
-        $phrases = self::getData();
+        $phrases = self::getData(translationFile: $translationFile);
         $result = null;
 
         /** @var Phrase $item */
@@ -136,9 +130,11 @@ class Translator
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public static function getData(?string $translationFile): PhraseCollection
+    public static function getData(?string $translationFile = null): PhraseCollection
     {
-        $cachedData = Config::getCache()->read(key: self::getCacheKey(translationFile: $translationFile));
+        $cachedData = Config::getCache()->read(
+            key: self::getCacheKey(translationFile: $translationFile)
+        );
 
         return $cachedData === null
             ? self::load(translationFile: $translationFile)
@@ -165,22 +161,26 @@ class Translator
         /** @var PhraseCollection $result */
         $result = DataConverter::arrayToCollection(
             data: $decode,
-            targetType: Phrase::class
+            type: Phrase::class
         );
 
         return $result;
     }
 
     /**
-     * @param string|null $translationFile
-     *
-     * @return string
+     * Generates a valid cache key which includes the name of the translation file.
      */
-    private static function getCacheKey(?string $translationFile): string
+    public static function getCacheKey(?string $translationFile = null): string
     {
-        return ($translationFile ?
+        $rawKey = ($translationFile ?
             (self::$cacheKey . '-' . $translationFile) :
             (self::$cacheKey . '-' . self::$translationsFilePath)
+        );
+
+        return preg_replace(
+            pattern: '/[^a-zA-Z\d\-_]/',
+            subject: $rawKey,
+            replacement: '-'
         );
     }
 }

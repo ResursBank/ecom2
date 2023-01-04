@@ -136,17 +136,13 @@
     "id": "default-quantity-unit",
     "translation": {
       "en": "pcs",
-      "fi": "kpl",
-      "sv": "st",
-      "da": "st",
-      "no": "st"
+      "sv": "st"
     }
   },
   {
     "id": "shipping-description",
     "translation": {
       "en": "Shipping",
-      "fi": "Laivaus",
       "sv": "Frakt"
     }
   },
@@ -154,7 +150,6 @@
     "id": "shipping-reference",
     "translation": {
       "en": "shipping",
-      "fi": "laivaus",
       "sv": "frakt"
     }
   },

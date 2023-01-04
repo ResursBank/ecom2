@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Collection;
 
 use ArrayAccess;
-use Iterator;
 use Countable;
+use Iterator;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -30,84 +30,29 @@ class Collection implements ArrayAccess, Iterator, Countable
     private const TYPE_ERR_NO_DATA = 'No type or data specified';
 
     protected string $type;
-    private array $data;
     private int $position;
 
     /**
      * @param array $data
-     * @param string|null $type
      * @throws IllegalTypeException
      */
-    public function __construct(array $data, string $type = null)
+    public function __construct(private array $data, ?string $type = null)
     {
         $type = $this->determineType(data: $data, type: $type);
         $this->verifyDataArrayType(data: $data, type: $type);
-        $this->data = $data;
         $this->type = $type;
         $this->position = 0;
-    }
-
-    /**
-     * Get collection from specified type or first element of data array
-     *
-     * @param array $data
-     * @param string|null $type
-     * @return string
-     * @throws IllegalTypeException
-     */
-    private function determineType(array $data, string $type = null): string
-    {
-        if ($type) {
-            return $type;
-        }
-
-        if (!empty($data) && isset($data[0])) {
-            return is_object(value: $data[0]) ? $data[0]::class : gettype(value: $data[0]);
-        }
-
-        throw new IllegalTypeException(message: self::TYPE_ERR_NO_DATA);
-    }
-
-    /**
-     * Verify the type of objects in collection data
-     *
-     * @param array $data
-     * @param string $type
-     * @return void
-     * @throws IllegalTypeException
-     */
-    private function verifyDataArrayType(array $data, string $type): void
-    {
-        /** @psalm-suppress MixedAssignment */
-        foreach ($data as $item) {
-            if (
-                (is_object(value: $item) && $item::class !== $type) ||
-                (!is_object(value: $item) && gettype(value: $item) !== $type)
-            ) {
-                throw new IllegalTypeException(
-                    message: sprintf(
-                        self::TYPE_ERR,
-                        $type,
-                        (is_object(value: $item) ? $item::class : gettype(value: $item))
-                    )
-                );
-            }
-        }
     }
 
     /**
      * Set new data array
      *
      * @param array $data
-     * @return void
      * @throws IllegalTypeException
      */
     public function setData(array $data): void
     {
-        $this->verifyDataArrayType(
-            data: $data,
-            type: $this->type
-        );
+        $this->verifyDataArrayType(data: $data, type: $this->type);
 
         $this->data = $data;
     }
@@ -131,17 +76,17 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Get collection type
      *
-     * @return string
+     * @return class-string
      */
     public function getType(): string
     {
+        /* @phpstan-ignore-next-line */
         return $this->type;
     }
 
     /**
      * Get data array from collection
      *
-     * @param bool $full
      * @return array
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -161,23 +106,30 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
-     * @param mixed $offset
-     * @param mixed $value
-     * @return void
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @todo Refactor, too complex. See ECP-346
      */
+    // phpcs:ignore
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (
-            (is_object(value: $value) && $value::class !== $this->type) ||
-            (!is_object(value: $value) && gettype(value: $value) !== $this->type)
+            (
+                is_object(value: $value) &&
+                $value::class !== $this->type
+            ) ||
+            (
+                !is_object(value: $value) &&
+                gettype(value: $value) !== $this->type
+            )
         ) {
             throw new IllegalTypeException(
                 message: sprintf(
                     self::TYPE_ERR,
                     $this->type,
-                    is_object(value: $value) ? $value::class : gettype(value: $value)
+                    is_object(value: $value) ? $value::class : gettype(
+                        value: $value
+                    )
                 )
             );
         }
@@ -185,7 +137,6 @@ class Collection implements ArrayAccess, Iterator, Countable
         if ($offset === null) {
             $this->data[] = $value;
         } else {
-            /** @psalm-suppress MixedArrayOffset */
             $this->data[$offset] = $value;
         }
     }
@@ -195,7 +146,6 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     public function offsetExists(mixed $offset): bool
     {
-        /** @psalm-suppress MixedArrayOffset */
         return isset($this->data[$offset]);
     }
 
@@ -204,14 +154,11 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     public function offsetUnset(mixed $offset): void
     {
-        /** @psalm-suppress MixedArrayOffset */
         unset($this->data[$offset]);
     }
 
     /**
      * @inheritDoc
-     * @psalm-suppress MixedArrayOffset
-     * @psalm-suppress MixedReturnStatement
      */
     public function offsetGet(mixed $offset): mixed
     {
@@ -231,7 +178,6 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
-     * @inheritDoc
      * @throws CollectionException
      */
     public function current(): mixed
@@ -241,15 +187,16 @@ class Collection implements ArrayAccess, Iterator, Countable
                 message: 'Could not find any data in data array.'
             );
         }
+
         return $this->data[$this->position];
     }
 
     /**
-     * @inheritDoc
      * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
     public function key(): mixed
     {
+        // NOTE: Parent method returns mixed, so we cannot specify int.
         return $this->position;
     }
 
@@ -267,5 +214,58 @@ class Collection implements ArrayAccess, Iterator, Countable
     public function valid(): bool
     {
         return isset($this->data[$this->position]);
+    }
+
+    /**
+     * Get collection from specified type or first element of data array
+     *
+     * @throws IllegalTypeException
+     */
+    private function determineType(array $data, ?string $type = null): string
+    {
+        if ($type) {
+            return $type;
+        }
+
+        if (!empty($data) && isset($data[0])) {
+            return is_object(value: $data[0]) ? $data[0]::class : gettype(
+                value: $data[0]
+            );
+        }
+
+        throw new IllegalTypeException(message: self::TYPE_ERR_NO_DATA);
+    }
+
+    /**
+     * Verify the type of objects in collection data
+     *
+     * @throws IllegalTypeException
+     * @todo Refactor, too complex, see ECP-347
+     */
+    // phpcs:ignore
+    private function verifyDataArrayType(array $data, string $type): void
+    {
+        foreach ($data as $item) {
+            if (
+                (
+                    is_object(value: $item) &&
+                    $item::class !== $type
+                ) ||
+                (
+                    !is_object(value: $item) &&
+                    gettype(value: $item) !== $type
+                )
+            ) {
+                throw new IllegalTypeException(
+                    message: sprintf(
+                        self::TYPE_ERR,
+                        $type,
+                        (is_object(value: $item) ? $item::class : gettype(
+                            value: $item
+                        ))
+                    )
+                );
+            }
+        }
     }
 }

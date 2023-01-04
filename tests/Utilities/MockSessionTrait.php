@@ -42,7 +42,6 @@ trait MockSessionTrait
     /**
      * Make session appear enabled.
      *
-     * @psalm-suppress
      * @noinspection UnnecessaryAssertionInspection
      */
     public function enableSession(): void
@@ -56,7 +55,6 @@ trait MockSessionTrait
     /**
      * Make session appear disabled.
      *
-     * @psalm-suppress
      * @noinspection UnnecessaryAssertionInspection
      */
     public function disableSession(): void

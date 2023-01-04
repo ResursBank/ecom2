@@ -237,9 +237,6 @@ class RefundTest extends TestCase
 
         $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine);
 
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         */
         $this->assertEquals(
             expected: $orderLine->totalAmountIncludingVat,
             actual: $refundResponse->order->refundedAmount
@@ -294,9 +291,6 @@ class RefundTest extends TestCase
 
         $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         */
         $this->assertEquals(
             expected: $transactionId,
             actual: $actionLog->transactionId
@@ -351,12 +345,6 @@ class RefundTest extends TestCase
 
         $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         */
-        $this->assertEquals(
-            expected: $creator,
-            actual: $actionLog->creator
-        );
+        $this->assertEquals(expected: $creator, actual: $actionLog->creator);
     }
 }

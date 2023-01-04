@@ -292,7 +292,6 @@ class RepositoryTest extends TestCase
         $this->assertTrue(condition: isset($_SESSION));
         $this->assertArrayHasKey(key: $key, array: $_SESSION);
 
-        // To suppress psalm report.
         if (!isset($_SESSION[$key])) {
             $this->fail(message: "$key not set in session.");
         }

@@ -104,10 +104,7 @@ class GetAddressControllerTest extends TestCase
         string $haystack
     ): void {
         $this->assertNotEmpty(actual: $haystack);
-        $this->assertStringContainsString(
-            needle: $needle,
-            haystack: $haystack
-        );
+        $this->assertStringContainsString(needle: $needle, haystack: $haystack);
     }
 
     /**

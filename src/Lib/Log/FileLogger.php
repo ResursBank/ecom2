@@ -17,9 +17,6 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Throwable;
 
-use function get_class;
-use function is_object;
-
 /**
  * Write logfiles to disk.
  */
@@ -29,8 +26,7 @@ class FileLogger implements LoggerInterface
     private const PATH_ERR_EMPTY = 'Specified log file path is empty';
     private const PATH_ERR_WHITESPACE = 'Specified log file path has trailing or leading whitespace';
     private const PATH_ERR_TRAILING_SEPARATOR = 'Specified log file path has a trailing directory separator character';
-    private const PATH_ERR_FILE_DOES_NOT_EXIST = 'Specified log file path does not exist';
-    private const PATH_ERR_FILE_NOT_DIRECTORY = 'Specified log file path is not a directory';
+    private const PATH_ERR_NOT_DIRECTORY = 'Specified log file path is not a directory';
     private const PATH_ERR_FILE_NOT_WRITABLE = 'Specified log file path is not writable';
     private const WRITE_ERROR = 'No data was written to the log file';
     private const ERR_UNWRITABLE = 'Log file appears to be unwritable';
@@ -44,6 +40,7 @@ class FileLogger implements LoggerInterface
         private readonly string $path
     ) {
         $this->validatePath();
+        $this->validateLogFile();
     }
 
     /**
@@ -95,77 +92,26 @@ class FileLogger implements LoggerInterface
      *
      * @throws FilesystemException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
-        /**
-         * @psalm-suppress RedundantCondition
-         */
-        if (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Throwable::class ||
-                is_subclass_of(
-                    object_or_class: $message,
-                    class: Throwable::class
-                )
-            )
-        ) {
-            $this->logException(exception: $message);
-        } elseif (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Error::class ||
-                is_subclass_of(object_or_class: $message, class: Error::class)
-            )
-        ) {
-            $this->logError(error: $message);
-        } elseif (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Throwable::class ||
-                is_subclass_of(
-                    object_or_class: $message,
-                    class: Throwable::class
-                )
-            )
-        ) {
+        $this->validateLogFile();
+
+        if ($message instanceof Throwable) {
             $this->logError(error: $message);
         } elseif (LogLevel::loggable(level: $level)) {
-            $timestamp = new DateTime();
-            $formattedMessage = $timestamp->format(
-                format: 'c'
-            ) . ' ' . $level->name . ': ' . $message;
-
-            if (!$this->logIsWritable()) {
-                throw new FilesystemException(message: self::ERR_UNWRITABLE);
-            }
+            $date = (new DateTime())->format(format: 'c');
 
             if (
                 !file_put_contents(
                     filename: $this->getFilename(),
-                    data: $formattedMessage . PHP_EOL,
+                    data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
                     flags: FILE_APPEND | LOCK_EX
                 )
             ) {
                 throw new FilesystemException(message: self::WRITE_ERROR);
             }
         }
-    }
-
-    /**
-     * Log Exception object by converting it to a string and feeding it to the log method.
-     *
-     * @throws ConfigException
-     * @throws FilesystemException
-     */
-    private function logException(Throwable $exception): void
-    {
-        $this->log(
-            level: LogLevel::EXCEPTION,
-            message: $exception->getTraceAsString()
-        );
     }
 
     /**
@@ -178,7 +124,7 @@ class FileLogger implements LoggerInterface
     {
         $this->log(
             level: LogLevel::ERROR,
-            message: $error->getTraceAsString()
+            message: $error->getMessage() . ', ' . $error->getTraceAsString()
         );
     }
 
@@ -197,7 +143,7 @@ class FileLogger implements LoggerInterface
      * @throws FilesystemException
      * @throws FormatException
      */
-    private function validatePath(): bool
+    private function validatePath(): void
     {
         if ($this->path === '') {
             throw new EmptyValueException(message: self::PATH_ERR_EMPTY);
@@ -213,15 +159,9 @@ class FileLogger implements LoggerInterface
             );
         }
 
-        if (!file_exists(filename: $this->path)) {
-            throw new FilesystemException(
-                message: self::PATH_ERR_FILE_DOES_NOT_EXIST
-            );
-        }
-
         if (!is_dir(filename: $this->path)) {
             throw new FilesystemException(
-                message: self::PATH_ERR_FILE_NOT_DIRECTORY
+                message: self::PATH_ERR_NOT_DIRECTORY
             );
         }
 
@@ -230,39 +170,20 @@ class FileLogger implements LoggerInterface
                 message: self::PATH_ERR_FILE_NOT_WRITABLE
             );
         }
-
-        return true;
     }
 
     /**
-     * Checks if the log file is writable.
+     * Validate existing log file if any.
+     *
+     * @throws FilesystemException
      */
-    private function logIsWritable(): bool
+    private function validateLogFile(): void
     {
-        // Consider file writable if it either exists, isn't a directory and is writable or it doesn't exist but the
-        // parent directory passes the validation test
-        try {
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (
-                (
-                    file_exists(filename: $this->getFilename()) &&
-                    is_writable(
-                        filename: $this->getFilename()
-                    )
-                ) ||
-                (
-                    !file_exists(
-                        filename: $this->getFilename()
-                    ) &&
-                    $this->validatePath()
-                )
-            ) {
-                return true;
-            }
-        } catch (Throwable) {
-            return false;
+        if (
+            is_file(filename: $this->getFilename()) &&
+            !is_writable(filename: $this->getFilename())
+        ) {
+            throw new FilesystemException(message: self::ERR_UNWRITABLE);
         }
-
-        return false;
     }
 }

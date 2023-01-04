@@ -26,11 +26,9 @@ use function strlen;
 class Header
 {
     /**
-     * @param array $headers
      * @return array<array-key,HeaderModel>
      * @throws EmptyValueException
      * @throws ConfigException
-     * @psalm-suppress MixedReturnTypeCoercion
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function generateHeaders(
@@ -66,7 +64,6 @@ class Header
     }
 
     /**
-     * @param array $headers
      * @throws ConfigException
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
@@ -80,14 +77,7 @@ class Header
     /**
      * Retrieve list of headers where $key matches.
      *
-     * NOTE: Psalm errors are suppressed because the array content is confirmed
-     * using validateHeaderArray(), but Psalm does not see it.
-     *
-     * @param array $headers
-     * @return array
      * @throws ConfigException
-     * @psalm-suppress MixedArgument
-     * @psalm-suppress MixedPropertyFetch
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function findHeaders(
@@ -107,14 +97,9 @@ class Header
     }
 
     /**
-     * NOTE: Psalm errors are suppressed because the array content is confirmed
-     * using validateHeaderArray(), but Psalm does not see it.
-     *
      * @param array $headers
      * @return array
      * @throws ConfigException
-     * @psalm-suppress MixedOperand
-     * @psalm-suppress MixedPropertyFetch
      */
     public static function getHeadersData(
         array $headers
@@ -139,9 +124,7 @@ class Header
     public static function getUserAgent(): string
     {
         try {
-            $version = (new Generic())->getVersionByComposer(
-                location: __DIR__
-            );
+            $version = (new Generic())->getVersionByComposer(location: __DIR__);
         } catch (Throwable) {
             $version = 'composer.version.not.found';
         }
@@ -153,6 +136,9 @@ class Header
         ]));
     }
 
+    /**
+     * Get content type.
+     */
     private static function getContentType(ContentType $contentType): string
     {
         return match ($contentType) {

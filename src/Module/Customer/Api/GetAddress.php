@@ -36,6 +36,9 @@ use Throwable;
  */
 class GetAddress
 {
+    /**
+     * Assign object properties.
+     */
     public function __construct(
         private readonly Mapi $mapi = new Mapi()
     ) {
@@ -53,7 +56,9 @@ class GetAddress
      * @throws ValidationException
      * @throws ApiException
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @todo Refactor, see ECP-356. Remove phpcs:ignore when done.
      */
+    // phpcs:ignore
     public function call(
         string $storeId,
         string $governmentId,

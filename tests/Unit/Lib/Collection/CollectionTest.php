@@ -22,9 +22,7 @@ use function get_class;
  */
 final class CollectionTest extends TestCase
 {
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     private array $data;
 
     /**
@@ -268,8 +266,6 @@ final class CollectionTest extends TestCase
     public function testNext(): void
     {
         $collection = new Collection(data: $this->data);
-
-        /** @psalm-suppress MixedAssignment */
         $originalKey = $collection->key();
         $collection->next();
 

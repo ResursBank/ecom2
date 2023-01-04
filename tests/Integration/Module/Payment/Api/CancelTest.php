@@ -170,15 +170,12 @@ class CancelTest extends TestCase
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
-        $this->assertTrue(
-            condition: isset($response->order->actionLog[1])
-        );
+        $this->assertTrue(condition: isset($response->order->actionLog[1]));
 
         $actionLog = $response->order->actionLog[1];
 
         $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
-        /** @psalm-suppress MixedPropertyFetch */
         $this->assertEquals(
             expected: ActionType::CANCEL,
             actual: $actionLog->type
@@ -243,26 +240,29 @@ class CancelTest extends TestCase
         $actionLog1 = $payment->order->actionLog[0];
         $actionLog2 = $response->order->actionLog[1];
 
-        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog1);
-        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog2);
+        $this->assertInstanceOf(
+            expected: ActionLog::class,
+            actual: $actionLog1
+        );
+        $this->assertInstanceOf(
+            expected: ActionLog::class,
+            actual: $actionLog2
+        );
         $this->assertTrue(condition: isset($actionLog1->orderLines[0]));
         $this->assertTrue(condition: isset($actionLog2->orderLines[0]));
 
         $orderLine1 = $actionLog1->orderLines[0];
         $orderLine2 = $actionLog2->orderLines[0];
 
-        $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine1);
-        $this->assertInstanceOf(expected: OrderLine::class, actual: $orderLine2);
-
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         * @psalm-suppress MixedArrayAccess
-         */
+        $this->assertInstanceOf(
+            expected: OrderLine::class,
+            actual: $orderLine1
+        );
+        $this->assertInstanceOf(
+            expected: OrderLine::class,
+            actual: $orderLine2
+        );
         $this->assertEquals(expected: $orderLine1, actual: $orderLine2);
-        /**
-         * @psalm-suppress MixedPropertyFetch
-         * @psalm-suppress MixedArrayAccess
-         */
         $this->assertEquals(
             expected: $orderLine1->totalAmountIncludingVat,
             actual: $response->order->canceledAmount
@@ -308,7 +308,6 @@ class CancelTest extends TestCase
         // Assert that creator argument is present in action log
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
-        /** @psalm-suppress MixedPropertyFetch */
         $this->assertEquals(expected: $creator, actual: $actionLog->creator);
     }
 }

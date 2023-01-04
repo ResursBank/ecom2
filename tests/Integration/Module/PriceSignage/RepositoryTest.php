@@ -278,14 +278,12 @@ class RepositoryTest extends TestCase
         $this->assertInstanceOf(expected: Cost::class, actual: $cost1);
         $this->assertInstanceOf(expected: Cost::class, actual: $cost2);
 
-        /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months1,
             actual: $cost1->durationMonths,
             message: "Cache should be filtered by $months1 months."
         );
 
-        /** @psalm-suppress MixedPropertyFetch */
         $this->assertSame(
             expected: $months2,
             actual: $cost2->durationMonths,

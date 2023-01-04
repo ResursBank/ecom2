@@ -10,11 +10,13 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Utilities;
 
 use ArgumentCountError;
+use BackedEnum;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionObject;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
@@ -36,14 +38,18 @@ class DataConverter
      * @param class-string $type
      * @throws ReflectionException
      * @throws ArgumentCountError
-     * @throws IllegalTypeException
+     * @throws IllegalTypeException|IllegalValueException
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @todo This file is ignored by psalm configuration but shouldn't be. We should fix all errors we can instead.
-     * @todo This is starting to become a bit too complex, consider refactoring.
+     * @todo Refactor ECP-353
      */
+    // phpcs:ignore
     public static function stdClassToType(object $object, string $type): Model
     {
+        if (!is_subclass_of(object_or_class: $type, class: Model::class)) {
+            throw new IllegalValueException(message: "$type is not a Model");
+        }
+
         $sourceReflection = new ReflectionObject(object: $object);
         $destReflection = new ReflectionClass(objectOrClass: $type);
         $sourceProperties = $sourceReflection->getProperties();
@@ -94,13 +100,16 @@ class DataConverter
             } elseif (enum_exists(enum: $propertyType)) {
                 // If our property is an enum we need to convert the value
                 // to the enum value it represents.
+                // @todo enum_exists guarantees UnitEnum, we expect BackedEnum. See ECP-339
                 $arguments[$name] = call_user_func(
+                    /* @phpstan-ignore-next-line */
                     $propertyType . '::from',
-                    is_object(value: $value) ? $value->value : $value
+                    $value instanceof BackedEnum ? $value->value : $value
                 );
             } elseif (is_object(value: $value)) {
                 $arguments[$name] = self::stdClassToType(
                     object: $value,
+                    /* @phpstan-ignore-next-line */
                     type: $propertyType
                 );
             } else {
@@ -113,26 +122,30 @@ class DataConverter
 
     /**
      * @param array $data
-     * @param class-string $targetType
-     * @throws ReflectionException
+     * @param class-string $type
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
      */
-    public static function arrayToCollection(array $data, string $targetType): Collection
+    public static function arrayToCollection(array $data, string $type): Collection
     {
+        if (!is_subclass_of(object_or_class: $type, class: Model::class)) {
+            throw new IllegalValueException(message: "$type is not a Model");
+        }
+
         $convertedData = [];
 
         foreach ($data as $item) {
-            $convertedData[] = self::stdClassToType(
-                object: $item,
-                type: $targetType
-            );
+            $convertedData[] = self::stdClassToType(object: $item, type: $type);
         }
 
-        $class = $targetType . 'Collection';
+        $class = $type . 'Collection';
 
-        if (!class_exists(class: $class)) {
-            throw new IllegalTypeException(
-                message: 'Collection class ' . $class . ' does not exist.'
+        if (
+            !is_subclass_of(object_or_class: $class, class: Collection::class)
+        ) {
+            throw new IllegalValueException(
+                message: "$type is not a Collection"
             );
         }
 

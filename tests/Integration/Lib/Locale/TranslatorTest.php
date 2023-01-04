@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\PaymentMethod\Models;
+namespace Resursbank\EcomTest\Integration\Lib\Locale;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class TranslatorTest extends TestCase
     protected function setUp(): void
     {
         $this->setupConfig();
-        Config::getCache()->clear(key: 'resursbank-ecom-translations');
+        Config::getCache()->clear(key: Translator::getCacheKey());
 
         parent::setUp();
     }
@@ -100,7 +100,7 @@ class TranslatorTest extends TestCase
     public function testTranslateLoadsDataFromFile(): void
     {
         $cachedData = Config::getCache()->read(
-            key: 'resursbank-ecom-translations'
+            key: Translator::getCacheKey()
         );
 
         $translatedData = Translator::translate(phraseId: 'read-more');
@@ -120,12 +120,13 @@ class TranslatorTest extends TestCase
     public function testTranslateLoadsDataFromCache(): void
     {
         $phraseId = 'read-more';
+        $cacheKey = Translator::getCacheKey();
         $oldCache = Config::getCache()->read(
-            key: 'resursbank-ecom-translations'
+            key: Translator::getCacheKey()
         );
         $translatedString = Translator::translate(phraseId: $phraseId);
         $newCache = Config::getCache()->read(
-            key: 'resursbank-ecom-translations'
+            key: Translator::getCacheKey()
         );
 
         $this->assertNotNull(actual: $newCache);
@@ -145,5 +146,29 @@ class TranslatorTest extends TestCase
 
         $this->assertNull(actual: $oldCache);
         $this->assertSame(expected: $translatedString, actual: $result);
+    }
+
+    /**
+     * Verify that translating from alternate translation file works
+     *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function testTranslateFromAlternateTranslationFile(): void
+    {
+        $source = __DIR__ . '/../../../Data/Translator/alternate.json';
+
+        $this->assertEquals(
+            expected: 'This is a test string',
+            actual: Translator::translate(
+                phraseId: 'test-string',
+                translationFile: $source
+            ),
+            message: 'Translated string does not match expected output'
+        );
     }
 }

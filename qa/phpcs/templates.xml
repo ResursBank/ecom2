@@ -134,13 +134,6 @@
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch" />
     <rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly" />
     <rule ref="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch" />
-    <rule ref="SlevomatCodingStandard.Files.FileLength">
-        <properties>
-            <property name="includeComments" value="false" />
-            <property name="includeWhitespace" value="false" />
-            <property name="maxLinesLength" value="250" />
-        </properties>
-    </rule>
     <rule ref="SlevomatCodingStandard.Files.LineLength">
         <properties>
             <property name="lineLengthLimit" value="120" />
@@ -168,7 +161,7 @@
         <properties>
             <property name="includeComments" value="false" />
             <property name="includeWhitespace" value="false" />
-            <property name="maxLinesLength" value="40" />
+            <property name="maxLinesLength" value="20" />
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction" />

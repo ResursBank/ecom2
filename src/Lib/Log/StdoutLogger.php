@@ -11,13 +11,9 @@ namespace Resursbank\Ecom\Lib\Log;
 
 use DateTime;
 use Error;
-use Exception;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\IOException;
 use Throwable;
-
-use function get_class;
-use function is_object;
 
 /**
  * Write logs directly to STDOUT and STDERR
@@ -27,7 +23,6 @@ class StdoutLogger implements LoggerInterface
     private const ERR_GENERAL_WRITE = 'Unable to write message to STDOUT/STDERR';
 
     /**
-     * @inheritDoc
      * @throws IOException
      * @throws ConfigException
      */
@@ -37,7 +32,6 @@ class StdoutLogger implements LoggerInterface
     }
 
     /**
-     * @inheritDoc
      * @throws IOException
      * @throws ConfigException
      */
@@ -47,7 +41,6 @@ class StdoutLogger implements LoggerInterface
     }
 
     /**
-     * @inheritDoc
      * @throws IOException
      * @throws ConfigException
      */
@@ -57,7 +50,6 @@ class StdoutLogger implements LoggerInterface
     }
 
     /**
-     * @inheritDoc
      * @throws IOException
      * @throws ConfigException
      */
@@ -69,45 +61,34 @@ class StdoutLogger implements LoggerInterface
     /**
      * Write log entry to STDOUT/STDERR (depending on log level)
      *
-     * @param LogLevel $level
-     * @param string|Throwable|Exception|Error $message
-     * @return void
      * @throws ConfigException
      * @throws IOException
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
-        /**
-         * @psalm-suppress RedundantCondition
-         */
-        if (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Exception::class ||
-                is_subclass_of(object_or_class: $message, class: Exception::class)
-            )
-        ) {
-            $this->logException(exception: $message);
-        } elseif (
-            is_object(value: $message) &&
-            (
-                get_class(object: $message) === Error::class ||
-                is_subclass_of(object_or_class: $message, class: Error::class)
-            )
-        ) {
+        if ($message instanceof Error) {
             $this->logError(error: $message);
+        } elseif ($message instanceof Throwable) {
+            $this->logException(exception: $message);
         } elseif (LogLevel::loggable(level: $level)) {
             $fileHandle = match ($level) {
-                LogLevel::EXCEPTION, LogLevel::ERROR => fopen(filename: 'php://stderr', mode: 'ab'),
-                LogLevel::DEBUG, LogLevel::INFO, LogLevel::WARNING => fopen(filename: 'php://stdout', mode: 'ab')
+                LogLevel::EXCEPTION, LogLevel::ERROR => fopen(
+                    filename: 'php://stderr',
+                    mode: 'ab'
+                ),
+                LogLevel::DEBUG, LogLevel::INFO, LogLevel::WARNING => fopen(
+                    filename: 'php://stdout',
+                    mode: 'ab'
+                )
             };
 
             if ($fileHandle === false) {
                 throw new IOException(message: self::ERR_GENERAL_WRITE);
             }
 
-            $timestamp = new DateTime();
-            $formattedMessage = $timestamp->format(format: 'c') . ' ' . $level->name . ': ' . $message;
+            $date = (new DateTime())->format(format: 'c');
+            $formattedMessage = $date . ' ' . $level->name . ': ' . $message;
+
             fwrite(stream: $fileHandle, data: $formattedMessage);
             fclose(stream: $fileHandle);
         }
@@ -116,26 +97,28 @@ class StdoutLogger implements LoggerInterface
     /**
      * Log Exception object by converting it to a string and feeding it to the log method.
      *
-     * @param Throwable $exception
-     * @return void
      * @throws ConfigException
      * @throws IOException
      */
     private function logException(Throwable $exception): void
     {
-        $this->log(level: LogLevel::EXCEPTION, message: $exception->getTraceAsString());
+        $this->log(
+            level: LogLevel::EXCEPTION,
+            message: $exception->getTraceAsString()
+        );
     }
 
     /**
      * Log Error object by converting it to a string and feeding it to the log method.
      *
-     * @param Error $error
-     * @return void
      * @throws IOException
      * @throws ConfigException
      */
-    private function logError(Error $error): void
+    private function logError(Throwable $error): void
     {
-        $this->log(level: LogLevel::ERROR, message: $error->getTraceAsString());
+        $this->log(
+            level: LogLevel::ERROR,
+            message: $error->getTraceAsString()
+        );
     }
 }

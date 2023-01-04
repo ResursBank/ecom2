@@ -97,7 +97,9 @@ class PartPayment extends Widget
     ) {
         $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
-        $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $this->logo = (string) file_get_contents(
+            filename: __DIR__ . '/resurs.svg'
+        );
         $this->infoText = Translator::translate(
             phraseId: 'pay-in-installments-with-resurs-bank'
         );
@@ -250,14 +252,12 @@ class PartPayment extends Widget
             );
         }
 
-        /** @var Cost */
         return array_values(array: $costs->costList->toArray())[0];
     }
 
     /**
      * Fetches iframe URL
      *
-     * @return string
      * @todo: Properly render URL
      */
     private function getIframeUrl(): string
