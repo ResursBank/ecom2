@@ -108,7 +108,9 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @todo Refactor, too complex. See ECP-346
      */
+    // phpcs:ignore
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (
@@ -177,7 +179,6 @@ class Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * @throws CollectionException
-     * @inheritDoc
      */
     public function current(): mixed
     {
@@ -192,7 +193,6 @@ class Collection implements ArrayAccess, Iterator, Countable
 
     /**
      * @noinspection PhpMixedReturnTypeCanBeReducedInspection
-     * @inheritDoc
      */
     public function key(): mixed
     {
@@ -219,7 +219,6 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Get collection from specified type or first element of data array
      *
-     * @param array $data
      * @throws IllegalTypeException
      */
     private function determineType(array $data, ?string $type = null): string
@@ -240,9 +239,10 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Verify the type of objects in collection data
      *
-     * @param array $data
      * @throws IllegalTypeException
+     * @todo Refactor, too complex, see ECP-347
      */
+    // phpcs:ignore
     private function verifyDataArrayType(array $data, string $type): void
     {
         foreach ($data as $item) {

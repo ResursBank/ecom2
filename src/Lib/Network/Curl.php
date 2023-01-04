@@ -40,7 +40,9 @@ use function is_string;
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  * @noinspection EfferentObjectCouplingInspection
  * @todo Check if ConfigException validation need testing in class methods.
+ * @todo Refactor this class, its' too long (exceeds 250 lines). ECP-344
  */
+// phpcs:ignore
 class Curl
 {
     /** @var CurlHandle */
@@ -211,7 +213,9 @@ class Curl
      * @throws JsonException
      * @throws IllegalValueException
      * @throws ConfigException
+     * @todo Needs refactoring, method is too large. See ECP-345
      */
+    // phpcs:ignore
     public function exec(): Response
     {
         /** @noinspection DuplicatedCode */

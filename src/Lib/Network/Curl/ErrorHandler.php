@@ -73,10 +73,7 @@ class ErrorHandler
      */
     private function getHttpCode(): int
     {
-        $code = curl_getinfo(
-            handle: $this->ch,
-            option: CURLINFO_RESPONSE_CODE
-        );
+        $code = curl_getinfo(handle: $this->ch, option: CURLINFO_RESPONSE_CODE);
 
         /* @phpstan-ignore-next-line */
         if (is_string(value: $code) && is_numeric(value: $code)) {
@@ -138,7 +135,9 @@ class ErrorHandler
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @todo This needs refactoring. See ECP-342
      */
+    // phpcs:ignore
     private function getMessageFromErrorBody(): string
     {
         if ($this->httpCode >= 400 && is_string(value: $this->body)) {
@@ -202,7 +201,9 @@ class ErrorHandler
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ConfigException
+     * @todo This needs refactoring, it's too complex. See ECP-343
      */
+    // phpcs:ignore
     private function validateBody(): void
     {
         if ($this->contentType !== ContentType::JSON) {
