@@ -162,7 +162,7 @@ class CurlTest extends TestCase
         );
 
         $curl = new Curl(
-            url: 'https://ipv4.netcurl.org',
+            url: 'http://52.212.158.105',
             requestMethod: RequestMethod::GET,
             contentType: ContentType::URL,
             authType: AuthType::NONE,
@@ -198,7 +198,7 @@ class CurlTest extends TestCase
         );
 
         $curl = new Curl(
-            url: 'https://ipv4.netcurl.org',
+            url: 'http://52.212.158.105',
             requestMethod: RequestMethod::GET,
             contentType: ContentType::URL,
             authType: AuthType::NONE,
@@ -237,7 +237,7 @@ class CurlTest extends TestCase
         $payload = new stdClass();
         $payload->customRow = 'Present';
         $response = Curl::post(
-            url: 'https://ipv4.netcurl.org',
+            url: 'http://52.212.158.105',
             payload: (array)$payload,
             authType: AuthType::NONE
         );
@@ -275,7 +275,7 @@ class CurlTest extends TestCase
         $payload = new stdClass();
         $payload->customRow = 'Present';
         $response = Curl::put(
-            url: 'https://ipv4.netcurl.org',
+            url: 'http://52.212.158.105',
             payload: (array)$payload,
             authType: AuthType::NONE
         );
@@ -312,7 +312,7 @@ class CurlTest extends TestCase
         );
 
         $response = Curl::delete(
-            url: 'https://ipv4.netcurl.org',
+            url: 'http://52.212.158.105',
             authType: AuthType::NONE
         );
 
@@ -395,7 +395,7 @@ class CurlTest extends TestCase
 
         try {
             Curl::get(
-                url: 'https://ipv4.netcurl.org/http.php?code=404',
+                url: 'http://52.212.158.105/http.php?code=404',
                 authType: AuthType::NONE
             );
         } catch (CurlException $e) {
@@ -427,7 +427,7 @@ class CurlTest extends TestCase
 
         try {
             Curl::get(
-                url: 'https://ipv4.netcurl.org/http.php?code=403',
+                url: 'http://52.212.158.105/http.php?code=403',
                 authType: AuthType::NONE
             );
         } catch (CurlException $e) {
