@@ -51,7 +51,6 @@ class SessionTest extends TestCase
         $this->assertTrue(condition: isset($_SESSION));
         $this->assertArrayHasKey(key: $sessionKey, array: $_SESSION);
 
-        // To suppress psalm report.
         if (!isset($_SESSION[$sessionKey])) {
             $this->fail(message: "$sessionKey not set in session.");
         }

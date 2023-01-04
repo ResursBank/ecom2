@@ -28,7 +28,7 @@ use function json_decode;
  *
  * @todo Check if ConfigException require test.
  */
-class Translator
+abstract class Translator
 {
     /**
      * Path to the translations file that holds all translations in Ecom.
@@ -39,13 +39,6 @@ class Translator
      * Key to store cached translations under.
      */
     private static string $cacheKey = 'resursbank-ecom-translations';
-
-    /**
-     * Prevent object instantiation
-     */
-    private function __construct()
-    {
-    }
 
     /**
      * Loads translations file from disk, decodes the result into a collection
@@ -165,7 +158,7 @@ class Translator
         /** @var PhraseCollection $result */
         $result = DataConverter::arrayToCollection(
             data: $decode,
-            targetType: Phrase::class
+            type: Phrase::class
         );
 
         return $result;

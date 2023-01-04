@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Customer;
 
-use Error;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -117,7 +116,6 @@ class Repository
             $data = $sessionHandler->get(key: self::SESSION_KEY_SSN_DATA);
 
             if ($data !== '') {
-                /** @psalm-suppress MixedAssignment */
                 $data = json_decode(
                     json: $data,
                     associative: false,
@@ -139,9 +137,8 @@ class Repository
                 }
             }
         } catch (Throwable $e) {
+            $result = null;
             self::logException(exception: $e);
-            // Failing is harmless, client can supply info on gateway.
-        } catch (Error) {
             // Failing is harmless, client can supply info on gateway.
         }
 

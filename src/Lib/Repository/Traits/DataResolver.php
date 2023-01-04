@@ -26,7 +26,9 @@ trait DataResolver
      * Resolve data form API response.
      *
      * @throws ApiException
+     * @todo Refactor, see ECP-349 (remember to remove phpcs:ignore below after).
      */
+    // phpcs:ignore
     public function resolveResponseData(
         string|array|stdClass $data,
         string $extractProperty = ''
@@ -52,7 +54,6 @@ trait DataResolver
                 );
             }
 
-            /** @psalm-suppress MixedAssignment */
             $data = $data->{$extractProperty};
         }
 

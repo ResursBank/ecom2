@@ -60,7 +60,6 @@ class DeviceInfoTest extends TestCase
 //    private function convert(
 //        array $updates = []
 //    ): void {
-//        /** @psalm-suppress MixedAssignment */
 //        foreach ($updates as $key => $val) {
 //            $this->data->{$key} = $val;
 //        }

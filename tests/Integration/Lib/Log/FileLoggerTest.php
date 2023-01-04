@@ -259,6 +259,7 @@ final class FileLoggerTest extends TestCase
     {
         $error = new Error();
         Config::getLogger()->debug(message: $error);
+        $m = file(filename: $this->filename);
         $numLines = count(value: file(filename: $this->filename));
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;

@@ -27,8 +27,6 @@ class ArrayValidation
      * Validates the supplied array contains an element named $key and that
      * element contains an array. Returns the validated array.
      *
-     * @param array $data
-     * @return array
      * @throws MissingKeyException
      * @throws IllegalTypeException
      */
@@ -91,20 +89,18 @@ class ArrayValidation
      */
     public function isMultiDimensional(array $data, int $depth): bool
     {
-        if ($depth > 0) {
-            foreach ($data as $el) {
-                if (!is_array(value: $el)) {
-                    throw new IllegalTypeException(
-                        message: 'Array contains none array element.'
-                    );
-                }
-
-                if ($depth - 1 <= 0) {
-                    continue;
-                }
-
-                $this->isMultiDimensional(data: $el, depth: $depth - 1);
+        foreach ($data as $el) {
+            if (!is_array(value: $el)) {
+                throw new IllegalTypeException(
+                    message: 'Array contains none array element.'
+                );
             }
+
+            if ($depth - 1 <= 0) {
+                continue;
+            }
+
+            $this->isMultiDimensional(data: $el, depth: $depth - 1);
         }
 
         return true;
@@ -163,7 +159,6 @@ class ArrayValidation
         string $type,
         callable $compareFn
     ): bool {
-        /** @psalm-suppress MixedAssignment */
         foreach ($data as $i => $item) {
             if (!$compareFn($item)) {
                 throw new IllegalTypeException(

@@ -35,11 +35,17 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/create
+ *
+ * @todo Refactor ECP-358. Remove phpcs:ignore below when done.
  */
+// phpcs:ignore
 class Create
 {
     private Mapi $mapi;
 
+    /**
+     * Assign properties.
+     */
     public function __construct()
     {
         $this->mapi = new Mapi();
@@ -57,7 +63,9 @@ class Create
      * @throws ValidationException
      * @throws ConfigException
      * @noinspection PhpTooManyParametersInspection
+     * @todo When refactored, remove phpcs:ignore below.
      */
+    // phpcs:ignore
     public function call(
         string $storeId,
         string $paymentMethodId,

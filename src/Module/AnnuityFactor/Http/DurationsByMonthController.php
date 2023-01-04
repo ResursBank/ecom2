@@ -88,9 +88,7 @@ class DurationsByMonthController extends Controller
      */
     public function getRequestData(): DurationsByMonthRequest
     {
-        $result = $this->getRequestModel(
-            model: DurationsByMonthRequest::class
-        );
+        $result = $this->getRequestModel(model: DurationsByMonthRequest::class);
 
         if (!$result instanceof DurationsByMonthRequest) {
             throw new HttpException(

@@ -53,8 +53,6 @@ final class ModelConverterTest extends TestCase
     public function testValidateModelThrowsWithoutClass(): void
     {
         $this->expectException(exception: InvalidArgumentException::class);
-
-        /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
         $this->validateModel(model: 'Nada');
     }
 
@@ -82,8 +80,6 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelThrowsWithoutClass(): void
     {
         $this->expectException(exception: InvalidArgumentException::class);
-
-        /** @psalm-suppress UndefinedClass, ArgumentTypeCoercion */
         $this->convertToModel(data: new stdClass(), model: 'Nope');
     }
 

@@ -46,11 +46,11 @@ class GetCallback
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @psalm-suppress MoreSpecificReturnType
      * @todo Check if ConfigException validation needs a test.
      * @todo Consider using LogException trait instead.
      * @todo I dropped an EmptyValueException, ensure tests are fine.
-     * @todo Fix all psalm errors. Suppressed now since class has been discussed for refactoring.
+     * @todo Class has been discussed for refactoring.
+     * @todo Ensure the PHPStan suppressors are removed when we refactor.
      */
     public function call(string $eventName): Callback
     {
@@ -65,8 +65,9 @@ class GetCallback
         try {
             $response = $curl->exec();
 
-            /** @psalm-suppress MoreSpecificReturnType, PossiblyInvalidArgument, LessSpecificReturnStatement */
+            /* @phpstan-ignore-next-line */
             return DataConverter::stdClassToType(
+                /* @phpstan-ignore-next-line */
                 object: $response->body,
                 type: Callback::class
             );

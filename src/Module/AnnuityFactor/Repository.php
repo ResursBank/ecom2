@@ -124,7 +124,6 @@ class Repository
             $result[] = $method;
         }
 
-        /** @psalm-suppress MixedArgumentTypeCoercion */
         return new PaymentMethodCollection(data: $result);
     }
 

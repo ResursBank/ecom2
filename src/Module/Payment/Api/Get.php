@@ -67,9 +67,6 @@ class Get
             $data instanceof stdClass
         ) ? $data : new stdClass();
 
-        // @todo psalm suppression should be sorted when metadata has been fixed in the API.
-
-        /** @psalm-suppress MixedPropertyAssignment, MixedPropertyFetch */
         if (
             isset($content->metadata->custom) &&
             $content->metadata->custom instanceof stdClass

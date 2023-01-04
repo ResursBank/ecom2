@@ -26,9 +26,7 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
  */
 class OrderLineTest extends TestCase
 {
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed> */
     private static array $data = [];
 
     /**
