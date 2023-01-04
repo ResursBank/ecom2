@@ -50,7 +50,7 @@ abstract class Translator
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public static function load(?string $translationFile): PhraseCollection
+    public static function load(?string $translationFile = null): PhraseCollection
     {
         $translationFilePath = $translationFile ?? self::$translationsFilePath;
 
@@ -130,7 +130,7 @@ abstract class Translator
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public static function getData(?string $translationFile): PhraseCollection
+    public static function getData(?string $translationFile = null): PhraseCollection
     {
         $cachedData = Config::getCache()->read(
             key: self::getCacheKey(translationFile: $translationFile)
@@ -170,7 +170,7 @@ abstract class Translator
     /**
      * Generates a valid cache key which includes the name of the translation file.
      */
-    private static function getCacheKey(?string $translationFile): string
+    public static function getCacheKey(?string $translationFile = null): string
     {
         $rawKey = ($translationFile ?
             (self::$cacheKey . '-' . $translationFile) :
