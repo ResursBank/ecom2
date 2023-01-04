@@ -29,7 +29,7 @@ class TranslatorTest extends TestCase
     protected function setUp(): void
     {
         $this->setupConfig();
-        Config::getCache()->clear(key: 'resursbank-ecom-translations');
+        Config::getCache()->clear(key: Translator::getCacheKey());
 
         parent::setUp();
     }
@@ -100,7 +100,7 @@ class TranslatorTest extends TestCase
     public function testTranslateLoadsDataFromFile(): void
     {
         $cachedData = Config::getCache()->read(
-            key: 'resursbank-ecom-translations'
+            key: Translator::getCacheKey()
         );
 
         $translatedData = Translator::translate(phraseId: 'read-more');
@@ -120,12 +120,13 @@ class TranslatorTest extends TestCase
     public function testTranslateLoadsDataFromCache(): void
     {
         $phraseId = 'read-more';
+        $cacheKey = Translator::getCacheKey();
         $oldCache = Config::getCache()->read(
-            key: 'resursbank-ecom-translations'
+            key: Translator::getCacheKey()
         );
         $translatedString = Translator::translate(phraseId: $phraseId);
         $newCache = Config::getCache()->read(
-            key: 'resursbank-ecom-translations'
+            key: Translator::getCacheKey()
         );
 
         $this->assertNotNull(actual: $newCache);
