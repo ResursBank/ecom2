@@ -53,6 +53,7 @@ abstract class Translator
     public static function load(?string $translationFile): PhraseCollection
     {
         $translationFilePath = $translationFile ?? self::$translationsFilePath;
+
         if (!file_exists(filename: $translationFilePath)) {
             throw new FilesystemException(
                 message: 'Translations file could not be found on path: ' .
@@ -100,7 +101,7 @@ abstract class Translator
         string $phraseId,
         ?string $translationFile = null
     ): string {
-        $phrases = self::getData();
+        $phrases = self::getData(translationFile: $translationFile);
         $result = null;
 
         /** @var Phrase $item */
@@ -131,7 +132,9 @@ abstract class Translator
      */
     public static function getData(?string $translationFile): PhraseCollection
     {
-        $cachedData = Config::getCache()->read(key: self::getCacheKey(translationFile: $translationFile));
+        $cachedData = Config::getCache()->read(
+            key: self::getCacheKey(translationFile: $translationFile)
+        );
 
         return $cachedData === null
             ? self::load(translationFile: $translationFile)
@@ -165,15 +168,19 @@ abstract class Translator
     }
 
     /**
-     * @param string|null $translationFile
-     *
-     * @return string
+     * Generates a valid cache key which includes the name of the translation file.
      */
     private static function getCacheKey(?string $translationFile): string
     {
-        return ($translationFile ?
+        $rawKey = ($translationFile ?
             (self::$cacheKey . '-' . $translationFile) :
             (self::$cacheKey . '-' . self::$translationsFilePath)
+        );
+
+        return preg_replace(
+            pattern: '/[^a-zA-Z\d\-_]/',
+            subject: $rawKey,
+            replacement: '-'
         );
     }
 }
