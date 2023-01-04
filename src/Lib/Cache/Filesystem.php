@@ -192,7 +192,7 @@ class Filesystem extends AbstractCache implements CacheInterface
             is_file(filename: $file) &&
             is_readable(filename: $file)
         ) {
-            $result = file_get_contents(filename: $file);
+            $result = (string) file_get_contents(filename: $file);
         }
 
         return $result;

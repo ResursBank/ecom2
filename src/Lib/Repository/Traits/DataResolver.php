@@ -52,7 +52,6 @@ trait DataResolver
                 );
             }
 
-            /** @psalm-suppress MixedAssignment */
             $data = $data->{$extractProperty};
         }
 

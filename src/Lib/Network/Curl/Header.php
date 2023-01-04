@@ -30,7 +30,6 @@ class Header
      * @return array<array-key,HeaderModel>
      * @throws EmptyValueException
      * @throws ConfigException
-     * @psalm-suppress MixedReturnTypeCoercion
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function generateHeaders(
@@ -80,14 +79,9 @@ class Header
     /**
      * Retrieve list of headers where $key matches.
      *
-     * NOTE: Psalm errors are suppressed because the array content is confirmed
-     * using validateHeaderArray(), but Psalm does not see it.
-     *
      * @param array $headers
      * @return array
      * @throws ConfigException
-     * @psalm-suppress MixedArgument
-     * @psalm-suppress MixedPropertyFetch
      * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function findHeaders(
@@ -107,14 +101,9 @@ class Header
     }
 
     /**
-     * NOTE: Psalm errors are suppressed because the array content is confirmed
-     * using validateHeaderArray(), but Psalm does not see it.
-     *
      * @param array $headers
      * @return array
      * @throws ConfigException
-     * @psalm-suppress MixedOperand
-     * @psalm-suppress MixedPropertyFetch
      */
     public static function getHeadersData(
         array $headers

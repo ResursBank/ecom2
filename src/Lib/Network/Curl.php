@@ -244,7 +244,6 @@ class Curl
 
         if ($this->responseContentType === ContentType::JSON) {
             $this->stringValidation->notEmpty(value: $body);
-            /** @psalm-suppress MixedAssignment */
             $body = json_decode(
                 json: $body,
                 associative: false,

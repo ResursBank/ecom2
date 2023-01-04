@@ -70,16 +70,13 @@ class StdoutLogger implements LoggerInterface
      * Write log entry to STDOUT/STDERR (depending on log level)
      *
      * @param LogLevel $level
-     * @param string|Throwable|Exception|Error $message
+     * @param string|Throwable $message
      * @return void
      * @throws ConfigException
      * @throws IOException
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
-        /**
-         * @psalm-suppress RedundantCondition
-         */
         if (
             is_object(value: $message) &&
             (
@@ -129,12 +126,12 @@ class StdoutLogger implements LoggerInterface
     /**
      * Log Error object by converting it to a string and feeding it to the log method.
      *
-     * @param Error $error
+     * @param Throwable $error
      * @return void
      * @throws IOException
      * @throws ConfigException
      */
-    private function logError(Error $error): void
+    private function logError(Throwable $error): void
     {
         $this->log(level: LogLevel::ERROR, message: $error->getTraceAsString());
     }

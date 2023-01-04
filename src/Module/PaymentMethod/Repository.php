@@ -94,6 +94,7 @@ class Repository
     ): PaymentMethodCollection {
         /** @var PaymentMethod $method */
         foreach ($collection as $method) {
+            /* @phpstan-ignore-next-line */
             $method->sortOrder = ((int) $collection->key() + 1) * 100;
         }
 

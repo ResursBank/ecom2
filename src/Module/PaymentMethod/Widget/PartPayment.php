@@ -33,6 +33,8 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 
+use function is_string;
+
 /**
  * Renders Part payment widget HTML and CSS
  */
@@ -97,7 +99,7 @@ class PartPayment extends Widget
     ) {
         $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
-        $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $this->logo = (string) file_get_contents(filename: __DIR__ . '/resurs.svg');
         $this->infoText = Translator::translate(
             phraseId: 'pay-in-installments-with-resurs-bank'
         );

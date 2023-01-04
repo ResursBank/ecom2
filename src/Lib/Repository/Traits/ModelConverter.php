@@ -46,7 +46,6 @@ trait ModelConverter
 
         $this->validateModel(model: $model);
 
-        /** @psalm-suppress MixedAssignment */
         if (is_string(value: $data)) {
             $data = json_decode(
                 json: $data,
@@ -57,13 +56,11 @@ trait ModelConverter
         }
 
         if (is_array(value: $data)) {
-            /** @psalm-suppress MixedAssignment */
             $result = DataConverter::arrayToCollection(
                 data: $data,
-                targetType: $model
+                type: $model
             );
         } elseif ($data instanceof stdClass) {
-            /** @psalm-suppress MixedAssignment */
             $result = DataConverter::stdClassToType(
                 object: $data,
                 type: $model

@@ -32,6 +32,6 @@ class Widget
 
         require $file;
 
-        return ob_get_clean();
+        return (string) ob_get_clean();
     }
 }

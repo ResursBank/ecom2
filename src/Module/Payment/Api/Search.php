@@ -93,7 +93,7 @@ class Search
 
         $result = DataConverter::arrayToCollection(
             data: $content,
-            targetType: Payment::class
+            type: Payment::class
         );
 
         if (!$result instanceof PaymentCollection) {
