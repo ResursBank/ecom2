@@ -168,7 +168,7 @@
         <properties>
             <property name="includeComments" value="false" />
             <property name="includeWhitespace" value="false" />
-            <property name="maxLinesLength" value="20" />
+            <property name="maxLinesLength" value="40" />
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction" />
