@@ -154,11 +154,7 @@ class FilesystemTest extends TestCase
         $this->assertFileExists(filename: $this->path);
         $this->expectException(exception: FilesystemException::class);
 
-        $this->fileSystem->write(
-            key: $this->key,
-            data: 'my data set?',
-            ttl: 0
-        );
+        $this->fileSystem->write(key: $this->key, data: 'my data set?', ttl: 0);
     }
 
     /**

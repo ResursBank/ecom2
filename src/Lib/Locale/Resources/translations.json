@@ -1,5 +1,26 @@
 [
   {
+    "id": "status",
+    "translation": {
+      "en": "Status",
+      "sv": "Status"
+    }
+  },
+  {
+    "id": "frozen",
+    "translation": {
+      "en": "Frozen",
+      "sv": "Fryst"
+    }
+  },
+  {
+    "id": "fraud",
+    "translation": {
+      "en": "Fraud",
+      "sv": "Bedrägeri"
+    }
+  },
+  {
     "id": "read-more",
     "translation": {
       "en": "Read More",
@@ -11,6 +32,34 @@
     "translation": {
       "en": "Name",
       "sv": "Namn"
+    }
+  },
+  {
+    "id": "customer",
+    "translation": {
+      "en": "Customer",
+      "sv": "Kund"
+    }
+  },
+  {
+    "id": "address",
+    "translation": {
+      "en": "Address",
+      "sv": "Adress"
+    }
+  },
+  {
+    "id": "telephone",
+    "translation": {
+      "en": "Telephone",
+      "sv": "Telefon"
+    }
+  },
+  {
+    "id": "email",
+    "translation": {
+      "en": "Email",
+      "sv": "Epost"
     }
   },
   {
@@ -238,10 +287,31 @@
     }
   },
   {
+    "id": "payment",
+    "translation": {
+      "en": "Payment",
+      "sv": "Betalning"
+    }
+  },
+  {
+    "id": "payment-id",
+    "translation": {
+      "en": "Payment ID",
+      "sv": "Betalnings-ID"
+    }
+  },
+  {
     "id": "payment-method",
     "translation": {
       "en": "Payment method",
       "sv": "Betalningsmetod"
+    }
+  },
+  {
+    "id": "amount",
+    "translation": {
+      "en": "Amount",
+      "sv": "Summa"
     }
   },
   {
@@ -340,6 +410,76 @@
     "translation": {
       "en": "Please select a store in the API settings",
       "sv": "Vänligen välj en butik i API-inställingarna"
+    }
+  },
+  {
+    "id": "yes",
+    "translation": {
+      "en": "Yes",
+      "sv": "Ja"
+    }
+  },
+  {
+    "id": "no",
+    "translation": {
+      "en": "No",
+      "sv": "Nej"
+    }
+  },
+  {
+    "id": "total-order-amount",
+    "translation": {
+      "en": "Total order amount",
+      "sv": "Total ordersumma"
+    }
+  },
+  {
+    "id": "authorized-amount",
+    "translation": {
+      "en": "Authorized amount",
+      "sv": "Auktoriserat belopp"
+    }
+  },
+  {
+    "id": "canceled-amount",
+    "translation": {
+      "en": "Canceled amount",
+      "sv": "Annullerat belopp"
+    }
+  },
+  {
+    "id": "captured-amount",
+    "translation": {
+      "en": "Captured amount",
+      "sv": "Debiterat belopp"
+    }
+  },
+  {
+    "id": "refunded-amount",
+    "translation": {
+      "en": "Refunded amount",
+      "sv": "Återbetalat belopp"
+    }
+  },
+  {
+    "id": "payment-status-on-hold",
+    "translation": {
+      "en": "Payment is waiting for more information from Resurs.",
+      "sv": "Betalningen inväntar mer information från Resurs."
+    }
+  },
+  {
+    "id": "payment-status-failed",
+    "translation": {
+      "en": "Payment rejected by Resurs.",
+      "sv": "Betalningen nekades av Resurs."
+    }
+  },
+  {
+    "id": "customer-landingpage-return",
+    "translation": {
+      "en": "Customer returned from external source.",
+      "sv": "Kund har återvänt från extern källa."
     }
   }
 ]

@@ -174,10 +174,7 @@ class CancelTest extends TestCase
 
         $actionLog = $response->order->actionLog[1];
 
-        $this->assertInstanceOf(
-            expected: ActionLog::class,
-            actual: $actionLog
-        );
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
         $this->assertEquals(
             expected: ActionType::CANCEL,
@@ -306,10 +303,7 @@ class CancelTest extends TestCase
 
         $actionLog = $response->order->actionLog[1];
 
-        $this->assertInstanceOf(
-            expected: ActionLog::class,
-            actual: $actionLog
-        );
+        $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
         // Assert that creator argument is present in action log
         $this->assertEquals(expected: $payment->id, actual: $response->id);

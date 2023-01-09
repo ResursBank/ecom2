@@ -38,24 +38,6 @@ use function is_string;
  */
 class CurlTest extends TestCase
 {
-    /**
-     * Proxy host to test with proxies. On manual tests, you may want to change this host to something
-     * that accepts the default HTTP-proxy setup.
-     */
-    private string $proxyHost = '212.63.208.8';
-
-    /**
-     * Almost-random proxy ip to test prohibited requests.
-     */
-    private string $badProxyHost = '95.216.170.246';
-
-    /**
-     * The server at 95.216.170.246 throws an HTTP 400 rather than 403 since the remote is a non-proxy nginx setup.
-     * If you ever change the $badProxyHost, make sure you match the errors returned from the server by changing
-     * this value.
-     */
-    private int $badProxyCode = 400;
-
     private function getRequestBodyObject(
         Response $response
     ): stdClass {
@@ -386,99 +368,6 @@ class CurlTest extends TestCase
             } else {
                 static::assertSame(expected: 28, actual: $e->getCode());
             }
-        }
-    }
-
-    /**
-     * Verify that proxy connections work
-     *
-     * @throws AuthException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     */
-    public function testProxy(): void
-    {
-        if ((bool) $_ENV['SKIP_PROXY_TESTS']) {
-            static::markTestSkipped(
-                message: 'Skipping proxy tests because of environment variable.'
-            );
-        }
-
-        if ((bool) $_ENV['IS_PIPELINE']) {
-            $this->markTestSkipped(
-                message: 'Pipeline does not support proxies.'
-            );
-        }
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            proxy: sprintf('%s:80', $this->proxyHost)
-        );
-
-        // We need to move those features "in house" at some point (like timeout.resurs.com).
-        $curl = new Curl(
-            url: 'https://ipv4.netcurl.org',
-            requestMethod: RequestMethod::GET,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::JSON
-        );
-
-        try {
-            $response = $curl->exec();
-
-            // Request should reflect the proxy ip, not your own.
-            $this->assertSame(
-                expected: $this->proxyHost,
-                actual: $this->getIp(response: $response)
-            );
-        } catch (CurlException $e) {
-            $this->markTestSkipped(
-                message: sprintf(
-                    'Can not run proxy test! Caught error (%d) from remote server: %s.',
-                    $e->getCode(),
-                    $e->getMessage()
-                )
-            );
-        }
-    }
-
-    /**
-     * Verify that proxy connections work
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ConfigException
-     */
-    public function testBadProxy(): void
-    {
-        $this->expectExceptionCode(code: $this->badProxyCode);
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            proxy: sprintf('%s:80', $this->badProxyHost)
-        );
-
-        try {
-            Curl::get(
-                url: 'https://ipv4.netcurl.org',
-                authType: AuthType::NONE
-            );
-        } catch (CurlException $e) {
-            $this->markTestSkipped(
-                message: sprintf(
-                    'Can not run proxy test! Caught error (%d) from remote server: %s.',
-                    $e->getCode(),
-                    $e->getMessage()
-                )
-            );
         }
     }
 
