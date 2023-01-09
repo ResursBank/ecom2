@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\PaymentMethod\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Customer\Widget;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;

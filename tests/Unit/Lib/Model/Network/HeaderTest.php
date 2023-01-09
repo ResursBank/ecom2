@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Auth\Jwt;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Network;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;

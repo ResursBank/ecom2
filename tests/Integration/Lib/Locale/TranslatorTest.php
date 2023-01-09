@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\PaymentMethod\Models;
+namespace Resursbank\EcomTest\Integration\Lib\Locale;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;

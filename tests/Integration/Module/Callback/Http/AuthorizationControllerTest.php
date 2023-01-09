@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Callback;
+namespace Resursbank\EcomTest\Integration\Module\Callback\Http;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;

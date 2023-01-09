@@ -62,8 +62,10 @@ class Create
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      * @noinspection PhpTooManyParametersInspection
-     * @todo When refactored, remove phpcs:ignore below.
+     * @todo When refactored, remove phpcs:ignore below and other suppressors above.
      */
     // phpcs:ignore
     public function call(
