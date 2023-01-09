@@ -29,7 +29,7 @@
     <rule ref="rulesets/unusedcode.xml" />
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
-            <property name="exceptions" value="id,ch,ip,en,sv,da,fi,no"/>
+            <property name="exceptions" value="id,ch,ip,en,sv,da,fi,no,js"/>
         </properties>
     </rule>
 </ruleset>

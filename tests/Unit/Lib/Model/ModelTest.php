@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Lib\Model;
+namespace Resursbank\EcomTest\Unit\Lib\Model;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\EcomTest\Data\Models\ArrayPropertyDummy;

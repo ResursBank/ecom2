@@ -27,6 +27,8 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
+ *
+ * @todo Refactor this file. Contains several null pointers, file_get_contents can return false, etc.
  */
 class PaymentInformation extends Widget
 {

@@ -82,11 +82,13 @@ class DataConverter
                 $dummyCollection = new $propertyType(data: []);
                 $dummyCollectionType = $dummyCollection->getType();
 
-                foreach ($value as $item) {
-                    $converted[] = self::stdClassToType(
-                        object: $item,
-                        type: $dummyCollectionType
-                    );
+                if (is_iterable(value: $value)) {
+                    foreach ($value as $item) {
+                        $converted[] = self::stdClassToType(
+                            object: $item,
+                            type: $dummyCollectionType
+                        );
+                    }
                 }
 
                 $dummyCollection->setData(data: $converted);

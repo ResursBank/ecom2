@@ -53,6 +53,7 @@ final class ModelConverterTest extends TestCase
     public function testValidateModelThrowsWithoutClass(): void
     {
         $this->expectException(exception: InvalidArgumentException::class);
+        /* @phpstan-ignore-next-line */
         $this->validateModel(model: 'Nada');
     }
 
@@ -80,6 +81,7 @@ final class ModelConverterTest extends TestCase
     public function testConvertToModelThrowsWithoutClass(): void
     {
         $this->expectException(exception: InvalidArgumentException::class);
+        /* @phpstan-ignore-next-line */
         $this->convertToModel(data: new stdClass(), model: 'Nope');
     }
 

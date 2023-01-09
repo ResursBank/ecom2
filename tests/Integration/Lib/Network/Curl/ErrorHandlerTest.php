@@ -13,6 +13,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -146,12 +147,16 @@ class ErrorHandlerTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws ConfigException
      */
     public function testValidateThrowsWithHttpCode0(): void
     {
         $this->expectException(exception: CurlException::class);
 
         $ch = curl_init(url: 'nowhere.loc/404');
+
+        self::assertNotFalse(condition: $ch);
+
         curl_exec(handle: $ch);
 
         $handler = new ErrorHandler(

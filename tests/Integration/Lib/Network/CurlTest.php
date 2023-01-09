@@ -101,22 +101,6 @@ class CurlTest extends TestCase
         return $body->input;
     }
 
-    private function getIp(
-        Response $response
-    ): string {
-        $body = $this->getRequestBodyObject(response: $response);
-
-        if (!isset($body->ip)) {
-            $this->fail(message: 'No ip found in response body.');
-        }
-
-        if (!is_string(value: $body->ip)) {
-            $this->fail(message: 'ip in response body is not a string.');
-        }
-
-        return $body->ip;
-    }
-
     /**
      * Verify that Basic auth properties are set when creating a Basic auth instance
      *
