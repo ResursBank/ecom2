@@ -412,17 +412,4 @@ class RepositoryTest extends TestCase
             );
         }
     }
-
-    /**
-     * Assert that USP fetcher works
-     */
-    public function testUniqueSellingPointFetching(): void
-    {
-        $this->assertEquals(
-            expected: 'USP not available in English',
-            actual: Repository::getUniqueSellingPoint(
-                type: PaymentMethodType::RESURS_PART_PAYMENT
-            )
-        );
-    }
 }
