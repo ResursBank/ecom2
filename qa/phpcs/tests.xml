@@ -7,7 +7,6 @@
     <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma" />
     <rule ref="SlevomatCodingStandard.Classes.BackedEnumTypeSpacing" />
     <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility" />
-    <rule ref="SlevomatCodingStandard.Classes.ClassLength" />
     <rule ref="SlevomatCodingStandard.Classes.ClassMemberSpacing" />
     <rule ref="SlevomatCodingStandard.Classes.ClassStructure">
         <properties>
@@ -134,13 +133,6 @@
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch" />
     <rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly" />
     <rule ref="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch" />
-    <rule ref="SlevomatCodingStandard.Files.FileLength">
-        <properties>
-            <property name="includeComments" value="false" />
-            <property name="includeWhitespace" value="false" />
-            <property name="maxLinesLength" value="250" />
-        </properties>
-    </rule>
     <rule ref="SlevomatCodingStandard.Files.LineLength">
         <properties>
             <property name="lineLengthLimit" value="120" />
@@ -164,13 +156,6 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Functions.DisallowEmptyFunction" />
-    <rule ref="SlevomatCodingStandard.Functions.FunctionLength">
-        <properties>
-            <property name="includeComments" value="false" />
-            <property name="includeWhitespace" value="false" />
-            <property name="maxLinesLength" value="40" />
-        </properties>
-    </rule>
     <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction" />
     <rule ref="SlevomatCodingStandard.Functions.RequireMultiLineCall">
         <properties>

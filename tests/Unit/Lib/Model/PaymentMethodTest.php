@@ -88,9 +88,10 @@ class PaymentMethodTest extends TestCase
 
             if (in_array(needle: $case, haystack: $validCases, strict: true)) {
                 $this->assertTrue(condition: $method->isPartPayment());
-            } else {
-                $this->assertFalse(condition: $method->isPartPayment());
+                continue;
             }
+
+            $this->assertFalse(condition: $method->isPartPayment());
         }
     }
 }

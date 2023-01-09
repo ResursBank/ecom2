@@ -98,23 +98,16 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Commenting.EmptyComment" />
-    <rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration" />
     <rule ref="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment" />
     <rule ref="SlevomatCodingStandard.Complexity.Cognitive" />
     <rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition" />
-    <rule ref="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing">
-        <properties>
-            <property name="linesCountBefore" value="1" />
-            <property name="linesCountAfter" value="1" />
-        </properties>
-    </rule>
     <rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit" />
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch" />
     <rule ref="SlevomatCodingStandard.ControlStructures.LanguageConstructWithParentheses" />
     <rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses" />
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireMultiLineCondition">
         <properties>
-            <property name="minLineLength" value="81" />
+            <property name="minLineLength" value="121" />
             <property name="booleanOperatorOnPreviousLine" value="true" />
             <property name="alwaysSplitAllConditionParts" value="true" />
         </properties>
@@ -167,7 +160,7 @@
     <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction" />
     <rule ref="SlevomatCodingStandard.Functions.RequireMultiLineCall">
         <properties>
-            <property name="minLineLength" value="81" />
+            <property name="minLineLength" value="121" />
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Functions.RequireSingleLineCall">

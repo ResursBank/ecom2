@@ -244,7 +244,12 @@ final class FileLoggerTest extends TestCase
     {
         $exception = new Exception();
         Config::getLogger()->debug(message: $exception);
-        $numLines = count(value: file(filename: $this->filename));
+
+        $content = file(filename: $this->filename);
+
+        self::assertNotFalse(condition: $content);
+
+        $numLines = count(value: $content);
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
         $this::assertSame(expected: $expectedLastLine, actual: $lastLine);
@@ -259,8 +264,12 @@ final class FileLoggerTest extends TestCase
     {
         $error = new Error();
         Config::getLogger()->debug(message: $error);
-        $m = file(filename: $this->filename);
-        $numLines = count(value: file(filename: $this->filename));
+
+        $content = file(filename: $this->filename);
+
+        self::assertNotFalse(condition: $content);
+
+        $numLines = count(value: $content);
         $lastLine = $this->getLastLineFromFile(filename: $this->filename);
         $expectedLastLine = '#' . ($numLines - 1) . ' {main}' . PHP_EOL;
         $this::assertSame(expected: $expectedLastLine, actual: $lastLine);

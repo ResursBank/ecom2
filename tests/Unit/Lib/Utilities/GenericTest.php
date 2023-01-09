@@ -7,11 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Integration\Lib\Utilities;
+namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
 /**
@@ -20,14 +21,16 @@ use Resursbank\Ecom\Lib\Utilities\Generic;
 class GenericTest extends TestCase
 {
     /**
-     * @test
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public function getVersionByDocBlockTest(): void
     {
         $this->assertTrue(
             condition: version_compare(
-                version1: (new Generic())->getVersionByClassDoc(className: Generic::class),
+                version1: (new Generic())->getVersionByClassDoc(
+                    className: Generic::class
+                ),
                 version2: '1.0.0',
                 operator: '>='
             )
@@ -35,14 +38,11 @@ class GenericTest extends TestCase
     }
 
     /**
-     * @test
      * @throws Exception
      */
     public function getVersionByComposerTest(): void
     {
-        $generic = $this->createMock(
-            originalClassName: Generic::class
-        );
+        $generic = $this->createMock(originalClassName: Generic::class);
         $generic->method('getVersionByComposer')->willReturn(value: '1.0.0');
         // composer.json in our package may not contain version numbers.
         $this->assertTrue(
@@ -55,14 +55,11 @@ class GenericTest extends TestCase
     }
 
     /**
-     * @test
      * @throws ReflectionException
      */
     public function getVersionByAnythingFound(): void
     {
-        $generic = $this->createMock(
-            originalClassName: Generic::class
-        );
+        $generic = $this->createMock(originalClassName: Generic::class);
         $generic->method('getVersionByAny')->willReturn(value: '1.0.0');
         $this->assertTrue(
             condition: version_compare(
@@ -78,7 +75,6 @@ class GenericTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function getAnotherComposerTag(): void
@@ -87,19 +83,23 @@ class GenericTest extends TestCase
 
         $this->assertSame(
             expected: $willReturn,
-            actual: (new Generic())->getComposerTag(location: __DIR__, tag: 'name')
+            actual: (new Generic())->getComposerTag(
+                location: __DIR__,
+                tag: 'name'
+            )
         );
     }
 
     /**
-     * @test
      * @throws Exception
      */
     public function getVendorTest(): void
     {
         $this->assertSame(
             expected: 'resursbank',
-            actual: (new Generic())->getComposerVendor(composerLocation: __DIR__)
+            actual: (new Generic())->getComposerVendor(
+                composerLocation: __DIR__
+            )
         );
     }
 }
