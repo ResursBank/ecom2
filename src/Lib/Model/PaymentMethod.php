@@ -62,6 +62,17 @@ class PaymentMethod extends Model
     }
 
     /**
+     * Checks if payment method is a Resurs payment method
+     */
+    public function isResursMethod(): bool
+    {
+        return str_starts_with(
+            haystack: $this->type->name,
+            needle: 'RESURS_'
+        );
+    }
+
+    /**
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
