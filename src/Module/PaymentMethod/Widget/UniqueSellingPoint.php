@@ -31,6 +31,9 @@ class UniqueSellingPoint extends Widget
     /** @var string */
     public readonly string $content;
 
+    /** @var string */
+    public readonly string $message;
+
     /**
      * @param PaymentMethod $paymentMethod
      * @param float $amount
