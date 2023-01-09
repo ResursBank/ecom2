@@ -35,9 +35,6 @@ class UniqueSellingPoint extends Widget
     public readonly string $message;
 
     /**
-     * @param PaymentMethod $paymentMethod
-     * @param float $amount
-     *
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -51,8 +48,12 @@ class UniqueSellingPoint extends Widget
             paymentMethod: $this->paymentMethod,
             amount: $amount
         );
-        $this->message = $this->getBasicTranslation(paymentMethodType: $this->paymentMethod->type);
-        $this->content = $this->render(file: __DIR__ . '/unique-selling-point.phtml');
+        $this->message = $this->getBasicTranslation(
+            paymentMethodType: $this->paymentMethod->type
+        );
+        $this->content = $this->render(
+            file: __DIR__ . '/unique-selling-point.phtml'
+        );
     }
 
     /**
