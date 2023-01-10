@@ -97,10 +97,8 @@ class FileLogger implements LoggerInterface
     {
         $this->validateLogFile();
 
-        if ($message instanceof Error) {
+        if ($message instanceof Throwable) {
             $this->logError(error: $message);
-        } elseif ($message instanceof Throwable) {
-            $this->logException(exception: $message);
         } elseif (LogLevel::loggable(level: $level)) {
             $date = (new DateTime())->format(format: 'c');
 
@@ -117,20 +115,6 @@ class FileLogger implements LoggerInterface
     }
 
     /**
-     * Log Exception object by converting it to a string and feeding it to the log method.
-     *
-     * @throws ConfigException
-     * @throws FilesystemException
-     */
-    private function logException(Throwable $exception): void
-    {
-        $this->log(
-            level: LogLevel::EXCEPTION,
-            message: $exception->getTraceAsString()
-        );
-    }
-
-    /**
      * Log Error object by converting it to a string and feeding it to the log method.
      *
      * @throws ConfigException
@@ -140,7 +124,7 @@ class FileLogger implements LoggerInterface
     {
         $this->log(
             level: LogLevel::ERROR,
-            message: $error->getTraceAsString()
+            message: $error->getMessage() . ', ' . $error->getTraceAsString()
         );
     }
 

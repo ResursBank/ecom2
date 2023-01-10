@@ -156,8 +156,9 @@ class Controller
     ): string {
         try {
             $result = Translator::translate(phraseId: $phraseId);
-        } catch (Throwable) {
+        } catch (Throwable $error) {
             $result = 'Failed to translate error. Check debug log for info.';
+            Config::getLogger()->error(message: $error);
         }
 
         return $result;

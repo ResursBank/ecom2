@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
 use Throwable;
 
 /**
@@ -192,6 +193,19 @@ class Repository
             self::logException(exception: $e);
             throw $e;
         }
+    }
+
+    /**
+     * Fetches the USP for specified payment method type
+     */
+    public static function getUniqueSellingPoint(
+        PaymentMethod $paymentMethod,
+        float $amount
+    ): UniqueSellingPoint {
+        return new UniqueSellingPoint(
+            paymentMethod: $paymentMethod,
+            amount: $amount
+        );
     }
 
     /**

@@ -62,4 +62,19 @@ class ReadMore extends Widget
         $this->content = $this->render(file: __DIR__ . '/read-more.phtml');
         $this->css = $this->render(file: __DIR__ . '/read-more.css');
     }
+
+    public static function getCss(): string
+    {
+        $file = __DIR__ . '/read-more.css';
+        ob_start();
+
+        if (!file_exists(filename: $file)) {
+            throw new FilesystemException(
+                message: "Template file not found: $file"
+            );
+        }
+
+        require $file;
+        return (string) ob_get_clean();
+    }
 }
