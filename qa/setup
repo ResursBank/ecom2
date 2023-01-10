@@ -67,7 +67,13 @@ if [ -n "\$SRC_FILES" ]; then
   echo "---==( Automatically adjusting src files )==---"
   echo ""
   echo ""
+  echo "[APPLYING PSR-12 RULESET]"
+  echo ""
   $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 \$SRC_FILES
+  echo ""
+  echo ""
+  echo "[APPLYING CUSTOM RULESET]"
+  echo ""
   $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/src.xml \$SRC_FILES
 fi
 
@@ -77,7 +83,13 @@ if [ -n "\$TEST_FILES" ]; then
   echo "---==( Automatically adjusting test files )==---"
   echo ""
   echo ""
+  echo "[APPLYING PSR-12 RULESET]"
+  echo ""
   $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 \$TEST_FILES
+  echo ""
+  echo ""
+  echo "[APPLYING CUSTOM RULESET]"
+  echo ""
   $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/tests.xml \$TEST_FILES
 fi
 
