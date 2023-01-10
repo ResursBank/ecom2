@@ -24,7 +24,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
-use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
@@ -56,7 +55,6 @@ class RepositoryTest extends TestCase
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
             ),
-            language: Language::en,
             cache: new Filesystem(
                 path: '/tmp/ecom-test/paymentMethods/' . time()
             ),
