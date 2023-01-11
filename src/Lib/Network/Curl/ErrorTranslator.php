@@ -29,7 +29,7 @@ abstract class ErrorTranslator
         try {
             return Translator::translate(
                 phraseId: $propertyName,
-                translationFile: __DIR__ . '/Resources/propertynames.json'
+                translationFile: __DIR__ . '/Resources/error.json'
             );
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
