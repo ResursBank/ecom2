@@ -24,16 +24,16 @@ abstract class ErrorTranslator
      * @param string $propertyName
      * @throws ConfigException
      */
-    public static function get(string $propertyName): string
+    public static function get(string $errorMessage): string
     {
         try {
             return Translator::translate(
-                phraseId: $propertyName,
+                phraseId: $errorMessage,
                 translationFile: __DIR__ . '/Resources/errors.json'
             );
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
-            return $propertyName;
+            return $errorMessage;
         }
     }
 }
