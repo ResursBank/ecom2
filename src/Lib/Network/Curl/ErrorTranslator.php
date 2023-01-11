@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 /**
  * Converter to turn property names like "customer.mobilePhone" into more user-friendly strings like "mobile phone"
  */
-abstract class PropertyConverter
+abstract class ErrorTranslator
 {
     /**
      * Gets converted and localized string
