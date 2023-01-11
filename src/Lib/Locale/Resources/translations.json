@@ -282,8 +282,8 @@
   {
     "id": "part-payment-limit",
     "translation": {
-      "en": "Minimum product price the widget is displayed for.",
-      "sv": "Lägsta produktpris för vilket widgeten visas."
+      "en": "Minimum monthly cost the widget is displayed for.",
+      "sv": "Lägsta månadskostnad som widgeten visas för."
     }
   },
   {
@@ -338,8 +338,8 @@
   {
     "id": "limit-explanation",
     "translation": {
-      "en": "Minimum product price the widget is displayed for",
-      "sv": "Lägsta produktpris som widgeten visas för"
+      "en": "Minimum monthly cost the widget is displayed for",
+      "sv": "Lägsta månadskostnad som widgeten visas för"
     }
   },
   {
@@ -389,6 +389,13 @@
     "translation": {
       "en": "The specified limit is above the payment method's max purchase limit (%1)",
       "sv": "Det angivna gränsvärdet är över betalningsmetodens högsta tillåtna köpsumma (%1)"
+    }
+  },
+  {
+    "id": "limit-new-value-below-max",
+    "translation": {
+      "en": "The specified limit is below the payment method's min purchase limit (%1)",
+      "sv": "Det angivna gränsvärdet är under betalningsmetodens lägsta tillåtna köpsumma (%1)"
     }
   },
   {
@@ -481,5 +488,5 @@
       "en": "Customer returned from external source.",
       "sv": "Kund har återvänt från extern källa."
     }
-  }
+  },
 ]
