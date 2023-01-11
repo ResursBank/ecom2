@@ -392,7 +392,7 @@
     }
   },
   {
-    "id": "limit-new-value-below-max",
+    "id": "limit-new-value-below-min",
     "translation": {
       "en": "The specified limit is below the payment method's min purchase limit (%1)",
       "sv": "Det angivna gränsvärdet är under betalningsmetodens lägsta tillåtna köpsumma (%1)"
