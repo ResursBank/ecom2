@@ -143,7 +143,7 @@ class OrderLine extends Model
 
         $this->floatValidation->inRange(
             value: $this->unitAmountIncludingVat,
-            min: 0,
+            min: $this->getMinValueRange(),
             max: 9999999999.99
         );
     }
@@ -161,7 +161,7 @@ class OrderLine extends Model
 
         $this->floatValidation->inRange(
             value: $this->totalAmountIncludingVat,
-            min: 0,
+            min: $this->getMinValueRange(),
             max: 9999999999.99
         );
     }
@@ -183,8 +183,16 @@ class OrderLine extends Model
 
         $this->floatValidation->inRange(
             value: $this->totalVatAmount,
-            min: 0,
+            min: $this->getMinValueRange(),
             max: 9999999999.99
         );
+    }
+
+    /**
+     * @return float
+     */
+    private function getMinValueRange(): float
+    {
+        return OrderLineType::DISCOUNT ? -9999999999.99 : 0.0;
     }
 }

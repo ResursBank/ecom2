@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as OrderLineModel;
+use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\EcomTest\Data\OrderLine;
 use stdClass;
@@ -473,6 +474,158 @@ class OrderLineTest extends TestCase
         $this->assertSame(
             expected: $this->data->totalVatAmount,
             actual: $this->item->totalVatAmount
+        );
+    }
+
+    /**
+     * Assert that a negative totalAmountIncludingVat value and type NORMAL
+     * results in a IllegalValueException being thrown.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testTotalAmountInclVatNormalType(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: [
+            'totalAmountIncludingVat' => -10.0,
+            'type' => OrderLineType::NORMAL
+        ]);
+    }
+
+    /**
+     * Assert that a negative totalAmountIncludingVat value and type DISCOUNT
+     * is accepted.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testTotalAmountInclVatDiscountTypeNegative(): void
+    {
+        $this->convert(updates: [
+            'totalAmountIncludingVat' => -10.0,
+            'type' => OrderLineType::DISCOUNT
+        ]);
+
+        $this->assertSame(
+            expected: $this->data->totalAmountIncludingVat,
+            actual: $this->item->totalAmountIncludingVat
+        );
+    }
+
+    /**
+     * Assert that a positive totalAmountIncludingVat value and type DISCOUNT
+     * throws an IllegalValueException.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testPositiveTotalAmountInclVatDiscountTypeThrows(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: [
+            'totalAmountIncludingVat' => 10.0,
+            'type' => OrderLineType::DISCOUNT
+        ]);
+    }
+
+    /**
+     * Assert that a positive totalAmountIncludingVat value and type NORMAL
+     * is accepted.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testPositiveTotalAmountInclVatNormalType(): void
+    {
+        $this->convert(updates: [
+            'totalAmountIncludingVat' => 10.0,
+            'type' => OrderLineType::NORMAL
+        ]);
+
+        $this->assertSame(
+            expected: $this->data->totalAmountIncludingVat,
+            actual: $this->item->totalAmountIncludingVat
+        );
+    }
+
+    /**
+     * Assert that a negative unitAmountIncludingVat value and type NORMAL
+     * results in a IllegalValueException being thrown.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testNegativeTotalAmountInclVatNormalTypeThrows(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: [
+            'unitAmountIncludingVat' => -10.0,
+            'type' => OrderLineType::NORMAL
+        ]);
+    }
+
+    /**
+     * Assert that a negative unitAmountIncludingVat value and type DISCOUNT
+     * is accepted.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testNegativeTotalAmountInclVatDiscountType(): void
+    {
+        $this->convert(updates: [
+            'unitAmountIncludingVat' => -10.0,
+            'type' => OrderLineType::DISCOUNT
+        ]);
+
+        $this->assertSame(
+            expected: $this->data->unitAmountIncludingVat,
+            actual: $this->item->unitAmountIncludingVat
+        );
+    }
+
+    /**
+     * Assert that a positive unitAmountIncludingVat value and type DISCOUNT
+     * throws an IllegalValueException.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testPositiveTotalAmountInclVatDiscountTypeThrows(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $this->convert(updates: [
+            'unitAmountIncludingVat' => 10.0,
+            'type' => OrderLineType::DISCOUNT
+        ]);
+    }
+
+    /**
+     * Assert that a positive unitAmountIncludingVat value and type NORMAL
+     * is accepted.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testPositiveTotalAmountInclVatNormalType(): void
+    {
+        $this->convert(updates: [
+            'unitAmountIncludingVat' => 10.0,
+            'type' => OrderLineType::NORMAL
+        ]);
+
+        $this->assertSame(
+            expected: $this->data->unitAmountIncludingVat,
+            actual: $this->item->unitAmountIncludingVat
         );
     }
 }

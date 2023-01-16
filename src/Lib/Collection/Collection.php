@@ -217,6 +217,20 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * @throws IllegalTypeException
+     */
+    public function push(Model $model): void
+    {
+        if ($model::class !== $this->getType()) {
+            throw new IllegalTypeException(
+                message: 'Cannot mix model classes in collection.'
+            );
+        }
+
+        $this->data[] = $model;
+    }
+
+    /**
      * Get collection from specified type or first element of data array
      *
      * @throws IllegalTypeException
