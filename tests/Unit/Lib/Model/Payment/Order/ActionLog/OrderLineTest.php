@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Payment\Order\ActionLog;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use ReflectionProperty;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -48,6 +50,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     private function convert(
         array $updates = []
@@ -69,6 +72,109 @@ class OrderLineTest extends TestCase
         }
 
         $this->item = $item;
+    }
+
+    /**
+     * Check if the $item property on $this instance has been initiated.
+     *
+     * @throws ReflectionException
+     */
+    private function isItemInitialized(): bool
+    {
+        return (
+        new ReflectionProperty(class: $this, property: 'item')
+        )->isInitialized(object: $this);
+    }
+
+    /**
+     * Get an anonymous array with price data for all price related properties
+     * in the OrderLine class.
+     *
+     * @param array $props | Anonymous array of properties on OrderLine class.
+     * @param string $illegalProperty | Invert value for specified property (to test illegal values).
+     * @throws Exception
+     */
+    private function getPriceData(
+        OrderLineType $type,
+        array $props,
+        string $illegalProperty = ''
+    ): array {
+        $result = [
+            'type' => $type,
+        ];
+
+        foreach ($props as $prop) {
+            $price = $this->getRandomPrice();
+
+            // Using negative values for discount lines.
+            if ($type === OrderLineType::DISCOUNT) {
+                $price = -$price;
+            }
+
+            $result[$prop] = $prop === $illegalProperty ? $price * -1 : $price;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Test that supplied price data is accepted by the OrderLine model.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    private function testAllowedPriceData(
+        array $data,
+        string $prop,
+        string $message
+    ): void {
+        try {
+            unset($this->item);
+            $this->convert(updates: $data);
+            $this->assertSame(
+                expected: $this->item->{$prop},
+                actual: $data[$prop]
+            );
+        } catch (IllegalValueException) {
+            $this->fail(message: $message);
+        }
+    }
+
+    /**
+     * Test that supplied price data is rejected by the OrderLine model.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    private function testDisallowedPriceData(
+        array $data,
+        string $message
+    ): void {
+        // Test that negative value is DISALLOWED for NORMAL.
+        try {
+            unset($this->item);
+            $this->convert(updates: $data);
+
+            // Will only occur if no Exception was thrown.
+            $this->fail(message: $message);
+        } catch (IllegalValueException) {
+            $this->assertFalse(condition: $this->isItemInitialized());
+        }
+    }
+
+    /**
+     * Resolve a random value within the confounds of price property validation.
+     *
+     * @throws Exception
+     */
+    private function getRandomPrice(): float
+    {
+        $int = random_int(min: 1, max: 9999999999);
+        $dec = random_int(min: 1, max: 9999999999) / 100;
+
+        return round(num: $int + $dec, precision: 2);
     }
 
     /**
@@ -338,6 +444,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testDescriptionWasAssigned(): void
     {
@@ -354,6 +461,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testReferenceWasAssigned(): void
     {
@@ -370,6 +478,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testTypeWasAssigned(): void
     {
@@ -387,6 +496,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testQuantityUnitWasAssigned(): void
     {
@@ -403,6 +513,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testQuantityWasAssigned(): void
     {
@@ -419,6 +530,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testVatRateWasAssigned(): void
     {
@@ -435,6 +547,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testUnitAmountIncludingVatWasAssigned(): void
     {
@@ -451,6 +564,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testTotalAmountIncludingVatWasAssigned(): void
     {
@@ -467,6 +581,7 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function testTotalVatAmountWasAssigned(): void
     {
@@ -478,154 +593,62 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert that a negative totalAmountIncludingVat value and type NORMAL
-     * results in a IllegalValueException being thrown.
+     * Assert that price related values on OrderLine instance only accept
+     * positive values if the type _is not_ DISCOUNT, and vice versa if it is.
      *
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
+     * @throws Exception
      */
-    public function testTotalAmountInclVatNormalType(): void
+    public function testAcceptablePriceValues(): void
     {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'totalAmountIncludingVat' => -10.0,
-            'type' => OrderLineType::NORMAL
-        ]);
-    }
+        $props = [
+            'totalAmountIncludingVat',
+            'unitAmountIncludingVat',
+            'totalVatAmount',
+        ];
 
-    /**
-     * Assert that a negative totalAmountIncludingVat value and type DISCOUNT
-     * is accepted.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testTotalAmountInclVatDiscountTypeNegative(): void
-    {
-        $this->convert(updates: [
-            'totalAmountIncludingVat' => -10.0,
-            'type' => OrderLineType::DISCOUNT
-        ]);
+        foreach ($props as $prop) {
+            // Test that positive value is ALLOWED for NORMAL.
+            $this->testAllowedPriceData(
+                data: $this->getPriceData(
+                    type: OrderLineType::NORMAL,
+                    props: $props
+                ),
+                prop: $prop,
+                message: "$prop failed with NORMAL type and positive value."
+            );
 
-        $this->assertSame(
-            expected: $this->data->totalAmountIncludingVat,
-            actual: $this->item->totalAmountIncludingVat
-        );
-    }
+            // Test that negative value is ALLOWED for DISCOUNT.
+            $this->testAllowedPriceData(
+                data: $this->getPriceData(
+                    type: OrderLineType::DISCOUNT,
+                    props: $props
+                ),
+                prop: $prop,
+                message: "$prop failed with DISCOUNT type and negative value."
+            );
 
-    /**
-     * Assert that a positive totalAmountIncludingVat value and type DISCOUNT
-     * throws an IllegalValueException.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testPositiveTotalAmountInclVatDiscountTypeThrows(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'totalAmountIncludingVat' => 10.0,
-            'type' => OrderLineType::DISCOUNT
-        ]);
-    }
+            // Test that negative value is DISALLOWED for NORMAL.
+            $this->testDisallowedPriceData(
+                data: $this->getPriceData(
+                    type: OrderLineType::NORMAL,
+                    props: $props,
+                    illegalProperty: $prop
+                ),
+                message: "$prop was allowed a negative value with NORMAL type."
+            );
 
-    /**
-     * Assert that a positive totalAmountIncludingVat value and type NORMAL
-     * is accepted.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testPositiveTotalAmountInclVatNormalType(): void
-    {
-        $this->convert(updates: [
-            'totalAmountIncludingVat' => 10.0,
-            'type' => OrderLineType::NORMAL
-        ]);
-
-        $this->assertSame(
-            expected: $this->data->totalAmountIncludingVat,
-            actual: $this->item->totalAmountIncludingVat
-        );
-    }
-
-    /**
-     * Assert that a negative unitAmountIncludingVat value and type NORMAL
-     * results in a IllegalValueException being thrown.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testNegativeTotalAmountInclVatNormalTypeThrows(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'unitAmountIncludingVat' => -10.0,
-            'type' => OrderLineType::NORMAL
-        ]);
-    }
-
-    /**
-     * Assert that a negative unitAmountIncludingVat value and type DISCOUNT
-     * is accepted.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testNegativeTotalAmountInclVatDiscountType(): void
-    {
-        $this->convert(updates: [
-            'unitAmountIncludingVat' => -10.0,
-            'type' => OrderLineType::DISCOUNT
-        ]);
-
-        $this->assertSame(
-            expected: $this->data->unitAmountIncludingVat,
-            actual: $this->item->unitAmountIncludingVat
-        );
-    }
-
-    /**
-     * Assert that a positive unitAmountIncludingVat value and type DISCOUNT
-     * throws an IllegalValueException.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testPositiveTotalAmountInclVatDiscountTypeThrows(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'unitAmountIncludingVat' => 10.0,
-            'type' => OrderLineType::DISCOUNT
-        ]);
-    }
-
-    /**
-     * Assert that a positive unitAmountIncludingVat value and type NORMAL
-     * is accepted.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    public function testPositiveTotalAmountInclVatNormalType(): void
-    {
-        $this->convert(updates: [
-            'unitAmountIncludingVat' => 10.0,
-            'type' => OrderLineType::NORMAL
-        ]);
-
-        $this->assertSame(
-            expected: $this->data->unitAmountIncludingVat,
-            actual: $this->item->unitAmountIncludingVat
-        );
+            // Test that positive value is DISALLOWED for DISCOUNT.
+            $this->testDisallowedPriceData(
+                data: $this->getPriceData(
+                    type: OrderLineType::DISCOUNT,
+                    props: $props,
+                    illegalProperty: $prop
+                ),
+                message: "$prop was allowed a positive value with DISCOUNT type."
+            );
+        }
     }
 }

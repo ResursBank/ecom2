@@ -66,10 +66,7 @@ class PaymentMethod extends Model
      */
     public function isResursMethod(): bool
     {
-        return str_starts_with(
-            haystack: $this->type->name,
-            needle: 'RESURS_'
-        );
+        return str_starts_with(haystack: $this->type->name, needle: 'RESURS_');
     }
 
     /**

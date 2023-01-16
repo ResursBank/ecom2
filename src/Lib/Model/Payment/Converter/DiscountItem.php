@@ -22,5 +22,6 @@ class DiscountItem extends Model
     public function __construct(
         public readonly float $rate,
         public float $amount = 0.0
-    ) { }
+    ) {
+    }
 }
