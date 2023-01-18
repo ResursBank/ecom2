@@ -530,5 +530,12 @@
       "en": "Store ID",
       "sv": "Butiks-ID"
     }
+  },
+  {
+    "id": "discount",
+    "translation": {
+      "en": "Discount",
+      "sv": "Rabatt"
+    }
   }
 ]

@@ -120,7 +120,6 @@ class TranslatorTest extends TestCase
     public function testTranslateLoadsDataFromCache(): void
     {
         $phraseId = 'read-more';
-        $cacheKey = Translator::getCacheKey();
         $oldCache = Config::getCache()->read(
             key: Translator::getCacheKey()
         );

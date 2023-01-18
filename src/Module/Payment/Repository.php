@@ -26,7 +26,6 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection as ActionLogOrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
@@ -151,7 +150,7 @@ class Repository
      */
     public static function capture(
         string $paymentId,
-        ?ActionLogOrderLineCollection $orderLines = null,
+        ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
         ?string $transactionId = null,
         ?string $invoiceId = null
@@ -181,7 +180,7 @@ class Repository
      */
     public static function cancel(
         string $paymentId,
-        ?ActionLogOrderLineCollection $orderLines = null,
+        ?OrderLineCollection $orderLines = null,
         ?string $creator = null
     ): Payment {
         return (new Cancel())->call(
@@ -207,7 +206,7 @@ class Repository
      */
     public static function refund(
         string $paymentId,
-        ?ActionLogOrderLineCollection $orderLines = null,
+        ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
         ?string $transactionId = null
     ): Payment {
