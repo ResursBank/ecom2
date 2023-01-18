@@ -34,7 +34,7 @@ class ErrorTranslatorTest extends TestCase
 
     /**
      * Assert that a simple error string translation works.
-     * @return void
+     *
      * @throws ConfigException
      */
     public function testTranslation(): void

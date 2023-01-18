@@ -488,5 +488,12 @@
       "en": "Customer returned from external source.",
       "sv": "Kund har återvänt från extern källa."
     }
+  },
+  {
+    "id": "discount",
+    "translation": {
+      "en": "Discount",
+      "sv": "Rabatt"
+    }
   }
 ]
