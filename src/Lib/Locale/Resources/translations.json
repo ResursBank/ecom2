@@ -488,5 +488,47 @@
       "en": "Customer returned from external source.",
       "sv": "Kund har återvänt från extern källa."
     }
+  },
+  {
+    "id": "log-path",
+    "translation": {
+      "en": "Log path",
+      "sv": "Loggsökväg"
+    }
+  },
+  {
+    "id": "leave-empty-to-disable-logging",
+    "translation": {
+      "en": "Leave empty to disable logging.",
+      "sv": "Lämna tomt för att inaktivera loggning."
+    }
+  },
+  {
+    "id": "cache-path",
+    "translation": {
+      "en": "Cache path",
+      "sv": "Cachesökväg"
+    }
+  },
+  {
+    "id": "leave-empty-to-disable-cache",
+    "translation": {
+      "en": "Leave empty to disable cache.",
+      "sv": "Lämna tomt för att inaktivera cache."
+    }
+  },
+  {
+    "id": "enable-widget-to-get-address",
+    "translation": {
+      "en": "Enable widget to get address",
+      "sv": "Aktivera widget för a hämta adress"
+    }
+  },
+  {
+    "id": "store-id",
+    "translation": {
+      "en": "Store ID",
+      "sv": "Butiks-ID"
+    }
   }
 ]
