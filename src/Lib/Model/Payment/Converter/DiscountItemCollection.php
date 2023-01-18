@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
+use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 
 /**
@@ -55,7 +56,7 @@ class DiscountItemCollection extends Collection
     /**
      * Add rate data (create rate if it does not exist and append amount).
      *
-     * @throws IllegalTypeException
+     * @throws IllegalTypeException|IllegalValueException
      */
     public function addRateData(
         float $rate,
@@ -68,10 +69,10 @@ class DiscountItemCollection extends Collection
                 rate: round(num: $rate, precision: 2)
             );
 
-            $this->push(model: $result);
+            $this->offsetSet(offset: null, value: $result);
         }
 
-        $result->amount += round(num: $amount, precision: 2);
+        $result->amount = round(num: $result->amount + $amount, precision: 2);
 
         return $result;
     }
@@ -88,7 +89,7 @@ class DiscountItemCollection extends Collection
      * @throws TranslationException
      * @throws IllegalValueException
      */
-    public function getOrderLines(): array
+    public function getOrderLines(): OrderLineCollection
     {
         $result = [];
 
@@ -111,6 +112,6 @@ class DiscountItemCollection extends Collection
             );
         }
 
-        return $result;
+        return new OrderLineCollection(data: $result);
     }
 }
