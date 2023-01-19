@@ -16,6 +16,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 use function file_get_contents;
@@ -49,6 +50,7 @@ abstract class Translator
      * @throws JsonException
      * @throws ReflectionException
      * @throws ConfigException
+     * @throws IllegalValueException
      */
     public static function load(?string $translationFile = null): PhraseCollection
     {
@@ -129,6 +131,7 @@ abstract class Translator
      * @throws JsonException
      * @throws ReflectionException
      * @throws ConfigException
+     * @throws IllegalValueException
      */
     public static function getData(?string $translationFile = null): PhraseCollection
     {
@@ -147,6 +150,7 @@ abstract class Translator
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public static function decodeData(string $data): PhraseCollection
     {
