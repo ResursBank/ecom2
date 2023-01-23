@@ -11,6 +11,8 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 
 /**
@@ -28,8 +30,8 @@ class JwtTest extends TestCase
         new Jwt(
             clientId: '',
             clientSecret: 'secret',
-            scope: 'scope',
-            grantType: 'grantType'
+            scope: Scope::MOCK_MERCHANT_API,
+            grantType: GrantType::CREDENTIALS
         );
     }
 
@@ -43,38 +45,8 @@ class JwtTest extends TestCase
         new Jwt(
             clientId: 'clientId',
             clientSecret: '',
-            scope: 'scope',
-            grantType: 'grantType'
-        );
-    }
-
-    /**
-     * Assert EmptyValueException is thrown when scope is empty.
-     */
-    public function testThrowsOnEmptyScope(): void
-    {
-        $this->expectException(exception: EmptyValueException::class);
-
-        new Jwt(
-            clientId: 'clientId',
-            clientSecret: 'secret',
-            scope: '',
-            grantType: 'grantType'
-        );
-    }
-
-    /**
-     * Assert EmptyValueException is thrown when grantType is empty.
-     */
-    public function testThrowsOnEmptyGrantType(): void
-    {
-        $this->expectException(exception: EmptyValueException::class);
-
-        new Jwt(
-            clientId: 'clientId',
-            clientSecret: 'secret',
-            scope: 'scope',
-            grantType: ''
+            scope: Scope::MOCK_MERCHANT_API,
+            grantType: GrantType::CREDENTIALS
         );
     }
 }

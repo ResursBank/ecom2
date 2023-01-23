@@ -537,5 +537,54 @@
       "en": "Discount",
       "sv": "Rabatt"
     }
+  },
+  {
+    "id": "api-settings",
+    "translation": {
+      "en": "API Settings",
+      "sv": "API inställningar"
+    }
+  },
+  {
+    "id": "enabled",
+    "translation": {
+      "en": "Enabled",
+      "sv": "Aktiverad"
+    }
+  },
+  {
+    "id": "environment",
+    "translation": {
+      "en": "Environment",
+      "sv": "Miljö"
+    }
+  },
+  {
+    "id": "test",
+    "translation": {
+      "en": "Test",
+      "sv": "Test"
+    }
+  },
+  {
+    "id": "prod",
+    "translation": {
+      "en": "Production (live)",
+      "sv": "Produktion (live)"
+    }
+  },
+  {
+    "id": "client-id",
+    "translation": {
+      "en": "Client ID",
+      "sv": "Klient ID"
+    }
+  },
+  {
+    "id": "client-secret",
+    "translation": {
+      "en": "Client Secret",
+      "sv": "Klient hemlighet"
+    }
   }
 ]

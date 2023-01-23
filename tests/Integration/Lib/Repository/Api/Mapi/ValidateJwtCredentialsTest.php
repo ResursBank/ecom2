@@ -20,6 +20,8 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\ValidateJwtCredentials;
 
@@ -47,8 +49,8 @@ class ValidateJwtCredentialsTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: 'mamba',
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
 
@@ -76,8 +78,8 @@ class ValidateJwtCredentialsTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: 'core',
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
 
@@ -127,8 +129,8 @@ class ValidateJwtCredentialsTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: $_ENV['JWT_AUTH_SCOPE'],
-                grantType: $_ENV['JWT_AUTH_GRANT_TYPE']
+                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
 
