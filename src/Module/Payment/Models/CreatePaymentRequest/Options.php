@@ -26,14 +26,14 @@ class Options extends Model
      * @throws IllegalValueException
      */
     public function __construct(
-        public readonly ?bool $initiatedOnCustomerDevice = null,
+        public readonly ?bool $initiatedOnCustomersDevice = null,
         public readonly ?bool $handleManualInspection = null,
         public readonly ?bool $handleFrozenPayments = null,
-        public readonly ?bool $automaticCapture = null,
+        public readonly bool $automaticCapture = false,
         public readonly ?RedirectionUrls $redirectionUrls = null,
         public readonly ?Callbacks $callbacks = null,
         public readonly ?int $timeToLiveInMinutes = null,
-        public readonly IntValidation $intValidation = new IntValidation()
+        private readonly IntValidation $intValidation = new IntValidation()
     ) {
         $this->validateTimeToLiveInMinutes();
         $this->validateAutomaticCapture();

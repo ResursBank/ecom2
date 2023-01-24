@@ -20,8 +20,7 @@ class Callback extends Model
         /**
          * @todo Don't know how to validate urls.
          */
-        public readonly ?string $url,
-        public readonly ?string $description
+        public readonly ?string $url
     ) {
     }
 }
