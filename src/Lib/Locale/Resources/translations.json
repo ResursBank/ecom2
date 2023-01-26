@@ -586,5 +586,12 @@
       "en": "Client Secret",
       "sv": "Klient hemlighet"
     }
+  },
+  {
+    "id": "cache-enabled",
+    "translation": {
+      "en": "Enable Cache",
+      "sv": "Aktivera cache"
+    }
   }
 ]
