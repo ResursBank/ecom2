@@ -10,9 +10,12 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Lib\Cache;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Redis as Server;
 use RedisException;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Cache\Redis;
@@ -34,13 +37,22 @@ class RedisTest extends TestCase
     protected function setUp(): void
     {
         $this->redis = new Redis(host: $_ENV['REDIS_HOST']);
+        $this->key = $this->getKey();
 
-        // NOTE: Simply using time() is unsafe, tests run too quickly.
-        $this->key = AbstractCache::getKey(
-            key: 'redis-cache-' . random_int(min: 0, max: 999999999) . time()
-        );
+        Config::setup(cache: $this->redis);
 
         parent::setUp();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getKey(): string
+    {
+        // NOTE: Simply using time() is unsafe, tests run too quickly.
+        return AbstractCache::getKey(
+            key: 'redis-cache-' . random_int(min: 0, max: 999999999) . time()
+        );
     }
 
     /**
@@ -61,6 +73,7 @@ class RedisTest extends TestCase
      *
      * @throws RedisException
      * @throws ValidationException
+     * @throws JsonException
      */
     public function testWriteThrowsWithIllegalKeyCharacter(): void
     {
@@ -77,6 +90,7 @@ class RedisTest extends TestCase
      *
      * @throws RedisException
      * @throws ValidationException
+     * @throws JsonException
      */
     public function testWriteThrowsWithEmptyKey(): void
     {
@@ -89,6 +103,8 @@ class RedisTest extends TestCase
      *
      * @throws ValidationException
      * @throws RedisException
+     * @throws JsonException
+     * @throws ConfigException
      */
     public function testWrite(): void
     {
@@ -98,7 +114,7 @@ class RedisTest extends TestCase
 
         $this->assertEquals(
             expected: $data,
-            actual: $this->getRedisConnection()->get(key: $this->key)
+            actual: $this->redis->read(key: $this->key)
         );
     }
 
@@ -108,6 +124,7 @@ class RedisTest extends TestCase
      *
      * @throws RedisException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testReadThrowsWithIllegalKeyCharacter(): void
     {
@@ -120,6 +137,7 @@ class RedisTest extends TestCase
      *
      * @throws RedisException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testReadThrowsWithEmptyKey(): void
     {
@@ -132,6 +150,7 @@ class RedisTest extends TestCase
      *
      * @throws RedisException
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testReadReturnsNullForUndefinedData(): void
     {
@@ -143,12 +162,13 @@ class RedisTest extends TestCase
      *
      * @throws ValidationException
      * @throws RedisException
+     * @throws ConfigException|JsonException
      */
     public function testRead(): void
     {
         $data = '9891823918391094850834523';
 
-        $this->getRedisConnection()->set(key: $this->key, value: $data);
+        $this->redis->write(key: $this->key, data: $data, ttl: 9999);
 
         $this->assertEquals(
             expected: $data,
@@ -161,21 +181,21 @@ class RedisTest extends TestCase
      *
      * @throws RedisException
      * @throws ValidationException
+     * @throws ConfigException
+     * @throws JsonException
      */
     public function testReadReturnsNullForStaleData(): void
     {
         $data = 'testing a test';
 
-        $conn = $this->getRedisConnection();
-
-        $conn->setex(key: $this->key, expire: 2, value: $data);
+        $this->redis->write(key: $this->key, data: $data, ttl: 1);
 
         $this->assertSame(
             expected: $data,
-            actual: $conn->get(key: $this->key)
+            actual: $this->redis->read(key: $this->key)
         );
 
-        sleep(seconds: 3);
+        sleep(seconds: 2);
 
         $this->assertNull(actual: $this->redis->read(key: $this->key));
     }
@@ -227,5 +247,62 @@ class RedisTest extends TestCase
         $this->redis->clear(key: $this->key);
 
         $this->assertFalse(condition: $conn->get(key: $this->key));
+    }
+
+    /**
+     * Assert read() returns NULL when cache is invalidated, and cached data
+     * when not invalidated.
+     *
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testCacheInvalidation(): void
+    {
+        $key1 = $this->getKey();
+        $key2 = $this->getKey();
+        $data1 = 'Hello!';
+        $data2 = 'Big Bird';
+
+        $this->redis->write(key: $key1, data: $data1, ttl: 10000);
+        $this->assertSame(
+            expected: $data1,
+            actual: $this->redis->read(key: $key1)
+        );
+
+        $this->redis->invalidate();
+        $this->assertNull(
+            actual: $this->redis->read(key: $key1)
+        );
+
+        // createdAt of new Entry must be younger than invalidation marker.
+        sleep(seconds: 1);
+
+        $this->redis->write(key: $key2, data: $data2, ttl: 10000);
+        $this->assertSame(
+            expected: $data2,
+            actual: $this->redis->read(key: $key2)
+        );
+
+        // Update invalidation marker, invalidating the entry we just created.
+        sleep(seconds: 1);
+
+        $this->redis->invalidate();
+        $this->assertNull(actual: $this->redis->read(key: $key2));
+
+        // Delete the invalidation marker, once again validating current cache.
+        $this->redis->clear(
+            key: AbstractCache::getKey(
+                key: AbstractCache::CACHE_INVALIDATION_KEY
+            )
+        );
+
+        $this->assertSame(
+            expected: $data1,
+            actual: $this->redis->read(key: $key1)
+        );
+        $this->assertSame(
+            expected: $data2,
+            actual: $this->redis->read(key: $key2)
+        );
     }
 }

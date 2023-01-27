@@ -10,9 +10,12 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Cache;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
+use Resursbank\Ecom\Lib\Model\Cache\Entry;
+use stdClass;
 
 /**
  * This class will test general cache methods.
@@ -109,5 +112,64 @@ class AbstractCacheTest extends TestCase
             expected: AbstractCache::CACHE_KEY_PREFIX . 'test-key',
             actual: AbstractCache::getKey(key: 'test-key')
         );
+    }
+
+    /**
+     * Assert encodeData() returns JSON encoded instance of Entry object.
+     *
+     * @throws JsonException
+     */
+    public function testEncodeData(): void
+    {
+        $data = 'Hello there, this is some text.';
+        $ttl = 100;
+
+        $raw = $this->cache->encodeEntry(data: $data, ttl: $ttl);
+
+        $this->assertJson(actualJson: $raw);
+
+        $entry = json_decode(
+            json: $raw,
+            associative: false,
+            depth: 512,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        $this->assertInstanceOf(expected: stdClass::class, actual: $entry);
+        $this->assertSame(expected: $data, actual: $entry->data);
+        $this->assertSame(expected: $ttl, actual: $entry->ttl);
+    }
+
+    /**
+     * Assert decodeData() decodes Entry object which has been JSON encoded.
+     *
+     * @throws JsonException
+     */
+    public function testDecodeData(): void
+    {
+        $data = '{ "i": "am", "a": "json", "object": 5, "or": false }';
+        $ttl = 123474;
+
+        $raw = $this->cache->encodeEntry(data: $data, ttl: $ttl);
+
+        $this->assertJson(actualJson: $raw);
+
+        $entry = $this->cache->decodeEntry(data: $raw);
+
+        $this->assertInstanceOf(expected: Entry::class, actual: $entry);
+        $this->assertSame(expected: $data, actual: $entry->data);
+        $this->assertSame(expected: $ttl, actual: $entry->ttl);
+    }
+
+    /**
+     * Assert decodeData() method will return NULL for invalid data.
+     */
+    public function testDecodeDataReturnsNull(): void
+    {
+        $this->assertNull(actual: $this->cache->decodeEntry(data: ''));
+        $this->assertNull(actual: $this->cache->decodeEntry(data: 'not-json'));
+        $this->assertNull(actual: $this->cache->decodeEntry(
+            data: '{ "data": "Some data", "createdAt": ' . time() . ' }'
+        ));
     }
 }
