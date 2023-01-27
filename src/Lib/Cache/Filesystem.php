@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Cache;
 
+use JsonException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;
-
-use function is_int;
 
 /**
  * Basic filesystem caching.
@@ -37,36 +37,29 @@ class Filesystem extends AbstractCache implements CacheInterface
      * return null, meaning it will fail silently.
      *
      * @throws ValidationException
+     * @throws ConfigException
      * @todo Consider adding logs.
      */
     public function read(string $key): ?string
     {
-        $result = null;
-
         // Make sure the key consists of valid characters.
         $this->validateKey(key: $key);
 
         // Read and parse cache file.
-        $data = $this->getFileContent(file: $this->getFile(key: $key));
-        $split = $this->getSplit(content: $data);
-        $ttl = substr(string: $data, offset: 0, length: $split);
-        $content = substr(string: $data, offset: $split + 1);
+        $entry = $this->decodeEntry(
+            data: $this->getFileContent(file: $this->getFile(key: $key))
+        );
 
-        // Make sure the content isn't empty and TTL has not expired.
-        if (
-            $content !== '' &&
-            !preg_match(pattern: '/\D/', subject: $ttl) &&
-            time() < (int)$ttl
-        ) {
-            $result = $content;
-        }
-
-        return $result;
+        return (
+            $entry !== null &&
+            $this->validate(key: $key, entry: $entry)
+        ) ? $entry->data : null;
     }
 
     /**
      * @throws ValidationException
      * @throws FilesystemException
+     * @throws JsonException
      */
     public function write(string $key, string $data, int $ttl): void
     {
@@ -93,9 +86,10 @@ class Filesystem extends AbstractCache implements CacheInterface
             }
         }
 
-        $ttl = time() + $ttl;
-
-        file_put_contents(filename: $filename, data: "$ttl|$data");
+        file_put_contents(
+            filename: $filename,
+            data: $this->encodeEntry(data: $data, ttl: $ttl)
+        );
     }
 
     /**
@@ -182,24 +176,6 @@ class Filesystem extends AbstractCache implements CacheInterface
             is_readable(filename: $file)
         ) {
             $result = (string) file_get_contents(filename: $file);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Separate cache data and TTL from content.
-     */
-    private function getSplit(
-        string $content
-    ): int {
-        $result = 0;
-
-        $split = strpos(haystack: $content, needle: '|');
-
-        // Make sure we got a split pointer.
-        if (is_int(value: $split) && $split > 1) {
-            $result = $split;
         }
 
         return $result;

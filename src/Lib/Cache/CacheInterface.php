@@ -35,4 +35,9 @@ interface CacheInterface
      * Validate key.
      */
     public function validateKey(string $key): void;
+
+    /**
+     * Mark all existing cache as invalid.
+     */
+    public function invalidate(): void;
 }
