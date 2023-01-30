@@ -593,5 +593,19 @@
       "en": "Enable Cache",
       "sv": "Aktivera cache"
     }
+  },
+  {
+    "id": "clear-cache",
+    "translation": {
+      "en": "Clear cache",
+      "sv": "Rensa cache"
+    }
+  },
+  {
+    "id": "cache-cleared",
+    "translation": {
+      "en": "Cache successfully cleared.",
+      "sv": "Cache rensad."
+    }
   }
 ]
