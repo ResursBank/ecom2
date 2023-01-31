@@ -14,6 +14,7 @@ namespace Resursbank\EcomTest\Integration\Lib\Cache;
 use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
@@ -78,6 +79,8 @@ class FilesystemTest extends TestCase
         $this->fileSystem = $this->getFilesystem(path: $this->path);
         $this->key = $this->getKey();
         $this->file = "$this->path/$this->key.cache";
+
+        Config::setup(cache: $this->fileSystem);
 
         parent::setUp();
     }
@@ -371,7 +374,7 @@ class FilesystemTest extends TestCase
     /**
      * Assert ValidationException occurs when calling read() with an empty key.
      *
-     * @throws ValidationException
+     * @throws Exception
      */
     public function testReadThrowsWithEmptyKey(): void
     {
@@ -433,6 +436,28 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Assert method read() will convert JSON data in file to Entry object.
+     *
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testReadConvertsJsonToEntry(): void
+    {
+        mkdir(directory: $this->path, permissions: 0755, recursive: true);
+        file_put_contents(
+            filename: $this->file,
+            data: '{ "data": "Test data", "ttl": ' . 21000 . ', "createdAt": ' . time() . ' }'
+        );
+
+        $this->assertFileExists(filename: $this->file);
+        $this->assertFileIsReadable(file: $this->file);
+        $this->assertSame(
+            expected: 'Test data',
+            actual: $this->fileSystem->read(key: $this->key)
+        );
+    }
+
+    /**
      * Assert method read() will return NULL if the cache file isn't properly
      * formatted ("ttl|data").
      *
@@ -442,7 +467,10 @@ class FilesystemTest extends TestCase
     public function testReadReturnsNullWithoutTtl(): void
     {
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(filename: $this->file, data: 'some data');
+        file_put_contents(
+            filename: $this->file,
+            data: '{ "data": "Test data", "createdAt": ' . time() . ' }'
+        );
 
         $this->assertFileExists(filename: $this->file);
         $this->assertFileIsReadable(file: $this->file);
@@ -459,7 +487,10 @@ class FilesystemTest extends TestCase
     public function testReadReturnsNullWithZeroTtl(): void
     {
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(filename: $this->file, data: '0|whatever');
+        file_put_contents(
+            filename: $this->file,
+            data: '{ "data": "Test data", "ttl": ' . 0 . ', "createdAt": ' . time() . ' }'
+        );
 
         $this->assertFileExists(filename: $this->file);
         $this->assertFileIsReadable(file: $this->file);
@@ -475,7 +506,10 @@ class FilesystemTest extends TestCase
     public function testReadReturnsNullWithInvalidTtl(): void
     {
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(filename: $this->file, data: '95.4|whatever');
+        file_put_contents(
+            filename: $this->file,
+            data: '{ "data": "Test data", "ttl": "100.345", "createdAt": ' . time() . ' }'
+        );
 
         $this->assertFileExists(filename: $this->file);
         $this->assertFileIsReadable(file: $this->file);
@@ -491,7 +525,10 @@ class FilesystemTest extends TestCase
     public function testReadReturnsNullWithEmptyData(): void
     {
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(filename: $this->file, data: '0|');
+        file_put_contents(
+            filename: $this->file,
+            data: '{ "data": "", "ttl": ' . 10040 . ', "createdAt": ' . time() . ' }'
+        );
 
         $this->assertFileExists(filename: $this->file);
         $this->assertFileIsReadable(file: $this->file);
@@ -507,15 +544,16 @@ class FilesystemTest extends TestCase
      */
     public function testReadReturnsData(): void
     {
-        $ttl = time() + 9999;
-
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(filename: $this->file, data: "$ttl|data");
+        file_put_contents(
+            filename: $this->file,
+            data: $this->fileSystem->encodeEntry(data: 'This data', ttl: 99999)
+        );
 
         $this->assertFileExists(filename: $this->file);
         $this->assertFileIsReadable(file: $this->file);
         $this->assertSame(
-            expected: 'data',
+            expected: 'This data',
             actual: $this->fileSystem->read(key: $this->key)
         );
     }
@@ -530,7 +568,10 @@ class FilesystemTest extends TestCase
     {
         $obj = new stdClass();
         $obj->mhm = 'asd';
-        $data = serialize(value: $obj);
+        $data = $this->fileSystem->encodeEntry(
+            data: serialize(value: $obj),
+            ttl: 99999
+        );
 
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
         file_put_contents(filename: $this->file, data: $data);
@@ -541,28 +582,13 @@ class FilesystemTest extends TestCase
             expectedFile: $this->file,
             actualString: $data
         );
-        $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
-    }
 
-    /**
-     * Assert method read() will only split on the first available pipe.
-     *
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function testReadSplitsOnFirstPipe(): void
-    {
-        $ttl = time() + 9999;
-        $data = 'My Epic | Data set | Is great';
+        $serialized = $this->fileSystem->read(key: $this->key);
 
-        mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(filename: $this->file, data: "$ttl|$data");
-
-        $this->assertFileExists(filename: $this->file);
-        $this->assertFileIsReadable(file: $this->file);
-        $this->assertSame(
-            expected: $data,
-            actual: $this->fileSystem->read(key: $this->key)
+        $this->assertIsString(actual: $serialized);
+        $this->assertEquals(
+            expected: $obj,
+            actual: unserialize(data: $serialized)
         );
     }
 
@@ -574,19 +600,16 @@ class FilesystemTest extends TestCase
      */
     public function testReadReturnsNullWithExpiredTtl(): void
     {
-        $ttl = time() - 10;
+        $data = $this->fileSystem->encodeEntry(data: 'Is data', ttl: -99999);
 
         mkdir(directory: $this->path, permissions: 0755, recursive: true);
-        file_put_contents(
-            filename: $this->file,
-            data: "$ttl|My big test | success"
-        );
+        file_put_contents(filename: $this->file, data: $data);
 
         $this->assertFileExists(filename: $this->file);
         $this->assertFileIsReadable(file: $this->file);
         $this->assertStringEqualsFile(
             expectedFile: $this->file,
-            actualString: "$ttl|My big test | success"
+            actualString: $data
         );
         $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
     }
@@ -609,6 +632,63 @@ class FilesystemTest extends TestCase
             actualString: ''
         );
         $this->assertNull(actual: $this->fileSystem->read(key: $this->key));
+    }
+
+    /**
+     * Assert read() returns NULL when cache is invalidated, and cached data
+     * when not invalidated.
+     *
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testCacheInvalidation(): void
+    {
+        $key1 = $this->getKey();
+        $key2 = $this->getKey();
+        $data1 = 'Hello!';
+        $data2 = 'Big Bird';
+
+        $this->fileSystem->write(key: $key1, data: $data1, ttl: 10000);
+        $this->assertSame(
+            expected: $data1,
+            actual: $this->fileSystem->read(key: $key1)
+        );
+
+        $this->fileSystem->invalidate();
+        $this->assertNull(
+            actual: $this->fileSystem->read(key: $key1)
+        );
+
+        // createdAt of new Entry must be younger than invalidation marker.
+        sleep(seconds: 1);
+
+        $this->fileSystem->write(key: $key2, data: $data2, ttl: 10000);
+        $this->assertSame(
+            expected: $data2,
+            actual: $this->fileSystem->read(key: $key2)
+        );
+
+        // Update invalidation marker, invalidating the entry we just created.
+        sleep(seconds: 1);
+
+        $this->fileSystem->invalidate();
+        $this->assertNull(actual: $this->fileSystem->read(key: $key2));
+
+        // Delete the invalidation marker, once again validating current cache.
+        $this->fileSystem->clear(
+            key: AbstractCache::getKey(
+                key: AbstractCache::CACHE_INVALIDATION_KEY
+            )
+        );
+
+        $this->assertSame(
+            expected: $data1,
+            actual: $this->fileSystem->read(key: $key1)
+        );
+        $this->assertSame(
+            expected: $data2,
+            actual: $this->fileSystem->read(key: $key2)
+        );
     }
 
     /**

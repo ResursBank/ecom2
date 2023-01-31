@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Cache;
 
+use JsonException;
 use Redis as Server;
 use RedisException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\ValidationException;
-
-use function is_string;
 
 /**
  * Redis cache implementation.
@@ -33,24 +33,35 @@ class Redis extends AbstractCache implements CacheInterface
     /**
      * @throws ValidationException
      * @throws RedisException
+     * @throws ConfigException
      */
     public function read(string $key): ?string
     {
         $this->validateKey(key: $key);
 
-        $result = $this->connect()->get(key: $key);
+        $entry = $this->decodeEntry(
+            data: (string) $this->connect()->get(key: $key)
+        );
 
-        return is_string(value: $result) ? $result : null;
+        return (
+            $entry !== null &&
+            $this->validate(key: $key, entry: $entry)
+        ) ? $entry->data : null;
     }
 
     /**
      * @throws ValidationException
      * @throws RedisException
+     * @throws JsonException
      */
     public function write(string $key, string $data, int $ttl): void
     {
         $this->validateKey(key: $key);
-        $this->connect()->setex(key: $key, expire: $ttl, value: $data);
+        $this->connect()->setex(
+            key: $key,
+            expire: $ttl,
+            value: $this->encodeEntry(data: $data, ttl: $ttl)
+        );
     }
 
     /**
