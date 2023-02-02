@@ -614,5 +614,33 @@
       "en": "Could not remove article row.",
       "sv": "Kunde inte ta bort artikelrad."
     }
+  },
+  {
+    "id": "cancel-success",
+    "translation": {
+      "en": "Successfully cancelled order.",
+      "sv": "Lyckades annullera order."
+    }
+  },
+  {
+    "id": "refund-success",
+    "translation": {
+      "en": "Successfully refunded order.",
+      "sv": "Lyckades kreditera order."
+    }
+  },
+  {
+    "id": "capture-success",
+    "translation": {
+      "en": "Successfully captured order.",
+      "sv": "Lyckades debitera order."
+    }
+  },
+  {
+    "id": "part-cancel-not-allowed",
+    "translation": {
+      "en": "This order is not allowed to be part cancelled.",
+      "sv": "Denna ordern får ej del-annulleras."
+    }
   }
 ]
