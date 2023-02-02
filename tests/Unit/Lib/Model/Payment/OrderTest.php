@@ -163,6 +163,84 @@ class OrderTest extends TestCase
     }
 
     /**
+     * Verify that the canCapture method works as intended
+     *
+     * @throws IllegalTypeException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @throws IllegalCharsetException
+     */
+    public function testCanPartCapture(): void
+    {
+        $captureable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::PARTIAL_CAPTURE
+                    ),
+                ]
+            )
+        );
+        $uncaptureable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::REFUND
+                    ),
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            expected: true,
+            actual: $captureable->canPartCapture()
+        );
+        $this->assertEquals(
+            expected: false,
+            actual: $uncaptureable->canPartCapture()
+        );
+    }
+
+    /**
+     * Verify that the canCapture method works as intended
+     *
+     * @throws IllegalTypeException
+     * @throws EmptyValueException
+     * @throws IllegalValueException
+     * @throws IllegalCharsetException
+     */
+    public function testCanPartCancel(): void
+    {
+        $captureable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::PARTIAL_CANCEL
+                    ),
+                ]
+            )
+        );
+        $uncaptureable = $this->createDummyPayment(
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [
+                    new Payment\Order\PossibleAction(
+                        action: PossibleAction::REFUND
+                    ),
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            expected: true,
+            actual: $captureable->canPartCancel()
+        );
+        $this->assertEquals(
+            expected: false,
+            actual: $uncaptureable->canPartCancel()
+        );
+    }
+
+    /**
      * Verify that the canRefund method works as intended
      *
      * @throws EmptyValueException
