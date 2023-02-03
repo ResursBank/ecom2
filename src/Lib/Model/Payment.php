@@ -74,7 +74,7 @@ class Payment extends Model
     /**
      * Checks if payment can be partially cancelled.
      */
-    public function canPartCancel(): bool
+    public function canCancelPartially(): bool
     {
         return $this->canPerformAction(actionType:  PossibleAction::PARTIAL_CANCEL);
     }
@@ -90,7 +90,7 @@ class Payment extends Model
     /**
      * Checks if payment can be partially captured.
      */
-    public function canPartCapture(): bool
+    public function canCapturePartially(): bool
     {
         return $this->canPerformAction(actionType: PossibleAction::PARTIAL_CAPTURE);
     }
