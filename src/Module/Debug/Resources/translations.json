@@ -1,0 +1,51 @@
+[
+  {
+    "id": "plugin-version",
+    "translation": {
+      "en": "Plugin Version",
+      "sv":  "Plugin version"
+    }
+  },
+  {
+    "id": "ecom-version",
+    "translation": {
+      "en": "EComPHP Version",
+      "sv": "EComPHP version"
+    }
+  },
+  {
+    "id": "php-version",
+    "translation": {
+      "en": "PHP Version",
+      "sv": "PHP version"
+    }
+  },
+  {
+    "id": "php-curl",
+    "translation": {
+      "en": "PHP Curl",
+      "sv": "PHP Curl"
+    }
+  },
+  {
+    "id": "php-openssl",
+    "translation": {
+      "en": "PHP OpenSSL",
+      "sv": "PHP OpenSSL"
+    }
+  },
+  {
+    "id": "server-ip",
+    "translation": {
+      "en": "Server IP",
+      "sv": "Server IP"
+    }
+  },
+  {
+    "id": "callback-url",
+    "translation": {
+      "en": "Callback URL",
+      "sv": "Callback URL"
+    }
+  }
+]
