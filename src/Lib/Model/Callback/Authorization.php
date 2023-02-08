@@ -18,7 +18,7 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 /**
  * Implementation of Authorization callback data.
  */
-class Authorization extends Model
+class Authorization extends Model implements CallbackInterface
 {
     /**
      * @throws EmptyValueException
@@ -32,6 +32,19 @@ class Authorization extends Model
     ) {
         $this->validatePaymentId();
         $this->validateCreated();
+    }
+
+    /**
+     * Property wrapper to fulfill contract.
+     */
+    public function getPaymentId(): string
+    {
+        return $this->paymentId;
+    }
+
+    public function getNote(): string
+    {
+        return "Authorization callback received. Status: {$this->status->value}";
     }
 
     /**
