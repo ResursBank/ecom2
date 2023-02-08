@@ -88,6 +88,14 @@ class Payment extends Model
     }
 
     /**
+     * Checks if payment can be partially refunded
+     */
+    public function canPartiallyRefund(): bool
+    {
+        return $this->canPerformAction(actionType: PossibleAction::PARTIAL_REFUND);
+    }
+
+    /**
      * Alias for canRefund
      */
     public function canCredit(): bool
