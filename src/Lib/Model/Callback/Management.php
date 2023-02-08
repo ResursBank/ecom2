@@ -9,24 +9,56 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Action;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Model for callback request management.
- *
- * @see https://merchant-api.integration.resurs.com/docs/v2/merchant_payments_v2/options#callbacks
+ * Implementation of Management callback data.
  */
 class Management extends Model
 {
     /**
-     * @todo Missing validation of properties.
+     * @param StringValidation $stringValidation
+     * @throws EmptyValueException
+     * @todo Incomplete property validation.
      */
     public function __construct(
         public readonly string $paymentId,
         public readonly Action $action,
         public readonly string $actionId,
-        public readonly string $created
+        public readonly string $created,
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
+        $this->validatePaymentId();
+        $this->validateActionId();
+        $this->validateCreated();
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    private function validatePaymentId(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->paymentId);
+    }
+
+    /**
+     * @throws EmptyValueException
+     * // @todo Could improve value validation, not sure what it may contain.
+     */
+    private function validateActionId(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->actionId);
+    }
+
+    /**
+     * @throws EmptyValueException
+     * // @todo Could validate it's a date.
+     */
+    private function validateCreated(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->created);
     }
 }
