@@ -698,5 +698,19 @@
       "en": "Please see the EComPHP log for further information.",
       "sv": "Vänligen se EComPHP loggen för mer information."
     }
+  },
+  {
+    "id": "authorization-callback-received",
+    "translation": {
+      "en": "Authorization callback received.",
+      "sv": "Authorization callback inkom."
+    }
+  },
+  {
+    "id": "management-callback-received",
+    "translation": {
+      "en": "Management callback received.",
+      "sv": "Management callback inkom."
+    }
   }
 ]

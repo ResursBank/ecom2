@@ -9,8 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Action;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -44,9 +51,21 @@ class Management extends Model implements CallbackInterface
         return $this->paymentId;
     }
 
+    /**
+     * Get note explaining what happened.
+     *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws TranslationException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
     public function getNote(): string
     {
-        return "Management callback received. Action: {$this->action->value}";
+        return Translator::translate(
+            phraseId: 'management-callback-received'
+        ) . " Action: {$this->action->value}";
     }
 
     /**
