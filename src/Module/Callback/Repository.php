@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Module\Callback;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
 use Resursbank\Ecom\Lib\Model\Callback\Management;
 use Throwable;
@@ -31,11 +32,23 @@ class Repository
         callable $process
     ): int {
         Config::getLogger()->debug(
-            message: 'Processing ' . $callback::class . ' callback.'
+            message: sprintf(
+                'Processing callback %s for payment %s',
+                $callback::class,
+                $callback->getPaymentId()
+            )
         );
 
         if ($callback instanceof Management) {
-            Config::getLogger()->debug(message: "Trace: $callback->actionId");
+            Config::getLogger()->debug(
+                message: "Action: {$callback->action->value} ($callback->actionId)"
+            );
+        }
+
+        if ($callback instanceof Authorization) {
+            Config::getLogger()->debug(
+                message: "Status: {$callback->status->value}"
+            );
         }
 
         $code = 202;

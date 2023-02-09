@@ -61,9 +61,10 @@ class Authorization extends Model implements CallbackInterface
      */
     public function getNote(): string
     {
-        return Translator::translate(
-            phraseId: 'authorization-callback-received'
-        ) . " Status: {$this->status->value}";
+        return sprintf(
+            Translator::translate(phraseId: 'authorization-callback-received'),
+            $this->status->value
+        );
     }
 
     /**

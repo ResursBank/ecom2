@@ -63,9 +63,10 @@ class Management extends Model implements CallbackInterface
      */
     public function getNote(): string
     {
-        return Translator::translate(
-            phraseId: 'management-callback-received'
-        ) . " Action: {$this->action->value}";
+        return sprintf(
+            Translator::translate(phraseId: 'management-callback-received'),
+            $this->action->value
+        );
     }
 
     /**

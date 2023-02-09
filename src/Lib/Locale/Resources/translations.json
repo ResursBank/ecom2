@@ -702,15 +702,15 @@
   {
     "id": "authorization-callback-received",
     "translation": {
-      "en": "Authorization callback received.",
-      "sv": "Authorization callback inkom."
+      "en": "Authorization callback received with status %s.",
+      "sv": "Authorization callback inkom med status %s."
     }
   },
   {
     "id": "management-callback-received",
     "translation": {
-      "en": "Management callback received.",
-      "sv": "Management callback inkom."
+      "en": "Management callback received with action %s.",
+      "sv": "Management callback inkom med händelse %s."
     }
   }
 ]
