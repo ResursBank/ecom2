@@ -193,11 +193,11 @@ class OrderTest extends TestCase
 
         $this->assertEquals(
             expected: true,
-            actual: $captureable->canCapturePartially()
+            actual: $captureable->canPartiallyCapture()
         );
         $this->assertEquals(
             expected: false,
-            actual: $uncaptureable->canCapturePartially()
+            actual: $uncaptureable->canPartiallyCapture()
         );
     }
 
@@ -232,11 +232,11 @@ class OrderTest extends TestCase
 
         $this->assertEquals(
             expected: true,
-            actual: $captureable->canCancelPartially()
+            actual: $captureable->canPartiallyCancel()
         );
         $this->assertEquals(
             expected: false,
-            actual: $uncaptureable->canCancelPartially()
+            actual: $uncaptureable->canPartiallyCancel()
         );
     }
 
