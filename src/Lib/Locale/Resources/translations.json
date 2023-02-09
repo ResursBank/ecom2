@@ -261,7 +261,7 @@
   {
     "id": "part-payment-widget-enabled",
     "translation": {
-      "en": "Part payment widget enabled",
+      "en": "Part Payment Widget Enabled",
       "sv": "Delbetalningswidget aktiverad"
     }
   },
@@ -303,7 +303,7 @@
   {
     "id": "payment-method",
     "translation": {
-      "en": "Payment method",
+      "en": "Payment Method",
       "sv": "Betalningsmetod"
     }
   },
@@ -317,7 +317,7 @@
   {
     "id": "annuity-period",
     "translation": {
-      "en": "Annuity period",
+      "en": "Annuity Period",
       "sv": "Avbetalningstid"
     }
   },
@@ -401,7 +401,7 @@
   {
     "id": "log-level",
     "translation": {
-      "en": "Log level",
+      "en": "Log Level",
       "sv": "Loggningsnivå"
     }
   },
@@ -492,7 +492,7 @@
   {
     "id": "log-path",
     "translation": {
-      "en": "Log path",
+      "en": "Log Path",
       "sv": "Loggsökväg"
     }
   },
@@ -520,8 +520,8 @@
   {
     "id": "enable-widget-to-get-address",
     "translation": {
-      "en": "Enable widget to get address",
-      "sv": "Aktivera widget för a hämta adress"
+      "en": "Enable Get Address Widget",
+      "sv": "Aktivera hämta adress widget"
     }
   },
   {
@@ -613,6 +613,90 @@
     "translation": {
       "en": "Could not remove article row.",
       "sv": "Kunde inte ta bort artikelrad."
+    }
+  },
+  {
+    "id": "payment-methods",
+    "translation": {
+      "en": "Payment Methods",
+      "sv": "Betalmetoder"
+    }
+  },
+  {
+    "id": "advanced",
+    "translation": {
+      "en": "Advanced",
+      "sv": "Avancerat"
+    }
+  },
+  {
+    "id": "part-payment",
+    "translation": {
+      "en": "Part Payment",
+      "sv": "Delbetalning"
+    }
+  },
+  {
+    "id": "select-store",
+    "translation": {
+      "en": "Select Store",
+      "sv": "Välj butik"
+    }
+  },
+  {
+    "id": "get-stores-failed",
+    "translation": {
+      "en": "Failed to resolve list of available stores from the Resurs Bank API.",
+      "sv": "Kunde inte hämta lista med butiker från Resurs Banks API."
+    }
+  },
+  {
+    "id": "clear-cache-failed",
+    "translation": {
+      "en": "Failed to clear Resurs Bank related cache.",
+      "sv": "Kunde inte rensa cache relaterad till Resurs Bank."
+    }
+  },
+  {
+    "id": "generate-callback-template-failed",
+    "translation": {
+      "en": "Failed to generate callback URL template.",
+      "sv": "Kunde inte generera URL-mall för callbacks."
+    }
+  },
+  {
+    "id": "payment-methods-widget-render-failed",
+    "translation": {
+      "en": "Failed to render list of available payment methods.",
+      "sv": "Kunde inte rendera lista med tillgängliga betalmetoder."
+    }
+  },
+  {
+    "id": "payment-methods-widget-render-failed",
+    "translation": {
+      "en": "Failed to render list of available payment methods.",
+      "sv": "Kunde inte rendera lista med tillgängliga betalmetoder."
+    }
+  },
+  {
+    "id": "render-settings-failed",
+    "translation": {
+      "en": "Failed to render settings.",
+      "sv": "Kunde inte rendera inställningar."
+    }
+  },
+  {
+    "id": "save-settings-failed",
+    "translation": {
+      "en": "Failed to save settings.",
+      "sv": "Kunde inte spara inställningar."
+    }
+  },
+  {
+    "id": "see-log",
+    "translation": {
+      "en": "Please see the EComPHP log for further information.",
+      "sv": "Vänligen se EComPHP loggen för mer information."
     }
   },
   {
