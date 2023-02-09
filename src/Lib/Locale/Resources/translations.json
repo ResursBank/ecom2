@@ -700,6 +700,61 @@
     }
   },
   {
+    "id": "refund-too-large",
+    "translation": {
+      "en": "Refund amount (%1) is too great, must be %2 or less. Aborting refund.",
+      "sv": "Återbetalningssumma (%1) är för stor, måste vara %2 eller mindre, återbetalning avbruten."
+    }
+  },
+  {
+    "id": "refund-unable-to-perform-operation",
+    "translation": {
+      "en": "Unable to perform refund operation: %1, please verify order state manually.",
+      "sv": "Kunde inte genomföra återbetalning: %1, vänligen verifiera orderstatus manuellt."
+    }
+  },
+  {
+    "id": "refund-wrong-return-type-from-wc-get-order",
+    "translation": {
+      "en": "wc_get_order returned object of type %1, WC_Order_Refund expected.",
+      "sv": "wc_get_order returnerade ett objekt av typen %1, WC_Order_Refund förväntades."
+    }
+  },
+  {
+    "id": "refund-unable-to-load-refund-information",
+    "translation": {
+      "en": "Unable to load refund information. Aborting refund.",
+      "sv": "Kunde ej ladda återbetalningsinformation. Avbryter återbetalning."
+    }
+  },
+  {
+    "id": "refund-payment-reference-not-a-string",
+    "translation": {
+      "en": "Fetched Resurs Bank payment reference is not a string. Aborting refund.",
+      "sv": "Hämtad betalningsreferens för Resurs Bank är inte en sträng. Avbryter återbetalning."
+    }
+  },
+  {
+    "id": "refund-payment-reference-is-empty",
+    "translation": {
+      "en": "Fetched Resurs Bank payment reference is empty. Aborting refund.",
+      "sv": "Hämtad betalningsreferens för Resurs Bank är tom. Avbryter återbetalning."
+    }
+  },
+  {
+    "id": "refund-unable-to-load-order-information",
+    "translation": {
+      "en": "Unable to load order information. Aborting refund.",
+      "sv": "Kunde inte ladda orderinformation. Avbryter återbetalning."
+    }
+  },
+  {
+    "id": "refund-error-when-fetching-order-lines",
+    "translation": {
+      "en": "Error encountered while attempting to fetch order lines. Aborting refund.",
+      "sv": "Ett fel uppstod när orderrader hämtades. Avbryter återbetalning."
+  },
+  {
     "id": "authorization-callback-received",
     "translation": {
       "en": "Authorization callback received with status %s.",
@@ -738,7 +793,7 @@
     "id": "part-cancel-not-allowed",
     "translation": {
       "en": "This order is not allowed to be part cancelled.",
-      "sv": "Denna ordern får ej del-annulleras."
+      "sv": "Denna order får ej del-annulleras."
     }
   }
 ]
