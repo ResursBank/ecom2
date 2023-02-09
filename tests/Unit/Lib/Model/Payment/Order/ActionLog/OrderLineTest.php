@@ -136,8 +136,8 @@ class OrderLineTest extends TestCase
                 expected: $this->item->{$prop},
                 actual: $data[$prop]
             );
-        } catch (IllegalValueException) {
-            $this->fail(message: $message);
+        } catch (IllegalValueException $e) {
+            $this->fail(message: "$message. Exception " . $e->getMessage());
         }
     }
 
@@ -172,7 +172,7 @@ class OrderLineTest extends TestCase
     private function getRandomPrice(): float
     {
         $int = random_int(min: 1, max: 9999999999);
-        $dec = random_int(min: 1, max: 9999999999) / 100;
+        $dec = random_int(min: 1, max: 99) / 100;
 
         return round(num: $int + $dec, precision: 2);
     }

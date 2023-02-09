@@ -128,18 +128,19 @@ class AuthorizationControllerTest extends TestCase
      */
     public function testGetRequestData(): void
     {
+        $paymentId = '6fa85f64-5997-45c2-b3fc-2c263f66afa6';
+
         $controller = $this->getControllerWithMockedInputData(
             data: [
-                'paymentId' => 'whatever',
+                'paymentId' => $paymentId,
                 'status' => Status::AUTHORIZED->value,
-                'created' => 'some-valid-date',
+                'created' => '2010-12-10 10:10',
             ]
         );
 
         $data = $controller->getRequestData();
 
         $this->assertSame(expected: Status::AUTHORIZED, actual: $data->status);
-
-        $this->assertSame(expected: 'whatever', actual: $data->paymentId);
+        $this->assertSame(expected: $paymentId, actual: $data->paymentId);
     }
 }

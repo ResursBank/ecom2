@@ -128,19 +128,21 @@ class ManagementControllerTest extends TestCase
      */
     public function testGetRequestData(): void
     {
+        $paymentId = '78a85554-1297-4862-b3fc-44c63f81afa9';
+        $actionId = '88a89954-cb9f-4462-bcf1-12c33f71a91c';
         $controller = $this->getControllerWithMockedInputData(
             data: [
-                'paymentId' => 'whatever',
+                'paymentId' => $paymentId,
                 'action' => Action::CAPTURE->value,
-                'actionId' => 'testing',
-                'created' => 'some-valid-date',
+                'actionId' => $actionId,
+                'created' => '2020-12-20 05:40:21',
             ]
         );
 
         $data = $controller->getRequestData();
 
         $this->assertSame(expected: Action::CAPTURE, actual: $data->action);
-
-        $this->assertSame(expected: 'whatever', actual: $data->paymentId);
+        $this->assertSame(expected: $paymentId, actual: $data->paymentId);
+        $this->assertSame(expected: $actionId, actual: $data->actionId);
     }
 }
