@@ -31,23 +31,24 @@ class Repository
         CallbackInterface $callback,
         callable $process
     ): int {
-        Config::getLogger()->debug(
-            message: sprintf(
-                'Processing callback %s for payment %s',
-                $callback::class,
-                $callback->getPaymentId()
-            )
-        );
-
         if ($callback instanceof Management) {
             Config::getLogger()->debug(
-                message: "Action: {$callback->action->value} ($callback->actionId)"
+                message: sprintf(
+                    'Processing management callback for %s, action %s (%s)',
+                    $callback->getPaymentId(),
+                    $callback->action->value,
+                    $callback->actionId
+                )
             );
         }
 
         if ($callback instanceof Authorization) {
             Config::getLogger()->debug(
-                message: "Status: {$callback->status->value}"
+                message: sprintf(
+                    'Processing authorization callback for %s, status %s',
+                    $callback->getPaymentId(),
+                    $callback->status->value
+                )
             );
         }
 
