@@ -753,6 +753,7 @@
     "translation": {
       "en": "Error encountered while attempting to fetch order lines. Aborting refund.",
       "sv": "Ett fel uppstod när orderrader hämtades. Avbryter återbetalning."
+    }
   },
   {
     "id": "authorization-callback-received",
