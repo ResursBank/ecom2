@@ -16,12 +16,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
-
 use Resursbank\EcomTest\Utilities\Random;
-use function chr;
+
 use function in_array;
-use function ord;
-use function random_bytes;
 
 /**
  * Tests for PaymentMethod functionality

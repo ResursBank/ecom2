@@ -156,7 +156,7 @@ class RepositoryTest extends TestCase
      * action. Execute an API request to fetch the ActionLog object matching
      * the id extracted from the capture response, to make sure we can fetch
      * a separate ActionLog entry, and that it matches the entry from our
-     * capture response (e.g. they are  the same entry).
+     * capture response (e.g. they are the same entry).
      *
      * @throws ApiException
      * @throws AuthException

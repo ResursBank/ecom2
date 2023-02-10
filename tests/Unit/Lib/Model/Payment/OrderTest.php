@@ -22,10 +22,7 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
-
 use Resursbank\EcomTest\Utilities\Random;
-use function chr;
-use function ord;
 
 /**
  * Tests for the Order class.

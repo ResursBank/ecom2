@@ -21,10 +21,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
-
 use Resursbank\EcomTest\Utilities\Random;
-use function chr;
-use function ord;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Model\Payment class.

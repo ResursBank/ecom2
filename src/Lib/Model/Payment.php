@@ -36,20 +36,7 @@ class Payment extends Model
      * Search compatible with the Payment model, we are temporary setting the missing fields
      * with empty defaults.
      *
-     * @param string $id
-     * @param string $created
-     * @param string $storeId
-     * @param Customer $customer
-     * @param Status $status
      * @param array $paymentActions
-     * @param PaymentMethod|null $paymentMethod
-     * @param CountryCode|null $countryCode
-     * @param Order|null $order
-     * @param ApplicationResponse|null $application
-     * @param Metadata|null $metadata
-     * @param CoApplicant|null $coApplicant
-     * @param TaskRedirectionUrls|null $taskRedirectionUrls
-     * @param StringValidation $stringValidation
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -89,7 +76,9 @@ class Payment extends Model
      */
     public function canPartiallyCancel(): bool
     {
-        return $this->canPerformAction(actionType:  PossibleAction::PARTIAL_CANCEL);
+        return $this->canPerformAction(
+            actionType: PossibleAction::PARTIAL_CANCEL
+        );
     }
 
     /**
@@ -105,7 +94,9 @@ class Payment extends Model
      */
     public function canPartiallyCapture(): bool
     {
-        return $this->canPerformAction(actionType: PossibleAction::PARTIAL_CAPTURE);
+        return $this->canPerformAction(
+            actionType: PossibleAction::PARTIAL_CAPTURE
+        );
     }
 
     /**
@@ -121,7 +112,9 @@ class Payment extends Model
      */
     public function canPartiallyRefund(): bool
     {
-        return $this->canPerformAction(actionType: PossibleAction::PARTIAL_REFUND);
+        return $this->canPerformAction(
+            actionType: PossibleAction::PARTIAL_REFUND
+        );
     }
 
     /**
