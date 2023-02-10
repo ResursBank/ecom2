@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
@@ -17,12 +18,12 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 
 /**
- * Defines an action log item
+ * Defines an action log item.
  */
 class ActionLog extends Model
 {
     /**
-     * @throws IllegalValueException
+     * @throws IllegalValueException|EmptyValueException
      */
     public function __construct(
         public readonly string $actionId,
@@ -41,21 +42,25 @@ class ActionLog extends Model
 
     /**
      * @throws IllegalValueException
+     * @throws EmptyValueException
      */
     private function validateActionId(): void
     {
+        $this->stringValidation->notEmpty(value: $this->actionId);
         $this->stringValidation->isUuid(value: $this->actionId);
     }
 
     /**
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
-     * sometimes containing a up to 9 digit microsecond suffix).
+     * sometimes containing an up to 9 digit microsecond suffix).
      *
      * @throws IllegalValueException
+     * @throws EmptyValueException
      */
     private function validateCreated(): void
     {
+        $this->stringValidation->notEmpty(value: $this->created);
         $this->stringValidation->isTimestampDate(value: $this->created);
     }
 

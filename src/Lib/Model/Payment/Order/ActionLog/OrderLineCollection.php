@@ -25,4 +25,19 @@ class OrderLineCollection extends Collection
     {
         parent::__construct(data: $data, type: OrderLine::class);
     }
+
+    /**
+     * Resolve total amount.
+     */
+    public function getTotal(): float
+    {
+        $amount = 0.0;
+
+        /** @var OrderLine $orderLine */
+        foreach ($this->getData() as $orderLine) {
+            $amount += $orderLine->totalAmountIncludingVat;
+        }
+
+        return round(num: $amount, precision: 2);
+    }
 }

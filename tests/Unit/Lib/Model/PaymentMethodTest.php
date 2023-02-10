@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 
+use Resursbank\EcomTest\Utilities\Random;
 use function chr;
 use function in_array;
 use function ord;
@@ -28,23 +29,6 @@ use function random_bytes;
 class PaymentMethodTest extends TestCase
 {
     /**
-     * Generate a bogus UUID
-     *
-     * @throws Exception
-     */
-    private function generateUuid(): string
-    {
-        $data = random_bytes(length: 16);
-        $data[6] = chr(codepoint: ord(character: $data[6]) & 0x0f | 0x40);
-        $data[8] = chr(codepoint: ord(character: $data[8]) & 0x3f | 0x80);
-
-        return vsprintf(
-            format: '%s%s-%s-%s-%s-%s%s%s',
-            values: str_split(string: bin2hex(string: $data), length: 4)
-        );
-    }
-
-    /**
      * Generate a dummy payment method with specified type
      *
      * @throws EmptyValueException
@@ -55,8 +39,8 @@ class PaymentMethodTest extends TestCase
     private function generatePaymentMethodWithType(Type $type): PaymentMethod
     {
         return new PaymentMethod(
-            id: $this->generateUuid(),
-            name: $this->generateUuid(),
+            id: Random::getUuid(),
+            name: Random::getUuid(),
             type: $type,
             minPurchaseLimit: 1,
             maxPurchaseLimit: 1000,
