@@ -22,31 +22,13 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
-
-use function chr;
-use function ord;
+use Resursbank\EcomTest\Utilities\Random;
 
 /**
  * Tests for the Order class.
  */
 class OrderTest extends TestCase
 {
-    /**
-     * Generate a bogus UUID
-     *
-     * @throws Exception
-     */
-    private function generateUuid(): string
-    {
-        $data = random_bytes(length: 16);
-        $data[6] = chr(codepoint: ord(character: $data[6]) & 0x0f | 0x40);
-        $data[8] = chr(codepoint: ord(character: $data[8]) & 0x3f | 0x80);
-        return vsprintf(
-            format: '%s%s-%s-%s-%s-%s%s%s',
-            values: str_split(string: bin2hex(string: $data), length: 4)
-        );
-    }
-
     /**
      * Create a dummy Payment object with the specified possible actions
      *
@@ -59,9 +41,9 @@ class OrderTest extends TestCase
     private function createDummyPayment(Payment\Order\PossibleActionCollection $possibleActions): Payment
     {
         return new Payment(
-            id: $this->generateUuid(),
+            id: Random::getUuid(),
             created: (new DateTime())->format(format: 'c'),
-            storeId: $this->generateUuid(),
+            storeId: Random::getUuid(),
             customer: new Payment\Customer(
                 customerType: CustomerType::NATURAL
             ),
@@ -69,7 +51,7 @@ class OrderTest extends TestCase
             status: Status::ACCEPTED,
             paymentActions: [],
             order: new Payment\Order(
-                orderReference: $this->generateUuid(),
+                orderReference: Random::getUuid(),
                 actionLog: new Payment\Order\ActionLogCollection(data: []),
                 possibleActions: $possibleActions,
                 totalOrderAmount: 100.00,

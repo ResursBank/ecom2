@@ -796,5 +796,12 @@
       "en": "This order is not allowed to be part cancelled.",
       "sv": "Denna order får ej del-annulleras."
     }
+  },
+  {
+    "id": "callback-amount",
+    "translation": {
+      "en": "Amount $%s",
+      "sv": "Summa %s kr"
+    }
   }
 ]
