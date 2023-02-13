@@ -800,8 +800,8 @@
   {
     "id": "callback-amount",
     "translation": {
-      "en": "Amount $%s",
-      "sv": "Summa %s kr"
+      "en": "Amount $%s in Resurs' system",
+      "sv": "Summa %s kr i Resurs system"
     }
   }
 ]
