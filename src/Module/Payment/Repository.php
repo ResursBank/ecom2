@@ -32,6 +32,7 @@ use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
 use Resursbank\Ecom\Module\Payment\Api\Get;
 use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
+use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
@@ -237,5 +238,66 @@ class Repository
         Metadata $metadata
     ): Metadata {
         return (new Put())->call(paymentId: $paymentId, metadata: $metadata);
+    }
+
+    /**
+     * Add new order lines to payment.
+     *
+     * @throws IllegalTypeException
+     */
+    public static function addOrderLines(
+        string $paymentId,
+        OrderLineCollection $orderLines
+    ): Payment {
+        return (new Add())->call(paymentId: $paymentId, orderLines: $orderLines);
+    }
+
+    /**
+     * Replaces current order lines on payment.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function updateOrderLines(
+        string $paymentId,
+        OrderLineCollection $orderLines
+    ): Payment {
+        // 1. Check that total sum of supplied order lines does not exceed authorized amount on payment
+        // Load current payment state
+        $payment = self::get(paymentId: $paymentId);
+        // Sum up order lines
+        $orderLineSum = 0.0;
+
+        /** @var Payment\Order\ActionLog\OrderLine $orderLine */
+        foreach ($orderLines as $orderLine) {
+            $orderLineSum += $orderLine->totalAmountIncludingVat;
+        }
+
+        // If sum > authorized amount
+        if ($orderLineSum > $payment->order->authorizedAmount) {
+            // Throw error
+            throw new IllegalValueException(message: 'Unable to update order, sum total of new order lines is ' .
+                $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount);
+        }
+
+        // 2. Clear out old order lines by canceling them
+        self::cancel(paymentId: $paymentId);
+
+        // 3. Add new order lines
+        $updatedPayment = self::addOrderLines(
+            paymentId: $paymentId,
+            orderLines: $orderLines
+        );
+
+        // 4. Return updated payment object
+        return $updatedPayment;
     }
 }
