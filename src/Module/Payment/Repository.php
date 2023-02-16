@@ -249,7 +249,10 @@ class Repository
         string $paymentId,
         OrderLineCollection $orderLines
     ): Payment {
-        return (new Add())->call(paymentId: $paymentId, orderLines: $orderLines);
+        return (new Add())->call(
+            paymentId: $paymentId,
+            orderLines: $orderLines
+        );
     }
 
     /**
@@ -270,10 +273,8 @@ class Repository
         string $paymentId,
         OrderLineCollection $orderLines
     ): Payment {
-        // 1. Check that total sum of supplied order lines does not exceed authorized amount on payment
-        // Load current payment state
         $payment = self::get(paymentId: $paymentId);
-        // Sum up order lines
+
         $orderLineSum = 0.0;
 
         /** @var Payment\Order\ActionLog\OrderLine $orderLine */
@@ -281,23 +282,24 @@ class Repository
             $orderLineSum += $orderLine->totalAmountIncludingVat;
         }
 
-        // If sum > authorized amount
-        if ($orderLineSum > $payment->order->authorizedAmount) {
-            // Throw error
-            throw new IllegalValueException(message: 'Unable to update order, sum total of new order lines is ' .
-                $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount);
+        if ($payment->order === null) {
+            throw new IllegalValueException(
+                message: 'Payment does not contain Order object.'
+            );
         }
 
-        // 2. Clear out old order lines by canceling them
+        if ($orderLineSum > $payment->order->authorizedAmount) {
+            throw new IllegalValueException(
+                message: 'Unable to update order, sum total of new order lines is ' .
+                    $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount
+            );
+        }
+
         self::cancel(paymentId: $paymentId);
 
-        // 3. Add new order lines
-        $updatedPayment = self::addOrderLines(
+        return self::addOrderLines(
             paymentId: $paymentId,
             orderLines: $orderLines
         );
-
-        // 4. Return updated payment object
-        return $updatedPayment;
     }
 }
