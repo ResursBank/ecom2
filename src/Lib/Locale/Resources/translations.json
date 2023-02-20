@@ -637,10 +637,10 @@
     }
   },
   {
-    "id": "select-store",
+    "id": "please-select",
     "translation": {
-      "en": "Select Store",
-      "sv": "Välj butik"
+      "en": "- Please select -",
+      "sv": "- Vänligen välj -"
     }
   },
   {
