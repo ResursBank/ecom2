@@ -803,5 +803,12 @@
       "en": "Amount $%s in Resurs' system",
       "sv": "Summa %s kr i Resurs system"
     }
+  },
+  {
+    "id": "failed-to-resolve-sku-from-order-line-object",
+    "translation": {
+      "en": "Failed to resolve SKU from order line item.",
+      "sv": "Kunde ej hämta artikelnummer från orderradsobjekt."
+    }
   }
 ]
