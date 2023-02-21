@@ -866,5 +866,12 @@
       "en": "Payment must have been captured before it can be refunded.",
       "sv": "Betalning måste ha debiterats innan den kan krediteras."
     }
+  },
+  {
+    "id": "failed-to-resolve-sku-from-order-line-object",
+    "translation": {
+      "en": "Failed to resolve SKU from order line item.",
+      "sv": "Kunde ej hämta artikelnummer från orderradsobjekt."
+    }
   }
 ]
