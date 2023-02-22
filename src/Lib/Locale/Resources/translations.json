@@ -478,8 +478,15 @@
   {
     "id": "payment-status-failed",
     "translation": {
-      "en": "Payment rejected by Resurs.",
-      "sv": "Betalningen nekades av Resurs."
+      "en": "Payment failed.",
+      "sv": "Betalning misslyckades."
+    }
+  },
+  {
+    "id": "payment-status-cancelled",
+    "translation": {
+      "en": "Payment aborted.",
+      "sv": "Betalningen avbröts."
     }
   },
   {
