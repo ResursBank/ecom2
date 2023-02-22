@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Payment\Status;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Merchant task data.
+ * Customer task data.
  */
 class CustomerTaskData extends Model
 {
