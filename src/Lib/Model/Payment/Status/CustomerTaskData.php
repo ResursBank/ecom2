@@ -23,7 +23,7 @@ class CustomerTaskData extends Model
      */
     public function __construct(
         public string $customerUrl,
-        public bool $hasActiveTask,
+        public bool $hasActiveTask
     ) {
     }
 }

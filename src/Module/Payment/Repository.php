@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
@@ -333,7 +332,7 @@ class Repository
      * @throws ValidationException
      */
     public static function getTaskStatusDetails(
-        string $paymentId,
+        string $paymentId
     ): TaskStatusDetails {
         self::validatePaymentId(paymentId: $paymentId);
 
