@@ -805,6 +805,69 @@
     }
   },
   {
+    "id": "order-management",
+    "translation": {
+      "en": "Order management",
+      "sv": "Hantering av beställningar"
+    }
+  },
+  {
+    "id": "enable-capture",
+    "translation": {
+      "en": "Enable Capture",
+      "sv": "Aktivera debitering"
+    }
+  },
+  {
+    "id": "enable-cancel",
+    "translation": {
+      "en": "Enable Cancel",
+      "sv": "Aktivera makulering"
+    }
+  },
+  {
+    "id": "enable-refund",
+    "translation": {
+      "en": "Enable Refund",
+      "sv": "Aktivera återbetalning"
+    }
+  },
+  {
+    "id": "automatic-order-management-on-status",
+    "translation": {
+      "en": "%s the Resurs Bank payment automatically when the corresponding order is assigned the status %s.",
+      "sv": "%s automatiskt betalningen hos Resurs Bank när motsvarande beställning erhåller status %s."
+    }
+  },
+  {
+    "id": "capture",
+    "translation": {
+      "en": "Capture",
+      "sv": "Fånga"
+    }
+  },
+  {
+    "id": "cancel",
+    "translation": {
+      "en": "Cancel",
+      "sv": "Makulera"
+    }
+  },
+  {
+    "id": "refund",
+    "translation": {
+      "en": "Refund",
+      "sv": "Återbetala"
+    }
+  },
+  {
+    "id": "payment-must-be-captured-to-be-refunded",
+    "translation": {
+      "en": "Payment must have been captured before it can be refunded.",
+      "sv": "Betalning måste ha debiterats innan den kan krediteras."
+    }
+  },
+  {
     "id": "failed-to-resolve-sku-from-order-line-object",
     "translation": {
       "en": "Failed to resolve SKU from order line item.",
