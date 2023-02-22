@@ -378,4 +378,36 @@ class RepositoryTest extends TestCase
             actual: $updatedOrderLineSum
         );
     }
+
+    /**
+     * Assert TaskStatusDetails->completed for an associated Payment remains
+     * "false" until the payment is actually completed, at which point it should
+     * change to "true".
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function testGetTaskStatusDetails(): void
+    {
+        $payment = $this->createPayment(
+            orderReference: $this->generateOrderReference()
+        );
+
+        $task = Repository::getTaskStatusDetails(paymentId: $payment->id);
+        $this->assertFalse(condition: $task->completed);
+
+//        MockSigner::approve(payment: $payment);
+//
+//        $task2 = Repository::getTaskStatusDetails(paymentId: $payment->id);
+//        $this->assertTrue(condition: $task2->completed);
+    }
 }
