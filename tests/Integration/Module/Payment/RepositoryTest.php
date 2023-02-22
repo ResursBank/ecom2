@@ -404,10 +404,5 @@ class RepositoryTest extends TestCase
 
         $task = Repository::getTaskStatusDetails(paymentId: $payment->id);
         $this->assertFalse(condition: $task->completed);
-
-//        MockSigner::approve(payment: $payment);
-//
-//        $task2 = Repository::getTaskStatusDetails(paymentId: $payment->id);
-//        $this->assertTrue(condition: $task2->completed);
     }
 }
