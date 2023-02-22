@@ -880,5 +880,26 @@
       "en": "Failed to resolve SKU from order line item.",
       "sv": "Kunde ej hämta artikelnummer från orderradsobjekt."
     }
+  },
+  {
+    "id": "callback-url-authorization",
+    "translation": {
+      "en": "Authorization Callback URL",
+      "sv": "Authorization Callback URL"
+    }
+  },
+  {
+    "id": "callback-url-management",
+    "translation": {
+      "en": "Management Callback URL",
+      "sv": "Management Callback URL"
+    }
+  },
+  {
+    "id": "get-annuity-periods-failed",
+    "translation": {
+      "en": "Failed to get annuity periods.",
+      "sv": "Kunde inte hämta förnyelse perioder."
+    }
   }
 ]
