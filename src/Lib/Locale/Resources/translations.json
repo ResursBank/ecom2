@@ -478,8 +478,15 @@
   {
     "id": "payment-status-failed",
     "translation": {
-      "en": "Payment rejected by Resurs.",
-      "sv": "Betalningen nekades av Resurs."
+      "en": "Payment failed.",
+      "sv": "Betalning misslyckades."
+    }
+  },
+  {
+    "id": "payment-status-cancelled",
+    "translation": {
+      "en": "Payment aborted.",
+      "sv": "Betalningen avbröts."
     }
   },
   {
@@ -886,6 +893,27 @@
     "translation": {
       "en": "Server response",
       "sv": "Serversvar"
+    }
+  },
+  {
+    "id": "callback-url-authorization",
+    "translation": {
+      "en": "Authorization Callback URL",
+      "sv": "Authorization Callback URL"
+    }
+  },
+  {
+    "id": "callback-url-management",
+    "translation": {
+      "en": "Management Callback URL",
+      "sv": "Management Callback URL"
+    }
+  },
+  {
+    "id": "get-annuity-periods-failed",
+    "translation": {
+      "en": "Failed to get annuity periods.",
+      "sv": "Kunde inte hämta förnyelse perioder."
     }
   }
 ]

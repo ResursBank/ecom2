@@ -21,12 +21,16 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
+use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
@@ -43,6 +47,7 @@ use Throwable;
  * Payment repository.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @noinspection EfferentObjectCouplingInspection
  */
 class Repository
 {
@@ -243,7 +248,16 @@ class Repository
     /**
      * Add new order lines to payment.
      *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public static function addOrderLines(
         string $paymentId,
@@ -301,5 +315,46 @@ class Repository
             paymentId: $paymentId,
             orderLines: $orderLines
         );
+    }
+
+    /**
+     * Fetch TaskStatusDetails object relating to our payment from API.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function getTaskStatusDetails(
+        string $paymentId
+    ): TaskStatusDetails {
+        self::validatePaymentId(paymentId: $paymentId);
+
+        $result = (new MapiGet(
+            model: TaskStatusDetails::class,
+            route: Mapi::PAYMENT_ROUTE . "/$paymentId/tasks/status",
+            params: []
+        ))->call();
+
+        if (!$result instanceof TaskStatusDetails) {
+            throw new ApiException(message: 'Invalid API response.');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @throws IllegalValueException
+     */
+    private static function validatePaymentId(
+        string $paymentId
+    ): void {
+        (new StringValidation())->isUuid(value: $paymentId);
     }
 }
