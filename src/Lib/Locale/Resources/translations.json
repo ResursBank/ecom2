@@ -873,5 +873,19 @@
       "en": "Failed to resolve SKU from order line item.",
       "sv": "Kunde ej hämta artikelnummer från orderradsobjekt."
     }
+  },
+  {
+    "id": "failed-to-fetch-order-data-from-the-server",
+    "translation": {
+      "en": "Failed to fetch order data from the server.",
+      "sv": "Kunde ej hämta orderdata från servern."
+    }
+  },
+  {
+    "id": "server-response",
+    "translation": {
+      "en": "Server response",
+      "sv": "Serversvar"
+    }
   }
 ]
