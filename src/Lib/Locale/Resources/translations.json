@@ -584,14 +584,14 @@
     "id": "client-id",
     "translation": {
       "en": "Client ID",
-      "sv": "Klient ID"
+      "sv": "Klient-ID"
     }
   },
   {
     "id": "client-secret",
     "translation": {
       "en": "Client Secret",
-      "sv": "Klient hemlighet"
+      "sv": "Klienthemlighet"
     }
   },
   {
@@ -703,7 +703,7 @@
     "id": "see-log",
     "translation": {
       "en": "Please see the EComPHP log for further information.",
-      "sv": "Vänligen se EComPHP loggen för mer information."
+      "sv": "Vänligen se EComPHP-loggen för mer information."
     }
   },
   {
@@ -899,7 +899,7 @@
     "id": "get-annuity-periods-failed",
     "translation": {
       "en": "Failed to get annuity periods.",
-      "sv": "Kunde inte hämta förnyelse perioder."
+      "sv": "Kunde inte hämta annuitetsperioder."
     }
   }
 ]
