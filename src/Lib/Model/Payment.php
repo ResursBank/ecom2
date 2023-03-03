@@ -134,6 +134,17 @@ class Payment extends Model
     }
 
     /**
+     * Whether payment is processable.
+     */
+    public function isProcessable(): bool
+    {
+        return match($this->status) {
+            Status::ACCEPTED, Status::TASK_REDIRECTION_REQUIRED => true,
+            default => false
+        };
+    }
+
+    /**
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
      * sometimes containing a up to 9 digit microsecond suffix).
