@@ -915,5 +915,26 @@
       "en": "Failed to get annuity periods.",
       "sv": "Kunde inte hämta annuitetsperioder."
     }
+  },
+  {
+    "id": "documentation",
+    "translation": {
+      "en": "Documentation",
+      "sv": "Dokumentation"
+    }
+  },
+  {
+    "id": "settings",
+    "translation": {
+      "en": "Settings",
+      "sv": "Inställningar"
+    }
+  },
+  {
+    "id": "error-creating-payment",
+    "translation": {
+      "en": "There was an error while crating the payment at Resurs Bank.",
+      "sv": "Ett fel inträffade medan betalningen skapades hos Resurs Bank."
+    }
   }
 ]
