@@ -46,6 +46,7 @@ class PaymentMethodTest extends TestCase
             legalLinks: new PaymentMethod\LegalLinkCollection(data: []),
             enabledForLegalCustomer: false,
             enabledForNaturalCustomer: true,
+            priceSignagePossible: true,
             sortOrder: 1
         );
     }
