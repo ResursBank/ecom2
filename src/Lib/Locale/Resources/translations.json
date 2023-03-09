@@ -709,8 +709,8 @@
   {
     "id": "refund-too-large",
     "translation": {
-      "en": "Refund amount (%1) is too great, must be %2 or less. Aborting refund.",
-      "sv": "Återbetalningssumma (%1) är för stor, måste vara %2 eller mindre, återbetalning avbruten."
+      "en": "Refund amount (%s) is too great, must be %s or less. Aborting refund.",
+      "sv": "Återbetalningssumma (%s) är för stor, måste vara %s eller mindre, återbetalning avbruten."
     }
   },
   {
@@ -779,22 +779,36 @@
   {
     "id": "cancel-success",
     "translation": {
-      "en": "Successfully cancelled order.",
-      "sv": "Lyckades annullera order."
+      "en": "Successfully cancelled payment at Resurs Bank.",
+      "sv": "Lyckades annullera betalningen hos Resurs Bank."
     }
   },
   {
     "id": "refund-success",
     "translation": {
-      "en": "Successfully refunded order.",
-      "sv": "Lyckades kreditera order."
+      "en": "Successfully refunded payment at Resurs Bank.",
+      "sv": "Lyckades kreditera betalningen hos Resurs Bank."
+    }
+  },
+  {
+    "id": "partial-refund-success",
+    "translation": {
+      "en": "Successfully refunded %s of payment at Resurs Bank.",
+      "sv": "Lyckades kreditera %s av betalningen hos Resurs Bank."
     }
   },
   {
     "id": "capture-success",
     "translation": {
-      "en": "Successfully captured order.",
-      "sv": "Lyckades debitera order."
+      "en": "Successfully captured payment at Resurs Bank.",
+      "sv": "Lyckades debitera betalningen hos Resurs Bank."
+    }
+  },
+  {
+    "id": "modify-success",
+    "translation": {
+      "en": "Successfully updated payment at Resurs Bank.",
+      "sv": "Lyckades uppdatera betalningen hos Resurs Bank."
     }
   },
   {
@@ -823,6 +837,13 @@
     "translation": {
       "en": "Enable Capture",
       "sv": "Aktivera debitering"
+    }
+  },
+  {
+    "id": "enable-modify",
+    "translation": {
+      "en": "Enable Modify",
+      "sv": "Aktivera modifikationer"
     }
   },
   {
@@ -935,6 +956,55 @@
     "translation": {
       "en": "There was an error while crating the payment at Resurs Bank.",
       "sv": "Ett fel inträffade medan betalningen skapades hos Resurs Bank."
+    }
+  },
+  {
+    "id": "failed-resolving-order",
+    "translation": {
+      "en": "Failed to resolve order with %s",
+      "sv": "Kunde inte hitta beställning med %s"
+    }
+  },
+  {
+    "id": "failed-resolving-payment",
+    "translation": {
+      "en": "Could not find payment at Resurs Bank.",
+      "sv": "Kunde inte hitta betalning hos Resurs Bank."
+    }
+  },
+  {
+    "id": "capture-action-failed",
+    "translation": {
+      "en": "Capturing payment at Resurs Bank failed.",
+      "sv": "Betalningen kunde inte fångas hos Resurs Bank."
+    }
+  },
+  {
+    "id": "refund-action-failed",
+    "translation": {
+      "en": "Refunding payment at Resurs Bank failed.",
+      "sv": "Återbetalning hos Resurs Bank misslyckades."
+    }
+  },
+  {
+    "id": "cancel-action-failed",
+    "translation": {
+      "en": "Cancelling payment at Resurs Bank failed.",
+      "sv": "Annullering av betalning hos Resurs Bank misslyckades."
+    }
+  },
+  {
+    "id": "modify-action-failed",
+    "translation": {
+      "en": "Modifying payment at Resurs Bank failed.",
+      "sv": "Modifikation av betalning hos Resurs Bank misslyckades."
+    }
+  },
+  {
+    "id": "payment-action-modify-desc",
+    "translation": {
+      "en": "Reflect changes applied on an order to the corresponding payment at Resurs Bank.",
+      "sv": "Reflektera ändringar på en beställning till motsvarande betalning hos Resurs Bank."
     }
   }
 ]

@@ -64,7 +64,7 @@ class Payment extends Model
     }
 
     /**
-     * Checks if payment can be cancelled
+     * Checks if payment can be cancelled.
      */
     public function canCancel(): bool
     {
@@ -82,7 +82,7 @@ class Payment extends Model
     }
 
     /**
-     * Checks if payment can be captured
+     * Checks if payment can be captured.
      */
     public function canCapture(): bool
     {
@@ -100,7 +100,7 @@ class Payment extends Model
     }
 
     /**
-     * Checks if payment can be refunded
+     * Checks if payment can be refunded.
      */
     public function canRefund(): bool
     {
@@ -108,7 +108,7 @@ class Payment extends Model
     }
 
     /**
-     * Checks if payment can be partially refunded
+     * Checks if payment can be partially refunded.
      */
     public function canPartiallyRefund(): bool
     {
@@ -118,7 +118,7 @@ class Payment extends Model
     }
 
     /**
-     * Alias for canRefund
+     * Alias for canRefund.
      */
     public function canCredit(): bool
     {
@@ -126,7 +126,7 @@ class Payment extends Model
     }
 
     /**
-     * Returns true if payment is frozen
+     * Returns true if payment is frozen.
      */
     public function isFrozen(): bool
     {
@@ -138,7 +138,7 @@ class Payment extends Model
      */
     public function isProcessable(): bool
     {
-        return match($this->status) {
+        return match ($this->status) {
             Status::ACCEPTED, Status::TASK_REDIRECTION_REQUIRED => true,
             default => false
         };
