@@ -145,6 +145,43 @@ class Payment extends Model
     }
 
     /**
+     * Whether payment is captured.
+     */
+    public function isCaptured(): bool
+    {
+        return
+            !$this->canCapture() &&
+            !$this->canPartiallyCapture() &&
+            $this->order->authorizedAmount === 0.0 &&
+            $this->order->capturedAmount > 0.0 &&
+            $this->order->capturedAmount !== $this->order->refundedAmount
+        ;
+    }
+
+    /**
+     * Whether payment is refunded.
+     */
+    public function isRefunded(): bool
+    {
+        return
+            $this->order->authorizedAmount === 0.0 &&
+            $this->order->capturedAmount > 0.0 &&
+            $this->order->capturedAmount === $this->order->refundedAmount
+        ;
+    }
+
+    /**
+     * Whether payment is cancelled.
+     */
+    public function isCancelled(): bool
+    {
+        return
+            $this->order->authorizedAmount === 0.0 &&
+            $this->order->canceledAmount === $this->order->totalOrderAmount
+        ;
+    }
+
+    /**
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
      * sometimes containing a up to 9 digit microsecond suffix).
