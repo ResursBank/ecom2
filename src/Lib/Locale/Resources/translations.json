@@ -812,7 +812,7 @@
     }
   },
   {
-    "id": "modify-success",
+    "id": "modify-order-success",
     "translation": {
       "en": "Successfully updated payment at Resurs Bank to %s",
       "sv": "Lyckades uppdatera betalningen hos Resurs Bank till %s"
@@ -973,10 +973,10 @@
     }
   },
   {
-    "id": "failed-resolving-payment",
+    "id": "failed-resolving-refund",
     "translation": {
-      "en": "Could not find payment at Resurs Bank.",
-      "sv": "Kunde inte hitta betalning hos Resurs Bank."
+      "en": "Failed to resolve refund with %s",
+      "sv": "Kunde inte hitta återbetalning med %s"
     }
   },
   {
@@ -1008,7 +1008,7 @@
     }
   },
   {
-    "id": "modify-action-failed",
+    "id": "modify-order-action-failed",
     "translation": {
       "en": "Updating payment at Resurs Bank failed. The payment may have been partially, or completely, cancelled. Please review the payment to confirm it's correct. You can otherwise attempt to correct it by saving your order again.",
       "sv": "Kunde inte uppdatera betalningen hos Resurs Bank. Betalningen kan vara delvis, eller helt, annullerad. Vönligen bekräfta att betalningen är korrekt. Du kan annars försöka korrigera potentiella problem genom att spara om din beställning igen."
@@ -1026,6 +1026,13 @@
     "translation": {
       "en": "Failed to change order status from %s to %s. Action is not valid against Resurs Bank payment.",
       "sv": "Kunde inte ändra beställningens status från %s till %s. Åtgärden är inte giltig mot betalning hos Resurs Bank."
+    }
+  },
+  {
+    "id": "cannot-remove-refund",
+    "translation": {
+      "en": "Refunds cannot be removed from Resurs Bank payment.",
+      "sv": "Återbetalningar kan inte tas bort from Resurs Bank betalningar."
     }
   }
 ]
