@@ -217,6 +217,9 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
          * @param {any} data
          */
         const handleFetchAddressData = (data) => {
+            if (typeof data === 'undefined') {
+                return;
+            }
             if (data.error) {
                 if (data.error === 'Invalid POST data.') {
                     setFetchAddressMessage(
