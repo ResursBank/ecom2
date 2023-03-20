@@ -1032,7 +1032,7 @@
     "id": "payment-action-modify-desc",
     "translation": {
       "en": "Reflect changes applied on an order to the corresponding payment at Resurs Bank.",
-      "sv": "Reflektera ändringar på en beställning till motsvarande betalning hos Resurs Bank."
+      "sv": "Uppdatera ändringar på en beställning till motsvarande betalning hos Resurs Bank."
     }
   },
   {
