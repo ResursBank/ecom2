@@ -882,10 +882,24 @@
     }
   },
   {
-    "id": "automatic-order-management-on-status",
+    "id": "automatic-order-management-on-complete",
     "translation": {
-      "en": "%s the Resurs Bank payment automatically when the corresponding order is assigned the status %s.",
-      "sv": "%s automatiskt betalningen hos Resurs Bank när motsvarande beställning erhåller status %s."
+      "en": "Capture the Resurs Bank payment automatically when an order is completed.",
+      "sv": "Debitera automatiskt betalningen hos Resurs Bank när en beställning blir färdigbehandlad."
+    }
+  },
+  {
+    "id": "automatic-order-management-on-cancel",
+    "translation": {
+      "en": "Cancel the Resurs Bank payment automatically when an order is cancelled.",
+      "sv": "Annullera automatiskt betalningen hos Resurs Bank när en beställning avbryts."
+    }
+  },
+  {
+    "id": "automatic-order-management-on-refund",
+    "translation": {
+      "en": "Refund the Resurs Bank payment automatically when an order is refunded.",
+      "sv": "Kreditera automatiskt betalningen hos Resurs Bank när en beställning krediteras."
     }
   },
   {
@@ -1032,7 +1046,7 @@
     "id": "payment-action-modify-desc",
     "translation": {
       "en": "Reflect changes applied on an order to the corresponding payment at Resurs Bank.",
-      "sv": "Reflektera ändringar på en beställning till motsvarande betalning hos Resurs Bank."
+      "sv": "Uppdatera ändringar på en beställning till motsvarande betalning hos Resurs Bank."
     }
   },
   {
