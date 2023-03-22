@@ -490,6 +490,20 @@
     }
   },
   {
+    "id": "payment-status-refunded",
+    "translation": {
+      "en": "Payment refunded.",
+      "sv": "Betalningen återbetalades."
+    }
+  },
+  {
+    "id": "payment-status-captured",
+    "translation": {
+      "en": "Payment captured.",
+      "sv": "Betalningen debiterades."
+    }
+  },
+  {
     "id": "customer-landingpage-return",
     "translation": {
       "en": "Customer returned from external source.",
@@ -828,8 +842,8 @@
   {
     "id": "callback-amount",
     "translation": {
-      "en": "Amount $%s in Resurs' system",
-      "sv": "Summa %s kr i Resurs system"
+      "en": "Amount %s in Resurs' system.",
+      "sv": "Summa %s i Resurs system."
     }
   },
   {
@@ -1033,6 +1047,20 @@
     "translation": {
       "en": "Refunds cannot be removed from Resurs Bank payment.",
       "sv": "Återbetalningar kan inte tas bort from Resurs Bank betalningar."
+    }
+  },
+  {
+    "id": "configure-credentials",
+    "translation": {
+      "en": "Please configure user credentials for the API.",
+      "sv": "Vänligen konfigurera användaruppgifter för API:et."
+    }
+  },
+  {
+    "id": "configure-store",
+    "translation": {
+      "en": "Please configure store for API connection.",
+      "sv": "Vänligen konfigurera butik för API kontakt."
     }
   }
 ]
