@@ -931,10 +931,10 @@
     }
   },
   {
-    "id": "server-response",
+    "id": "reason",
     "translation": {
-      "en": "Server response",
-      "sv": "Serversvar"
+      "en": "Reason",
+      "sv": "Orsak"
     }
   },
   {
