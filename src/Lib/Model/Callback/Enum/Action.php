@@ -17,4 +17,5 @@ enum Action: string
     case CAPTURE = 'CAPTURE';
     case REFUND = 'REFUND';
     case CANCEL = 'CANCEL';
+    case MODIFY_ORDER = 'MODIFY_ORDER';
 }
