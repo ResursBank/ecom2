@@ -16,6 +16,6 @@ namespace Resursbank\Ecom\Lib\Api;
  */
 enum MerchantPortal: string
 {
-    case TEST = 'https://web-integration-mock-merchant-portal.test.resurs.loc/login';
+    case TEST = 'https://merchantportal.integration.resurs.com/login';
     case PROD = 'https://merchantportal.resurs.com/login';
 }
