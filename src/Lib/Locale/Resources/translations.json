@@ -1076,5 +1076,12 @@
       "en": "Please configure store for API connection.",
       "sv": "Vänligen konfigurera butik för API kontakt."
     }
+  },
+  {
+    "id": "fee",
+    "translation": {
+      "en": "Fee",
+      "sv": "Avgift"
+    }
   }
 ]
