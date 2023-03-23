@@ -255,7 +255,7 @@
     "id": "updated-status-by-callback",
     "translation": {
       "en": "Callback from Resurs Bank updated the order status.",
-      "sv": "Callback från Resurs uppdaterade orderns status."
+      "sv": "Callback från Resurs uppdaterade beställningens status."
     }
   },
   {
@@ -779,8 +779,8 @@
   {
     "id": "refund-error-when-fetching-order-lines",
     "translation": {
-      "en": "Error encountered while attempting to fetch order lines. Aborting refund.",
-      "sv": "Ett fel uppstod när orderrader hämtades. Avbryter återbetalning."
+      "en": "Error encountered while attempting to fetch order lines from payment. Aborting refund.",
+      "sv": "Ett fel uppstod när orderrader hämtades från betalningen. Avbryter återbetalning."
     }
   },
   {
@@ -938,10 +938,10 @@
     }
   },
   {
-    "id": "failed-to-fetch-order-data-from-the-server",
+    "id": "failed-to-fetch-payment-data-from-the-server",
     "translation": {
-      "en": "Failed to fetch order data from the server.",
-      "sv": "Kunde ej hämta orderdata från servern."
+      "en": "Failed to fetch the payment.",
+      "sv": "Kunde ej hämta betalningen."
     }
   },
   {
