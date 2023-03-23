@@ -93,7 +93,8 @@ class PartPayment extends Widget
         private readonly float $amount,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
-        public readonly string $apiUrl
+        public readonly string $apiUrl,
+        public readonly int $decimals = 2
     ) {
         $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
@@ -172,7 +173,7 @@ class PartPayment extends Widget
                 num: $this->cost->monthlyCost,
                 precision: 2
             ),
-            decimals: 2,
+            decimals: $this->decimals,
             decimal_separator: ',',
             thousands_separator: ' '
         );
