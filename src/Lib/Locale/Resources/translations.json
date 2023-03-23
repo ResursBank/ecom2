@@ -1083,5 +1083,19 @@
       "en": "Fee",
       "sv": "Avgift"
     }
+  },
+  {
+    "id": "payment-cancelled-try-again",
+    "translation": {
+      "en": "Payment was canceled, please try again.",
+      "sv": "Betalningen avbröts, vänligen försök igen."
+    }
+  },
+  {
+    "id": "payment-failed-try-again",
+    "translation": {
+      "en": "Payment failed, please try another payment method.",
+      "sv": "Betalningen misslyckades, vänligen välj en annan betalmetod."
+    }
   }
 ]
