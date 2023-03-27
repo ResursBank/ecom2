@@ -41,9 +41,14 @@ class Mapi
     public const PAYMENT_ROUTE = 'v2/payments';
 
     /**
-     * Prefix route name for payment based API calls.
+     * Prefix route name for customer related API calls.
      */
     public const CUSTOMER_ROUTE = 'v2/customers';
+
+    /**
+     * Prefix route name for callback related API calls.
+     */
+    public const CALLBACK_ROUTE = 'v2/callbacks';
 
     public function __construct(
         private readonly StringValidation $stringValidation = new StringValidation()

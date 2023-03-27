@@ -237,4 +237,16 @@ class StringValidation
 
         return true;
     }
+
+    /**
+     * @throws IllegalValueException
+     */
+    public function isUrl(string $value): bool
+    {
+        if (!filter_var(value: $value, filter: FILTER_VALIDATE_URL)) {
+            throw new IllegalValueException(message: 'Not a valid URL.');
+        }
+
+        return true;
+    }
 }
