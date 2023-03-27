@@ -74,7 +74,7 @@ class Post
             ),
             requestMethod: RequestMethod::POST,
             payload: $this->params,
-            contentType: ContentType::URL,
+            contentType: ContentType::JSON,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON
         );

@@ -1132,5 +1132,19 @@
       "en": "Test callbacks",
       "sv": "Testa callbacks"
     }
+  },
+  {
+    "id": "failed-to-render-clear-cache-button",
+    "translation": {
+      "en": "Failed to render button to clear cache.",
+      "sv": "Kunde inte render knapp för att rensa cache."
+    }
+  },
+  {
+    "id": "failed-to-render-test-callbacks-button",
+    "translation": {
+      "en": "Failed to render button to test callbacks.",
+      "sv": "Kunde inte render knapp för att testa callbacks."
+    }
   }
 ]
