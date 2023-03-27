@@ -1097,5 +1097,40 @@
       "en": "Payment failed, please try another payment method.",
       "sv": "Betalningen misslyckades, vänligen välj en annan betalmetod."
     }
+  },
+  {
+    "id": "callbacks",
+    "translation": {
+      "en": "Callbacks",
+      "sv": "Callbacks"
+    }
+  },
+  {
+    "id": "callback-test-failed",
+    "translation": {
+      "en": "Failed to initiate callback test.",
+      "sv": "Kunde inte initiera callback test."
+    }
+  },
+  {
+    "id": "callback-test-succeeded",
+    "translation": {
+      "en": "Callback test initiated.",
+      "sv": "Callback test har initierats."
+    }
+  },
+  {
+    "id": "callback-test-received-at",
+    "translation": {
+      "en": "Test callback received at",
+      "sv": "Test callback inkom"
+    }
+  },
+  {
+    "id": "test-callbacks",
+    "translation": {
+      "en": "Test callbacks",
+      "sv": "Testa callbacks"
+    }
   }
 ]

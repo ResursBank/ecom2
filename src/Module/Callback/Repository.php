@@ -62,7 +62,7 @@ class Repository
 
         $request = new Post(
             model: TestResponse::class,
-            route: Mapi::CALLBACK_ROUTE . "/test",
+            route: Mapi::CALLBACK_ROUTE . '/test',
             params: ['url' => $url]
         );
 
