@@ -9,12 +9,25 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Callback;
 
+use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
 use Resursbank\Ecom\Lib\Model\Callback\Management;
+use Resursbank\Ecom\Lib\Model\Callback\TestResponse;
+use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Throwable;
 
 /**
@@ -23,6 +36,46 @@ use Throwable;
 class Repository
 {
     use ExceptionLog;
+
+    /**
+     * Trigger test callback.
+     *
+     * @return TestResponse
+     * @throws ConfigException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     */
+    public static function triggerTest(
+        string $url,
+        StringValidation $stringValidation = new StringValidation()
+    ): TestResponse {
+        Config::getLogger()->debug(message: 'Triggering test callback.');
+
+        $stringValidation->isUrl(value: $url);
+
+        $request = new Post(
+            model: TestResponse::class,
+            route: Mapi::CALLBACK_ROUTE . '/test',
+            params: ['url' => $url]
+        );
+
+        $response = $request->call();
+
+        if (!$response instanceof TestResponse) {
+            throw new IllegalValueException(
+                message: 'Unexpected model instance returned from test callback.'
+            );
+        }
+
+        return $response;
+    }
 
     /**
      * @throws ConfigException

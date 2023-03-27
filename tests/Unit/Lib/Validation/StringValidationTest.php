@@ -581,4 +581,52 @@ final class StringValidationTest extends TestCase
         $this->expectException(exception: IllegalValueException::class);
         $this->stringValidation->isSwedishOrg(value: '158997368573');
     }
+
+    /**
+     * Assert isUrl throws when given an illegal value and returns TRUE when
+     * provided a valid URL.
+     *
+     * @throws IllegalValueException
+     */
+    public function testIsUrl(): void
+    {
+        $this->assertTrue(
+            condition: $this->stringValidation->isUrl(
+                value: 'https://www.resursbank.com/'
+            )
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isUrl(
+                value: 'http://www.resursbank.com/'
+            )
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isUrl(
+                value: 'ftp://www.resursbank.com/'
+            )
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isUrl(
+                value: 'https://www.resursbank.com'
+            )
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isUrl(
+                value: 'https://www.resursbank.com/some/resource'
+            )
+        );
+
+        $this->assertTrue(
+            condition: $this->stringValidation->isUrl(
+                value: 'https://www.resursbank.com/some/resource.extension'
+            )
+        );
+
+        $this->expectException(exception: IllegalValueException::class);
+        $this->stringValidation->isUrl(value: 'NoURL');
+    }
 }

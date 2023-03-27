@@ -1097,5 +1097,54 @@
       "en": "Payment failed, please try another payment method.",
       "sv": "Betalningen misslyckades, vänligen välj en annan betalmetod."
     }
+  },
+  {
+    "id": "callbacks",
+    "translation": {
+      "en": "Callbacks",
+      "sv": "Callbacks"
+    }
+  },
+  {
+    "id": "callback-test-failed",
+    "translation": {
+      "en": "Failed to start callback test.",
+      "sv": "Kunde inte påbörja test av callback."
+    }
+  },
+  {
+    "id": "callback-test-succeeded",
+    "translation": {
+      "en": "Callback test succeeded.",
+      "sv": "Test av callback slutfört."
+    }
+  },
+  {
+    "id": "callback-test-received-at",
+    "translation": {
+      "en": "Callback test received at",
+      "sv": "Test av callback inkom"
+    }
+  },
+  {
+    "id": "test-callbacks",
+    "translation": {
+      "en": "Test callbacks",
+      "sv": "Testa callbacks"
+    }
+  },
+  {
+    "id": "failed-to-render-clear-cache-button",
+    "translation": {
+      "en": "Failed to render button to clear cache.",
+      "sv": "Kunde inte rendera knapp för att rensa cache."
+    }
+  },
+  {
+    "id": "failed-to-render-test-callbacks-button",
+    "translation": {
+      "en": "Failed to render button to test callbacks.",
+      "sv": "Kunde inte rendera knapp för att testa callbacks."
+    }
   }
 ]
