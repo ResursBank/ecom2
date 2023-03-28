@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+use Resursbank\Ecom\Lib\Locale\Translator;
+
+?>
+
+<div class="rb-si">
+  <dl>
+    <dt><?= Translator::translate(phraseId: 'plugin-version') ?></dt>
+    <dd><?= $this->pluginVersion ?></dd>
+    <dt><?= Translator::translate(phraseId: 'php-version') ?></dt>
+    <dd><?= $this->phpVersion ?></dd>
+    <dt><?= Translator::translate(phraseId: 'ecom-version') ?></dt>
+    <dd><?= $this->ecomVersion ?></dd>
+    <dt><?= Translator::translate(phraseId: 'external-ip') ?></dt>
+    <dd><?= $this->externalIp ?></dd>
+  </dl>
+</div>
