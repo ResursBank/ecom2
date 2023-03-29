@@ -20,6 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
+
 use function defined;
 
 /**
@@ -63,6 +64,7 @@ class SupportInfo extends Widget
         if (defined(constant_name: OPENSSL_VERSION_TEXT)) {
             return OPENSSL_VERSION_TEXT;
         }
+
         return '';
     }
 
