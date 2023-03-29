@@ -1167,12 +1167,5 @@
       "en": "Ecom version",
       "sv": "Ecom-version"
     }
-  },
-  {
-    "id": "external-ip",
-    "translation": {
-      "en": "External IP address",
-      "sv": "Extern IP-adress"
-    }
   }
 ]
