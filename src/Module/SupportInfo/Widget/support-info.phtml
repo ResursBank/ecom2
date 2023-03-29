@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 use Resursbank\Ecom\Lib\Locale\Translator;
 
@@ -10,10 +15,10 @@ use Resursbank\Ecom\Lib\Locale\Translator;
     <dt><?= Translator::translate(phraseId: 'plugin-version') ?></dt>
     <dd><?= $this->pluginVersion ?></dd>
     <dt><?= Translator::translate(phraseId: 'php-version') ?></dt>
-    <dd><?= $this->phpVersion ?></dd>
+    <dd><?= $this->getPhpVersion() ?></dd>
     <dt><?= Translator::translate(phraseId: 'ecom-version') ?></dt>
-    <dd><?= $this->ecomVersion ?></dd>
+    <dd><?= $this->getEcomVersion() ?></dd>
     <dt><?= Translator::translate(phraseId: 'external-ip') ?></dt>
-    <dd><?= $this->externalIp ?></dd>
+    <dd><?= $this->getExternalIp() ?></dd>
   </dl>
 </div>
