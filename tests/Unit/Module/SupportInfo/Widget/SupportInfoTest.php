@@ -11,6 +11,8 @@ namespace Resursbank\EcomTest\Unit\Module\SupportInfo\Widget;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -19,8 +21,16 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\SupportInfo\Widget\SupportInfo;
 
+/**
+ * Unit tests for the Support Info widget class.
+ */
 class SupportInfoTest extends TestCase
 {
+    /**
+     * Initialize the environment.
+     *
+     * @throws EmptyValueException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,17 +50,25 @@ class SupportInfoTest extends TestCase
         );
     }
 
+    /**
+     * Assert that the widget appears to render as intended.
+     *
+     * @throws FilesystemException
+     */
     public function testRenderWidget(): void
     {
         $pluginVersion = '1.3.3.7';
-        $widget = new SupportInfo(
-            pluginVersion: $pluginVersion
-        );
+        $widget = new SupportInfo(pluginVersion: $pluginVersion);
 
         $this->assertStringContainsString(
             needle: '<dd>' . $pluginVersion . '</dd>',
             haystack: $widget->getHtml(),
             message: 'Support Info widget is missing the plugin version'
+        );
+        $this->assertStringContainsString(
+            needle: '<dd>' . PHP_VERSION . '</dd>',
+            haystack: $widget->getHtml(),
+            message: 'Support Info widget is missing the PHP version'
         );
     }
 }
