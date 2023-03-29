@@ -20,6 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
+use function defined;
 
 /**
  * Support info widget which displays basic information about the state of the library.
@@ -52,6 +53,17 @@ class SupportInfo extends Widget
     public function getPhpVersion(): string
     {
         return PHP_VERSION;
+    }
+
+    /**
+     * Fetches the current OpenSSL version.
+     */
+    public function getSslVersion(): string
+    {
+        if (defined(constant_name: OPENSSL_VERSION_TEXT)) {
+            return OPENSSL_VERSION_TEXT;
+        }
+        return '';
     }
 
     /**

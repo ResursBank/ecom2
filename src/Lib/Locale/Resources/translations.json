@@ -1167,5 +1167,12 @@
       "en": "Ecom version",
       "sv": "Ecom-version"
     }
+  },
+  {
+    "id": "ssl-version",
+    "translation": {
+      "en": "SSL version",
+      "sv": "SSL-version"
+    }
   }
 ]

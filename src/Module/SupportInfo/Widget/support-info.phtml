@@ -23,5 +23,9 @@ use Resursbank\Ecom\Lib\Locale\Translator;
     <dt><?= Translator::translate(phraseId: 'ecom-version') ?></dt>
     <dd><?= $this->getEcomVersion() ?></dd>
     <?php endif; ?>
+    <?php if ($this->getSslVersion()): ?>
+    <dt><?= Translator::translate(phraseId: 'ssl-version') ?></dt>
+    <dd><?= $this->getSslVersion() ?></dd>
+    <?php endif; ?>
   </dl>
 </div>
