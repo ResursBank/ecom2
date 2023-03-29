@@ -21,8 +21,6 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
 
-use function defined;
-
 /**
  * Support info widget which displays basic information about the state of the library.
  */
