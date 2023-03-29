@@ -1174,5 +1174,12 @@
       "en": "SSL version",
       "sv": "SSL-version"
     }
+  },
+  {
+    "id": "curl-version",
+    "translation": {
+      "en": "Curl version",
+      "sv": "Curl-version"
+    }
   }
 ]

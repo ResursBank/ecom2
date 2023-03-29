@@ -63,6 +63,14 @@ class SupportInfo extends Widget
     }
 
     /**
+     * Fetches the current Curl version.
+     */
+    public function getCurlVersion(): string
+    {
+        return curl_version()['version'];
+    }
+
+    /**
      *  Attempt to fetch the current version of Ecom from the composer.json file.
      *
      * @throws ConfigException
