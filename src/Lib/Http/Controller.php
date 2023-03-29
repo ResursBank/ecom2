@@ -113,7 +113,14 @@ class Controller
 
         try {
             return DataConverter::stdClassToType(object: $obj, type: $model);
-        } catch (Throwable | Error) {
+        } catch (Throwable $error) {
+            // Attempt logging actual error.
+            try {
+                Config::getLogger()->error(message: $error);
+            } catch (Throwable) {
+                // Do nothing.
+            }
+
             throw new HttpException(
                 message: $this->translateError(phraseId: 'invalid-post-data'),
                 code: 415

@@ -7,83 +7,46 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Callback;
+namespace Resursbank\Ecom\Lib\Model\Store;
 
-use JsonException;
-use ReflectionException;
-use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Locale\Translator;
-use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
+use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Implementation of Authorization callback data.
+ * Request model to collect stores based on credentials. Useful for AJAX
+ * requests to collect a list of available stores before credentials are
+ * actually saved (enter credentials, reload list of stores, select store).
  */
-class Authorization extends Model implements CallbackInterface
+class GetStoresRequest extends Model
 {
     /**
      * @throws EmptyValueException
-     * @throws IllegalValueException
      */
     public function __construct(
-        public readonly string $paymentId,
-        public readonly Status $status,
-        public readonly string $created,
+        public readonly Environment $environment,
+        public readonly string $clientId,
+        public readonly string $clientSecret,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-        $this->validatePaymentId();
-        $this->validateCreated();
-    }
-
-    /**
-     * Property wrapper to fulfill contract.
-     */
-    public function getPaymentId(): string
-    {
-        return $this->paymentId;
-    }
-
-    /**
-     * Get note explaining what happened.
-     *
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws TranslationException
-     * @throws IllegalTypeException
-     */
-    public function getNote(): string
-    {
-        return sprintf(
-            Translator::translate(phraseId: 'authorization-callback-received'),
-            $this->status->value
-        );
+        $this->validateClientId();
+        $this->validateClientSecret();
     }
 
     /**
      * @throws EmptyValueException
-     * @throws IllegalValueException
      */
-    private function validatePaymentId(): void
+    private function validateClientId(): void
     {
-        $this->stringValidation->notEmpty(value: $this->paymentId);
-        $this->stringValidation->isUuid(value: $this->paymentId);
+        $this->stringValidation->notEmpty(value: $this->clientId);
     }
 
     /**
      * @throws EmptyValueException
-     * @throws IllegalValueException
      */
-    private function validateCreated(): void
+    private function validateClientSecret(): void
     {
-        $this->stringValidation->notEmpty(value: $this->created);
-        $this->stringValidation->isTimestampDate(value: $this->created);
+        $this->stringValidation->notEmpty(value: $this->clientSecret);
     }
 }

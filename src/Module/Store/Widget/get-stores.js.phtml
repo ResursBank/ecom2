@@ -1,0 +1,221 @@
+<?php
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+
+/** @var Resursbank\Ecom\Module\Store\Widget\GetStores $this */
+?>
+
+document.addEventListener('DOMContentLoaded', function () {
+    (function () {
+        'use strict';
+
+        /**
+         * Whether an AJAX request is active.
+         *
+         * @type {boolean}
+         */
+        let FETCHING = false;
+
+        /**
+         * Select element containing available stores.
+         *
+         * @type {HTMLSelectElement}
+         */
+        const SELECT_STORE = document.getElementById('<?= $this->storeSelectId ?>');
+
+        /**
+         * Select element containing available environment values.
+         *
+         * @type {HTMLSelectElement}
+         */
+        const SELECT_ENVIRONMENT = document.getElementById('<?= $this->environmentSelectId ?>');
+
+        /**
+         * Input element for client id value.
+         *
+         * @type {HTMLInputElement}
+         */
+        const INPUT_CLIENT_ID = document.getElementById('<?= $this->clientIdInputId ?>');
+
+        /**
+         * Input element for client secret value.
+         *
+         * @type {HTMLInputElement}
+         */
+        const INPUT_CLIENT_SECRET = document.getElementById('<?= $this->clientSecretInputId ?>');
+
+        /**
+         * Retrieve array of select / input elements we wish to observe when
+         * fetching stores.
+         *
+         * @returns {[HTMLSelectElement,HTMLInputElement,HTMLInputElement]}
+         */
+        const getInputElements = () => {
+            return [SELECT_ENVIRONMENT, INPUT_CLIENT_ID, INPUT_CLIENT_SECRET];
+        }
+
+        /**
+         * Make sure all elements we expect are available.
+         *
+         * @returns {boolean}
+         */
+        const validateElements = () => {
+            return (
+                SELECT_STORE instanceof HTMLSelectElement &&
+                SELECT_ENVIRONMENT instanceof HTMLSelectElement &&
+                INPUT_CLIENT_ID instanceof HTMLInputElement &&
+                INPUT_CLIENT_SECRET instanceof HTMLInputElement
+            );
+        };
+
+        /**
+         * Disable / enable AJAX request. We will also reflect the state to the
+         * elements we observe to execute the request, and show a spinner icon
+         * indicating an AJAX request is ongoing.
+         *
+         * @param {boolean} state
+         */
+        const toggleFetch = (state) => {
+            FETCHING = Boolean(state);
+
+            getInputElements().forEach((el) => {
+                if (FETCHING) {
+                    el.setAttribute('disabled', '');
+                } else {
+                    el.removeAttribute('disabled');
+                }
+            });
+
+            if (FETCHING) {
+                SELECT_STORE.setAttribute('disabled', '');
+                SELECT_STORE.parentElement.classList.add('<?= $this->spinnerClass ?>');
+                console.log(SELECT_STORE.className);
+            } else {
+                SELECT_STORE.removeAttribute('disabled');
+                SELECT_STORE.parentElement.classList.remove('<?= $this->spinnerClass ?>');
+            }
+        };
+
+        /**
+         * Perform AJAX request to fetch stores.
+         */
+        const fetchStores = () => {
+            if (FETCHING || getInputElements().some((el) => el.value === '')) {
+                return;
+            }
+
+            toggleFetch(true);
+
+            for (let i = 0; i < SELECT_STORE.options.length; i++) {
+                SELECT_STORE.options[i].remove();
+            }
+
+            SELECT_STORE.length = 0;
+
+            let clientId = INPUT_CLIENT_ID.value;
+            let clientSecret = INPUT_CLIENT_SECRET.value;
+            let environment = SELECT_ENVIRONMENT.value;
+
+            fetch('<?= $this->fetchUrl ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({environment, clientId, clientSecret})
+            })
+                .then(handleFetchResponse)
+                .then(handleFetchData)
+                .then(() => {
+                    toggleFetch(false)
+                })
+                .catch(handleFetchFatalError);
+
+        };
+
+        /**
+         * Handle network/JS errors during fetch request.
+         *
+         * @param {any} error
+         */
+        const handleFetchFatalError = (error) => {
+            if (error instanceof Error) {
+                errorHandler(
+                    '<?= Translator::translate(phraseId: 'get-address-server-error') ?>'
+                );
+            }
+        }
+
+        /**
+         * Resolve JSON data from request response.
+         *
+         * @param {Response} response
+         * @returns {Promise<any>|undefined}
+         */
+        const handleFetchResponse = (response) => {
+            if (!response.ok) {
+                errorHandler(
+                    '<?= Translator::translate(phraseId: 'get-address-server-error') ?>'
+                );
+            } else {
+                return response.json();
+            }
+        };
+
+        /**
+         * Apply new list of stores to stores select element.
+         *
+         * @param {any} data
+         */
+        const handleFetchData = (data) => {
+            if (typeof data === 'undefined') {
+                return;
+            }
+
+            if (data.error) {
+                errorHandler(data.error);
+            } else {
+                for (const [value, text] of Object.entries(data)) {
+                    let option = document.createElement('option');
+                    option.value = value;
+                    option.text = text;
+
+                    SELECT_STORE.add(option);
+                }
+            }
+        };
+
+        /**
+         * Append onchange listener to environment, client id and client secret
+         * inputs, to update list of available store when their values change.
+         */
+        const init = () => {
+            getInputElements().forEach((el) => {
+                el.addEventListener('change', fetchStores);
+            });
+        };
+
+        /**
+         * Error handler.
+         *
+         * @param {string} message
+         */
+        const errorHandler = (message) => {
+            alert(String(message));
+
+            if (FETCHING) {
+                toggleFetch(false);
+            }
+        };
+
+        // Start script if all elements we require are present.
+        if (validateElements()) {
+            init();
+        }
+    }());
+});

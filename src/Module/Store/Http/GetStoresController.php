@@ -7,10 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\AnnuityFactor\Http;
+namespace Resursbank\Ecom\Module\Store\Http;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
@@ -22,72 +23,31 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Http\Controller;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Store\GetStoresRequest;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
 use Resursbank\Ecom\Module\AnnuityFactor\Models\DurationsByMonthRequest;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
+use Resursbank\Ecom\Module\Store\Models\StoreCollection;
+use Resursbank\Woocommerce\Modules\Api\Connection;
 use Throwable;
 
 use function json_encode;
 
+/**
+ * Basic controller functionality to collect stores based on credentials.
+ */
 class GetStoresController extends Controller
 {
     /**
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     */
-    public function exec(
-        string $storeId,
-        string $paymentMethodId
-    ): string {
-        $stringValidation = new StringValidation();
-        $return = [];
-
-        try {
-            if ($storeId === '') {
-                throw new IllegalValueException(
-                    message: 'No storeId available'
-                );
-            }
-
-            $stringValidation->isUuid(value: $paymentMethodId);
-
-            $annuityFactors = Repository::getAnnuityFactors(
-                storeId: $storeId,
-                paymentMethodId: $paymentMethodId
-            );
-
-            /** @var AnnuityInformation $annuityFactor */
-            foreach ($annuityFactors->content as $annuityFactor) {
-                $return[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
-            }
-        } catch (Throwable $exception) {
-            throw $exception;
-        }
-
-        return json_encode(
-            value: $return,
-            flags: JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT
-        );
-    }
-
-    /**
      * @throws HttpException
      */
-    public function getRequestData(): DurationsByMonthRequest
+    public function getRequestData(): GetStoresRequest
     {
-        $result = $this->getRequestModel(model: DurationsByMonthRequest::class);
+        $result = $this->getRequestModel(model: GetStoresRequest::class);
 
-        if (!$result instanceof DurationsByMonthRequest) {
+        if (!$result instanceof GetStoresRequest) {
             throw new HttpException(
                 message: $this->translateError(phraseId: 'invalid-post-data'),
                 code: 415
