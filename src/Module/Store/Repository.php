@@ -16,10 +16,10 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
@@ -37,17 +37,17 @@ class Repository
     use ExceptionLog;
 
     /**
-     * @param array $sort
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
+     * @throws ConfigException
      */
     public static function getStores(
         int $size = 999999,
@@ -59,15 +59,7 @@ class Repository
             $result = $cache->read();
 
             if (!$result instanceof StoreCollection) {
-                $result = self::getApi(
-                    size: $size,
-                    page: $page,
-                    sort: $sort
-                )->call();
-
-                if (!$result instanceof StoreCollection) {
-                    throw new ApiException(message: 'Invalid API response.');
-                }
+                $result = self::getApi(size: $size, page: $page, sort: $sort);
 
                 $cache->write(data: $result);
             }
@@ -81,7 +73,7 @@ class Repository
     }
 
     /**
-     * @param array $sort
+     * Retrieve list of stores stashed in cache.
      */
     public static function getCache(
         int $size = 999999,
@@ -98,19 +90,32 @@ class Repository
     }
 
     /**
-     * @param array $sort
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public static function getApi(
         int $size = 999999,
         ?int $page = null,
         array $sort = []
-    ): Get {
-        return new Get(
+    ): StoreCollection {
+        $result = (new Get(
             model: Store::class,
             route: Mapi::STORE_ROUTE,
             params: compact('size', 'page', 'sort'),
             extractProperty: 'content'
-        );
+        ))->call();
+
+        if (!$result instanceof StoreCollection) {
+            throw new ApiException(message: 'Invalid API response.');
+        }
+
+        return $result;
     }
 }
