@@ -20,7 +20,6 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
@@ -29,7 +28,6 @@ use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\Store\Models\Store;
 use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 use Throwable;
-use function Amp\call;
 
 /**
  * Interaction with Store entities and related functionality.
@@ -39,7 +37,6 @@ class Repository
     use ExceptionLog;
 
     /**
-     * @return StoreCollection
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -62,11 +59,7 @@ class Repository
             $result = $cache->read();
 
             if (!$result instanceof StoreCollection) {
-                $result = self::getApi(
-                    size: $size,
-                    page: $page,
-                    sort: $sort
-                );
+                $result = self::getApi(size: $size, page: $page, sort: $sort);
 
                 $cache->write(data: $result);
             }
@@ -97,7 +90,6 @@ class Repository
     }
 
     /**
-     * @return StoreCollection
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

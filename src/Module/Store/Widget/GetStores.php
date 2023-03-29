@@ -9,11 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Store\Widget;
 
-use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**

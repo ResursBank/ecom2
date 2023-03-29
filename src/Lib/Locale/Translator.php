@@ -91,9 +91,6 @@ abstract class Translator
     /**
      * Takes an english phrase and translates it to the configured language.
      *
-     * @param string $phraseId
-     * @param string|null $translationFile
-     * @return string
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
