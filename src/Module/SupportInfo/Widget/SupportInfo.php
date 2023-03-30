@@ -59,7 +59,10 @@ class SupportInfo extends Widget
      */
     public function getSslVersion(): string
     {
-        return OPENSSL_VERSION_TEXT;
+        if (defined(constant_name: 'OPENSSL_VERSION_TEXT')) {
+            return OPENSSL_VERSION_TEXT;
+        }
+        return '';
     }
 
     /**
