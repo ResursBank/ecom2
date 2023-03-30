@@ -62,6 +62,7 @@ class SupportInfo extends Widget
         if (defined(constant_name: 'OPENSSL_VERSION_TEXT')) {
             return OPENSSL_VERSION_TEXT;
         }
+
         return '';
     }
 
