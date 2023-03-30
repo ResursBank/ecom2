@@ -1148,6 +1148,41 @@
     }
   },
   {
+    "id": "plugin-version",
+    "translation": {
+      "en": "Plugin version",
+      "sv": "Pluginversion"
+    }
+  },
+  {
+    "id": "php-version",
+    "translation": {
+      "en": "PHP version",
+      "sv": "PHP-version"
+    }
+  },
+  {
+    "id": "ecom-version",
+    "translation": {
+      "en": "Ecom version",
+      "sv": "Ecom-version"
+    }
+  },
+  {
+    "id": "ssl-version",
+    "translation": {
+      "en": "SSL version",
+      "sv": "SSL-version"
+    }
+  },
+  {
+    "id": "curl-version",
+    "translation": {
+      "en": "Curl version",
+      "sv": "Curl-version"
+    }
+  },
+  {
     "id": "failed-initializing-store-selector-assistant",
     "translation": {
       "en": "Failed to load store selection assistant. After changing API credentials, please reload the page and select the appropriate store.",
