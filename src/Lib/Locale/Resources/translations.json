@@ -1148,6 +1148,20 @@
     }
   },
   {
+    "id": "content-render-failed",
+    "translation": {
+      "en": "Failed to render content.",
+      "sv": "Kunde inte rendera innehållet."
+    }
+  },
+  {
+    "id": "support-info",
+    "translation": {
+      "en": "Support Info",
+      "sv": "Supportinformation"
+    }
+  },
+  {
     "id": "plugin-version",
     "translation": {
       "en": "Plugin version",
