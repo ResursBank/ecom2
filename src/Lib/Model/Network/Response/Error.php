@@ -13,7 +13,6 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use stdClass;
 
 /**
  * Response from some CURL requests contains an error trace.

@@ -17,6 +17,7 @@ use Resursbank\Ecom\Lib\Network\Curl\ErrorTranslator;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 use Throwable;
+
 use function is_string;
 
 /**

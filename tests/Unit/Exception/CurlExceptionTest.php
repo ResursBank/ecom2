@@ -12,9 +12,6 @@ namespace Resursbank\EcomTest\Unit\Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Lib\Model\Network\Response\Error;
-use Resursbank\EcomTest\Data\Models\ArrayPropertyDummy;
-use Resursbank\EcomTest\Data\Models\ObjectPropertyDummy;
-use Resursbank\EcomTest\Data\Models\SimpleDummy;
 
 /**
  * Verifies that the CurlException class works as intended.
@@ -48,7 +45,8 @@ class CurlExceptionTest extends TestCase
         $validJsonBody = new CurlException(
             message: 'Nothing',
             code: 450,
-            body: '{"traceId": "a2345s45sdf4sdf3wdf", "message": "some error message", "code": "SOME_CODE", "timestamp": "2023-12-10 18:55:12"}'
+            body: '{"traceId": "a2345s45sdf4sdf3wdf", "message": ' .
+                '"some error message", "code": "SOME_CODE", "timestamp": "2023-12-10 18:55:12"}'
         );
 
         $this->assertNull(actual: $boolBody->getError());

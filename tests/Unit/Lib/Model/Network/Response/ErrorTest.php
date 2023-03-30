@@ -7,12 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Model\Network;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Response;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Network\Header;
 use Resursbank\Ecom\Lib\Model\Network\Response\Error;
 
 /**
@@ -99,6 +98,7 @@ class ErrorTest extends TestCase
                 message: 'Empty value accepted for property timestamp.'
             );
         } catch (EmptyValueException) {
+            // This is expected.
         }
 
         try {
@@ -113,6 +113,7 @@ class ErrorTest extends TestCase
                 message: 'Illegal value accepted for property timestamp.'
             );
         } catch (IllegalValueException) {
+            // This is expected.
         }
     }
 }
