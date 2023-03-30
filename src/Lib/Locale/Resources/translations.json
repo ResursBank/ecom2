@@ -1148,6 +1148,13 @@
     }
   },
   {
+    "id": "support-info",
+    "translation": {
+      "en": "Support Info",
+      "sv": "Supportinformation"
+    }
+  },
+  {
     "id": "plugin-version",
     "translation": {
       "en": "Plugin version",
