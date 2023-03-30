@@ -40,17 +40,16 @@ class Repository
     /**
      * Trigger test callback.
      *
-     * @return TestResponse
+     * @throws ApiException
+     * @throws AuthException
      * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
      * @throws ValidationException
-     * @throws EmptyValueException
      */
     public static function triggerTest(
         string $url,

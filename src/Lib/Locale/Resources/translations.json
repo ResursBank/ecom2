@@ -800,8 +800,8 @@
   {
     "id": "cancel-success",
     "translation": {
-      "en": "Successfully cancelled %s of payment at Resurs Bank.",
-      "sv": "Lyckades annullera %s av betalningen hos Resurs Bank."
+      "en": "Successfully cancelled payment at Resurs Bank.",
+      "sv": "Lyckades annullera betalningen hos Resurs Bank."
     }
   },
   {
@@ -1017,29 +1017,29 @@
   {
     "id": "capture-action-failed",
     "translation": {
-      "en": "Capturing payment at Resurs Bank failed.",
-      "sv": "Betalningen kunde inte fångas hos Resurs Bank."
+      "en": "Capturing payment at Resurs Bank failed (%s).",
+      "sv": "Betalningen kunde inte fångas hos Resurs Bank (%s)."
     }
   },
   {
     "id": "refund-action-failed",
     "translation": {
-      "en": "Refunding payment at Resurs Bank failed.",
-      "sv": "Återbetalning hos Resurs Bank misslyckades."
+      "en": "Refunding payment at Resurs Bank failed (%s).",
+      "sv": "Återbetalning hos Resurs Bank misslyckades (%s)."
     }
   },
   {
     "id": "cancel-action-failed",
     "translation": {
-      "en": "Cancelling payment at Resurs Bank failed.",
-      "sv": "Annullering av betalning hos Resurs Bank misslyckades."
+      "en": "Cancelling payment at Resurs Bank failed (%s).",
+      "sv": "Annullering av betalning hos Resurs Bank misslyckades (%s)."
     }
   },
   {
     "id": "modify-order-action-failed",
     "translation": {
-      "en": "Updating payment at Resurs Bank failed. The payment may have been partially, or completely, cancelled. Please review the payment to confirm it's correct. You can otherwise attempt to correct it by saving your order again.",
-      "sv": "Kunde inte uppdatera betalningen hos Resurs Bank. Betalningen kan vara delvis, eller helt, annullerad. Vönligen bekräfta att betalningen är korrekt. Du kan annars försöka korrigera potentiella problem genom att spara om din beställning igen."
+      "en": "Updating payment at Resurs Bank failed (%s). The payment may have been partially, or completely, cancelled. Please review the payment to confirm it's correct. You can otherwise attempt to correct it by saving your order again.",
+      "sv": "Kunde inte uppdatera betalningen hos Resurs Bank (%s). Betalningen kan vara delvis, eller helt, annullerad. Vönligen bekräfta att betalningen är korrekt. Du kan annars försöka korrigera potentiella problem genom att spara om din beställning igen."
     }
   },
   {

@@ -33,7 +33,7 @@ class PaymentMethodTest extends TestCase
         'legalLinks' => [],
         'enabledForLegalCustomer' => true,
         'enabledForNaturalCustomer' => true,
-        'priceSignagePossible' => true
+        'priceSignagePossible' => true,
     ];
 
     /**
