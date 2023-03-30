@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Network;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Network\Header;
 use Resursbank\Ecom\Lib\Model\Network\Response\Error;
 
@@ -84,15 +85,19 @@ class ErrorTest extends TestCase
      */
     public function testTimestamp(): void
     {
+        $this->expectNotToPerformAssertions();
+
         try {
             new Error(
                 traceId: 'a123123g345345345345345345',
                 message: 'Something is very wrong.',
-                code: '',
-                timestamp: '2025-02-25 10:00'
+                code: 'SOME_CODE',
+                timestamp: ''
             );
 
-            $this->fail(message: 'Empty value accepted for property code.');
+            $this->fail(
+                message: 'Empty value accepted for property timestamp.'
+            );
         } catch (EmptyValueException) {
         }
 
@@ -100,12 +105,14 @@ class ErrorTest extends TestCase
             new Error(
                 traceId: 'a123123g345345345345345345',
                 message: 'Something is very wrong.',
-                code: '',
-                timestamp: '2025-02-25 10:00'
+                code: 'AN_ERROR',
+                timestamp: '1asd4sdf345ds'
             );
 
-            $this->fail(message: 'Empty value accepted for property code.');
-        } catch (EmptyValueException) {
+            $this->fail(
+                message: 'Illegal value accepted for property timestamp.'
+            );
+        } catch (IllegalValueException) {
         }
     }
 }
