@@ -11,23 +11,60 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 
 ?>
 
-<div class="rb-si">
-  <dl>
-    <?php if ($this->pluginVersion): ?>
-    <dt><?= Translator::translate(phraseId: 'plugin-version') ?></dt>
-    <dd><?= $this->pluginVersion ?></dd>
-    <?php endif; ?>
-    <dt><?= Translator::translate(phraseId: 'php-version') ?></dt>
-    <dd><?= $this->getPhpVersion() ?></dd>
-    <?php if ($this->getEcomVersion()): ?>
-    <dt><?= Translator::translate(phraseId: 'ecom-version') ?></dt>
-    <dd><?= $this->getEcomVersion() ?></dd>
-    <?php endif; ?>
-    <?php if ($this->getSslVersion()): ?>
-    <dt><?= Translator::translate(phraseId: 'ssl-version') ?></dt>
-    <dd><?= $this->getSslVersion() ?></dd>
-    <?php endif; ?>
-    <dt><?= Translator::translate(phraseId: 'curl-version') ?></dt>
-    <dd><?= $this->getCurlVersion() ?></dd>
-  </dl>
+<style>
+  .rb-si {
+    border-collapse: collapse;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+  }
+
+  .rb-si,
+  .rb-si * {
+    box-sizing: border-box;
+  }
+
+  .rb-si td {
+    padding: 15px 10px;
+  }
+
+  .rb-si table {
+    border-collapse: collapse;
+  }
+
+  .rb-si tbody {
+    color: white;
+    border: 1px solid #006464;
+  }
+
+  .rb-si tbody tr:last-child {
+    border-bottom: 1px solid #009b91;
+  }
+
+  .rb-si tbody tr:nth-child(even) {
+    background-color: #006464;
+  }
+
+  .rb-si tbody tr:nth-child(odd) {
+    background-color: #009b91;
+  }
+</style>
+<div class="rb-si"
+  <table>
+    <tbody>
+      <tr>
+        <td><?= Translator::translate(phraseId: 'plugin-version') ?></td>
+        <td><?= $this->pluginVersion ?></td>
+        <td><?= Translator::translate(phraseId: 'php-version') ?></td>
+        <td><?= $this->getPhpVersion() ?></td>
+        <td><?= Translator::translate(phraseId: 'ecom-version') ?></td>
+        <td><?= $this->getEcomVersion() ?></td>
+        <td><?= Translator::translate(phraseId: 'ssl-version') ?></td>
+        <td><?= $this->getSslVersion() ?></td>
+        <td><?= Translator::translate(phraseId: 'curl-version') ?></td>
+        <td><?= $this->getCurlVersion() ?></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
