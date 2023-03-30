@@ -800,8 +800,8 @@
   {
     "id": "cancel-success",
     "translation": {
-      "en": "Successfully cancelled %s of payment at Resurs Bank.",
-      "sv": "Lyckades annullera %s av betalningen hos Resurs Bank."
+      "en": "Successfully cancelled payment at Resurs Bank.",
+      "sv": "Lyckades annullera betalningen hos Resurs Bank."
     }
   },
   {
