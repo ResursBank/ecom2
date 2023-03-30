@@ -25,4 +25,20 @@ class ActionLogCollection extends Collection
     {
         parent::__construct(data: $data, type: ActionLog::class);
     }
+
+    /**
+     * Resolve action from collection based on id.
+     */
+    public function getByTransactionId(
+        string $id
+    ): ?ActionLog {
+        /** @var ActionLog $action */
+        foreach ($this->getData() as $action) {
+            if ($action->transactionId === $id) {
+                return $action;
+            }
+        }
+
+        return null;
+    }
 }

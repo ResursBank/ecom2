@@ -16,7 +16,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
-use Resursbank\EcomTest\Utilities\Random;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function in_array;
 
@@ -36,8 +36,8 @@ class PaymentMethodTest extends TestCase
     private function generatePaymentMethodWithType(Type $type): PaymentMethod
     {
         return new PaymentMethod(
-            id: Random::getUuid(),
-            name: Random::getUuid(),
+            id: Strings::getUuid(),
+            name: Strings::getUuid(),
             type: $type,
             minPurchaseLimit: 1,
             maxPurchaseLimit: 1000,
