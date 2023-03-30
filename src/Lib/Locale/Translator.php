@@ -91,12 +91,13 @@ abstract class Translator
     /**
      * Takes an english phrase and translates it to the configured language.
      *
+     * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
-     * @throws ConfigException
      * @see Config::$language
      */
     public static function translate(

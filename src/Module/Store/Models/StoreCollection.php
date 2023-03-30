@@ -25,4 +25,19 @@ class StoreCollection extends Collection
     {
         parent::__construct(data: $data, type: Store::class);
     }
+
+    /**
+     * Convert collection data to assoc array prepared for select elements.
+     */
+    public function getSelectList(): array
+    {
+        $result = [];
+
+        /** @var Store $store */
+        foreach ($this->getData() as $store) {
+            $result[$store->id] = "$store->nationalStoreId: $store->name";
+        }
+
+        return $result;
+    }
 }

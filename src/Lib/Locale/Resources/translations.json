@@ -1181,5 +1181,33 @@
       "en": "Curl version",
       "sv": "Curl-version"
     }
+  },
+  {
+    "id": "failed-initializing-store-selector-assistant",
+    "translation": {
+      "en": "Failed to load store selection assistant. After changing API credentials, please reload the page and select the appropriate store.",
+      "sv": "Kunde inte ladda assistent för butiksval. Efter du bytt användaruppgifter för API:et, vänligen ladda om sidan och välj rätt butik."
+    }
+  },
+  {
+    "id": "get-stores-could-not-fetch",
+    "translation": {
+      "en": "Could not fetch list of available stores with the configured API settings. Please select store after saving your settings and the page has reloaded.",
+      "sv": "Kunde inte hämta lista med butiker för de angivna API inställningarna. Vänligen välj butik efter du sparat dina inställningar och sidan har laddat om."
+    }
+  },
+  {
+    "id": "get-stores-server-error",
+    "translation": {
+      "en": "Something went wrong when fetching list of available stores. Please select store after saving your settings and the page has reloaded.",
+      "sv": "Något gick fel när listan med tillgängliga butiker hämtades. Vänligen välj butik efter du sparat dina inställningar och sidan har laddat om."
+    }
+  },
+  {
+    "id": "api-connection-failed-bad-credentials",
+    "translation": {
+      "en": "API connection failed, bad user credentials. Please review your settings and try again.",
+      "sv": "Kontakt med API:et misslyckades, felaktiga användaruppgifter. Vänligen kontrollera dina inställningar och försök igen."
+    }
   }
 ]
