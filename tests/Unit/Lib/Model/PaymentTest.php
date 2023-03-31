@@ -20,8 +20,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
-use Resursbank\EcomTest\Utilities\Random;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Model\Payment class.
@@ -42,9 +42,9 @@ class PaymentTest extends TestCase
     private function createDummyPayment(Status $status): Payment
     {
         return new Payment(
-            id: Random::getUuid(),
+            id: Strings::getUuid(),
             created: (new DateTime())->format(format: 'c'),
-            storeId: Random::getUuid(),
+            storeId: Strings::getUuid(),
             paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
             customer: new Payment\Customer(
                 customerType: CustomerType::NATURAL
@@ -52,7 +52,7 @@ class PaymentTest extends TestCase
             status: $status,
             paymentActions: [],
             order: new Payment\Order(
-                orderReference: Random::getUuid(),
+                orderReference: Strings::getUuid(),
                 actionLog: new Payment\Order\ActionLogCollection(data: []),
                 possibleActions: new Payment\Order\PossibleActionCollection(
                     data: []

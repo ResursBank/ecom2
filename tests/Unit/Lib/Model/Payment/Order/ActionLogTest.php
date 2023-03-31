@@ -20,8 +20,8 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
-use Resursbank\EcomTest\Utilities\Random;
 
 /**
  * Tests for the ActionLog class.
@@ -43,7 +43,7 @@ class ActionLogTest extends TestCase
     ): ActionLog {
         // Get default action id.
         if ($actionId === null) {
-            $actionId = Random::getUuid();
+            $actionId = Strings::getUuid();
         }
 
         // Get default OrderLineCollection

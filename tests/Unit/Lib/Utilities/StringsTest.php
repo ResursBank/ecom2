@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * String testing.
@@ -84,6 +86,20 @@ class StringsTest extends TestCase
         $this->assertEquals(
             expected: 'subjects?_d=1',
             actual: Strings::base64urlDecode(data: 'c3ViamVjdHM_X2Q9MQ')
+        );
+    }
+
+    /**
+     * Test getUuid() method.
+     *
+     * @throws IllegalValueException
+     */
+    public function testGetUuid(): void
+    {
+        $uuid = Strings::getUuid();
+
+        $this->assertTrue(
+            condition: (new StringValidation())->isUuid(value: $uuid)
         );
     }
 }
