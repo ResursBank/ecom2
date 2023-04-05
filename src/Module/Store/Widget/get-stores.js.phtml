@@ -195,6 +195,15 @@ document.addEventListener('DOMContentLoaded', function () {
          * inputs, to update list of available store when their values change.
          */
         const init = () => {
+            SELECT_STORE.form.addEventListener(
+                'submit',
+                function (evt) {
+                    if (FETCHING) {
+                        evt.preventDefault();
+                    }
+                }
+            );
+
             getInputElements().forEach((el) => {
                 el.addEventListener('change', fetchStores);
             });

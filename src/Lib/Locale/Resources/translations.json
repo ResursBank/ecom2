@@ -1039,7 +1039,7 @@
     "id": "modify-order-action-failed",
     "translation": {
       "en": "Updating payment at Resurs Bank failed (%s). The payment may have been partially, or completely, cancelled. Please review the payment to confirm it's correct. You can otherwise attempt to correct it by saving your order again.",
-      "sv": "Kunde inte uppdatera betalningen hos Resurs Bank (%s). Betalningen kan vara delvis, eller helt, annullerad. Vönligen bekräfta att betalningen är korrekt. Du kan annars försöka korrigera potentiella problem genom att spara om din beställning igen."
+      "sv": "Kunde inte uppdatera betalningen hos Resurs Bank (%s). Betalningen kan vara delvis, eller helt, annullerad. Vänligen bekräfta att betalningen är korrekt. Du kan annars försöka korrigera potentiella problem genom att spara om din beställning igen."
     }
   },
   {

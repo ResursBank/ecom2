@@ -28,16 +28,8 @@ use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
       <td><?= $this->payment->id ?></td>
     </tr>
     <tr>
-      <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'total-order-amount') ?></td>
-      <td><?= $this->getFormattedAmount(amount: $this->payment->order->totalOrderAmount) ?></td>
-    </tr>
-    <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'authorized-amount') ?></td>
       <td><?= $this->getFormattedAmount(amount: $this->payment->order->authorizedAmount) ?></td>
-    </tr>
-    <tr>
-      <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'canceled-amount') ?></td>
-      <td><?= $this->getFormattedAmount(amount: $this->payment->order->canceledAmount) ?></td>
     </tr>
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'captured-amount') ?></td>

@@ -59,7 +59,9 @@ class PaymentMethod extends Model
      */
     public function isPartPayment(): bool
     {
-        return $this->type === Type::RESURS_PART_PAYMENT || $this->type === Type::RESURS_REVOLVING_CREDIT;
+        return $this->type === Type::RESURS_PART_PAYMENT ||
+               $this->type === Type::RESURS_REVOLVING_CREDIT ||
+               $this->type === Type::RESURS_CARD;
     }
 
     /**
