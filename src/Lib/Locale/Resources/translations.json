@@ -989,7 +989,7 @@
   {
     "id": "error-creating-payment",
     "translation": {
-      "en": "There was an error while crating the payment at Resurs Bank.",
+      "en": "There was an error while creating the payment at Resurs Bank.",
       "sv": "Ett fel inträffade medan betalningen skapades hos Resurs Bank."
     }
   },
