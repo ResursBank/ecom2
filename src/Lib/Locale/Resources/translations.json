@@ -1223,5 +1223,12 @@
       "en": "API connection failed, bad user credentials. Please review your settings and try again.",
       "sv": "Kontakt med API:et misslyckades, felaktiga användaruppgifter. Vänligen kontrollera dina inställningar och försök igen."
     }
+  },
+  {
+    "id": "about",
+    "translation": {
+      "en": "About",
+      "sv": "Om plugin"
+    }
   }
 ]
