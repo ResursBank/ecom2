@@ -47,5 +47,26 @@
       "en": "USP not available in English",
       "sv": "Betala allt eller dela upp"
     }
+  },
+  {
+    "id": "SWISH",
+    "translation": {
+      "en": "USP not available in English",
+      "sv": "Godkänn betalningen i Swishappen på din telefon."
+    }
+  },
+  {
+    "id": "CREDIT_CARD",
+    "translation": {
+      "en": "USP not available in English",
+      "sv": "Betala ditt köp med ditt VISA eller Mastercard. Transaktionen sker via certifierad betalväxel och med SSL-kryptering vilket innebär att ingen obehörig kan se dina uppgifter. Inga kortuppgifter hanteras eller sparas av Resurs Bank. Vi accepterar inte kort som är utfärdade av en bank utanför norden."
+    }
+  },
+  {
+    "id": "DEBIT_CARD",
+    "translation": {
+      "en": "USP not available in English",
+      "sv": "Betala ditt köp med ditt VISA eller Mastercard. Transaktionen sker via certifierad betalväxel och med SSL-kryptering vilket innebär att ingen obehörig kan se dina uppgifter. Inga kortuppgifter hanteras eller sparas av Resurs Bank. Vi accepterar inte kort som är utfärdade av en bank utanför norden."
+    }
   }
 ]
