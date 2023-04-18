@@ -996,8 +996,8 @@
   {
     "id": "failed-resolving-order",
     "translation": {
-      "en": "Failed to resolve order with %s",
-      "sv": "Kunde inte hitta beställning med %s"
+      "en": "Failed to resolve order with id %s",
+      "sv": "Kunde inte hitta beställning med id %s"
     }
   },
   {
