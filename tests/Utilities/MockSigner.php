@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Utilities;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -50,6 +51,7 @@ class MockSigner
      * @throws ApiException
      * @throws IllegalValueException
      */
+    // phpcs:ignore
     private static function getSigningUrl(
         Payment $payment
     ): string {
@@ -64,10 +66,12 @@ class MockSigner
         }
 
         $url = '';
-        $elapsed = 0;
+        $attempts = 0;
 
         while (!str_contains(haystack: $url, needle: 'authenticate')) {
-            if ($elapsed >= 10) {
+            $attempts++;
+
+            if ($attempts >= 10) {
                 throw new RuntimeException(
                     message: sprintf(
                         'Timeout waiting for signing URL (got %s).',
@@ -83,18 +87,35 @@ class MockSigner
                 authType: AuthType::NONE,
                 responseContentType: ContentType::RAW
             );
-            $curl->exec();
 
-            $elapsed++;
+            try {
+                $curl->exec();
 
-            $url = $curl->getEffectiveUrl();
+                $url = $curl->getEffectiveUrl();
+            } catch (CurlException) {
+                self::handleCurlException(attempts: $attempts);
+            }
         }
 
         return str_replace(
-            search: 'authenticate',
-            replace: 'doAuth',
-            subject: $url
-        ) . '&govId=' . $payment->customer->governmentId;
+                search: 'authenticate',
+                replace: 'doAuth',
+                subject: $url
+            ) . '&govId=' . $payment->customer->governmentId;
+    }
+
+    /**
+     * Log error and sleep for 500 ms.
+     *
+     * @throws ConfigException
+     */
+    private static function handleCurlException(int $attempts): void
+    {
+        Config::getLogger()->error(
+            message: 'CurlException caught on attempt number ' . $attempts .
+            ', retrying again in 500 ms.'
+        );
+        usleep(microseconds: 500000);
     }
 
     /**
