@@ -98,10 +98,10 @@ class MockSigner
         }
 
         return str_replace(
-                search: 'authenticate',
-                replace: 'doAuth',
-                subject: $url
-            ) . '&govId=' . $payment->customer->governmentId;
+            search: 'authenticate',
+            replace: 'doAuth',
+            subject: $url
+        ) . '&govId=' . $payment->customer->governmentId;
     }
 
     /**
