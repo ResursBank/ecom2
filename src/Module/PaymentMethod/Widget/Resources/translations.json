@@ -47,5 +47,26 @@
       "en": "USP not available in English",
       "sv": "Betala allt eller dela upp"
     }
+  },
+  {
+    "id": "SWISH",
+    "translation": {
+      "en": "USP not available in English",
+      "sv": " "
+    }
+  },
+  {
+    "id": "CREDIT_CARD",
+    "translation": {
+      "en": "USP not available in English",
+      "sv": " "
+    }
+  },
+  {
+    "id": "DEBIT_CARD",
+    "translation": {
+      "en": "USP not available in English",
+      "sv": " "
+    }
   }
 ]
