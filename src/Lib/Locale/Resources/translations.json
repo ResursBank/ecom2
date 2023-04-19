@@ -1230,5 +1230,12 @@
       "en": "About",
       "sv": "Om plugin"
     }
+  },
+  {
+    "id": "log-enabled",
+    "translation": {
+      "en": "Log Enabled",
+      "sv": "Loggning aktiverad"
+    }
   }
 ]
