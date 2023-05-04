@@ -32,6 +32,7 @@ class Store extends Model
         public readonly int $nationalStoreId,
         public readonly Country $countryCode,
         public readonly string $name,
+        public readonly ?string $organizationNumber = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly IntValidation $intValidation = new IntValidation()
     ) {
