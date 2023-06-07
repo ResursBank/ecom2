@@ -52,34 +52,41 @@ class Resursbank_FetchStores {
      * Perform AJAX request to fetch stores.
      */
     fetchStores() {
-        if (this.fetching || this.getInputElements().some((el) => el === null || el.value === '')) {
-            return;
-        }
+        try {
+            if (
+                this.fetching ||
+                this.getInputElements().some((el) => el.value === '')
+            ) {
+                return;
+            }
 
-        this.toggleFetch(true);
+            this.toggleFetch(true);
 
-        const storeSelect = this.getSelectStoreElement();
+            const storeSelect = this.getSelectStoreElement();
 
-        for (let i = 0; i < storeSelect.options.length; i++) {
-            storeSelect.options[i].remove();
-        }
+            for (let i = 0; i < storeSelect.options.length; i++) {
+                storeSelect.options[i].remove();
+            }
 
-        storeSelect.length = 0;
+            storeSelect.length = 0;
 
-        fetch('<?= $this->fetchUrl ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.getPostData())
-        })
-            .then(this.handleFetchResponse.bind(this))
-            .then(this.handleFetchData.bind(this))
-            .then(() => {
-                this.toggleFetch(false)
+            fetch('<?= $this->fetchUrl ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.getPostData())
             })
-            .then(this.onComplete.bind(this))
-            .catch(this.errorHandler.bind(this));
+                .then(this.handleFetchResponse.bind(this))
+                .then(this.handleFetchData.bind(this))
+                .then(() => {
+                    this.toggleFetch(false)
+                })
+                .then(this.onComplete.bind(this))
+                .catch(this.errorHandler.bind(this));
+        } catch (e) {
+            this.errorHandler(e);
+        }
     }
 
     /**
@@ -94,7 +101,7 @@ class Resursbank_FetchStores {
         result = document.getElementById('<?= $this->storeSelectId ?>');
         <?php endif; ?>
 
-        if (!result instanceof HTMLSelectElement) {
+        if (result === null) {
             throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-select')  ?>');
         }
 
@@ -113,7 +120,7 @@ class Resursbank_FetchStores {
         result = document.getElementById('<?= $this->environmentSelectId ?>');
         <?php endif; ?>
 
-        if (!result instanceof HTMLSelectElement) {
+        if (result === null) {
             throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-environment-select')  ?>');
         }
 
@@ -132,7 +139,7 @@ class Resursbank_FetchStores {
         result = document.getElementById('<?= $this->clientIdInputId ?>');
         <?php endif; ?>
 
-        if (!result instanceof HTMLInputElement) {
+        if (result === null) {
             throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-id-input')  ?>');
         }
 
@@ -151,7 +158,7 @@ class Resursbank_FetchStores {
         result = document.getElementById('<?= $this->clientSecretInputId ?>');
         <?php endif; ?>
 
-        if (!result instanceof HTMLInputElement) {
+        if (result === null) {
             throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-secret-input')  ?>');
         }
 
@@ -172,8 +179,7 @@ class Resursbank_FetchStores {
     }
 
     /**
-     * Retrieve array of select / input elements we wish to observe when
-     * fetching stores.
+     * Retrieve inputs for environment, client id and client secret.
      *
      * @returns {[HTMLSelectElement,HTMLInputElement,HTMLInputElement]}
      */
@@ -286,7 +292,7 @@ class Resursbank_FetchStores {
      * @param {boolean} state
      */
     onToggle(state) {
-        // Pleaceholder.
+        // Placeholder.
     }
 }
 
