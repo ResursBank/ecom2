@@ -18,12 +18,13 @@
   width:auto;
 }
 .rb-pi table td {
-  padding:0.2em 0.5em;
+  padding:0.3em 0.5em;
 }
 .rb-pi table td.rb-pi-row-header {
   text-align:right;
-  min-width:20%;
+  min-width:22ch;
   font-weight:bold;
+  vertical-align: top;
 }
 .rb-pi table td:not(.rb-pi-row-header) {
   width:100%;
