@@ -11,8 +11,35 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 /** @var Resursbank\Ecom\Module\Store\Widget\GetStores $this */
 ?>
 
+/**
+ * Submit credentials using an AJAX request to fetch list of available stores
+ * and populate select box with these options.
+ */
 class Resursbank_FetchStores {
     'use strict';
+
+    /**
+     * Safely override pre-defined functions and properties using the supplied
+     * overrides parameter. Example:
+     *
+     * { "fetchStores": function () { // Custom code to fetch stores } }
+     *
+     * This allows for complex implementations where things like inputs, error
+     * handlers, loaders etc. are unknown variables.
+     *
+     * @param {{}} overrides
+     */
+    constructor(
+        overrides = {}
+    ) {
+        for (const [key, value] of Object.entries(overrides)) {
+            if (typeof this[key] === typeof value) {
+                this[key] = value;
+            } else {
+                console.warn('Failed to overwrite ' + key + ', type mismatch.');
+            }
+        }
+    }
 
     /**
      * Whether an AJAX request is active.
@@ -52,7 +79,7 @@ class Resursbank_FetchStores {
                 this.toggleFetch(false)
             })
             .then(this.onComplete.bind(this))
-            .catch(this.handleError.bind(this));
+            .catch(this.errorHandler.bind(this));
     }
 
     /**
@@ -238,7 +265,7 @@ class Resursbank_FetchStores {
      *
      * @param {Error} message
      */
-    handleError(message) {
+    errorHandler(message) {
         alert(message);
 
         if (this.fetching) {
@@ -289,7 +316,7 @@ document.addEventListener(
                 }
             });
         } catch (e) {
-            fetcher.handleError(e);
+            fetcher.errorHandler(e);
         }
     }
 );

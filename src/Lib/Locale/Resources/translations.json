@@ -1286,5 +1286,12 @@
       "en": "Please select store.",
       "sv": "Vänligen välj butik."
     }
+  },
+  {
+    "id": "logging",
+    "translation": {
+      "en": "Logging",
+      "sv": "Loggning"
+    }
   }
 ]
