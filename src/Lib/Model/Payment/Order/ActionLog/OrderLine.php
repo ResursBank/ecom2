@@ -66,7 +66,7 @@ class OrderLine extends Model
         $this->stringValidation->length(
             value: $this->description,
             min: 0,
-            max: 50
+            max: 100
         );
     }
 
