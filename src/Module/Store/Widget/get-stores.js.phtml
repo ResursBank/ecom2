@@ -11,220 +11,319 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 /** @var Resursbank\Ecom\Module\Store\Widget\GetStores $this */
 ?>
 
-document.addEventListener('DOMContentLoaded', function () {
-    (function () {
-        'use strict';
+/**
+ * Submit credentials using an AJAX request to fetch list of available stores
+ * and populate select box with these options.
+ */
+class Resursbank_FetchStores {
+    'use strict';
 
-        /**
-         * Whether an AJAX request is active.
-         *
-         * @type {boolean}
-         */
-        let FETCHING = false;
-
-        /**
-         * Select element containing available stores.
-         *
-         * @type {HTMLSelectElement}
-         */
-        const SELECT_STORE = document.getElementById('<?= $this->storeSelectId ?>');
-
-        /**
-         * Select element containing available environment values.
-         *
-         * @type {HTMLSelectElement}
-         */
-        const SELECT_ENVIRONMENT = document.getElementById('<?= $this->environmentSelectId ?>');
-
-        /**
-         * Input element for client id value.
-         *
-         * @type {HTMLInputElement}
-         */
-        const INPUT_CLIENT_ID = document.getElementById('<?= $this->clientIdInputId ?>');
-
-        /**
-         * Input element for client secret value.
-         *
-         * @type {HTMLInputElement}
-         */
-        const INPUT_CLIENT_SECRET = document.getElementById('<?= $this->clientSecretInputId ?>');
-
-        /**
-         * Retrieve array of select / input elements we wish to observe when
-         * fetching stores.
-         *
-         * @returns {[HTMLSelectElement,HTMLInputElement,HTMLInputElement]}
-         */
-        const getInputElements = () => {
-            return [SELECT_ENVIRONMENT, INPUT_CLIENT_ID, INPUT_CLIENT_SECRET];
-        }
-
-        /**
-         * Make sure all elements we expect are available.
-         *
-         * @returns {boolean}
-         */
-        const validateElements = () => {
-            return (
-                SELECT_STORE instanceof HTMLSelectElement &&
-                SELECT_ENVIRONMENT instanceof HTMLSelectElement &&
-                INPUT_CLIENT_ID instanceof HTMLInputElement &&
-                INPUT_CLIENT_SECRET instanceof HTMLInputElement
-            );
-        };
-
-        /**
-         * Disable / enable AJAX request. We will also reflect the state to the
-         * elements we observe to execute the request, and show a spinner icon
-         * indicating an AJAX request is ongoing.
-         *
-         * @param {boolean} state
-         */
-        const toggleFetch = (state) => {
-            FETCHING = Boolean(state);
-
-            getInputElements().forEach((el) => {
-                if (FETCHING) {
-                    el.setAttribute('disabled', '');
-                } else {
-                    el.removeAttribute('disabled');
-                }
-            });
-
-            if (FETCHING) {
-                SELECT_STORE.setAttribute('disabled', '');
-                SELECT_STORE.parentElement.classList.add('<?= $this->spinnerClass ?>');
-                console.log(SELECT_STORE.className);
+    /**
+     * Safely override pre-defined functions and properties using the supplied
+     * overrides parameter. Example:
+     *
+     * { "fetchStores": function () { // Custom code to fetch stores } }
+     *
+     * This allows for complex implementations where things like inputs, error
+     * handlers, loaders etc. are unknown variables.
+     *
+     * @param {{}} overrides
+     */
+    constructor(
+        overrides = {}
+    ) {
+        for (const [key, value] of Object.entries(overrides)) {
+            if (typeof this[key] === typeof value) {
+                this[key] = value;
             } else {
-                SELECT_STORE.removeAttribute('disabled');
-                SELECT_STORE.parentElement.classList.remove('<?= $this->spinnerClass ?>');
+                console.warn('Failed to overwrite ' + key + ', type mismatch.');
             }
-        };
+        }
+    }
 
-        /**
-         * Perform AJAX request to fetch stores.
-         */
-        const fetchStores = () => {
-            if (FETCHING || getInputElements().some((el) => el.value === '')) {
+    /**
+     * Whether an AJAX request is active.
+     *
+     * @type {boolean}
+     */
+    fetching = false;
+
+    /**
+     * Perform AJAX request to fetch stores.
+     */
+    fetchStores() {
+        try {
+            if (
+                this.fetching ||
+                this.getInputElements().some((el) => el.value === '')
+            ) {
                 return;
             }
 
-            toggleFetch(true);
+            this.toggleFetch(true);
 
-            for (let i = 0; i < SELECT_STORE.options.length; i++) {
-                SELECT_STORE.options[i].remove();
+            const storeSelect = this.getSelectStoreElement();
+
+            for (let i = 0; i < storeSelect.options.length; i++) {
+                storeSelect.options[i].remove();
             }
 
-            SELECT_STORE.length = 0;
-
-            let clientId = INPUT_CLIENT_ID.value;
-            let clientSecret = INPUT_CLIENT_SECRET.value;
-            let environment = SELECT_ENVIRONMENT.value;
+            storeSelect.length = 0;
 
             fetch('<?= $this->fetchUrl ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({environment, clientId, clientSecret})
+                body: JSON.stringify(this.getPostData())
             })
-                .then(handleFetchResponse)
-                .then(handleFetchData)
+                .then(this.handleFetchResponse.bind(this))
+                .then(this.handleFetchData.bind(this))
                 .then(() => {
-                    toggleFetch(false)
+                    this.toggleFetch(false)
                 })
-                .catch(handleFetchFatalError);
+                .then(this.onComplete.bind(this))
+                .catch(this.errorHandler.bind(this));
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
 
-        };
+    /**
+     * Resolve store select element.
+     *
+     * @returns {HTMLSelectElement}
+     */
+    getSelectStoreElement() {
+        let result = null;
 
-        /**
-         * Handle network/JS errors during fetch request.
-         *
-         * @param {any} error
-         */
-        const handleFetchFatalError = (error) => {
-            if (error instanceof Error) {
-                errorHandler(
-                    '<?= Translator::translate(phraseId: 'get-address-server-error') ?>'
-                );
-            }
+        <?php if ($this->storeSelectId !== null): ?>
+        result = document.getElementById('<?= $this->storeSelectId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-select')  ?>');
         }
 
-        /**
-         * Resolve JSON data from request response.
-         *
-         * @param {Response} response
-         * @returns {Promise<any>|undefined}
-         */
-        const handleFetchResponse = (response) => {
-            if (!response.ok) {
-                errorHandler(
-                    '<?= Translator::translate(phraseId: 'get-address-server-error') ?>'
-                );
-            } else {
-                return response.json();
-            }
+        return result;
+    }
+
+    /**
+     * Resolve environment selection element.
+     *
+     * @returns {HTMLSelectElement}
+     */
+    getSelectEnvironmentElement() {
+        let result = null;
+
+        <?php if ($this->environmentSelectId !== null): ?>
+        result = document.getElementById('<?= $this->environmentSelectId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-environment-select')  ?>');
+        }
+
+        return result;
+    }
+
+    /**
+     * Resolve client id input element.
+     *
+     * @returns {HTMLInputElement}
+     */
+    getClientIdInputElement() {
+        let result = null;
+
+        <?php if ($this->clientIdInputId !== null): ?>
+        result = document.getElementById('<?= $this->clientIdInputId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-id-input')  ?>');
+        }
+
+        return result;
+    }
+
+    /**
+     * Resolve client secret input element.
+     *
+     * @returns {HTMLInputElement}
+     */
+    getClientSecretInputElement() {
+        let result = null;
+
+        <?php if ($this->clientSecretInputId !== null): ?>
+        result = document.getElementById('<?= $this->clientSecretInputId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-secret-input')  ?>');
+        }
+
+        return result;
+    }
+
+    /**
+     * Resolve object with POST data for AJAX request.
+     *
+     * @returns {{}}
+     */
+    getPostData() {
+        return {
+            environment: this.getSelectEnvironmentElement().value,
+            clientId: this.getClientIdInputElement().value,
+            clientSecret: this.getClientSecretInputElement().value
         };
+    }
 
-        /**
-         * Apply new list of stores to stores select element.
-         *
-         * @param {any} data
-         */
-        const handleFetchData = (data) => {
-            if (typeof data === 'undefined') {
-                return;
-            }
+    /**
+     * Retrieve inputs for environment, client id and client secret.
+     *
+     * @returns {[HTMLSelectElement,HTMLInputElement,HTMLInputElement]}
+     */
+    getInputElements() {
+        return [
+            this.getSelectEnvironmentElement(),
+            this.getClientIdInputElement(),
+            this.getClientSecretInputElement()
+        ];
+    }
 
-            if (data.error) {
-                errorHandler(data.error);
+    /**
+     * Disable / enable AJAX request. We will also reflect the state to the
+     * elements we observe to execute the request, and show a spinner icon
+     * indicating an AJAX request is ongoing.
+     *
+     * @param {boolean} state
+     */
+    toggleFetch(state) {
+        this.onToggle(state);
+        this.fetching = Boolean(state);
+
+        this.getInputElements().forEach((el) => {
+            if (this.fetching) {
+                el.setAttribute('disabled', '');
             } else {
-                for (const [value, text] of Object.entries(data)) {
-                    let option = document.createElement('option');
-                    option.value = value;
-                    option.text = text;
-
-                    SELECT_STORE.add(option);
-                }
+                el.removeAttribute('disabled');
             }
-        };
+        });
 
-        /**
-         * Append onchange listener to environment, client id and client secret
-         * inputs, to update list of available store when their values change.
-         */
-        const init = () => {
-            SELECT_STORE.form.addEventListener(
+        const storeSelect = this.getSelectStoreElement();
+
+        if (this.fetching) {
+            storeSelect.setAttribute('disabled', '');
+
+            <?php if ($this->spinnerClass !== null): ?>
+            storeSelect.parentElement.classList.add('<?= $this->spinnerClass ?>');
+            <?php endif; ?>
+        } else {
+            storeSelect.removeAttribute('disabled');
+
+            <?php if ($this->spinnerClass !== null): ?>
+            storeSelect.parentElement.classList.remove('<?= $this->spinnerClass ?>');
+            <?php endif; ?>
+        }
+    }
+
+    /**
+     * Resolve JSON data from request response.
+     *
+     * @param {Response} response
+     * @returns {Promise<any>|undefined}
+     */
+    handleFetchResponse(response) {
+        if (!response.ok) {
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'get-stores-server-error') ?>'
+            );
+        } else {
+            return response.json();
+        }
+    };
+
+    /**
+     * Apply new list of stores to stores select element.
+     *
+     * @param {any} data
+     */
+    handleFetchData(data) {
+        if (typeof data === 'undefined') {
+            return;
+        }
+
+        if (data.error) {
+            throw new Error(data.error);
+        } else {
+            for (const [value, text] of Object.entries(data)) {
+                let option = document.createElement('option');
+                option.value = value;
+                option.text = text;
+
+                this.getSelectStoreElement().add(option);
+            }
+        }
+    }
+
+    /**
+     * Basic error handler.
+     *
+     * @param {Error} message
+     */
+    errorHandler(message) {
+        alert(message);
+
+        if (this.fetching) {
+            this.toggleFetch(false);
+        }
+    }
+
+    /**
+     * Events performed when store fetching has completed.
+     */
+    onComplete() {
+        // Placeholder.
+    }
+
+    /**
+     * Events performed when toggling.
+     *
+     * @param {boolean} state
+     */
+    onToggle(state) {
+        // Placeholder.
+    }
+}
+
+<?php if ($this->automatic): ?>
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+        const fetcher = new Resursbank_FetchStores();
+
+        try {
+            fetcher.getSelectStoreElement().form.addEventListener(
                 'submit',
                 function (evt) {
-                    if (FETCHING) {
+                    if (fetcher.fetching) {
                         evt.preventDefault();
                     }
                 }
             );
 
-            getInputElements().forEach((el) => {
-                el.addEventListener('change', fetchStores);
+            fetcher.getInputElements().forEach((el) => {
+                if (el instanceof HTMLElement) {
+                    el.addEventListener(
+                        'change',
+                        fetcher.fetchStores.bind(fetcher),
+                        false
+                    );
+                }
             });
-        };
-
-        /**
-         * Error handler.
-         *
-         * @param {string} message
-         */
-        const errorHandler = (message) => {
-            alert(String(message));
-
-            if (FETCHING) {
-                toggleFetch(false);
-            }
-        };
-
-        // Start script if all elements we require are present.
-        if (validateElements()) {
-            init();
+        } catch (e) {
+            fetcher.errorHandler(e);
         }
-    }());
-});
+    }
+);
+<?php endif; ?>
