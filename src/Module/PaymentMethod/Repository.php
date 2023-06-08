@@ -215,6 +215,7 @@ class Repository
         string $storeId
     ): void {
         $stringValidation = new StringValidation();
+        $stringValidation->notEmpty(value: $storeId);
         $stringValidation->isUuid(value: $storeId);
     }
 }
