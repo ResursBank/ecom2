@@ -1246,10 +1246,52 @@
     }
   },
   {
-      "id": "logging",
-      "translation": {
-          "en": "Logging",
-          "sv": "Loggning"
-      }
+    "id": "fetch-stores",
+    "translation": {
+      "en": "Fetch stores",
+      "sv": "Hämta butiker"
+    }
+  },
+  {
+    "id": "get-stores-missing-store-select",
+    "translation": {
+      "en": "Failed to obtain store selection box.",
+      "sv": "Kunde inte hitta select box för val av butik."
+    }
+  },
+  {
+    "id": "get-stores-missing-environment-select",
+    "translation": {
+      "en": "Failed to obtain environment selection box.",
+      "sv": "Kunde inte hitta select box för val av miljö."
+    }
+  },
+  {
+    "id": "get-stores-missing-client-id-input",
+    "translation": {
+      "en": "Failed to obtain client id input element.",
+      "sv": "Kunde inte hitta input element för klient id."
+    }
+  },
+  {
+    "id": "get-stores-missing-client-secret-input",
+    "translation": {
+      "en": "Failed to obtain client secret input element.",
+      "sv": "Kunde inte hitta input element för klient hemlighet."
+    }
+  },
+  {
+    "id": "please-select-store",
+    "translation": {
+      "en": "Please select store.",
+      "sv": "Vänligen välj butik."
+    }
+  },
+  {
+    "id": "logging",
+    "translation": {
+      "en": "Logging",
+      "sv": "Loggning"
+    }
   }
 ]

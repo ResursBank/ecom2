@@ -88,8 +88,38 @@ class Controller
      * @throws HttpException
      */
     public function getRequestModel(
-        string $model
+        string $model,
+        ?stdClass $data = null
     ): Model {
+        if ($data === null) {
+            $data = $this->getInputDataAsStdClass();
+        }
+
+        try {
+            return DataConverter::stdClassToType(object: $data, type: $model);
+        } catch (Throwable $error) {
+            // Attempt logging actual error.
+            try {
+                Config::getLogger()->error(message: $error);
+            } catch (Throwable) {
+                // Do nothing.
+            }
+
+            throw new HttpException(
+                message: $this->translateError(phraseId: 'invalid-post-data'),
+                code: 415
+            );
+        }
+    }
+
+    /**
+     * Get raw input data as stdClass object.
+     *
+     * @return stdClass
+     * @throws HttpException
+     */
+    public function getInputDataAsStdClass(): stdClass
+    {
         try {
             $obj = json_decode(
                 json: $this->getInputData(),
@@ -110,21 +140,7 @@ class Controller
             );
         }
 
-        try {
-            return DataConverter::stdClassToType(object: $obj, type: $model);
-        } catch (Throwable $error) {
-            // Attempt logging actual error.
-            try {
-                Config::getLogger()->error(message: $error);
-            } catch (Throwable) {
-                // Do nothing.
-            }
-
-            throw new HttpException(
-                message: $this->translateError(phraseId: 'invalid-post-data'),
-                code: 415
-            );
-        }
+        return $obj;
     }
 
     /**
