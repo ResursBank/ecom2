@@ -39,15 +39,15 @@ class OrderLineTest extends TestCase
         $data = json_decode(
             json: json_encode(
                 value: new OrderLine(
+                    quantity: 1,
+                    quantityUnit: 'st',
+                    vatRate: 10,
+                    totalAmountIncludingVat: 11,
                     description: 'Item',
                     reference: 'I-200',
-                    quantityUnit: 'st',
-                    quantity: 1,
-                    vatRate: 10,
+                    type: OrderLineType::NORMAL,
                     unitAmountIncludingVat: 10,
-                    totalAmountIncludingVat: 11,
-                    totalVatAmount: 1,
-                    type: OrderLineType::NORMAL
+                    totalVatAmount: 1
                 ),
                 flags: JSON_THROW_ON_ERROR
             ),
@@ -219,21 +219,7 @@ class OrderLineTest extends TestCase
         $this->convert(updates: ['quantity' => 99999999999]);
     }
 
-    /**
-     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
-     * its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testUnitAmountIncludingVatThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['unitAmountIncludingVat' => -10]);
-    }
-
-    /**
+     /**
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
@@ -263,20 +249,6 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
-     * when its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testTotalAmountIncludingVatThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['totalAmountIncludingVat' => -10]);
-    }
-
-    /**
-     * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
      * @throws ReflectionException
@@ -301,20 +273,6 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['totalAmountIncludingVat' => 99999999999]);
-    }
-
-    /**
-     * Assert validateTotalVatAmount() throws IllegalValueException when
-     * its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testTotalVatAmountThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['totalVatAmount' => -10]);
     }
 
     /**

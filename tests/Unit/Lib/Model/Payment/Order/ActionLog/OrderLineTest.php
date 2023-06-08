@@ -333,20 +333,6 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
-     * its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testUnitAmountIncludingVatThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['unitAmountIncludingVat' => -10]);
-    }
-
-    /**
-     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
      * @throws ReflectionException
@@ -375,20 +361,6 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
-     * when its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testTotalAmountIncludingVatThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['totalAmountIncludingVat' => -10]);
-    }
-
-    /**
-     * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
      * @throws ReflectionException
@@ -413,20 +385,6 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['totalAmountIncludingVat' => 99999999999]);
-    }
-
-    /**
-     * Assert validateTotalVatAmount() throws IllegalValueException when
-     * its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testTotalVatAmountThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['totalVatAmount' => -10]);
     }
 
     /**
@@ -647,26 +605,6 @@ class OrderLineTest extends TestCase
                 ),
                 prop: $prop,
                 message: "$prop failed with DISCOUNT type and negative value."
-            );
-
-            // Test that negative value is DISALLOWED for NORMAL.
-            $this->testDisallowedPriceData(
-                data: $this->getPriceData(
-                    type: OrderLineType::NORMAL,
-                    props: $props,
-                    illegalProperty: $prop
-                ),
-                message: "$prop was allowed a negative value with NORMAL type."
-            );
-
-            // Test that positive value is DISALLOWED for DISCOUNT.
-            $this->testDisallowedPriceData(
-                data: $this->getPriceData(
-                    type: OrderLineType::DISCOUNT,
-                    props: $props,
-                    illegalProperty: $prop
-                ),
-                message: "$prop was allowed a positive value with DISCOUNT type."
             );
         }
     }
