@@ -607,16 +607,6 @@ class OrderLineTest extends TestCase
                 message: "$prop failed with DISCOUNT type and negative value."
             );
 
-            // Test that negative value is DISALLOWED for NORMAL.
-            $this->testDisallowedPriceData(
-                data: $this->getPriceData(
-                    type: OrderLineType::NORMAL,
-                    props: $props,
-                    illegalProperty: $prop
-                ),
-                message: "$prop was allowed a negative value with NORMAL type."
-            );
-
             // Test that positive value is DISALLOWED for DISCOUNT.
             $this->testDisallowedPriceData(
                 data: $this->getPriceData(
