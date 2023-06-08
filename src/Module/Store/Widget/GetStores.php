@@ -22,20 +22,22 @@ class GetStores extends Widget
 
     /**
      * @param string $fetchUrl Endpoint where we fetch stores.
-     * @param string $environmentSelectId ID of element containing environments.
-     * @param string $clientIdInputId ID of client id input element.
-     * @param string $clientSecretInputId ID of client secret element.
-     * @param string $storeSelectId ID of element to populate with new stores.
-     * @param string $spinnerClass Class applied on store select element when fetching.
+     * @param bool $automatic
+     * @param string|null $storeSelectId ID of element to populate with new stores.
+     * @param string|null $environmentSelectId ID of element containing environments.
+     * @param string|null $clientIdInputId ID of client id input element.
+     * @param string|null $clientSecretInputId ID of client secret element.
+     * @param string|null $spinnerClass Class applied on store select element when fetching.
      * @throws FilesystemException
      */
     public function __construct(
         public readonly string $fetchUrl,
-        public readonly string $environmentSelectId,
-        public readonly string $clientIdInputId,
-        public readonly string $clientSecretInputId,
-        public readonly string $storeSelectId,
-        public readonly string $spinnerClass
+        public readonly bool $automatic = true,
+        public readonly ?string $storeSelectId = null,
+        public readonly ?string $environmentSelectId = null,
+        public readonly ?string $clientIdInputId = null,
+        public readonly ?string $clientSecretInputId = null,
+        public readonly ?string $spinnerClass = null
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-stores.js.phtml');
     }
