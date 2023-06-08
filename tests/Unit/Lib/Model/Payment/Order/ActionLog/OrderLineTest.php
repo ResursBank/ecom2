@@ -25,6 +25,8 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\EcomTest\Data\OrderLine;
 use stdClass;
 
+use function strlen;
+
 /**
  * Test data integrity of order line entity model.
  */
@@ -178,19 +180,37 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * @throws Exception
+     */
+    private function getRandomString(int $length): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $string = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $string .= $characters[random_int(
+                min: 0,
+                max: strlen(string: $characters) - 1
+            )];
+        }
+
+        return $string;
+    }
+
+    /**
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws Exception
      */
     public function testValidateDescriptionThrowsWhenTooLong(): void
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'description' => 'This text is way too long for this poor little ' .
-                'model property.',
+            'description' => $this->getRandomString(length: 101),
         ]);
     }
 
@@ -201,13 +221,13 @@ class OrderLineTest extends TestCase
      * @throws ReflectionException
      * @throws TestException
      * @throws IllegalTypeException
+     * @throws Exception
      */
     public function testValidateReferenceThrowsWhenTooLong(): void
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'reference' => 'This text is way too long for this poor little ' .
-                'model property.',
+            'reference' => $this->getRandomString(length: 51),
         ]);
     }
 
@@ -223,8 +243,7 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'quantityUnit' => 'This text is way too long for this poor little ' .
-                'model property.',
+            'quantityUnit' => $this->getRandomString(length: 51),
         ]);
     }
 
