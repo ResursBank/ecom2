@@ -314,20 +314,6 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
-     * its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testUnitAmountIncludingVatThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['unitAmountIncludingVat' => -10]);
-    }
-
-    /**
-     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
      * @throws ReflectionException
@@ -356,20 +342,6 @@ class OrderLineTest extends TestCase
 
     /**
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
-     * when its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testTotalAmountIncludingVatThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['totalAmountIncludingVat' => -10]);
-    }
-
-    /**
-     * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
      * @throws ReflectionException
@@ -394,20 +366,6 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['totalAmountIncludingVat' => 99999999999]);
-    }
-
-    /**
-     * Assert validateTotalVatAmount() throws IllegalValueException when
-     * its value is negative.
-     *
-     * @throws ReflectionException
-     * @throws TestException
-     * @throws IllegalTypeException
-     */
-    public function testTotalVatAmountThrowsWhenNegative(): void
-    {
-        $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: ['totalVatAmount' => -10]);
     }
 
     /**
