@@ -29,6 +29,7 @@ class GetStores extends Widget
      * @param string|null $clientSecretInputId ID of client secret element.
      * @param string|null $spinnerClass Class applied on store select element when fetching.
      * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $fetchUrl,
