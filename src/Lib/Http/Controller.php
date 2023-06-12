@@ -115,7 +115,6 @@ class Controller
     /**
      * Get raw input data as stdClass object.
      *
-     * @return stdClass
      * @throws HttpException
      */
     public function getInputDataAsStdClass(): stdClass
