@@ -15,7 +15,6 @@ use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
-use ReflectionProperty;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
