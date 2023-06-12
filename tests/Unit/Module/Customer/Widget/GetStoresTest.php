@@ -79,7 +79,7 @@ class GetStoresTest extends TestCase
             haystack: $widget->content
         );
         $this->assertStringContainsString(
-            needle: "storeSelect.parentElement.classList.add('" .  $spinnerClass . "');",
+            needle: "storeSelect.parentElement.classList.add('" . $spinnerClass . "');",
             haystack: $widget->content
         );
         $this->assertStringContainsString(
