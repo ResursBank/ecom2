@@ -22,7 +22,7 @@ class GetStores extends Widget
 
     /**
      * @param string $fetchUrl Endpoint where we fetch stores.
-     * @param bool $automatic
+     * @param bool $automatic Automatically search on field change
      * @param string|null $storeSelectId ID of element to populate with new stores.
      * @param string|null $environmentSelectId ID of element containing environments.
      * @param string|null $clientIdInputId ID of client id input element.
