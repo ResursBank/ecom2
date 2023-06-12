@@ -27,7 +27,7 @@ class Order
 {
     "actionLog": [
         {
-            "id": "160d2b10-7586-4a32-87a1-23a425b252ce",
+            "actionId": "160d2b10-7586-4a32-87a1-23a425b252ce",
             "type": "CREATE",
             "created": "2022-09-07T14:52:56.709",
             "creator": "jultomten",
@@ -73,6 +73,7 @@ class Order
     "totalOrderAmount": 12.34,
     "canceledAmount": 0.12,
     "capturedAmount": 1.23,
+    "authorizedAmount": 24.68,
     "refundedAmount": 0.0
 }
 EOD;
