@@ -104,17 +104,17 @@ class StoreCollectionTest extends TestCase
             name: 'Store 01',
             organizationNumber: '112233-4455'
         );
-        $singleStoreCollection = new StoreCollection(data: [$singleStore]);
+        $singleStoreCol = new StoreCollection(data: [$singleStore]);
 
         $this->assertNull(
             actual: $stores->getSingleStoreId()
         );
         $this->assertIsString(
-            actual: $singleStoreCollection->getSingleStoreId()
+            actual: $singleStoreCol->getSingleStoreId()
         );
         $this->assertEquals(
             expected: $singleStore->id,
-            actual: $singleStoreCollection->getSingleStoreId()
+            actual: $singleStoreCol->getSingleStoreId()
         );
     }
 }
