@@ -48,10 +48,12 @@ class CurlException extends Exception
      */
     public function getDetails(): array
     {
-        $result = [];
-
-        if ($this->httpCode !== 400 || empty($this->body)) {
-            return $result;
+        if (
+            $this->httpCode !== 400 ||
+            empty($this->body) ||
+            !is_string(value: $this->body)
+        ) {
+            return [];
         }
 
         $body = json_decode(
@@ -61,18 +63,7 @@ class CurlException extends Exception
             flags: JSON_THROW_ON_ERROR
         );
 
-        if (
-            isset($body->parameters) &&
-            $body->parameters instanceof stdClass
-        ) {
-            foreach ($body->parameters as $property => $message) {
-                $result[] = ErrorTranslator::get(
-                    errorMessage: $property . ' ' . $message
-                );
-            }
-        }
-
-        return $result;
+        return $this->extractParameters(body: $body);
     }
 
     /**
@@ -110,6 +101,32 @@ class CurlException extends Exception
             }
         } catch (Throwable) {
             // Do nothing. Body is not necessarily an Error model.
+        }
+
+        return $result;
+    }
+
+    /**
+     * Extract parameters from body.
+     *
+     * @return array
+     * @throws ConfigException
+     */
+    private function extractParameters(mixed $body): array
+    {
+        $result = [];
+
+        if (
+            $body instanceof stdClass &&
+            isset($body->parameters) &&
+            $body->parameters instanceof stdClass
+        ) {
+            /* @phpstan-ignore-next-line */
+            foreach ($body->parameters as $property => $message) {
+                $result[] = ErrorTranslator::get(
+                    errorMessage: $property . ' ' . $message
+                );
+            }
         }
 
         return $result;
