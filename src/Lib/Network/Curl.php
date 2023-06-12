@@ -22,12 +22,9 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 use Resursbank\Ecom\Lib\Model\Network\Response;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 use Resursbank\Ecom\Lib\Network\Curl\Header;
-use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use stdClass;
 
@@ -456,98 +453,15 @@ class Curl
     {
         switch ($this->authType) {
             case AuthType::BASIC:
-                $this->setBasicAuth(ch: $ch);
+                Curl\Auth::setBasicAuth(ch: $ch);
                 break;
 
             case AuthType::JWT:
-                $this->setJwtAuth(ch: $ch);
+                Curl\Auth::setJwtAuth(ch: $ch);
                 break;
 
             case AuthType::NONE:
                 break;
         }
-    }
-
-    /**
-     * @throws ConfigException
-     */
-    private function setBasicAuth(CurlHandle $ch): void
-    {
-        $auth = Config::getBasicAuth();
-
-        if ($auth === null) {
-            $exception = new ConfigException(
-                message: 'Basic auth is not configured.'
-            );
-            Config::getLogger()->error(message: $exception->getMessage());
-            Config::getLogger()->error(message: $exception);
-            throw $exception;
-        }
-
-        curl_setopt(
-            handle: $ch,
-            option: CURLOPT_USERPWD,
-            value: "$auth->username:$auth->password"
-        );
-    }
-
-    /**
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ValidationException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws ConfigException
-     */
-    private function setJwtAuth(CurlHandle $ch): void
-    {
-        $auth = Config::getJwtAuth();
-
-        if ($auth === null) {
-            $exception = new ConfigException(
-                message: 'JWT auth is not configured.'
-            );
-            Config::getLogger()->error(message: $exception->getMessage());
-            Config::getLogger()->error(message: $exception);
-            throw $exception;
-        }
-
-        curl_setopt(
-            handle: $ch,
-            option: CURLOPT_HTTPAUTH,
-            value: CURLAUTH_BEARER
-        );
-
-        curl_setopt(
-            handle: $ch,
-            option: CURLOPT_XOAUTH2_BEARER,
-            value: $this->getJwtToken(auth: $auth)->access_token
-        );
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ConfigException
-     */
-    private function getJwtToken(
-        Jwt $auth
-    ): Token {
-        $result = $auth->getToken();
-
-        if ($result === null || $result->isExpired()) {
-            $result = (new GenerateToken(auth: $auth))->call();
-        }
-
-        return $result;
     }
 }
