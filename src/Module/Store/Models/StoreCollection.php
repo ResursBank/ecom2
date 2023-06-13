@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Store\Models;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Module\Store\Repository;
 
 /**
  * Defines a Store collection.
@@ -44,12 +43,10 @@ class StoreCollection extends Collection
 
     /**
      * Resolve ID value of only available store.
-     *
-     * @return string|null
      */
     public function getSingleStoreId(): ?string
     {
         return count($this->getData()) === 1 ?
-            $this->offsetGet(offset: 0)->id : null;
+            array_values(array: $this->getData())[0]->id : null;
     }
 }

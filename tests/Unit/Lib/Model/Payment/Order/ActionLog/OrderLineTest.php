@@ -15,7 +15,6 @@ use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
-use ReflectionProperty;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -77,18 +76,6 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Check if the $item property on $this instance has been initiated.
-     *
-     * @throws ReflectionException
-     */
-    private function isItemInitialized(): bool
-    {
-        return (
-        new ReflectionProperty(class: $this, property: 'item')
-        )->isInitialized(object: $this);
-    }
-
-    /**
      * Get an anonymous array with price data for all price related properties
      * in the OrderLine class.
      *
@@ -140,29 +127,6 @@ class OrderLineTest extends TestCase
             );
         } catch (IllegalValueException $e) {
             $this->fail(message: "$message. Exception " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Test that supplied price data is rejected by the OrderLine model.
-     *
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws TestException
-     */
-    private function testDisallowedPriceData(
-        array $data,
-        string $message
-    ): void {
-        // Test that negative value is DISALLOWED for NORMAL.
-        try {
-            unset($this->item);
-            $this->convert(updates: $data);
-
-            // Will only occur if no Exception was thrown.
-            $this->fail(message: $message);
-        } catch (IllegalValueException) {
-            $this->assertFalse(condition: $this->isItemInitialized());
         }
     }
 

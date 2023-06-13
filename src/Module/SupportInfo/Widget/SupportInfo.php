@@ -71,7 +71,13 @@ class SupportInfo extends Widget
      */
     public function getCurlVersion(): string
     {
-        return curl_version()['version'];
+        $curlVersion = curl_version();
+
+        if ($curlVersion && isset($curlVersion['version'])) {
+            return $curlVersion['version'];
+        }
+
+        return '';
     }
 
     /**

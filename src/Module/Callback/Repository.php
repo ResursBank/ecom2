@@ -112,6 +112,7 @@ class Repository
         } catch (Throwable $e) {
             self::logException(exception: $e);
             $code = 408;
+
             if ($e instanceof HttpException) {
                 $code = $e->getCode();
             }

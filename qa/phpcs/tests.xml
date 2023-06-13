@@ -4,7 +4,6 @@
     <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation" />
     <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement" />
     <rule ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace" />
-    <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma" />
     <rule ref="SlevomatCodingStandard.Classes.BackedEnumTypeSpacing" />
     <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility" />
     <rule ref="SlevomatCodingStandard.Classes.ClassMemberSpacing" />
@@ -143,7 +142,7 @@
     <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
         <properties>
             <property name="rootNamespaces" type="array">
-                <element key="src/tests" value="Resursbank\EcomTest" />
+                <element key="tests" value="Resursbank\EcomTest" />
             </property>
         </properties>
     </rule>

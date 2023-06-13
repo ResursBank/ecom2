@@ -149,6 +149,10 @@ class Payment extends Model
      */
     public function isCaptured(): bool
     {
+        if (!$this->order) {
+            return false;
+        }
+
         return
             !$this->canCapture() &&
             !$this->canPartiallyCapture() &&
@@ -163,6 +167,10 @@ class Payment extends Model
      */
     public function isRefunded(): bool
     {
+        if (!$this->order) {
+            return false;
+        }
+
         return
             $this->order->authorizedAmount === 0.0 &&
             $this->order->capturedAmount > 0.0 &&
@@ -175,6 +183,10 @@ class Payment extends Model
      */
     public function isCancelled(): bool
     {
+        if (!$this->order) {
+            return false;
+        }
+
         return
             $this->order->authorizedAmount === 0.0 &&
             $this->order->canceledAmount === $this->order->totalOrderAmount
@@ -184,7 +196,7 @@ class Payment extends Model
     /**
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
-     * sometimes containing a up to 9 digit microsecond suffix).
+     * sometimes containing an up to 9 digit microsecond suffix).
      *
      * @throws IllegalValueException
      */

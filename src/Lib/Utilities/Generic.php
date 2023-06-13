@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
 use JsonException;
-use ReflectionClass;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -222,9 +221,9 @@ class Generic
      */
     public function getDocBlockItem(string $item, string $functionName = '', string $className = ''): string
     {
-        return $this->getExtractedDocBlockItem(
+        return Generic\Docblock::getExtractedDocBlockItem(
             item: $item,
-            doc: $this->getExtractedDocBlock(
+            doc: Generic\Docblock::getExtractedDocBlock(
                 functionName: $functionName,
                 className: $className
             )
@@ -320,6 +319,9 @@ class Generic
         return $return;
     }
 
+    /**
+     * Check for internal exception.
+     */
     private function hasInternalException(): bool
     {
         return !empty($this->internalExceptionMessage);
@@ -334,6 +336,9 @@ class Generic
         return 'open_basedir security active';
     }
 
+    /**
+     * Check for composer file.
+     */
     private function hasComposerFile(string $location): bool
     {
         $return = false;
@@ -376,69 +381,5 @@ class Generic
         }
 
         $this->composerData = $data;
-    }
-
-    /**
-     * Extract docblock item.
-     *
-     * @todo Refactor, see ECP-352. Remember to remove phpcs:ignore below when done.
-     */
-    // phpcs:ignore
-    private function getExtractedDocBlockItem(string $item, string $doc): string
-    {
-        $return = '';
-
-        if (!empty($doc)) {
-            $docBlock = [];
-
-            preg_match_all(
-                pattern: sprintf('/%s\s(\w.+)\n/s', $item),
-                subject: $doc,
-                matches: $docBlock
-            );
-
-            if (isset($docBlock[1][0])) {
-                $return = $docBlock[1][0];
-
-                // Strip stuff after line breaks
-                if (preg_match(pattern: '/[\n\r]/', subject: $return)) {
-                    $multiRowData = preg_split(
-                        pattern: '/[\n\r]/',
-                        subject: $return
-                    );
-
-                    if ($multiRowData !== false) {
-                        $return = $multiRowData[0] ?? '';
-                    }
-                }
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * @throws ReflectionException
-     * @throws IllegalValueException
-     */
-    private function getExtractedDocBlock(
-        string $functionName,
-        string $className = ''
-    ): string {
-        if ($className === '') {
-            $className = self::class;
-        }
-
-        if (!class_exists(class: $className)) {
-            throw new IllegalValueException(
-                message: "Class $className does not exist"
-            );
-        }
-
-        $doc = new ReflectionClass(objectOrClass: $className);
-
-        return $functionName === '' ?
-            (string) $doc->getDocComment() :
-            (string) $doc->getMethod(name: $functionName)->getDocComment();
     }
 }

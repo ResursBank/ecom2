@@ -24,6 +24,7 @@ class Options extends Model
 {
     /**
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly ?bool $initiatedOnCustomersDevice = null,

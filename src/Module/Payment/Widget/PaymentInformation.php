@@ -64,7 +64,15 @@ class PaymentInformation extends Widget
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
 
-        $this->logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
+            );
+        }
+
+        $this->logo = $logo;
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
         );
@@ -73,12 +81,22 @@ class PaymentInformation extends Widget
 
     /**
      * Fetches CSS without instantiating an object.
+     *
+     * @throws EmptyValueException
      */
     public static function getCss(): string
     {
-        return file_get_contents(
+        $css = file_get_contents(
             filename: __DIR__ . '/payment-information.css'
         );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet data'
+            );
+        }
+
+        return $css;
     }
 
     /**
@@ -94,7 +112,11 @@ class PaymentInformation extends Widget
      */
     public function getPaymentMethodName(): string
     {
-        return $this->payment->paymentMethod->name;
+        if ($this->payment->paymentMethod) {
+            return $this->payment->paymentMethod->name;
+        }
+
+        return '';
     }
 
     /**
@@ -102,7 +124,11 @@ class PaymentInformation extends Widget
      */
     public function getCustomerName(): string
     {
-        return $this->payment->customer->deliveryAddress->fullName;
+        if ($this->payment->customer->deliveryAddress) {
+            return $this->payment->customer->deliveryAddress->fullName ?? '';
+        }
+
+        return '';
     }
 
     /**
@@ -110,14 +136,19 @@ class PaymentInformation extends Widget
      */
     public function getAddress(): string
     {
-        return $this->payment->customer->deliveryAddress->addressRow1 . '<br />' . PHP_EOL .
-            ($this->payment->customer->deliveryAddress->addressRow2 ?
-                $this->payment->customer->deliveryAddress->addressRow2 . '<br />' . PHP_EOL :
-                ''
-            ) .
-            $this->payment->customer->deliveryAddress->postalArea . '<br />' . PHP_EOL .
-            $this->payment->customer->deliveryAddress->countryCode->value . ' - ' .
-            $this->payment->customer->deliveryAddress->postalCode;
+        if ($this->payment->customer->deliveryAddress) {
+            return $this->payment->customer->deliveryAddress->addressRow1 . '<br />' . PHP_EOL .
+                ($this->payment->customer->deliveryAddress->addressRow2 ?
+                    $this->payment->customer->deliveryAddress->addressRow2 . '<br />' . PHP_EOL :
+                    ''
+                ) .
+                $this->payment->customer->deliveryAddress->postalArea . '<br />' . PHP_EOL .
+                ($this->payment->customer->deliveryAddress->countryCode !== null ?
+                $this->payment->customer->deliveryAddress->countryCode->value . ' - ' : '') .
+                $this->payment->customer->deliveryAddress->postalCode;
+        }
+
+        return '';
     }
 
     /**
@@ -125,7 +156,7 @@ class PaymentInformation extends Widget
      */
     public function getTelephone(): string
     {
-        return $this->payment->customer->mobilePhone;
+        return $this->payment->customer->mobilePhone ?? '';
     }
 
     /**
@@ -133,7 +164,7 @@ class PaymentInformation extends Widget
      */
     public function getEmail(): string
     {
-        return $this->payment->customer->email;
+        return $this->payment->customer->email ?? '';
     }
 
     public function getFormattedAmount(float $amount): string
