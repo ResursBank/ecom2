@@ -175,7 +175,7 @@ class OrderTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'orderReference' => 'Test!',
+            'orderReference' => "·n”“©»ðßøæ£¡@¡\]£¡\¶\}t!",
         ]);
     }
 }
