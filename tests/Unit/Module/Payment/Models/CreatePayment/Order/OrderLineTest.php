@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\Payment\Models\CreatePayment\Order;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -20,6 +21,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+
+use function strlen;
 
 /**
  * Test data integrity of order line entity model.
@@ -85,6 +88,26 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Get a string of specified length.
+     *
+     * @throws Exception
+     */
+    private function getRandomString(int $length = 8): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $string = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $string .= $characters[random_int(
+                min: 0,
+                max: strlen(string: $characters) - 1
+            )];
+        }
+
+        return $string;
+    }
+
+    /**
      * Assert validateDescription() throws IllegalValueException when its
      * length is too long.
      *
@@ -96,8 +119,7 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'description' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing.',
+            'description' => $this->getRandomString(length: 101),
         ]);
     }
 
