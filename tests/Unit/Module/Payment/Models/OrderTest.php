@@ -21,12 +21,11 @@ use Resursbank\Ecom\Lib\Model\Payment\Order as OrderModel;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\EcomTest\Data\Order;
 use stdClass;
 
 use function array_fill;
-use function json_decode;
-use function json_encode;
 
 /**
  * Test data integrity of order entity model.
@@ -83,28 +82,32 @@ class OrderTest extends TestCase
     public function testValidateOrderLinesThrowsWhenTooLong(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'orderLines' => json_decode(
-                json: json_encode(value: array_fill(
-                    start_index: 0,
-                    count: 1001,
-                    value: new OrderLine(
-                        description: 'test',
-                        reference: 'test',
-                        quantityUnit: 'test',
-                        quantity: 20.1,
-                        vatRate: 20,
-                        unitAmountIncludingVat: 20,
-                        totalAmountIncludingVat: 20.1,
-                        totalVatAmount: 20.1,
-                        type: OrderLineType::NORMAL
-                    )
-                ), flags: JSON_THROW_ON_ERROR),
-                associative: false,
-                depth: 512,
-                flags: JSON_THROW_ON_ERROR
-            ),
-        ]);
+
+        $orderLines = new OrderModel\ActionLog\OrderLineCollection(
+            data: array_fill(
+                start_index: 0,
+                count: 1001,
+                value: new OrderLine(
+                    description: 'test',
+                    reference: 'test',
+                    quantityUnit: 'test',
+                    quantity: 20.1,
+                    vatRate: 20,
+                    unitAmountIncludingVat: 20,
+                    totalAmountIncludingVat: 20.1,
+                    totalVatAmount: 20.1,
+                    type: OrderLineType::NORMAL
+                )
+            )
+        );
+
+        new OrderModel\ActionLog(
+            actionId: '160d2b10-7586-4a32-87a1-23a425b252ce',
+            type: ActionType::CREATE,
+            created: '2022-09-07T14:52:56.709',
+            creator: 'jultomten',
+            orderLines: $orderLines
+        );
     }
 
     /**
@@ -118,9 +121,13 @@ class OrderTest extends TestCase
     public function testValidateOrderLinesThrowsWhenTooShort(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->convert(updates: [
-            'orderLines' => [],
-        ]);
+        new OrderModel\ActionLog(
+            actionId: '160d2b10-7586-4a32-87a1-23a425b252ce',
+            type: ActionType::CREATE,
+            created: '2022-09-07T14:52:56.709',
+            creator: 'jultomten',
+            orderLines: new OrderModel\ActionLog\OrderLineCollection(data: [])
+        );
     }
 
     /**
@@ -168,7 +175,7 @@ class OrderTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'orderReference' => 'Test!',
+            'orderReference' => "·n”“©»ðßøæ£¡@¡\]£¡\¶\}t!",
         ]);
     }
 }
