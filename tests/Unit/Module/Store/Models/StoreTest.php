@@ -39,6 +39,7 @@ class StoreTest extends TestCase
      * @throws IllegalTypeException
      * @throws ReflectionException
      * @throws TestException
+     * @throws IllegalValueException
      */
     private function convert(
         array $updates = []
@@ -60,8 +61,10 @@ class StoreTest extends TestCase
     /**
      * Assert validateId() throws EmptyValueException when id is empty.
      *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
-     * @throws TestException|IllegalTypeException
+     * @throws TestException
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
@@ -85,8 +88,10 @@ class StoreTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
-     * @throws TestException|IllegalTypeException
+     * @throws TestException
      */
     public function testIdAssigned(): void
     {
@@ -123,8 +128,10 @@ class StoreTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
-     * @throws TestException|IllegalTypeException
+     * @throws TestException
      */
     public function testNationalStoreIdWasAssigned(): void
     {
@@ -138,8 +145,10 @@ class StoreTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
-     * @throws TestException|IllegalTypeException
+     * @throws TestException
      */
     public function testCountryCodeWasAssigned(): void
     {
@@ -150,8 +159,10 @@ class StoreTest extends TestCase
     /**
      * Assert validateName() throws EmptyValueException when name is empty.
      *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
-     * @throws TestException|IllegalTypeException
+     * @throws TestException
      */
     public function testValidateNameThrowsWithEmptyValue(): void
     {
@@ -162,8 +173,10 @@ class StoreTest extends TestCase
     /**
      * Assert property was assigned during object conversion.
      *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
-     * @throws TestException|IllegalTypeException
+     * @throws TestException
      */
     public function testNameWasAssigned(): void
     {
