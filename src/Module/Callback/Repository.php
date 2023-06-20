@@ -27,7 +27,7 @@ use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
 use Resursbank\Ecom\Lib\Model\Callback\Management;
 use Resursbank\Ecom\Lib\Model\Callback\TestResponse;
-use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
+use Resursbank\Ecom\Lib\Repository\Traits\Post;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Throwable;
 

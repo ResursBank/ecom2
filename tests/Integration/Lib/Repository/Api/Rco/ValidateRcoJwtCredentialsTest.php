@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Lib\Repository\Api\Mapi;
+namespace Resursbank\EcomTest\Integration\Lib\Repository\Api\Rco;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -23,12 +23,12 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Repository\Api\Mapi\ValidateJwtCredentials;
+use Resursbank\Ecom\Lib\Repository\Traits\ValidateJwtCredentials;
 
 /**
 * Test for JWT credentials validation.
 */
-class ValidateJwtCredentialsTest extends TestCase
+class ValidateRcoJwtCredentialsTest extends TestCase
 {
     /**
      * Assert exec() throws AuthException with invalid username.
@@ -48,13 +48,15 @@ class ValidateJwtCredentialsTest extends TestCase
         Config::setup(
             jwtAuth: new Jwt(
                 clientId: 'mamba',
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+                clientSecret: $_ENV['RCO_JWT_AUTH_CLIENT_SECRET'],
+                scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(
+                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
+                )
             )
         );
 
-        $this->expectException(exception: AuthException::class);
+        $this->expectException(exception: CurlException::class);
 
         ValidateJwtCredentials::exec();
     }
@@ -76,14 +78,16 @@ class ValidateJwtCredentialsTest extends TestCase
     {
         Config::setup(
             jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientId: $_ENV['RCO_JWT_AUTH_CLIENT_ID'],
                 clientSecret: 'core',
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+                scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(
+                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
+                )
             )
         );
 
-        $this->expectException(exception: AuthException::class);
+        $this->expectException(exception: CurlException::class);
 
         ValidateJwtCredentials::exec();
     }
@@ -127,10 +131,12 @@ class ValidateJwtCredentialsTest extends TestCase
     {
         Config::setup(
             jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+                clientId: $_ENV['RCO_JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['RCO_JWT_AUTH_CLIENT_SECRET'],
+                scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(
+                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
+                )
             )
         );
 
