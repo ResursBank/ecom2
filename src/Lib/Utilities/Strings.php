@@ -56,10 +56,9 @@ class Strings
         return (string)base64_decode(
             string: str_pad(
                 string: strtr($data, '-_', '+/'),
-                length: strlen($data) % 4,
+                length: strlen(string: $data) % 4,
                 pad_string: '='
-            ),
-            strict: false
+            )
         );
     }
 
