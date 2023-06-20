@@ -56,7 +56,7 @@ class ValidateRcoJwtCredentialsTest extends TestCase
             )
         );
 
-        $this->expectException(exception: AuthException::class);
+        $this->expectException(exception: CurlException::class);
 
         ValidateJwtCredentials::exec();
     }
@@ -87,7 +87,7 @@ class ValidateRcoJwtCredentialsTest extends TestCase
             )
         );
 
-        $this->expectException(exception: AuthException::class);
+        $this->expectException(exception: CurlException::class);
 
         ValidateJwtCredentials::exec();
     }
