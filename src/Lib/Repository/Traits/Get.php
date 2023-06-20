@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Repository\Api\Mapi;
+namespace Resursbank\Ecom\Lib\Repository\Traits;
 
 use JsonException;
 use ReflectionException;
@@ -28,14 +28,12 @@ use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
-use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 
 /**
- * Generic functionality to perform a POST call against the Merchant API and
+ * Generic functionality to perform a GET call against the Merchant API and
  * convert the response to model instance(s).
  */
-class Post
+class Get
 {
     use ExceptionLog;
     use ModelConverter;
@@ -72,9 +70,9 @@ class Post
             url: $this->mapi->getUrl(
                 route: $this->route
             ),
-            requestMethod: RequestMethod::POST,
+            requestMethod: RequestMethod::GET,
             payload: $this->params,
-            contentType: ContentType::JSON,
+            contentType: ContentType::URL,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON
         );
