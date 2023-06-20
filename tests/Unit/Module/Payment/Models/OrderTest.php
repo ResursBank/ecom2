@@ -15,6 +15,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment\Order as OrderModel;
@@ -47,9 +48,10 @@ class OrderTest extends TestCase
 
     /**
      * @param array<string, mixed> $updates
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
      * @throws TestException
-     * @throws IllegalTypeException
      */
     private function convert(
         array $updates = []
@@ -74,10 +76,9 @@ class OrderTest extends TestCase
      * Assert validateOrderLines() throws IllegalValueException when its
      * length is too long.
      *
-     * @throws ReflectionException
-     * @throws TestException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws JsonException
+     * @throws IllegalValueException
      */
     public function testValidateOrderLinesThrowsWhenTooLong(): void
     {
@@ -88,15 +89,15 @@ class OrderTest extends TestCase
                 start_index: 0,
                 count: 1001,
                 value: new OrderLine(
+                    quantity: 20.1,
+                    quantityUnit: 'test',
+                    vatRate: 20,
+                    totalAmountIncludingVat: 20.1,
                     description: 'test',
                     reference: 'test',
-                    quantityUnit: 'test',
-                    quantity: 20.1,
-                    vatRate: 20,
+                    type: OrderLineType::NORMAL,
                     unitAmountIncludingVat: 20,
-                    totalAmountIncludingVat: 20.1,
-                    totalVatAmount: 20.1,
-                    type: OrderLineType::NORMAL
+                    totalVatAmount: 20.1
                 )
             )
         );
@@ -105,8 +106,8 @@ class OrderTest extends TestCase
             actionId: '160d2b10-7586-4a32-87a1-23a425b252ce',
             type: ActionType::CREATE,
             created: '2022-09-07T14:52:56.709',
-            creator: 'jultomten',
-            orderLines: $orderLines
+            orderLines: $orderLines,
+            creator: 'jultomten'
         );
     }
 
@@ -114,9 +115,9 @@ class OrderTest extends TestCase
      * Assert validateOrderLines() throws IllegalValueException when its
      * length is too short.
      *
-     * @throws ReflectionException
-     * @throws TestException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws EmptyValueException
      */
     public function testValidateOrderLinesThrowsWhenTooShort(): void
     {
@@ -125,8 +126,8 @@ class OrderTest extends TestCase
             actionId: '160d2b10-7586-4a32-87a1-23a425b252ce',
             type: ActionType::CREATE,
             created: '2022-09-07T14:52:56.709',
-            creator: 'jultomten',
-            orderLines: new OrderModel\ActionLog\OrderLineCollection(data: [])
+            orderLines: new OrderModel\ActionLog\OrderLineCollection(data: []),
+            creator: 'jultomten'
         );
     }
 

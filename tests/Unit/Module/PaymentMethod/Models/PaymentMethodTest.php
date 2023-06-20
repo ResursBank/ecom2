@@ -64,7 +64,9 @@ class PaymentMethodTest extends TestCase
 
     /**
      * @param array<string, mixed> $updates
+     * @return PaymentMethod
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
      * @throws TestException
      */
