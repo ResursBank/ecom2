@@ -50,7 +50,9 @@ class ValidateRcoJwtCredentialsTest extends TestCase
                 clientId: 'mamba',
                 clientSecret: $_ENV['RCO_JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE'])
+                grantType: GrantType::from(
+                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
+                )
             )
         );
 
@@ -79,7 +81,9 @@ class ValidateRcoJwtCredentialsTest extends TestCase
                 clientId: $_ENV['RCO_JWT_AUTH_CLIENT_ID'],
                 clientSecret: 'core',
                 scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE'])
+                grantType: GrantType::from(
+                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
+                )
             )
         );
 
@@ -130,7 +134,9 @@ class ValidateRcoJwtCredentialsTest extends TestCase
                 clientId: $_ENV['RCO_JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['RCO_JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE'])
+                grantType: GrantType::from(
+                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
+                )
             )
         );
 
