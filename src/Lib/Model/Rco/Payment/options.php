@@ -19,13 +19,6 @@ use Resursbank\Ecom\Lib\Model\Model;
 class options extends Model
 {
     /**
-     * @param bool $b2bEnabled
-     * @param bool $renderCart
-     * @param bool $mutableCart
-     * @param bool $calculateShipping
-     * @param bool $lookupB2CAddress
-     * @param bool $renderCartCode
-     * @param bool $renderNotes
      * @param array $requiredFields @todo Can we make an enum array?
      */
     // phpcs:ignore
