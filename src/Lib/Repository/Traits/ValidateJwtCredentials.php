@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Repository\Api\Mapi;
+namespace Resursbank\Ecom\Lib\Repository\Traits;
 
 use JsonException;
 use ReflectionException;
@@ -21,6 +21,7 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 
 /**
  * Helper class to validate JWT credentials.

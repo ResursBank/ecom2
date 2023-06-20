@@ -23,12 +23,12 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Repository\Api\Mapi\ValidateJwtCredentials;
+use Resursbank\Ecom\Lib\Repository\Traits\ValidateJwtCredentials;
 
 /**
 * Test for JWT credentials validation.
 */
-class ValidateJwtCredentialsTest extends TestCase
+class ValidateMapiJwtCredentialsTest extends TestCase
 {
     /**
      * Assert exec() throws AuthException with invalid username.
