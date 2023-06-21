@@ -52,7 +52,7 @@ class Item extends Model
 
     /**
      * Validate that description has content.
-     * @return void
+     *
      * @throws EmptyValueException
      */
     private function validateDescription(): void
@@ -62,7 +62,7 @@ class Item extends Model
 
     /**
      * Validate that the SKU or unique id has content.
-     * @return void
+     *
      * @throws EmptyValueException
      */
     private function validateItemId(): void
@@ -72,7 +72,7 @@ class Item extends Model
 
     /**
      * Validate that there is a quantity unit present.
-     * @return void
+     *
      * @throws EmptyValueException
      */
     private function validateQuantityUnit(): void
