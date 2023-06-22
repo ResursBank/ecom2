@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\Ecom\Lib\Model\Rco\Payment;
+
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Model\Payment;
+
+/**
+ * RCO+: A list of checkboxes rendered to the user.
+ */
+class CheckboxesCollection extends Collection
+{
+    /**
+     * @param array $data
+     * @throws IllegalTypeException
+     */
+    public function __construct(array $data)
+    {
+        parent::__construct(data: $data, type: Payment::class);
+    }
+}
