@@ -24,7 +24,10 @@
     "id": "read-more",
     "translation": {
       "en": "Read More",
-      "sv": "Läs Mer"
+      "sv": "Läs Mer",
+      "no": "Les mer",
+      "da": "Læs mere",
+      "fi": "Lue lisää"
     }
   },
   {
