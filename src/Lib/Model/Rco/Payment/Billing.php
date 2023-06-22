@@ -16,6 +16,11 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Billing extends Model
 {
+    /**
+     * @param string $name The full name of the recipient person or organization.
+     * @param Contact $contact Contact class.
+     * @param Address $address Address class.
+     */
     public function __construct(
         public readonly string $name,
         public readonly Contact $contact,
