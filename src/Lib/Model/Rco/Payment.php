@@ -20,26 +20,12 @@ use Resursbank\Ecom\Lib\Model\Rco\Payment\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Payment\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Payment\Redirects;
 use Resursbank\Ecom\Lib\Model\Rco\Payment\Webhooks;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\WebhookModel;
 
 /**
  * RCO+ Payment Model.
  */
 class Payment extends Model
 {
-    /**
-     * @param Options $options
-     * @param string $orderReference
-     * @param Locale $locale
-     * @param Currency $currency
-     * @param Cart $cart
-     * @param Customer $customer
-     * @param Redirects $redirects
-     * @param Callbacks $callbacks
-     * @param Webhooks $webhooks
-     * @param Checkboxes $checkboxes
-     * @param Merchant $merchant
-     */
     public function __construct(
         private readonly Options $options,
         private readonly string $orderReference,
@@ -51,7 +37,7 @@ class Payment extends Model
         private readonly Callbacks $callbacks,
         private readonly Webhooks $webhooks,
         private readonly Checkboxes $checkboxes,
-        private readonly Merchant $merchant,
+        private readonly Merchant $merchant
     ) {
     }
 }
