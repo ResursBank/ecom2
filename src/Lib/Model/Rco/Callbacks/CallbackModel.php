@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 
 use Resursbank\Ecom\Lib\Model\Model;
