@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 /**
  * RCO+ Refunded Callback.
  */
-class Refunded extends CallbackModel
+class Refunded extends Callbacks
 {
     /**
      * @param string $url An https url to that will be called when a payment has been refunded.
