@@ -87,6 +87,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Get data array from collection
      *
+     * @param bool $full
      * @return array
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
