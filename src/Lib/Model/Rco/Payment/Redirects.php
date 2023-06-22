@@ -18,6 +18,7 @@ class Redirects extends Model
 {
     /**
      * Urls must be given in https format.
+     *
      * @param string $success Successful payment url. If left empty, the default status page will be shown.
      * @param string $checkout Fail/cancel url. Url takes user back to the store which must load the checkout again.
      * @todo Validate URLs as URLs.
