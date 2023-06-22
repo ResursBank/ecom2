@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco\Payment;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -31,6 +33,7 @@ class Item extends Model
      * @param string $imageUrl A url to an image of the product or service.
      * @param array $tags A list of optional string tags.
      * @throws EmptyValueException
+     * @throws IllegalValueException
      */
     public function __construct(
         public readonly Type $type,
@@ -44,10 +47,14 @@ class Item extends Model
         public readonly string $url,
         public readonly string $imageUrl,
         public readonly array $tags = [],
-        private readonly StringValidation $stringValidation = new StringValidation()
+        private readonly StringValidation $stringValidation = new StringValidation(),
+        private readonly FloatValidation $floatValidation = new FloatValidation()
     ) {
         $this->validateDescription();
         $this->validateItemId();
+        $this->validateQuantityUnit();
+        $this->validateQuantity();
+        $this->validateUnitPrice();
     }
 
     /**
@@ -78,5 +85,36 @@ class Item extends Model
     private function validateQuantityUnit(): void
     {
         $this->stringValidation->notEmpty(value: $this->quantityUnit);
+    }
+
+    /**
+     * @return void
+     * @throws IllegalValueException
+     */
+    private function validateQuantity(): void {
+        $this->floatValidation->isPositive(value: $this->quantity);
+    }
+
+    /**
+     * @return void
+     * @throws IllegalValueException
+     */
+    private function validateUnitPrice(): void
+    {
+        if (!is_float(value: $this->unitPrice)) {
+            return;
+        }
+
+        $this->floatValidation->length(
+            value: $this->unitPrice,
+            min: 0,
+            max: 2
+        );
+
+        $this->floatValidation->inRange(
+            value: $this->unitPrice,
+            min: -9999999999.99,
+            max: 9999999999.99
+        );
     }
 }
