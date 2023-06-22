@@ -88,15 +88,14 @@ class Item extends Model
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
-    private function validateQuantity(): void {
+    private function validateQuantity(): void
+    {
         $this->floatValidation->isPositive(value: $this->quantity);
     }
 
     /**
-     * @return void
      * @throws IllegalValueException
      */
     private function validateUnitPrice(): void
@@ -105,11 +104,7 @@ class Item extends Model
             return;
         }
 
-        $this->floatValidation->length(
-            value: $this->unitPrice,
-            min: 0,
-            max: 2
-        );
+        $this->floatValidation->length(value: $this->unitPrice, min: 0, max: 2);
 
         $this->floatValidation->inRange(
             value: $this->unitPrice,
