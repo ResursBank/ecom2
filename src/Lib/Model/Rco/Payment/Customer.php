@@ -20,8 +20,7 @@ class Customer extends Model
         public readonly Delivery $delivery,
         public readonly CustomerType $type,
         public readonly string $governmentId,
-        public readonly Billing $billing,
-    )
-    {
+        public readonly Billing $billing
+    ) {
     }
 }

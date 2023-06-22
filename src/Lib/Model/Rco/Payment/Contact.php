@@ -16,12 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Contact extends Model
 {
-    /**
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $email
-     * @param string $phone
-     */
     public function __construct(
         private readonly string $firstName,
         private readonly string $lastName,
