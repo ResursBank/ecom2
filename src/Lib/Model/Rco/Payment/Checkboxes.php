@@ -16,7 +16,7 @@ use Resursbank\Ecom\Lib\Model\Payment;
 /**
  * RCO+: A list of checkboxes rendered to the user.
  */
-class CheckboxesCollection extends Collection
+class Checkboxes extends Collection
 {
     /**
      * @param array $data

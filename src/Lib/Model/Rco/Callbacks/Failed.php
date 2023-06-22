@@ -7,7 +7,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 /**
  * RCO+ Callback Failed.
  */
-class Failed extends CallbackModel
+class Failed extends Callbacks
 {
     /**
      * @param string $url An https url to that will be called when a payment has failed.

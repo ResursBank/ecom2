@@ -16,7 +16,7 @@ use Resursbank\Ecom\Lib\Model\Model;
  *
  * @SuppressWarnings(PHPMD.CamelCaseClassName)
  */
-class options extends Model
+class Options extends Model
 {
     /**
      * @param array $requiredFields @todo Can we make an enum array?

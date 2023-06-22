@@ -6,7 +6,10 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
-class CallbackModel extends Model
+/**
+ * Callback model for RCO+.
+ */
+class Callbacks extends Model
 {
     /**
      * @param string $url URL to register for the specific callback.
