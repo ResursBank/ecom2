@@ -16,9 +16,6 @@ class Cart extends WebhookModel
 {
     /**
      * @param string $url Posted to when the cart fields have been changed if the mutateCart option is set to true.
-     * @param string $authorization
-     * @param bool $continueOnNoResponse
-     * @param int $timeout
      */
     public function __construct(string $url, string $authorization, bool $continueOnNoResponse, int $timeout)
     {
