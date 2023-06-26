@@ -68,9 +68,10 @@ class UniqueSellingPoint extends Widget
      */
     private function getBasicTranslation(Type $paymentMethodType): string
     {
-        return Translator::translate(
+        $return = Translator::translate(
             phraseId: $paymentMethodType->value,
             translationFile: __DIR__ . '/Resources/translations.json'
         );
+        return $return !== 'N/A' ? $return : '';
     }
 }
