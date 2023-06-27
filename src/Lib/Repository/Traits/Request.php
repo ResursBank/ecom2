@@ -46,7 +46,7 @@ class Request
         protected readonly RequestMethod $requestMethod,
         protected Mapi|Rco $api,
         protected readonly array $params = [],
-        protected readonly string $extractProperty = '',
+        protected readonly string $extractProperty = ''
     ) {
         $this->validateModel(model: $model);
     }

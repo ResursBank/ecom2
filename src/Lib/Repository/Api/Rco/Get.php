@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Repository\Api\Rco;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
