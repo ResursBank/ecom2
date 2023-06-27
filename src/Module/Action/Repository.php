@@ -22,7 +22,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
-use Resursbank\Ecom\Lib\Repository\Traits\Get;
+use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**

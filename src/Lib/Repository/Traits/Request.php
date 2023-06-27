@@ -5,8 +5,6 @@
  * See LICENSE for license details.
  */
 
-/** @noinspection PhpMultipleClassDeclarationsInspection */
-
 declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Repository\Traits;
@@ -19,8 +17,10 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -29,26 +29,27 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 
-/**
- * Generic functionality to perform a POST call against the Merchant API and
- * convert the response to model instance(s).
- */
-class Post
+class Request
 {
     use ExceptionLog;
     use ModelConverter;
     use DataResolver;
 
+    /** @var RequestMethod HTTP Post Method. */
+    protected RequestMethod $requestMethod;
+
+    protected Mapi|Rco $api;
+
     /**
      * @param class-string $model | Convert cached data to model instance(s).
+     * @param array $params
      * @throws IllegalTypeException
      */
     public function __construct(
-        private readonly string $model,
-        private readonly string $route,
-        private readonly array $params = [],
-        private readonly string $extractProperty = '',
-        private readonly Mapi $mapi = new Mapi()
+        protected readonly string $model,
+        protected readonly string $route,
+        protected readonly array $params = [],
+        protected readonly string $extractProperty = ''
     ) {
         $this->validateModel(model: $model);
     }
@@ -56,23 +57,24 @@ class Post
     /**
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ConfigException
+     * @throws IllegalValueException
      */
     public function call(): Collection|Model
     {
         $curl = new Curl(
-            url: $this->mapi->getUrl(
+            url: $this->api->getUrl(
                 route: $this->route
             ),
-            requestMethod: RequestMethod::POST,
+            requestMethod: $this->requestMethod,
             payload: $this->params,
-            contentType: ContentType::JSON,
+            contentType: ContentType::URL,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON
         );
