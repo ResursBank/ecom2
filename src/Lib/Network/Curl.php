@@ -409,7 +409,8 @@ class Curl
             RequestMethod::GET => 'GET',
             RequestMethod::POST => 'POST',
             RequestMethod::PUT => 'PUT',
-            RequestMethod::DELETE => 'DELETE'
+            RequestMethod::DELETE => 'DELETE',
+            RequestMethod::PATCH => 'PATCH'
         };
     }
 
