@@ -29,11 +29,9 @@ class Post extends Request
     use ModelConverter;
     use DataResolver;
 
-    /** @var RequestMethod Set request method as HTTP POST. */
-    protected RequestMethod $requestMethod = RequestMethod::POST;
-
     /**
      * @param class-string $model | Convert cached data to model instance(s).
+     * @param array $params
      * @throws IllegalTypeException
      */
     public function __construct(
@@ -42,7 +40,13 @@ class Post extends Request
         protected readonly array $params = [],
         protected readonly string $extractProperty = ''
     ) {
-        $this->api = new Mapi();
-        $this->validateModel(model: $model);
+        parent::__construct(
+            model: $model,
+            route: $route,
+            requestMethod: RequestMethod::POST,
+            api: new Mapi(),
+            params: $params,
+            extractProperty: $extractProperty
+        );
     }
 }

@@ -29,21 +29,24 @@ class Patch extends Request
     use ModelConverter;
     use DataResolver;
 
-    /** @var RequestMethod Set request method as HTTP PATCH. */
-    protected RequestMethod $requestMethod = RequestMethod::PATCH;
-
     /**
      * @param class-string $model | Convert cached data to model instance(s).
      * @param array $params
      * @throws IllegalTypeException
      */
     public function __construct(
-        protected readonly string $model,
-        protected readonly string $route,
-        protected readonly array $params = [],
-        protected readonly string $extractProperty = ''
+        string $model,
+        string $route,
+        array $params = [],
+        string $extractProperty = ''
     ) {
-        $this->api = new Rco();
-        $this->validateModel(model: $model);
+        parent::__construct(
+            model: $model,
+            route: $route,
+            requestMethod: RequestMethod::PATCH,
+            api: new Rco(),
+            params: $params,
+            extractProperty: $extractProperty
+        );
     }
 }

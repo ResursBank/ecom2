@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Repository\Api\Rco;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
@@ -29,9 +30,6 @@ class Get extends Request
     use ModelConverter;
     use DataResolver;
 
-    /** @var RequestMethod Set request method as HTTP GET. */
-    protected RequestMethod $requestMethod = RequestMethod::GET;
-
     /**
      * @param class-string $model | Convert cached data to model instance(s).
      * @param array $params
@@ -43,7 +41,13 @@ class Get extends Request
         protected readonly array $params = [],
         protected readonly string $extractProperty = ''
     ) {
-        $this->api = new Rco();
-        $this->validateModel(model: $model);
+        parent::__construct(
+            model: $model,
+            route: $route,
+            requestMethod: RequestMethod::GET,
+            api: new Rco(),
+            params: $params,
+            extractProperty: $extractProperty
+        );
     }
 }

@@ -29,23 +29,24 @@ class Put extends Request
     use ModelConverter;
     use DataResolver;
 
-    /** @var RequestMethod Set request method as HTTP PUT. */
-    protected RequestMethod $requestMethod = RequestMethod::PUT;
-
     /**
      * @param class-string $model | Convert cached data to model instance(s).
-     * @param string $route
      * @param array $params
-     * @param string $extractProperty
      * @throws IllegalTypeException
      */
     public function __construct(
-        protected readonly string $model,
-        protected readonly string $route,
-        protected readonly array $params = [],
-        protected readonly string $extractProperty = ''
+        string $model,
+        string $route,
+        array $params = [],
+        string $extractProperty = ''
     ) {
-        $this->api = new Rco();
-        $this->validateModel(model: $model);
+        parent::__construct(
+            model: $model,
+            route: $route,
+            requestMethod: RequestMethod::PUT,
+            api: new Rco(),
+            params: $params,
+            extractProperty: $extractProperty
+        );
     }
 }

@@ -35,11 +35,6 @@ class Request
     use ModelConverter;
     use DataResolver;
 
-    /** @var RequestMethod HTTP Post Method. */
-    protected RequestMethod $requestMethod;
-
-    protected Mapi|Rco $api;
-
     /**
      * @param class-string $model | Convert cached data to model instance(s).
      * @param array $params
@@ -48,8 +43,10 @@ class Request
     public function __construct(
         protected readonly string $model,
         protected readonly string $route,
+        protected readonly RequestMethod $requestMethod,
+        protected Mapi|Rco $api,
         protected readonly array $params = [],
-        protected readonly string $extractProperty = ''
+        protected readonly string $extractProperty = '',
     ) {
         $this->validateModel(model: $model);
     }
