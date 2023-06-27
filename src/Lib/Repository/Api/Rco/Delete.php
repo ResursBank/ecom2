@@ -20,7 +20,7 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Repository\Traits\Request;
 
 /**
- * Generic functionality to perform a POST call against the Merchant API and
+ * Generic functionality to perform a DELETE call against RCO+ and
  * convert the response to model instance(s).
  */
 class Delete extends Request

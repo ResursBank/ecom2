@@ -29,6 +29,9 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 
+/**
+ * HTTP Requests centralized for both RCO+ and MAPI related calls.
+ */
 class Request
 {
     use ExceptionLog;
