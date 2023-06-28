@@ -23,10 +23,10 @@ class Contact extends Model
      * @param string $phone The phone number to the contact person.
      */
     public function __construct(
-        private readonly string $firstName,
-        private readonly string $lastName,
-        private readonly string $email,
-        private readonly string $phone
+        public readonly string $firstName,
+        public readonly string $lastName,
+        public readonly string $email,
+        public readonly string $phone
     ) {
     }
 }

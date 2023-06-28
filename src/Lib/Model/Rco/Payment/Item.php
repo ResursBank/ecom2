@@ -34,6 +34,7 @@ class Item extends Model
      * @param array $tags A list of optional string tags.
      * @throws EmptyValueException
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly Type $type,

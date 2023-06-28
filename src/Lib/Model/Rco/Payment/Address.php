@@ -25,12 +25,12 @@ class Address extends Model
      * @param CountryCode $countryCode ISO 3166-1 Alpha-2 country code (enum): SE,DK,FI,NO.
      */
     public function __construct(
-        private readonly string $street,
-        private readonly string $addressLine,
-        private readonly string $postalCode,
-        private readonly string $city,
-        private readonly string $notes,
-        private readonly CountryCode $countryCode
+        public readonly string $street,
+        public readonly string $addressLine,
+        public readonly string $postalCode,
+        public readonly string $city,
+        public readonly string $notes,
+        public readonly CountryCode $countryCode
     ) {
     }
 }

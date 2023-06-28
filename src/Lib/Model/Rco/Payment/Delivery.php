@@ -14,15 +14,4 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Payment;
  */
 class Delivery extends Billing
 {
-    /**
-     * Inherited constructor.
-     *
-     * @param string $name The full name of the recipient person or organization.
-     * @param Contact $contact Contact class.
-     * @param Address $address Address class.
-     */
-    public function __construct(string $name, Contact $contact, Address $address)
-    {
-        parent::__construct(name: $name, contact: $contact, address: $address);
-    }
 }

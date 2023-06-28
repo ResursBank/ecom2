@@ -20,6 +20,7 @@ class Options extends Model
 {
     /**
      * @param array $requiredFields @todo Can we make an enum array?
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     // phpcs:ignore
     public function __construct(
