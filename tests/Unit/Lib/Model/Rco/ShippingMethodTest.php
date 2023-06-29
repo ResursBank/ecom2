@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\RcoRequiredFieldException;
-use Resursbank\Ecom\Exception\RcoShippingScopeException;
+use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
+use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
@@ -28,12 +28,12 @@ class ShippingMethodTest extends TestCase
 
     /**
      * @throws IllegalValueException
-     * @throws RcoRequiredFieldException
-     * @throws RcoShippingScopeException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
      */
     public function testBadScope(): void
     {
-        $this->expectException(exception: RcoShippingScopeException::class);
+        $this->expectException(exception: ShippingScopeException::class);
 
         new ShippingMethod(
             methodId: 'methodId',
@@ -55,8 +55,8 @@ class ShippingMethodTest extends TestCase
 
     /**
      * @throws IllegalValueException
-     * @throws RcoRequiredFieldException
-     * @throws RcoShippingScopeException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
      */
     public function testProperScope(): void
     {
@@ -82,14 +82,14 @@ class ShippingMethodTest extends TestCase
     }
 
     /**
-     * @throws RcoRequiredFieldException
-     * @throws RcoShippingScopeException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
      * @throws IllegalValueException
      * @throws IllegalValueException
      */
     public function testBadRequiredField(): void
     {
-        $this->expectException(exception: RcoRequiredFieldException::class);
+        $this->expectException(exception: RequiredFieldException::class);
 
         new ShippingMethod(
             methodId: 'methodId',
@@ -111,8 +111,8 @@ class ShippingMethodTest extends TestCase
 
     /**
      * @throws IllegalValueException
-     * @throws RcoRequiredFieldException
-     * @throws RcoShippingScopeException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
      */
     public function testEmptyRequiredField(): void
     {
@@ -139,8 +139,8 @@ class ShippingMethodTest extends TestCase
 
     /**
      * @throws IllegalValueException
-     * @throws RcoRequiredFieldException
-     * @throws RcoShippingScopeException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
      */
     public function testProperRequiredField(): void
     {

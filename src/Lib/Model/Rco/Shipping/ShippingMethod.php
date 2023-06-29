@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
-use Resursbank\Ecom\Exception\RcoRequiredFieldException;
-use Resursbank\Ecom\Exception\RcoShippingScopeException;
+use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
+use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
@@ -29,8 +29,8 @@ class ShippingMethod extends Model
      * @param array $required List of required fields if this method is used: GOVERNMENT_ID,EMAIL,PHONE,NAME,ADDRESS.
      * @param Carrier $carrier Can be one of predefined carriers or GENERIC for other carriers: POSTNORD,GENERIC.
      * @throws IllegalValueException
-     * @throws RcoRequiredFieldException
-     * @throws RcoShippingScopeException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -53,7 +53,7 @@ class ShippingMethod extends Model
     /**
      * Validate array content of scope. Values allowed: B2C,B2B.
      *
-     * @throws RcoShippingScopeException
+     * @throws ShippingScopeException
      */
     private function validateScope(): void
     {
@@ -61,7 +61,7 @@ class ShippingMethod extends Model
             !in_array(needle: 'B2C', haystack: $this->scope) &&
             !in_array(needle: 'B2B', haystack: $this->scope)
         ) {
-            throw new RcoShippingScopeException(
+            throw new ShippingScopeException(
                 message: 'Scope must contain B2B or B2C to be valid.'
             );
         }
@@ -71,7 +71,7 @@ class ShippingMethod extends Model
      * Validate array of $this->required and allow it to only contain GOVERNMENT_ID,EMAIL,PHONE,NAME,ADDRESS.
      *
      * @throws IllegalValueException
-     * @throws RcoRequiredFieldException
+     * @throws RequiredFieldException
      */
     private function validateRequired(): void
     {
@@ -93,7 +93,7 @@ class ShippingMethod extends Model
                 ]
             )
         ) {
-            throw new RcoRequiredFieldException(
+            throw new RequiredFieldException(
                 message: 'Malicious value found in the array of required fields.'
             );
         }

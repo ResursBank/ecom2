@@ -7,11 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Exception;
+namespace Resursbank\Ecom\Exception\Rco;
+
+use Resursbank\Ecom\Exception\ValidationException;
 
 /**
  * Property has illegal type.
  */
-class RcoShippingScopeException extends ValidationException
+class RequiredFieldException extends ValidationException
 {
 }
