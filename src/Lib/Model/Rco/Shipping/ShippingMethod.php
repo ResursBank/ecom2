@@ -31,6 +31,7 @@ class ShippingMethod extends Model
      * @throws IllegalValueException
      * @throws RcoRequiredFieldException
      * @throws RcoShippingScopeException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly string $methodId,
