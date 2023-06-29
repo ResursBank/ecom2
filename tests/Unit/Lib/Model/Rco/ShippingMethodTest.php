@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
 use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
+use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
