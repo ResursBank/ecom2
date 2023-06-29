@@ -116,7 +116,7 @@ class ShippingMethodTest extends TestCase
      */
     public function testEmptyRequiredField(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: ShippingMethod::class,
             actual: new ShippingMethod(
                 methodId: 'methodId',
@@ -144,7 +144,7 @@ class ShippingMethodTest extends TestCase
      */
     public function testProperRequiredField(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             expected: ShippingMethod::class,
             actual: new ShippingMethod(
                 methodId: 'methodId',
