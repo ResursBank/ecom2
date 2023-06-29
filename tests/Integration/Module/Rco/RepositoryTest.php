@@ -9,12 +9,18 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -143,38 +149,7 @@ final class RepositoryTest extends TestCase
                 url: 'https://www.example.com/callbacks',
                 authorization: $auth
             ),
-            webhooks: new Payment\Webhooks(
-                customer: new Customer(
-                    url: 'https://www.example.com/webhooks/customer',
-                    authorization: $auth,
-                    timeout: 60,
-                    continueOnNoResponse: true
-                ),
-                cart: new Cart(
-                    url: 'https://www.example.com/webhooks/cart',
-                    authorization: $auth,
-                    timeout: 60,
-                    continueOnNoResponse: true
-                ),
-                shipping: new Shipping(
-                    url: 'https://www.example.com/webhooks/shipping',
-                    authorization: $auth,
-                    timeout: 60,
-                    continueOnNoResponse: true
-                ),
-                payment: new PaymentWebhook(
-                    url: 'https://wwww.example.com/webhooks/payment',
-                    authorization: $auth,
-                    timeout: 60,
-                    continueOnNoResponse: true
-                ),
-                validate: new Validate(
-                    url: 'https://www.example.com/webhooks/validate',
-                    authorization: $auth,
-                    timeout: 60,
-                    continueOnNoResponse: true
-                )
-            ),
+            webhooks: $this->getWebhooks(auth: $auth),
             checkboxes: new Payment\Checkboxes(data: [
                 new Payment\Checkbox(
                     id: 'terms',
@@ -193,12 +168,57 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * Fetch web hooks.
+     */
+    private function getWebhooks(string $auth): Payment\Webhooks
+    {
+        return new Payment\Webhooks(
+            customer: new Customer(
+                url: 'https://www.example.com/webhooks/customer',
+                authorization: $auth,
+                timeout: 60,
+                continueOnNoResponse: true
+            ),
+            cart: new Cart(
+                url: 'https://www.example.com/webhooks/cart',
+                authorization: $auth,
+                timeout: 60,
+                continueOnNoResponse: true
+            ),
+            shipping: new Shipping(
+                url: 'https://www.example.com/webhooks/shipping',
+                authorization: $auth,
+                timeout: 60,
+                continueOnNoResponse: true
+            ),
+            payment: new PaymentWebhook(
+                url: 'https://wwww.example.com/webhooks/payment',
+                authorization: $auth,
+                timeout: 60,
+                continueOnNoResponse: true
+            ),
+            validate: new Validate(
+                url: 'https://www.example.com/webhooks/validate',
+                authorization: $auth,
+                timeout: 60,
+                continueOnNoResponse: true
+            )
+        );
+    }
+
+    /**
      * Assert that Init returns a Payment object.
      *
      * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws ValidationException
      * @todo Expand this to not just test the orderReference.
      */
     public function testInit(): void
