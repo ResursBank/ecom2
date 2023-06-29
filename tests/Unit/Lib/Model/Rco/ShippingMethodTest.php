@@ -11,7 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\RcoRequiredFieldException;
-use Resursbank\Ecom\Exception\ShippingScopeException;
+use Resursbank\Ecom\Exception\RcoShippingScopeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
@@ -29,11 +29,11 @@ class ShippingMethodTest extends TestCase
     /**
      * @throws IllegalValueException
      * @throws RcoRequiredFieldException
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      */
     public function testBadScope(): void
     {
-        $this->expectException(exception: ShippingScopeException::class);
+        $this->expectException(exception: RcoShippingScopeException::class);
 
         new ShippingMethod(
             methodId: 'methodId',
@@ -56,7 +56,7 @@ class ShippingMethodTest extends TestCase
     /**
      * @throws IllegalValueException
      * @throws RcoRequiredFieldException
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      */
     public function testProperScope(): void
     {
@@ -83,7 +83,7 @@ class ShippingMethodTest extends TestCase
 
     /**
      * @throws RcoRequiredFieldException
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      * @throws IllegalValueException
      * @throws IllegalValueException
      */
@@ -112,7 +112,7 @@ class ShippingMethodTest extends TestCase
     /**
      * @throws IllegalValueException
      * @throws RcoRequiredFieldException
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      */
     public function testEmptyRequiredField(): void
     {
@@ -140,7 +140,7 @@ class ShippingMethodTest extends TestCase
     /**
      * @throws IllegalValueException
      * @throws RcoRequiredFieldException
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      */
     public function testProperRequiredField(): void
     {

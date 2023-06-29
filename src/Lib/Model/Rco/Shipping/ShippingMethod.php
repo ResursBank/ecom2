@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
 use Resursbank\Ecom\Exception\RcoRequiredFieldException;
-use Resursbank\Ecom\Exception\ShippingScopeException;
+use Resursbank\Ecom\Exception\RcoShippingScopeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
@@ -30,7 +30,7 @@ class ShippingMethod extends Model
      * @param Carrier $carrier Can be one of predefined carriers or GENERIC for other carriers: POSTNORD,GENERIC.
      * @throws IllegalValueException
      * @throws RcoRequiredFieldException
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      */
     public function __construct(
         public readonly string $methodId,
@@ -52,7 +52,7 @@ class ShippingMethod extends Model
     /**
      * Validate array content of scope. Values allowed: B2C,B2B.
      *
-     * @throws ShippingScopeException
+     * @throws RcoShippingScopeException
      */
     private function validateScope(): void
     {
@@ -60,7 +60,7 @@ class ShippingMethod extends Model
             !in_array(needle: 'B2C', haystack: $this->scope) &&
             !in_array(needle: 'B2B', haystack: $this->scope)
         ) {
-            throw new ShippingScopeException(
+            throw new RcoShippingScopeException(
                 message: 'Scope must contain B2B or B2C to be valid.'
             );
         }

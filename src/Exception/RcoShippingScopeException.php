@@ -12,6 +12,6 @@ namespace Resursbank\Ecom\Exception;
 /**
  * Property has illegal type.
  */
-class ShippingScopeException extends ValidationException
+class RcoShippingScopeException extends ValidationException
 {
 }
