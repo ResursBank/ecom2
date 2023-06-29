@@ -21,12 +21,13 @@ class Merchant extends Model
      * @param string $logoUrl Https url pointing to a small logo. SVG is recommended.
      * @param string $homepageUrl Https fallback url pointing to the main page.
      * @param string $accessControlAllowOrigin Https url of the page that will serve the web component.
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        private readonly string $displayName,
-        private readonly string $logoUrl,
-        private readonly string $homepageUrl,
-        private readonly string $accessControlAllowOrigin
+        public readonly string $displayName,
+        public readonly string $logoUrl,
+        public readonly string $homepageUrl,
+        public readonly string $accessControlAllowOrigin
     ) {
     }
 }

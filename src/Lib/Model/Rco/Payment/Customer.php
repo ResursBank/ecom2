@@ -17,16 +17,16 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Customer extends Model
 {
     /**
-     * @param Delivery $delivery Delivery address object.
      * @param CustomerType $type Customer type enum.
      * @param string $governmentId Government id supplied by the customer.
      * @param Billing $billing Billing address object.
+     * @param Delivery|null $delivery Delivery address object.
      */
     public function __construct(
-        public readonly Delivery $delivery,
         public readonly CustomerType $type,
         public readonly string $governmentId,
-        public readonly Billing $billing
+        public readonly Billing $billing,
+        public readonly ?Delivery $delivery = null
     ) {
     }
 }

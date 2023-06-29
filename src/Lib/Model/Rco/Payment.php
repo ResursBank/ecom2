@@ -26,18 +26,21 @@ use Resursbank\Ecom\Lib\Model\Rco\Payment\Webhooks;
  */
 class Payment extends Model
 {
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
-        private readonly Options $options,
-        private readonly string $orderReference,
-        private readonly Locale $locale,
-        private readonly Currency $currency,
-        private readonly Cart $cart,
-        private readonly Customer $customer,
-        private readonly Redirects $redirects,
-        private readonly Callbacks $callbacks,
-        private readonly Webhooks $webhooks,
-        private readonly Checkboxes $checkboxes,
-        private readonly Merchant $merchant
+        public readonly string $orderReference,
+        public readonly Options $options,
+        public readonly Locale $locale,
+        public readonly Currency $currency,
+        public readonly Cart $cart,
+        public readonly Customer $customer,
+        public readonly Checkboxes $checkboxes,
+        public readonly Merchant $merchant,
+        public readonly ?Callbacks $callbacks = null,
+        public readonly ?Redirects $redirects = null,
+        public readonly ?Webhooks $webhooks = null
     ) {
     }
 }

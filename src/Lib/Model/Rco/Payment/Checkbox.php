@@ -21,6 +21,7 @@ class Checkbox extends Model
      * @param string $label Description rendered next to the checkbox.
      * @param bool $checked Whether the checkbox is checked or not. Defaults to false.
      * @param bool $required er the checkbox must be checked in order to proceed to payment. Defaults to false.
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $id,
