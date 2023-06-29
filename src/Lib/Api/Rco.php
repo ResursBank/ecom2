@@ -40,6 +40,11 @@ class Rco
      */
     public const AUTH_URL_TEST = 'https://apigw.integration.resurs.com/';
 
+    /**
+     * Prefix route name for checkout
+     */
+    public const CHECKOUT_ROUTE = 'api/checkout';
+
     public function __construct(
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {

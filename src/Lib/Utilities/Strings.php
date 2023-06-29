@@ -58,7 +58,8 @@ class Strings
                 string: strtr($data, '-_', '+/'),
                 length: strlen(string: $data) % 4,
                 pad_string: '='
-            )
+            ),
+            strict: false
         );
     }
 
