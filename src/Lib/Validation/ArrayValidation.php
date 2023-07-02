@@ -119,7 +119,7 @@ class ArrayValidation
             if (!$item instanceof stdClass) {
                 throw new IllegalTypeException(
                     message: 'Array contains data that is not an stdClass ' .
-                        'instance.'
+                    'instance.'
                 );
             }
         }
@@ -201,5 +201,25 @@ class ArrayValidation
         }
 
         return true;
+    }
+
+    /**
+     * in_array, but when the needle is an array.
+     *
+     * @param array $needle
+     * @param array $haystack
+     * @throws IllegalValueException
+     */
+    public function inArrayMulti(array $needle, array $haystack): bool
+    {
+        $this->isSequential(data: $needle);
+
+        foreach ($needle as $key) {
+            if (in_array(needle: $key, haystack: $haystack, strict: true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
