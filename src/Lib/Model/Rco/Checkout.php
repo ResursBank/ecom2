@@ -39,9 +39,11 @@ class Checkout extends Model
         public readonly Checkboxes $checkboxes,
         public readonly Merchant $merchant,
         public readonly ?string $id = null,
+        public readonly ?string $version = null,
         public readonly ?Callbacks $callbacks = null,
         public readonly ?Redirects $redirects = null,
-        public readonly ?Webhooks $webhooks = null
+        public readonly ?Webhooks $webhooks = null,
+        public readonly ?string $notes = null
     ) {
     }
 }
