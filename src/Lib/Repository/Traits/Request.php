@@ -49,7 +49,8 @@ class Request
         protected readonly RequestMethod $requestMethod,
         protected Mapi|Rco $api,
         protected readonly array $params = [],
-        protected readonly string $extractProperty = ''
+        protected readonly string $extractProperty = '',
+        protected readonly array $headers = []
     ) {
         $this->validateModel(model: $model);
     }
@@ -76,7 +77,8 @@ class Request
             payload: $this->params,
             contentType: ContentType::URL,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON
+            responseContentType: ContentType::JSON,
+            headers: $this->headers
         );
 
         $data = $curl->exec()->body;

@@ -38,7 +38,8 @@ class Patch extends Request
         string $model,
         string $route,
         array $params = [],
-        string $extractProperty = ''
+        string $extractProperty = '',
+        array $headers = []
     ) {
         parent::__construct(
             model: $model,
@@ -46,7 +47,8 @@ class Patch extends Request
             requestMethod: RequestMethod::PATCH,
             api: new Rco(),
             params: $params,
-            extractProperty: $extractProperty
+            extractProperty: $extractProperty,
+            headers: $headers
         );
     }
 }
