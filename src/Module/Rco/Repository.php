@@ -40,8 +40,8 @@ class Repository
      * @throws IllegalValueException
      */
     public static function init(
-        Checkout $payment
+        Checkout $checkout
     ): Checkout {
-        return (new Init())->call(payment: $payment);
+        return (new Init())->call(checkout: $checkout);
     }
 }

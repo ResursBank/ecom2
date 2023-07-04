@@ -55,20 +55,20 @@ class Init
      * @throws ReflectionException
      * @throws ApiException
      */
-    public function call(Checkout $payment): Checkout
+    public function call(Checkout $checkout): Checkout
     {
         $payload = [
-            'orderReference' => $payment->orderReference,
-            'options' => $payment->options,
-            'locale' => $payment->locale,
-            'currency' => $payment->currency,
-            'cart' => $payment->cart->toArray(),
-            'customer' => $payment->customer,
-            'redirects' => $payment->redirects,
-            'callbacks' => $payment->callbacks,
-            'webhooks' => $payment->webhooks,
-            'checkboxes' => $payment->checkboxes->toArray(),
-            'merchant' => $payment->merchant
+            'orderReference' => $checkout->orderReference,
+            'options' => $checkout->options,
+            'locale' => $checkout->locale,
+            'currency' => $checkout->currency,
+            'cart' => $checkout->cart->toArray(),
+            'customer' => $checkout->customer,
+            'redirects' => $checkout->redirects,
+            'callbacks' => $checkout->callbacks,
+            'webhooks' => $checkout->webhooks,
+            'checkboxes' => $checkout->checkboxes->toArray(),
+            'merchant' => $checkout->merchant
         ];
 
         $curl = new Curl(

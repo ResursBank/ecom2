@@ -239,7 +239,7 @@ final class RepositoryTest extends TestCase
     public function testInit(): void
     {
         $request = $this->getPayment();
-        $response = Repository::init(payment: $request);
+        $response = Repository::init(checkout: $request);
 
         $this->assertEquals(
             expected: $request->orderReference,
