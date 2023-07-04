@@ -20,7 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Rco;
-use Resursbank\Ecom\Lib\Model\Rco\Payment;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -55,7 +55,7 @@ class Init
      * @throws ReflectionException
      * @throws ApiException
      */
-    public function call(Payment $payment): Payment
+    public function call(Checkout $payment): Checkout
     {
         $payload = [
             'orderReference' => $payment->orderReference,
@@ -91,12 +91,12 @@ class Init
 
         $result = DataConverter::stdClassToType(
             object: $data,
-            type: Payment::class
+            type: Checkout::class
         );
 
-        if (!$result instanceof Payment) {
+        if (!$result instanceof Checkout) {
             throw new IllegalValueException(
-                message: 'Response is not an instance of ' . Payment::class
+                message: 'Response is not an instance of ' . Checkout::class
             );
         }
 

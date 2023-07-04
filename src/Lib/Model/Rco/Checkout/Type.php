@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Payment;
+namespace Resursbank\Ecom\Lib\Model\Rco\Checkout;
 
 /**
  * Enum for product types in RCO+.
