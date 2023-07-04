@@ -38,7 +38,8 @@ class Post extends Request
         string $model,
         string $route,
         array $params = [],
-        string $extractProperty = ''
+        string $extractProperty = '',
+        array $headers = []
     ) {
         parent::__construct(
             model: $model,
@@ -46,7 +47,8 @@ class Post extends Request
             requestMethod: RequestMethod::POST,
             api: new Rco(),
             params: $params,
-            extractProperty: $extractProperty
+            extractProperty: $extractProperty,
+            headers: $headers
         );
     }
 }

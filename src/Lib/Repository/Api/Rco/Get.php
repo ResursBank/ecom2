@@ -38,15 +38,17 @@ class Get extends Request
         protected readonly string $model,
         protected readonly string $route,
         protected readonly array $params = [],
-        protected readonly string $extractProperty = ''
+        protected readonly string $extractProperty = '',
+        protected readonly array $headers = []
     ) {
         parent::__construct(
-            model: $model,
-            route: $route,
+            model: $this->model,
+            route: $this->route,
             requestMethod: RequestMethod::GET,
             api: new Rco(),
-            params: $params,
-            extractProperty: $extractProperty
+            params: $this->params,
+            extractProperty: $this->extractProperty,
+            headers: $this->headers
         );
     }
 }
