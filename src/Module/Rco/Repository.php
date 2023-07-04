@@ -19,7 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Model\Rco\Payment;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Module\Rco\Api\Init;
 
 /**
@@ -40,8 +40,8 @@ class Repository
      * @throws IllegalValueException
      */
     public static function init(
-        Payment $payment
-    ): Payment {
-        return (new Init())->call(payment: $payment);
+        Checkout $checkout
+    ): Checkout {
+        return (new Init())->call(checkout: $checkout);
     }
 }

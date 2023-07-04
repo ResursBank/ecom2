@@ -20,7 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Rco;
-use Resursbank\Ecom\Lib\Model\Rco\Payment;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -55,20 +55,20 @@ class Init
      * @throws ReflectionException
      * @throws ApiException
      */
-    public function call(Payment $payment): Payment
+    public function call(Checkout $checkout): Checkout
     {
         $payload = [
-            'orderReference' => $payment->orderReference,
-            'options' => $payment->options,
-            'locale' => $payment->locale,
-            'currency' => $payment->currency,
-            'cart' => $payment->cart->toArray(),
-            'customer' => $payment->customer,
-            'redirects' => $payment->redirects,
-            'callbacks' => $payment->callbacks,
-            'webhooks' => $payment->webhooks,
-            'checkboxes' => $payment->checkboxes->toArray(),
-            'merchant' => $payment->merchant
+            'orderReference' => $checkout->orderReference,
+            'options' => $checkout->options,
+            'locale' => $checkout->locale,
+            'currency' => $checkout->currency,
+            'cart' => $checkout->cart->toArray(),
+            'customer' => $checkout->customer,
+            'redirects' => $checkout->redirects,
+            'callbacks' => $checkout->callbacks,
+            'webhooks' => $checkout->webhooks,
+            'checkboxes' => $checkout->checkboxes->toArray(),
+            'merchant' => $checkout->merchant
         ];
 
         $curl = new Curl(
@@ -91,12 +91,12 @@ class Init
 
         $result = DataConverter::stdClassToType(
             object: $data,
-            type: Payment::class
+            type: Checkout::class
         );
 
-        if (!$result instanceof Payment) {
+        if (!$result instanceof Checkout) {
             throw new IllegalValueException(
-                message: 'Response is not an instance of ' . Payment::class
+                message: 'Response is not an instance of ' . Checkout::class
             );
         }
 

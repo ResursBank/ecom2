@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Payment;
+namespace Resursbank\Ecom\Lib\Model\Rco\Checkout;
 
 /**
  * Delivery address model for RCO+. Extends Billing since they are identical.

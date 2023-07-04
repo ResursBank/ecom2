@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Payment;
+namespace Resursbank\Ecom\Lib\Model\Rco\Checkout;
 
 /**
  * Enum for country codes in RCO+, in ISO 3166-1 Alpha-2.

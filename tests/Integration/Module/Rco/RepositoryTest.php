@@ -28,7 +28,22 @@ use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Payment;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Address;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Billing;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkbox;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkboxes;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Contact;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\CountryCode;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\CustomerType;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Delivery;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Item;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\ItemCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Type;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
@@ -67,29 +82,29 @@ final class RepositoryTest extends TestCase
     /**
      * Fetch a new payment object.
      *
+     * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws ConfigException
      */
-    private function getPayment(): Payment
+    private function getPayment(): Checkout
     {
         if (!Config::getJwtAuth()) {
             throw new ConfigException(message: 'Missing JWT auth token!');
         }
 
         $auth = 'Bearer ' . Config::getJwtAuth()->getToken();
-        return new Payment(
-            options: new Payment\Options(),
+        return new Checkout(
             orderReference: 'abc123',
+            options: new Options(),
             locale: Locale::SV,
-            currency: Payment\Currency::SEK,
-            cart: new Payment\Cart(
+            currency: Currency::SEK,
+            cart: new Checkout\Cart(
                 code: '',
-                items: new Payment\ItemCollection(
+                items: new ItemCollection(
                     data: [
-                        new Payment\Item(
-                            type: Payment\Type::PRODUCT,
+                        new Item(
+                            type: Type::PRODUCT,
                             itemId: 'item01',
                             description: 'An Item',
                             quantityUnit: 'st',
@@ -103,105 +118,105 @@ final class RepositoryTest extends TestCase
                     ]
                 )
             ),
-            customer: new Payment\Customer(
-                delivery: new Payment\Delivery(
+            customer: new Checkout\Customer(
+                type: CustomerType::B2C,
+                governmentId: 'SE8305147715',
+                billing: new Billing(
                     name: 'John Doe',
-                    contact: new Payment\Contact(
+                    contact: new Contact(
                         firstName: 'John',
                         lastName: 'Doe',
                         email: 'johndoe@example.com',
                         phone: '+46701234567'
                     ),
-                    address: new Payment\Address(
+                    address: new Address(
                         street: 'Glassgatan 15',
                         addressLine: '',
                         postalCode: '41655',
                         city: 'Göteborg',
-                        countryCode: Payment\CountryCode::SE,
-                        notes: ''
+                        notes: '',
+                        countryCode: CountryCode::SE
                     )
                 ),
-                type: Payment\CustomerType::B2C,
-                governmentId: 'SE8305147715',
-                billing: new Payment\Billing(
+                delivery: new Delivery(
                     name: 'John Doe',
-                    contact: new Payment\Contact(
+                    contact: new Contact(
                         firstName: 'John',
                         lastName: 'Doe',
                         email: 'johndoe@example.com',
                         phone: '+46701234567'
                     ),
-                    address: new Payment\Address(
+                    address: new Address(
                         street: 'Glassgatan 15',
                         addressLine: '',
                         postalCode: '41655',
                         city: 'Göteborg',
-                        countryCode: Payment\CountryCode::SE,
-                        notes: ''
+                        notes: '',
+                        countryCode: CountryCode::SE
                     )
                 )
             ),
-            redirects: new Payment\Redirects(
-                success: 'https://www.example.com/success',
-                checkout: 'https://www.example.com/checkout'
-            ),
-            callbacks: new Callbacks(
-                url: 'https://www.example.com/callbacks',
-                authorization: $auth
-            ),
-            webhooks: $this->getWebhooks(auth: $auth),
-            checkboxes: new Payment\Checkboxes(data: [
-                new Payment\Checkbox(
+            checkboxes: new Checkboxes(data: [
+                new Checkbox(
                     id: 'terms',
                     label: 'Terms and conditions',
                     checked: true,
                     required: true
                 )
             ]),
-            merchant: new Payment\Merchant(
+            merchant: new Merchant(
                 displayName: 'Resurs Stuff AB',
                 logoUrl: 'https://www.example.com/logoUrl.jpg',
                 homepageUrl: 'https://www.example.com',
                 accessControlAllowOrigin: 'https://www.example.com'
-            )
+            ),
+            callbacks: new Callbacks(
+                url: 'https://www.example.com/callbacks',
+                authorization: $auth
+            ),
+            redirects: new Checkout\Redirects(
+                success: 'https://www.example.com/success',
+                checkout: 'https://www.example.com/checkout'
+            ),
+            webhooks: $this->getWebhooks(auth: $auth)
         );
     }
 
     /**
      * Fetch web hooks.
      */
-    private function getWebhooks(string $auth): Payment\Webhooks
+    private function getWebhooks(string $auth): Webhooks
     {
-        return new Payment\Webhooks(
+        return new Webhooks(
             customer: new Customer(
                 url: 'https://www.example.com/webhooks/customer',
                 authorization: $auth,
-                timeout: 60,
-                continueOnNoResponse: true
+                continueOnNoResponse: true,
+                timeout: 60
             ),
             cart: new Cart(
                 url: 'https://www.example.com/webhooks/cart',
                 authorization: $auth,
-                timeout: 60,
-                continueOnNoResponse: true
+                continueOnNoResponse: true,
+                timeout: 60
             ),
             shipping: new Shipping(
                 url: 'https://www.example.com/webhooks/shipping',
                 authorization: $auth,
-                timeout: 60,
-                continueOnNoResponse: true
+                continueOnNoResponse: true,
+                timeout: 60
             ),
             payment: new PaymentWebhook(
                 url: 'https://wwww.example.com/webhooks/payment',
                 authorization: $auth,
-                timeout: 60,
-                continueOnNoResponse: true
+                continueOnNoResponse: true,
+                timeout: 60
             ),
             validate: new Validate(
                 url: 'https://www.example.com/webhooks/validate',
                 authorization: $auth,
-                timeout: 60,
-                continueOnNoResponse: true
+                continueOnNoResponse: true,
+                timeout: 60
             )
         );
     }
@@ -224,7 +239,7 @@ final class RepositoryTest extends TestCase
     public function testInit(): void
     {
         $request = $this->getPayment();
-        $response = Repository::init(payment: $request);
+        $response = Repository::init(checkout: $request);
 
         $this->assertEquals(
             expected: $request->orderReference,

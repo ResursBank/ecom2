@@ -12,19 +12,19 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Cart;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Checkboxes;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Customer;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Options;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Redirects;
-use Resursbank\Ecom\Lib\Model\Rco\Payment\Webhooks;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Cart;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkboxes;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Customer;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Redirects;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
 
 /**
  * RCO+ Payment Model.
  */
-class Payment extends Model
+class Checkout extends Model
 {
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
