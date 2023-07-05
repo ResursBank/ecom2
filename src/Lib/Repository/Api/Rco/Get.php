@@ -32,23 +32,24 @@ class Get extends Request
     /**
      * @param class-string $model | Convert cached data to model instance(s).
      * @param array $params
+     * @param array $headers
      * @throws IllegalTypeException
      */
     public function __construct(
-        protected readonly string $model,
-        protected readonly string $route,
-        protected readonly array $params = [],
-        protected readonly string $extractProperty = '',
-        protected readonly array $headers = []
+        string $model,
+        string $route,
+        array $params = [],
+        string $extractProperty = '',
+        array $headers = []
     ) {
         parent::__construct(
-            model: $this->model,
-            route: $this->route,
+            model: $model,
+            route: $route,
             requestMethod: RequestMethod::GET,
             api: new Rco(),
-            params: $this->params,
-            extractProperty: $this->extractProperty,
-            headers: $this->headers
+            params: $params,
+            extractProperty: $extractProperty,
+            headers: $headers
         );
     }
 }
