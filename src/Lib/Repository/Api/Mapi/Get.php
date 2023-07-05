@@ -14,6 +14,7 @@ namespace Resursbank\Ecom\Lib\Repository\Api\Mapi;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
@@ -46,7 +47,8 @@ class Get extends Request
             requestMethod: RequestMethod::GET,
             api: new Mapi(),
             params: $params,
-            extractProperty: $extractProperty
+            extractProperty: $extractProperty,
+            contentType: ContentType::URL
         );
     }
 }

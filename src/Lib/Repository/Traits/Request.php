@@ -41,6 +41,7 @@ class Request
     /**
      * @param class-string $model | Convert cached data to model instance(s).
      * @param array $params
+     * @param array $headers
      * @throws IllegalTypeException
      */
     public function __construct(
@@ -50,7 +51,8 @@ class Request
         protected Mapi|Rco $api,
         protected readonly array $params = [],
         protected readonly string $extractProperty = '',
-        protected readonly array $headers = []
+        protected readonly array $headers = [],
+        protected readonly ContentType $contentType = ContentType::JSON
     ) {
         $this->validateModel(model: $model);
     }
@@ -75,7 +77,7 @@ class Request
             ),
             requestMethod: $this->requestMethod,
             payload: $this->params,
-            contentType: ContentType::URL,
+            contentType: $this->contentType,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON,
             headers: $this->headers
