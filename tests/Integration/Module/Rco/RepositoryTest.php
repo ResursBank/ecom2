@@ -87,7 +87,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    private function getPayment(): Checkout
+    private function getCheckout(): Checkout
     {
         if (!Config::getJwtAuth()) {
             throw new ConfigException(message: 'Missing JWT auth token!');
@@ -222,6 +222,36 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * Generate a different cart from the one from getCheckout.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    private function getCart(): Checkout\Cart
+    {
+        return new Checkout\Cart(
+            code: '',
+            items: new ItemCollection(
+                data: [
+                    new Item(
+                        type: Type::PRODUCT,
+                        itemId: 'item02',
+                        description: 'Another Item',
+                        quantityUnit: 'st',
+                        quantity: 2,
+                        unitPrice: 1500,
+                        taxRate: 25,
+                        totalDiscount: 0,
+                        url: 'https://www.example.com',
+                        imageUrl: 'https://www.example.com/image.jpg'
+                    )
+                ]
+            )
+        );
+    }
+
+    /**
      * Assert that Init returns a Payment object.
      *
      * @throws ConfigException
@@ -238,12 +268,63 @@ final class RepositoryTest extends TestCase
      */
     public function testInit(): void
     {
-        $request = $this->getPayment();
+        $request = $this->getCheckout();
         $response = Repository::init(checkout: $request);
 
         $this->assertEquals(
             expected: $request->orderReference,
             actual: $response->orderReference
+        );
+    }
+
+    /**
+     * Assert that setCart properly updates the cart.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSetCart(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $newCart = $this->getCart();
+        $result = Repository::setCart(
+            id: $response->id,
+            cart: $newCart,
+            version: $response->version
+        );
+
+        $items = $result->cart->items->toArray();
+
+
+        $this->assertEquals(
+            expected: 1,
+            actual: sizeof($items)
+        );
+        $this->assertEquals(
+            expected: $newCart->items->toArray()[0]->itemId,
+            actual: $items[0]->itemId
         );
     }
 }
