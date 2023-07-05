@@ -21,8 +21,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Network\Header;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
-use Resursbank\Ecom\Module\Rco\Api\Init;
 
 /**
  * Main entrypoint for interfacing with the RCO+ API programmatically.
@@ -46,7 +46,31 @@ class Repository
     public static function init(
         Checkout $checkout
     ): Checkout {
-        return (new Init())->call(checkout: $checkout);
+        $result = (new Post(
+            model: Checkout::class,
+            route: 'api/checkout',
+            params: [
+                'orderReference' => $checkout->orderReference,
+                'options' => $checkout->options,
+                'locale' => $checkout->locale,
+                'currency' => $checkout->currency,
+                'cart' => $checkout->cart->toArray(),
+                'customer' => $checkout->customer,
+                'redirects' => $checkout->redirects,
+                'callbacks' => $checkout->callbacks,
+                'webhooks' => $checkout->webhooks,
+                'checkboxes' => $checkout->checkboxes->toArray(),
+                'merchant' => $checkout->merchant
+            ]
+        ))->call();
+
+        if (!$result instanceof Checkout) {
+            throw new IllegalTypeException(
+                message: 'Expected ' . Checkout::class . ', got ' . $result::class
+            );
+        }
+
+        return $result;
     }
 
     /**
