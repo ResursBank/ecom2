@@ -287,6 +287,7 @@ class Curl
         return
             $this->requestMethod === RequestMethod::POST ||
             $this->requestMethod === RequestMethod::PUT ||
+            $this->requestMethod === RequestMethod::PATCH ||
             $this->requestMethod === RequestMethod::DELETE
         ;
     }
