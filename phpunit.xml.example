@@ -28,6 +28,6 @@
         <env name="RCO_JWT_AUTH_CLIENT_SECRET" value="REPLACEME" force="true" />
         <env name="RCO_JWT_AUTH_SCOPE" value="mock-merchant-api" force="true" />
         <env name="RCO_JWT_AUTH_GRANT_TYPE" value="client_credentials" force="true" />
-        <env name="RCOPLUS_HOMEPAGE_URL" value="https://www.example.com" force="true" />
+        <env name="RCOPLUS_HOMEPAGE_URL" value="https://web-integration-rco-plus-testpage.integration.resurs.com" force="true" />
     </php>
 </phpunit>
