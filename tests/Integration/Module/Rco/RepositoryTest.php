@@ -114,8 +114,8 @@ final class RepositoryTest extends TestCase
                             unitPrice: 1000,
                             taxRate: 25,
                             totalDiscount: 0,
-                            url: 'https://www.example.com',
-                            imageUrl: 'https://www.example.com/image.jpg'
+                            url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
+                            imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg'
                         )
                     ]
                 )
@@ -168,17 +168,17 @@ final class RepositoryTest extends TestCase
             ]),
             merchant: new Merchant(
                 displayName: 'Resurs Stuff AB',
-                logoUrl: 'https://www.example.com/logoUrl.jpg',
-                homepageUrl: 'https://www.example.com',
-                accessControlAllowOrigin: 'https://www.example.com'
+                logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
+                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'],
+                accessControlAllowOrigin: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
             callbacks: new Callbacks(
-                url: 'https://www.example.com/callbacks',
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/callbacks',
                 authorization: $auth
             ),
             redirects: new Checkout\Redirects(
-                success: 'https://www.example.com/success',
-                checkout: 'https://www.example.com/checkout'
+                success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
+                checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
             ),
             webhooks: $this->getWebhooks(auth: $auth)
         );
@@ -191,19 +191,19 @@ final class RepositoryTest extends TestCase
     {
         return new Webhooks(
             customer: new Customer(
-                url: 'https://www.example.com/webhooks/customer',
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/customer',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
             ),
             cart: new Cart(
-                url: 'https://www.example.com/webhooks/cart',
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/cart',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
             ),
             shipping: new Shipping(
-                url: 'https://www.example.com/webhooks/shipping',
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/shipping',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
@@ -215,7 +215,7 @@ final class RepositoryTest extends TestCase
                 timeout: 60
             ),
             validate: new Validate(
-                url: 'https://www.example.com/webhooks/validate',
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/validate',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
