@@ -374,4 +374,47 @@ final class RepositoryTest extends TestCase
             actual: $result->cart->items->toArray()[0]->quantity
         );
     }
+
+    /**
+     * Assert that the deleteCartItem method removes cart items.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testDeleteCartItem(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $result = Repository::deleteCartItem(
+            id: $response->id,
+            itemId: $response->cart->items->toArray()[0]->itemId,
+            version: $response->version
+        );
+
+        $this->assertEquals(
+            expected: 0,
+            actual: sizeof($result->cart->items->toArray())
+        );
+    }
 }
