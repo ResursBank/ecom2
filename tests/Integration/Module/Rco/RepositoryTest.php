@@ -96,7 +96,9 @@ final class RepositoryTest extends TestCase
         $auth = 'Bearer ' . Config::getJwtAuth()->getToken();
         return new Checkout(
             orderReference: 'abc123',
-            options: new Options(),
+            options: new Options(
+                mutableCart: true
+            ),
             locale: Locale::SV,
             currency: Currency::SEK,
             cart: new Checkout\Cart(
@@ -325,6 +327,51 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: $newCart->items->toArray()[0]->itemId,
             actual: $items[0]->itemId
+        );
+    }
+
+    /**
+     * Assert that changing the quantity of an item works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testPatchCart(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $newQty = 8;
+        $result = Repository::patchCart(
+            id: $response->id,
+            itemId: $response->cart->items->toArray()[0]->itemId,
+            version: $response->version,
+            quantity: $newQty
+        );
+
+        $this->assertEquals(
+            expected: $newQty,
+            actual: $result->cart->items->toArray()[0]->quantity
         );
     }
 }
