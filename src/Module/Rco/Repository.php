@@ -205,8 +205,6 @@ class Repository
      *
      * @param string $id Checkout ID
      * @param string $orderReference Order reference
-     * @param string $version
-     * @return Checkout
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
