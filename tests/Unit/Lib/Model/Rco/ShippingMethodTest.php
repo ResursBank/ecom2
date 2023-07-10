@@ -18,6 +18,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type;
+use TypeError;
 
 class ShippingMethodTest extends TestCase
 {
@@ -38,7 +39,7 @@ class ShippingMethodTest extends TestCase
         new ShippingMethod(
             methodId: 'methodId',
             name: 'name',
-            scope: [],
+            scope: [true],
             type: Type::PICKUP,
             description: 'description',
             price: new Price(
@@ -65,7 +66,7 @@ class ShippingMethodTest extends TestCase
             actual: new ShippingMethod(
                 methodId: 'methodId',
                 name: 'name',
-                scope: [Scope::B2B->value],
+                scope: [Scope::B2B],
                 type: Type::PICKUP,
                 description: 'description',
                 price: new Price(
@@ -94,7 +95,7 @@ class ShippingMethodTest extends TestCase
         new ShippingMethod(
             methodId: 'methodId',
             name: 'name',
-            scope: [Scope::B2B->value],
+            scope: [Scope::B2B],
             type: Type::PICKUP,
             description: 'description',
             price: new Price(
@@ -121,7 +122,7 @@ class ShippingMethodTest extends TestCase
             actual: new ShippingMethod(
                 methodId: 'methodId',
                 name: 'name',
-                scope: [Scope::B2B->value],
+                scope: [Scope::B2B],
                 type: Type::PICKUP,
                 description: 'description',
                 price: new Price(
@@ -149,7 +150,7 @@ class ShippingMethodTest extends TestCase
             actual: new ShippingMethod(
                 methodId: 'methodId',
                 name: 'name',
-                scope: [Scope::B2B->value],
+                scope: [Scope::B2B],
                 type: Type::PICKUP,
                 description: 'description',
                 price: new Price(
