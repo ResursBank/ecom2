@@ -45,6 +45,32 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Check if property with value exists.
+     *
+     * @param string $propertyName Name of property to search for
+     * @param mixed $propertyValue Value to search for
+     */
+    public function hasObjectWithPropertyValue(
+        string $propertyName,
+        mixed $propertyValue
+    ): bool {
+        foreach ($this->data as $object) {
+            if (
+                is_object(value: $object) &&
+                property_exists(
+                    object_or_class: $object,
+                    property: $propertyName
+                ) &&
+                $object->$propertyName === $propertyValue
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Set new data array
      *
      * @param array $data

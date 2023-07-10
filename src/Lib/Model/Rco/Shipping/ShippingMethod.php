@@ -36,7 +36,6 @@ class ShippingMethod extends Model
     public function __construct(
         public readonly string $methodId,
         public readonly string $name,
-        public readonly array $scope,
         public readonly Type $type,
         public readonly string $description,
         public readonly Price $price,
@@ -44,6 +43,7 @@ class ShippingMethod extends Model
         public readonly array $options,
         public readonly array $required,
         public readonly Carrier $carrier,
+        public readonly ?array $scope = null,
         private readonly ArrayValidation $arrayValidation = new ArrayValidation()
     ) {
         $this->validateScope();
@@ -57,9 +57,17 @@ class ShippingMethod extends Model
      */
     private function validateScope(): void
     {
+        if (!$this->scope) {
+            return;
+        }
+
         if (
-            !in_array(needle: 'B2C', haystack: $this->scope) &&
-            !in_array(needle: 'B2B', haystack: $this->scope)
+            !in_array(
+                needle: Scope::B2C,
+                haystack: $this->scope,
+                strict: true
+            ) &&
+            !in_array(needle: Scope::B2B, haystack: $this->scope, strict: true)
         ) {
             throw new ShippingScopeException(
                 message: 'Scope must contain B2B or B2C to be valid.'
