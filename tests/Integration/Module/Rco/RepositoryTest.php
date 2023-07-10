@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -77,6 +78,16 @@ final class RepositoryTest extends TestCase
                 )
             )
         );
+    }
+
+    /**
+     * Generates a random string of characters.
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(int $length): string
+    {
+        return bin2hex(string: random_bytes(length: max(1, $length)));
     }
 
     /**
@@ -415,6 +426,50 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: 0,
             actual: sizeof($result->cart->items->toArray())
+        );
+    }
+
+    /**
+     * Assert that order reference is properly set.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSetOrderReference(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $orderReference = $this->generateOrderReference(length: 16);
+        $result = Repository::setOrderReference(
+            id: $response->id,
+            orderReference: $orderReference,
+            version: $response->version
+        );
+
+        $this->assertEquals(
+            expected: $orderReference,
+            actual: $result->orderReference
         );
     }
 }

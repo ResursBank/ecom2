@@ -199,4 +199,50 @@ class Repository
 
         return $response;
     }
+
+    /**
+     * Set order reference on Checkout.
+     *
+     * @param string $id Checkout ID
+     * @param string $orderReference Order reference
+     * @param string $version
+     * @return Checkout
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function setOrderReference(
+        string $id,
+        string $orderReference,
+        string $version
+    ): Checkout {
+        $headers = [
+            new Header(key: 'X-Checkout-Version', value: $version)
+        ];
+
+        $response = (new Put(
+            model: Checkout::class,
+            route: 'api/checkout/' . $id . '/order-reference',
+            params: [
+                'orderReference' => $orderReference
+            ],
+            headers: $headers
+        ))->call();
+
+        if (!$response instanceof Checkout) {
+            throw new IllegalTypeException(
+                message: 'Expected ' . Checkout::class . ', got ' .
+                $response::class
+            );
+        }
+
+        return $response;
+    }
 }
