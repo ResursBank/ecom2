@@ -16,11 +16,10 @@ use Resursbank\Ecom\Lib\Collection\Collection;
  *
  * @see https://web-integration-rco-plus.integration.resurs.com/docs/#_set_shipping_methods
  */
-class ShippingMethods extends Collection
+class ShippingMethodCollection extends Collection
 {
-    public function __construct(
-        array $shippingMethod
-    ) {
-        parent::__construct(data: $shippingMethod, type: ShippingMethod::class);
+    public function __construct(array $data)
+    {
+        parent::__construct(data: $data, type: ShippingMethod::class);
     }
 }
