@@ -18,7 +18,6 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type;
-use TypeError;
 
 class ShippingMethodTest extends TestCase
 {
