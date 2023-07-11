@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Rco;
+namespace Resursbank\EcomTest\Integration\Module\Rco\Widget;
 
 use Exception;
 use JsonException;
@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -45,23 +46,18 @@ use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethod;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Validate;
 use Resursbank\Ecom\Module\Rco\Repository;
+use Resursbank\Ecom\Module\Rco\Widget\Checkout as CheckoutWidget;
 
 /**
- * Tests for RCO+ module Repository class.
+ * Tests for the RCO+ widget.
  */
-final class RepositoryTest extends TestCase
+class CheckoutTest extends TestCase
 {
     /**
      * Set up the Ecom+ config.
@@ -112,7 +108,7 @@ final class RepositoryTest extends TestCase
 
         $auth = 'Bearer ' . Config::getJwtAuth()->getToken();
         return new Checkout(
-            orderReference: 'abc123',
+            orderReference: $this->generateOrderReference(length: 12),
             options: new Options(
                 mutableCart: true
             ),
@@ -241,350 +237,162 @@ final class RepositoryTest extends TestCase
     }
 
     /**
-     * Generate a different cart from the one from getCheckout.
+     * Assert that basic rendering of the widget works.
      *
+     * @throws ConfigException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws FilesystemException
+     * @throws ValidationException
      */
-    private function getCart(): Checkout\Cart
+    public function testRenderWidget(): void
     {
-        return new Checkout\Cart(
-            code: '',
-            items: new ItemCollection(
-                data: [
-                    new Item(
-                        type: Type::PRODUCT,
-                        itemId: 'item02',
-                        description: 'Another Item',
-                        quantityUnit: 'st',
-                        quantity: 2,
-                        unitPrice: 1500,
-                        taxRate: 25,
-                        totalDiscount: 0,
-                        url: 'https://www.example.com',
-                        imageUrl: 'https://www.example.com/image.jpg'
-                    )
-                ]
+        $checkout = Repository::init(checkout: $this->getCheckout());
+
+        if (!$checkout->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        $widget = new CheckoutWidget(checkoutId: $checkout->id);
+
+        $body = $widget->getBodyElement();
+
+        $this->assertStringContainsString(
+            haystack: $body,
+            needle: $checkout->id
+        );
+    }
+
+    /**
+     * Assert that basic rendering of the widget's header script works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testRenderHead(): void
+    {
+        $checkout = Repository::init(checkout: $this->getCheckout());
+
+        if (!$checkout->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        $widget = new CheckoutWidget(checkoutId: $checkout->id);
+
+        $head = $widget->getHeaderScript();
+
+        $this->assertStringContainsString(
+            haystack: $head,
+            needle: $widget->getScriptUrl()
+        );
+    }
+
+    /**
+     * Assert that rendering the widget with options works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testRenderWidgetWithOptions(): void
+    {
+        $checkout = Repository::init(checkout: $this->getCheckout());
+
+        if (!$checkout->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        $widget = new CheckoutWidget(
+            checkoutId: $checkout->id,
+            locale: Locale::NB,
+            disabled: true,
+            collapseCart: true
+        );
+
+        $body = $widget->getBodyElement();
+
+        $this->assertStringContainsString(
+            needle: 'collapseCart',
+            haystack: $body
+        );
+        $this->assertStringContainsString(needle: 'disabled', haystack: $body);
+        $this->assertStringContainsString(
+            needle: 'locale="' . Locale::NB->value . '"',
+            haystack: $body
+        );
+    }
+
+    /**
+     * Assert that rendering the header section with styling works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testRenderHeadWithStyling(): void
+    {
+        $checkout = Repository::init(checkout: $this->getCheckout());
+
+        if (!$checkout->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        $widget = new CheckoutWidget(
+            checkoutId: $checkout->id,
+            style: new CheckoutWidget\Style(
+                primaryColor: '#ff0000',
+                buttonRadius: '12px'
             )
         );
-    }
 
-    private function getShippingMethods(): ShippingMethodCollection
-    {
-        return new ShippingMethodCollection(data: [
-            new ShippingMethod(
-                methodId: 'method01',
-                name: 'The post',
-                scope: [ShippingScope::B2C],
-                type: ShippingType::MAILBOX,
-                description: 'Lorem ipsum',
-                price: new Price(
-                    display: '49 kr',
-                    calculate: 4900,
-                    calculateTax: 25
-                ),
-                deliveryEta: '2 days',
-                options: [],
-                required: [],
-                carrier: Carrier::POSTNORD
-            ),
-            new ShippingMethod(
-                methodId: 'method02',
-                name: 'The other post',
-                scope: [ShippingScope::B2C],
-                type: ShippingType::MAILBOX,
-                description: 'Dolor sit amet',
-                price: new Price(
-                    display: '79 kr',
-                    calculate: 7900,
-                    calculateTax: 25
-                ),
-                deliveryEta: '1 day',
-                options: [],
-                required: [],
-                carrier: Carrier::GENERIC
-            )
-        ]);
-    }
+        $head = $widget->getHeaderScript();
 
-    /**
-     * Assert that Init returns a Payment object.
-     *
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws ValidationException
-     * @todo Expand this to not just test the orderReference.
-     */
-    public function testInit(): void
-    {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        $this->assertEquals(
-            expected: $request->orderReference,
-            actual: $response->orderReference
+        $this->assertStringContainsString(
+            needle: '--rco-primary-color: #ff0000;',
+            haystack: $head
         );
-    }
-
-    /**
-     * Assert that setCart properly updates the cart.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testSetCart(): void
-    {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $newCart = $this->getCart();
-        $result = Repository::setCart(
-            id: $response->id,
-            cart: $newCart,
-            version: $response->version
-        );
-
-        $items = $result->cart->items->toArray();
-
-
-        $this->assertEquals(
-            expected: 1,
-            actual: sizeof($items)
-        );
-        $this->assertEquals(
-            expected: $newCart->items->toArray()[0]->itemId,
-            actual: $items[0]->itemId
-        );
-    }
-
-    /**
-     * Assert that changing the quantity of an item works.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testPatchCart(): void
-    {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $newQty = 8;
-        $result = Repository::patchCart(
-            id: $response->id,
-            itemId: $response->cart->items->toArray()[0]->itemId,
-            version: $response->version,
-            quantity: $newQty
-        );
-
-        $this->assertEquals(
-            expected: $newQty,
-            actual: $result->cart->items->toArray()[0]->quantity
-        );
-    }
-
-    /**
-     * Assert that setting shipping methods actually sets them.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testSetShippingMethods(): void
-    {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $shippingMethods = $this->getShippingMethods();
-
-        $result = Repository::setShippingMethods(
-            id: $response->id,
-            shippingMethods: $shippingMethods,
-            version: $response->version
-        );
-
-        if (!$result->shipping) {
-            throw new IllegalValueException(
-                message: 'Property "shipping" missing from setShippingMethods' .
-                ' response'
-            );
-        }
-
-        if (!$result->shipping->methods) {
-            throw new IllegalValueException(
-                message: 'Property "methods" missing from setShippingMethods' .
-                ' response'
-            );
-        }
-
-        $fetchedMethods = $result->shipping->methods;
-
-        $this->assertCount(
-            expectedCount: count($shippingMethods),
-            haystack: $fetchedMethods
-        );
-
-        /** @var ShippingMethod $shippingMethod */
-        foreach ($shippingMethods as $shippingMethod) {
-            $this->assertTrue(
-                condition: $fetchedMethods->hasObjectWithPropertyValue(
-                    propertyName: 'methodId',
-                    propertyValue: $shippingMethod->methodId
-                )
-            );
-        }
-    }
-
-    /**
-     * Assert that the deleteCartItem method removes cart items.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testDeleteCartItem(): void
-    {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $result = Repository::deleteCartItem(
-            id: $response->id,
-            itemId: $response->cart->items->toArray()[0]->itemId,
-            version: $response->version
-        );
-
-        $this->assertEquals(
-            expected: 0,
-            actual: sizeof($result->cart->items->toArray())
-        );
-    }
-
-    /**
-     * Assert that order reference is properly set.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testSetOrderReference(): void
-    {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $orderReference = $this->generateOrderReference(length: 16);
-        $result = Repository::setOrderReference(
-            id: $response->id,
-            orderReference: $orderReference,
-            version: $response->version
-        );
-
-        $this->assertEquals(
-            expected: $orderReference,
-            actual: $result->orderReference
+        $this->assertStringNotContainsString(
+            needle: '--rco-button-bg-color:',
+            haystack: $head
         );
     }
 }
