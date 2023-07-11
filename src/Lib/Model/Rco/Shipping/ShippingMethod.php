@@ -22,7 +22,6 @@ class ShippingMethod extends Model
     /**
      * @param string $methodId An unique id set by the merchant.
      * @param string $name Name of the shipping method.
-     * @param array $scope Indicates which customer types the method should be available for. Possible values: B2C,B2B.
      * @param Type $type Type of pickup can be: PICKUP,IN_STORE,MAILBOX,DELIVERY.
      * @param string $description Descriptive text shown to the user in the checkout.
      * @param Price $price Price model.
@@ -30,6 +29,7 @@ class ShippingMethod extends Model
      * @param array $options Specific shipping options.
      * @param array $required List of required fields if this method is used: GOVERNMENT_ID,EMAIL,PHONE,NAME,ADDRESS.
      * @param Carrier $carrier Can be one of predefined carriers or GENERIC for other carriers: POSTNORD,GENERIC.
+     * @param array|null $scope Indicates which customer types the method should be available for. Possible val: B2C,B2B.
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws RequiredFieldException
@@ -39,7 +39,6 @@ class ShippingMethod extends Model
     public function __construct(
         public readonly string $methodId,
         public readonly string $name,
-        public readonly array $scope,
         public readonly Type $type,
         public readonly string $description,
         public readonly Price $price,
@@ -47,6 +46,7 @@ class ShippingMethod extends Model
         public readonly array $options,
         public readonly array $required,
         public readonly Carrier $carrier,
+        public readonly ?array $scope = null,
         private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
@@ -64,9 +64,17 @@ class ShippingMethod extends Model
      */
     private function validateScope(): void
     {
+        if (!$this->scope) {
+            return;
+        }
+
         if (
-            !in_array(needle: 'B2C', haystack: $this->scope) &&
-            !in_array(needle: 'B2B', haystack: $this->scope)
+            !in_array(
+                needle: Scope::B2C,
+                haystack: $this->scope,
+                strict: true
+            ) &&
+            !in_array(needle: Scope::B2B, haystack: $this->scope, strict: true)
         ) {
             throw new ShippingScopeException(
                 message: 'Scope must contain B2B or B2C to be valid.'

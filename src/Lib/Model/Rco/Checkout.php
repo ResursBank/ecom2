@@ -19,6 +19,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Checkout\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Redirects;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
 
 /**
@@ -38,6 +39,7 @@ class Checkout extends Model
         public readonly Customer $customer,
         public readonly Checkboxes $checkboxes,
         public readonly Merchant $merchant,
+        public readonly ?Shipping $shipping = null,
         public readonly ?string $id = null,
         public readonly ?string $version = null,
         public readonly ?Callbacks $callbacks = null,

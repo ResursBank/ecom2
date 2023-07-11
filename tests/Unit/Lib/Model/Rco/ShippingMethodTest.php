@@ -43,7 +43,7 @@ class ShippingMethodTest extends TestCase
         new ShippingMethod(
             methodId: 'methodId',
             name: 'name',
-            scope: [],
+            scope: [true],
             type: Type::PICKUP,
             description: 'description',
             price: new Price(
@@ -71,7 +71,7 @@ class ShippingMethodTest extends TestCase
             actual: new ShippingMethod(
                 methodId: 'methodId',
                 name: 'name',
-                scope: [Scope::B2B->value],
+                scope: [Scope::B2B],
                 type: Type::PICKUP,
                 description: 'description',
                 price: new Price(
@@ -100,7 +100,7 @@ class ShippingMethodTest extends TestCase
         new ShippingMethod(
             methodId: 'methodId',
             name: 'name',
-            scope: [Scope::B2B->value],
+            scope: [Scope::B2B],
             type: Type::PICKUP,
             description: 'description',
             price: new Price(
@@ -128,7 +128,7 @@ class ShippingMethodTest extends TestCase
             actual: new ShippingMethod(
                 methodId: 'methodId',
                 name: 'name',
-                scope: [Scope::B2B->value],
+                scope: [Scope::B2B],
                 type: Type::PICKUP,
                 description: 'description',
                 price: new Price(
@@ -157,7 +157,7 @@ class ShippingMethodTest extends TestCase
             actual: new ShippingMethod(
                 methodId: 'methodId',
                 name: 'name',
-                scope: [Scope::B2B->value],
+                scope: [Scope::B2B],
                 type: Type::PICKUP,
                 description: 'description',
                 price: new Price(

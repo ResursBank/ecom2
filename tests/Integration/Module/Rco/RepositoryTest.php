@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Rco;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -44,6 +45,12 @@ use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethod;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
@@ -77,6 +84,16 @@ final class RepositoryTest extends TestCase
                 )
             )
         );
+    }
+
+    /**
+     * Generates a random string of characters.
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(int $length): string
+    {
+        return bin2hex(string: random_bytes(length: max(1, $length)));
     }
 
     /**
@@ -253,6 +270,44 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    private function getShippingMethods(): ShippingMethodCollection
+    {
+        return new ShippingMethodCollection(data: [
+            new ShippingMethod(
+                methodId: 'method01',
+                name: 'The post',
+                scope: [ShippingScope::B2C],
+                type: ShippingType::MAILBOX,
+                description: 'Lorem ipsum',
+                price: new Price(
+                    display: '49 kr',
+                    calculate: 4900,
+                    calculateTax: 25
+                ),
+                deliveryEta: '2 days',
+                options: [],
+                required: [],
+                carrier: Carrier::POSTNORD
+            ),
+            new ShippingMethod(
+                methodId: 'method02',
+                name: 'The other post',
+                scope: [ShippingScope::B2C],
+                type: ShippingType::MAILBOX,
+                description: 'Dolor sit amet',
+                price: new Price(
+                    display: '79 kr',
+                    calculate: 7900,
+                    calculateTax: 25
+                ),
+                deliveryEta: '1 day',
+                options: [],
+                required: [],
+                carrier: Carrier::GENERIC
+            )
+        ]);
+    }
+
     /**
      * Assert that Init returns a Payment object.
      *
@@ -372,6 +427,164 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: $newQty,
             actual: $result->cart->items->toArray()[0]->quantity
+        );
+    }
+
+    /**
+     * Assert that setting shipping methods actually sets them.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSetShippingMethods(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $shippingMethods = $this->getShippingMethods();
+
+        $result = Repository::setShippingMethods(
+            id: $response->id,
+            shippingMethods: $shippingMethods,
+            version: $response->version
+        );
+
+        if (!$result->shipping) {
+            throw new IllegalValueException(
+                message: 'Property "shipping" missing from setShippingMethods' .
+                ' response'
+            );
+        }
+
+        if (!$result->shipping->methods) {
+            throw new IllegalValueException(
+                message: 'Property "methods" missing from setShippingMethods' .
+                ' response'
+            );
+        }
+
+        $fetchedMethods = $result->shipping->methods;
+
+        $this->assertCount(
+            expectedCount: count($shippingMethods),
+            haystack: $fetchedMethods
+        );
+
+        /** @var ShippingMethod $shippingMethod */
+        foreach ($shippingMethods as $shippingMethod) {
+            $this->assertTrue(
+                condition: $fetchedMethods->hasObjectWithPropertyValue(
+                    propertyName: 'methodId',
+                    propertyValue: $shippingMethod->methodId
+                )
+            );
+        }
+    }
+
+    /**
+     * Assert that the deleteCartItem method removes cart items.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testDeleteCartItem(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $result = Repository::deleteCartItem(
+            id: $response->id,
+            itemId: $response->cart->items->toArray()[0]->itemId,
+            version: $response->version
+        );
+
+        $this->assertEquals(
+            expected: 0,
+            actual: sizeof($result->cart->items->toArray())
+        );
+    }
+
+    /**
+     * Assert that order reference is properly set.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSetOrderReference(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        $orderReference = $this->generateOrderReference(length: 16);
+        $result = Repository::setOrderReference(
+            id: $response->id,
+            orderReference: $orderReference,
+            version: $response->version
+        );
+
+        $this->assertEquals(
+            expected: $orderReference,
+            actual: $result->orderReference
         );
     }
 }
