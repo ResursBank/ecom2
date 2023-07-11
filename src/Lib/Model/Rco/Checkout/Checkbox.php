@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Checkout;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * RCO+ checkbox renderer array model.
@@ -21,13 +23,33 @@ class Checkbox extends Model
      * @param string $label Description rendered next to the checkbox.
      * @param bool $checked Whether the checkbox is checked or not. Defaults to false.
      * @param bool $required er the checkbox must be checked in order to proceed to payment. Defaults to false.
+     * @throws EmptyValueException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $id,
         public readonly string $label,
         public readonly bool $checked = false,
-        public readonly bool $required = false
+        public readonly bool $required = false,
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
+        $this->validateId();
+        $this->validateLabel();
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    private function validateId(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->id);
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    private function validateLabel(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->label);
     }
 }

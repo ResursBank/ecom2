@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
+use Resursbank\Ecom\Lib\Validation\IntValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -49,12 +50,14 @@ class Item extends Model
         public readonly string $imageUrl,
         public readonly array $tags = [],
         private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly FloatValidation $floatValidation = new FloatValidation()
+        private readonly FloatValidation $floatValidation = new FloatValidation(),
+        private readonly IntValidation $intValidation = new IntValidation()
     ) {
         $this->validateDescription();
         $this->validateItemId();
         $this->validateQuantityUnit();
         $this->validateQuantity();
+        $this->validateTaxRate();
         $this->validateUnitPrice();
     }
 
@@ -112,5 +115,19 @@ class Item extends Model
             min: -9999999999.99,
             max: 9999999999.99
         );
+    }
+
+    /**
+     * Tax rate must be 0 or greater.
+     *
+     * @throws IllegalValueException
+     */
+    private function validateTaxRate(): void
+    {
+        if ($this->taxRate === 0) {
+            return;
+        }
+
+        $this->intValidation->isPositive(value: $this->taxRate);
     }
 }

@@ -12,6 +12,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
 use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
@@ -19,6 +20,9 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type;
 
+/**
+ * Test shipping method class.
+ */
 class ShippingMethodTest extends TestCase
 {
     protected function setUp(): void
@@ -30,6 +34,7 @@ class ShippingMethodTest extends TestCase
      * @throws IllegalValueException
      * @throws RequiredFieldException
      * @throws ShippingScopeException
+     * @throws EmptyValueException
      */
     public function testBadScope(): void
     {
@@ -54,6 +59,7 @@ class ShippingMethodTest extends TestCase
     }
 
     /**
+     * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws RequiredFieldException
      * @throws ShippingScopeException
@@ -82,10 +88,10 @@ class ShippingMethodTest extends TestCase
     }
 
     /**
+     * @throws EmptyValueException
+     * @throws IllegalValueException
      * @throws RequiredFieldException
      * @throws ShippingScopeException
-     * @throws IllegalValueException
-     * @throws IllegalValueException
      */
     public function testBadRequiredField(): void
     {
@@ -110,6 +116,7 @@ class ShippingMethodTest extends TestCase
     }
 
     /**
+     * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws RequiredFieldException
      * @throws ShippingScopeException
@@ -138,6 +145,7 @@ class ShippingMethodTest extends TestCase
     }
 
     /**
+     * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws RequiredFieldException
      * @throws ShippingScopeException
