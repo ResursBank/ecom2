@@ -595,9 +595,6 @@ final class RepositoryTest extends TestCase
 
         $fetched = Repository::get(id: $response->id);
 
-        $this->assertEquals(
-            expected: 1,
-            actual: 2
-        );
+        $this->assertEquals(expected: 1, actual: 2);
     }
 }
