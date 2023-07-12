@@ -587,4 +587,17 @@ final class RepositoryTest extends TestCase
             actual: $result->orderReference
         );
     }
+
+    public function testGet(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        $fetched = Repository::get(id: $response->id);
+
+        $this->assertEquals(
+            expected: 1,
+            actual: 2
+        );
+    }
 }
