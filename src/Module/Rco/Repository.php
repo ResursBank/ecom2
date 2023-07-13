@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Model\Network\Header;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
@@ -51,7 +52,7 @@ class Repository
     ): Checkout {
         $result = (new Post(
             model: Checkout::class,
-            route: 'api/checkout',
+            route: Rco::CHECKOUT_ROUTE,
             params: [
                 'orderReference' => $checkout->orderReference,
                 'options' => $checkout->options,
@@ -103,7 +104,7 @@ class Repository
 
         $response = (new Put(
             model: Checkout::class,
-            route: 'api/checkout/' . $id . '/cart',
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
             params: [
                 'items' => $cart->items->toArray()
             ],
@@ -142,7 +143,7 @@ class Repository
 
         $response = (new Patch(
             model: Checkout::class,
-            route: 'api/checkout/' . $id . '/cart/item/' . $itemId,
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/item/' . $itemId,
             params: [
                 'quantity' => $quantity
             ],
@@ -187,7 +188,7 @@ class Repository
 
         $response = (new Put(
             model: Checkout::class,
-            route: 'api/checkout/' . $id . '/shipping/methods',
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/shipping/methods',
             params: [
                 'methods' => $shippingMethods->toArray()
             ],
@@ -231,7 +232,7 @@ class Repository
 
         $response = (new Delete(
             model: Checkout::class,
-            route: 'api/checkout/' . $id . '/cart/item/' . $itemId,
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/item/' . $itemId,
             params: [],
             headers: $headers
         ))->call();
@@ -273,7 +274,7 @@ class Repository
 
         $response = (new Put(
             model: Checkout::class,
-            route: 'api/checkout/' . $id . '/order-reference',
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/order-reference',
             params: [
                 'orderReference' => $orderReference
             ],
