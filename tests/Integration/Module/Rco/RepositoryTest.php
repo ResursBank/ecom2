@@ -28,7 +28,7 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callbacks;
+use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callback;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Billing;
@@ -189,7 +189,7 @@ final class RepositoryTest extends TestCase
                 homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'],
                 accessControlAllowOrigin: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
-            callbacks: new Callbacks(
+            callbacks: new Callback(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/callbacks',
                 authorization: $auth
             ),

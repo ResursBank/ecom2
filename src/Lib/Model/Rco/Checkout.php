@@ -11,7 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callbacks;
+use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callback;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkboxes;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Currency;
@@ -42,7 +42,7 @@ class Checkout extends Model
         public readonly ?Shipping $shipping = null,
         public readonly ?string $id = null,
         public readonly ?string $version = null,
-        public readonly ?Callbacks $callbacks = null,
+        public readonly ?Callback $callbacks = null,
         public readonly ?Redirects $redirects = null,
         public readonly ?Webhooks $webhooks = null,
         public readonly ?string $notes = null
