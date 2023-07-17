@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Webhooks;
+namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
  * Webhook Model Extender for RCO+.
  */
-class WebhookModel extends Model
+class Webhooks extends Model
 {
     /**
      * @param string $url A https url to that will be posted to when [...]

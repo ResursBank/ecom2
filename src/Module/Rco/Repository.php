@@ -58,7 +58,7 @@ class Repository
                 'options' => $checkout->options,
                 'locale' => $checkout->locale,
                 'currency' => $checkout->currency,
-                'cart' => $checkout->cart?->toArray(),
+                'cart' => $checkout->cart->toArray(),
                 'customer' => $checkout->customer,
                 'redirects' => $checkout->redirects,
                 'callbacks' => $checkout->callbacks,

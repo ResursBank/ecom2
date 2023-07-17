@@ -30,12 +30,12 @@ class Checkout extends Model
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public readonly Customer $customer,
-        public readonly Currency $currency,
+        public readonly Cart $cart,
         public readonly Merchant $merchant,
+        public readonly ?Customer $customer = null,
+        public readonly ?Currency $currency = null,
         public readonly ?string $orderReference = null,
         public readonly ?Options $options = null,
-        public readonly ?Cart $cart = null,
         public readonly ?Locale $locale = null,
         public readonly ?Shipping $shipping = null,
         public readonly ?string $id = null,

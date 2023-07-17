@@ -202,6 +202,9 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Get Callbacks property.
+     */
     private function getCallbacks(string $auth): Callbacks
     {
         return new Callbacks(
@@ -351,6 +354,46 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * Assert that a minimal Checkout init call works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testMinimalInit(): void
+    {
+        $request = new Checkout(
+            cart: new Checkout\Cart(
+                code: 'asdf1234',
+                items: new ItemCollection(data: [
+                    new Item(
+                        type: Type::PRODUCT,
+                        itemId: 'item-01',
+                        description: 'Item',
+                        quantityUnit: 'st',
+                        quantity: 1,
+                        unitPrice: 4900,
+                        taxRate: 25
+                    )
+                ])
+            ),
+            merchant: new Merchant(
+                displayName: 'Resurs'
+            )
+        );
+        $response = Repository::init(checkout: $request);
+
+        $this->assertNotNull(actual: $response->id);
+    }
+
+    /**
      * Assert that Init returns a Payment object.
      *
      * @throws ConfigException
@@ -416,12 +459,6 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        if (!$result->cart) {
-            throw new EmptyValueException(
-                message: 'Response did not contain a cart object!'
-            );
-        }
-
         $items = $result->cart->items->toArray();
 
 
@@ -467,12 +504,6 @@ final class RepositoryTest extends TestCase
             );
         }
 
-        if (!$response->cart) {
-            throw new IllegalValueException(
-                message: 'Property "cart" missing from Init response.'
-            );
-        }
-
         $newQty = 8;
         $result = Repository::patchCart(
             id: $response->id,
@@ -480,12 +511,6 @@ final class RepositoryTest extends TestCase
             version: $response->version,
             quantity: $newQty
         );
-
-        if (!$result->cart) {
-            throw new IllegalValueException(
-                message: 'Property "cart" missing from Init response.'
-            );
-        }
 
         $this->assertEquals(
             expected: $newQty,
@@ -597,23 +622,11 @@ final class RepositoryTest extends TestCase
             );
         }
 
-        if (!$response->cart) {
-            throw new IllegalValueException(
-                message: 'Property "cart" missing from Init response.'
-            );
-        }
-
         $result = Repository::deleteCartItem(
             id: $response->id,
             itemId: $response->cart->items->toArray()[0]->itemId,
             version: $response->version
         );
-
-        if (!$result->cart) {
-            throw new IllegalValueException(
-                message: 'Property "cart" missing from Init response.'
-            );
-        }
 
         $this->assertEquals(
             expected: 0,

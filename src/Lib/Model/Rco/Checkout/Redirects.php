@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco\Checkout;
 
 use Resursbank\Ecom\Exception\UrlValidationException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Redirects model for RCO+ (similar to the older flows success- and failUrl).
@@ -22,15 +20,13 @@ class Redirects extends Model
     /**
      * Urls must be given in https format.
      *
-     * @param string $success Successful payment url. If left empty, the default status page will be shown.
-     * @param string $checkout Fail/cancel url. Url takes user back to the store which must load the checkout again.
-     * @throws EmptyValueException
+     * @param string|null $checkout Fail/cancel url..
+     * @param string|null $success Successful payment url.
      * @throws UrlValidationException
      */
     public function __construct(
-        public readonly string $checkout,
-        public readonly string $success = '',
-        private readonly StringValidation $stringValidation = new StringValidation()
+        public readonly ?string $checkout = null,
+        public readonly ?string $success = null
     ) {
         $this->validateCheckoutUrl();
         $this->validateSuccessUrl();
@@ -38,11 +34,12 @@ class Redirects extends Model
 
     /**
      * @throws UrlValidationException
-     * @throws EmptyValueException
      */
     private function validateCheckoutUrl(): void
     {
-        $this->stringValidation->notEmpty(value: $this->checkout);
+        if (!$this->checkout) {
+            return;
+        }
 
         if (!filter_var(value: $this->checkout, filter: FILTER_VALIDATE_URL)) {
             throw new UrlValidationException(message: 'Invalid redirect URL.');
@@ -56,7 +53,7 @@ class Redirects extends Model
      */
     private function validateSuccessUrl(): void
     {
-        if ($this->success === '') {
+        if (!$this->success) {
             return;
         }
 
