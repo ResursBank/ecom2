@@ -24,13 +24,13 @@ class Options extends Model
      */
     // phpcs:ignore
     public function __construct(
-        public readonly bool $b2bEnabled = true,
-        public readonly bool $renderCart = false,
-        public readonly bool $mutableCart = false,
-        public readonly bool $calculateShipping = false,
-        public readonly bool $lookupB2CAddress = false,
-        public readonly bool $renderCartCode = false,
-        public readonly bool $renderNotes = false,
+        public readonly ?bool $b2bEnabled = null,
+        public readonly ?bool $renderCart = null,
+        public readonly ?bool $mutableCart = null,
+        public readonly ?bool $calculateShipping = null,
+        public readonly ?bool $lookupB2CAddress = null,
+        public readonly ?bool $renderCartCode = null,
+        public readonly ?bool $renderNotes = null,
         public readonly array $requiredFields = ['EMAIL', 'PHONE', 'NAME', 'ADDRESS']
     ) {
     }

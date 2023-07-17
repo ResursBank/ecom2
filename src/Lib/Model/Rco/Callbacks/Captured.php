@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 /**
  * RCO+ Captured Callback.
  */
-class Captured extends Callbacks
+class Captured extends Callback
 {
     /**
      * @param string $url An https url to that will be called when a payment has been captured.

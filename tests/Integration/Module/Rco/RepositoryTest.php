@@ -18,6 +18,9 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
+use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
+use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -28,7 +31,8 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callbacks;
+use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
+use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Authorized;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Billing;
@@ -103,6 +107,7 @@ final class RepositoryTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws UrlValidationException
      */
     private function getCheckout(): Checkout
     {
@@ -186,18 +191,51 @@ final class RepositoryTest extends TestCase
             merchant: new Merchant(
                 displayName: 'Resurs Stuff AB',
                 logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
-                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'],
-                accessControlAllowOrigin: $_ENV['RCOPLUS_HOMEPAGE_URL']
+                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
-            callbacks: new Callbacks(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/callbacks',
-                authorization: $auth
-            ),
+            callbacks: $this->getCallbacks(auth: $auth),
             redirects: new Checkout\Redirects(
                 success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
                 checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
             ),
             webhooks: $this->getWebhooks(auth: $auth)
+        );
+    }
+
+    /**
+     * Get Callbacks property.
+     */
+    private function getCallbacks(string $auth): Callbacks
+    {
+        return new Callbacks(
+            authorized: new Authorized(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/authorized',
+                authorization: $auth
+            ),
+            cancelled: new Callbacks\Cancelled(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/cancelled',
+                authorization: $auth
+            ),
+            captured: new Callbacks\Captured(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/captured',
+                authorization: $auth
+            ),
+            created: new Callbacks\Created(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/created',
+                authorization: $auth
+            ),
+            failed: new Callbacks\Failed(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/failed',
+                authorization: $auth
+            ),
+            paid: new Callbacks\Paid(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/paid',
+                authorization: $auth
+            ),
+            refunded: new Callbacks\Refunded(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/refunded',
+                authorization: $auth
+            )
         );
     }
 
@@ -270,6 +308,13 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws RequiredFieldException
+     * @throws ShippingScopeException
+     */
     private function getShippingMethods(): ShippingMethodCollection
     {
         return new ShippingMethodCollection(data: [
@@ -309,6 +354,46 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * Assert that a minimal Checkout init call works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testMinimalInit(): void
+    {
+        $request = new Checkout(
+            cart: new Checkout\Cart(
+                code: 'asdf1234',
+                items: new ItemCollection(data: [
+                    new Item(
+                        type: Type::PRODUCT,
+                        itemId: 'item-01',
+                        description: 'Item',
+                        quantityUnit: 'st',
+                        quantity: 1,
+                        unitPrice: 4900,
+                        taxRate: 25
+                    )
+                ])
+            ),
+            merchant: new Merchant(
+                displayName: 'Resurs'
+            )
+        );
+        $response = Repository::init(checkout: $request);
+
+        $this->assertNotNull(actual: $response->id);
+    }
+
+    /**
      * Assert that Init returns a Payment object.
      *
      * @throws ConfigException
@@ -321,6 +406,7 @@ final class RepositoryTest extends TestCase
      * @throws AuthException
      * @throws CurlException
      * @throws ValidationException
+     * @throws UrlValidationException
      * @todo Expand this to not just test the orderReference.
      */
     public function testInit(): void
@@ -347,6 +433,7 @@ final class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws UrlValidationException
      */
     public function testSetCart(): void
     {
@@ -398,6 +485,7 @@ final class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws UrlValidationException
      */
     public function testPatchCart(): void
     {
@@ -443,6 +531,7 @@ final class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws UrlValidationException
      */
     public function testSetShippingMethods(): void
     {
@@ -514,6 +603,7 @@ final class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws UrlValidationException
      */
     public function testDeleteCartItem(): void
     {
@@ -557,6 +647,8 @@ final class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws UrlValidationException
+     * @throws Exception
      */
     public function testSetOrderReference(): void
     {

@@ -27,12 +27,7 @@ class MerchantTest extends TestCase
     public function testBadDisplayName(): void
     {
         $this->expectException(EmptyValueException::class);
-        new Merchant(
-            displayName: '',
-            logoUrl: '',
-            homepageUrl: '',
-            accessControlAllowOrigin: 'https://test.example.com'
-        );
+        new Merchant(displayName: '', logoUrl: '', homepageUrl: '');
     }
 
     public function testBadUrls(): void
@@ -41,8 +36,7 @@ class MerchantTest extends TestCase
         new Merchant(
             displayName: 'DisplayName',
             logoUrl: 'bad-url',
-            homepageUrl: 'bad-url',
-            accessControlAllowOrigin: 'https://test.example.com'
+            homepageUrl: 'bad-url'
         );
     }
 
@@ -56,23 +50,8 @@ class MerchantTest extends TestCase
             actual: new Merchant(
                 displayName: 'DisplayName',
                 logoUrl: '',
-                homepageUrl: '',
-                accessControlAllowOrigin: 'https://test.example.com'
+                homepageUrl: ''
             )
-        );
-    }
-
-    /**
-     * Validation of bad urls.
-     */
-    public function testMerchantBadUrl(): void
-    {
-        $this->expectException(exception: UrlValidationException::class);
-        new Merchant(
-            displayName: 'DisplayName',
-            logoUrl: '',
-            homepageUrl: '',
-            accessControlAllowOrigin: 'Nope'
         );
     }
 }

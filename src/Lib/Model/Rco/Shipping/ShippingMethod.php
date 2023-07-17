@@ -29,7 +29,7 @@ class ShippingMethod extends Model
      * @param array $options Specific shipping options.
      * @param array $required List of required fields if this method is used: GOVERNMENT_ID,EMAIL,PHONE,NAME,ADDRESS.
      * @param Carrier $carrier Can be one of predefined carriers or GENERIC for other carriers: POSTNORD,GENERIC.
-     * @param array|null $scope Indicates which customer types the method should be available for. Possible val: B2C,B2B.
+     * @param array|null $scope Indicates which customer types the method should be available for. Possible val: B2C,B2B
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws RequiredFieldException
