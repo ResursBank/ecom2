@@ -193,41 +193,46 @@ final class RepositoryTest extends TestCase
                 logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
                 homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
-            callbacks: new Callbacks(
-                authorized: new Authorized(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/authorized',
-                    authorization: $auth
-                ),
-                cancelled: new Callbacks\Cancelled(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/cancelled',
-                    authorization: $auth
-                ),
-                captured: new Callbacks\Captured(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/captured',
-                    authorization: $auth
-                ),
-                created: new Callbacks\Created(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/created',
-                    authorization: $auth
-                ),
-                failed: new Callbacks\Failed(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/failed',
-                    authorization: $auth
-                ),
-                paid: new Callbacks\Paid(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/paid',
-                    authorization: $auth
-                ),
-                refunded: new Callbacks\Refunded(
-                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/refunded',
-                    authorization: $auth
-                )
-            ),
+            callbacks: $this->getCallbacks(auth: $auth),
             redirects: new Checkout\Redirects(
                 success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
                 checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
             ),
             webhooks: $this->getWebhooks(auth: $auth)
+        );
+    }
+
+    private function getCallbacks(string $auth): Callbacks
+    {
+        return new Callbacks(
+            authorized: new Authorized(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/authorized',
+                authorization: $auth
+            ),
+            cancelled: new Callbacks\Cancelled(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/cancelled',
+                authorization: $auth
+            ),
+            captured: new Callbacks\Captured(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/captured',
+                authorization: $auth
+            ),
+            created: new Callbacks\Created(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/created',
+                authorization: $auth
+            ),
+            failed: new Callbacks\Failed(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/failed',
+                authorization: $auth
+            ),
+            paid: new Callbacks\Paid(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/paid',
+                authorization: $auth
+            ),
+            refunded: new Callbacks\Refunded(
+                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/refunded',
+                authorization: $auth
+            )
         );
     }
 
