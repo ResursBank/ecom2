@@ -58,12 +58,12 @@ class Repository
                 'options' => $checkout->options,
                 'locale' => $checkout->locale,
                 'currency' => $checkout->currency,
-                'cart' => $checkout->cart->toArray(),
+                'cart' => $checkout->cart?->toArray(),
                 'customer' => $checkout->customer,
                 'redirects' => $checkout->redirects,
                 'callbacks' => $checkout->callbacks,
                 'webhooks' => $checkout->webhooks,
-                'checkboxes' => $checkout->checkboxes->toArray(),
+                'checkboxes' => $checkout->checkboxes?->toArray(),
                 'merchant' => $checkout->merchant
             ]
         ))->call();
@@ -143,9 +143,14 @@ class Repository
 
         $response = (new Patch(
             model: Checkout::class,
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/item/' . $itemId,
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
             params: [
-                'quantity' => $quantity
+                'items' => [
+            [
+                    'itemId' => $itemId,
+                    'quantity' => $quantity
+                    ]
+                ]
             ],
             headers: $headers
         ))->call();
@@ -161,7 +166,6 @@ class Repository
     }
 
     /**
-<<<<<<< HEAD
      * Set shipping methods on Checkout.
      *
      * @param string $id Checkout ID
@@ -232,7 +236,7 @@ class Repository
 
         $response = (new Delete(
             model: Checkout::class,
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/item/' . $itemId,
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/items/' . $itemId,
             params: [],
             headers: $headers
         ))->call();
