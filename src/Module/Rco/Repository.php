@@ -296,12 +296,26 @@ class Repository
         return $response;
     }
 
+    /**
+     * Fetch an existing Checkout.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
     public static function get(
         string $id
     ): Checkout {
         $response = (new Get(
             model: Checkout::class,
-            route: 'api/checkout/' . $id . '/payment',
+            route: 'api/checkout/' . $id,
             params: []
         ))->call();
 

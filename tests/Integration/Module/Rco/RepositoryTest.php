@@ -680,13 +680,50 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Assert that fetching a checkout works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     */
     public function testGet(): void
     {
         $request = $this->getCheckout();
         $response = Repository::init(checkout: $request);
 
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
         $fetched = Repository::get(id: $response->id);
 
-        $this->assertEquals(expected: 1, actual: 2);
+        if (!$fetched->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$fetched->status) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        $this->assertEquals(expected: $response->id, actual: $fetched->id);
+        $this->assertEquals(
+            expected: 'CREATED',
+            actual: $fetched->status->type
+        );
     }
 }
