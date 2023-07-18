@@ -11,16 +11,17 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
 use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
 use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 class ShippingMethod extends Model
 {
     /**
      * @param string $methodId An unique id set by the merchant.
      * @param string $name Name of the shipping method.
-     * @param array $scope Indicates which customer types the method should be available for. Possible values: B2C,B2B.
      * @param Type $type Type of pickup can be: PICKUP,IN_STORE,MAILBOX,DELIVERY.
      * @param string $description Descriptive text shown to the user in the checkout.
      * @param Price $price Price model.
@@ -28,6 +29,8 @@ class ShippingMethod extends Model
      * @param array $options Specific shipping options.
      * @param array $required List of required fields if this method is used: GOVERNMENT_ID,EMAIL,PHONE,NAME,ADDRESS.
      * @param Carrier $carrier Can be one of predefined carriers or GENERIC for other carriers: POSTNORD,GENERIC.
+     * @param array|null $scope Indicates which customer types the method should be available for. Possible val: B2C,B2B
+     * @throws EmptyValueException
      * @throws IllegalValueException
      * @throws RequiredFieldException
      * @throws ShippingScopeException
@@ -44,8 +47,12 @@ class ShippingMethod extends Model
         public readonly array $required,
         public readonly Carrier $carrier,
         public readonly ?array $scope = null,
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
+        private readonly ArrayValidation $arrayValidation = new ArrayValidation(),
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
+        $this->validateMethodID();
+        $this->validateName();
+        $this->validateDescription();
         $this->validateScope();
         $this->validateRequired();
     }
@@ -105,5 +112,29 @@ class ShippingMethod extends Model
                 message: 'Malicious value found in the array of required fields.'
             );
         }
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    private function validateMethodID(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->methodId);
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    private function validateName(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->name);
+    }
+
+    /**
+     * @throws EmptyValueException
+     */
+    private function validateDescription(): void
+    {
+        $this->stringValidation->notEmpty(value: $this->description);
     }
 }

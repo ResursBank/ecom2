@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Callbacks;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkboxes;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout\Currency;
@@ -31,20 +30,20 @@ class Checkout extends Model
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public readonly string $orderReference,
-        public readonly Options $options,
-        public readonly Locale $locale,
-        public readonly Currency $currency,
         public readonly Cart $cart,
-        public readonly Customer $customer,
-        public readonly Checkboxes $checkboxes,
         public readonly Merchant $merchant,
+        public readonly ?Customer $customer = null,
+        public readonly ?Currency $currency = null,
+        public readonly ?string $orderReference = null,
+        public readonly ?Options $options = null,
+        public readonly ?Locale $locale = null,
         public readonly ?Shipping $shipping = null,
         public readonly ?string $id = null,
         public readonly ?string $version = null,
         public readonly ?Callbacks $callbacks = null,
         public readonly ?Redirects $redirects = null,
         public readonly ?Webhooks $webhooks = null,
+        public readonly ?Checkboxes $checkboxes = null,
         public readonly ?string $notes = null
     ) {
     }

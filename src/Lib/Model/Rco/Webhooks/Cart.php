@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Webhooks;
 
+use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
+
 /**
  * Webhook model for when the cart fields have been changed if the mutateCart option is set to true.
  */
-class Cart extends WebhookModel
+class Cart extends Webhooks
 {
     /**
      * @param string $url Posted to when the cart fields have been changed if the mutateCart option is set to true.

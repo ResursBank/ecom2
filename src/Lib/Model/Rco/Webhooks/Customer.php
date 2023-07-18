@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Webhooks;
 
+use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
+
 /**
  * Webhook model for when the customer fields have been changed.
  */
-class Customer extends WebhookModel
+class Customer extends Webhooks
 {
     /**
      * @param string $url Posted to when the customer fields have been changed.

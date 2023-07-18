@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 /**
  * RCO+ Paid Callback.
  */
-class Paid extends Callbacks
+class Paid extends Callback
 {
     /**
      * @param string $url An https url to that will be called when a checkout has been completed and paid for.

@@ -22,7 +22,7 @@ class Address extends Model
      * @param string $postalCode A valid post code.
      * @param string $city Name of the city.
      * @param string $notes Free text area for notes.
-     * @param CountryCode $countryCode ISO 3166-1 Alpha-2 country code (enum): SE,DK,FI,NO.
+     * @param CountryCode $countryCode ISO 3166-1 Alpha-2 country code.
      */
     public function __construct(
         public readonly string $street,

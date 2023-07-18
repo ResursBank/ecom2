@@ -9,7 +9,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 /**
  * Callback model for RCO+.
  */
-class Callbacks extends Model
+class Callback extends Model
 {
     /**
      * @param string $url URL to register for the specific callback.

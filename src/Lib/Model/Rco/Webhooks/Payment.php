@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Webhooks;
 
+use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
+
 /**
  * Webhook model for when the end user has made a payment selection.
  */
-class Payment extends WebhookModel
+class Payment extends Webhooks
 {
     /**
      * @param string $url Posted to when the end user has made a payment selection.

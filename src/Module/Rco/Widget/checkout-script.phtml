@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var \Resursbank\Ecom\Module\Rco\Widget\Checkout $this */
+/** @psalm-scope-this \Resursbank\Ecom\Module\Rco\Widget\Checkout */
+
+?>
+
+<script defer src="<?= $this->getScriptUrl() ?>"></script>
+<style>
+  rco-checkout {
+    <?php foreach ($this->getStyleOptions() as $option): ?>
+      <?= $option ?>
+    <?php endforeach; ?>
+  }
+</style>
