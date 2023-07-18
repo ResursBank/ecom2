@@ -24,6 +24,7 @@ use Resursbank\Ecom\Lib\Model\Network\Header;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
+use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
@@ -283,6 +284,39 @@ class Repository
                 'orderReference' => $orderReference
             ],
             headers: $headers
+        ))->call();
+
+        if (!$response instanceof Checkout) {
+            throw new IllegalTypeException(
+                message: 'Expected ' . Checkout::class . ', got ' .
+                $response::class
+            );
+        }
+
+        return $response;
+    }
+
+    /**
+     * Fetch an existing Checkout.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function get(
+        string $id
+    ): Checkout {
+        $response = (new Get(
+            model: Checkout::class,
+            route: 'api/checkout/' . $id,
+            params: []
         ))->call();
 
         if (!$response instanceof Checkout) {

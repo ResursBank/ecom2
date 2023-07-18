@@ -44,7 +44,9 @@ class Checkout extends Model
         public readonly ?Redirects $redirects = null,
         public readonly ?Webhooks $webhooks = null,
         public readonly ?Checkboxes $checkboxes = null,
-        public readonly ?string $notes = null
+        public readonly ?string $notes = null,
+        public readonly ?PaymentMethods $paymentMethods = null,
+        public readonly ?Status $status = null
     ) {
     }
 }
