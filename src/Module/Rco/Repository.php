@@ -315,8 +315,48 @@ class Repository
     ): Checkout {
         $response = (new Get(
             model: Checkout::class,
-            route: 'api/checkout/' . $id,
+            route: Rco::CHECKOUT_ROUTE . '/' . $id,
             params: []
+        ))->call();
+
+        if (!$response instanceof Checkout) {
+            throw new IllegalTypeException(
+                message: 'Expected ' . Checkout::class . ', got ' .
+                $response::class
+            );
+        }
+
+        return $response;
+    }
+
+    /**
+     * Cancel a payment.
+     *
+     * @param string $id Checkout/payment ID
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function cancel(
+        string $id,
+        string $version
+    ): Checkout {
+        $headers = [
+            new Header(key: 'X-Checkout-Version', value: $version)
+        ];
+
+        $response = (new Post(
+            model: Checkout::class,
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
+            params: [],
+            headers: $headers
         ))->call();
 
         if (!$response instanceof Checkout) {

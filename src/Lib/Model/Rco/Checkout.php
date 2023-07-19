@@ -46,6 +46,7 @@ class Checkout extends Model
         public readonly ?Checkboxes $checkboxes = null,
         public readonly ?string $notes = null,
         public readonly ?PaymentMethods $paymentMethods = null,
+        public readonly ?Payment $payment = null,
         public readonly ?Status $status = null
     ) {
     }

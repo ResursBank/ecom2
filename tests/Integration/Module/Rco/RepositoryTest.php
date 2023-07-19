@@ -26,11 +26,13 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Network\Header;
 use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Authorized;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
@@ -60,6 +62,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Validate;
+use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Module\Rco\Repository;
 
 /**
@@ -95,7 +98,7 @@ final class RepositoryTest extends TestCase
      *
      * @throws Exception
      */
-    private function generateOrderReference(int $length): string
+    private function generateRandomString(int $length): string
     {
         return bin2hex(string: random_bytes(length: max(1, $length)));
     }
@@ -108,6 +111,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws UrlValidationException
+     * @throws Exception
      */
     private function getCheckout(): Checkout
     {
@@ -117,7 +121,7 @@ final class RepositoryTest extends TestCase
 
         $auth = 'Bearer ' . Config::getJwtAuth()->getToken();
         return new Checkout(
-            orderReference: 'abc123',
+            orderReference: $this->generateRandomString(length: 12),
             options: new Options(
                 mutableCart: true
             ),
@@ -667,7 +671,7 @@ final class RepositoryTest extends TestCase
             );
         }
 
-        $orderReference = $this->generateOrderReference(length: 16);
+        $orderReference = $this->generateRandomString(length: 16);
         $result = Repository::setOrderReference(
             id: $response->id,
             orderReference: $orderReference,
@@ -724,6 +728,83 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: 'CREATED',
             actual: $fetched->status->type
+        );
+    }
+
+    /**
+     * Assert that cancelling a payment works as intended.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     */
+    public function testCancel(): void
+    {
+        $request = $this->getCheckout();
+        $response = Repository::init(checkout: $request);
+
+        if (!$response->id) {
+            throw new IllegalValueException(
+                message: 'Property "id" missing from Init response.'
+            );
+        }
+
+        if (!$response->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from Init response.'
+            );
+        }
+
+        // Set to validated
+        $validated = (new Put(
+            model: Checkout::class,
+            route: Rco::CHECKOUT_ROUTE . '/' . $response->id,
+            params: [
+                'status' => [
+                    'type' => 'VALIDATED',
+                    'callingIp' => '127.0.0.1'
+                ],
+                'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
+            ],
+            headers: [
+                new Header(key: 'X-Checkout-Version', value: $response->version)
+            ]
+        ))->call();
+
+        if (!$validated instanceof Checkout) {
+            throw new IllegalTypeException(
+                message: 'Return value not instance of Checkout'
+            );
+        }
+
+        if (!$validated->version) {
+            throw new IllegalValueException(
+                message: 'Property "version" missing from validation response.'
+            );
+        }
+
+        $cancelled = Repository::cancel(
+            id: $response->id,
+            version: $validated->version
+        );
+
+        if (!$cancelled->status) {
+            throw new EmptyValueException(
+                message: 'Returned Checkout object has no status property'
+            );
+        }
+
+        $this->assertEquals(
+            expected: 'CANCELLED',
+            actual: $cancelled->status->type
         );
     }
 }
