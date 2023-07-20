@@ -353,7 +353,7 @@ class Repository
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             params: [],
             headers: [new Header(key: 'X-Checkout-Version', value: $version)]
-        ))->call();
+        ))->call(forceObject: true);
 
         if (!$response instanceof Checkout) {
             throw new IllegalTypeException(
