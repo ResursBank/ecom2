@@ -349,7 +349,7 @@ class Repository
             model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             params: [],
-            headers: [ new Header(key: 'X-Checkout-Version', value: $version)]
+            headers: [new Header(key: 'X-Checkout-Version', value: $version)]
         ))->call();
 
         if (!$response instanceof Checkout) {
