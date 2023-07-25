@@ -24,7 +24,7 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Repository\Traits\Request as BaseRequest;
 
 /**
- * Generic functionality to perform a GET call against RCO+ and
+ * Generic functionality to perform API calls against RCO+ and
  * convert the response to model instance(s).
  */
 class Request extends BaseRequest
