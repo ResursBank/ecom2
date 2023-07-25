@@ -33,6 +33,8 @@ use Throwable;
 
 /**
  * Curl connection wrapper.
+ *
+ * @noinspection EfferentObjectCouplingInspection
  */
 class Curl
 {
@@ -226,16 +228,13 @@ class Curl
         }
 
         if ($this->responseContentType === ContentType::JSON) {
-            // ErrorHandler validation ensure this is a string, thus casting is safe.
             $body = ResponseHandler::getJsonBody(body: $body);
         } elseif ($this->responseContentType === ContentType::RAW) {
             $body = (object) ['message' => $body];
         }
 
         if (!$body instanceof stdClass) {
-            throw new IllegalTypeException(
-                message: 'Body expected to be stdClass instance.'
-            );
+            throw new IllegalTypeException(message: 'Body is not an object.');
         }
 
         curl_close(handle: $this->ch);

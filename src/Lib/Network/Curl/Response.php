@@ -26,7 +26,7 @@ use function is_int;
 class Response
 {
     /**
-     * Made static to ensure it reachable by the ErrorHandler class.
+     * Resolve body content from request response as object, decoded from JSON.
      *
      * @throws IllegalValueException
      * @throws NotJsonEncodedException
@@ -57,6 +57,8 @@ class Response
     }
 
     /**
+     * Type-safe wrapper to extract response code from request.
+     *
      * @throws IllegalTypeException
      */
     public static function getCode(CurlHandle $ch): int
@@ -69,7 +71,7 @@ class Response
 
         if (!is_int(value: $code)) {
             throw new IllegalTypeException(
-                message: 'Curl http code is not an integer.'
+                message: 'Curl response code is not an integer.'
             );
         }
 
