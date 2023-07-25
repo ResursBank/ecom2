@@ -26,6 +26,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
@@ -61,12 +62,15 @@ use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Validate;
+use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\EcomTest\Data\Models\Instrument;
 use Throwable;
 
 /**
  * Tests for RCO+ module Repository class.
+ *
+ * @noinspection EfferentObjectCouplingInspection
  */
 final class RepositoryTest extends TestCase
 {
@@ -120,7 +124,6 @@ final class RepositoryTest extends TestCase
     private function validateCheckout(string $id, string $version): Checkout
     {
         $result = (new Put(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id,
             params: [
                 'status' => [
@@ -129,9 +132,7 @@ final class RepositoryTest extends TestCase
                 ],
                 'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
             ],
-            headers: [
-                new Header(key: 'X-Checkout-Version', value: $version)
-            ]
+            version: $version
         ))->call();
 
         if (!$result instanceof Checkout) {

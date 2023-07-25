@@ -273,20 +273,11 @@ class Repository
         string $version
     ): Checkout {
         $response = (new Post(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
-            params: [],
-            headers: [new Header(key: 'X-Checkout-Version', value: $version)]
+            version: $version
         ))->call(forceObject: true);
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
