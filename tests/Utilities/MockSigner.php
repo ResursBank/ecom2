@@ -91,7 +91,7 @@ class MockSigner
             try {
                 $curl->exec();
 
-                $url = $curl->getEffectiveUrl();
+                $url = self::getEffectiveUrl(curl: $curl);
             } catch (CurlException) {
                 self::handleCurlException(attempts: $attempts);
             }
@@ -102,6 +102,17 @@ class MockSigner
             replace: 'doAuth',
             subject: $url
         ) . '&govId=' . $payment->customer->governmentId;
+    }
+
+    /**
+     * Fetch CURLINFO_EFFECTIVE_URL
+     */
+    private static function getEffectiveUrl(Curl $curl): string
+    {
+        return (string) curl_getinfo(
+            handle: $curl->ch,
+            option: CURLINFO_EFFECTIVE_URL
+        );
     }
 
     /**
