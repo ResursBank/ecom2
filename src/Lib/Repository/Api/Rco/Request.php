@@ -9,45 +9,54 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Repository\Api\Mapi;
+namespace Resursbank\Ecom\Lib\Repository\Api\Rco;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Network\Header;
+use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
-use Resursbank\Ecom\Lib\Repository\Traits\Request;
+use Resursbank\Ecom\Lib\Repository\Traits\Request as BaseRequest;
 
 /**
- * Generic functionality to perform a GET call against the Merchant API and
+ * Generic functionality to perform API calls against RCO+ and
  * convert the response to model instance(s).
  */
-class Get extends Request
+class Request extends BaseRequest
 {
     use ExceptionLog;
     use ModelConverter;
     use DataResolver;
 
     /**
-     * @param class-string $model | Convert cached data to model instance(s).
      * @throws IllegalTypeException
+     * @throws EmptyValueException
      */
     public function __construct(
-        string $model,
         string $route,
+        RequestMethod $requestMethod,
         array $params = [],
-        string $extractProperty = ''
+        array $headers = [],
+        string $version = ''
     ) {
+        if ($version !== '') {
+            $headers[] = new Header(key: 'X-Checkout-Version', value: $version);
+        }
+
         parent::__construct(
-            model: $model,
+            model: Checkout::class,
             route: $route,
-            requestMethod: RequestMethod::GET,
-            api: new Mapi(),
+            requestMethod: $requestMethod,
+            api: new Rco(),
             params: $params,
-            extractProperty: $extractProperty,
-            contentType: ContentType::URL
+            extractProperty: '',
+            headers: $headers,
+            contentType: ContentType::JSON
         );
     }
 }

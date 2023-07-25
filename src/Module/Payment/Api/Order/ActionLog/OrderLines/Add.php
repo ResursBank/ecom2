@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use stdClass;
 
 /**
  * Handles adding new order lines to an existing payment.
@@ -73,12 +72,8 @@ class Add
             forceObject: false
         );
 
-        $data = $curl->exec()->body;
-
-        $content = $data instanceof stdClass ? $data : new stdClass();
-
         $result = DataConverter::stdClassToType(
-            object: $content,
+            object: $curl->exec()->body,
             type: Payment::class
         );
 

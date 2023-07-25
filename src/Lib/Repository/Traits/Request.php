@@ -40,8 +40,6 @@ class Request
 
     /**
      * @param class-string $model | Convert cached data to model instance(s).
-     * @param array $params
-     * @param array $headers
      * @throws IllegalTypeException
      */
     public function __construct(
@@ -85,11 +83,9 @@ class Request
             forceObject: $forceObject
         );
 
-        $data = $curl->exec()->body;
-
         return $this->convertToModel(
             data: $this->resolveResponseData(
-                data: $data,
+                data: $curl->exec()->body,
                 extractProperty: $this->extractProperty
             ),
             model: $this->model
