@@ -30,8 +30,8 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
-
 use Throwable;
+
 use function is_string;
 
 /**
