@@ -27,7 +27,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use stdClass;
+use Throwable;
 
 /**
  * POST /payments/{payment_id}/cancel
@@ -42,16 +42,17 @@ class Cancel
     }
 
     /**
+     * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ApiException
-     * @throws ConfigException
-     * @throws IllegalValueException
+     * @throws Throwable
      */
     public function call(
         string $paymentId,
@@ -79,12 +80,8 @@ class Cancel
             forceObject: empty($payload)
         );
 
-        $data = $curl->exec()->body;
-
-        $content = $data instanceof stdClass ? $data : new stdClass();
-
         $result = DataConverter::stdClassToType(
-            object: $content,
+            object: $curl->exec()->body,
             type: Payment::class
         );
 
