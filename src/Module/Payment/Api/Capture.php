@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Throwable;
 
 /**
  * POST /payments/{payment_id}/capture
@@ -57,7 +56,6 @@ class Capture
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @throws Throwable
      * @todo Remove phpcs:ignore after refactor.
      */
     // phpcs:ignore

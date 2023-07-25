@@ -29,7 +29,6 @@ use Resursbank\Ecom\Lib\Network\Curl\Header;
 use Resursbank\Ecom\Lib\Network\Curl\Response as ResponseHandler;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use stdClass;
-use Throwable;
 
 /**
  * Curl connection wrapper.
@@ -89,7 +88,6 @@ class Curl
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @throws Throwable
      */
     public static function get(
         string $url,
@@ -118,7 +116,6 @@ class Curl
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @throws Throwable
      */
     public static function post(
         string $url,
@@ -145,7 +142,6 @@ class Curl
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
      */
     public static function delete(
@@ -172,7 +168,6 @@ class Curl
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @throws Throwable
      */
     public static function put(
         string $url,
@@ -202,7 +197,6 @@ class Curl
      * @throws IllegalValueException
      * @throws ConfigException
      * @throws ValidationException
-     * @throws Throwable
      */
     public function exec(): Response
     {
@@ -222,7 +216,7 @@ class Curl
             /* Having passed validation means $body must be a string, since we
                always apply CURLOPT_RETURNTRANSFER. */
             $body = (string) $body;
-        } catch (Throwable $error) {
+        } catch (CurlException | IllegalTypeException | AuthException $error) {
             Config::getLogger()->error(message: $error);
             throw $error;
         }

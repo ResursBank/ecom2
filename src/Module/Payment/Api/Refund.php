@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Throwable;
 
 /**
  * POST /payments/{payment_id}/refund
@@ -52,7 +51,6 @@ class Refund
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @throws Throwable
      */
     public function call(
         string $paymentId,

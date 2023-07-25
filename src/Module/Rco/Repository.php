@@ -20,7 +20,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Rco;
-use Resursbank\Ecom\Lib\Model\Network\Header;
+use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
@@ -51,8 +52,7 @@ class Repository
     public static function init(
         Checkout $checkout
     ): Checkout {
-        $result = (new Post(
-            model: Checkout::class,
+        $response = (new Post(
             route: Rco::CHECKOUT_ROUTE,
             params: [
                 'orderReference' => $checkout->orderReference,
@@ -69,13 +69,7 @@ class Repository
             ]
         ))->call();
 
-        if (!$result instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' . $result::class
-            );
-        }
-
-        return $result;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -97,38 +91,30 @@ class Repository
         Checkout\Cart $cart,
         string $version
     ): Checkout {
-        $headers = [];
-
-        if ($version) {
-            $headers[] = new Header(key: 'X-Checkout-Version', value: $version);
-        }
-
         $response = (new Put(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
             params: [
                 'items' => $cart->items->toArray()
             ],
-            headers: $headers
+            version: $version
         ))->call();
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
      * Update item quantity in cart.
      *
-     * @param string $id Checkout ID
-     * @param string $itemId Cart item ID
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public static function patchCart(
         string $id,
@@ -136,15 +122,9 @@ class Repository
         string $version,
         int $quantity
     ): Checkout {
-        $headers = [];
-
-        if ($version) {
-            $headers[] = new Header(key: 'X-Checkout-Version', value: $version);
-        }
-
         $response = (new Patch(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
+            version: $version,
             params: [
                 'items' => [
             [
@@ -152,18 +132,10 @@ class Repository
                     'quantity' => $quantity
                     ]
                 ]
-            ],
-            headers: $headers
+            ]
         ))->call();
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -187,27 +159,15 @@ class Repository
         ShippingMethodCollection $shippingMethods,
         string $version
     ): Checkout {
-        $headers = [
-            new Header(key: 'X-Checkout-Version', value: $version)
-        ];
-
         $response = (new Put(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/shipping/methods',
+            version: $version,
             params: [
                 'methods' => $shippingMethods->toArray()
-            ],
-            headers: $headers
+            ]
         ))->call();
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -231,25 +191,12 @@ class Repository
         string $itemId,
         string $version
     ): Checkout {
-        $headers = [
-            new Header(key: 'X-Checkout-Version', value: $version)
-        ];
-
         $response = (new Delete(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/items/' . $itemId,
-            params: [],
-            headers: $headers
+            version: $version
         ))->call();
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -273,27 +220,15 @@ class Repository
         string $orderReference,
         string $version
     ): Checkout {
-        $headers = [
-            new Header(key: 'X-Checkout-Version', value: $version)
-        ];
-
         $response = (new Put(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/order-reference',
             params: [
                 'orderReference' => $orderReference
             ],
-            headers: $headers
+            version: $version
         ))->call();
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -313,20 +248,9 @@ class Repository
     public static function get(
         string $id
     ): Checkout {
-        $response = (new Get(
-            model: Checkout::class,
-            route: Rco::CHECKOUT_ROUTE . '/' . $id,
-            params: []
-        ))->call();
+        $response = (new Get(route: Rco::CHECKOUT_ROUTE . '/' . $id))->call();
 
-        if (!$response instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
-            );
-        }
-
-        return $response;
+        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -348,24 +272,29 @@ class Repository
         string $id,
         string $version
     ): Checkout {
-        $headers = [
-            new Header(key: 'X-Checkout-Version', value: $version)
-        ];
-
         $response = (new Post(
-            model: Checkout::class,
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
-            params: [],
-            headers: $headers
+            version: $version
         ))->call();
 
-        if (!$response instanceof Checkout) {
+        return self::validateCheckoutModel(model: $response);
+    }
+
+    /**
+     * Centralised business logic to ensure type safety for all endpoint
+     * implementations in this class.
+     *
+     * @throws IllegalTypeException
+     */
+    public static function validateCheckoutModel(
+        Collection|Model $model
+    ): Checkout {
+        if (!$model instanceof Checkout) {
             throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $response::class
+                message: 'Expected ' . Checkout::class . ', got ' . $model::class
             );
         }
 
-        return $response;
+        return $model;
     }
 }
