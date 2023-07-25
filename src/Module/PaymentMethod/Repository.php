@@ -19,6 +19,8 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -55,8 +57,8 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws Throwable
      */
     public static function getPaymentMethods(
         string $storeId,
@@ -105,6 +107,7 @@ class Repository
 
     /**
      * @throws IllegalValueException
+     * @throws EmptyValueException
      */
     public static function getCache(
         string $storeId,
@@ -124,6 +127,7 @@ class Repository
     /**
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws EmptyValueException
      */
     public static function getApi(
         string $storeId,
@@ -151,6 +155,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public static function getById(
         string $storeId,
@@ -198,6 +203,13 @@ class Repository
 
     /**
      * Fetches the USP for specified payment method type
+     *
+     * @throws ConfigException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws FilesystemException
+     * @throws TranslationException
      */
     public static function getUniqueSellingPoint(
         PaymentMethod $paymentMethod,

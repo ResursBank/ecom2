@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Throwable;
 
 /**
  * Handles adding new order lines to an existing payment.
@@ -54,7 +53,6 @@ class Add
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @throws Throwable
      */
     public function call(
         string $paymentId,

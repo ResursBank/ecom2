@@ -31,7 +31,6 @@ class Post extends Request
 
     /**
      * @param class-string $model | Convert cached data to model instance(s).
-     * @param array $params
      * @throws IllegalTypeException
      */
     public function __construct(

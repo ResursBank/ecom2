@@ -32,7 +32,6 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use stdClass;
-use Throwable;
 
 /**
  * POST /payments/{payment_id}/create
@@ -63,7 +62,6 @@ class Create
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @throws Throwable
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @noinspection PhpTooManyParametersInspection

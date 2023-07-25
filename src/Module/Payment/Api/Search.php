@@ -30,7 +30,6 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
-use Throwable;
 
 use function is_array;
 
@@ -58,7 +57,6 @@ class Search
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @throws Throwable
      * @todo Refactor ECP-357. Remove phpcs:ignore when done.
      */
     // phpcs:ignore

@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
-use Throwable;
 
 /**
  * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
@@ -50,7 +49,6 @@ class Get
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
-     * @throws Throwable
      */
     public function call(string $paymentId): Payment
     {
