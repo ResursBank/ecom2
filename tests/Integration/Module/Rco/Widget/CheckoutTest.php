@@ -19,7 +19,9 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -31,28 +33,31 @@ use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Address;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Billing;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkbox;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkboxes;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Contact;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\CountryCode;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\CustomerType;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Delivery;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Item;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\ItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Type;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
+use Resursbank\Ecom\Lib\Model\Rco\Address;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
+use Resursbank\Ecom\Lib\Model\Rco\Recipient;
+use Resursbank\Ecom\Lib\Model\Rco\Checkbox;
+use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Contact;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Merchant;
+use Resursbank\Ecom\Lib\Model\Rco\Options;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
+use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Validate;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\Ecom\Module\Rco\Widget\Checkout as CheckoutWidget;
+use Resursbank\EcomTest\Utilities\Rco;
 
 /**
  * Tests for the RCO+ widget.
@@ -83,207 +88,25 @@ class CheckoutTest extends TestCase
     }
 
     /**
-     * Generates a random string of characters.
-     *
-     * @throws Exception
-     */
-    private function generateOrderReference(int $length): string
-    {
-        return bin2hex(string: random_bytes(length: max(1, $length)));
-    }
-
-    /**
-     * Fetch a new payment object.
-     *
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    private function getCheckout(): Checkout
-    {
-        if (!Config::getJwtAuth()) {
-            throw new ConfigException(message: 'Missing JWT auth token!');
-        }
-
-        $auth = 'Bearer ' . Config::getJwtAuth()->getToken();
-        return new Checkout(
-            orderReference: $this->generateOrderReference(length: 12),
-            options: new Options(
-                mutableCart: true
-            ),
-            locale: Locale::SV,
-            currency: Currency::SEK,
-            cart: new Checkout\Cart(
-                code: '',
-                items: new ItemCollection(
-                    data: [
-                        new Item(
-                            type: Type::PRODUCT,
-                            itemId: 'item01',
-                            description: 'An Item',
-                            quantityUnit: 'st',
-                            quantity: 1,
-                            unitPrice: 1000,
-                            taxRate: 25,
-                            totalDiscount: 0,
-                            url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
-                            imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg'
-                        )
-                    ]
-                )
-            ),
-            customer: new Checkout\Customer(
-                type: CustomerType::B2C,
-                governmentId: 'SE8305147715',
-                billing: new Billing(
-                    name: 'John Doe',
-                    contact: new Contact(
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        email: 'johndoe@example.com',
-                        phone: '+46701234567'
-                    ),
-                    address: new Address(
-                        street: 'Glassgatan 15',
-                        addressLine: '',
-                        postalCode: '41655',
-                        city: 'Göteborg',
-                        notes: '',
-                        countryCode: CountryCode::SE
-                    )
-                ),
-                delivery: new Delivery(
-                    name: 'John Doe',
-                    contact: new Contact(
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        email: 'johndoe@example.com',
-                        phone: '+46701234567'
-                    ),
-                    address: new Address(
-                        street: 'Glassgatan 15',
-                        addressLine: '',
-                        postalCode: '41655',
-                        city: 'Göteborg',
-                        notes: '',
-                        countryCode: CountryCode::SE
-                    )
-                )
-            ),
-            checkboxes: new Checkboxes(data: [
-                new Checkbox(
-                    id: 'terms',
-                    label: 'Terms and conditions',
-                    checked: true,
-                    required: true
-                )
-            ]),
-            merchant: new Merchant(
-                displayName: 'Resurs Stuff AB',
-                logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
-                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
-            ),
-            callbacks: $this->getCallbacks(auth: $auth),
-            redirects: new Checkout\Redirects(
-                success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
-                checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
-            ),
-            webhooks: $this->getWebhooks(auth: $auth)
-        );
-    }
-
-    private function getCallbacks(string $auth): Callbacks
-    {
-        return new Callbacks(
-            authorized: new Callbacks\Authorized(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/authorized',
-                authorization: $auth
-            ),
-            cancelled: new Callbacks\Cancelled(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/cancelled',
-                authorization: $auth
-            ),
-            captured: new Callbacks\Captured(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/captured',
-                authorization: $auth
-            ),
-            created: new Callbacks\Created(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/created',
-                authorization: $auth
-            ),
-            failed: new Callbacks\Failed(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/failed',
-                authorization: $auth
-            ),
-            paid: new Callbacks\Paid(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/paid',
-                authorization: $auth
-            ),
-            refunded: new Callbacks\Refunded(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/refunded',
-                authorization: $auth
-            )
-        );
-    }
-
-    /**
-     * Fetch web hooks.
-     */
-    private function getWebhooks(string $auth): Webhooks
-    {
-        return new Webhooks(
-            customer: new Customer(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/customer',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            cart: new Cart(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/cart',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            shipping: new Shipping(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/shipping',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            payment: new PaymentWebhook(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/payment',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            validate: new Validate(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/validate',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            )
-        );
-    }
-
-    /**
      * Assert that basic rendering of the widget works.
      *
+     * @throws ApiException
+     * @throws AuthException
      * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws FilesystemException
+     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testRenderWidget(): void
     {
-        $checkout = Repository::init(checkout: $this->getCheckout());
+        $checkout = Repository::init(request: $this->getCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(
@@ -310,15 +133,17 @@ class CheckoutTest extends TestCase
      * @throws CurlException
      * @throws EmptyValueException
      * @throws FilesystemException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testRenderHead(): void
     {
-        $checkout = Repository::init(checkout: $this->getCheckout());
+        $checkout = Repository::init(request: $this->getCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(
@@ -345,15 +170,17 @@ class CheckoutTest extends TestCase
      * @throws CurlException
      * @throws EmptyValueException
      * @throws FilesystemException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testRenderWidgetWithOptions(): void
     {
-        $checkout = Repository::init(checkout: $this->getCheckout());
+        $checkout = Repository::init(request: $this->getCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(
@@ -390,15 +217,17 @@ class CheckoutTest extends TestCase
      * @throws CurlException
      * @throws EmptyValueException
      * @throws FilesystemException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testRenderHeadWithStyling(): void
     {
-        $checkout = Repository::init(checkout: $this->getCheckout());
+        $checkout = Repository::init(request: $this->getCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(

@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\EcomTest\Unit\Lib\Model\Rco\Cart;
+
+use Exception;
+use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
+use Resursbank\Ecom\Lib\Model\Rco\Cart\Item;
+use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\EcomTest\Utilities\DataIntegrity;
+use Throwable;
+
+/**
+ * Integrity test of Cart\Item model.
+ */
+class ItemTest extends TestCase
+{
+    /**
+     * Get mocked model instance.
+     *
+     * @throws Exception
+     */
+    private function generateModel(
+        ?string $itemId = null,
+        ?string $description = null,
+        ?string $quantityUnit = null,
+        ?int $quantity = null,
+        ?int $unitPrice = null,
+        ?int $totalPrice = null,
+        ?int $taxRate = null,
+        ?int $totalTax = null,
+        ?int $totalDiscount = null,
+        ?string $url = null,
+        ?string $imageUrl = null,
+        ?array $tags = null,
+    ): void {
+        if ($itemId === null) {
+            $itemId = Strings::generateRandomString(length: 36);
+        }
+
+        if ($description === null) {
+            $description = Strings::generateRandomString(length: 200);
+        }
+
+        if ($quantityUnit === null) {
+            $quantityUnit = Strings::generateRandomString(length: 1);
+        }
+
+        if ($quantity === null) {
+            $quantity = 0;
+        }
+
+        if ($unitPrice === null) {
+            $unitPrice = 0;
+        }
+
+        if ($totalPrice === null) {
+            $totalPrice = 0;
+        }
+
+        if ($taxRate === null) {
+            $taxRate = 25;
+        }
+
+        if ($totalTax === null) {
+            $totalTax = 0;
+        }
+
+        if ($totalDiscount === null) {
+            $totalDiscount = 0;
+        }
+
+        if ($url === null) {
+            $url = Strings::generateRandomString(length: 1234);
+        }
+
+        if ($imageUrl === null) {
+            $imageUrl = Strings::generateRandomString(length: 1123);
+        }
+
+        if ($tags === null) {
+            $tags = [Strings::generateRandomString(length: 100)];
+        }
+
+        new Item(
+            type: CartItemType::PRODUCT,
+            itemId: $itemId,
+            description: $description,
+            quantityUnit: $quantityUnit,
+            unitPrice: $unitPrice,
+            totalPrice: $totalPrice,
+            quantity: $quantity,
+            taxRate: $taxRate,
+            totalTax: $totalTax,
+            totalDiscount: $totalDiscount,
+            url: $url,
+            imageUrl: $imageUrl,
+            tags: $tags
+        );
+    }
+
+    /**
+     * Test generating a valid model instance.
+     */
+    public function testModel(): void
+    {
+        try {
+            $this->generateModel();
+            $this->addToAssertionCount(count: 1);
+        } catch (Throwable) {
+            $this->fail(message: 'Failed to generate model instance.');
+        }
+    }
+}

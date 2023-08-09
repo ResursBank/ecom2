@@ -21,9 +21,24 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart as PostCart;
+use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Customer;
+use Resursbank\Ecom\Lib\Model\Rco\Merchant;
+use Resursbank\Ecom\Lib\Model\Rco\Redirects;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping;
+use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\PspPayment;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentMethods;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
@@ -50,23 +65,11 @@ class Repository
      * @throws IllegalValueException
      */
     public static function init(
-        Checkout $checkout
+        CreateCheckout $request
     ): Checkout {
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE,
-            params: [
-                'orderReference' => $checkout->orderReference,
-                'options' => $checkout->options,
-                'locale' => $checkout->locale,
-                'currency' => $checkout->currency,
-                'cart' => $checkout->cart->toArray(),
-                'customer' => $checkout->customer,
-                'redirects' => $checkout->redirects,
-                'callbacks' => $checkout->callbacks,
-                'webhooks' => $checkout->webhooks,
-                'checkboxes' => $checkout->checkboxes?->toArray(),
-                'merchant' => $checkout->merchant
-            ]
+            params: $request->toArray(full: true)
         ))->call();
 
         return self::validateCheckoutModel(model: $response);
@@ -88,7 +91,7 @@ class Repository
      */
     public static function setCart(
         string $id,
-        Checkout\Cart $cart,
+        CreateCart $cart,
         string $version
     ): Checkout {
         $response = (new Put(
@@ -156,7 +159,7 @@ class Repository
      */
     public static function setShippingMethods(
         string $id,
-        ShippingMethodCollection $shippingMethods,
+        MethodCollection $shippingMethods,
         string $version
     ): Checkout {
         $response = (new Put(
