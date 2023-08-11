@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus as PaymentStatusEnum;
+
 use function in_array;
 
 /**
@@ -20,8 +21,8 @@ use function in_array;
 class PaymentStatus extends Model
 {
     /**
-     * @param null|array $availableActions This is actually an array of enum,
-     * values see ECP-549, currently fixed using evaluateFields to convert data.
+     * @param array|null $availableActions This is actually an array of enum,
+ * values see ECP-549, currently fixed using evaluateFields to convert data.
      */
     public function __construct(
         public readonly int $requestedAmount,
@@ -30,7 +31,7 @@ class PaymentStatus extends Model
         public readonly int $capturedAmount,
         public readonly int $refundedAmount,
         public readonly ?PaymentStatusEnum $status = null,
-        public ?array $availableActions = null,
+        public ?array $availableActions = null
     ) {
         $this->evaluateAvailableActions();
     }

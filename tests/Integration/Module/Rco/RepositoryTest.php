@@ -18,7 +18,6 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
 use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
@@ -35,22 +34,21 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -170,7 +168,6 @@ final class RepositoryTest extends TestCase
     }
 
     /**
-     * @return MethodCollection
      * @throws IllegalTypeException
      */
     private function getShippingMethods(): MethodCollection
@@ -278,6 +275,8 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
+        $this->assertNotNull(actual: $result->cart);
+
         $items = $result->cart->items->toArray();
 
         $this->assertEquals(
@@ -309,6 +308,8 @@ final class RepositoryTest extends TestCase
     {
         $checkout = $this->initFull();
 
+        $this->assertNotNull(actual: $checkout->cart);
+
         $newQty = 8;
         $result = Repository::patchCart(
             id: $checkout->id,
@@ -316,6 +317,8 @@ final class RepositoryTest extends TestCase
             version: $checkout->version,
             quantity: $newQty
         );
+
+        $this->assertNotNull(actual: $result->cart);
 
         $this->assertEquals(
             expected: $newQty,
@@ -350,19 +353,14 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        if (!$result->shipping) {
+        if ($result->shipping === null) {
             throw new IllegalValueException(
                 message: 'Property "shipping" missing from setShippingMethods' .
                 ' response'
             );
         }
 
-        if (!$result->shipping->methods) {
-            throw new IllegalValueException(
-                message: 'Property "methods" missing from setShippingMethods' .
-                ' response'
-            );
-        }
+        $this->assertEmpty(actual: $result->shipping->methods);
 
         $fetchedMethods = $result->shipping->methods;
 
@@ -400,6 +398,8 @@ final class RepositoryTest extends TestCase
     public function testDeleteCartItem(): void
     {
         $checkout = $this->initFull();
+
+        $this->assertNotNull(actual: $checkout->cart);
 
         $result = Repository::deleteCartItem(
             id: $checkout->id,
@@ -542,6 +542,9 @@ final class RepositoryTest extends TestCase
             version: $validated->version
         );
 
+        $this->assertNotNull(actual: $result->payment);
+        $this->assertNotNull(actual: $result->payment->paymentStatus);
+
         $this->assertSame(
             expected: PaymentStatus::CAPTURED,
             actual: $result->payment->paymentStatus->status
@@ -571,7 +574,7 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSigner::approveRcoPayment(checkout: $validated);
+        MockSigner::approveRcoPayment(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -579,6 +582,9 @@ final class RepositoryTest extends TestCase
             id: $validated->id,
             version: $fetched->version
         );
+
+        $this->assertNotNull(actual: $result->payment);
+        $this->assertNotNull(actual: $result->payment->paymentStatus);
 
         $this->assertSame(
             expected: PaymentStatus::CANCELLED,

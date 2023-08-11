@@ -11,34 +11,16 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Utilities;
 
-use JsonException;
+use Closure;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
-use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
-use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\CurlException;
+use ReflectionFunction;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Model\Payment;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Status as RcoStatus;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
-use Resursbank\Ecom\Lib\Network\AuthType;
-use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Module\Payment\Enum\Status;
-use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\Rco\Repository as RcoRepository;
-use RuntimeException;
+use ValueError;
 
-use function sleep;
-use function sprintf;
+use function in_array;
 
 /**
  * Helper to satisfy data integrity tests.
@@ -48,54 +30,111 @@ class DataIntegrity
     /**
      * Centralized business logic to confirm ValidationException handling for
      * various values.
+     *
+     * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function testValueIntegrity(
         array $accepted,
         array $rejected,
-        callable $callback,
+        Closure $callback,
         TestCase $test
     ): void {
-        foreach ($accepted as $val) {
+        self::testAcceptableValues(
+            values: $accepted,
+            callback: $callback,
+            test: $test
+        );
+
+        self::testRejectionValues(
+            values: $rejected,
+            callback: $callback,
+            test: $test
+        );
+    }
+
+    /**
+     * Verify that acceptable values won't cause Exceptions/Errors.
+     *
+     * @throws ReflectionException
+     */
+    public static function testAcceptableValues(
+        array $values,
+        Closure $callback,
+        TestCase $test
+    ): void {
+        self::confirmValueIntegrityCallback(callback: $callback, test: $test);
+
+        foreach ($values as $val) {
             try {
+                // Ignore next line, it's confirmed by confirmValueIntegrityCallback.
+                /* @phpstan-ignore-next-line */
                 $callback(v: $val);
                 $test->addToAssertionCount(count: 1);
-            } catch (IllegalValueException|IllegalCharsetException) {
+            } catch (IllegalValueException | IllegalCharsetException) {
                 $test->fail(message: "Legal value '$val' rejected.");
             }
         }
+    }
 
-        foreach ($rejected as $val) {
+    /**
+     * Verify that illegal values causes Exception/Error.
+     *
+     * @throws ReflectionException
+     */
+    public static function testRejectionValues(
+        array $values,
+        Closure $callback,
+        TestCase $test
+    ): void {
+        self::confirmValueIntegrityCallback(callback: $callback, test: $test);
+
+        foreach ($values as $val) {
             try {
+                // Ignore next line, it's confirmed by confirmValueIntegrityCallback.
+                /* @phpstan-ignore-next-line */
                 $callback(v: $val);
                 $test->fail(message: "Illegal value '$val' accepted.");
-            } catch (IllegalValueException|IllegalCharsetException) {
+            } catch (IllegalValueException | IllegalCharsetException | ValueError) {
                 $test->addToAssertionCount(count: 1);
             }
         }
     }
 
     /**
-     * Centralized business logic to confirm EmptyValueException handling.
+     * @throws ReflectionException
      */
-    public static function testEmptyValue(
-        callable $callback,
-        TestCase $test,
-        bool $allowed = false
+    public static function confirmValueIntegrityCallback(
+        Closure $callback,
+        TestCase $test
+    ): void {
+        if (
+            in_array(
+                needle: 'v',
+                haystack: (new ReflectionFunction(
+                    function: $callback
+                ))->getParameters(),
+                strict: true
+            )
+        ) {
+            return;
+        }
+
+        $test->fail(message: 'Missing parameter v on callback.');
+    }
+
+    /**
+     * Test empty value is rejected.
+     */
+    public static function testEmptyValueRejection(
+        Closure $callback,
+        TestCase $test
     ): void {
         try {
             $callback();
-
-            if ($allowed) {
-                $test->addToAssertionCount(count: 1);
-            } else {
-                $test->fail(message: 'Empty value accepted.');
-            }
+            $test->fail(message: 'Empty value accepted.');
         } catch (EmptyValueException) {
-            if ($allowed) {
-                $test->fail(message: 'Empty value rejected.');
-            } else {
-                $test->addToAssertionCount(count: 1);
-            }
+            $test->addToAssertionCount(count: 1);
         }
     }
 }

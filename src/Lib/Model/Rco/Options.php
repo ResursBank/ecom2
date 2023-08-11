@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
+
 use function in_array;
 
 /**

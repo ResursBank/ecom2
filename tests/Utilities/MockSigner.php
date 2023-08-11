@@ -24,7 +24,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Status as RcoStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -183,13 +182,13 @@ class MockSigner
 
         /* PAID indicates that the checkout session has been completed, it does
            not necessarily mean that the payment has been captured. */
-        while ($checkout->payment->paymentStatus->status->type !== CheckoutStatus::PAID) {
+        while ($checkout->status->type !== CheckoutStatus::PAID) {
             if ($elapsed >= 10) {
                 throw new RuntimeException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',
                         CheckoutStatus::PAID->value,
-                        $checkout->payment->paymentStatus->status->type->value
+                        $checkout->status->type->value
                     )
                 );
             }
@@ -281,5 +280,9 @@ class MockSigner
             responseContentType: ContentType::RAW
         );
         $curl->exec();
+
+        self::waitForStatusUpdateRco(
+            checkout: RcoRepository::get(id: $checkout->id)
+        );
     }
 }

@@ -36,6 +36,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Recipient;
+use Resursbank\Ecom\Lib\Model\Rco\Redirects;
 use Resursbank\Ecom\Lib\Model\Rco\Webhook;
 use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -50,7 +51,6 @@ class Rco
     /**
      * Resolve the smallest possible object to initiate checkout session from.
      *
-     * @return CreateCheckout
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
@@ -184,7 +184,7 @@ class Rco
                 homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
             callbacks: self::getCallbacks(),
-            redirects: new \Resursbank\Ecom\Lib\Model\Rco\Redirects(
+            redirects: new Redirects(
                 success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
                 checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
             ),

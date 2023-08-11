@@ -10,9 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Selection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Tracking;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Selection;
 
 /**
  * Implementation of ShippingDto object.

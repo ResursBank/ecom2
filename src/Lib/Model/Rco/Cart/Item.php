@@ -13,6 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
+
 use function is_string;
 
 /**
@@ -21,8 +22,8 @@ use function is_string;
 class Item extends Model
 {
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @throws IllegalTypeException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly CartItemType $type,

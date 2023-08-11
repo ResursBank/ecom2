@@ -25,8 +25,8 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class CreateCheckout extends Model
 {
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @throws IllegalCharsetException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly CreateCart $cart,
@@ -52,11 +52,13 @@ class CreateCheckout extends Model
      */
     public function validateOrderReference(): void
     {
-        if ($this->orderReference !== null) {
-            $this->stringValidation->matchRegex(
-                value: $this->orderReference,
-                pattern: '/^$|^[a-zA-Z0-9]{1,32}$/'
-            );
+        if ($this->orderReference === null) {
+            return;
         }
+
+        $this->stringValidation->matchRegex(
+            value: $this->orderReference,
+            pattern: '/^$|^[a-zA-Z0-9]{1,32}$/'
+        );
     }
 }

@@ -19,11 +19,6 @@ class Redirects extends Model
     /**
      * URLs should utilize the https protocol (http can be utilized but
      * everything may not work correctly).
-     *
-     * @param string|null $checkout
-     * @param string|null $success
-     * @param string|null $failure
-     * @param string|null $cancel
      */
     public function __construct(
         public readonly ?string $checkout = null,

@@ -16,8 +16,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
 
@@ -34,10 +34,12 @@ class CreateCheckoutTest extends TestCase
      * @throws Exception
      */
     private function generateCheckoutModel(
-        ?string $orderReference = null,
+        ?string $orderReference = null
     ): void {
         new CreateCheckout(
-            orderReference: $orderReference ?? Strings::generateRandomString(length: 32),
+            orderReference: $orderReference ?? Strings::generateRandomString(
+                length: 32
+            ),
             cart: new CreateCart(items: new ItemCollection(data: [])),
             merchant: new Merchant(displayName: 'test')
         );
@@ -52,7 +54,9 @@ class CreateCheckoutTest extends TestCase
             $this->generateCheckoutModel();
             $this->addToAssertionCount(count: 1);
         } catch (Throwable) {
-            $this->fail(message: 'Failed to generate CreateCheckout model instance.');
+            $this->fail(
+                message: 'Failed to generate CreateCheckout model instance.'
+            );
         }
     }
 

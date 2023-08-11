@@ -12,7 +12,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Checkbox\Link;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of CheckboxDto object.
@@ -32,7 +31,7 @@ class Checkbox extends Model
         public readonly string $label,
         public readonly ?bool $checked = null,
         public readonly ?bool $required = null,
-        public readonly ?Link $link = null,
+        public readonly ?Link $link = null
     ) {
     }
 }

@@ -44,13 +44,15 @@ class Contact extends Model
      */
     public function validateFirstName(): void
     {
-        if ($this->firstName !== null) {
-            $this->stringValidation->length(
-                value: $this->firstName,
-                min: 0,
-                max: 64
-            );
+        if ($this->firstName === null) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->firstName,
+            min: 0,
+            max: 64
+        );
     }
 
     /**
@@ -58,13 +60,15 @@ class Contact extends Model
      */
     public function validateLastName(): void
     {
-        if ($this->lastName !== null) {
-            $this->stringValidation->length(
-                value: $this->lastName,
-                min: 0,
-                max: 64
-            );
+        if ($this->lastName === null) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->lastName,
+            min: 0,
+            max: 64
+        );
     }
 
     /**
@@ -77,11 +81,7 @@ class Contact extends Model
             return;
         }
 
-        $this->stringValidation->length(
-            value: $this->phone,
-            min: 0,
-            max: 20
-        );
+        $this->stringValidation->length(value: $this->phone, min: 0, max: 20);
 
         $this->stringValidation->matchRegex(
             value: $this->phone,

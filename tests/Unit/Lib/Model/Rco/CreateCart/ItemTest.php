@@ -11,8 +11,8 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco\CreateCart;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
 use Throwable;
@@ -26,7 +26,11 @@ class ItemTest extends TestCase
      * Get mocked model instance.
      *
      * @throws Exception
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @noinspection PhpTooManyParametersInspection
+     * @noinspection PhpSameParameterValueInspection
      */
+    // phpcs:ignore
     private function generateModel(
         ?string $itemId = null,
         ?string $description = null,
@@ -104,7 +108,7 @@ class ItemTest extends TestCase
             test: $this
         );
 
-        DataIntegrity::testEmptyValue(
+        DataIntegrity::testEmptyValueRejection(
             callback: fn () => $this->generateModel(itemId: ''),
             test: $this
         );
@@ -154,7 +158,7 @@ class ItemTest extends TestCase
             test: $this
         );
 
-        DataIntegrity::testEmptyValue(
+        DataIntegrity::testEmptyValueRejection(
             callback: fn () => $this->generateModel(quantityUnit: ''),
             test: $this
         );

@@ -11,10 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\UrlValidationException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Callback;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
 
@@ -47,7 +44,7 @@ class CallbackTest extends TestCase
                 Strings::generateRandomString(length: 45),
                 Strings::generateRandomString(length: 200)
             ],
-            callback: fn (string $v) => new Callback(url: $v),
+            callback: static fn (string $v) => new Callback(url: $v),
             test: $this
         );
     }

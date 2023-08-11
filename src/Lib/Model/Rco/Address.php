@@ -49,13 +49,11 @@ class Address extends Model
      */
     public function validateStreet(): void
     {
-        if ($this->street !== null) {
-            $this->stringValidation->length(
-                value: $this->street,
-                min: 0,
-                max: 80
-            );
+        if ($this->street === null) {
+            return;
         }
+
+        $this->stringValidation->length(value: $this->street, min: 0, max: 80);
     }
 
     /**
@@ -63,13 +61,15 @@ class Address extends Model
      */
     public function validateAddressLine(): void
     {
-        if ($this->addressLine !== null) {
-            $this->stringValidation->length(
-                value: $this->addressLine,
-                min: 0,
-                max: 80
-            );
+        if ($this->addressLine === null) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->addressLine,
+            min: 0,
+            max: 80
+        );
     }
 
     /**
@@ -77,13 +77,15 @@ class Address extends Model
      */
     public function validatePostalCode(): void
     {
-        if ($this->postalCode !== null) {
-            $this->stringValidation->length(
-                value: $this->postalCode,
-                min: 0,
-                max: 24
-            );
+        if ($this->postalCode === null) {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->postalCode,
+            min: 0,
+            max: 24
+        );
     }
 
     /**
@@ -91,13 +93,11 @@ class Address extends Model
      */
     public function validateCity(): void
     {
-        if ($this->city !== null) {
-            $this->stringValidation->length(
-                value: $this->city,
-                min: 0,
-                max: 80
-            );
+        if ($this->city === null) {
+            return;
         }
+
+        $this->stringValidation->length(value: $this->city, min: 0, max: 80);
     }
 
     /**
@@ -105,12 +105,10 @@ class Address extends Model
      */
     public function validateNotes(): void
     {
-        if ($this->notes !== null) {
-            $this->stringValidation->length(
-                value: $this->notes,
-                min: 0,
-                max: 280
-            );
+        if ($this->notes === null) {
+            return;
         }
+
+        $this->stringValidation->length(value: $this->notes, min: 0, max: 280);
     }
 }

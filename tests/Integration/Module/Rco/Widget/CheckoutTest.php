@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Rco\Widget;
 
-use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -31,30 +30,6 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Address;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
-use Resursbank\Ecom\Lib\Model\Rco\Recipient;
-use Resursbank\Ecom\Lib\Model\Rco\Checkbox;
-use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Contact;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Options;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Cart;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Shipping;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Validate;
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\Ecom\Module\Rco\Widget\Checkout as CheckoutWidget;
 use Resursbank\EcomTest\Utilities\Rco;
@@ -106,7 +81,7 @@ class CheckoutTest extends TestCase
      */
     public function testRenderWidget(): void
     {
-        $checkout = Repository::init(request: $this->getCheckout());
+        $checkout = Repository::init(request: Rco::getFullCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(
@@ -143,7 +118,7 @@ class CheckoutTest extends TestCase
      */
     public function testRenderHead(): void
     {
-        $checkout = Repository::init(request: $this->getCheckout());
+        $checkout = Repository::init(request: Rco::getFullCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(
@@ -180,7 +155,7 @@ class CheckoutTest extends TestCase
      */
     public function testRenderWidgetWithOptions(): void
     {
-        $checkout = Repository::init(request: $this->getCheckout());
+        $checkout = Repository::init(request: Rco::getFullCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(
@@ -227,7 +202,7 @@ class CheckoutTest extends TestCase
      */
     public function testRenderHeadWithStyling(): void
     {
-        $checkout = Repository::init(request: $this->getCheckout());
+        $checkout = Repository::init(request: Rco::getFullCheckout());
 
         if (!$checkout->id) {
             throw new IllegalValueException(

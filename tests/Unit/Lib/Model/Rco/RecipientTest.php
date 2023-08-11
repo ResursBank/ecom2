@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
+
 use function strlen;
 
 /**
@@ -30,9 +31,7 @@ class RecipientTest extends TestCase
     private function generateModel(
         ?string $name = null
     ): void {
-        new Recipient(
-            name: $name
-        );
+        new Recipient(name: $name);
     }
 
     /**
@@ -44,7 +43,9 @@ class RecipientTest extends TestCase
             $this->generateModel();
             $this->addToAssertionCount(count: 1);
         } catch (Throwable) {
-            $this->fail(message: 'Failed to generate Recipient model instance.');
+            $this->fail(
+                message: 'Failed to generate Recipient model instance.'
+            );
         }
     }
 
@@ -91,7 +92,7 @@ class RecipientTest extends TestCase
             $this->fail(
                 message: sprintf(
                     'Name accepted a value exceeding 128 characters, %s',
-                    $value3,
+                    $value3
                 )
             );
         } catch (IllegalValueException) {

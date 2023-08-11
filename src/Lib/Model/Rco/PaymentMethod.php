@@ -13,7 +13,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\Type;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
+
 use function in_array;
 
 /**

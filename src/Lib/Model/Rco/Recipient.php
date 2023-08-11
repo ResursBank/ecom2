@@ -11,8 +11,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Address;
-use Resursbank\Ecom\Lib\Model\Rco\Contact;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -38,8 +36,10 @@ class Recipient extends Model
      */
     public function validateName(): void
     {
-        if ($this->name !== null) {
-            $this->stringValidation->length(value: $this->name, min: 0, max: 128);
+        if ($this->name === null) {
+            return;
         }
+
+        $this->stringValidation->length(value: $this->name, min: 0, max: 128);
     }
 }

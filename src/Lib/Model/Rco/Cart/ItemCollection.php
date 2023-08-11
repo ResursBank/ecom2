@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Cart;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Model\Rco\Cart\Item;
 
 /**
  * Collection of order row items in RCO+ GET requests.

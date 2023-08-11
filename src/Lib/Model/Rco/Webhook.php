@@ -19,8 +19,8 @@ class Webhook extends Model
     /**
      * @param string $url A https url to that will be posted to when [...]
      * @param string $authorization The Authorization header to set when doing the webhook.
-     * @param null|bool $continueOnNoResponse Continue if no/unexpected response is returned from the webhook post.
-     * @param null|int $timeout Timeout in seconds before giving up on a request.
+     * @param bool|null $continueOnNoResponse Continue if no/unexpected response is returned from the webhook post.
+     * @param int|null $timeout Timeout in seconds before giving up on a request.
      */
     public function __construct(
         public readonly string $url,

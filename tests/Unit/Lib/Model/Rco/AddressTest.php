@@ -71,12 +71,14 @@ class AddressTest extends TestCase
             $this->generateModel(street: $street1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $street1 .' failed street validation.');
+            $this->fail(message: $street1 . ' failed street validation.');
         }
 
         try {
             $this->generateModel(street: $street2);
-            $this->fail(message: 'Street exceeding 64 characters passed validation.');
+            $this->fail(
+                message: 'Street exceeding 64 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
@@ -103,12 +105,16 @@ class AddressTest extends TestCase
             $this->generateModel(addressLine: $addressLine1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $addressLine1 .' failed addressLine validation.');
+            $this->fail(
+                message: $addressLine1 . ' failed addressLine validation.'
+            );
         }
 
         try {
             $this->generateModel(addressLine: $addressLine2);
-            $this->fail(message: 'AddressLine exceeding 64 characters passed validation.');
+            $this->fail(
+                message: 'AddressLine exceeding 64 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
@@ -135,12 +141,16 @@ class AddressTest extends TestCase
             $this->generateModel(postalCode: $postalCode1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $postalCode1 .' failed postalCode validation.');
+            $this->fail(
+                message: $postalCode1 . ' failed postalCode validation.'
+            );
         }
 
         try {
             $this->generateModel(postalCode: $postalCode2);
-            $this->fail(message: 'PostalCode exceeding 64 characters passed validation.');
+            $this->fail(
+                message: 'PostalCode exceeding 64 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
@@ -167,12 +177,14 @@ class AddressTest extends TestCase
             $this->generateModel(city: $city1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $city1 .' failed city validation.');
+            $this->fail(message: $city1 . ' failed city validation.');
         }
 
         try {
             $this->generateModel(city: $city2);
-            $this->fail(message: 'City exceeding 64 characters passed validation.');
+            $this->fail(
+                message: 'City exceeding 64 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
@@ -199,12 +211,14 @@ class AddressTest extends TestCase
             $this->generateModel(notes: $notes1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $notes1 .' failed notes validation.');
+            $this->fail(message: $notes1 . ' failed notes validation.');
         }
 
         try {
             $this->generateModel(notes: $notes2);
-            $this->fail(message: 'Notes exceeding 280 characters passed validation.');
+            $this->fail(
+                message: 'Notes exceeding 280 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }

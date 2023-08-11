@@ -16,11 +16,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Customer;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Customer;
-use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -47,7 +47,9 @@ class CheckoutTest extends TestCase
         new Checkout(
             id: $id ?? Strings::getUuid(),
             storeId: $storeId ?? Strings::getUuid(),
-            orderReference: $orderReference ?? Strings::generateRandomString(length: 32),
+            orderReference: $orderReference ?? Strings::generateRandomString(
+                length: 32
+            ),
             countryCode: CountryCode::SE,
             locale: Locale::SV,
             currency: Currency::SEK,

@@ -9,11 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\IntValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of ShippingPriceDto object.
@@ -28,7 +24,7 @@ class Price extends Model
     public function __construct(
         public readonly string $display,
         public readonly int $calculate,
-        public readonly int $calculateTax,
+        public readonly int $calculateTax
     ) {
     }
 }

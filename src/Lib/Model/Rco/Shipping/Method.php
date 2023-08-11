@@ -9,14 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
-use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
-use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+
 use function in_array;
 
 /**

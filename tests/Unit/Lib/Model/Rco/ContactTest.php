@@ -31,13 +31,9 @@ class ContactTest extends TestCase
     private function generateModel(
         ?string $firstName = null,
         ?string $lastName = null,
-        ?string $phone = null,
+        ?string $phone = null
     ): void {
-        new Contact(
-            firstName: $firstName,
-            lastName: $lastName,
-            phone: $phone
-        );
+        new Contact(firstName: $firstName, lastName: $lastName, phone: $phone);
     }
 
     /**
@@ -67,12 +63,14 @@ class ContactTest extends TestCase
             $this->generateModel(firstName: $firstName1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $firstName1 .' failed firstName validation.');
+            $this->fail(message: $firstName1 . ' failed firstName validation.');
         }
 
         try {
             $this->generateModel(firstName: $firstName2);
-            $this->fail(message: 'Firstname exceeding 64 characters passed validation.');
+            $this->fail(
+                message: 'Firstname exceeding 64 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
@@ -99,12 +97,14 @@ class ContactTest extends TestCase
             $this->generateModel(lastName: $lastName1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalValueException) {
-            $this->fail(message: $lastName1 .' failed lastName validation.');
+            $this->fail(message: $lastName1 . ' failed lastName validation.');
         }
 
         try {
             $this->generateModel(lastName: $lastName2);
-            $this->fail(message: 'Lastname exceeding 64 characters passed validation.');
+            $this->fail(
+                message: 'Lastname exceeding 64 characters passed validation.'
+            );
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
@@ -132,19 +132,21 @@ class ContactTest extends TestCase
             $this->generateModel(phone: $phone1);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalCharsetException) {
-            $this->fail(message: $phone1 .' failed phone validation.');
+            $this->fail(message: $phone1 . ' failed phone validation.');
         }
 
         try {
             $this->generateModel(phone: $phone2);
             $this->addToAssertionCount(count: 1);
         } catch (IllegalCharsetException) {
-            $this->fail(message: $phone2 .' failed phone validation.');
+            $this->fail(message: $phone2 . ' failed phone validation.');
         }
 
         try {
             $this->generateModel(phone: $phone3);
-            $this->fail(message: 'Phone number without + prefix passed validation.');
+            $this->fail(
+                message: 'Phone number without + prefix passed validation.'
+            );
         } catch (IllegalCharsetException) {
             $this->addToAssertionCount(count: 1);
         }

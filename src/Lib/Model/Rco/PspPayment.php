@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus;
 
 /**
  * Implementation of PspPaymentDto object.

@@ -11,10 +11,10 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco\Cart;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\Item;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\EcomTest\Utilities\DataIntegrity;
 use Throwable;
 
 /**
@@ -25,8 +25,15 @@ class ItemTest extends TestCase
     /**
      * Get mocked model instance.
      *
+     * @throws IllegalTypeException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @noinspection PhpSameParameterValueInspection
+     * @noinspection PhpTooManyParametersInspection
      */
+    // phpcs:ignore
     private function generateModel(
         ?string $itemId = null,
         ?string $description = null,
@@ -39,7 +46,7 @@ class ItemTest extends TestCase
         ?int $totalDiscount = null,
         ?string $url = null,
         ?string $imageUrl = null,
-        ?array $tags = null,
+        ?array $tags = null
     ): void {
         if ($itemId === null) {
             $itemId = Strings::generateRandomString(length: 36);

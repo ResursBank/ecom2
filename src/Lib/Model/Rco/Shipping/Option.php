@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
 
 /**
  * Implementation of ShippingOptionDto object.

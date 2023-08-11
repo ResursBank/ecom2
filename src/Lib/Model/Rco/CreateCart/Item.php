@@ -71,13 +71,15 @@ class Item extends Model
      */
     private function validateDescription(): void
     {
-        if ($this->description !== '') {
-            $this->stringValidation->length(
-                value: $this->description,
-                min: 1,
-                max: 280
-            );
+        if ($this->description === '') {
+            return;
         }
+
+        $this->stringValidation->length(
+            value: $this->description,
+            min: 1,
+            max: 280
+        );
     }
 
     /**
@@ -99,9 +101,11 @@ class Item extends Model
      */
     private function validateQuantity(): void
     {
-        if ($this->quantity !== null) {
-            $this->intValidation->isPositive(value: $this->quantity);
+        if ($this->quantity === null) {
+            return;
         }
+
+        $this->intValidation->isPositive(value: $this->quantity);
     }
 
     /**
@@ -109,9 +113,11 @@ class Item extends Model
      */
     private function validateTaxRate(): void
     {
-        if ($this->taxRate !== null) {
-            $this->intValidation->inRange(value: $this->taxRate, min: 0, max: 100);
+        if ($this->taxRate === null) {
+            return;
         }
+
+        $this->intValidation->inRange(value: $this->taxRate, min: 0, max: 100);
     }
 
     /**
@@ -119,9 +125,11 @@ class Item extends Model
      */
     private function validateTotalDiscount(): void
     {
-        if ($this->totalDiscount !== null) {
-            $this->intValidation->isPositive(value: $this->totalDiscount);
+        if ($this->totalDiscount === null) {
+            return;
         }
+
+        $this->intValidation->isPositive(value: $this->totalDiscount);
     }
 
     /**
@@ -129,12 +137,14 @@ class Item extends Model
      */
     private function validateUrl(): void
     {
-        if ($this->url !== null) {
-            $this->stringValidation->matchRegex(
-                value: $this->url,
-                pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
-            );
+        if ($this->url === null) {
+            return;
         }
+
+        $this->stringValidation->matchRegex(
+            value: $this->url,
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        );
     }
 
     /**
@@ -142,12 +152,14 @@ class Item extends Model
      */
     private function validateImageUrl(): void
     {
-        if ($this->imageUrl !== null) {
-            $this->stringValidation->matchRegex(
-                value: $this->imageUrl,
-                pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
-            );
+        if ($this->imageUrl === null) {
+            return;
         }
+
+        $this->stringValidation->matchRegex(
+            value: $this->imageUrl,
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        );
     }
 
     /**
@@ -155,8 +167,10 @@ class Item extends Model
      */
     private function validateTags(): void
     {
-        if ($this->tags !== null) {
-            $this->arrayValidation->length(data: $this->tags, min: 0, max: 10);
+        if ($this->tags === null) {
+            return;
         }
+
+        $this->arrayValidation->length(data: $this->tags, min: 0, max: 10);
     }
 }

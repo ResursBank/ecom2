@@ -27,10 +27,10 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Checkout extends Model
 {
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @throws IllegalValueException
      * @throws EmptyValueException
      * @throws IllegalCharsetException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly string $id,
