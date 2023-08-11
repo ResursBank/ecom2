@@ -27,6 +27,7 @@ class CreateCheckout extends Model
     /**
      * @throws IllegalCharsetException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
         public readonly CreateCart $cart,

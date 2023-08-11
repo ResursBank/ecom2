@@ -21,21 +21,20 @@
         <exclude name="CouplingBetweenObjects" />
     </rule>
     <rule ref="rulesets/naming.xml">
+        <!-- Exclude rules in order to re-introduce them with specific config. -->
         <exclude name="ShortVariable" />
     </rule>
     <rule ref="rulesets/unusedcode.xml" />
+
+    <!-- Re-introduce rule with specific config. -->
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
             <property name="exceptions" value="id,ch,ip,en,sv,da,fi,no,js"/>
         </properties>
     </rule>
-    <rule ref="rulesets/naming.xml/LongVariable">
-        <properties>
-            <property name="exceptions" value="selectedPaymentMethodId"/>
-        </properties>
-    </rule>
 
     <exclude-pattern>Lib/Model/Rco/Enum/ShippingSelection.php</exclude-pattern>
+    <exclude-pattern>Lib/Model/Rco/Enum/PaymentSelection.php</exclude-pattern>
     <exclude-pattern>Lib/Order/CountryCode.php</exclude-pattern>
     <exclude-pattern>Lib/Network/ContentType.php</exclude-pattern>
     <exclude-pattern>Lib/Model/PaymentMethod/ApplicationFormSpecResponse/ApplicationFormSpecElementResponse/Type.php</exclude-pattern>
