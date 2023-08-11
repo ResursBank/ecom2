@@ -64,7 +64,7 @@ class MockSigner
         while (!str_contains(haystack: $url, needle: 'authenticate')) {
             $attempts++;
 
-            if ($attempts >= 10) {
+            if ($attempts >= 30) {
                 throw new RuntimeException(
                     message: sprintf(
                         'Timeout waiting for signing URL (got %s).',
