@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use function strlen;
 
 /**
  * String testing.
@@ -113,7 +114,7 @@ class StringsTest extends TestCase
     {
         $this->assertSame(
             expected: 45,
-            actual: Strings::generateRandomString(length: 45)
+            actual: strlen(string: Strings::generateRandomString(length: 45))
         );
     }
 }

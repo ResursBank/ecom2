@@ -143,7 +143,7 @@ class MockSigner
         $elapsed = 0;
 
         while ($payment->status !== Status::ACCEPTED) {
-            if ($elapsed >= 10) {
+            if ($elapsed >= 30) {
                 throw new RuntimeException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',
@@ -183,7 +183,7 @@ class MockSigner
         /* PAID indicates that the checkout session has been completed, it does
            not necessarily mean that the payment has been captured. */
         while ($checkout->status->type !== CheckoutStatus::PAID) {
-            if ($elapsed >= 10) {
+            if ($elapsed >= 30) {
                 throw new RuntimeException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',

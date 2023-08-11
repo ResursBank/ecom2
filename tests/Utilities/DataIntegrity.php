@@ -108,16 +108,14 @@ class DataIntegrity
         Closure $callback,
         TestCase $test
     ): void {
-        if (
-            in_array(
-                needle: 'v',
-                haystack: (new ReflectionFunction(
-                    function: $callback
-                ))->getParameters(),
-                strict: true
-            )
-        ) {
-            return;
+        $params = (new ReflectionFunction(
+            function: $callback
+        ))->getParameters();
+
+        foreach ($params as $param) {
+            if ($param->name === 'v') {
+                return;
+            }
         }
 
         $test->fail(message: 'Missing parameter v on callback.');
