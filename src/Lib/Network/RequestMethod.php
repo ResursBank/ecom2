@@ -14,11 +14,10 @@ namespace Resursbank\Ecom\Lib\Network;
  *
  * @codingStandardsIgnoreStart
  */
-enum RequestMethod: string
+enum RequestMethod
 {
-    case GET = 'GET';
-    case POST = 'POST';
-    case PUT = 'PUT';
-    case DELETE = 'DELETE';
-    case PATCH = 'PATCH';
+    case GET;
+    case POST;
+    case PUT;
+    case DELETE;
 }

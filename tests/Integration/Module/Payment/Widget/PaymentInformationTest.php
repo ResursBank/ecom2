@@ -38,7 +38,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
@@ -66,6 +65,16 @@ class PaymentInformationTest extends TestCase
             ),
             language: Language::sv
         );
+    }
+
+    /**
+     * Generate a dummy order reference.
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(): string
+    {
+        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -141,11 +150,10 @@ class PaymentInformationTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws FilesystemException
-     * @throws Exception
      */
     public function testRenderWidget(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
         MockSigner::approve(payment: $payment);
         $signedPayment = Repository::get(paymentId: $payment->id);

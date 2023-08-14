@@ -30,7 +30,6 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
-use Throwable;
 
 use function is_string;
 
@@ -133,14 +132,11 @@ class CurlTest extends TestCase
      * Test to make sure that remote requests really works.
      *
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws ValidationException
-     * @throws Throwable
      */
     public function testRealGetRequest(): void
     {
@@ -168,15 +164,12 @@ class CurlTest extends TestCase
      * Test to make sure that remote requests really works.
      *
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
      */
     public function testRealGetRequestWithCustomUserAgent(): void
     {
@@ -211,15 +204,14 @@ class CurlTest extends TestCase
      *
      * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testRealPostRequest(): void
     {
@@ -250,15 +242,14 @@ class CurlTest extends TestCase
     /**
      * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testRealPutRequest(): void
     {
@@ -289,15 +280,14 @@ class CurlTest extends TestCase
     /**
      * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testRealDeleteRequest(): void
     {
@@ -318,15 +308,14 @@ class CurlTest extends TestCase
     /**
      * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @noinspection SpellCheckingInspection
      */
@@ -369,17 +358,16 @@ class CurlTest extends TestCase
     /**
      * Verify that CurlException for 404 pages has code set to 404
      *
-     * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws ApiException
+     * @throws IllegalValueException
+     * @throws ConfigException
      */
     public function testFileNotFound(): void
     {
@@ -404,15 +392,14 @@ class CurlTest extends TestCase
     /**
      * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws ValidationException
+     * @throws ConfigException
      */
     public function testPermissionDenied(): void
     {

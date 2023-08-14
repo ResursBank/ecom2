@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -18,571 +20,233 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
-use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\GrantType;
-use Resursbank\Ecom\Lib\Api\Rco;
-use Resursbank\Ecom\Lib\Api\Scope;
-use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Locale\Rco\Locale;
-use Resursbank\Ecom\Lib\Log\NoneLogger;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Rco\Cart;
-use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
-use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Options;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
-use Resursbank\Ecom\Lib\Model\Rco\Status;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
-use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Lib\Log\FileLogger;
+use Resursbank\Ecom\Lib\Log\LogLevel;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
+use Resursbank\Ecom\Module\Rco\Models\Address;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Customer;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request;
+use Resursbank\Ecom\Module\Rco\Models\OrderLine;
+use Resursbank\Ecom\Module\Rco\Models\OrderLineCollection;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdateRequest;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
 use Resursbank\Ecom\Module\Rco\Repository;
-use Resursbank\EcomTest\Data\Models\Instrument;
-use Resursbank\EcomTest\Utilities\MockSigner;
-use Resursbank\EcomTest\Utilities\Rco as RcoHelper;
-use Throwable;
 
 /**
- * Tests for RCO+ module Repository class.
- *
- * @noinspection EfferentObjectCouplingInspection
+ * Tests for RCO module Repository class.
  */
 final class RepositoryTest extends TestCase
 {
-    private string $orderReference = '';
+    private string $orderReference;
+    private Request $request;
 
     /**
-     * Set up the Ecom+ config.
+     * Set up prerequisites for testing
      *
-     * @throws EmptyValueException
+     * @throws IllegalTypeException
      * @throws Exception
      */
     protected function setUp(): void
     {
-        parent::setUp();
+        $this->orderReference = bin2hex(string: random_bytes(length: 8));
+        $this->request = new Request(
+            orderLines: new OrderLineCollection(data: [
+                new OrderLine(
+                    artNo: 'sku123',
+                    description: 'My product',
+                    quantity: 1,
+                    unitMeasure: 'pc',
+                    unitAmountWithoutVat: 20,
+                    vatPct: 25
+                ),
+            ]),
+            customer: new Customer(
+                governmentId: '198305147715',
+                mobile: '46701234567',
+                email: 'test@hosted.resurs',
+                deliveryAddress: new Address(
+                    firstName: 'Vincent',
+                    lastName: 'Williamsson Alexandersson',
+                    addressRow1: 'Glassgatan 15',
+                    postalArea: 'Göteborg',
+                    postalCode: '41655',
+                    countryCode: 'SE'
+                )
+            ),
+            successUrl: 'https://example.com/success',
+            backUrl: 'https://example.com/checkout',
+            shopUrl: 'https://example.com'
+        );
+
+        $basicAuth = new Basic(
+            username: $_ENV['BASIC_AUTH_USERNAME'],
+            password: $_ENV['BASIC_AUTH_PASSWORD']
+        );
 
         Config::setup(
-            logger: new NoneLogger(),
-            cache: new None(),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['RCO_JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['RCO_JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['RCO_JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(
-                    value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
-                )
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            basicAuth: $basicAuth,
+            logLevel: LogLevel::DEBUG,
+            isProduction: false
+        );
+
+        parent::setUp();
+    }
+
+    /**
+     * Verify that InitPayment works
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testInitPayment(): void
+    {
+        $response = Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
+        );
+
+        $this::assertSame(
+            expected: $this->request->customer->governmentId,
+            actual: $response->customer?->governmentId ?? ''
+        );
+
+        if ($response->iframe === null) {
+            $this->fail(message: 'No iframe found in response.');
+        }
+
+        $this::assertSame(
+            expected: '<iframe',
+            actual: substr(string: $response->iframe, offset: 0, length: 7)
+        );
+    }
+
+    /**
+     * Verify that a valid UpdatePayment request returns http 200 and the payment session id
+     *
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ApiException
+     * @throws ConfigException
+     * @throws IllegalValueException
+     */
+    public function testUpdatePayment(): void
+    {
+        $session = Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
+        );
+
+        $request = new UpdateRequest(
+            orderLines: new OrderLineCollection(
+                data: [
+                    new OrderLine(
+                        artNo: 'Updated-1234',
+                        description: 'Updated product',
+                        quantity: 2,
+                        unitMeasure: 'pc',
+                        unitAmountWithoutVat: 20,
+                        vatPct: 25
+                    ),
+                ]
             )
         );
 
-        $this->orderReference = Strings::generateRandomString(length: 12);
+        $response = Repository::updatePayment(
+            request: $request,
+            orderReference: $this->orderReference
+        );
+
+        $this::assertSame(expected: 200, actual: $response->code);
+        $this::assertSame(
+            expected: $session->paymentSessionId,
+            actual: $response->message
+        );
     }
 
     /**
-     * Perform validation of Checkout, so it gets a payment object attached.
+     * Verify that a 404 response is given when attempting to update a nonexistent order.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
-     */
-    private function validateCheckout(string $id, string $version): Checkout
-    {
-        $result = (new Put(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id,
-            params: [
-                'status' => [
-                    'type' => 'VALIDATED',
-                    'callingIp' => '127.0.0.1'
-                ],
-                'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
-            ],
-            version: $version
-        ))->call();
-
-        if (!$result instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' .
-                $result::class
-            );
-        }
-
-        return $result;
-    }
-
-    /**
-     * Fetch a new payment object.
-     *
-     * @throws ConfigException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws UrlValidationException
      * @throws Exception
      */
-    private function initFull(
-        ?string $orderReference = null
-    ): Checkout {
-        return Repository::init(request: RcoHelper::getFullCheckout(
-            orderReference: $orderReference
-        ));
-    }
-
-    /**
-     * Resolve the smallest possible object to initialize a checkout session.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    private function initMini(): Checkout
+    public function testUpdatePaymentWrongOrderReference(): void
     {
-        return Repository::init(request: RcoHelper::getMiniCheckout());
-    }
+        Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
+        );
 
-    /**
-     * @return MethodCollection
-     * @throws IllegalTypeException
-     */
-    private function getShippingMethods(): MethodCollection
-    {
-        return new MethodCollection(data: [
-            new Method(
-                methodId: 'method01',
-                name: 'The post',
-                type: ShippingType::MAILBOX,
-                description: 'Lorem ipsum',
-                price: new Price(
-                    display: '49 kr',
-                    calculate: 4900,
-                    calculateTax: 25
-                ),
-                deliveryEta: '2 days',
-                options: new OptionCollection(data: []),
-                required: [],
-                carrier: Carrier::POSTNORD
-            ),
-            new Method(
-                methodId: 'method02',
-                name: 'The other post',
-                type: ShippingType::MAILBOX,
-                description: 'Dolor sit amet',
-                price: new Price(
-                    display: '79 kr',
-                    calculate: 7900,
-                    calculateTax: 25
-                ),
-                deliveryEta: '1 day',
-                options: new OptionCollection(data: []),
-                required: [],
-                carrier: Carrier::GENERIC
+        $request = new UpdateRequest(
+            orderLines: new OrderLineCollection(
+                data: [
+                    new OrderLine(
+                        artNo: 'Updated-1234',
+                        description: 'Updated product',
+                        quantity: 2,
+                        unitMeasure: 'pc',
+                        unitAmountWithoutVat: 20,
+                        vatPct: 25
+                    ),
+                ]
             )
-        ]);
-    }
-
-    /**
-     * Assert that a minimal Checkout init call works.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testMinimalInit(): void
-    {
-        $checkout = $this->initMini();
-
-        $this->assertNotNull(actual: $checkout->id);
-    }
-
-    /**
-     * Assert that Init returns a Payment object.
-     *
-     * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws UrlValidationException
-     * @throws Exception
-     * @todo Expand this to not just test the orderReference.
-     */
-    public function testInit(): void
-    {
-        $orderReference = Strings::generateRandomString(length: 12);
-
-        $checkout = $this->initFull(orderReference: $orderReference);
-
-        $this->assertEquals(
-            expected: $orderReference,
-            actual: $checkout->orderReference
-        );
-    }
-
-    /**
-     * Assert that setCart properly updates the cart.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws UrlValidationException
-     */
-    public function testSetCart(): void
-    {
-        $checkout = $this->initFull();
-        $newCart = RcoHelper::getCart();
-        $result = Repository::setCart(
-            id: $checkout->id,
-            cart: $newCart,
-            version: $checkout->version
         );
 
-        $items = $result->cart->items->toArray();
+        $this->expectException(exception: CurlException::class);
 
-        $this->assertEquals(
-            expected: 1,
-            actual: sizeof($items)
-        );
-        $this->assertEquals(
-            expected: $newCart->items->toArray()[0]->itemId,
-            actual: $items[0]->itemId
-        );
-    }
-
-    /**
-     * Assert that changing the quantity of an item works.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws UrlValidationException
-     */
-    public function testPatchCart(): void
-    {
-        $checkout = $this->initFull();
-
-        $newQty = 8;
-        $result = Repository::patchCart(
-            id: $checkout->id,
-            itemId: $checkout->cart->items->toArray()[0]->itemId,
-            version: $checkout->version,
-            quantity: $newQty
-        );
-
-        $this->assertEquals(
-            expected: $newQty,
-            actual: $result->cart->items->toArray()[0]->quantity
-        );
-    }
-
-    /**
-     * Assert that setting shipping methods actually sets them.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws UrlValidationException
-     */
-    public function testSetShippingMethods(): void
-    {
-        $checkout = $this->initFull();
-
-        $shippingMethods = $this->getShippingMethods();
-
-        $result = Repository::setShippingMethods(
-            id: $checkout->id,
-            shippingMethods: $shippingMethods,
-            version: $checkout->version
-        );
-
-        if (!$result->shipping) {
-            throw new IllegalValueException(
-                message: 'Property "shipping" missing from setShippingMethods' .
-                ' response'
-            );
-        }
-
-        if (!$result->shipping->methods) {
-            throw new IllegalValueException(
-                message: 'Property "methods" missing from setShippingMethods' .
-                ' response'
-            );
-        }
-
-        $fetchedMethods = $result->shipping->methods;
-
-        $this->assertCount(
-            expectedCount: count($shippingMethods),
-            haystack: $fetchedMethods
-        );
-
-        /** @var Method $shippingMethod */
-        foreach ($shippingMethods as $shippingMethod) {
-            $this->assertTrue(
-                condition: $fetchedMethods->hasObjectWithPropertyValue(
-                    propertyName: 'methodId',
-                    propertyValue: $shippingMethod->methodId
-                )
-            );
-        }
-    }
-
-    /**
-     * Assert that the deleteCartItem method removes cart items.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws UrlValidationException
-     */
-    public function testDeleteCartItem(): void
-    {
-        $checkout = $this->initFull();
-
-        $result = Repository::deleteCartItem(
-            id: $checkout->id,
-            itemId: $checkout->cart->items->toArray()[0]->itemId,
-            version: $checkout->version
-        );
-
-        $this->assertNull(actual: $result->cart);
-    }
-
-    /**
-     * Assert that order reference is properly set.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws UrlValidationException
-     * @throws Exception
-     */
-    public function testSetOrderReference(): void
-    {
-        $checkout = $this->initFull();
-
-        $orderReference = Strings::generateRandomString(length: 16);
-        $result = Repository::setOrderReference(
-            id: $checkout->id,
-            orderReference: $orderReference,
-            version: $checkout->version
-        );
-
-        $this->assertEquals(
-            expected: $orderReference,
-            actual: $result->orderReference
-        );
-    }
-
-    /**
-     * Assert that fetching a checkout works.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws UrlValidationException
-     * @throws ValidationException
-     */
-    public function testGet(): void
-    {
-        $init = $this->initFull();
-        $fetched = Repository::get(id: $init->id);
-
-        $this->assertEquals(expected: $init->id, actual: $fetched->id);
-        $this->assertSame(
-            expected: CheckoutStatus::CREATED,
-            actual: $fetched->status->type
-        );
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws IllegalCharsetException
-     */
-    public function testValidateCheckoutModel(): void
-    {
         try {
-            Repository::validateCheckoutModel(model: new Instrument(
-                id: 10,
-                name: 'anka'
-            ));
-
-            $this->fail(
-                message: 'Validation failed to confirm model is instance of ' . Checkout::class
+            Repository::updatePayment(
+                request: $request,
+                orderReference: $this->orderReference . bin2hex(
+                    string: random_bytes(length: 8)
+                )
             );
-        } catch (Throwable) {
-            $this->addToAssertionCount(count: 1);
+        } catch (CurlException $e) {
+            $this::assertSame(expected: 404, actual: $e->httpCode);
+            throw $e;
         }
-
-        Repository::validateCheckoutModel(model: new Checkout(
-            id: Strings::getUuid(),
-            storeId: Strings::getUuid(),
-            orderReference: $this->orderReference,
-            countryCode: CountryCode::SE,
-            locale: Locale::SV,
-            currency: Currency::SEK,
-            version: Strings::getUuid(),
-            options: new Options(),
-            customer: new CustomerModel(
-                type: Type::B2C
-            ),
-            status: new Status(type: CheckoutStatus::CREATED),
-            cart: new Cart(
-                code: 'nothing',
-                items: new CartItemCollection(data: [])
-            ),
-            merchant: new Merchant(
-                displayName: 'Jocke'
-            )
-        ));
     }
 
     /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws UrlValidationException
-     * @throws ValidationException
-     */
-    public function testCapture(): void
-    {
-        $response = $this->initFull();
-        $validated = $this->validateCheckout(
-            id: $response->id,
-            version: $response->version
-        );
-
-        MockSigner::approveRcoPayment(checkout: $validated, ssn: '8305147715');
-
-        $result = Repository::capture(
-            id: $validated->id,
-            version: $validated->version
-        );
-
-        $this->assertSame(
-            expected: PaymentStatus::CAPTURED,
-            actual: $result->payment->paymentStatus->status
-        );
-    }
-
-    /**
-     * Assert that cancelling a payment works as intended.
+     * Verify that a valid UpdatePaymentReference request returns HTTP 200 and the order reference
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
-     * @throws ValidationException
+     * @throws Exception
      */
-    public function testCancel(): void
+    public function testUpdatePaymentReference(): void
     {
-        $response = $this->initFull();
-        $validated = $this->validateCheckout(
-            id: $response->id,
-            version: $response->version
+        Repository::initPayment(
+            request: $this->request,
+            orderReference: $this->orderReference
         );
 
-        MockSigner::approveRcoPayment(checkout: $validated);
-
-        $fetched = Repository::get(id: $validated->id);
-
-        $result = Repository::cancel(
-            id: $validated->id,
-            version: $fetched->version
+        $newPaymentReference = bin2hex(string: random_bytes(length: 8));
+        $request = new UpdatePaymentReferenceRequest(
+            paymentReference: $newPaymentReference
         );
 
-        $this->assertSame(
-            expected: PaymentStatus::CANCELLED,
-            actual: $result->payment->paymentStatus->status
+        $response = Repository::updatePaymentReference(
+            request: $request,
+            orderReference: $this->orderReference
         );
+        $this::assertSame(expected: 200, actual: $response->code);
     }
 }

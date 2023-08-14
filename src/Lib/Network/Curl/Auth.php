@@ -20,11 +20,9 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
-use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken as GenerateMapiToken;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\GenerateToken as GenerateRcoToken;
+use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 
 /**
  * JWT-related functionality for Curl.
@@ -108,14 +106,7 @@ class Auth
         $result = $auth->getToken();
 
         if ($result === null || $result->isExpired()) {
-            if (
-                $auth->scope === Scope::MERCHANT_API ||
-                $auth->scope === Scope::MOCK_MERCHANT_API
-            ) {
-                return (new GenerateMapiToken(auth: $auth))->call();
-            }
-
-            return (new GenerateRcoToken(auth: $auth))->call();
+            $result = (new GenerateToken(auth: $auth))->call();
         }
 
         return $result;

@@ -19,7 +19,6 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
@@ -51,14 +50,13 @@ class GenerateToken
     /**
      * @throws ApiException
      * @throws AuthException
-     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws IllegalValueException
+     * @throws ConfigException
      */
     public function call(): Token
     {

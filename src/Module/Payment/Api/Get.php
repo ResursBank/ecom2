@@ -63,15 +63,19 @@ class Get
 
         $data = $curl->exec()->body;
 
+        $content = (
+            $data instanceof stdClass
+        ) ? $data : new stdClass();
+
         if (
-            isset($data->metadata->custom) &&
-            $data->metadata->custom instanceof stdClass
+            isset($content->metadata->custom) &&
+            $content->metadata->custom instanceof stdClass
         ) {
-            $data->metadata->custom = (array) $data->metadata->custom;
+            $content->metadata->custom = (array) $content->metadata->custom;
         }
 
         $result = DataConverter::stdClassToType(
-            object: $data,
+            object: $content,
             type: Payment::class
         );
 

@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -11,6 +13,7 @@ namespace Resursbank\Ecom\Module\Rco;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -19,94 +22,48 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Rco;
-use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Locale\Rco\Locale;
-use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCart as PostCart;
-use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Customer;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Redirects;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
-use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
-use Resursbank\Ecom\Lib\Model\Rco\PspPayment;
-use Resursbank\Ecom\Lib\Model\Rco\PaymentMethods;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Status;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
-use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
+use Resursbank\Ecom\Module\Rco\Api\GetPayment;
+use Resursbank\Ecom\Module\Rco\Api\InitPayment;
+use Resursbank\Ecom\Module\Rco\Api\UpdatePayment;
+use Resursbank\Ecom\Module\Rco\Api\UpdatePaymentReference;
+use Resursbank\Ecom\Module\Rco\Models\GetPayment\Response;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Request as InitPaymentRequest;
+use Resursbank\Ecom\Module\Rco\Models\InitPayment\Response as InitPaymentResponse;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Request as UpdatePaymentRequest;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePayment\Response as UpdatePaymentResponse;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Request as UpdatePaymentReferenceRequest;
+use Resursbank\Ecom\Module\Rco\Models\UpdatePaymentReference\Response as UpdatePaymentReferenceResponse;
 
 /**
- * Main entrypoint for interfacing with the RCO+ API programmatically.
+ * Main entrypoint for interfacing with the RCO API programmatically.
  */
 class Repository
 {
-    /**
-     * Initialize a new checkout.
-     *
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    public static function init(
-        CreateCheckout $request
-    ): Checkout {
-        $response = (new Post(
-            route: Rco::CHECKOUT_ROUTE,
-            params: $request->toArray(full: true)
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
-    }
+    public const HOSTNAME_PROD = 'checkout.resurs.com';
+    public const HOSTNAME_TEST = 'omnitest.resurs.com';
 
     /**
-     * Replace cart contents with supplied Cart object.
+     * Initialize a payment session.
      *
-     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws ApiException
+     * @throws IllegalValueException
      */
-    public static function setCart(
-        string $id,
-        CreateCart $cart,
-        string $version
-    ): Checkout {
-        $response = (new Put(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
-            params: [
-                'items' => $cart->items->toArray()
-            ],
-            version: $version
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
+    public static function initPayment(InitPaymentRequest $request, string $orderReference): InitPaymentResponse
+    {
+        return (new InitPayment())
+            ->call(request: $request, orderReference: $orderReference);
     }
 
     /**
-     * Update item quantity in cart.
+     * Update an existing payment session.
      *
      * @throws ApiException
      * @throws AuthException
@@ -119,123 +76,14 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function patchCart(
-        string $id,
-        string $itemId,
-        string $version,
-        int $quantity
-    ): Checkout {
-        $response = (new Patch(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
-            version: $version,
-            params: [
-                'items' => [
-            [
-                    'itemId' => $itemId,
-                    'quantity' => $quantity
-                    ]
-                ]
-            ]
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
+    public static function updatePayment(UpdatePaymentRequest $request, string $orderReference): UpdatePaymentResponse
+    {
+        return (new UpdatePayment())
+            ->call(request: $request, orderReference: $orderReference);
     }
 
     /**
-     * Set shipping methods on Checkout.
-     *
-     * @param string $id Checkout ID
-     * @param string $version Checkout version
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public static function setShippingMethods(
-        string $id,
-        MethodCollection $shippingMethods,
-        string $version
-    ): Checkout {
-        $response = (new Put(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/shipping/methods',
-            version: $version,
-            params: [
-                'methods' => $shippingMethods->toArray()
-            ]
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
-    }
-
-    /**
-     * Deletes specified cart item.
-     *
-     * @param string $id Checkout ID
-     * @param string $itemId Cart item ID
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public static function deleteCartItem(
-        string $id,
-        string $itemId,
-        string $version
-    ): Checkout {
-        $response = (new Delete(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart/items/' . $itemId,
-            version: $version
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
-    }
-
-    /**
-     * Set order reference on Checkout.
-     *
-     * @param string $id Checkout ID
-     * @param string $orderReference Order reference
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public static function setOrderReference(
-        string $id,
-        string $orderReference,
-        string $version
-    ): Checkout {
-        $response = (new Put(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/order-reference',
-            params: [
-                'orderReference' => $orderReference
-            ],
-            version: $version
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
-    }
-
-    /**
-     * Fetch an existing Checkout.
+     * Update the payment reference for a payment session.
      *
      * @throws ApiException
      * @throws AuthException
@@ -248,45 +96,17 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function get(
-        string $id
-    ): Checkout {
-        $response = (new Get(route: Rco::CHECKOUT_ROUTE . '/' . $id))->call();
-
-        return self::validateCheckoutModel(model: $response);
+    public static function updatePaymentReference(
+        UpdatePaymentReferenceRequest $request,
+        string $orderReference
+    ): UpdatePaymentReferenceResponse {
+        return (new UpdatePaymentReference())
+            ->call(request: $request, orderReference: $orderReference);
     }
 
     /**
-     * Capture a payment.
+     * Get existing payment session.
      *
-     * @param string $id Checkout/payment ID
-     * @throws ValidationException
-     * @throws AuthException
-     * @throws EmptyValueException
-     * @throws CurlException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws IllegalTypeException
-     * @throws ConfigException
-     * @throws ReflectionException
-     * @throws ApiException
-     */
-    public static function capture(
-        string $id,
-        string $version
-    ): Checkout {
-        $response = (new Post(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
-            version: $version
-        ))->call(forceObject: true);
-
-        return self::validateCheckoutModel(model: $response);
-    }
-
-    /**
-     * Cancel a payment.
-     *
-     * @param string $id Checkout/payment ID
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -297,34 +117,26 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @noinspection PhpUnused
      */
-    public static function cancel(
-        string $id,
-        string $version
-    ): Checkout {
-        $response = (new Post(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
-            version: $version
-        ))->call();
-
-        return self::validateCheckoutModel(model: $response);
+    public static function getPayment(string $orderReference): Response
+    {
+        return (new GetPayment())
+            ->call(orderReference: $orderReference);
     }
 
     /**
-     * Centralised business logic to ensure type safety for all endpoint
-     * implementations in this class.
+     * Gets API hostname.
      *
-     * @throws IllegalTypeException
+     * @throws ConfigException
+     * @todo Check if ConfigException validation needs a test.
      */
-    public static function validateCheckoutModel(
-        Collection|Model $model
-    ): Checkout {
-        if (!$model instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' . $model::class
-            );
+    public static function getApiHostname(): string
+    {
+        if (Config::isProduction()) {
+            return self::HOSTNAME_PROD;
         }
 
-        return $model;
+        return self::HOSTNAME_TEST;
     }
 }

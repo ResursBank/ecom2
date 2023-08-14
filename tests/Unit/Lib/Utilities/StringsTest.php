@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -101,19 +100,6 @@ class StringsTest extends TestCase
 
         $this->assertTrue(
             condition: (new StringValidation())->isUuid(value: $uuid)
-        );
-    }
-
-    /**
-     * Assert that the generateRandomString method works as expected.
-     *
-     * @throws Exception
-     */
-    public function testGenerateRandomString(): void
-    {
-        $this->assertSame(
-            expected: 45,
-            actual: Strings::generateRandomString(length: 45)
         );
     }
 }

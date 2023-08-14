@@ -18,5 +18,4 @@ enum Scope: string
 {
     case MERCHANT_API = 'merchant-api';
     case MOCK_MERCHANT_API = 'mock-merchant-api';
-    case CHECKOUT_PLUS_API = 'checkout-plus-api';
 }

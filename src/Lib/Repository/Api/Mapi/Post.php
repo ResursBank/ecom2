@@ -11,19 +11,31 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Repository\Api\Mapi;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Network\AuthType;
+use Resursbank\Ecom\Lib\Network\ContentType;
+use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
-use Resursbank\Ecom\Lib\Repository\Traits\Request;
 
 /**
  * Generic functionality to perform a POST call against the Merchant API and
  * convert the response to model instance(s).
  */
-class Post extends Request
+class Post
 {
     use ExceptionLog;
     use ModelConverter;
@@ -34,18 +46,47 @@ class Post extends Request
      * @throws IllegalTypeException
      */
     public function __construct(
-        protected readonly string $model,
-        protected readonly string $route,
-        protected readonly array $params = [],
-        protected readonly string $extractProperty = ''
+        private readonly string $model,
+        private readonly string $route,
+        private readonly array $params = [],
+        private readonly string $extractProperty = '',
+        private readonly Mapi $mapi = new Mapi()
     ) {
-        parent::__construct(
-            model: $model,
-            route: $route,
+        $this->validateModel(model: $model);
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws ConfigException
+     */
+    public function call(): Collection|Model
+    {
+        $curl = new Curl(
+            url: $this->mapi->getUrl(
+                route: $this->route
+            ),
             requestMethod: RequestMethod::POST,
-            api: new Mapi(),
-            params: $params,
-            extractProperty: $extractProperty
+            payload: $this->params,
+            contentType: ContentType::JSON,
+            authType: AuthType::JWT,
+            responseContentType: ContentType::JSON
+        );
+
+        $data = $curl->exec()->body;
+
+        return $this->convertToModel(
+            data: $this->resolveResponseData(
+                data: $data,
+                extractProperty: $this->extractProperty
+            ),
+            model: $this->model
         );
     }
 }

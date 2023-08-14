@@ -25,7 +25,6 @@ class Model
     /**
      * Converts the object to an array suitable for use with the Curl library.
      *
-     * @param bool $full
      * @param array $raw
      * @return array
      * @SuppressWarnings(PHPMD.ElseExpression)
@@ -35,11 +34,11 @@ class Model
     // phpcs:ignore
     public function toArray(
         bool $full = false,
-        ?array $raw = null
+        array $raw = []
     ): array {
         $data = [];
 
-        $raw = $raw ?? get_object_vars(object: $this);
+        $raw = $raw ?: get_object_vars(object: $this);
 
         foreach ($raw as $name => $value) {
             if (is_object(value: $value)) {

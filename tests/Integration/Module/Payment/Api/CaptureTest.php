@@ -40,7 +40,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
@@ -68,6 +67,16 @@ class CaptureTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
+    }
+
+    /**
+     * Generate a dummy order reference
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(): string
+    {
+        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -146,7 +155,7 @@ class CaptureTest extends TestCase
      */
     public function testCaptureEntirePayment(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         // Create payment
         $payment = $this->createPayment(orderReference: $orderReference);
         $originalId = $payment->id;
@@ -173,7 +182,7 @@ class CaptureTest extends TestCase
      */
     public function testCaptureSingleOrderLine(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         // Create payment with multiple order lines
         $payment = $this->createPayment(orderReference: $orderReference);
 
@@ -224,7 +233,7 @@ class CaptureTest extends TestCase
      */
     public function testCaptureWithTransactionId(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         // Create payment
         $payment = $this->createPayment(orderReference: $orderReference);
 
@@ -232,7 +241,7 @@ class CaptureTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         // Capture and specify transaction id
-        $transactionId = Strings::generateRandomString(length: 12);
+        $transactionId = $this->generateOrderReference();
         $response = Repository::capture(
             paymentId: $payment->id,
             transactionId: $transactionId
@@ -267,7 +276,7 @@ class CaptureTest extends TestCase
      */
     public function testCaptureWithInvoiceId(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         // Create payment
         $payment = $this->createPayment(orderReference: $orderReference);
 
@@ -275,7 +284,7 @@ class CaptureTest extends TestCase
         MockSigner::approve(payment: $payment);
 
         // Capture and specify transaction id
-        $invoiceId = Strings::generateRandomString(length: 12);
+        $invoiceId = $this->generateOrderReference();
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(
                 quantity: 2.00,

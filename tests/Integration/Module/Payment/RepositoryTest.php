@@ -40,7 +40,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
@@ -68,6 +67,16 @@ class RepositoryTest extends TestCase
         );
 
         parent::setUp();
+    }
+
+    /**
+     * Generate a dummy order reference
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(): string
+    {
+        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -310,7 +319,7 @@ class RepositoryTest extends TestCase
      */
     public function testReplaceOrderLines(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
         MockSigner::approve(payment: $payment);
 
@@ -390,7 +399,7 @@ class RepositoryTest extends TestCase
     public function testGetTaskStatusDetails(): void
     {
         $payment = $this->createPayment(
-            orderReference: Strings::generateRandomString(length: 12)
+            orderReference: $this->generateOrderReference()
         );
 
         $task = Repository::getTaskStatusDetails(paymentId: $payment->id);

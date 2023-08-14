@@ -40,7 +40,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
@@ -69,6 +68,16 @@ class CancelTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
+    }
+
+    /**
+     * Generate a dummy order reference
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(): string
+    {
+        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -150,7 +159,7 @@ class CancelTest extends TestCase
     public function testCancelEntirePayment(): void
     {
         // Create payment
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
@@ -200,7 +209,7 @@ class CancelTest extends TestCase
     public function testCancelWithOrderLines(): void
     {
         // Create payment
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
@@ -279,7 +288,7 @@ class CancelTest extends TestCase
     public function testCancelWithCreator(): void
     {
         // Create payment
-        $orderReference = Strings::generateRandomString(length: 12);
+        $orderReference = $this->generateOrderReference();
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign

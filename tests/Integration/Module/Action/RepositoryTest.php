@@ -35,7 +35,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Action\Repository as ActionRepository;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -63,6 +62,16 @@ class RepositoryTest extends TestCase
         );
 
         parent::setUp();
+    }
+
+    /**
+     * Generate a dummy order reference
+     *
+     * @throws Exception
+     */
+    private function generateOrderReference(): string
+    {
+        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -165,7 +174,7 @@ class RepositoryTest extends TestCase
     {
         // Create a new payment.
         $payment = $this->createPayment(
-            orderReference: Strings::generateRandomString(length: 12)
+            orderReference: $this->generateOrderReference()
         );
 
         // Confirm payment was created.
