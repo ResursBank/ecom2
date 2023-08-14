@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+
 use function strlen;
 
 /**

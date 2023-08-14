@@ -20,8 +20,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use ValueError;
 
-use function in_array;
-
 /**
  * Helper to satisfy data integrity tests.
  */

@@ -34,6 +34,8 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
@@ -44,9 +46,9 @@ use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
@@ -170,12 +172,16 @@ final class RepositoryTest extends TestCase
     /**
      * @throws IllegalTypeException
      */
-    private function getShippingMethods(): MethodCollection
+    private function getShippingMethods(): CreateShippingMethodCollection
     {
-        return new MethodCollection(data: [
-            new Method(
+        return new CreateShippingMethodCollection(data: [
+            new CreateShippingMethod(
                 methodId: 'method01',
                 name: 'The post',
+                scope: [
+                    ShippingScope::B2C,
+                    ShippingScope::B2B
+                ],
                 type: ShippingType::MAILBOX,
                 description: 'Lorem ipsum',
                 price: new Price(
@@ -188,9 +194,13 @@ final class RepositoryTest extends TestCase
                 required: [],
                 carrier: Carrier::POSTNORD
             ),
-            new Method(
+            new CreateShippingMethod(
                 methodId: 'method02',
                 name: 'The other post',
+                scope: [
+                    ShippingScope::B2C,
+                    ShippingScope::B2B
+                ],
                 type: ShippingType::MAILBOX,
                 description: 'Dolor sit amet',
                 price: new Price(
