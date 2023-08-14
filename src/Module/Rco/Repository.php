@@ -153,7 +153,7 @@ class Repository
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/shipping/methods',
             version: $version,
             params: [
-                'methods' => $shippingMethods->toArray()
+                'methods' => $shippingMethods->toArray(full: true)
             ]
         ))->call();
 

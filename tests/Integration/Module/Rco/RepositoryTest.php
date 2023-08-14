@@ -360,8 +360,6 @@ final class RepositoryTest extends TestCase
             );
         }
 
-        $this->assertEmpty(actual: $result->shipping->methods);
-
         $fetchedMethods = $result->shipping->methods;
 
         $this->assertCount(
