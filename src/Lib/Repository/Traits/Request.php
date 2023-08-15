@@ -66,8 +66,9 @@ class Request
      * @throws JsonException
      * @throws ReflectionException
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function call(): Collection|Model
+    public function call(bool $forceObject = false): Collection|Model
     {
         $curl = new Curl(
             url: $this->api->getUrl(
@@ -78,7 +79,8 @@ class Request
             contentType: $this->contentType,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON,
-            headers: $this->headers
+            headers: $this->headers,
+            forceObject: $forceObject
         );
 
         return $this->convertToModel(

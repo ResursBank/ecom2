@@ -34,11 +34,11 @@ class Model
     // phpcs:ignore
     public function toArray(
         bool $full = false,
-        array $raw = []
+        ?array $raw = null
     ): array {
         $data = [];
 
-        $raw = $raw ?: get_object_vars(object: $this);
+        $raw ??= get_object_vars(object: $this);
 
         foreach ($raw as $name => $value) {
             if (is_object(value: $value)) {

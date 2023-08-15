@@ -10,15 +10,16 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Status\Location;
 
 /**
- * Checkout status
+ * Implementation of StatusDto object.
  */
 class Status extends Model
 {
     public function __construct(
-        public readonly ?string $type = null,
+        public readonly CheckoutStatus $type,
         public readonly ?Location $location = null
     ) {
     }

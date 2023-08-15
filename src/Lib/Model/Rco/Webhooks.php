@@ -12,21 +12,16 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Webhook Model Extender for RCO+.
+ * Implementation of WebhooksDto object.
  */
 class Webhooks extends Model
 {
-    /**
-     * @param string $url A https url to that will be posted to when [...]
-     * @param string $authorization The Authorization header to set when doing the webhook.
-     * @param bool $continueOnNoResponse Continue if no/unexpected response is returned from the webhook post.
-     * @param int $timeout Timeout in seconds before giving up on a request.
-     */
     public function __construct(
-        public readonly string $url,
-        public readonly string $authorization,
-        public readonly bool $continueOnNoResponse,
-        public readonly int $timeout
+        public readonly Webhook $customer,
+        public readonly Webhook $cart,
+        public readonly Webhook $shipping,
+        public readonly Webhook $payment,
+        public readonly Webhook $validate
     ) {
     }
 }

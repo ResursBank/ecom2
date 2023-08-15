@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
 
 /**
- * Currently selected shipping method information
+ * Implementation of ShippingSelectionDto object.
  */
 class Selection extends Model
 {
     public function __construct(
-        public readonly ?string $methodId = null,
-        public readonly ?string $optionId = null,
-        public readonly ?Type $type = null
+        public readonly string $methodId,
+        public readonly string $optionId,
+        public readonly ShippingSelection $type
     ) {
     }
 }
