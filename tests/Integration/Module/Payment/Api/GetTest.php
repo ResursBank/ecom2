@@ -38,6 +38,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
@@ -65,17 +66,6 @@ class GetTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
-    }
-
-    /**
-     * Generate a dummy order reference
-     *
-     * @throws Exception
-     * @throws Exception
-     */
-    private function generateOrderReference(): string
-    {
-        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -153,7 +143,7 @@ class GetTest extends TestCase
     public function testGetPayment(): void
     {
         // Create payment
-        $orderReference = $this->generateOrderReference();
+        $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign

@@ -23,7 +23,9 @@ use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
@@ -50,23 +52,11 @@ class Repository
      * @throws IllegalValueException
      */
     public static function init(
-        Checkout $checkout
+        CreateCheckout $request
     ): Checkout {
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE,
-            params: [
-                'orderReference' => $checkout->orderReference,
-                'options' => $checkout->options,
-                'locale' => $checkout->locale,
-                'currency' => $checkout->currency,
-                'cart' => $checkout->cart->toArray(),
-                'customer' => $checkout->customer,
-                'redirects' => $checkout->redirects,
-                'callbacks' => $checkout->callbacks,
-                'webhooks' => $checkout->webhooks,
-                'checkboxes' => $checkout->checkboxes?->toArray(),
-                'merchant' => $checkout->merchant
-            ]
+            params: $request->toArray(full: true)
         ))->call();
 
         return self::validateCheckoutModel(model: $response);
@@ -88,7 +78,7 @@ class Repository
      */
     public static function setCart(
         string $id,
-        Checkout\Cart $cart,
+        CreateCart $cart,
         string $version
     ): Checkout {
         $response = (new Put(
@@ -156,14 +146,14 @@ class Repository
      */
     public static function setShippingMethods(
         string $id,
-        ShippingMethodCollection $shippingMethods,
+        CreateShippingMethodCollection $shippingMethods,
         string $version
     ): Checkout {
         $response = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/shipping/methods',
             version: $version,
             params: [
-                'methods' => $shippingMethods->toArray()
+                'methods' => $shippingMethods->toArray(full: true)
             ]
         ))->call();
 
@@ -249,6 +239,33 @@ class Repository
         string $id
     ): Checkout {
         $response = (new Get(route: Rco::CHECKOUT_ROUTE . '/' . $id))->call();
+
+        return self::validateCheckoutModel(model: $response);
+    }
+
+    /**
+     * Capture a payment.
+     *
+     * @param string $id Checkout/payment ID
+     * @throws ValidationException
+     * @throws AuthException
+     * @throws EmptyValueException
+     * @throws CurlException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws IllegalTypeException
+     * @throws ConfigException
+     * @throws ReflectionException
+     * @throws ApiException
+     */
+    public static function capture(
+        string $id,
+        string $version
+    ): Checkout {
+        $response = (new Post(
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
+            version: $version
+        ))->call(forceObject: true);
 
         return self::validateCheckoutModel(model: $response);
     }

@@ -58,6 +58,7 @@ class Authorization extends Model implements CallbackInterface
      * @throws FilesystemException
      * @throws TranslationException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function getNote(): string
     {

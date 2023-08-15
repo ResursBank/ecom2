@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Checkout location information
+ * Implementation of StatusLocationDto object.
  */
 class Location extends Model
 {

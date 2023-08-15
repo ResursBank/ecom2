@@ -14,7 +14,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
  */
 enum Type: string
 {
-    case DEFAULT = 'DEFAULT';
     case PICKUP = 'PICKUP';
     case IN_STORE = 'IN_STORE';
     case MAILBOX = 'MAILBOX';

@@ -18,62 +18,61 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Rco\RequiredFieldException;
-use Resursbank\Ecom\Exception\Rco\ShippingScopeException;
 use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks\Authorized;
+use Resursbank\Ecom\Lib\Model\Rco\Cart;
+use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Address;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Billing;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Cart as CartModel;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkbox;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Checkboxes;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Contact;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\CountryCode;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\CustomerType;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Delivery;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Item;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\ItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Options;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Type;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout\Webhooks;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Merchant;
+use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethod;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\ShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Cart;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Customer;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Payment as PaymentWebhook;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Shipping;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks\Validate;
+use Resursbank\Ecom\Lib\Model\Rco\Status;
+use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\EcomTest\Data\Models\Instrument;
+use Resursbank\EcomTest\Utilities\MockSigner;
+use Resursbank\EcomTest\Utilities\Rco as RcoHelper;
 use Throwable;
 
 /**
  * Tests for RCO+ module Repository class.
+ *
+ * @noinspection EfferentObjectCouplingInspection
  */
 final class RepositoryTest extends TestCase
 {
+    private string $orderReference = '';
+
     /**
      * Set up the Ecom+ config.
      *
      * @throws EmptyValueException
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -91,16 +90,46 @@ final class RepositoryTest extends TestCase
                 )
             )
         );
+
+        $this->orderReference = Strings::generateRandomString(length: 12);
     }
 
     /**
-     * Generates a random string of characters.
+     * Perform validation of Checkout, so it gets a payment object attached.
      *
-     * @throws Exception
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
-    private function generateRandomString(int $length): string
+    private function validateCheckout(string $id, string $version): Checkout
     {
-        return bin2hex(string: random_bytes(length: max(1, $length)));
+        $result = (new Put(
+            route: Rco::CHECKOUT_ROUTE . '/' . $id,
+            params: [
+                'status' => [
+                    'type' => 'VALIDATED',
+                    'callingIp' => '127.0.0.1'
+                ],
+                'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
+            ],
+            version: $version
+        ))->call();
+
+        if (!$result instanceof Checkout) {
+            throw new IllegalTypeException(
+                message: 'Expected ' . Checkout::class . ', got ' .
+                $result::class
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -113,219 +142,46 @@ final class RepositoryTest extends TestCase
      * @throws UrlValidationException
      * @throws Exception
      */
-    private function getCheckout(): Checkout
-    {
-        if (!Config::getJwtAuth()) {
-            throw new ConfigException(message: 'Missing JWT auth token!');
-        }
-
-        $auth = 'Bearer ' . Config::getJwtAuth()->getToken();
-        return new Checkout(
-            orderReference: $this->generateRandomString(length: 12),
-            options: new Options(
-                mutableCart: true
-            ),
-            locale: Locale::SV,
-            currency: Currency::SEK,
-            cart: new CartModel(
-                code: '',
-                items: new ItemCollection(
-                    data: [
-                        new Item(
-                            type: Type::PRODUCT,
-                            itemId: 'item01',
-                            description: 'An Item',
-                            quantityUnit: 'st',
-                            quantity: 1,
-                            unitPrice: 1000,
-                            taxRate: 25,
-                            totalDiscount: 0,
-                            url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
-                            imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg'
-                        )
-                    ]
-                )
-            ),
-            customer: new Checkout\Customer(
-                type: CustomerType::B2C,
-                governmentId: 'SE8305147715',
-                billing: new Billing(
-                    name: 'John Doe',
-                    contact: new Contact(
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        email: 'johndoe@example.com',
-                        phone: '+46701234567'
-                    ),
-                    address: new Address(
-                        street: 'Glassgatan 15',
-                        addressLine: '',
-                        postalCode: '41655',
-                        city: 'Göteborg',
-                        notes: '',
-                        countryCode: CountryCode::SE
-                    )
-                ),
-                delivery: new Delivery(
-                    name: 'John Doe',
-                    contact: new Contact(
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        email: 'johndoe@example.com',
-                        phone: '+46701234567'
-                    ),
-                    address: new Address(
-                        street: 'Glassgatan 15',
-                        addressLine: '',
-                        postalCode: '41655',
-                        city: 'Göteborg',
-                        notes: '',
-                        countryCode: CountryCode::SE
-                    )
-                )
-            ),
-            checkboxes: new Checkboxes(data: [
-                new Checkbox(
-                    id: 'terms',
-                    label: 'Terms and conditions',
-                    checked: true,
-                    required: true
-                )
-            ]),
-            merchant: new Merchant(
-                displayName: 'Resurs Stuff AB',
-                logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
-                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
-            ),
-            callbacks: $this->getCallbacks(auth: $auth),
-            redirects: new Checkout\Redirects(
-                success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
-                checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
-            ),
-            webhooks: $this->getWebhooks(auth: $auth)
-        );
+    private function initFull(
+        ?string $orderReference = null
+    ): Checkout {
+        return Repository::init(request: RcoHelper::getFullCheckout(
+            orderReference: $orderReference
+        ));
     }
 
     /**
-     * Get Callbacks property.
-     */
-    private function getCallbacks(string $auth): Callbacks
-    {
-        return new Callbacks(
-            authorized: new Authorized(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/authorized',
-                authorization: $auth
-            ),
-            cancelled: new Callbacks\Cancelled(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/cancelled',
-                authorization: $auth
-            ),
-            captured: new Callbacks\Captured(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/captured',
-                authorization: $auth
-            ),
-            created: new Callbacks\Created(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/created',
-                authorization: $auth
-            ),
-            failed: new Callbacks\Failed(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/failed',
-                authorization: $auth
-            ),
-            paid: new Callbacks\Paid(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/paid',
-                authorization: $auth
-            ),
-            refunded: new Callbacks\Refunded(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/refunded',
-                authorization: $auth
-            )
-        );
-    }
-
-    /**
-     * Fetch web hooks.
-     */
-    private function getWebhooks(string $auth): Webhooks
-    {
-        return new Webhooks(
-            customer: new Customer(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/customer',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            cart: new Cart(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/cart',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            shipping: new Shipping(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/shipping',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            payment: new PaymentWebhook(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/payment',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            ),
-            validate: new Validate(
-                url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/validate',
-                authorization: $auth,
-                continueOnNoResponse: true,
-                timeout: 60
-            )
-        );
-    }
-
-    /**
-     * Generate a different cart from the one from getCheckout.
+     * Resolve the smallest possible object to initialize a checkout session.
      *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
-    private function getCart(): CartModel
+    private function initMini(): Checkout
     {
-        return new CartModel(
-            code: '',
-            items: new ItemCollection(
-                data: [
-                    new Item(
-                        type: Type::PRODUCT,
-                        itemId: 'item02',
-                        description: 'Another Item',
-                        quantityUnit: 'st',
-                        quantity: 2,
-                        unitPrice: 1500,
-                        taxRate: 25,
-                        totalDiscount: 0,
-                        url: 'https://www.example.com',
-                        imageUrl: 'https://www.example.com/image.jpg'
-                    )
-                ]
-            )
-        );
+        return Repository::init(request: RcoHelper::getMiniCheckout());
     }
 
     /**
-     * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws RequiredFieldException
-     * @throws ShippingScopeException
      */
-    private function getShippingMethods(): ShippingMethodCollection
+    private function getShippingMethods(): CreateShippingMethodCollection
     {
-        return new ShippingMethodCollection(data: [
-            new ShippingMethod(
+        return new CreateShippingMethodCollection(data: [
+            new CreateShippingMethod(
                 methodId: 'method01',
                 name: 'The post',
-                scope: [ShippingScope::B2C],
+                scope: [
+                    ShippingScope::B2C,
+                    ShippingScope::B2B
+                ],
                 type: ShippingType::MAILBOX,
                 description: 'Lorem ipsum',
                 price: new Price(
@@ -334,14 +190,17 @@ final class RepositoryTest extends TestCase
                     calculateTax: 25
                 ),
                 deliveryEta: '2 days',
-                options: [],
+                options: new OptionCollection(data: []),
                 required: [],
                 carrier: Carrier::POSTNORD
             ),
-            new ShippingMethod(
+            new CreateShippingMethod(
                 methodId: 'method02',
                 name: 'The other post',
-                scope: [ShippingScope::B2C],
+                scope: [
+                    ShippingScope::B2C,
+                    ShippingScope::B2B
+                ],
                 type: ShippingType::MAILBOX,
                 description: 'Dolor sit amet',
                 price: new Price(
@@ -350,7 +209,7 @@ final class RepositoryTest extends TestCase
                     calculateTax: 25
                 ),
                 deliveryEta: '1 day',
-                options: [],
+                options: new OptionCollection(data: []),
                 required: [],
                 carrier: Carrier::GENERIC
             )
@@ -373,28 +232,9 @@ final class RepositoryTest extends TestCase
      */
     public function testMinimalInit(): void
     {
-        $request = new Checkout(
-            cart: new CartModel(
-                code: 'asdf1234',
-                items: new ItemCollection(data: [
-                    new Item(
-                        type: Type::PRODUCT,
-                        itemId: 'item-01',
-                        description: 'Item',
-                        quantityUnit: 'st',
-                        quantity: 1,
-                        unitPrice: 4900,
-                        taxRate: 25
-                    )
-                ])
-            ),
-            merchant: new Merchant(
-                displayName: 'Resurs'
-            )
-        );
-        $response = Repository::init(checkout: $request);
+        $checkout = $this->initMini();
 
-        $this->assertNotNull(actual: $response->id);
+        $this->assertNotNull(actual: $checkout->id);
     }
 
     /**
@@ -404,23 +244,19 @@ final class RepositoryTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CurlException
-     * @throws ValidationException
      * @throws UrlValidationException
+     * @throws Exception
      * @todo Expand this to not just test the orderReference.
      */
     public function testInit(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
+        $orderReference = Strings::generateRandomString(length: 12);
+
+        $checkout = $this->initFull(orderReference: $orderReference);
 
         $this->assertEquals(
-            expected: $request->orderReference,
-            actual: $response->orderReference
+            expected: $orderReference,
+            actual: $checkout->orderReference
         );
     }
 
@@ -441,30 +277,17 @@ final class RepositoryTest extends TestCase
      */
     public function testSetCart(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $newCart = $this->getCart();
+        $checkout = $this->initFull();
+        $newCart = RcoHelper::getCart();
         $result = Repository::setCart(
-            id: $response->id,
+            id: $checkout->id,
             cart: $newCart,
-            version: $response->version
+            version: $checkout->version
         );
 
-        $items = $result->cart->items->toArray();
+        $this->assertNotNull(actual: $result->cart);
 
+        $items = $result->cart->items->toArray();
 
         $this->assertEquals(
             expected: 1,
@@ -493,28 +316,19 @@ final class RepositoryTest extends TestCase
      */
     public function testPatchCart(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
+        $checkout = $this->initFull();
 
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
+        $this->assertNotNull(actual: $checkout->cart);
 
         $newQty = 8;
         $result = Repository::patchCart(
-            id: $response->id,
-            itemId: $response->cart->items->toArray()[0]->itemId,
-            version: $response->version,
+            id: $checkout->id,
+            itemId: $checkout->cart->items->toArray()[0]->itemId,
+            version: $checkout->version,
             quantity: $newQty
         );
+
+        $this->assertNotNull(actual: $result->cart);
 
         $this->assertEquals(
             expected: $newQty,
@@ -539,39 +353,19 @@ final class RepositoryTest extends TestCase
      */
     public function testSetShippingMethods(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
-
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
+        $checkout = $this->initFull();
 
         $shippingMethods = $this->getShippingMethods();
 
         $result = Repository::setShippingMethods(
-            id: $response->id,
+            id: $checkout->id,
             shippingMethods: $shippingMethods,
-            version: $response->version
+            version: $checkout->version
         );
 
-        if (!$result->shipping) {
+        if ($result->shipping === null) {
             throw new IllegalValueException(
                 message: 'Property "shipping" missing from setShippingMethods' .
-                ' response'
-            );
-        }
-
-        if (!$result->shipping->methods) {
-            throw new IllegalValueException(
-                message: 'Property "methods" missing from setShippingMethods' .
                 ' response'
             );
         }
@@ -583,7 +377,7 @@ final class RepositoryTest extends TestCase
             haystack: $fetchedMethods
         );
 
-        /** @var ShippingMethod $shippingMethod */
+        /** @var Method $shippingMethod */
         foreach ($shippingMethods as $shippingMethod) {
             $this->assertTrue(
                 condition: $fetchedMethods->hasObjectWithPropertyValue(
@@ -611,31 +405,17 @@ final class RepositoryTest extends TestCase
      */
     public function testDeleteCartItem(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
+        $checkout = $this->initFull();
 
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
+        $this->assertNotNull(actual: $checkout->cart);
 
         $result = Repository::deleteCartItem(
-            id: $response->id,
-            itemId: $response->cart->items->toArray()[0]->itemId,
-            version: $response->version
+            id: $checkout->id,
+            itemId: $checkout->cart->items->toArray()[0]->itemId,
+            version: $checkout->version
         );
 
-        $this->assertEquals(
-            expected: 0,
-            actual: sizeof($result->cart->items->toArray())
-        );
+        $this->assertNull(actual: $result->cart);
     }
 
     /**
@@ -656,26 +436,13 @@ final class RepositoryTest extends TestCase
      */
     public function testSetOrderReference(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
+        $checkout = $this->initFull();
 
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$response->version) {
-            throw new IllegalValueException(
-                message: 'Property "version" missing from Init response.'
-            );
-        }
-
-        $orderReference = $this->generateRandomString(length: 16);
+        $orderReference = Strings::generateRandomString(length: 16);
         $result = Repository::setOrderReference(
-            id: $response->id,
+            id: $checkout->id,
             orderReference: $orderReference,
-            version: $response->version
+            version: $checkout->version
         );
 
         $this->assertEquals(
@@ -701,38 +468,21 @@ final class RepositoryTest extends TestCase
      */
     public function testGet(): void
     {
-        $request = $this->getCheckout();
-        $response = Repository::init(checkout: $request);
+        $init = $this->initFull();
+        $fetched = Repository::get(id: $init->id);
 
-        if (!$response->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        $fetched = Repository::get(id: $response->id);
-
-        if (!$fetched->id) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        if (!$fetched->status) {
-            throw new IllegalValueException(
-                message: 'Property "id" missing from Init response.'
-            );
-        }
-
-        $this->assertEquals(expected: $response->id, actual: $fetched->id);
-        $this->assertEquals(
-            expected: 'CREATED',
+        $this->assertEquals(expected: $init->id, actual: $fetched->id);
+        $this->assertSame(
+            expected: CheckoutStatus::CREATED,
             actual: $fetched->status->type
         );
     }
 
     /**
+     * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws IllegalCharsetException
      */
     public function testValidateCheckoutModel(): void
     {
@@ -750,9 +500,21 @@ final class RepositoryTest extends TestCase
         }
 
         Repository::validateCheckoutModel(model: new Checkout(
-            cart: new CartModel(
+            id: Strings::getUuid(),
+            storeId: Strings::getUuid(),
+            orderReference: $this->orderReference,
+            countryCode: CountryCode::SE,
+            locale: Locale::SV,
+            currency: Currency::SEK,
+            version: Strings::getUuid(),
+            options: new Options(),
+            customer: new CustomerModel(
+                type: Type::B2C
+            ),
+            status: new Status(type: CheckoutStatus::CREATED),
+            cart: new Cart(
                 code: 'nothing',
-                items: new ItemCollection(data: [])
+                items: new CartItemCollection(data: [])
             ),
             merchant: new Merchant(
                 displayName: 'Jocke'
@@ -761,81 +523,80 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     */
+    public function testCapture(): void
+    {
+        $response = $this->initFull();
+        $validated = $this->validateCheckout(
+            id: $response->id,
+            version: $response->version
+        );
+
+        MockSigner::approveRcoPayment(checkout: $validated, ssn: '8305147715');
+
+        $result = Repository::capture(
+            id: $validated->id,
+            version: $validated->version
+        );
+
+        $this->assertNotNull(actual: $result->payment);
+        $this->assertNotNull(actual: $result->payment->paymentStatus);
+
+        $this->assertSame(
+            expected: PaymentStatus::CAPTURED,
+            actual: $result->payment->paymentStatus->status
+        );
+    }
+
+    /**
      * Assert that cancelling a payment works as intended.
      *
-//     * @throws ApiException
-//     * @throws AuthException
-//     * @throws ConfigException
-//     * @throws CurlException
-//     * @throws EmptyValueException
-//     * @throws IllegalTypeException
-//     * @throws IllegalValueException
-//     * @throws JsonException
-//     * @throws ReflectionException
-//     * @throws UrlValidationException
-//     * @throws ValidationException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
      */
     public function testCancel(): void
     {
-        /** @todo Re-enable and test this when the API is fixed. */
-        $this->markTestSkipped(
-            message: 'API service to cancel currently broken. See ECP-540'
+        $response = $this->initFull();
+        $validated = $this->validateCheckout(
+            id: $response->id,
+            version: $response->version
         );
 
-//        $request = $this->getCheckout();
-//        $response = Repository::init(checkout: $request);
-//
-//        if (!$response->id) {
-//            throw new IllegalValueException(
-//                message: 'Property "id" missing from Init response.'
-//            );
-//        }
-//
-//        if (!$response->version) {
-//            throw new IllegalValueException(
-//                message: 'Property "version" missing from Init response.'
-//            );
-//        }
-//
-//        // Set to validated
-//        $validated = (new Put(
-//            route: Rco::CHECKOUT_ROUTE . '/' . $response->id,
-//            params: [
-//                'status' => [
-//                    'type' => 'VALIDATED',
-//                    'callingIp' => '127.0.0.1'
-//                ],
-//                'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
-//            ],
-//            version: $response->version
-//        ))->call();
-//
-//        if (!$validated instanceof Checkout) {
-//            throw new IllegalTypeException(
-//                message: 'Return value not instance of Checkout'
-//            );
-//        }
-//
-//        if (!$validated->version) {
-//            throw new IllegalValueException(
-//                message: 'Property "version" missing from validation response.'
-//            );
-//        }
-//
-//        $cancelled = Repository::cancel(
-//            id: $response->id,
-//            version: $validated->version
-//        );
-//
-//        if (!$cancelled->status) {
-//            throw new EmptyValueException(
-//                message: 'Returned Checkout object has no status property'
-//            );
-//        }
-//
-//        $this->assertEquals(
-//            expected: 'CANCELLED',
-//            actual: $cancelled->status->type
-//        );
+        MockSigner::approveRcoPayment(checkout: $validated, ssn: '8305147715');
+
+        $fetched = Repository::get(id: $validated->id);
+
+        $result = Repository::cancel(
+            id: $validated->id,
+            version: $fetched->version
+        );
+
+        $this->assertNotNull(actual: $result->payment);
+        $this->assertNotNull(actual: $result->payment->paymentStatus);
+
+        $this->assertSame(
+            expected: PaymentStatus::CANCELLED,
+            actual: $result->payment->paymentStatus->status
+        );
     }
 }
