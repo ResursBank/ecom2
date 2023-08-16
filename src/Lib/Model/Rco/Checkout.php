@@ -48,8 +48,8 @@ class Checkout extends Model
         public readonly Customer $customer,
         public readonly Status $status,
         public readonly Cart $cart = new Cart(
-        items: new ItemCollection(data: []),
-        code: ''
+            items: new ItemCollection(data: []),
+            code: ''
         ),
         public readonly ?Shipping $shipping = null,
         public readonly ?PaymentMethods $paymentMethods = null,
