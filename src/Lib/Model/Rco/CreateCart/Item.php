@@ -24,9 +24,10 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Item extends Model
 {
     /**
+     * @param array|null $tags
      * @throws EmptyValueException
-     * @throws IllegalValueException
      * @throws IllegalCharsetException
+     * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -41,6 +42,7 @@ class Item extends Model
         public readonly ?string $url = null,
         public readonly ?string $imageUrl = null,
         public readonly ?array $tags = null,
+        public readonly ?bool $mutable = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly IntValidation $intValidation = new IntValidation(),
         private readonly ArrayValidation $arrayValidation = new ArrayValidation()

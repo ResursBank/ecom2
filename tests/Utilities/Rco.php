@@ -107,14 +107,7 @@ class Rco
 
         $auth = 'Bearer ' . $jwt->getToken();
         return new CreateCheckout(
-            orderReference: $orderReference,
-            options: new Options(
-                mutableCart: true
-            ),
-            locale: Locale::SV,
-            currency: Currency::SEK,
             cart: new CreateCart(
-                code: '',
                 items: new ItemCollection(
                     data: [
                         new Item(
@@ -122,16 +115,25 @@ class Rco
                             itemId: 'item01',
                             description: 'An Item',
                             quantityUnit: 'st',
-                            quantity: 1,
                             unitPrice: 1000,
+                            quantity: 1,
                             taxRate: 25,
                             totalDiscount: 0,
                             url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
-                            imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg'
+                            imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg',
+                            mutable: true
                         )
                     ]
-                )
+                ),
+                code: ''
             ),
+            merchant: new Merchant(
+                displayName: 'Resurs Stuff AB',
+                logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
+                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
+            ),
+            orderReference: $orderReference,
+            options: new Options(),
             customer: new Customer(
                 type: Type::B2C,
                 governmentId: 'SE8305147715',
@@ -170,6 +172,14 @@ class Rco
                     )
                 )
             ),
+            redirects: new Redirects(
+                checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout',
+                success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success'
+            ),
+            callbacks: self::getCallbacks(),
+            webhooks: self::getWebhooks(auth: $auth),
+            locale: Locale::SV,
+            currency: Currency::SEK,
             checkboxes: new CheckboxCollection(data: [
                 new Checkbox(
                     id: 'terms',
@@ -177,18 +187,7 @@ class Rco
                     checked: true,
                     required: true
                 )
-            ]),
-            merchant: new Merchant(
-                displayName: 'Resurs Stuff AB',
-                logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
-                homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
-            ),
-            callbacks: self::getCallbacks(),
-            redirects: new Redirects(
-                success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success',
-                checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout'
-            ),
-            webhooks: self::getWebhooks(auth: $auth)
+            ])
         );
     }
 

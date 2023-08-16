@@ -11,9 +11,11 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -30,7 +32,9 @@ class Checkout extends Model
      * @throws IllegalValueException
      * @throws EmptyValueException
      * @throws IllegalCharsetException
+     * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * // phpcs:ignore
      */
     public function __construct(
         public readonly string $id,
@@ -43,7 +47,10 @@ class Checkout extends Model
         public readonly Options $options,
         public readonly Customer $customer,
         public readonly Status $status,
-        public readonly ?Cart $cart = null,
+        public readonly Cart $cart = new Cart(
+        items: new ItemCollection(data: []),
+        code: ''
+        ),
         public readonly ?Shipping $shipping = null,
         public readonly ?PaymentMethods $paymentMethods = null,
         public readonly ?PspPayment $payment = null,
