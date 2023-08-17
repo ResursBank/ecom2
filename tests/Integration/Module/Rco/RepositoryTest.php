@@ -112,14 +112,14 @@ final class RepositoryTest extends TestCase
     {
         $result = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id,
+            version: $version,
             params: [
                 'status' => [
                     'type' => 'VALIDATED',
                     'callingIp' => '127.0.0.1'
                 ],
                 'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
-            ],
-            version: $version
+            ]
         ))->call();
 
         if (!$result instanceof Checkout) {
@@ -183,6 +183,7 @@ final class RepositoryTest extends TestCase
                     ShippingScope::B2B
                 ],
                 type: ShippingType::MAILBOX,
+                carrier: Carrier::POSTNORD,
                 description: 'Lorem ipsum',
                 price: new Price(
                     display: '49 kr',
@@ -191,8 +192,7 @@ final class RepositoryTest extends TestCase
                 ),
                 deliveryEta: '2 days',
                 options: new OptionCollection(data: []),
-                required: [],
-                carrier: Carrier::POSTNORD
+                required: []
             ),
             new CreateShippingMethod(
                 methodId: 'method02',
@@ -202,6 +202,7 @@ final class RepositoryTest extends TestCase
                     ShippingScope::B2B
                 ],
                 type: ShippingType::MAILBOX,
+                carrier: Carrier::GENERIC,
                 description: 'Dolor sit amet',
                 price: new Price(
                     display: '79 kr',
@@ -210,8 +211,7 @@ final class RepositoryTest extends TestCase
                 ),
                 deliveryEta: '1 day',
                 options: new OptionCollection(data: []),
-                required: [],
-                carrier: Carrier::GENERIC
+                required: []
             )
         ]);
     }
@@ -415,7 +415,18 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        $this->assertNull(actual: $result->cart);
+        if ($result->cart !== null) {
+            // When successfully deleting a single item in a cart that only contains one item,
+            // the final result is still iterable - not null. If cart object is null, something went wrong
+            // in the API and this test should fail.
+            $this->assertCount(
+                expectedCount: 0,
+                haystack: $result->cart->items
+            );
+            return;
+        }
+
+        $this->fail(message: 'Cart returned as null.');
     }
 
     /**
@@ -513,8 +524,8 @@ final class RepositoryTest extends TestCase
             ),
             status: new Status(type: CheckoutStatus::CREATED),
             cart: new Cart(
-                code: 'nothing',
-                items: new CartItemCollection(data: [])
+                items: new CartItemCollection(data: []),
+                code: 'nothing'
             ),
             merchant: new Merchant(
                 displayName: 'Jocke'

@@ -83,10 +83,10 @@ class Repository
     ): Checkout {
         $response = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
+            version: $version,
             params: [
                 'items' => $cart->items->toArray()
-            ],
-            version: $version
+            ]
         ))->call();
 
         return self::validateCheckoutModel(model: $response);
@@ -212,10 +212,10 @@ class Repository
     ): Checkout {
         $response = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/order-reference',
+            version: $version,
             params: [
                 'orderReference' => $orderReference
-            ],
-            version: $version
+            ]
         ))->call();
 
         return self::validateCheckoutModel(model: $response);

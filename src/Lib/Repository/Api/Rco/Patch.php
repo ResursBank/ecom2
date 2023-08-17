@@ -32,8 +32,8 @@ class Patch extends Request
     ) {
         parent::__construct(
             route: $route,
-            params: $params,
             requestMethod: RequestMethod::PATCH,
+            params: $params,
             version: $version
         );
     }
