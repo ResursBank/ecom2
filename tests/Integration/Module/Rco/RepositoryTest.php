@@ -415,7 +415,18 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        $this->assertCount(expectedCount: 0, haystack: $result->cart->items);
+        if ($result->cart !== null) {
+            // When successfully deleting a single item in a cart that only contains one item,
+            // the final result is still iterable - not null. If cart object is null, something went wrong
+            // in the API and this test should fail.
+            $this->assertCount(
+                expectedCount: 0,
+                haystack: $result->cart->items
+            );
+            return;
+        }
+
+        $this->fail(message: 'Cart returned as null.');
     }
 
     /**
