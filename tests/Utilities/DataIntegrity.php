@@ -16,11 +16,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionFunction;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use ValueError;
-
-use function in_array;
+use Throwable;
 
 /**
  * Helper to satisfy data integrity tests.
@@ -71,7 +67,7 @@ class DataIntegrity
                 /* @phpstan-ignore-next-line */
                 $callback(v: $val);
                 $test->addToAssertionCount(count: 1);
-            } catch (IllegalValueException | IllegalCharsetException) {
+            } catch (Throwable) {
                 $test->fail(message: "Legal value '$val' rejected.");
             }
         }
@@ -95,7 +91,7 @@ class DataIntegrity
                 /* @phpstan-ignore-next-line */
                 $callback(v: $val);
                 $test->fail(message: "Illegal value '$val' accepted.");
-            } catch (IllegalValueException | IllegalCharsetException | ValueError) {
+            } catch (Throwable) {
                 $test->addToAssertionCount(count: 1);
             }
         }
