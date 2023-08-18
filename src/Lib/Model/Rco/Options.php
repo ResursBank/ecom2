@@ -25,7 +25,6 @@ class Options extends Model
     public function __construct(
         public readonly ?bool $b2bEnabled = null,
         public readonly ?bool $renderCart = null,
-        public readonly ?bool $mutableCart = null,
         public readonly ?bool $calculateShipping = null,
         public readonly ?bool $lookupB2CAddress = null,
         public readonly ?bool $renderCartCode = null,

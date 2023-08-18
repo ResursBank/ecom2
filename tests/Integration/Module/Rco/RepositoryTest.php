@@ -34,6 +34,8 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
@@ -45,9 +47,9 @@ use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
@@ -111,14 +113,14 @@ final class RepositoryTest extends TestCase
     {
         $result = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id,
+            version: $version,
             params: [
                 'status' => [
                     'type' => 'VALIDATED',
                     'callingIp' => '127.0.0.1'
                 ],
                 'selectedPaymentMethodId' => $_ENV['RCO_PAYMENT_METHOD_ID']
-            ],
-            version: $version
+            ]
         ))->call();
 
         if (!$result instanceof Checkout) {
@@ -171,13 +173,18 @@ final class RepositoryTest extends TestCase
     /**
      * @throws IllegalTypeException
      */
-    private function getShippingMethods(): MethodCollection
+    private function getShippingMethods(): CreateShippingMethodCollection
     {
-        return new MethodCollection(data: [
-            new Method(
+        return new CreateShippingMethodCollection(data: [
+            new CreateShippingMethod(
                 methodId: 'method01',
                 name: 'The post',
+                scope: [
+                    ShippingScope::B2C,
+                    ShippingScope::B2B
+                ],
                 type: ShippingType::MAILBOX,
+                carrier: Carrier::POSTNORD,
                 description: 'Lorem ipsum',
                 price: new Price(
                     display: '49 kr',
@@ -186,13 +193,17 @@ final class RepositoryTest extends TestCase
                 ),
                 deliveryEta: '2 days',
                 options: new OptionCollection(data: []),
-                required: new RequiredCollection(data: []),
-                carrier: Carrier::POSTNORD
+                required: new RequiredCollection(data: [])
             ),
-            new Method(
+            new CreateShippingMethod(
                 methodId: 'method02',
                 name: 'The other post',
+                scope: [
+                    ShippingScope::B2C,
+                    ShippingScope::B2B
+                ],
                 type: ShippingType::MAILBOX,
+                carrier: Carrier::GENERIC,
                 description: 'Dolor sit amet',
                 price: new Price(
                     display: '79 kr',
@@ -201,8 +212,7 @@ final class RepositoryTest extends TestCase
                 ),
                 deliveryEta: '1 day',
                 options: new OptionCollection(data: []),
-                required: new RequiredCollection(data: []),
-                carrier: Carrier::GENERIC
+                required: new RequiredCollection(data: [])
             )
         ]);
     }
@@ -406,7 +416,18 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        $this->assertNull(actual: $result->cart);
+        if ($result->cart !== null) {
+            // When successfully deleting a single item in a cart that only contains one item,
+            // the final result is still iterable - not null. If cart object is null, something went wrong
+            // in the API and this test should fail.
+            $this->assertCount(
+                expectedCount: 0,
+                haystack: $result->cart->items
+            );
+            return;
+        }
+
+        $this->fail(message: 'Cart returned as null.');
     }
 
     /**
@@ -504,8 +525,8 @@ final class RepositoryTest extends TestCase
             ),
             status: new Status(type: CheckoutStatus::CREATED),
             cart: new Cart(
-                code: 'nothing',
-                items: new CartItemCollection(data: [])
+                items: new CartItemCollection(data: []),
+                code: 'nothing'
             ),
             merchant: new Merchant(
                 displayName: 'Jocke'

@@ -25,7 +25,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
@@ -83,10 +83,10 @@ class Repository
     ): Checkout {
         $response = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
+            version: $version,
             params: [
                 'items' => $cart->items->toArray()
-            ],
-            version: $version
+            ]
         ))->call();
 
         return self::validateCheckoutModel(model: $response);
@@ -146,7 +146,7 @@ class Repository
      */
     public static function setShippingMethods(
         string $id,
-        MethodCollection $shippingMethods,
+        CreateShippingMethodCollection $shippingMethods,
         string $version
     ): Checkout {
         $response = (new Put(
@@ -212,10 +212,10 @@ class Repository
     ): Checkout {
         $response = (new Put(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/order-reference',
+            version: $version,
             params: [
                 'orderReference' => $orderReference
-            ],
-            version: $version
+            ]
         ))->call();
 
         return self::validateCheckoutModel(model: $response);

@@ -18,11 +18,13 @@ use ReflectionObject;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Collection\EnumCollection;
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
 
 use function call_user_func;
 use function is_object;
+use function is_string;
 
 /**
  * Utility class for data type conversions.
@@ -84,10 +86,20 @@ class DataConverter
 
                 if (is_iterable(value: $value)) {
                     foreach ($value as $item) {
-                        $converted[] = self::stdClassToType(
-                            object: $item,
-                            type: $dummyCollectionType
-                        );
+                        if (
+                            is_string(value: $item) &&
+                            is_subclass_of(
+                                object_or_class: $propertyType,
+                                class: EnumCollection::class
+                            )
+                        ) {
+                            $converted[] = $dummyCollectionType::from($item);
+                        } else {
+                            $converted[] = self::stdClassToType(
+                                object: $item,
+                                type: $dummyCollectionType
+                            );
+                        }
                     }
                 }
 

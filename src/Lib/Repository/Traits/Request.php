@@ -75,11 +75,11 @@ class Request
                 route: $this->route
             ),
             requestMethod: $this->requestMethod,
+            headers: $this->headers,
             payload: $this->params,
             contentType: $this->contentType,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON,
-            headers: $this->headers,
             forceObject: $forceObject
         );
 
