@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -28,12 +27,10 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Checkout extends Model
 {
     /**
-     * @throws IllegalValueException
      * @throws EmptyValueException
      * @throws IllegalCharsetException
-     * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * // phpcs:ignore
      */
     public function __construct(
         public readonly string $id,

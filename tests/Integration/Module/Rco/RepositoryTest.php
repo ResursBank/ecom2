@@ -42,6 +42,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
@@ -192,7 +193,7 @@ final class RepositoryTest extends TestCase
                 ),
                 deliveryEta: '2 days',
                 options: new OptionCollection(data: []),
-                required: []
+                required: new RequiredCollection(data: [])
             ),
             new CreateShippingMethod(
                 methodId: 'method02',
@@ -211,7 +212,7 @@ final class RepositoryTest extends TestCase
                 ),
                 deliveryEta: '1 day',
                 options: new OptionCollection(data: []),
-                required: []
+                required: new RequiredCollection(data: [])
             )
         ]);
     }

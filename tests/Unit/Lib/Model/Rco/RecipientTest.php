@@ -37,7 +37,7 @@ class RecipientTest extends TestCase
     /**
      * Test generating a valid model instance.
      */
-    public function testOptionsModel(): void
+    public function testModel(): void
     {
         try {
             $this->generateModel();

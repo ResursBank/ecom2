@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
-
-use function in_array;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
 /**
  * Implementation of ShippingMethodDto object.
@@ -27,9 +25,6 @@ class Method extends Model
      * @param string $description Descriptive text shown to the user in the checkout.
      * @param Price $price Price model.
      * @param string $deliveryEta Description of delivery ETA.
-     * @param OptionCollection $options Specific shipping options.
-     * @param array $required This is actually an array of enum values, see
-     * ECP-546, currently fixed using evaluateFields to convert data.
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -41,26 +36,7 @@ class Method extends Model
         public readonly Price $price,
         public readonly string $deliveryEta,
         public readonly OptionCollection $options,
-        public array $required
+        public readonly RequiredCollection $required
     ) {
-        $this->evaluateRequired();
-    }
-
-    /**
-     * Convert anonymous strings to enum correspondent for required.
-     */
-    private function evaluateRequired(): void
-    {
-        $data = [];
-
-        foreach ($this->required as $field) {
-            $data[] = in_array(
-                needle: $field,
-                haystack: Required::cases(),
-                strict: true
-            ) ? $field : Required::from(value: $field);
-        }
-
-        $this->required = $data;
     }
 }

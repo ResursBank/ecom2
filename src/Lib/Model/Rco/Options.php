@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
-
-use function in_array;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
 /**
  * Implementation of OptionsDto object.
@@ -22,8 +20,6 @@ use function in_array;
 class Options extends Model
 {
     /**
-     * @param array $requiredFields This is actually an array of enum values,
-     * see ECP-543, currently fixed using evaluateRequiredFields to convert data.
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
@@ -33,31 +29,7 @@ class Options extends Model
         public readonly ?bool $lookupB2CAddress = null,
         public readonly ?bool $renderCartCode = null,
         public readonly ?bool $renderNotes = null,
-        public array $requiredFields = [
-            Required::EMAIL,
-            Required::PHONE,
-            Required::NAME,
-            Required::ADDRESS
-        ]
+        public readonly ?RequiredCollection $requiredFields = null
     ) {
-        $this->evaluateRequiredFields();
-    }
-
-    /**
-     * Convert anonymous strings to enum correspondent for requiredFields.
-     */
-    private function evaluateRequiredFields(): void
-    {
-        $data = [];
-
-        foreach ($this->requiredFields as $field) {
-            $data[] = in_array(
-                needle: $field,
-                haystack: Required::cases(),
-                strict: true
-            ) ? $field : Required::from(value: $field);
-        }
-
-        $this->requiredFields = $data;
     }
 }
