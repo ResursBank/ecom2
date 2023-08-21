@@ -9,11 +9,19 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Throwable;
+
+/**
+ * Integrity test of RCO Checkout PaymentMethod model class.
 
 /**
  * Unit tests for PaymentMethod.
@@ -21,9 +29,43 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
 class PaymentMethodTest extends TestCase
 {
     /**
+     * Get mocked model instance.
+     *
+     * @throws IllegalTypeException
+     */
+    private function generateModel(): void
+    {
+        new PaymentMethod(
+            methodId: '',
+            name: '',
+            type: Type::GENERIC,
+            fee: 0,
+            required: new RequiredCollection(data: []),
+            subtitle: '',
+            descriptions: [],
+            terms: '',
+            links: new LinkCollection(data: [])
+        );
+    }
+
+    /**
+     * Test generating a valid model instance.
+     */
+    public function testPaymentMethodModel(): void
+    {
+        try {
+            $this->generateModel();
+            $this->addToAssertionCount(count: 1);
+        } catch (Throwable) {
+            $this->fail(message: 'Failed to generate model instance.');
+        }
+    }
+
+    /**
      * Check that invalid type in descriptions throws an exception.
      *
      * @throws IllegalTypeException
+     * @throws Exception
      */
     public function testInvalidDescription(): void
     {
@@ -33,7 +75,9 @@ class PaymentMethodTest extends TestCase
             name: Strings::generateRandomString(length: 12),
             type: Type::GENERIC,
             fee: 1000,
-            required: [],
+            required: new RequiredCollection(
+                data: [Required::ADDRESS, Required::NAME->value]
+            ),
             subtitle: Strings::generateRandomString(length: 12),
             descriptions: [
                 Strings::generateRandomString(length: 12),

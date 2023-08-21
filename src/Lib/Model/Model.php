@@ -33,8 +33,6 @@ class Model
     /**
      * Converts the object to an array suitable for use with the Curl library.
      *
-     * @param array $raw
-     * @return array
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @todo Refactor see ECP-354. Remove phpcs:ignore when done.

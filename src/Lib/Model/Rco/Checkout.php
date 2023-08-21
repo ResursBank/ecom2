@@ -27,9 +27,9 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Checkout extends Model
 {
     /**
-     * @throws IllegalValueException
      * @throws EmptyValueException
      * @throws IllegalCharsetException
+     * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
