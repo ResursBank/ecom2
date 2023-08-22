@@ -70,7 +70,7 @@ class CheckoutTest extends TestCase
         try {
             $this->generateCheckoutModel();
             $this->addToAssertionCount(count: 1);
-        } catch (Throwable $error) {
+        } catch (Throwable) {
             $this->fail(message: 'Failed to generate Checkout model instance.');
         }
     }

@@ -37,7 +37,9 @@ class Checkout extends Model
     public function __construct(
         #[StringNotEmpty] #[StringIsUuid] public readonly string $id,
         #[StringNotEmpty] #[StringIsUuid] public readonly string $storeId,
-        #[StringNotEmpty] #[StringMatchesRegex(pattern: '/^[a-zA-Z0-9]{1,32}$/')]
+        #[StringNotEmpty] #[StringMatchesRegex(
+            pattern: '/^[a-zA-Z0-9]{1,32}$/'
+        )]
         public readonly string $orderReference,
         public readonly CountryCode $countryCode,
         public readonly Locale $locale,
@@ -52,7 +54,7 @@ class Checkout extends Model
         public readonly ?PspPayment $payment = null,
         public readonly ?Merchant $merchant = null,
         public readonly ?CheckboxCollection $checkboxes = null,
-        public readonly ?string $notes = null,
+        public readonly ?string $notes = null
     ) {
         parent::__construct();
     }
