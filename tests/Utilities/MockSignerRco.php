@@ -33,7 +33,7 @@ use function sleep;
 use function sprintf;
 
 /**
- * Handles mock signing in dev.
+ * Handles mock signing in integration of RCO payments.
  */
 class MockSignerRco extends MockSigner
 {
