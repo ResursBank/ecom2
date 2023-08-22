@@ -12,11 +12,13 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of CheckoutDto object.
@@ -33,13 +35,14 @@ class Checkout extends Model
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $storeId,
+        #[StringNotEmpty] #[StringIsUuid] public readonly string $id,
+        #[StringNotEmpty] #[StringIsUuid] public readonly string $storeId,
+        #[StringNotEmpty] #[StringMatchesRegex(pattern: '/^[a-zA-Z0-9]{1,32}$/')]
         public readonly string $orderReference,
         public readonly CountryCode $countryCode,
         public readonly Locale $locale,
         public readonly Currency $currency,
-        public readonly string $version,
+        #[StringNotEmpty] #[StringIsUuid] public readonly string $version,
         public readonly Options $options,
         public readonly Customer $customer,
         public readonly Status $status,
@@ -50,54 +53,7 @@ class Checkout extends Model
         public readonly ?Merchant $merchant = null,
         public readonly ?CheckboxCollection $checkboxes = null,
         public readonly ?string $notes = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-        $this->validateId();
-        $this->validateStoreId();
-        $this->validateOrderReference();
-        $this->validateVersion();
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws EmptyValueException
-     */
-    public function validateId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->id);
-        $this->stringValidation->isUuid(value: $this->id);
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    public function validateStoreId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->storeId);
-        $this->stringValidation->isUuid(value: $this->storeId);
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalCharsetException
-     */
-    public function validateOrderReference(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->orderReference);
-        $this->stringValidation->matchRegex(
-            value: $this->orderReference,
-            pattern: '/^[a-zA-Z0-9]{1,32}$/'
-        );
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws EmptyValueException
-     */
-    public function validateVersion(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->version);
-        $this->stringValidation->isUuid(value: $this->version);
+        parent::__construct();
     }
 }

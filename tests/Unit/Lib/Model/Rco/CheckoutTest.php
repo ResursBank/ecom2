@@ -70,7 +70,7 @@ class CheckoutTest extends TestCase
         try {
             $this->generateCheckoutModel();
             $this->addToAssertionCount(count: 1);
-        } catch (Throwable) {
+        } catch (Throwable $error) {
             $this->fail(message: 'Failed to generate Checkout model instance.');
         }
     }
@@ -114,7 +114,7 @@ class CheckoutTest extends TestCase
         }
 
         try {
-            $this->generateCheckoutModel(version: 'asd-dcvb-123saqd-asd2-wdsf');
+            $this->generateCheckoutModel(storeId: 'asd-dcvb-123saqd-asd2-wdsf');
             $this->fail(message: 'Invalid storeId value accepted.');
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
