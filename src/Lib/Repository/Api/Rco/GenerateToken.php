@@ -13,10 +13,10 @@ namespace Resursbank\Ecom\Lib\Repository\Api\Rco;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -49,7 +49,7 @@ class GenerateToken
     }
 
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -84,7 +84,7 @@ class GenerateToken
         );
 
         if (!$result instanceof Token) {
-            throw new TimeoutException(
+            throw new ApiException(
                 message: 'Could not convert response to Token model.'
             );
         }

@@ -14,10 +14,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -73,7 +73,7 @@ class RepositoryTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -133,7 +133,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -215,7 +215,7 @@ class RepositoryTest extends TestCase
     /**
      * Assert that it's possible to create a new payment with metadata on it.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -297,7 +297,7 @@ class RepositoryTest extends TestCase
      * Verify that updateOrderLines actually replaces order lines.
      *
      * @throws Exception
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -375,7 +375,7 @@ class RepositoryTest extends TestCase
      * "false" until the payment is actually completed, at which point it should
      * change to "true".
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

@@ -13,11 +13,11 @@ namespace Resursbank\Ecom\Module\Store;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -37,7 +37,7 @@ class Repository
     use ExceptionLog;
 
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws CurlException
@@ -90,7 +90,7 @@ class Repository
     }
 
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -113,7 +113,7 @@ class Repository
         ))->call();
 
         if (!$result instanceof StoreCollection) {
-            throw new TimeoutException(message: 'Invalid API response.');
+            throw new ApiException(message: 'Invalid API response.');
         }
 
         return $result;

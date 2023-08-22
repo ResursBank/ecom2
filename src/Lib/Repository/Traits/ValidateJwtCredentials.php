@@ -14,10 +14,10 @@ namespace Resursbank\Ecom\Lib\Repository\Traits;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -29,7 +29,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 class ValidateJwtCredentials
 {
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

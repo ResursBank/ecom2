@@ -11,12 +11,12 @@ namespace Resursbank\Ecom\Module\AnnuityFactor\Http;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\HttpException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -39,7 +39,7 @@ class DurationsByMonthController extends Controller
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException

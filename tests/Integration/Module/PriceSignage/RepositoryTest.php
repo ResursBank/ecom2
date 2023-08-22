@@ -13,11 +13,11 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -95,7 +95,7 @@ class RepositoryTest extends TestCase
     /**
      * Assert clearCache() clears cache.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws CurlException
@@ -125,7 +125,7 @@ class RepositoryTest extends TestCase
     /**
      * Assert getPriceSignage() returns data from the API when cache is empty.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -153,7 +153,7 @@ class RepositoryTest extends TestCase
      * Assert getPriceSignage() retrieves payment methods, priceSignage them in
      * cache, and will later return the same priceSignage from cache.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -183,7 +183,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -297,7 +297,7 @@ class RepositoryTest extends TestCase
      * Assert getPriceSignage() throws if the supplied amount is less than
      * supplied payment method min. purchase amount.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException

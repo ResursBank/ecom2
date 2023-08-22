@@ -14,10 +14,10 @@ namespace Resursbank\EcomTest\Utilities;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -77,7 +77,7 @@ class MockSigner
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws ValidationException
      */
     protected static function callCustomerUrl(
@@ -128,7 +128,7 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws IllegalValueException
      */
     // phpcs:ignore
@@ -145,7 +145,7 @@ class MockSigner
 
         while (!str_contains(haystack: $signingUrl, needle: 'authenticate')) {
             if ($attempts >= 10) {
-                throw new TimeoutException(
+                throw new ApiException(
                     message: sprintf(
                         'Timeout waiting for signing URL (got %s).',
                         $signingUrl
@@ -179,7 +179,7 @@ class MockSigner
      * Continuously poll payment status until it matches the expected status.
      * Waits a maximum of 10 seconds before throwing an exception.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -197,7 +197,7 @@ class MockSigner
 
         while ($payment->status !== Status::ACCEPTED) {
             if ($elapsed >= 10) {
-                throw new TimeoutException(
+                throw new ApiException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',
                         Status::ACCEPTED->value,
@@ -214,7 +214,7 @@ class MockSigner
     }
 
     /**
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

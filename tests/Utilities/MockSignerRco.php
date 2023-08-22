@@ -13,10 +13,10 @@ namespace Resursbank\EcomTest\Utilities;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -46,7 +46,7 @@ class MockSignerRco extends MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws IllegalValueException
      * @noinspection PhpMissingParentCallCommonInspection
      */
@@ -60,7 +60,7 @@ class MockSignerRco extends MockSigner
 
         while (!str_contains(haystack: $signingUrl, needle: 'authenticate')) {
             if ($attempts >= 10) {
-                throw new TimeoutException(
+                throw new ApiException(
                     message: sprintf(
                         'Timeout waiting for signing URL (got %s).',
                         $signingUrl
@@ -92,7 +92,7 @@ class MockSignerRco extends MockSigner
      * Continuously poll payment status until it matches the expected status.
      * Waits a maximum of 10 seconds before throwing an exception.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -112,7 +112,7 @@ class MockSignerRco extends MockSigner
            not necessarily mean that the payment has been captured. */
         while ($checkout->status->type !== CheckoutStatus::PAID) {
             if ($elapsed >= 10) {
-                throw new TimeoutException(
+                throw new ApiException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',
                         CheckoutStatus::PAID->value,
@@ -130,7 +130,7 @@ class MockSignerRco extends MockSigner
 
     /**
      * @param string $ssn Cannot get from Checkout instance, value is masked.
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

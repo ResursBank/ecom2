@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Repository\Traits;
 
-use Resursbank\Ecom\Exception\TimeoutException;
+use Resursbank\Ecom\Exception\ApiException;
 use stdClass;
 
 use function is_array;
@@ -25,7 +25,7 @@ trait DataResolver
     /**
      * Resolve data form API response.
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @todo Refactor, see ECP-349 (remember to remove phpcs:ignore below after).
      */
     // phpcs:ignore
@@ -34,7 +34,7 @@ trait DataResolver
         string $extractProperty = ''
     ): stdClass|array|string {
         if (!$data instanceof stdClass) {
-            throw new TimeoutException(
+            throw new ApiException(
                 message: 'Invalid response from API. Not an stdClass.',
                 code: 500
             );
@@ -47,7 +47,7 @@ trait DataResolver
                     property: $extractProperty
                 )
             ) {
-                throw new TimeoutException(
+                throw new ApiException(
                     message: 'Invalid response from API. Missing property ' .
                     $extractProperty,
                     code: 500
@@ -62,7 +62,7 @@ trait DataResolver
             !is_string(value: $data) &&
             !is_array(value: $data)
         ) {
-            throw new TimeoutException(
+            throw new ApiException(
                 message: 'Invalid response from API. Not an stdClass or array.',
                 code: 500
             );

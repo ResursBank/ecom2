@@ -17,10 +17,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -74,7 +74,7 @@ class CancelTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -136,7 +136,7 @@ class CancelTest extends TestCase
     /**
      * Verify that canceling an entire payment works as intended
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -186,7 +186,7 @@ class CancelTest extends TestCase
     /**
      * Verify that cancelling a single order line works as intended
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -265,7 +265,7 @@ class CancelTest extends TestCase
     /**
      * Verify that canceling with creator argument results in specified creator value being present in action log
      *
-     * @throws TimeoutException
+     * @throws ApiException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
