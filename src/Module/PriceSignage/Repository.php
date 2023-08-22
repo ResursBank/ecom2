@@ -54,6 +54,7 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws Throwable
      * @todo Refactor ECP-355. Remove phpcs:ignore when done.
      */
     // phpcs:ignore

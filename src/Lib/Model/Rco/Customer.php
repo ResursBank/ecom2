@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 
@@ -25,9 +26,13 @@ class Customer extends Model
      */
     public function __construct(
         public readonly Type $type,
+        #[StringMatchesRegex(
+            pattern: '/^$|^(?:SE|FI|DK|NO)[-+A-Za-z0-9]{6,18}$/'
+        )]
         public readonly ?string $governmentId = null,
         public readonly ?Recipient $billing = null,
         public readonly ?Recipient $delivery = null
     ) {
+        parent::__construct();
     }
 }
