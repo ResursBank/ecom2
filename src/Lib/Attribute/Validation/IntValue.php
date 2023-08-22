@@ -12,17 +12,15 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 use Attribute;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 
-use function strlen;
-
 /**
- * Used for setting minimum and maximum lengths on string properties.
+ * Used for setting minimum and maximum value on int properties.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
-class StringLength
+class IntValue
 {
     /**
-     * @param int|null $min Minimum string length
-     * @param int|null $max Maximum string length
+     * @param int|null $min Minimum value
+     * @param int|null $max Maximum value
      */
     public function __construct(
         public readonly ?int $min = null,
@@ -33,17 +31,17 @@ class StringLength
     /**
      * @throws IllegalValueException
      */
-    public function validate(string $name, string $value): void
+    public function validate(string $name, int $value): void
     {
-        if ($this->min !== null && strlen(string: $value) < $this->min) {
+        if (isset($this->min) && $value < $this->min) {
             throw new IllegalValueException(
-                message: $name . ' is shorter than its specified minimum length of ' . $this->min
+                message: 'Value of ' . $name . ' is less than its specified minimum value of ' . $this->min
             );
         }
 
-        if ($this->max !== null && strlen(string: $value) > $this->max) {
+        if (isset($this->min) && $value > $this->max) {
             throw new IllegalValueException(
-                message: $name . ' is longer than its specified minimum length of ' . $this->min
+                message: 'Value of ' . $name . ' is greater than its specified minimum value of ' . $this->max
             );
         }
     }
