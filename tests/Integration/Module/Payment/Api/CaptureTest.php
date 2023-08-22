@@ -17,10 +17,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -73,7 +73,7 @@ class CaptureTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -218,7 +218,7 @@ class CaptureTest extends TestCase
      * @throws ValidationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws IllegalValueException
      * @throws Exception
      */
@@ -254,7 +254,7 @@ class CaptureTest extends TestCase
     /**
      * Verify that capturing with an invoice ID works
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

@@ -13,10 +13,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -33,7 +33,7 @@ class ValidateRcoJwtCredentialsTest extends TestCase
     /**
      * Assert exec() throws AuthException with invalid username.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -64,7 +64,7 @@ class ValidateRcoJwtCredentialsTest extends TestCase
     /**
      * Assert exec() throws AuthException with invalid password.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -95,7 +95,7 @@ class ValidateRcoJwtCredentialsTest extends TestCase
     /**
      * Assert exec() throws ConfigException without any credentials.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -117,7 +117,7 @@ class ValidateRcoJwtCredentialsTest extends TestCase
     /**
      * Assert exec() return TRUE with valid credentials configured.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

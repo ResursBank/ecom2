@@ -14,10 +14,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -71,7 +71,7 @@ class RepositoryTest extends TestCase
      * @throws EmptyValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -149,7 +149,7 @@ class RepositoryTest extends TestCase
      * a separate ActionLog entry, and that it matches the entry from our
      * capture response (e.g. they are the same entry).
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

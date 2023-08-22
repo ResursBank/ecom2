@@ -11,12 +11,12 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -72,7 +72,7 @@ class PartPayment extends Widget
     private readonly AnnuityInformation $annuityInformation;
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -180,7 +180,7 @@ class PartPayment extends Widget
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -220,7 +220,7 @@ class PartPayment extends Widget
     /**
      * Fetch a Cost object from the Price signage API
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException

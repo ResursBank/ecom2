@@ -11,10 +11,10 @@ namespace Resursbank\Ecom\Module\Rco;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -42,7 +42,7 @@ class Repository
      *
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -65,7 +65,7 @@ class Repository
     /**
      * Replace cart contents with supplied Cart object.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -95,7 +95,7 @@ class Repository
     /**
      * Update item quantity in cart.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -133,7 +133,7 @@ class Repository
      *
      * @param string $id Checkout ID
      * @param string $version Checkout version
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -165,7 +165,7 @@ class Repository
      *
      * @param string $id Checkout ID
      * @param string $itemId Cart item ID
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -194,7 +194,7 @@ class Repository
      *
      * @param string $id Checkout ID
      * @param string $orderReference Order reference
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -224,7 +224,7 @@ class Repository
     /**
      * Fetch an existing Checkout.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -256,7 +256,7 @@ class Repository
      * @throws IllegalTypeException
      * @throws ConfigException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      */
     public static function capture(
         string $id,
@@ -274,7 +274,7 @@ class Repository
      * Cancel a payment.
      *
      * @param string $id Checkout/payment ID
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException

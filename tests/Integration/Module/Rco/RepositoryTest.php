@@ -14,10 +14,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
@@ -56,7 +56,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\EcomTest\Data\Models\Instrument;
-use Resursbank\EcomTest\Utilities\MockSigner;
+use Resursbank\EcomTest\Utilities\MockSignerRco;
 use Resursbank\EcomTest\Utilities\Rco as RcoHelper;
 use Throwable;
 
@@ -98,7 +98,7 @@ final class RepositoryTest extends TestCase
     /**
      * Perform validation of Checkout, so it gets a payment object attached.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -154,7 +154,7 @@ final class RepositoryTest extends TestCase
     /**
      * Resolve the smallest possible object to initialize a checkout session.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -220,7 +220,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that a minimal Checkout init call works.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -264,7 +264,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that setCart properly updates the cart.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -303,7 +303,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that changing the quantity of an item works.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -340,7 +340,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that setting shipping methods actually sets them.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -392,7 +392,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that the deleteCartItem method removes cart items.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -433,7 +433,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that order reference is properly set.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -466,7 +466,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that fetching a checkout works.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -535,7 +535,7 @@ final class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -555,7 +555,7 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSigner::approveRcoPayment(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $result = Repository::capture(
             id: $validated->id,
@@ -574,7 +574,7 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that cancelling a payment works as intended.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -594,7 +594,7 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSigner::approveRcoPayment(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 

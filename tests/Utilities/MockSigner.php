@@ -14,25 +14,22 @@ namespace Resursbank\EcomTest\Utilities;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
-use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
+use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\Rco\Repository as RcoRepository;
-use RuntimeException;
 
 use function sleep;
 use function sprintf;
@@ -43,64 +40,9 @@ use function sprintf;
 class MockSigner
 {
     /**
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ApiException
-     * @throws IllegalValueException
-     */
-    // phpcs:ignore
-    private static function getSigningUrl(
-        string $url,
-        string $governmentId
-    ): string {
-        $attempts = 0;
-
-        while (!str_contains(haystack: $url, needle: 'authenticate')) {
-            $attempts++;
-
-            if ($attempts >= 30) {
-                throw new RuntimeException(
-                    message: sprintf(
-                        'Timeout waiting for signing URL (got %s).',
-                        $url
-                    )
-                );
-            }
-
-            $curl = new Curl(
-                url: $url,
-                requestMethod: RequestMethod::GET,
-                contentType: ContentType::URL,
-                authType: AuthType::NONE,
-                responseContentType: ContentType::RAW
-            );
-
-            try {
-                $curl->exec();
-
-                $url = self::getEffectiveUrl(curl: $curl);
-            } catch (CurlException) {
-                self::handleCurlException(attempts: $attempts);
-            }
-        }
-
-        return str_replace(
-            search: 'authenticate',
-            replace: 'doAuth',
-            subject: $url
-        ) . '&govId=' . $governmentId;
-    }
-
-    /**
      * Fetch CURLINFO_EFFECTIVE_URL
      */
-    private static function getEffectiveUrl(Curl $curl): string
+    protected static function getEffectiveUrl(Curl $curl): string
     {
         return (string) curl_getinfo(
             handle: $curl->ch,
@@ -113,7 +55,7 @@ class MockSigner
      *
      * @throws ConfigException
      */
-    private static function handleCurlException(int $attempts): void
+    protected static function handleCurlException(int $attempts): void
     {
         Config::getLogger()->error(
             message: 'CurlException caught on attempt number ' . $attempts .
@@ -123,10 +65,122 @@ class MockSigner
     }
 
     /**
+     * Call customer URL to resolve the signing URL (customer URl will lead to
+     * a series are redirects, eventually landing on the signing page, thus
+     * providing us with the actual URL to perform signing).
+     *
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TimeoutException
+     * @throws ValidationException
+     */
+    protected static function callCustomerUrl(
+        string $url,
+        int $attemptCount
+    ): string {
+        $result = '';
+
+        $curl = new Curl(
+            url: $url,
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::URL,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::RAW
+        );
+
+        try {
+            $curl->exec();
+
+            $result = self::getEffectiveUrl(curl: $curl);
+        } catch (CurlException) {
+            self::handleCurlException(attempts: $attemptCount);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Replace 'authenticate' in signing URL with 'doAuth' to mock signing.
+     */
+    protected static function translateSigningUrl(
+        string $url,
+        string $governmentId
+    ): string {
+        return str_replace(
+            search: 'authenticate',
+            replace: 'doAuth',
+            subject: $url
+        ) . '&govId=' . $governmentId;
+    }
+
+    /**
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws TimeoutException
+     * @throws IllegalValueException
+     */
+    // phpcs:ignore
+    private static function getSigningUrl(
+        Payment $payment,
+        TaskStatusDetails $taskStatusDetails
+    ): string {
+        $attempts = 0;
+        $signingUrl = '';
+
+        if ($payment->customer->governmentId === null) {
+            throw new EmptyValueException(message: 'No government ID found');
+        }
+
+        while (!str_contains(haystack: $signingUrl, needle: 'authenticate')) {
+            if ($attempts >= 10) {
+                throw new TimeoutException(
+                    message: sprintf(
+                        'Timeout waiting for signing URL (got %s).',
+                        $signingUrl
+                    )
+                );
+            }
+
+            if (
+                $taskStatusDetails->customer !== null &&
+                $taskStatusDetails->customer->customerUrl !== null
+            ) {
+                $signingUrl = self::callCustomerUrl(
+                    url: $taskStatusDetails->customer->customerUrl,
+                    attemptCount: $attempts
+                );
+            }
+
+            sleep(seconds: 1);
+            $taskStatusDetails = Repository::getTaskStatusDetails(
+                paymentId: $payment->id
+            );
+            $attempts++;
+        }
+
+        return self::translateSigningUrl(
+            url: $signingUrl,
+            governmentId: $payment->customer->governmentId
+        );
+    }
+
+    /**
      * Continuously poll payment status until it matches the expected status.
      * Waits a maximum of 10 seconds before throwing an exception.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -143,8 +197,8 @@ class MockSigner
         $elapsed = 0;
 
         while ($payment->status !== Status::ACCEPTED) {
-            if ($elapsed >= 30) {
-                throw new RuntimeException(
+            if ($elapsed >= 10) {
+                throw new TimeoutException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',
                         Status::ACCEPTED->value,
@@ -161,47 +215,7 @@ class MockSigner
     }
 
     /**
-     * Continuously poll payment status until it matches the expected status.
-     * Waits a maximum of 10 seconds before throwing an exception.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    private static function waitForStatusUpdateRco(
-        Checkout $checkout
-    ): void {
-        $elapsed = 0;
-
-        /* PAID indicates that the checkout session has been completed, it does
-           not necessarily mean that the payment has been captured. */
-        while ($checkout->status->type !== CheckoutStatus::PAID) {
-            if ($elapsed >= 30) {
-                throw new RuntimeException(
-                    message: sprintf(
-                        'Timeout waiting for payment status %s. Current status is %s',
-                        CheckoutStatus::PAID->value,
-                        $checkout->status->type->value
-                    )
-                );
-            }
-
-            sleep(seconds: 1);
-            $elapsed++;
-
-            $checkout = RcoRepository::get(id: $checkout->id);
-        }
-    }
-
-    /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -214,75 +228,24 @@ class MockSigner
      */
     public static function approve(Payment $payment): void
     {
-        if (!$payment->taskRedirectionUrls) {
-            throw new EmptyValueException(
-                message: 'No redirection URL object found'
-            );
-        }
-
-        if ($payment->customer->governmentId === null) {
-            throw new EmptyValueException(message: 'No government ID found');
-        }
-
-        $curl = new Curl(
-            url: self::getSigningUrl(
-                url: $payment->taskRedirectionUrls->customerUrl,
-                governmentId: $payment->customer->governmentId
+        $url = self::getSigningUrl(
+            taskStatusDetails: Repository::getTaskStatusDetails(
+                paymentId: $payment->id
             ),
+            payment: $payment
+        );
+
+        // Try 10 times to resolve signing URL.
+        $curl = new Curl(
+            url: $url,
             requestMethod: RequestMethod::GET,
             contentType: ContentType::EMPTY,
             authType: AuthType::NONE,
             responseContentType: ContentType::RAW
         );
+
         $curl->exec();
 
-        // Wait for the payment to be processed at Resurs Bank.
         self::waitForStatusUpdate(payment: $payment);
-    }
-
-    /**
-     * @param string $ssn Cannot get from Checkout instance, value is masked.
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public static function approveRcoPayment(
-        Checkout $checkout,
-        string $ssn
-    ): void {
-        if (!isset($checkout->status->location->url)) {
-            throw new EmptyValueException(message: 'No redirection URL found.');
-        }
-
-        if (!isset($checkout->customer->governmentId)) {
-            throw new EmptyValueException(message: 'No government ID found.');
-        }
-
-        if (!is_numeric(value: substr(string: $ssn, offset: 0, length: 2))) {
-            $ssn = substr(string: $ssn, offset: 2);
-        }
-
-        $curl = new Curl(
-            url: self::getSigningUrl(
-                url: $checkout->status->location->url,
-                governmentId: $ssn
-            ),
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::EMPTY,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-        $curl->exec();
-
-        self::waitForStatusUpdateRco(
-            checkout: RcoRepository::get(id: $checkout->id)
-        );
     }
 }

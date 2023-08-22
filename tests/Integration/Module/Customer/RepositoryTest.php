@@ -13,12 +13,12 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -73,7 +73,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws CacheException
      * @throws IllegalValueException
      */
@@ -93,7 +93,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -133,7 +133,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -175,7 +175,7 @@ class RepositoryTest extends TestCase
     /**
      * GetAddress resolving an organization but with NATURAL as customerType.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -202,7 +202,7 @@ class RepositoryTest extends TestCase
     /**
      * GetAddress resolving an organization but with NATURAL as customerType.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws CurlException
@@ -230,7 +230,7 @@ class RepositoryTest extends TestCase
      * Assert getAddress with inaccurate SSN results in a CurlException with
      * httpCode 400, morphing to a GetAddressException.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws CurlException

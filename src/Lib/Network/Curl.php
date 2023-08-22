@@ -14,10 +14,10 @@ use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -42,7 +42,7 @@ class Curl
 
     /**
      * @param bool $forceObject Enforces the JSON_FORCE_OBJECT flag on json_encode of payload
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -78,7 +78,7 @@ class Curl
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -106,7 +106,7 @@ class Curl
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -133,7 +133,7 @@ class Curl
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -158,7 +158,7 @@ class Curl
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -360,7 +360,7 @@ class Curl
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

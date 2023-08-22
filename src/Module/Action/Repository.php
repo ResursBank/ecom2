@@ -11,10 +11,10 @@ namespace Resursbank\Ecom\Module\Action;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -35,7 +35,7 @@ class Repository
     /**
      * Fetch Action from API.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -60,7 +60,7 @@ class Repository
         ))->call();
 
         if (!$result instanceof ActionLog) {
-            throw new ApiException(message: 'Invalid API response.');
+            throw new TimeoutException(message: 'Invalid API response.');
         }
 
         return $result;

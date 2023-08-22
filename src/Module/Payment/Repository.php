@@ -13,10 +13,10 @@ namespace Resursbank\Ecom\Module\Payment;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -54,7 +54,7 @@ class Repository
     use ExceptionLog;
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -79,7 +79,7 @@ class Repository
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -106,7 +106,7 @@ class Repository
     /**
      * Create payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -143,7 +143,7 @@ class Repository
     /**
      * Capture payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -173,7 +173,7 @@ class Repository
     /**
      * Cancel payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -199,7 +199,7 @@ class Repository
     /**
      * Refund payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -227,7 +227,7 @@ class Repository
     /**
      * Set Metadata on payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -248,7 +248,7 @@ class Repository
     /**
      * Add new order lines to payment.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -272,7 +272,7 @@ class Repository
     /**
      * Replaces current order lines on payment.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -320,7 +320,7 @@ class Repository
     /**
      * Fetch TaskStatusDetails object relating to our payment from API.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -343,7 +343,7 @@ class Repository
         ))->call();
 
         if (!$result instanceof TaskStatusDetails) {
-            throw new ApiException(message: 'Invalid API response.');
+            throw new TimeoutException(message: 'Invalid API response.');
         }
 
         return $result;

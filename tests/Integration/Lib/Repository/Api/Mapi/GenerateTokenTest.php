@@ -13,10 +13,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -39,7 +39,7 @@ class GenerateTokenTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws CurlException
      * @throws ValidationException
      * @throws ConfigException
@@ -76,7 +76,7 @@ class GenerateTokenTest extends TestCase
     /**
      * Assert AuthException is thrown when JWT auth has invalid client id.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -112,7 +112,7 @@ class GenerateTokenTest extends TestCase
     /**
      * Assert AuthException is thrown when JWT auth has invalid client secret.
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

@@ -13,12 +13,12 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -67,7 +67,7 @@ class PartPaymentTest extends TestCase
      *
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
@@ -144,7 +144,7 @@ class PartPaymentTest extends TestCase
     /**
      * Verify that the part payment widget contains the starting at value returned by getStartingAtCost
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException

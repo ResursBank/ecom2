@@ -11,11 +11,11 @@ namespace Resursbank\Ecom\Module\Customer\Api;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -54,7 +54,7 @@ class GetAddress
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ApiException
+     * @throws TimeoutException
      * @SuppressWarnings(PHPMD.Superglobals)
      * @todo Refactor, see ECP-356. Remove phpcs:ignore when done.
      */

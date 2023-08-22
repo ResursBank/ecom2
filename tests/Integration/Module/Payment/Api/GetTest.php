@@ -16,10 +16,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -69,7 +69,7 @@ class GetTest extends TestCase
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -137,7 +137,7 @@ class GetTest extends TestCase
      * @throws JsonException
      * @throws IllegalTypeException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws Exception
      */
     public function testGetPayment(): void

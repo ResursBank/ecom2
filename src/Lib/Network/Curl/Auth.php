@@ -13,10 +13,10 @@ use CurlHandle;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -39,7 +39,7 @@ class Auth
      * @throws JsonException
      * @throws ValidationException
      * @throws ReflectionException
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws ConfigException
      */
     public static function setJwtAuth(CurlHandle $ch): void
@@ -92,7 +92,7 @@ class Auth
     }
 
     /**
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException

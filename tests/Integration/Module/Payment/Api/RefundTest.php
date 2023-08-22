@@ -16,10 +16,10 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -72,7 +72,7 @@ class RefundTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -134,7 +134,7 @@ class RefundTest extends TestCase
     /**
      * Verify that refunding an entire order works as intended
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -177,7 +177,7 @@ class RefundTest extends TestCase
     /**
      * Verify that refunding a single captured order line works
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -239,7 +239,7 @@ class RefundTest extends TestCase
     /**
      * Verify that refunding with a transaction id works
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
@@ -293,7 +293,7 @@ class RefundTest extends TestCase
     /**
      * Verify that refunding with creator specified works
      *
-     * @throws ApiException
+     * @throws TimeoutException
      * @throws AuthException
      * @throws CurlException
      * @throws EmptyValueException
