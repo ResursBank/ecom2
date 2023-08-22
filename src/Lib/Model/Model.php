@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model;
 
 use BackedEnum;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionParameter;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_array;
@@ -22,6 +25,11 @@ use function is_object;
  */
 class Model
 {
+    public function __construct()
+    {
+        $this->validateProperties();
+    }
+
     /**
      * Converts the object to an array suitable for use with the Curl library.
      *
@@ -57,5 +65,52 @@ class Model
         }
 
         return $data;
+    }
+
+    /**
+     * Validate object properties.
+     *
+     * @throws ReflectionException
+     */
+    private function validateProperties(): void
+    {
+        $parameters = (new ReflectionMethod(
+            objectOrMethod: $this,
+            method: '__construct'
+        ))->getParameters();
+
+        foreach ($parameters as $parameter) {
+            $this->validateProperty(parameter: $parameter);
+        }
+    }
+
+    /**
+     * Validate individual parameter.
+     */
+    private function validateProperty(ReflectionParameter $parameter): void
+    {
+        if ($this->{$parameter->name} === null && $parameter->allowsNull()) {
+            return;
+        }
+
+        $attributes = $parameter->getAttributes();
+
+        foreach ($attributes as $attribute) {
+            $instance = $attribute->newInstance();
+
+            if (
+                !method_exists(object_or_class: $instance, method: 'validate')
+            ) {
+                return;
+            }
+
+            /* Complains about stdClass even though object is never of that type */
+            $instance->validate(
+            /* @phpstan-ignore-next-line */
+                name: $parameter->name,
+                /* @phpstan-ignore-next-line */
+                value: $this->{$parameter->name}
+            );
+        }
     }
 }
