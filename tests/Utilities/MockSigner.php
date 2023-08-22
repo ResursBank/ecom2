@@ -154,8 +154,7 @@ class MockSigner
             }
 
             if (
-                $taskStatusDetails->customer !== null &&
-                $taskStatusDetails->customer->customerUrl !== null
+                $taskStatusDetails->customer?->customerUrl !== null
             ) {
                 $signingUrl = self::callCustomerUrl(
                     url: $taskStatusDetails->customer->customerUrl,

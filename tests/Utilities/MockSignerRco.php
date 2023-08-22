@@ -69,8 +69,7 @@ class MockSignerRco extends MockSigner
             }
 
             if (
-                $checkout->status->location !== null &&
-                $checkout->status->location->url !== null
+                $checkout->status->location?->url !== null
             ) {
                 $signingUrl = self::callCustomerUrl(
                     url: $checkout->status->location->url,
