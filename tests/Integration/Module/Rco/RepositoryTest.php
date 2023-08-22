@@ -551,6 +551,8 @@ final class RepositoryTest extends TestCase
     {
         $this->markTestSkipped(message: 'Waiting for fixes from RCO dev team.');
 
+        // Remove phpstan suppression when test is re-enabled, added to avoid error from pre-commit script.
+        /* @phpstan-ignore-next-line */
         $response = $this->initFull();
         $validated = $this->validateCheckout(
             id: $response->id,
@@ -592,7 +594,8 @@ final class RepositoryTest extends TestCase
     {
         $this->markTestSkipped(message: 'Waiting for fixes from RCO dev team.');
 
-
+        // Remove phpstan suppression when test is re-enabled, added to avoid error from pre-commit script.
+        /* @phpstan-ignore-next-line */
         $response = $this->initFull();
         $validated = $this->validateCheckout(
             id: $response->id,
