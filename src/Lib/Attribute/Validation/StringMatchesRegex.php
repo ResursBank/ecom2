@@ -15,7 +15,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use function preg_match;
 
 /**
- * Used for regex validation of strings..
+ * Used for regex validation of strings.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class StringMatchesRegex
