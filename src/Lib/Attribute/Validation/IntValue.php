@@ -13,14 +13,14 @@ use Attribute;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 
 /**
- * Used for setting minimum and maximum lengths on string properties.
+ * Used for setting minimum and maximum value on int properties.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class IntValue
 {
     /**
-     * @param int|null $min Minimum string length
-     * @param int|null $max Maximum string length
+     * @param int|null $min Minimum value
+     * @param int|null $max Maximum value
      */
     public function __construct(
         public readonly ?int $min = null,
