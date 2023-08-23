@@ -125,4 +125,20 @@ class ItemTest extends TestCase
             $this->fail(message: 'Failed to generate model instance.');
         }
     }
+
+    /**
+     * Verify that an IllegalTypeException is thrown for non-string tags elements.
+     *
+     * @throws IllegalTypeException
+     */
+    public function testInvalidTags(): void
+    {
+        $this->expectException(exception: IllegalTypeException::class);
+        $this->generateModel(
+            tags: [
+                Strings::generateRandomString(length: 12),
+                42
+            ]
+        );
+    }
 }
