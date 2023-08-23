@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -16,15 +17,24 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Redirects extends Model
 {
-    /**
-     * URLs should utilize the https protocol (http can be utilized but
-     * everything may not work correctly).
-     */
     public function __construct(
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+        )]
         public readonly ?string $checkout = null,
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+        )]
         public readonly ?string $success = null,
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+        )]
         public readonly ?string $failure = null,
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+        )]
         public readonly ?string $cancel = null
     ) {
+        parent::__construct();
     }
 }
