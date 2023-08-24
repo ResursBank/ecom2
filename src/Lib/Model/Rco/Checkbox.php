@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Checkbox\Link;
 
@@ -23,7 +22,6 @@ class Checkbox extends Model
      * @param string $label Description rendered next to the checkbox.
      * @param bool $checked Whether the checkbox is checked or not.
      * @param bool $required Whether its required to be checked.
-     * @throws EmptyValueException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
@@ -33,5 +31,6 @@ class Checkbox extends Model
         public readonly ?bool $required = null,
         public readonly ?Link $link = null
     ) {
+        parent::__construct();
     }
 }
