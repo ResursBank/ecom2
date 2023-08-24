@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 
@@ -20,7 +21,8 @@ class CreateCart extends Model
 {
     public function __construct(
         public readonly ItemCollection $items,
-        public readonly ?string $code = null
+        #[StringLength(min: 0, max: 128)] public readonly ?string $code = null
     ) {
+        parent::__construct();
     }
 }
