@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -23,10 +27,17 @@ class Webhook extends Model
      * @param int|null $timeout Timeout in seconds before giving up on a request.
      */
     public function __construct(
-        public readonly string $url,
-        public readonly string $authorization,
+        #[StringNotEmpty] #[StringMatchesUrl] public readonly string $url,
+        #[StringLength(
+            min: 0,
+            max: 16000
+        )] public readonly string $authorization,
         public readonly ?bool $continueOnNoResponse,
-        public readonly ?int $timeout
+        #[IntValue(
+            min: 0,
+            max: 180
+        )] public readonly ?int $timeout
     ) {
+        parent::__construct();
     }
 }
