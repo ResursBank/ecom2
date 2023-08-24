@@ -9,12 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Cart;
 
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-
-use function is_string;
 
 /**
  * Implementation of CartItemDto object.
@@ -22,7 +19,6 @@ use function is_string;
 class Item extends Model
 {
     /**
-     * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -38,21 +34,10 @@ class Item extends Model
         public readonly int $totalDiscount,
         public readonly string $url,
         public readonly string $imageUrl,
-        public readonly array $tags,
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
+        // Ignoring complaint about $tags being unused
+        // phpcs:ignore
+        #[ArrayOfStrings] readonly array $tags
     ) {
-        $this->validateTags();
-    }
-
-    /**
-     * @throws IllegalTypeException
-     */
-    private function validateTags(): void
-    {
-        $this->arrayValidation->isOfType(
-            data: $this->tags,
-            type: 'string',
-            compareFn: static fn (mixed $value) => is_string(value: $value)
-        );
+        parent::__construct();
     }
 }
