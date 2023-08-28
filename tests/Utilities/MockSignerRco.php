@@ -172,5 +172,8 @@ class MockSignerRco extends MockSigner
         self::waitForStatusUpdateRco(
             checkout: RcoRepository::get(id: $checkout->id)
         );
+
+        // Appears to be required in order for state to be properly updated
+        sleep(seconds: 5);
     }
 }
