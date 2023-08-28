@@ -26,7 +26,8 @@ class Tracking extends Model
 
     private function validateUrl(): void
     {
-        if ($this->url === null) {
+        // Comparison to empty string added to get around API returning this value.
+        if ($this->url === null || $this->url === '') {
             return;
         }
 
