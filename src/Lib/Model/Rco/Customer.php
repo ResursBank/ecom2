@@ -27,7 +27,9 @@ class Customer extends Model
     public function __construct(
         public readonly Type $type,
         #[StringMatchesRegex(
-            pattern: '/^$|^(?:SE|FI|DK|NO)[-+A-Za-z0-9]{6,18}$/'
+            // Temporary fix for masked government id.
+            pattern: '/^$|^(?:SE|FI|DK|NO)[-+A-Za-z0-9\*]{6,18}$/'
+            //pattern: '/^$|^(?:SE|FI|DK|NO)[-+A-Za-z0-9]{6,18}$/'
         )]
         public readonly ?string $governmentId = null,
         public readonly ?Recipient $billing = null,
