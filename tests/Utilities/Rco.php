@@ -12,7 +12,6 @@ namespace Resursbank\EcomTest\Utilities;
 use Exception;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -48,6 +47,48 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
  */
 class Rco
 {
+    /**
+     * Fetch items for cart creation.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    private static function getItemCollection(): ItemCollection
+    {
+        return new ItemCollection(
+            data: [
+                new Item(
+                    type: CartItemType::PRODUCT,
+                    itemId: 'item01',
+                    description: 'An Item',
+                    quantityUnit: 'st',
+                    unitPrice: 1000,
+                    quantity: 1,
+                    taxRate: 25,
+                    totalDiscount: 0,
+                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
+                    imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg',
+                    mutable: true
+                ),
+                new Item(
+                    type: CartItemType::PRODUCT,
+                    itemId: 'item02',
+                    description: 'An Item',
+                    quantityUnit: 'st',
+                    unitPrice: 2000,
+                    quantity: 1,
+                    taxRate: 25,
+                    totalDiscount: 0,
+                    url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
+                    imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg',
+                    mutable: true
+                )
+            ]
+        );
+    }
+
     /**
      * Resolve the smallest possible object to initiate checkout session from.
      *
@@ -89,7 +130,6 @@ class Rco
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws UrlValidationException
      * @throws Exception
      */
     public static function getFullCheckout(
@@ -108,23 +148,7 @@ class Rco
         $auth = 'Bearer ' . $jwt->getToken();
         return new CreateCheckout(
             cart: new CreateCart(
-                items: new ItemCollection(
-                    data: [
-                        new Item(
-                            type: CartItemType::PRODUCT,
-                            itemId: 'item01',
-                            description: 'An Item',
-                            quantityUnit: 'st',
-                            unitPrice: 1000,
-                            quantity: 1,
-                            taxRate: 25,
-                            totalDiscount: 0,
-                            url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '',
-                            imageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/image.jpg',
-                            mutable: true
-                        )
-                    ]
-                ),
+                items: self::getItemCollection(),
                 code: ''
             ),
             merchant: new Merchant(
