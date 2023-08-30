@@ -301,6 +301,32 @@ class Repository
     }
 
     /**
+     * Refund a payment.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function refund(
+        string $id,
+        string $version
+    ): Checkout {
+        $response = (new Post(
+            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
+            version: $version
+        ))->call(forceObject: true);
+
+        return self::validateCheckoutModel(model: $response);
+    }
+
+    /**
      * Centralised business logic to ensure type safety for all endpoint
      * implementations in this class.
      *
