@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Rco;
@@ -52,6 +53,8 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
+use Resursbank\Ecom\Lib\Model\Rco\Transaction;
+use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -568,6 +571,83 @@ final class RepositoryTest extends TestCase
         $this->assertSame(
             expected: PaymentStatus::CAPTURED,
             actual: $result->payment->paymentStatus->status
+        );
+    }
+
+    /**
+     * Verify that partial captures work and capture the correct amount.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     */
+    public function testPartialCapture(): void
+    {
+        $checkout = $this->initFull();
+        $validated = $this->validateCheckout(
+            id: $checkout->id,
+            version: $checkout->version
+        );
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+
+        $fetched = Repository::get(id: $validated->id);
+
+        if ($fetched->cart === null) {
+            throw new EmptyValueException(
+                message: 'Cart missing from response!'
+            );
+        }
+
+        $fetchedItems = $fetched->cart->items;
+
+        if (
+            !$fetchedItems instanceof Cart\ItemCollection ||
+            !isset($fetchedItems->toArray()[0])
+        ) {
+            throw new MissingKeyException(message: 'Cart items not present');
+        }
+
+        /** @var Cart\Item $captureItem */
+        $captureItem = $fetched->cart->items->toArray()[0];
+        $transactionLines = new TransactionCollection(data: [
+            new Transaction(
+                type: $captureItem->type,
+                description: $captureItem->description,
+                itemId: $captureItem->itemId,
+                quantityUnit: $captureItem->quantityUnit,
+                quantity: $captureItem->quantity,
+                unitPrice: $captureItem->unitPrice,
+                taxRate: $captureItem->taxRate
+            )
+        ]);
+
+        $result = Repository::capture(
+            id: $fetched->id,
+            version: $fetched->id,
+            transactionLines: $transactionLines
+        );
+
+        if ($result->payment === null) {
+            throw new EmptyValueException(message: 'Payment object missing!');
+        }
+
+        if ($result->payment->paymentStatus === null) {
+            throw new EmptyValueException(
+                message: 'Payment status object missing!'
+            );
+        }
+
+        $this->assertEquals(
+            expected: $captureItem->unitPrice * $captureItem->quantity,
+            actual: $result->payment->paymentStatus->capturedAmount
         );
     }
 
