@@ -316,12 +316,14 @@ class Repository
      */
     public static function refund(
         string $id,
-        string $version
+        string $version,
+        ?TransactionCollection $transactionLines = null
     ): Checkout {
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
-            version: $version
-        ))->call(forceObject: true);
+            version: $version,
+            params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
+        ))->call(forceObject: !($transactionLines !== null));
 
         return self::validateCheckoutModel(model: $response);
     }

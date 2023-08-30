@@ -750,4 +750,57 @@ final class RepositoryTest extends TestCase
             actual: $refunded->payment->paymentStatus->refundedAmount
         );
     }
+
+    public function testPartialRefund(): void
+    {
+        $checkout = $this->initFull();
+        $validated = $this->validateCheckout(
+            id: $checkout->id,
+            version: $checkout->version
+        );
+
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+
+        $fetched = Repository::get(id: $validated->id);
+
+        $captured = Repository::capture(
+            id: $fetched->id,
+            version: $fetched->version
+        );
+
+        if ($captured->cart?->items === null) {
+            throw new EmptyValueException(message: 'Cart items not present');
+        }
+
+        /** @var Cart\Item $cartItem */
+        $cartItem = $captured->cart->items->toArray()[0];
+        $transactionLines = new TransactionCollection(data: [
+            new Transaction(
+                type: $cartItem->type,
+                description: $cartItem->description,
+                itemId: $cartItem->itemId,
+                quantityUnit: $cartItem->quantityUnit,
+                quantity: $cartItem->quantity,
+                unitPrice: $cartItem->unitPrice,
+                taxRate: $cartItem->taxRate
+            )
+        ]);
+
+        $result = Repository::refund(
+            id: $captured->id,
+            version: $captured->version,
+            transactionLines: $transactionLines
+        );
+
+        if ($result->payment?->paymentStatus === null) {
+            throw new EmptyValueException(
+                message: 'Missing payment object on $result'
+            );
+        }
+
+        $this->assertEquals(
+            expected: $cartItem->totalPrice,
+            actual: $result->payment->paymentStatus->refundedAmount
+        );
+    }
 }
