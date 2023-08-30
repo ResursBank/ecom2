@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Utilities;
 
 use Closure;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionFunction;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Throwable;
+use function is_resource;
 
 /**
  * Helper to satisfy data integrity tests.
@@ -24,28 +26,67 @@ use Throwable;
 class DataIntegrity
 {
     /**
+     * Mark acceptance test as failed and explain why.
+     *
+     * @throws JsonException
+     */
+    private static function failAcceptanceTest(
+        mixed $val,
+        TestCase $test,
+        string $class = '',
+        string $parameter = ''
+    ): void {
+        $message = "Legal value '%s' rejected";
+
+        if ($class !== '' && $parameter !== '') {
+            $message .= ' on %s::%s.';
+        }
+
+        $test->fail(
+            message: sprintf(
+                $message,
+                is_resource(value: $val) ? 'RESOURCE' : json_encode(
+                    value: $val,
+                    flags: JSON_THROW_ON_ERROR
+                ),
+                $class,
+                $parameter
+            )
+        );
+    }
+
+    /**
      * Centralized business logic to confirm ValidationException handling for
      * various values.
      *
+     * @param string $class Class being probed. For Exception trace.
+     * @param string $parameter Parameter being probed. For Exception trace.
      * @throws ReflectionException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @noinspection PhpTooManyParametersInspection
      */
     public static function testValueIntegrity(
         array $accepted,
         array $rejected,
         Closure $callback,
-        TestCase $test
+        TestCase $test,
+        string $class = '',
+        string $parameter = ''
     ): void {
         self::testAcceptableValues(
             values: $accepted,
             callback: $callback,
-            test: $test
+            test: $test,
+            class: $class,
+            parameter: $parameter
         );
 
         self::testRejectionValues(
             values: $rejected,
             callback: $callback,
-            test: $test
+            test: $test,
+            class: $class,
+            parameter: $parameter
         );
     }
 
@@ -57,7 +98,9 @@ class DataIntegrity
     public static function testAcceptableValues(
         array $values,
         Closure $callback,
-        TestCase $test
+        TestCase $test,
+        string $class = '',
+        string $parameter = ''
     ): void {
         self::confirmValueIntegrityCallback(callback: $callback, test: $test);
 
@@ -68,7 +111,12 @@ class DataIntegrity
                 $callback(v: $val);
                 $test->addToAssertionCount(count: 1);
             } catch (Throwable) {
-                $test->fail(message: "Legal value '$val' rejected.");
+                self::failAcceptanceTest(
+                    val: $val,
+                    test: $test,
+                    class: $class,
+                    parameter: $parameter
+                );
             }
         }
     }
@@ -81,16 +129,31 @@ class DataIntegrity
     public static function testRejectionValues(
         array $values,
         Closure $callback,
-        TestCase $test
+        TestCase $test,
+        string $class = '',
+        string $parameter = ''
     ): void {
         self::confirmValueIntegrityCallback(callback: $callback, test: $test);
+
+        $message = "Illegal value '%s' accepted";
+
+        if ($class !== '' && $parameter !== '') {
+            $message .= ' on %s::%s.';
+        }
 
         foreach ($values as $val) {
             try {
                 // Ignore next line, it's confirmed by confirmValueIntegrityCallback.
                 /* @phpstan-ignore-next-line */
                 $callback(v: $val);
-                $test->fail(message: "Illegal value '$val' accepted.");
+                $test->fail(
+                    message: sprintf(
+                        $message,
+                        $val ?? 'NULL',
+                        $class,
+                        $parameter
+                    )
+                );
             } catch (Throwable) {
                 $test->addToAssertionCount(count: 1);
             }
