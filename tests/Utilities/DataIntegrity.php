@@ -18,6 +18,7 @@ use ReflectionException;
 use ReflectionFunction;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Throwable;
+
 use function is_resource;
 
 /**
@@ -61,7 +62,7 @@ class DataIntegrity
      *
      * @param string $class Class being probed. For Exception trace.
      * @param string $parameter Parameter being probed. For Exception trace.
-     * @throws ReflectionException
+     * @throws ReflectionException|JsonException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @noinspection PhpTooManyParametersInspection
      */
@@ -93,6 +94,7 @@ class DataIntegrity
     /**
      * Verify that acceptable values won't cause Exceptions/Errors.
      *
+     * @throws JsonException
      * @throws ReflectionException
      */
     public static function testAcceptableValues(
