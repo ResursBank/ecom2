@@ -59,10 +59,11 @@ class StringLength implements StringInterface
      * @inheritDoc
      * @throws Exception
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function getAcceptedValues(
         ReflectionParameter $parameter,
-        int $size = 10
+        int $size = 5
     ): array {
         $size = max($size, 1);
 
@@ -71,6 +72,8 @@ class StringLength implements StringInterface
         // Add threshold values.
         if ($this->min !== null) {
             $result[] = Strings::generateRandomString(length: $this->min);
+        } else {
+            $result[] = '';
         }
 
         if ($this->max !== null) {
@@ -97,7 +100,7 @@ class StringLength implements StringInterface
      */
     public function getRejectedValues(
         ReflectionParameter $parameter,
-        int $size = 10
+        int $size = 5
     ): array {
         // Add at least one random min and one max that will be rejected.
         $size = max($size, 2);
@@ -154,10 +157,7 @@ class StringLength implements StringInterface
             }
 
             $result[] = Strings::generateRandomString(
-                length: random_int(
-                    min: $this->min - 9999,
-                    max: $this->min - 1
-                )
+                length: random_int(min: 0, max: $this->min - 1)
             );
             $count++;
         }

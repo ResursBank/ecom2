@@ -33,7 +33,7 @@ interface AttributeInterface
      */
     public function getAcceptedValues(
         ReflectionParameter $parameter,
-        int $size
+        int $size = 5
     ): array;
 
     /**
@@ -47,6 +47,6 @@ interface AttributeInterface
      */
     public function getRejectedValues(
         ReflectionParameter $parameter,
-        int $size
+        int $size = 5
     ): array;
 }

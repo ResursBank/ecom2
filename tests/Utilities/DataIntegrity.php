@@ -17,7 +17,9 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionFunction;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Throwable;
+use ValueError;
 
 use function is_resource;
 
@@ -34,11 +36,10 @@ class DataIntegrity
     private static function failAcceptanceTest(
         mixed $val,
         TestCase $test,
+        string $message,
         string $class = '',
         string $parameter = ''
     ): void {
-        $message = "Legal value '%s' rejected";
-
         if ($class !== '' && $parameter !== '') {
             $message .= ' on %s::%s.';
         }
@@ -116,6 +117,7 @@ class DataIntegrity
                 self::failAcceptanceTest(
                     val: $val,
                     test: $test,
+                    message: "Legal value '%s' rejected",
                     class: $class,
                     parameter: $parameter
                 );
@@ -127,6 +129,7 @@ class DataIntegrity
      * Verify that illegal values causes Exception/Error.
      *
      * @throws ReflectionException
+     * @throws JsonException
      */
     public static function testRejectionValues(
         array $values,
@@ -137,26 +140,19 @@ class DataIntegrity
     ): void {
         self::confirmValueIntegrityCallback(callback: $callback, test: $test);
 
-        $message = "Illegal value '%s' accepted";
-
-        if ($class !== '' && $parameter !== '') {
-            $message .= ' on %s::%s.';
-        }
-
         foreach ($values as $val) {
             try {
                 // Ignore next line, it's confirmed by confirmValueIntegrityCallback.
                 /* @phpstan-ignore-next-line */
                 $callback(v: $val);
-                $test->fail(
-                    message: sprintf(
-                        $message,
-                        $val ?? 'NULL',
-                        $class,
-                        $parameter
-                    )
+                self::failAcceptanceTest(
+                    val: $val,
+                    test: $test,
+                    message: "Illegal value '%s' accepted",
+                    class: $class,
+                    parameter: $parameter
                 );
-            } catch (Throwable) {
+            } catch (ValidationException | ValueError) {
                 $test->addToAssertionCount(count: 1);
             }
         }

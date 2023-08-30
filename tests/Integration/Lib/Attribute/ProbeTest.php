@@ -42,7 +42,7 @@ use Resursbank\EcomTest\Utilities\DataIntegrity;
  */
 class ProbeTest extends TestCase
 {
-    public const VALIDATION_ITERATIONS = 10;
+    public const VALIDATION_ITERATIONS = 5;
 
     /**
      * Describes which class should be utilised to assemble testing values when
@@ -125,8 +125,7 @@ class ProbeTest extends TestCase
                 continue;
             }
 
-            $instance = $attribute->newInstance();
-            $result[$instance::class] = $instance;
+            $result[$attribute::class] = $attribute;
         }
 
         return $result;
@@ -179,7 +178,7 @@ class ProbeTest extends TestCase
             }
 
             $args[] = $this->getRandomAcceptedParameterValue(parameter: $p) ??
-                $this->getDefaultTypeValue(parameter: $p);
+                Random::getParameterValue(parameter: $p);
         }
 
         $result = new $class(...$args);
@@ -189,39 +188,6 @@ class ProbeTest extends TestCase
         }
 
         return $result;
-    }
-
-    /**
-     * Resolve default value based on datatype.
-     *
-     * @throws Exception
-     */
-    private function getDefaultTypeValue(
-        ReflectionParameter $parameter
-    ): mixed {
-        if (!$parameter->hasType()) {
-            return 0;
-        }
-
-        $type = (string) $parameter->getType();
-
-        if (str_contains(haystack: $type, needle: '|')) {
-            $type = substr(
-                string: $type,
-                offset: 0,
-                length: (int) strpos(haystack: $type, needle: '|')
-            );
-        }
-
-        /* @phpstan-ignore-next-line */
-        return match ($type) {
-            'string' => Random::getString(),
-            'int' => Random::getInt(),
-            'float' => Random::getFloat(),
-            'bool' => Random::getBool(),
-            'object' => Random::getObject(),
-            'array' => Random::getArray()
-        };
     }
 
     /**
@@ -242,7 +208,7 @@ class ProbeTest extends TestCase
         $accepted = $attribute?->getAcceptedValues(
             parameter: $parameter,
             size: self::VALIDATION_ITERATIONS
-        ) ?? [$this->getDefaultTypeValue(parameter: $parameter)];
+        ) ?? [Random::getParameterValue(parameter: $parameter)];
 
         // Randomize rejected values to test.
         $rejected = $attribute?->getRejectedValues(

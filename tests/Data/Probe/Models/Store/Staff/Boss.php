@@ -20,6 +20,12 @@ class Boss extends Staff
 {
     public function __construct()
     {
-        parent::__construct(name: 'Kalle', salary: 500, rank: 'the boss');
+        parent::__construct(
+            name: 'Kalle',
+            salary: 500,
+            rank: 'the boss',
+            breaks: [],
+            likes: ['Jan', 'Sean', 'Sarah', 'Clara', 'Peanut', 'Baking']
+        );
     }
 }

@@ -32,6 +32,18 @@ class Employee extends Staff
             max: 12
         )] public readonly ?int $contractLength = null
     ) {
-        parent::__construct(rank: 'Normal', salary: 100, name: 'That one');
+        parent::__construct(
+            rank: 'Normal',
+            salary: 100,
+            name: 'That one',
+            breaks: ['Tuesday', 'Thursday'],
+            likes: [
+                'Things',
+                'Other things',
+                'Yoda',
+                'Potato',
+                'testing bikes'
+            ]
+        );
     }
 }

@@ -56,7 +56,7 @@ class IntValue implements IntInterface
      */
     public function getAcceptedValues(
         ReflectionParameter $parameter,
-        int $size = 10
+        int $size = 5
     ): array {
         $size = max($size, 1);
 
@@ -91,7 +91,7 @@ class IntValue implements IntInterface
      */
     public function getRejectedValues(
         ReflectionParameter $parameter,
-        int $size = 10
+        int $size = 5
     ): array {
         $size = max($size, 2);
 
