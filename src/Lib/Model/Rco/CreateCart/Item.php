@@ -12,9 +12,9 @@ namespace Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\IntValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -41,12 +41,12 @@ class Item extends Model
         public readonly ?int $totalDiscount = null,
         public readonly ?string $url = null,
         public readonly ?string $imageUrl = null,
-        public readonly ?array $tags = null,
+        #[ArrayOfStrings] public readonly ?array $tags = null,
         public readonly ?bool $mutable = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly IntValidation $intValidation = new IntValidation(),
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
+        private readonly IntValidation $intValidation = new IntValidation()
     ) {
+        parent::__construct();
         $this->validateItemId();
         $this->validateDescription();
         $this->validateQuantityUnit();
@@ -55,7 +55,6 @@ class Item extends Model
         $this->validateTotalDiscount();
         $this->validateUrl();
         $this->validateImageUrl();
-        $this->validateTags();
     }
 
     /**
@@ -162,17 +161,5 @@ class Item extends Model
             value: $this->imageUrl,
             pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
         );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateTags(): void
-    {
-        if ($this->tags === null) {
-            return;
-        }
-
-        $this->arrayValidation->length(data: $this->tags, min: 0, max: 10);
     }
 }
