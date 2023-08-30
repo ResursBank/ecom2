@@ -11,18 +11,19 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function count;
 
 /**
- * Used for setting minimum and maximum size of array properties.
+ * Used for setting minimum and maximum size of Collection properties.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
-class ArraySize
+class CollectionSize
 {
     /**
-     * @param int|null $min Minimum number of array elements
-     * @param int|null $max Maximum number of array elements
+     * @param int|null $min Minimum number of Collection elements
+     * @param int|null $max Maximum number of Collection elements
      */
     public function __construct(
         public readonly ?int $min = null,
@@ -33,16 +34,16 @@ class ArraySize
     /**
      * @throws IllegalValueException
      */
-    public function validate(string $name, array $value): void
+    public function validate(string $name, Collection $value): void
     {
-        if ($this->min !== null && count($value) < $this->min) {
+        if ($this->min !== null && count($value->toArray()) < $this->min) {
             throw new IllegalValueException(
                 message: 'Argument ' . $name . ' contains ' . count($value) .
                 ' elements, minimum of ' . $this->min . ' required.'
             );
         }
 
-        if ($this->max !== null && count($value) > $this->max) {
+        if ($this->max !== null && count($value->toArray()) > $this->max) {
             throw new IllegalValueException(
                 message: 'Argument ' . $name . ' contains ' . count($value) .
                 ' elements, maximum of ' . $this->max . ' allowed.'
