@@ -22,11 +22,11 @@ use function count;
 class CollectionSize
 {
     /**
-     * @param int|null $min Minimum number of Collection elements
+     * @param int $min Minimum number of Collection elements
      * @param int|null $max Maximum number of Collection elements
      */
     public function __construct(
-        public readonly ?int $min = null,
+        public readonly int $min = 0,
         public readonly ?int $max = null
     ) {
     }
@@ -36,14 +36,14 @@ class CollectionSize
      */
     public function validate(string $name, Collection $value): void
     {
-        if ($this->min !== null && count($value->toArray()) < $this->min) {
+        if (count($value) < $this->min) {
             throw new IllegalValueException(
                 message: 'Argument ' . $name . ' contains ' . count($value) .
                 ' elements, minimum of ' . $this->min . ' required.'
             );
         }
 
-        if ($this->max !== null && count($value->toArray()) > $this->max) {
+        if ($this->max !== null && count($value) > $this->max) {
             throw new IllegalValueException(
                 message: 'Argument ' . $name . ' contains ' . count($value) .
                 ' elements, maximum of ' . $this->max . ' allowed.'
