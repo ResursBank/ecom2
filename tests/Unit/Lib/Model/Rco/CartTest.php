@@ -43,7 +43,9 @@ class CartTest extends TestCase
                 totalDiscount: 0,
                 url: 'https://example.com',
                 imageUrl: 'https://example.com',
-                tags: []
+                tags: [],
+                mutable: false,
+                maxQuantity: (2 ** 31 ) - 1
             )
         ]);
     }
