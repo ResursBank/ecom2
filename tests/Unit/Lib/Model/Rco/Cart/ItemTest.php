@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\Item;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\EcomTest\Utilities\DataIntegrity;
 use Throwable;
 
 /**
@@ -139,6 +140,61 @@ class ItemTest extends TestCase
                 Strings::generateRandomString(length: 12),
                 42
             ]
+        );
+    }
+
+    /**
+     * Assert validation rules for tags property.
+     *
+     * @throws Exception
+     */
+    public function testTagsValidation(): void
+    {
+        DataIntegrity::testValueIntegrity(
+            accepted: [
+                [
+                    Strings::generateRandomString(length: 1),
+                    Strings::generateRandomString(length: 10),
+                    Strings::generateRandomString(length: 12)
+                ],
+                [],
+                [
+                    Strings::generateRandomString(length: 150)
+                ],
+                [
+                    Strings::generateRandomString(length: 1),
+                    Strings::generateRandomString(length: 10),
+                    Strings::generateRandomString(length: 100),
+                    Strings::generateRandomString(length: 250),
+                    Strings::generateRandomString(length: 4),
+                    Strings::generateRandomString(length: 66),
+                    Strings::generateRandomString(length: 154),
+                    Strings::generateRandomString(length: 132),
+                    Strings::generateRandomString(length: 5),
+                    Strings::generateRandomString(length: 98)
+                ]
+            ],
+            rejected: [
+                [
+                    Strings::generateRandomString(length: 1),
+                    Strings::generateRandomString(length: 10),
+                    Strings::generateRandomString(length: 100),
+                    Strings::generateRandomString(length: 250),
+                    Strings::generateRandomString(length: 4),
+                    Strings::generateRandomString(length: 66),
+                    Strings::generateRandomString(length: 154),
+                    Strings::generateRandomString(length: 132),
+                    Strings::generateRandomString(length: 5),
+                    Strings::generateRandomString(length: 98),
+                    Strings::generateRandomString(length: 100)
+                ],
+                [
+                    Strings::generateRandomString(length: 32),
+                    42
+                ]
+            ],
+            callback: fn (array $v) => $this->generateModel(tags: $v),
+            test: $this
         );
     }
 }
