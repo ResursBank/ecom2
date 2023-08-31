@@ -691,4 +691,63 @@ final class RepositoryTest extends TestCase
             actual: $result->payment->paymentStatus->status
         );
     }
+
+    /**
+     * Assert that full refund refunds the full amount.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     */
+    public function testRefund(): void
+    {
+        $checkout = $this->initFull();
+        $validated = $this->validateCheckout(
+            id: $checkout->id,
+            version: $checkout->version
+        );
+
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+
+        $fetched = Repository::get(id: $validated->id);
+
+        $captured = Repository::capture(
+            id: $fetched->id,
+            version: $fetched->version
+        );
+
+        $refunded = Repository::refund(
+            id: $captured->id,
+            version: $captured->version
+        );
+
+        if (
+            $captured->payment?->paymentStatus === null
+        ) {
+            throw new EmptyValueException(
+                message: 'Missing payment or payment status info on $captured object'
+            );
+        }
+
+        if (
+            $refunded->payment?->paymentStatus === null
+        ) {
+            throw new EmptyValueException(
+                message: 'Missing payment or payment status info on $refunded object'
+            );
+        }
+
+        $this->assertEquals(
+            expected: $captured->payment->paymentStatus->capturedAmount,
+            actual: $refunded->payment->paymentStatus->refundedAmount
+        );
+    }
 }
