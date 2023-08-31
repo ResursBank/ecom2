@@ -16,11 +16,8 @@ use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Validation\IntValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of CrateCartItemDto object.
@@ -42,13 +39,20 @@ class Item extends Model
         public readonly int $unitPrice,
         #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly ?int $quantity,
         #[IntValue(min: 0, max: 100)] public readonly ?int $taxRate = null,
-        #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly ?int $totalDiscount = null,
-        #[StringMatchesRegex(pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/')]
+        #[IntValue(
+            min: 0,
+            max: (2 ** 31) - 1
+        )] public readonly ?int $totalDiscount = null,
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        )]
         public readonly ?string $url = null,
-        #[StringMatchesRegex(pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/')]
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        )]
         public readonly ?string $imageUrl = null,
         #[ArrayOfStrings] public readonly ?array $tags = null,
-        public readonly ?bool $mutable = null,
+        public readonly ?bool $mutable = null
     ) {
         parent::__construct();
     }
