@@ -92,4 +92,100 @@ class CreateCartTest extends TestCase
         $this->assertEquals(expected: $min, actual: $minCreateCart->code);
         $this->assertEquals(expected: $max, actual: $maxCreateCart->code);
     }
+
+    /**
+     * Verify that an item list within the allowed limits doesn't throw exceptions.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testValidItems(): void
+    {
+        $minData = [
+            new CreateCart\Item(
+                type: CartItemType::GENERIC,
+                itemId: Strings::generateRandomString(length: 12),
+                description: Strings::generateRandomString(length: 32),
+                quantity: 1,
+                unitPrice: 1000,
+                quantityUnit: Strings::generateRandomString(length: 2)
+            )
+        ];
+        $maxData = [];
+
+        for ($i = 0; $i < 256; $i++) {
+            $maxData[] = new CreateCart\Item(
+                type: CartItemType::GENERIC,
+                itemId: Strings::generateRandomString(length: 12),
+                description: Strings::generateRandomString(length: 32),
+                quantity: 1,
+                unitPrice: 1000,
+                quantityUnit: Strings::generateRandomString(length: 2)
+            );
+        }
+
+        $minItems = new CreateCart(
+            items: new CreateCart\ItemCollection(data: $minData),
+            code: Strings::generateRandomString(length: 32)
+        );
+        $maxItems = new CreateCart(
+            items: new CreateCart\ItemCollection(data: $maxData),
+            code: Strings::generateRandomString(length: 32)
+        );
+
+        $this->assertCount(
+            expectedCount: 1,
+            haystack: $minItems->items->toArray()
+        );
+        $this->assertCount(
+            expectedCount: 256,
+            haystack: $maxItems->items->toArray()
+        );
+    }
+
+    /**
+     * Verify that an exception is thrown if the item collection is empty.
+     *
+     * @throws IllegalTypeException
+     */
+    public function testEmptyItems(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        new CreateCart(
+            items: new CreateCart\ItemCollection(data: []),
+            code: Strings::generateRandomString(length: 32)
+        );
+    }
+
+    /**
+     * Verify that an exception is thrown if the item collection is too large.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testTooManyItems(): void
+    {
+        $this->expectException(exception: IllegalValueException::class);
+        $cartData = [];
+
+        for ($i = 0; $i < 257; $i++) {
+            $cartData[] = new CreateCart\Item(
+                type: CartItemType::GENERIC,
+                itemId: Strings::generateRandomString(length: 12),
+                description: Strings::generateRandomString(length: 32),
+                quantity: 1,
+                unitPrice: 1000,
+                quantityUnit: Strings::generateRandomString(length: 2)
+            );
+        }
+
+        new CreateCart(
+            items: new CreateCart\ItemCollection(data: $cartData),
+            code: Strings::generateRandomString(length: 32)
+        );
+    }
 }
