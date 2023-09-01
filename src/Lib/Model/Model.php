@@ -10,9 +10,17 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model;
 
 use BackedEnum;
+use JsonException;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
+use Resursbank\Ecom\Lib\Attribute\Validation\Interface\ArrayInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_array;
@@ -25,9 +33,107 @@ use function is_object;
  */
 class Model
 {
+    /**
+     * List of valid validation attribute combinations.
+     *
+     * @var array<array>
+     */
+    private static array $attributeCombos = [
+        [
+            ArraySize::class,
+            ArrayOfStrings::class
+        ]
+    ];
+
+    /**
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     */
     public function __construct()
     {
         $this->validateProperties();
+    }
+
+    /**
+     * Get attributes utilised for validation attached to Model property.
+     *
+     * @throws JsonException
+     * @throws AttributeCombinationException
+     */
+    public static function getValidationAttributes(
+        ReflectionParameter $parameter
+    ): array {
+        $result = [];
+        $combo = [];
+
+        foreach ($parameter->getAttributes() as $attribute) {
+            $instance = $attribute->newInstance();
+
+            if (!self::isValidationAttribute(attribute: $instance)) {
+                continue;
+            }
+
+            $result[] = $instance;
+            $combo[] = $instance::class;
+        }
+
+        if (count($result) === 2) {
+            self::validateAttributeCombination(
+                parameter: $parameter,
+                combo: $combo
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check whether supplied $attribute is part of validation suite.
+     */
+    public static function isValidationAttribute(
+        object $attribute
+    ): bool {
+        return
+            $attribute instanceof StringInterface ||
+            $attribute instanceof IntInterface ||
+            $attribute instanceof FloatInterface ||
+            $attribute instanceof ArrayInterface
+        ;
+    }
+
+    /**
+     * Confirm combination of validation attributes is functional.
+     *
+     * A combination of validation attributes requires one of the attributes to
+     * implement business logic for producing testable data matching said
+     * combination. Without that, automated tests cannot be safely conducted
+     * and as such we will reject any combination we do not explicitly allow.
+     *
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     */
+    public static function validateAttributeCombination(
+        ReflectionParameter $parameter,
+        array $combo
+    ): void {
+        $combo = sort($combo);
+        $validCombo = false;
+
+        foreach (self::$attributeCombos as $c) {
+            $validCombo = (sort($c) === $combo);
+        }
+
+        if (!$validCombo) {
+            throw new AttributeCombinationException(
+                message: sprintf(
+                    'Cannot combines %s attributes for parameter %s on %s',
+                    json_encode(value: $combo, flags: JSON_THROW_ON_ERROR),
+                    $parameter->name,
+                    $parameter->getDeclaringClass()?->name
+                )
+            );
+        }
     }
 
     /**
@@ -71,6 +177,8 @@ class Model
      * Validate object properties.
      *
      * @throws ReflectionException
+     * @throws JsonException
+     * @throws AttributeCombinationException
      */
     private function validateProperties(): void
     {
@@ -86,6 +194,9 @@ class Model
 
     /**
      * Validate individual parameter.
+     *
+     * @throws JsonException
+     * @throws AttributeCombinationException
      */
     private function validateProperty(ReflectionParameter $parameter): void
     {
@@ -93,22 +204,11 @@ class Model
             return;
         }
 
-        $attributes = $parameter->getAttributes();
-
-        foreach ($attributes as $attribute) {
-            $instance = $attribute->newInstance();
-
-            if (
-                !method_exists(object_or_class: $instance, method: 'validate')
-            ) {
-                return;
-            }
-
-            /* Complains about stdClass even though object is never of that type */
-            $instance->validate(
-            /* @phpstan-ignore-next-line */
+        foreach (
+            self::getValidationAttributes(parameter: $parameter) as $attribute
+        ) {
+            $attribute->validate(
                 name: $parameter->name,
-                /* @phpstan-ignore-next-line */
                 value: $this->{$parameter->name}
             );
         }

@@ -20,6 +20,8 @@ use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 
+use function dirname;
+
 /**
  * API communication object.
  *
@@ -244,5 +246,13 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->location;
+    }
+
+    /**
+     * Resolve path starting from project root directory.
+     */
+    public static function getPath(string $dir = ''): string
+    {
+        return dirname(path: __DIR__) . ($dir !== '' ? "/$dir" : '');
     }
 }
