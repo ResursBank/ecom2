@@ -101,15 +101,11 @@ class ItemTest extends TestCase
                 Strings::generateRandomString(length: 36)
             ],
             rejected: [
+                '',
                 Strings::generateRandomString(length: 37),
                 Strings::generateRandomString(length: 100)
             ],
             callback: fn (string $v) => $this->generateModel(itemId: $v),
-            test: $this
-        );
-
-        DataIntegrity::testEmptyValueRejection(
-            callback: fn () => $this->generateModel(itemId: ''),
             test: $this
         );
     }
@@ -151,15 +147,11 @@ class ItemTest extends TestCase
                 Strings::generateRandomString(length: 32)
             ],
             rejected: [
+                '',
                 Strings::generateRandomString(length: 33),
                 Strings::generateRandomString(length: 45)
             ],
             callback: fn (string $v) => $this->generateModel(quantityUnit: $v),
-            test: $this
-        );
-
-        DataIntegrity::testEmptyValueRejection(
-            callback: fn () => $this->generateModel(quantityUnit: ''),
             test: $this
         );
     }
@@ -282,7 +274,6 @@ class ItemTest extends TestCase
                     Strings::generateRandomString(length: 10),
                     Strings::generateRandomString(length: 12)
                 ],
-                [],
                 [
                     Strings::generateRandomString(length: 150)
                 ],

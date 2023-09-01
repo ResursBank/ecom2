@@ -560,9 +560,11 @@ final class RepositoryTest extends TestCase
 
         MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
 
+        $fetched = Repository::get(id: $validated->id);
+
         $result = Repository::capture(
             id: $validated->id,
-            version: $validated->version
+            version: $fetched->version
         );
 
         $this->assertNotNull(actual: $result->payment);

@@ -13,10 +13,11 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
+use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Validation\IntValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of CrateCartItemDto object.
@@ -32,134 +33,27 @@ class Item extends Model
      */
     public function __construct(
         public readonly CartItemType $type,
-        public readonly string $itemId,
-        public readonly string $description,
-        public readonly string $quantityUnit,
+        #[StringLength(min: 1, max: 36)] public readonly string $itemId,
+        #[StringLength(min: 0, max: 280)] public readonly string $description,
+        #[StringLength(min: 1, max: 32)] public readonly string $quantityUnit,
         public readonly int $unitPrice,
-        public readonly ?int $quantity,
-        public readonly ?int $taxRate = null,
-        public readonly ?int $totalDiscount = null,
+        #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly ?int $quantity,
+        #[IntValue(min: 0, max: 100)] public readonly ?int $taxRate = null,
+        #[IntValue(
+            min: 0,
+            max: (2 ** 31) - 1
+        )] public readonly ?int $totalDiscount = null,
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        )]
         public readonly ?string $url = null,
+        #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        )]
         public readonly ?string $imageUrl = null,
         #[ArrayOfStrings] public readonly ?array $tags = null,
-        public readonly ?bool $mutable = null,
-        private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly IntValidation $intValidation = new IntValidation()
+        public readonly ?bool $mutable = null
     ) {
         parent::__construct();
-        $this->validateItemId();
-        $this->validateDescription();
-        $this->validateQuantityUnit();
-        $this->validateQuantity();
-        $this->validateTaxRate();
-        $this->validateTotalDiscount();
-        $this->validateUrl();
-        $this->validateImageUrl();
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateItemId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->itemId);
-        $this->stringValidation->length(value: $this->itemId, min: 1, max: 36);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateDescription(): void
-    {
-        if ($this->description === '') {
-            return;
-        }
-
-        $this->stringValidation->length(
-            value: $this->description,
-            min: 1,
-            max: 280
-        );
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateQuantityUnit(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->quantityUnit);
-        $this->stringValidation->length(
-            value: $this->quantityUnit,
-            min: 1,
-            max: 32
-        );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateQuantity(): void
-    {
-        if ($this->quantity === null) {
-            return;
-        }
-
-        $this->intValidation->isPositive(value: $this->quantity);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateTaxRate(): void
-    {
-        if ($this->taxRate === null) {
-            return;
-        }
-
-        $this->intValidation->inRange(value: $this->taxRate, min: 0, max: 100);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateTotalDiscount(): void
-    {
-        if ($this->totalDiscount === null) {
-            return;
-        }
-
-        $this->intValidation->isPositive(value: $this->totalDiscount);
-    }
-
-    /**
-     * @throws IllegalCharsetException
-     */
-    private function validateUrl(): void
-    {
-        if ($this->url === null) {
-            return;
-        }
-
-        $this->stringValidation->matchRegex(
-            value: $this->url,
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
-        );
-    }
-
-    /**
-     * @throws IllegalCharsetException
-     */
-    private function validateImageUrl(): void
-    {
-        if ($this->imageUrl === null) {
-            return;
-        }
-
-        $this->stringValidation->matchRegex(
-            value: $this->imageUrl,
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
-        );
     }
 }

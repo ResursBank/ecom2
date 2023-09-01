@@ -47,7 +47,9 @@ class ItemTest extends TestCase
         ?int $totalDiscount = null,
         ?string $url = null,
         ?string $imageUrl = null,
-        ?array $tags = null
+        ?array $tags = null,
+        ?int $maxQuantity = null,
+        ?bool $mutable = null
     ): void {
         if ($itemId === null) {
             $itemId = Strings::generateRandomString(length: 36);
@@ -97,6 +99,14 @@ class ItemTest extends TestCase
             $tags = [Strings::generateRandomString(length: 100)];
         }
 
+        if ($maxQuantity === null) {
+            $maxQuantity = (2 ** 31) - 1;
+        }
+
+        if ($mutable === null) {
+            $mutable = false;
+        }
+
         new Item(
             type: CartItemType::PRODUCT,
             itemId: $itemId,
@@ -110,7 +120,9 @@ class ItemTest extends TestCase
             totalDiscount: $totalDiscount,
             url: $url,
             imageUrl: $imageUrl,
-            tags: $tags
+            tags: $tags,
+            maxQuantity: $maxQuantity,
+            mutable: $mutable
         );
     }
 
@@ -157,7 +169,6 @@ class ItemTest extends TestCase
                     Strings::generateRandomString(length: 10),
                     Strings::generateRandomString(length: 12)
                 ],
-                [],
                 [
                     Strings::generateRandomString(length: 150)
                 ],
