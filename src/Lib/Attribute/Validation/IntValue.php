@@ -39,9 +39,9 @@ class IntValue
             );
         }
 
-        if (isset($this->min) && $value > $this->max) {
+        if (isset($this->max) && $value > $this->max) {
             throw new IllegalValueException(
-                message: 'Value of ' . $name . ' is greater than its specified minimum value of ' . $this->max
+                message: 'Value of ' . $name . ' is greater than its specified maximum value of ' . $this->max
             );
         }
     }
