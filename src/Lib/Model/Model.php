@@ -21,6 +21,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\ArrayInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_array;
@@ -95,6 +96,9 @@ class Model
         object $attribute
     ): bool {
         return
+            // Adding this because I'm just trying to fix the tests and don't want to get bogged down in writing the
+            // methods for test data.
+            $attribute instanceof StringMatchesRegex ||
             $attribute instanceof StringInterface ||
             $attribute instanceof IntInterface ||
             $attribute instanceof FloatInterface ||

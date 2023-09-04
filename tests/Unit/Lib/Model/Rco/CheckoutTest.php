@@ -43,8 +43,8 @@ class CheckoutTest extends TestCase
         ?string $storeId = null,
         ?string $orderReference = null,
         ?string $version = null
-    ): void {
-        new Checkout(
+    ): Checkout {
+        return new Checkout(
             id: $id ?? Strings::getUuid(),
             storeId: $storeId ?? Strings::getUuid(),
             orderReference: $orderReference ?? Strings::generateRandomString(
