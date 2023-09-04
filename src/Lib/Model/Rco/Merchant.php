@@ -27,6 +27,10 @@ class Merchant extends Model
     public function __construct(
         #[StringLength(min: 2, max: 128)] public readonly string $displayName,
         #[StringMatchesRegex(
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]$/'
+        )]
+        public readonly string $termsUrl,
+        #[StringMatchesRegex(
             pattern: '/^$|^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]$/'
         )]
         public readonly ?string $logoUrl = null,

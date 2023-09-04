@@ -51,7 +51,7 @@ class CheckoutTest extends TestCase
                 length: 32
             ),
             countryCode: CountryCode::SE,
-            locale: Locale::SV,
+            locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: $version ?? Strings::getUuid(),
             options: new Options(),

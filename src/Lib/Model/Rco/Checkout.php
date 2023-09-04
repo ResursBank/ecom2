@@ -51,7 +51,7 @@ class Checkout extends Model
         public readonly ?Cart $cart = null,
         public readonly ?Shipping $shipping = null,
         public readonly ?PaymentMethods $paymentMethods = null,
-        public readonly ?PspPayment $payment = null,
+        public readonly ?Payment $payment = null,
         public readonly ?Merchant $merchant = null,
         public readonly ?CheckboxCollection $checkboxes = null,
         public readonly ?string $notes = null

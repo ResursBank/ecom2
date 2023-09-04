@@ -14,8 +14,8 @@ namespace Resursbank\Ecom\Lib\Locale\Rco;
  */
 enum Locale: string
 {
-    case SV = 'SV';
-    case NB = 'NB';
-    case FI = 'FI';
-    case DA = 'DA';
+    case sv_SE = 'sv-SE';
+    case da_DK = 'da-DK';
+    case fi_FI = 'fi-FI';
+    case nb_NO = 'nb-NO';
 }

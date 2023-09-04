@@ -41,7 +41,10 @@ class CreateCheckoutTest extends TestCase
                 length: 32
             ),
             cart: new CreateCart(items: new ItemCollection(data: [])),
-            merchant: new Merchant(displayName: 'test')
+            merchant: new Merchant(
+                displayName: 'test',
+                termsUrl: 'https://example.com'
+            )
         );
     }
 

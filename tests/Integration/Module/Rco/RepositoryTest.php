@@ -46,6 +46,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus as RcoPaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
@@ -424,7 +425,7 @@ final class RepositoryTest extends TestCase
             // the final result is still iterable - not null. If cart object is null, something went wrong
             // in the API and this test should fail.
             $this->assertCount(
-                expectedCount: 0,
+                expectedCount: 1,
                 haystack: $result->cart->items
             );
             return;
@@ -519,7 +520,7 @@ final class RepositoryTest extends TestCase
             storeId: Strings::getUuid(),
             orderReference: $this->orderReference,
             countryCode: CountryCode::SE,
-            locale: Locale::SV,
+            locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: Strings::getUuid(),
             options: new Options(),
@@ -532,7 +533,8 @@ final class RepositoryTest extends TestCase
                 code: 'nothing'
             ),
             merchant: new Merchant(
-                displayName: 'Jocke'
+                displayName: 'Jocke',
+                termsUrl: 'https://example.com'
             )
         ));
     }
@@ -568,11 +570,12 @@ final class RepositoryTest extends TestCase
         );
 
         $this->assertNotNull(actual: $result->payment);
-        $this->assertNotNull(actual: $result->payment->paymentStatus);
+        $this->assertNotNull(actual: $result->payment->status);
+        $this->assertNotNull(actual: $result->payment->status->type);
 
         $this->assertSame(
             expected: PaymentStatus::CAPTURED,
-            actual: $result->payment->paymentStatus->status
+            actual: $result->payment->status->type
         );
     }
 
@@ -633,7 +636,7 @@ final class RepositoryTest extends TestCase
 
         $result = Repository::capture(
             id: $fetched->id,
-            version: $fetched->id,
+            version: $fetched->version,
             transactionLines: $transactionLines
         );
 
@@ -641,7 +644,7 @@ final class RepositoryTest extends TestCase
             throw new EmptyValueException(message: 'Payment object missing!');
         }
 
-        if ($result->payment->paymentStatus === null) {
+        if (!$result->payment->status instanceof RcoPaymentStatus) {
             throw new EmptyValueException(
                 message: 'Payment status object missing!'
             );
@@ -649,7 +652,7 @@ final class RepositoryTest extends TestCase
 
         $this->assertEquals(
             expected: $captureItem->unitPrice * $captureItem->quantity,
-            actual: $result->payment->paymentStatus->capturedAmount
+            actual: $result->payment->status->capturedAmount
         );
     }
 
@@ -686,11 +689,12 @@ final class RepositoryTest extends TestCase
         );
 
         $this->assertNotNull(actual: $result->payment);
-        $this->assertNotNull(actual: $result->payment->paymentStatus);
+        $this->assertNotNull(actual: $result->payment->status);
+        $this->assertNotNull(actual: $result->payment->status->type);
 
         $this->assertSame(
             expected: PaymentStatus::CANCELLED,
-            actual: $result->payment->paymentStatus->status
+            actual: $result->payment->status->type
         );
     }
 
@@ -732,7 +736,7 @@ final class RepositoryTest extends TestCase
         );
 
         if (
-            $captured->payment?->paymentStatus === null
+            $captured->payment?->status === null
         ) {
             throw new EmptyValueException(
                 message: 'Missing payment or payment status info on $captured object'
@@ -740,7 +744,7 @@ final class RepositoryTest extends TestCase
         }
 
         if (
-            $refunded->payment?->paymentStatus === null
+            $refunded->payment?->status === null
         ) {
             throw new EmptyValueException(
                 message: 'Missing payment or payment status info on $refunded object'
@@ -748,8 +752,8 @@ final class RepositoryTest extends TestCase
         }
 
         $this->assertEquals(
-            expected: $captured->payment->paymentStatus->capturedAmount,
-            actual: $refunded->payment->paymentStatus->refundedAmount
+            expected: $captured->payment->status->capturedAmount,
+            actual: $refunded->payment->status->refundedAmount
         );
     }
 
@@ -794,7 +798,7 @@ final class RepositoryTest extends TestCase
             transactionLines: $transactionLines
         );
 
-        if ($result->payment?->paymentStatus === null) {
+        if ($result->payment?->status === null) {
             throw new EmptyValueException(
                 message: 'Missing payment object on $result'
             );
@@ -802,7 +806,7 @@ final class RepositoryTest extends TestCase
 
         $this->assertEquals(
             expected: $cartItem->totalPrice,
-            actual: $result->payment->paymentStatus->refundedAmount
+            actual: $result->payment->status->refundedAmount
         );
     }
 }

@@ -165,7 +165,7 @@ class CheckoutTest extends TestCase
 
         $widget = new CheckoutWidget(
             checkoutId: $checkout->id,
-            locale: Locale::NB,
+            locale: Locale::nb_NO,
             disabled: true,
             collapseCart: true
         );
@@ -178,7 +178,7 @@ class CheckoutTest extends TestCase
         );
         $this->assertStringContainsString(needle: 'disabled', haystack: $body);
         $this->assertStringContainsString(
-            needle: 'locale="' . Locale::NB->value . '"',
+            needle: 'locale="' . Locale::nb_NO->value . '"',
             haystack: $body
         );
     }
