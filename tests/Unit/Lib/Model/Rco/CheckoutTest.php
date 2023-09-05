@@ -43,15 +43,15 @@ class CheckoutTest extends TestCase
         ?string $storeId = null,
         ?string $orderReference = null,
         ?string $version = null
-    ): void {
-        new Checkout(
+    ): Checkout {
+        return new Checkout(
             id: $id ?? Strings::getUuid(),
             storeId: $storeId ?? Strings::getUuid(),
             orderReference: $orderReference ?? Strings::generateRandomString(
                 length: 32
             ),
             countryCode: CountryCode::SE,
-            locale: Locale::SV,
+            locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: $version ?? Strings::getUuid(),
             options: new Options(),

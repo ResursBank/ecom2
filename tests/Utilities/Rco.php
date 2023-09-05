@@ -117,7 +117,8 @@ class Rco
                 )
             ),
             merchant: new Merchant(
-                displayName: 'Resurs Stuff AB'
+                displayName: 'Resurs Stuff AB',
+                termsUrl: 'https://example.com'
             )
         );
     }
@@ -153,6 +154,7 @@ class Rco
             ),
             merchant: new Merchant(
                 displayName: 'Resurs Stuff AB',
+                termsUrl: 'https://example.com',
                 logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
                 homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
@@ -202,7 +204,7 @@ class Rco
             ),
             callbacks: self::getCallbacks(),
             webhooks: self::getWebhooks(auth: $auth),
-            locale: Locale::SV,
+            locale: Locale::sv_SE,
             currency: Currency::SEK,
             checkboxes: new CheckboxCollection(data: [
                 new Checkbox(

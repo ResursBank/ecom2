@@ -30,7 +30,8 @@ class MerchantTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         new Merchant(
-            displayName: Strings::generateRandomString(length: 1)
+            displayName: Strings::generateRandomString(length: 1),
+            termsUrl: 'https://example.com'
         );
     }
 
@@ -43,7 +44,8 @@ class MerchantTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         new Merchant(
-            displayName: Strings::generateRandomString(length: 129)
+            displayName: Strings::generateRandomString(length: 129),
+            termsUrl: 'https://example.com'
         );
     }
 
@@ -56,8 +58,14 @@ class MerchantTest extends TestCase
     {
         $min = Strings::generateRandomString(length: 2);
         $max = Strings::generateRandomString(length: 128);
-        $minMerchant = new Merchant(displayName: $min);
-        $maxMerchant = new Merchant(displayName: $max);
+        $minMerchant = new Merchant(
+            displayName: $min,
+            termsUrl: 'https://example.com'
+        );
+        $maxMerchant = new Merchant(
+            displayName: $max,
+            termsUrl: 'https://example.com'
+        );
 
         $this->assertEquals(expected: $min, actual: $minMerchant->displayName);
         $this->assertEquals(expected: $max, actual: $maxMerchant->displayName);
@@ -73,6 +81,7 @@ class MerchantTest extends TestCase
         $this->expectException(exception: IllegalCharsetException::class);
         new Merchant(
             displayName: Strings::generateRandomString(length: 12),
+            termsUrl: 'https://example.com',
             logoUrl: 'foobar'
         );
     }
@@ -87,6 +96,7 @@ class MerchantTest extends TestCase
         $url = 'https://example.com';
         $merchant = new Merchant(
             displayName: Strings::generateRandomString(length: 12),
+            termsUrl: 'https://example.com',
             logoUrl: $url
         );
         $this->assertEquals(expected: $url, actual: $merchant->logoUrl);
@@ -102,6 +112,7 @@ class MerchantTest extends TestCase
         $this->expectException(exception: IllegalCharsetException::class);
         new Merchant(
             displayName: Strings::generateRandomString(length: 12),
+            termsUrl: 'https://example.com',
             homepageUrl: 'foobar'
         );
     }
@@ -116,6 +127,7 @@ class MerchantTest extends TestCase
         $url = 'https://example.com';
         $merchant = new Merchant(
             displayName: Strings::generateRandomString(length: 12),
+            termsUrl: 'https://example.com',
             homepageUrl: $url
         );
         $this->assertEquals(expected: $url, actual: $merchant->homepageUrl);
