@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
+use Exception;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
@@ -37,10 +38,7 @@ class StringNotEmpty implements StringInterface
 
     /**
      * @inheritDoc
-     * @param ReflectionParameter $parameter
-     * @param int $size
-     * @return array
-     * @throws \Exception
+     * @throws Exception
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
     public function getAcceptedValues(ReflectionParameter $parameter, int $size = 5): array
@@ -56,9 +54,6 @@ class StringNotEmpty implements StringInterface
 
     /**
      * @inheritDoc
-     * @param ReflectionParameter $parameter
-     * @param int $size
-     * @return array
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
     public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array

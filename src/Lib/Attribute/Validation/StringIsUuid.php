@@ -43,9 +43,6 @@ class StringIsUuid implements StringInterface
 
     /**
      * @inheritDoc
-     * @param ReflectionParameter $parameter
-     * @param int $size
-     * @return array
      * @throws IllegalValueException
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
@@ -62,9 +59,6 @@ class StringIsUuid implements StringInterface
 
     /**
      * @inheritDoc
-     * @param ReflectionParameter $parameter
-     * @param int $size
-     * @return array
      * @throws Exception
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
