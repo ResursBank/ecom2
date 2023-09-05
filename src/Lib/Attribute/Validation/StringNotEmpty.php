@@ -14,7 +14,7 @@ use Exception;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
-use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Lib\Utilities\Random;
 
 use function trim;
 
@@ -46,7 +46,7 @@ class StringNotEmpty implements StringInterface
         $values = [];
 
         for ($i = 0; $i < $size; $i++) {
-            $values[] = Strings::generateRandomString(length: 12);
+            $values[] = Random::getString();
         }
 
         return $values;

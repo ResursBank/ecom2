@@ -14,6 +14,7 @@ use Exception;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
+use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function preg_match;
@@ -67,7 +68,7 @@ class StringIsUuid implements StringInterface
         $values = [];
 
         for ($i = 0; $i < $size; $i++) {
-            $values[] = Strings::generateRandomString(length: 12);
+            $values[] = Random::getString();
         }
 
         return $values;
