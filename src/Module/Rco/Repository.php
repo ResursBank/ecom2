@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
+use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
@@ -240,6 +241,34 @@ class Repository
         string $id
     ): Checkout {
         $response = (new Get(route: Rco::CHECKOUT_ROUTE . '/' . $id))->call();
+
+        return self::validateCheckoutModel(model: $response);
+    }
+
+    /**
+     * Update checkout state.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function update(
+        string $id,
+        UpdateCheckout $data,
+        string $version
+    ): Checkout {
+        $response = (new Put(
+            route: Rco::CHECKOUT_ROUTE . '/' . $id,
+            version: $version,
+            params: $data->toArray()
+        ))->call();
 
         return self::validateCheckoutModel(model: $response);
     }
