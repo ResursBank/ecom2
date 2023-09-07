@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -35,6 +36,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
@@ -47,6 +49,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus as RcoPaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\SetStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
@@ -56,6 +59,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Model\Rco\Transaction;
 use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
+use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -807,6 +811,92 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: $cartItem->totalPrice,
             actual: $result->payment->status->refundedAmount
+        );
+    }
+
+    /**
+     * Assert that updating a checkout's status works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     * @throws AttributeCombinationException
+     */
+    public function testUpdate(): void
+    {
+        $checkout = $this->initFull();
+        $fetched = Repository::get(id: $checkout->id);
+
+        $items = [];
+
+        if ($fetched->cart === null) {
+            throw new EmptyValueException(
+                message: 'No cart object in fetched Checkout'
+            );
+        }
+
+        /** @var Cart\Item $item */
+        foreach ($fetched->cart->items as $item) {
+            $items[] = new CreateCart\Item(
+                type: $item->type,
+                itemId: $item->itemId,
+                description: $item->description,
+                quantityUnit: $item->quantityUnit,
+                unitPrice: $item->unitPrice,
+                quantity: $item->quantity,
+                taxRate: $item->taxRate,
+                totalDiscount: $item->totalDiscount,
+                url: $item->url,
+                imageUrl: $item->imageUrl,
+                tags: $item->tags,
+                mutable: $item->mutable
+            );
+        }
+
+        $cart = new CreateCart(
+            items: new CreateCart\ItemCollection(data: $items)
+        );
+
+        $newCustomer = new CustomerModel(
+            type: $fetched->customer->type,
+            governmentId: 'SE8001010001',
+            billing: $fetched->customer->billing,
+            delivery: $fetched->customer->delivery
+        );
+
+        if ($fetched->payment === null) {
+            throw new EmptyValueException(
+                message: 'No payment object in fetched Checkout'
+            );
+        }
+
+        $updated = Repository::update(
+            id: $fetched->id,
+            version: $fetched->version,
+            data: new UpdateCheckout(
+                status: new SetStatus(
+                    type: CheckoutStatus::VALIDATED,
+                    callingIp: '127.0.0.1'
+                ),
+                selectedPaymentMethodId: $fetched->payment->selection->methodId,
+                customer: $newCustomer,
+                orderReference: $fetched->orderReference,
+                cart: $cart
+            )
+        );
+
+        $this->assertEquals(
+            expected: CheckoutStatus::VALIDATED,
+            actual: $updated->status->type
         );
     }
 }
