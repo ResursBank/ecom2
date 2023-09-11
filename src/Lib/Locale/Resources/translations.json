@@ -1296,5 +1296,12 @@
       "en": "Logging",
       "sv": "Loggning"
     }
+  },
+  {
+      "id": "rcoplus",
+      "translation": {
+          "en": "RCO Plus",
+          "sv": "RCO Plus"
+      }
   }
 ]
