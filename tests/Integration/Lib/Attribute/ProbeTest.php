@@ -55,10 +55,6 @@ class ProbeTest extends TestCase
      * For example, when validating an array contains only strings
      * (ArrayOfStrings) and at the same time ensuring a specific size
      * (ArraySize), ArrayOfStrings will be the class to assemble test values.
-<<<<<<< Updated upstream
-     * The getAcceptedValues/getRejectedValues
-=======
->>>>>>> Stashed changes
      *
      * @var array<array>
      */
