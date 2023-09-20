@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco;
+namespace Resursbank\Ecom\Lib\Model\Rco\Webhook;
 
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
@@ -15,7 +15,7 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 /**
  * Implementation of WebhookResponseDto object.
  */
-class WebhookResponse extends Model
+class Response extends Model
 {
     public function __construct(
         public readonly ?Recipient $delivery,
