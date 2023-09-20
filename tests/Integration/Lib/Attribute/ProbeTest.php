@@ -36,12 +36,16 @@ use Resursbank\EcomTest\Data\Probe\Models\Store\Staff\Employee;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
 
 /**
- * This class will test Filesystem cache methods.
+ * This class ensures the Model probe class works as expected by probing mocked
+ * Model classes.
  *
  * @noinspection EfferentObjectCouplingInspection
  */
 class ProbeTest extends TestCase
 {
+    /**
+     * Number of random accepted & rejected values to test against each prop.
+     */
     public const VALIDATION_ITERATIONS = 5;
 
     /**
@@ -51,7 +55,10 @@ class ProbeTest extends TestCase
      * For example, when validating an array contains only strings
      * (ArrayOfStrings) and at the same time ensuring a specific size
      * (ArraySize), ArrayOfStrings will be the class to assemble test values.
+<<<<<<< Updated upstream
      * The getAcceptedValues/getRejectedValues
+=======
+>>>>>>> Stashed changes
      *
      * @var array<array>
      */
