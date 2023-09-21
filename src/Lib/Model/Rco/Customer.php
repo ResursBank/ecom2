@@ -37,4 +37,9 @@ class Customer extends Model
     ) {
         parent::__construct();
     }
+
+    public function useSeparateDeliveryAddress(): bool
+    {
+        return $this->delivery !== null;
+    }
 }
