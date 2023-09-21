@@ -1303,5 +1303,40 @@
           "en": "RCO Plus",
           "sv": "RCO Plus"
       }
+  },
+  {
+    "id": "failed-applying-billing-address",
+    "translation": {
+      "en": "Failed to update billing address.",
+      "sv": "Kunde inte uppdatera faktureringsadress."
+    }
+  },
+  {
+    "id": "failed-applying-delivery-address",
+    "translation": {
+      "en": "Failed to update deliery address.",
+      "sv": "Kunde inte uppdatera leveransadress."
+    }
+  },
+  {
+    "id": "failed-applying-shipping-method",
+    "translation": {
+      "en": "Failed to update shipping method selection.",
+      "sv": "Kunde inte uppdatera val av fraktmetod."
+    }
+  },
+  {
+    "id": "failed-applying-payment-method",
+    "translation": {
+      "en": "Failed to update payment method selection.",
+      "sv": "Kunde inte uppdatera val av betalmetod."
+    }
+  },
+  {
+    "id": "failed-placing-order",
+    "translation": {
+      "en": "Failed to place order.",
+      "sv": "Kunde inte genomför beställning."
+    }
   }
 ]
