@@ -1338,5 +1338,12 @@
       "en": "Failed to place order.",
       "sv": "Kunde inte genomför beställning."
     }
+  },
+  {
+    "id": "invalid-webhook-data",
+    "translation": {
+      "en": "Invalid webhook data submitted from Resurs Bank.",
+      "sv": "Ogiltig webhook data skickad från Resurs Bank."
+    }
   }
 ]

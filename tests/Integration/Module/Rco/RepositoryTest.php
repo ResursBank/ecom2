@@ -19,6 +19,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
@@ -26,6 +28,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Exception\WebhookException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Api\Scope;
@@ -898,5 +901,50 @@ final class RepositoryTest extends TestCase
             expected: CheckoutStatus::VALIDATED,
             actual: $updated->status->type
         );
+    }
+
+    /**
+     * Simulate the body ($_POST) data in an incoming webhook request from the
+     * API server and make sure we can parse it into a CheckoutDto instance.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     * @throws WebhookException
+     * @throws FilesystemException
+     * @throws TranslationException
+     */
+    public function testGetWebhookRequestData(): void
+    {
+        $_POST = [
+            'some' => 'corrupted',
+            'data' => 'set',
+            'here' => 55
+        ];
+
+        try {
+            Repository::getWebhookRequestData();
+            $this->fail(message: 'Invalid webhook data accepted.');
+        } catch (WebhookException) {
+            $this->addToAssertionCount(count: 1);
+        }
+
+        // Simulate a complete CheckoutDto object in $_POST
+        $_POST = $this->initFull()->toArray();
+        Repository::getWebhookRequestData();
+        $this->addToAssertionCount(count: 1);
+
+        // Simulate a minimal CheckoutDto object in $_POST
+        $_POST = $this->initMini()->toArray();
+        Repository::getWebhookRequestData();
+        $this->addToAssertionCount(count: 1);
     }
 }
