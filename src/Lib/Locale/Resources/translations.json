@@ -1314,7 +1314,7 @@
   {
     "id": "failed-applying-delivery-address",
     "translation": {
-      "en": "Failed to update deliery address.",
+      "en": "Failed to update delivery address.",
       "sv": "Kunde inte uppdatera leveransadress."
     }
   },
