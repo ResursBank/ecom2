@@ -11,16 +11,21 @@ namespace Resursbank\Ecom\Module\Rco;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Exception\WebhookException;
 use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
@@ -33,6 +38,10 @@ use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Throwable;
+
+use function is_object;
 
 /**
  * Main entrypoint for interfacing with the RCO+ API programmatically.
@@ -373,5 +382,61 @@ class Repository
         }
 
         return $model;
+    }
+
+    /**
+     * Convert $_POST data to a CheckoutDto instance.
+     *
+     * @throws ConfigException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws WebhookException
+     * @throws FilesystemException
+     * @throws TranslationException
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public static function getWebhookRequestData(): Checkout
+    {
+        /** @noinspection BadExceptionsProcessingInspection */
+        try {
+            $data = json_decode(
+                json: json_encode(
+                    value: $_POST,
+                    flags: JSON_THROW_ON_ERROR
+                ),
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
+
+            if (!is_object(value: $data)) {
+                throw new WebhookException(
+                    message: 'Failed converting submitted data into an object.'
+                );
+            }
+
+            $result = DataConverter::stdClassToType(
+                object: $data,
+                type: Checkout::class
+            );
+
+            if (!$result instanceof Checkout) {
+                throw new IllegalValueException(
+                    message: 'Received data could not be converted to CheckoutDto instance.'
+                );
+            }
+        } catch (Throwable $error) {
+            Config::getLogger()->debug(message: $error);
+
+            throw new WebhookException(
+                message: Translator::translate(
+                    phraseId: 'invalid-webhook-data'
+                )
+            );
+        }
+
+        return $result;
     }
 }

@@ -1303,5 +1303,12 @@
           "en": "RCO Plus",
           "sv": "RCO Plus"
       }
+  },
+  {
+    "id": "invalid-webhook-data",
+    "translation": {
+      "en": "Invalid webhook data submitted from Resurs Bank.",
+      "sv": "Ogiltig webhook data skickad från Resurs Bank."
+    }
   }
 ]
