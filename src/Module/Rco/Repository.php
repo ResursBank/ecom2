@@ -42,6 +42,7 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Throwable;
 
 use function is_object;
+use function is_string;
 
 /**
  * Main entrypoint for interfacing with the RCO+ API programmatically.
@@ -397,15 +398,16 @@ class Repository
      * @throws TranslationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public static function getWebhookRequestData(): Checkout
+    public static function getWebhookRequestData(?string $post = null): Checkout
     {
+        if ($post === null && is_string(value: $_POST)) {
+            $post = $_POST;
+        }
+
         /** @noinspection BadExceptionsProcessingInspection */
         try {
             $data = json_decode(
-                json: json_encode(
-                    value: $_POST,
-                    flags: JSON_THROW_ON_ERROR
-                ),
+                json: $post,
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
