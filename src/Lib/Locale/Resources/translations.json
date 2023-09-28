@@ -1345,5 +1345,12 @@
       "en": "Invalid webhook data submitted from Resurs Bank.",
       "sv": "Ogiltig webhook data skickad från Resurs Bank."
     }
+  },
+  {
+      "id": "rb-advanced-settings-for-rcoplus",
+      "translation": {
+          "en": "Advanced Settings for RCO Plus",
+          "sv": "Avancerade inställningar för RCO Plus"
+      }
   }
 ]
