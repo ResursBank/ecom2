@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
@@ -25,6 +28,9 @@ class Webhook extends Model
      * @param string $authorization The Authorization header to set when doing the webhook.
      * @param bool|null $continueOnNoResponse Continue if no/unexpected response is returned from the webhook post.
      * @param int|null $timeout Timeout in seconds before giving up on a request.
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws JsonException
      */
     public function __construct(
         #[StringNotEmpty] #[StringMatchesUrl] public readonly string $url,
@@ -32,11 +38,11 @@ class Webhook extends Model
             min: 0,
             max: 16000
         )] public readonly string $authorization,
-        public readonly ?bool $continueOnNoResponse,
+        public readonly ?bool $continueOnNoResponse = null,
         #[IntValue(
             min: 0,
             max: 180
-        )] public readonly ?int $timeout
+        )] public readonly ?int $timeout = null
     ) {
         parent::__construct();
     }
