@@ -17,11 +17,12 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Webhooks extends Model
 {
     public function __construct(
-        public readonly Webhook $customer,
-        public readonly Webhook $cart,
-        public readonly Webhook $shipping,
-        public readonly Webhook $payment,
-        public readonly Webhook $validate
+        public readonly ?Webhook $customer = null,
+        public readonly ?Webhook $cart = null,
+        public readonly ?Webhook $shipping = null,
+        public readonly ?Webhook $payment = null,
+        public readonly ?Webhook $validate = null
     ) {
+        parent::__construct();
     }
 }
