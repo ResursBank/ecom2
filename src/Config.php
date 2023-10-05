@@ -37,7 +37,7 @@ final class Config
      *
      * NOTE: Nullable to allow unsetting configuration.
      */
-    private static ?Config $instance;
+    private static ?Config $instance = null;
 
     /**
      * NOTE: By default we only log INFO level messages.
