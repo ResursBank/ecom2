@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -149,6 +152,9 @@ class CreateCartTest extends TestCase
      * Verify that an exception is thrown if the item collection is empty.
      *
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function testEmptyItems(): void
     {

@@ -67,13 +67,16 @@ class ArraySize implements ArrayInterface
 
         // Add threshold values.
         if ((int) $this->min > 0) {
-            $this->getRandom(min: (int) $this->min, max: (int) $this->min);
+            $result[] = $this->getRandom(
+                min: (int) $this->min,
+                max: (int) $this->min
+            );
         } else {
             $result[] = [];
         }
 
         if ($this->max !== null) {
-            $this->getRandom(min: $this->max, max: $this->max);
+            $result[] = $this->getRandom(min: $this->max, max: $this->max);
         }
 
         // Add randomized values.
@@ -100,13 +103,19 @@ class ArraySize implements ArrayInterface
 
         // Add threshold values.
         if ($this->min !== null) {
-            $this->getRandom(min: $this->min - 1, max: $this->min - 1);
+            $result[] = $this->getRandom(
+                min: $this->min - 1,
+                max: $this->min - 1
+            );
         } else {
             $result[] = [];
         }
 
         if ($this->max !== null) {
-            $this->getRandom(min: $this->max + 1, max: $this->max + 1);
+            $result[] = $this->getRandom(
+                min: $this->max + 1,
+                max: $this->max + 1
+            );
         }
 
         /// Add randomized values.
