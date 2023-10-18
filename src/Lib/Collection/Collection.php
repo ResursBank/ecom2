@@ -113,6 +113,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Get data array from collection
      *
+     * @param bool $full Expand all child objects
      * @return array
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -122,9 +123,28 @@ class Collection implements ArrayAccess, Iterator, Countable
         $data = $full ? [] : $this->data;
 
         if ($full) {
-            /** @var Model $model */
-            foreach ($this->data as $model) {
-                $data[] = $model->toArray(full: $full);
+            $data = $this->fullToArray();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get full data array from collection.
+     *
+     * @return array
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    private function fullToArray(): array
+    {
+        $data = [];
+
+        /** @var Model $model */
+        foreach ($this->data as $model) {
+            if (method_exists(object_or_class: $model, method: 'toArray')) {
+                $data[] = $model->toArray(full: true);
+            } else {
+                $data[] = $model;
             }
         }
 
