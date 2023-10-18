@@ -13,7 +13,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
 use Throwable;
 
@@ -44,15 +44,15 @@ class ItemTest extends TestCase
         ?array $tags = null
     ): void {
         if ($itemId === null) {
-            $itemId = Strings::generateRandomString(length: 36);
+            $itemId = Random::getString(length: 36);
         }
 
         if ($description === null) {
-            $description = Strings::generateRandomString(length: 200);
+            $description = Random::getString(length: 200);
         }
 
         if ($quantityUnit === null) {
-            $quantityUnit = Strings::generateRandomString(length: 1);
+            $quantityUnit = Random::getString(length: 1);
         }
 
         if ($unitPrice === null) {
@@ -96,14 +96,14 @@ class ItemTest extends TestCase
     {
         DataIntegrity::testValueIntegrity(
             accepted: [
-                Strings::generateRandomString(length: 1),
-                Strings::generateRandomString(length: 10),
-                Strings::generateRandomString(length: 36)
+                Random::getString(length: 1),
+                Random::getString(length: 10),
+                Random::getString(length: 36)
             ],
             rejected: [
                 '',
-                Strings::generateRandomString(length: 37),
-                Strings::generateRandomString(length: 100)
+                Random::getString(length: 37),
+                Random::getString(length: 100)
             ],
             callback: fn (string $v) => $this->generateModel(itemId: $v),
             test: $this
@@ -120,13 +120,13 @@ class ItemTest extends TestCase
         DataIntegrity::testValueIntegrity(
             accepted: [
                 '',
-                Strings::generateRandomString(length: 1),
-                Strings::generateRandomString(length: 100),
-                Strings::generateRandomString(length: 280)
+                Random::getString(length: 1),
+                Random::getString(length: 100),
+                Random::getString(length: 280)
             ],
             rejected: [
-                Strings::generateRandomString(length: 281),
-                Strings::generateRandomString(length: 300)
+                Random::getString(length: 281),
+                Random::getString(length: 300)
             ],
             callback: fn (string $v) => $this->generateModel(description: $v),
             test: $this
@@ -142,14 +142,14 @@ class ItemTest extends TestCase
     {
         DataIntegrity::testValueIntegrity(
             accepted: [
-                Strings::generateRandomString(length: 1),
-                Strings::generateRandomString(length: 31),
-                Strings::generateRandomString(length: 32)
+                Random::getString(length: 1),
+                Random::getString(length: 31),
+                Random::getString(length: 32)
             ],
             rejected: [
                 '',
-                Strings::generateRandomString(length: 33),
-                Strings::generateRandomString(length: 45)
+                Random::getString(length: 33),
+                Random::getString(length: 45)
             ],
             callback: fn (string $v) => $this->generateModel(quantityUnit: $v),
             test: $this
@@ -221,9 +221,9 @@ class ItemTest extends TestCase
                 'htps://error.resurs.com',
                 'http2://www.resurs.com',
                 'http3://www.resurs.com',
-                Strings::generateRandomString(length: 1),
-                Strings::generateRandomString(length: 45),
-                Strings::generateRandomString(length: 200)
+                Random::getString(length: 1),
+                Random::getString(length: 45),
+                Random::getString(length: 200)
             ],
             callback: fn (string $v) => $this->generateModel(url: $v),
             test: $this
@@ -251,9 +251,9 @@ class ItemTest extends TestCase
                 'htps://error.resurs.com',
                 'http2://www.resurs.com',
                 'http3://www.resurs.com',
-                Strings::generateRandomString(length: 1),
-                Strings::generateRandomString(length: 45),
-                Strings::generateRandomString(length: 200)
+                Random::getString(length: 1),
+                Random::getString(length: 45),
+                Random::getString(length: 200)
             ],
             callback: fn (string $v) => $this->generateModel(imageUrl: $v),
             test: $this
@@ -267,42 +267,45 @@ class ItemTest extends TestCase
      */
     public function testTagsValidation(): void
     {
+        $characters = range(start: 'a', end: 'z');
+
         DataIntegrity::testValueIntegrity(
             accepted: [
                 [
-                    Strings::generateRandomString(length: 1),
-                    Strings::generateRandomString(length: 10),
-                    Strings::generateRandomString(length: 12)
+                    Random::getString(length: 1, characters: $characters),
+                    Random::getString(length: 10, characters: $characters),
+                    Random::getString(length: 12, characters: $characters)
                 ],
                 [
-                    Strings::generateRandomString(length: 150)
+                    Random::getString(length: 150, characters: $characters)
                 ],
                 [
-                    Strings::generateRandomString(length: 1),
-                    Strings::generateRandomString(length: 10),
-                    Strings::generateRandomString(length: 100),
-                    Strings::generateRandomString(length: 250),
-                    Strings::generateRandomString(length: 4),
-                    Strings::generateRandomString(length: 66),
-                    Strings::generateRandomString(length: 154),
-                    Strings::generateRandomString(length: 132),
-                    Strings::generateRandomString(length: 5),
-                    Strings::generateRandomString(length: 98)
+                    Random::getString(length: 1, characters: $characters),
+                    Random::getString(length: 10, characters: $characters),
+                    Random::getString(length: 100, characters: $characters),
+                    Random::getString(length: 250, characters: $characters),
+                    Random::getString(length: 4, characters: $characters),
+                    Random::getString(length: 66, characters: $characters),
+                    Random::getString(length: 154, characters: $characters),
+                    Random::getString(length: 132, characters: $characters),
+                    Random::getString(length: 5, characters: $characters),
+                    Random::getString(length: 98, characters: $characters)
                 ]
             ],
             rejected: [
                 [
-                    Strings::generateRandomString(length: 1),
-                    Strings::generateRandomString(length: 10),
-                    Strings::generateRandomString(length: 100),
-                    Strings::generateRandomString(length: 250),
-                    Strings::generateRandomString(length: 4),
-                    Strings::generateRandomString(length: 66),
-                    Strings::generateRandomString(length: 154),
-                    Strings::generateRandomString(length: 132),
-                    Strings::generateRandomString(length: 5),
-                    Strings::generateRandomString(length: 98),
-                    Strings::generateRandomString(length: 100)
+                    Random::getString(length: 1),
+                    Random::getString(length: 10),
+                    Random::getString(length: 100),
+                    Random::getString(length: 250),
+                    Random::getString(length: 4),
+                    Random::getString(length: 66),
+                    Random::getString(length: 154),
+                    Random::getString(length: 132),
+                    Random::getString(length: 5),
+                    Random::getString(length: 98),
+                    Random::getString(length: 100),
+                    (int)42
                 ]
             ],
             callback: fn (array $v) => $this->generateModel(tags: $v),
