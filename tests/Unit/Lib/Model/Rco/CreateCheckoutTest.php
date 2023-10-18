@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
@@ -40,7 +41,16 @@ class CreateCheckoutTest extends TestCase
             orderReference: $orderReference ?? Strings::generateRandomString(
                 length: 32
             ),
-            cart: new CreateCart(items: new ItemCollection(data: [])),
+            cart: new CreateCart(items: new ItemCollection(data: [
+                new CreateCart\Item(
+                    type: CartItemType::PRODUCT,
+                    itemId: 'item-001',
+                    description: 'An item',
+                    quantityUnit: 'st',
+                    unitPrice: 1500,
+                    quantity: 1
+                )
+            ])),
             merchant: new Merchant(
                 displayName: 'test',
                 termsUrl: 'https://example.com'
