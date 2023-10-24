@@ -47,6 +47,8 @@ class Random
     }
 
     /**
+     * Get random value of random type specified in DataType.
+     *
      * @throws Exception
      */
     public static function getValue(): mixed

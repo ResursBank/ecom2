@@ -904,6 +904,8 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * Simulate a webhook request.
+     *
      * Simulate the body ($_POST) data in an incoming webhook request from the
      * API server and make sure we can parse it into a CheckoutDto instance.
      *
@@ -945,6 +947,59 @@ final class RepositoryTest extends TestCase
         // Simulate a minimal CheckoutDto object in $_POST
         $_POST = $this->initMini()->toArray();
         Repository::getWebhookRequestData();
+        $this->addToAssertionCount(count: 1);
+    }
+
+    /**
+     * Simulate the processing of a webhook request using the post parameter.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     * @throws WebhookException
+     */
+    public function testWebhookRequestDataWithPostParameter(): void
+    {
+        $postData = json_encode(
+            value: [
+            'some' => 'corrupted',
+            'data' => 'set',
+            'here' => 55
+            ],
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        try {
+            Repository::getWebhookRequestData(post: $postData);
+            $this->fail(message: 'Invalid webhook data accepted.');
+        } catch (WebhookException) {
+            $this->addToAssertionCount(count: 1);
+        }
+
+        // Simulate a complete CheckoutDto object in $_POST
+        $postData = json_encode(
+            value: $this->initFull()->toArray(),
+            flags: JSON_THROW_ON_ERROR
+        );
+        Repository::getWebhookRequestData(post: $postData);
+        $this->addToAssertionCount(count: 1);
+
+        // Simulate a minimal CheckoutDto object in $_POST
+        $postData = json_encode(
+            value: $this->initMini()->toArray(),
+            flags: JSON_THROW_ON_ERROR
+        );
+        Repository::getWebhookRequestData(post: $postData);
         $this->addToAssertionCount(count: 1);
     }
 }

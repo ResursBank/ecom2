@@ -19,4 +19,5 @@ enum Scope: string
     case MERCHANT_API = 'merchant-api';
     case MOCK_MERCHANT_API = 'mock-merchant-api';
     case CHECKOUT_PLUS_API = 'checkout-plus-api';
+    case TEST_CHECKOUT_PLUS_API = 'test-checkout-plus-api';
 }

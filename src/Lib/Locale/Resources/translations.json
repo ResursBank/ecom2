@@ -1347,10 +1347,24 @@
     }
   },
   {
-      "id": "advanced-settings-for-rcoplus",
-      "translation": {
-          "en": "Advanced Settings for RCO Plus",
-          "sv": "Avancerade inställningar för RCO Plus"
-      }
+    "id": "advanced-settings-for-rcoplus",
+    "translation": {
+      "en": "Advanced Settings for RCO Plus",
+      "sv": "Avancerade inställningar för RCO Plus"
+    }
+  },
+  {
+    "id": "terms-url",
+    "translation": {
+      "en": "Terms URL",
+      "sv": "Länk till villkor"
+    }
+  },
+  {
+    "id": "terms-url-description",
+    "translation": {
+      "en": "Must be an HTTPS URL on the same domain as your store",
+      "sv": "Måste vara en HTTPS-URL på samma domän som er butik"
+    }
   }
 ]
