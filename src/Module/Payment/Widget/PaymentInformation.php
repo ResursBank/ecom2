@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -20,6 +21,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -62,7 +64,18 @@ class PaymentInformation extends Widget
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat
     ) {
-        $this->payment = Repository::get(paymentId: $this->paymentId);
+        /* We extend this class from the RCO module, since we need the exact
+           same widget for RCO, but our resources differ slightly (for example,
+           the Payment object is available in MAPI but in RCO we instead have
+           a Checkout object). We must avoid the code below from executing when
+           using RCO, we should refactor this to remove the payment variable
+           instead but this would introduce a breaking change. See */
+        if (
+            Config::getJwtAuth()->scope === Scope::MERCHANT_API ||
+            Config::getJwtAuth()->scope === Scope::MOCK_MERCHANT_API
+        ) {
+            $this->payment = Repository::get(paymentId: $this->paymentId);
+        }
 
         $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
 
@@ -100,39 +113,9 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch payment status.
-     */
-    public function getStatus(): string
-    {
-        return $this->payment->status->name;
-    }
-
-    /**
-     * Fetch the name of the payment method used.
-     */
-    public function getPaymentMethodName(): string
-    {
-        if ($this->payment->paymentMethod) {
-            return $this->payment->paymentMethod->name;
-        }
-
-        return '';
-    }
-
-    /**
-     * Fetch customer name.
-     */
-    public function getCustomerName(): string
-    {
-        if ($this->payment->customer->deliveryAddress) {
-            return $this->payment->customer->deliveryAddress->fullName ?? '';
-        }
-
-        return '';
-    }
-
-    /**
      * Fetch formatted delivery address.
+     *
+     * @deprecated Use methods to collect individual values instead.
      */
     public function getAddress(): string
     {
@@ -151,28 +134,83 @@ class PaymentInformation extends Widget
         return '';
     }
 
-    /**
-     * Fetch customer mobile phone number from payment.
-     */
+    public function hasAddress(): bool
+    {
+        return $this->payment->customer->deliveryAddress !== null;
+    }
+
+    public function getAddressRow2(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->addressRow2;
+    }
+
+    public function getAddressRow1(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->addressRow1;
+    }
+
+    public function getCity(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->postalArea;
+    }
+
+    public function getCountryCode(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->countryCode?->value;
+    }
+
+    public function getPostalCode(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->postalCode;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->payment->status->value;
+    }
+
+    public function getPaymentMethodName(): string
+    {
+        return (string) $this->payment->paymentMethod?->name;
+    }
+
+    public function getCustomerName(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->fullName;
+    }
+
     public function getTelephone(): string
     {
         return $this->payment->customer->mobilePhone ?? '';
     }
 
-    /**
-     * Fetch customer email from payment.
-     */
     public function getEmail(): string
     {
         return $this->payment->customer->email ?? '';
     }
 
+    public function getAuthorizedAmount(): float
+    {
+        return (float) $this->payment->order?->authorizedAmount;
+    }
+
+    public function getCapturedAmount(): float
+    {
+        return (float) $this->payment->order?->capturedAmount;
+    }
+
+    public function getRefundedAmount(): float
+    {
+        return (float) $this->payment->order?->refundedAmount;
+    }
+
+    /**
+     * Take supplied amount value and format with currency symbol etc.
+     */
     public function getFormattedAmount(float $amount): string
     {
-        if ($this->currencyFormat === CurrencyFormat::SYMBOL_FIRST) {
-            return $this->currencySymbol . ' ' . $amount;
-        }
-
-        return $amount . ' ' . $this->currencySymbol;
+        return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
+            $this->currencySymbol . ' ' . $amount :
+            $amount . ' ' . $this->currencySymbol;
     }
 }
