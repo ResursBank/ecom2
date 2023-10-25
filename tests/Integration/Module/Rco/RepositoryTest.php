@@ -737,9 +737,12 @@ final class RepositoryTest extends TestCase
             version: $fetched->version
         );
 
+        // This get call is required to prevent 409 BadVersion.
+        $fetched = Repository::get(id: $validated->id);
+
         $refunded = Repository::refund(
             id: $captured->id,
-            version: $captured->version
+            version: $fetched->version
         );
 
         if (
@@ -764,6 +767,22 @@ final class RepositoryTest extends TestCase
         );
     }
 
+    /**
+     * Assert that partial refunds work as intended.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws UrlValidationException
+     * @throws ValidationException
+     */
     public function testPartialRefund(): void
     {
         $checkout = $this->initFull();
@@ -799,9 +818,11 @@ final class RepositoryTest extends TestCase
             )
         ]);
 
+        $fetched = Repository::get(id: $captured->id);
+
         $result = Repository::refund(
             id: $captured->id,
-            version: $captured->version,
+            version: $fetched->version,
             transactionLines: $transactionLines
         );
 
@@ -926,11 +947,7 @@ final class RepositoryTest extends TestCase
      */
     public function testGetWebhookRequestData(): void
     {
-        $_POST = [
-            'some' => 'corrupted',
-            'data' => 'set',
-            'here' => 55
-        ];
+        $_POST = '{"some":"corrupted","data":"set","here":55}';
 
         try {
             Repository::getWebhookRequestData();
@@ -940,12 +957,18 @@ final class RepositoryTest extends TestCase
         }
 
         // Simulate a complete CheckoutDto object in $_POST
-        $_POST = $this->initFull()->toArray();
+        $_POST = json_encode(
+            value: $this->initFull(),
+            flags: JSON_THROW_ON_ERROR
+        );
         Repository::getWebhookRequestData();
         $this->addToAssertionCount(count: 1);
 
         // Simulate a minimal CheckoutDto object in $_POST
-        $_POST = $this->initMini()->toArray();
+        $_POST = json_encode(
+            value: $this->initMini(),
+            flags: JSON_THROW_ON_ERROR
+        );
         Repository::getWebhookRequestData();
         $this->addToAssertionCount(count: 1);
     }

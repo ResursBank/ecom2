@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\ArrayInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\Interface\CollectionInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
@@ -102,6 +103,7 @@ class Model
             $attribute instanceof StringInterface ||
             $attribute instanceof IntInterface ||
             $attribute instanceof FloatInterface ||
+            $attribute instanceof CollectionInterface ||
             $attribute instanceof ArrayInterface
         ;
     }

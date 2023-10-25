@@ -11,8 +11,11 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
 use ReflectionParameter;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Random\DataType;
 use stdClass;
+
+use function strlen;
 
 /**
  * Methods to randomize values of various data-types.
@@ -91,9 +94,17 @@ class Random
      * @throws Exception
      */
     public static function getString(
-        ?int $length = null
+        ?int $length = null,
+        ?array $characters = null
     ): string {
         $length ??= self::getInt(min: 0, max: 9999);
+
+        if (!empty($characters)) {
+            return self::getStringWithCharset(
+                length: $length,
+                charset: $characters
+            );
+        }
 
         return substr(
             string: bin2hex(
@@ -162,5 +173,31 @@ class Random
         }
 
         return $result;
+    }
+
+    /**
+     * Get random string made up of characters from specified array.
+     *
+     * @param array $charset
+     * @throws IllegalValueException
+     */
+    private static function getStringWithCharset(
+        int $length,
+        array $charset
+    ): string {
+        $string = '';
+
+        foreach ($charset as $char) {
+            if (!is_string(value: $char) || strlen(string: $char) !== 1) {
+                throw new IllegalValueException(message: 'Element \'' . $char .
+                    '\'in character array is not a single-character string');
+            }
+        }
+
+        while (strlen(string: $string) < $length) {
+            $string .= $charset[array_rand($charset)];
+        }
+
+        return $string;
     }
 }

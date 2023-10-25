@@ -300,7 +300,7 @@ class ProbeTest extends TestCase
         $classes = Probe::getClasses(dir: 'tests/Data/Probe');
 
         self::assertCount(expectedCount: count($expected), haystack: $classes);
-        self::assertEquals(expected: $expected, actual: $classes);
+        self::assertEqualsCanonicalizing(expected: $expected, actual: $classes);
 
         foreach ($classes as $classname) {
             self::assertContains(needle: $classname, haystack: $expected);

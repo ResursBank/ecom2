@@ -16,7 +16,7 @@ class WebhookTest extends TestCase
      */
     public function testBadWebHook(): void
     {
-        self::expectException(exception: IllegalUrlException::class);
+        $this->expectException(exception: IllegalUrlException::class);
         new Webhook(
             url: 'hppt://www.test.com',
             authorization: '',
@@ -46,7 +46,7 @@ class WebhookTest extends TestCase
      */
     public function testBadTimeout(): void
     {
-        self::expectException(exception: IllegalValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
 
         new Webhook(
             url: 'https://test.resurs.com/docs',
