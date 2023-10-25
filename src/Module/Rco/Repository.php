@@ -449,10 +449,11 @@ class Repository
      *
      * @return mixed
      * @throws ConfigException
+     * @noinspection PhpUnused
      */
     public static function getScriptByScope(?Scope $altScope = null): string
     {
-        return ($altScope instanceof Scope ? $altScope : Config::getJwtAuth()->scope) === Scope::TEST_CHECKOUT_PLUS_API ?
-            Rco::URL_MOCK : Rco::URL_TEST;
+        $useScope = $altScope instanceof Scope ? $altScope : Config::getJwtAuth()->scope;
+        return $useScope === Scope::TEST_CHECKOUT_PLUS_API ? Rco::URL_MOCK : Rco::URL_TEST;
     }
 }
