@@ -947,11 +947,7 @@ final class RepositoryTest extends TestCase
      */
     public function testGetWebhookRequestData(): void
     {
-        $_POST = [
-            'some' => 'corrupted',
-            'data' => 'set',
-            'here' => 55
-        ];
+        $_POST = '{"some":"corrupted","data":"set","here":55}';
 
         try {
             Repository::getWebhookRequestData();
@@ -961,12 +957,18 @@ final class RepositoryTest extends TestCase
         }
 
         // Simulate a complete CheckoutDto object in $_POST
-        $_POST = $this->initFull()->toArray();
+        $_POST = json_encode(
+            value: $this->initFull(),
+            flags: JSON_THROW_ON_ERROR
+        );
         Repository::getWebhookRequestData();
         $this->addToAssertionCount(count: 1);
 
         // Simulate a minimal CheckoutDto object in $_POST
-        $_POST = $this->initMini()->toArray();
+        $_POST = json_encode(
+            value: $this->initMini(),
+            flags: JSON_THROW_ON_ERROR
+        );
         Repository::getWebhookRequestData();
         $this->addToAssertionCount(count: 1);
     }
