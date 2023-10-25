@@ -103,10 +103,12 @@ class ArraySize implements ArrayInterface
 
         // Add threshold values.
         if ($this->min !== null) {
-            $result[] = $this->getRandom(
-                min: $this->min - 1,
-                max: $this->min - 1
-            );
+            if ($this->min > 0) {
+                $result[] = $this->getRandom(
+                    min: $this->min - 1,
+                    max: $this->min - 1
+                );
+            }
         } else {
             $result[] = [];
         }
