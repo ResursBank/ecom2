@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -21,7 +20,6 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -66,31 +64,6 @@ class PaymentInformation extends Widget
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
-    }
-
-    /**
-     * Render widget components (kept in separate method, so it can be executed
-     * from subclasses).
-     *
-     * @return void
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     */
-    protected function renderWidget(): void
-    {
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
-
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
-            );
-        }
-
-        $this->logo = $logo;
-        $this->content = $this->render(
-            file: __DIR__ . '/payment-information.phtml'
-        );
-        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
     }
 
     /**
@@ -213,5 +186,32 @@ class PaymentInformation extends Widget
         return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
             $this->currencySymbol . ' ' . $amount :
             $amount . ' ' . $this->currencySymbol;
+    }
+
+    /**
+     * Render widget components (kept in separate method, so it can be executed
+     * from subclasses).
+     *
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     */
+    protected function renderWidget(): void
+    {
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
+            );
+        }
+
+        /* @phpstan-ignore-next-line */
+        $this->logo = $logo;
+        /* @phpstan-ignore-next-line */
+        $this->content = $this->render(
+            file: __DIR__ . '/payment-information.phtml'
+        );
+        /* @phpstan-ignore-next-line */
+        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
     }
 }
