@@ -66,7 +66,7 @@ class Rco
         $this->stringValidation->notEmpty(value: $route);
 
         return
-            (Config::isProduction() ? self::URL_PROD : self::URL_TEST) .
+            (Config::isProduction() ? self::URL_PROD : $this->getTestUrlByScope()) .
             $route;
     }
 
@@ -81,7 +81,7 @@ class Rco
         $this->stringValidation->notEmpty(value: $route);
 
         return
-            (Config::isProduction() ? self::URL_PROD : $this->getTestUrlByScope()) .
+            (Config::isProduction() ? self::AUTH_URL_PROD : self::AUTH_URL_TEST) .
             $route;
     }
 
