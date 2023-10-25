@@ -92,8 +92,7 @@ class Rco
      */
     private function getTestUrlByScope(): string
     {
-        $currentJwtScope = Config::getJwtAuth()->scope;
-        return $currentJwtScope === Scope::TEST_CHECKOUT_PLUS_API
+        return Config::getJwtAuth()->scope === Scope::TEST_CHECKOUT_PLUS_API
             ? self::URL_MOCK
             : self::URL_TEST;
     }
