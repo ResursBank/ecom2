@@ -64,19 +64,20 @@ class PaymentInformation extends Widget
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat
     ) {
-        /* We extend this class from the RCO module, since we need the exact
-           same widget for RCO, but our resources differ slightly (for example,
-           the Payment object is available in MAPI but in RCO we instead have
-           a Checkout object). We must avoid the code below from executing when
-           using RCO, we should refactor this to remove the payment variable
-           instead but this would introduce a breaking change. See */
-        if (
-            Config::getJwtAuth()->scope === Scope::MERCHANT_API ||
-            Config::getJwtAuth()->scope === Scope::MOCK_MERCHANT_API
-        ) {
-            $this->payment = Repository::get(paymentId: $this->paymentId);
-        }
+        $this->payment = Repository::get(paymentId: $this->paymentId);
+        $this->renderWidget();
+    }
 
+    /**
+     * Render widget components (kept in separate method, so it can be executed
+     * from subclasses).
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     */
+    protected function renderWidget(): void
+    {
         $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
 
         if (!$logo) {
