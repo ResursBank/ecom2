@@ -71,17 +71,6 @@ class Rco
     }
 
     /**
-     * URLs to integration and mock are different. Return proper url based on which scope that has been used.
-     * @return string
-     * @throws ConfigException
-     */
-    private function getTestUrlByScope(): string
-    {
-        $currentJwtScope = Config::getJwtAuth()->scope;
-        return $currentJwtScope === Scope::TEST_CHECKOUT_PLUS_API ? self::URL_MOCK : self::URL_TEST;
-    }
-
-    /**
      * Get URL for tokens individually since the urls are different to the API endpoints.
      *
      * @throws EmptyValueException
@@ -94,5 +83,18 @@ class Rco
         return
             (Config::isProduction() ? self::URL_PROD : $this->getTestUrlByScope()) .
             $route;
+    }
+
+    /**
+     * URLs to integration and mock are different. Return proper url based on which scope that has been used.
+     *
+     * @throws ConfigException
+     */
+    private function getTestUrlByScope(): string
+    {
+        $currentJwtScope = Config::getJwtAuth()->scope;
+        return $currentJwtScope === Scope::TEST_CHECKOUT_PLUS_API
+            ? self::URL_MOCK
+            : self::URL_TEST;
     }
 }
