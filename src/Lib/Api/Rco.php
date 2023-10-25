@@ -41,6 +41,11 @@ class Rco
     public const AUTH_URL_TEST = 'https://apigw.integration.resurs.com/';
 
     /**
+     * Mock test endpoint.
+     */
+    public const URL_MOCK = 'https://web-integration-mock-rco-plus.integration.resurs.com/';
+
+    /**
      * Prefix route name for checkout
      */
     public const CHECKOUT_ROUTE = 'api/checkout';
@@ -61,7 +66,7 @@ class Rco
         $this->stringValidation->notEmpty(value: $route);
 
         return
-            (Config::isProduction() ? self::URL_PROD : self::URL_TEST) .
+            (Config::isProduction() ? self::URL_PROD : $this->getTestUrlByScope()) .
             $route;
     }
 
@@ -78,5 +83,17 @@ class Rco
         return
             (Config::isProduction() ? self::AUTH_URL_PROD : self::AUTH_URL_TEST) .
             $route;
+    }
+
+    /**
+     * URLs to integration and mock are different. Return proper url based on which scope that has been used.
+     *
+     * @throws ConfigException
+     */
+    private function getTestUrlByScope(): string
+    {
+        return Config::getJwtAuth()->scope === Scope::TEST_CHECKOUT_PLUS_API
+            ? self::URL_MOCK
+            : self::URL_TEST;
     }
 }

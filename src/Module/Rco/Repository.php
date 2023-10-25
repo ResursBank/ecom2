@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Exception\WebhookException;
 use Resursbank\Ecom\Lib\Api\Rco;
+use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -440,5 +441,18 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * Return script url by current scope, or customized by request (useful when Config has not yet been initialized).
+     *
+     * @return mixed
+     * @throws ConfigException
+     * @noinspection PhpUnused
+     */
+    public static function getScriptUrlByScope(?Scope $alternativeScope = null): string
+    {
+        $scope = $alternativeScope instanceof Scope ? $alternativeScope : Config::getJwtAuth()->scope;
+        return $scope === Scope::TEST_CHECKOUT_PLUS_API ? Rco::URL_MOCK : Rco::URL_TEST;
     }
 }
