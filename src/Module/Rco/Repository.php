@@ -444,7 +444,7 @@ class Repository
     }
 
     /**
-     * Return script-tag by current scope, or return customized by
+     * Return script tag by current scope, or return customized by
      * request (useful when Config has not yet been initialized).
      *
      * @return mixed
