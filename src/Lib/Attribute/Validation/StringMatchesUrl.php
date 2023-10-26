@@ -47,9 +47,12 @@ class StringMatchesUrl implements StringInterface
      * @param int $size
      * @return array
      * @throws Exception
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
-    public function getAcceptedValues(ReflectionParameter $parameter, int $size = 5): array
-    {
+    public function getAcceptedValues(
+        ReflectionParameter $parameter,
+        int $size = 5
+    ): array {
         $urls = [];
         $characters = range(start: 'a', end: 'z');
 
@@ -68,9 +71,12 @@ class StringMatchesUrl implements StringInterface
      * @param int $size
      * @return array
      * @throws Exception
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
-    public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array
-    {
+    public function getRejectedValues(
+        ReflectionParameter $parameter,
+        int $size = 5
+    ): array {
         $urls = [];
 
         for ($i = 0; $i < $size; $i++) {
