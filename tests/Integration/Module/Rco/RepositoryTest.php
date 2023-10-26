@@ -947,29 +947,29 @@ final class RepositoryTest extends TestCase
      */
     public function testGetWebhookRequestData(): void
     {
-        $_POST = '{"some":"corrupted","data":"set","here":55}';
+        $faultyData = '{"some":"corrupted","data":"set","here":55}';
 
         try {
-            Repository::getWebhookRequestData();
+            Repository::getWebhookRequestData($faultyData);
             $this->fail(message: 'Invalid webhook data accepted.');
         } catch (WebhookException) {
             $this->addToAssertionCount(count: 1);
         }
 
         // Simulate a complete CheckoutDto object in $_POST
-        $_POST = json_encode(
+        $full = json_encode(
             value: $this->initFull(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData();
+        Repository::getWebhookRequestData($full);
         $this->addToAssertionCount(count: 1);
 
         // Simulate a minimal CheckoutDto object in $_POST
-        $_POST = json_encode(
+        $mini = json_encode(
             value: $this->initMini(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData();
+        Repository::getWebhookRequestData($mini);
         $this->addToAssertionCount(count: 1);
     }
 
@@ -1003,7 +1003,7 @@ final class RepositoryTest extends TestCase
         );
 
         try {
-            Repository::getWebhookRequestData(post: $postData);
+            Repository::getWebhookRequestData(custom: $postData);
             $this->fail(message: 'Invalid webhook data accepted.');
         } catch (WebhookException) {
             $this->addToAssertionCount(count: 1);
@@ -1014,7 +1014,7 @@ final class RepositoryTest extends TestCase
             value: $this->initFull()->toArray(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData(post: $postData);
+        Repository::getWebhookRequestData(custom: $postData);
         $this->addToAssertionCount(count: 1);
 
         // Simulate a minimal CheckoutDto object in $_POST
@@ -1022,7 +1022,7 @@ final class RepositoryTest extends TestCase
             value: $this->initMini()->toArray(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData(post: $postData);
+        Repository::getWebhookRequestData(custom: $postData);
         $this->addToAssertionCount(count: 1);
     }
 }

@@ -386,7 +386,7 @@ class Repository
     }
 
     /**
-     * Convert $_POST data to a CheckoutDto instance.
+     * Convert php://input stream data to a CheckoutDto instance.
      *
      * @throws ConfigException
      * @throws IllegalTypeException
@@ -398,20 +398,22 @@ class Repository
      * @throws TranslationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public static function getWebhookRequestData(?string $post = null): Checkout
+    public static function getWebhookRequestData(?string $custom = null): Checkout
     {
-        $data = (object) $_POST;
-
         /** @noinspection BadExceptionsProcessingInspection */
         try {
-            if ($post !== null) {
-                $data = json_decode(
-                    json: $post,
-                    associative: false,
-                    depth: 512,
-                    flags: JSON_THROW_ON_ERROR
-                );
+            $data = $custom ?? file_get_contents(filename: 'php://input');
+
+            if (!$data) {
+                throw new WebhookException(message: 'Missing data.');
             }
+
+            $data = json_decode(
+                json: (string) $custom,
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
 
             if (!is_object(value: $data)) {
                 throw new WebhookException(
