@@ -398,18 +398,18 @@ class Repository
      * @throws TranslationException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public static function getWebhookRequestData(?string $custom = null): Checkout
+    public static function getWebhookRequestData(?string $post = null): Checkout
     {
         /** @noinspection BadExceptionsProcessingInspection */
         try {
-            $data = $custom ?? file_get_contents(filename: 'php://input');
+            $data = $post ?? file_get_contents(filename: 'php://input');
 
             if (!$data) {
                 throw new WebhookException(message: 'Missing data.');
             }
 
             $data = json_decode(
-                json: (string) $custom,
+                json: (string) $post,
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR

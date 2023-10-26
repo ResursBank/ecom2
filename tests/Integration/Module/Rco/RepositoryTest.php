@@ -1003,7 +1003,7 @@ final class RepositoryTest extends TestCase
         );
 
         try {
-            Repository::getWebhookRequestData(custom: $postData);
+            Repository::getWebhookRequestData(post: $postData);
             $this->fail(message: 'Invalid webhook data accepted.');
         } catch (WebhookException) {
             $this->addToAssertionCount(count: 1);
@@ -1014,7 +1014,7 @@ final class RepositoryTest extends TestCase
             value: $this->initFull()->toArray(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData(custom: $postData);
+        Repository::getWebhookRequestData(post: $postData);
         $this->addToAssertionCount(count: 1);
 
         // Simulate a minimal CheckoutDto object in $_POST
@@ -1022,7 +1022,7 @@ final class RepositoryTest extends TestCase
             value: $this->initMini()->toArray(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData(custom: $postData);
+        Repository::getWebhookRequestData(post: $postData);
         $this->addToAssertionCount(count: 1);
     }
 }
