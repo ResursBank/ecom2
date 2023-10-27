@@ -28,6 +28,7 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Authorization extends Model implements CallbackInterface
 {
     /**
+     * @param string|null $checkoutId RCO+ checkout ID.
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
@@ -35,6 +36,7 @@ class Authorization extends Model implements CallbackInterface
         public readonly string $paymentId,
         public readonly Status $status,
         public readonly string $created,
+        public readonly ?string $checkoutId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validatePaymentId();
