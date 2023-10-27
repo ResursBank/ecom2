@@ -43,7 +43,6 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Throwable;
 
 use function is_object;
-use function is_string;
 
 /**
  * Main entrypoint for interfacing with the RCO+ API programmatically.
@@ -387,7 +386,7 @@ class Repository
     }
 
     /**
-     * Convert $_POST data to a CheckoutDto instance.
+     * Convert php://input stream data to a CheckoutDto instance.
      *
      * @throws ConfigException
      * @throws IllegalTypeException
@@ -401,14 +400,16 @@ class Repository
      */
     public static function getWebhookRequestData(?string $post = null): Checkout
     {
-        if ($post === null && is_string(value: $_POST)) {
-            $post = $_POST;
-        }
-
         /** @noinspection BadExceptionsProcessingInspection */
         try {
+            $data = $post ?? file_get_contents(filename: 'php://input');
+
+            if (!$data) {
+                throw new WebhookException(message: 'Missing data.');
+            }
+
             $data = json_decode(
-                json: $post,
+                json: (string) $post,
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
@@ -446,13 +447,17 @@ class Repository
     /**
      * Return script url by current scope, or customized by request (useful when Config has not yet been initialized).
      *
-     * @return mixed
      * @throws ConfigException
      * @noinspection PhpUnused
      */
     public static function getScriptUrlByScope(?Scope $alternativeScope = null): string
     {
-        $scope = $alternativeScope instanceof Scope ? $alternativeScope : Config::getJwtAuth()->scope;
-        return $scope === Scope::TEST_CHECKOUT_PLUS_API ? Rco::URL_MOCK : Rco::URL_TEST;
+        $scope = $alternativeScope instanceof Scope ?
+            $alternativeScope :
+            Config::getJwtAuth()?->scope;
+
+        return $scope === Scope::TEST_CHECKOUT_PLUS_API ?
+            Rco::URL_MOCK :
+            Rco::URL_TEST;
     }
 }

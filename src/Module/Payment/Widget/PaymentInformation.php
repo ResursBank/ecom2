@@ -63,20 +63,7 @@ class PaymentInformation extends Widget
         public readonly CurrencyFormat $currencyFormat
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
-
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
-
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
-            );
-        }
-
-        $this->logo = $logo;
-        $this->content = $this->render(
-            file: __DIR__ . '/payment-information.phtml'
-        );
-        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
+        $this->renderWidget();
     }
 
     /**
@@ -100,39 +87,9 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Fetch payment status.
-     */
-    public function getStatus(): string
-    {
-        return $this->payment->status->name;
-    }
-
-    /**
-     * Fetch the name of the payment method used.
-     */
-    public function getPaymentMethodName(): string
-    {
-        if ($this->payment->paymentMethod) {
-            return $this->payment->paymentMethod->name;
-        }
-
-        return '';
-    }
-
-    /**
-     * Fetch customer name.
-     */
-    public function getCustomerName(): string
-    {
-        if ($this->payment->customer->deliveryAddress) {
-            return $this->payment->customer->deliveryAddress->fullName ?? '';
-        }
-
-        return '';
-    }
-
-    /**
      * Fetch formatted delivery address.
+     *
+     * @deprecated Use methods to collect individual values instead.
      */
     public function getAddress(): string
     {
@@ -151,28 +108,110 @@ class PaymentInformation extends Widget
         return '';
     }
 
-    /**
-     * Fetch customer mobile phone number from payment.
-     */
+    public function hasAddress(): bool
+    {
+        return $this->payment->customer->deliveryAddress !== null;
+    }
+
+    public function getAddressRow2(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->addressRow2;
+    }
+
+    public function getAddressRow1(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->addressRow1;
+    }
+
+    public function getCity(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->postalArea;
+    }
+
+    public function getCountryCode(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->countryCode?->value;
+    }
+
+    public function getPostalCode(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->postalCode;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->payment->status->value;
+    }
+
+    public function getPaymentMethodName(): string
+    {
+        return (string) $this->payment->paymentMethod?->name;
+    }
+
+    public function getCustomerName(): string
+    {
+        return (string) $this->payment->customer->deliveryAddress?->fullName;
+    }
+
     public function getTelephone(): string
     {
         return $this->payment->customer->mobilePhone ?? '';
     }
 
-    /**
-     * Fetch customer email from payment.
-     */
     public function getEmail(): string
     {
         return $this->payment->customer->email ?? '';
     }
 
+    public function getAuthorizedAmount(): float
+    {
+        return (float) $this->payment->order?->authorizedAmount;
+    }
+
+    public function getCapturedAmount(): float
+    {
+        return (float) $this->payment->order?->capturedAmount;
+    }
+
+    public function getRefundedAmount(): float
+    {
+        return (float) $this->payment->order?->refundedAmount;
+    }
+
+    /**
+     * Take supplied amount value and format with currency symbol etc.
+     */
     public function getFormattedAmount(float $amount): string
     {
-        if ($this->currencyFormat === CurrencyFormat::SYMBOL_FIRST) {
-            return $this->currencySymbol . ' ' . $amount;
+        return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
+            $this->currencySymbol . ' ' . $amount :
+            $amount . ' ' . $this->currencySymbol;
+    }
+
+    /**
+     * Render widget components (kept in separate method, so it can be executed
+     * from subclasses).
+     *
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     */
+    protected function renderWidget(): void
+    {
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
+            );
         }
 
-        return $amount . ' ' . $this->currencySymbol;
+        /* @phpstan-ignore-next-line */
+        $this->logo = $logo;
+        /* @phpstan-ignore-next-line */
+        $this->content = $this->render(
+            file: __DIR__ . '/payment-information.phtml'
+        );
+        /* @phpstan-ignore-next-line */
+        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
     }
 }
