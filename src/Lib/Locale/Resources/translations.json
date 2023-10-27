@@ -1366,5 +1366,12 @@
       "en": "Must be an HTTPS URL on the same domain as your store",
       "sv": "Måste vara en HTTPS-URL på samma domän som er butik"
     }
+  },
+  {
+    "id": "invalid-webhook-auth-token",
+    "translation": {
+      "en": "Invalid auth token.",
+      "sv": "Ogiltigt auth token."
+    }
   }
 ]
