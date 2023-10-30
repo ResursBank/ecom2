@@ -9,11 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 
@@ -26,6 +30,9 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 class Checkout extends Model
 {
     /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -51,5 +58,84 @@ class Checkout extends Model
         public readonly ?string $notes = null
     ) {
         parent::__construct();
+    }
+
+    /**
+     * Checks if payment can be captured.
+     */
+    public function canCapture(): bool
+    {
+        return $this->canPerformAction(actionType: AvailableActions::CAPTURE);
+    }
+
+    /**
+     * Checks if payment is processing (can be captured).
+     */
+    public function isProcessing(): bool
+    {
+        return $this->canCapture();
+    }
+
+    /**
+     * Checks if payment has been captured.
+     */
+    public function isCaptured(): bool
+    {
+        if ($this->payment === null) {
+            return false;
+        }
+
+        return
+            !$this->canCapture() &&
+            $this->payment->status->authorizedAmount === 0 &&
+            $this->payment->status->capturedAmount > 0 &&
+            $this->payment->status->capturedAmount !== $this->payment->status->refundedAmount;
+    }
+
+    /**
+     * Checks if payment has been cancelled.
+     */
+    public function isCancelled(): bool
+    {
+        if ($this->payment === null) {
+            return false;
+        }
+
+        return
+            $this->payment->status->authorizedAmount === 0 &&
+            $this->payment->status->requestedAmount === $this->payment->status->cancelledAmount;
+    }
+
+    /**
+     * Checks if payment has been refunded.
+     */
+    public function isRefunded(): bool
+    {
+        if ($this->payment === null) {
+            return false;
+        }
+
+        return
+            $this->payment->status->capturedAmount > 0 &&
+            $this->payment->status->authorizedAmount === 0 &&
+            $this->payment->status->capturedAmount === $this->payment->status->refundedAmount;
+    }
+
+    /**
+     * Check if specified action can be performed.
+     */
+    private function canPerformAction(AvailableActions $actionType): bool
+    {
+        if (!$this->payment || !$this->payment->status->availableActions) {
+            return false;
+        }
+
+        foreach ($this->payment->status->availableActions as $action) {
+            if ($action === $actionType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
