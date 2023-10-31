@@ -12,13 +12,13 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Implementation of CallbacksDto object.
+ * Implementation of CreateCallbacksDto object.
  */
 class Callbacks extends Model
 {
     public function __construct(
-        public readonly Callback $authorization,
-        public readonly Callback $management
+        public readonly ?Callback $authorization = null,
+        public readonly ?Callback $management = null
     ) {
     }
 }
