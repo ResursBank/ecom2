@@ -53,10 +53,10 @@
     <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference" />
     <rule ref="SlevomatCodingStandard.Classes.PropertyDeclaration">
         <properties>
-            <property name="minLinesCountBeforeWithComment" value="1" />
+            <!--<property name="minLinesCountBeforeWithComment" value="1" />
             <property name="maxLinesCountBeforeWithComment" value="1" />
             <property name="minLinesCountBeforeWithoutComment" value="1" />
-            <property name="maxLinesCountBeforeWithoutComment" value="1" />
+            <property name="maxLinesCountBeforeWithoutComment" value="1" />-->
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.PropertySpacing" />
@@ -150,7 +150,7 @@
     <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
         <properties>
             <property name="rootNamespaces" type="array">
-                <element key="src/src" value="Resursbank\Ecom" />
+                <element key="src" value="Resursbank\Ecom" />
             </property>
         </properties>
     </rule>
