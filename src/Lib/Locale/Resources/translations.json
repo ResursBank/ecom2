@@ -1373,5 +1373,12 @@
       "en": "Invalid auth token.",
       "sv": "Ogiltigt auth token."
     }
+  },
+  {
+    "id": "failed-clearing-cart",
+    "translation": {
+      "en": "Clearing cart failed",
+      "sv": "Tömning av kundvagn misslyckades."
+    }
   }
 ]
