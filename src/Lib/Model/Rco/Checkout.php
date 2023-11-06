@@ -69,6 +69,22 @@ class Checkout extends Model
     }
 
     /**
+     * Checks if payment can be cancelled.
+     */
+    public function canCancel(): bool
+    {
+        return $this->canPerformAction(actionType: AvailableActions::CANCEL);
+    }
+
+    /**
+     * Checks if payment can be refunded.
+     */
+    public function canRefund(): bool
+    {
+        return $this->canPerformAction(actionType: AvailableActions::REFUND);
+    }
+
+    /**
      * Checks if payment is processing (can be captured).
      */
     public function isProcessing(): bool
