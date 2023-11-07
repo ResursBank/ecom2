@@ -10,18 +10,33 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActionsCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentSelection as PaymentSelectionEnum;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus as PaymentStatusEnum;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
+use Resursbank\Ecom\Lib\Model\Rco\Payment;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentSelection;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
@@ -42,7 +57,8 @@ class CheckoutTest extends TestCase
         ?string $id = null,
         ?string $storeId = null,
         ?string $orderReference = null,
-        ?string $version = null
+        ?string $version = null,
+        ?Payment $payment = null
     ): Checkout {
         return new Checkout(
             id: $id ?? Strings::getUuid(),
@@ -56,8 +72,92 @@ class CheckoutTest extends TestCase
             version: $version ?? Strings::getUuid(),
             options: new Options(),
             customer: new Customer(type: Type::B2C),
+            payment: $payment ?? $this->generatePayment(),
             status: new Status(
                 type: CheckoutStatus::INITIATED
+            )
+        );
+    }
+
+    /**
+     * Generates a Payment object.
+     *
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     */
+    private function generatePayment(
+        ?PaymentStatus $paymentStatus = null
+    ): Payment {
+        $paymentMethodId = Strings::getUuid();
+        return new Payment(
+            methods: new PaymentMethodCollection(data: [
+                new PaymentMethod(
+                    methodId: $paymentMethodId,
+                    name: Strings::generateRandomString(length: 12),
+                    type: PaymentMethod\Type::GENERIC,
+                    fee: 0,
+                    required: new RequiredCollection(data: [
+                        Required::GOVERNMENT_ID
+                    ]),
+                    subtitle: Strings::generateRandomString(length: 32),
+                    descriptions: [
+                        Strings::generateRandomString(length: 32)
+                    ],
+                    terms: Strings::generateRandomString(length: 32),
+                    links: new PaymentMethod\LinkCollection(data: [
+                        new PaymentMethod\Link(
+                            label: Strings::generateRandomString(length: 12),
+                            url: 'https://example.com'
+                        )
+                    ])
+                )
+            ]),
+            status: $paymentStatus ?? new PaymentStatus(
+                requestedAmount: 0,
+                authorizedAmount: 0,
+                cancelledAmount: 0,
+                capturedAmount: 0,
+                refundedAmount: 0,
+                status: PaymentStatusEnum::NONE,
+                availableActions: new AvailableActionsCollection(data: [
+                ])
+            ),
+            selection: new PaymentSelection(
+                methodId: $paymentMethodId,
+                type: PaymentSelectionEnum::DEFAULT
+            )
+        );
+    }
+
+    /**
+     * Generates a PaymentStatus object.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    private function generatePaymentStatus(
+        ?int $requestedAmount = null,
+        ?int $authorizedAmount = null,
+        ?int $cancelledAmount = null,
+        ?int $capturedAmount = null,
+        ?int $refundedAmount = null,
+        ?AvailableActionsCollection $availableActions = null
+    ): PaymentStatus {
+        return new PaymentStatus(
+            requestedAmount: $requestedAmount ?? 0,
+            authorizedAmount: $authorizedAmount ?? 0,
+            cancelledAmount: $cancelledAmount ?? 0,
+            capturedAmount: $capturedAmount ?? 0,
+            refundedAmount: $refundedAmount ?? 0,
+            status: PaymentStatusEnum::NONE,
+            availableActions: $availableActions ?? new AvailableActionsCollection(
+                data: [
+                ]
             )
         );
     }
@@ -179,5 +279,339 @@ class CheckoutTest extends TestCase
         } catch (IllegalValueException) {
             $this->addToAssertionCount(count: 1);
         }
+    }
+
+    /**
+     * Verify that the canCapture method works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testCanCapture(): void
+    {
+        foreach (AvailableActions::cases() as $action) {
+            $checkout = $this->generateCheckoutModel(
+                payment: $this->generatePayment(
+                    paymentStatus: $this->generatePaymentStatus(
+                        availableActions: new AvailableActionsCollection(
+                            data: [
+                                $action
+                            ]
+                        )
+                    )
+                )
+            );
+
+            if ($action === AvailableActions::CAPTURE) {
+                $this->assertTrue(
+                    condition: $checkout->canCapture()
+                );
+            } else {
+                $this->assertFalse(
+                    condition: $checkout->canCapture()
+                );
+            }
+        }
+    }
+
+    /**
+     * Verify that the canCancel method works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testCanCancel(): void
+    {
+        foreach (AvailableActions::cases() as $action) {
+            $checkout = $this->generateCheckoutModel(
+                payment: $this->generatePayment(
+                    paymentStatus: $this->generatePaymentStatus(
+                        availableActions: new AvailableActionsCollection(
+                            data: [
+                                $action
+                            ]
+                        )
+                    )
+                )
+            );
+
+            if ($action === AvailableActions::CANCEL) {
+                $this->assertTrue(
+                    condition: $checkout->canCancel()
+                );
+            } else {
+                $this->assertFalse(
+                    condition: $checkout->canCancel()
+                );
+            }
+        }
+    }
+
+    /**
+     * Verify that the canRefund method works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testCanRefund(): void
+    {
+        foreach (AvailableActions::cases() as $action) {
+            $checkout = $this->generateCheckoutModel(
+                payment: $this->generatePayment(
+                    paymentStatus: $this->generatePaymentStatus(
+                        availableActions: new AvailableActionsCollection(
+                            data: [
+                                $action
+                            ]
+                        )
+                    )
+                )
+            );
+
+            if ($action === AvailableActions::REFUND) {
+                $this->assertTrue(
+                    condition: $checkout->canRefund()
+                );
+            } else {
+                $this->assertFalse(
+                    condition: $checkout->canRefund()
+                );
+            }
+        }
+    }
+
+    /**
+     * Verify that the isCaptured method works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testIsCaptured(): void
+    {
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 500,
+                    capturedAmount: 500,
+                    refundedAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertTrue(
+            condition: $checkout->isCaptured()
+        );
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 0,
+                    capturedAmount: 500,
+                    refundedAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::CAPTURE
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isCaptured());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 500,
+                    capturedAmount: 0,
+                    refundedAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isCaptured());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 0,
+                    capturedAmount: 500,
+                    refundedAmount: 500,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isCaptured());
+    }
+
+    /**
+     * Verify that the isCancelled method works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testIsCancelled(): void
+    {
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 500,
+                    capturedAmount: 0,
+                    refundedAmount: 0,
+                    cancelledAmount: 500,
+                    requestedAmount: 500,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertTrue(condition: $checkout->isCancelled());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 500,
+                    capturedAmount: 0,
+                    refundedAmount: 0,
+                    requestedAmount: 250,
+                    cancelledAmount: 250,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isCancelled());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 0,
+                    capturedAmount: 0,
+                    refundedAmount: 0,
+                    requestedAmount: 250,
+                    cancelledAmount: 500,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isCancelled());
+    }
+
+    /**
+     * Verify that the isRefunded method works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testIsRefunded(): void
+    {
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 500,
+                    capturedAmount: 500,
+                    refundedAmount: 500,
+                    requestedAmount: 500,
+                    cancelledAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::CANCEL
+                    ])
+                )
+            )
+        );
+
+        $this->assertTrue(condition: $checkout->isRefunded());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 0,
+                    capturedAmount: 0,
+                    refundedAmount: 0,
+                    requestedAmount: 250,
+                    cancelledAmount: 00,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isRefunded());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 250,
+                    capturedAmount: 250,
+                    refundedAmount: 0,
+                    requestedAmount: 500,
+                    cancelledAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isRefunded());
+
+        $checkout = $this->generateCheckoutModel(
+            payment: $this->generatePayment(
+                paymentStatus: $this->generatePaymentStatus(
+                    authorizedAmount: 0,
+                    capturedAmount: 250,
+                    refundedAmount: 230,
+                    requestedAmount: 500,
+                    cancelledAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::REFUND
+                    ])
+                )
+            )
+        );
+
+        $this->assertFalse(condition: $checkout->isRefunded());
     }
 }
