@@ -410,7 +410,7 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
-                    authorizedAmount: 0,
+                    authorizedAmount: 500,
                     capturedAmount: 500,
                     refundedAmount: 0,
                     availableActions: new AvailableActionsCollection(data: [
@@ -485,7 +485,7 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
-                    authorizedAmount: 0,
+                    authorizedAmount: 500,
                     capturedAmount: 0,
                     refundedAmount: 0,
                     cancelledAmount: 500,
@@ -549,7 +549,7 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
-                    authorizedAmount: 0,
+                    authorizedAmount: 500,
                     capturedAmount: 500,
                     refundedAmount: 500,
                     requestedAmount: 500,

@@ -103,7 +103,11 @@ class Checkout extends Model
 
         return
             !$this->canCapture() &&
-            $this->payment->status->authorizedAmount === 0 &&
+            (
+                $this->payment->status->authorizedAmount -
+                $this->payment->status->cancelledAmount -
+                $this->payment->status->capturedAmount === 0
+            ) &&
             $this->payment->status->capturedAmount > 0 &&
             $this->payment->status->capturedAmount !== $this->payment->status->refundedAmount;
     }
@@ -118,7 +122,11 @@ class Checkout extends Model
         }
 
         return
-            $this->payment->status->authorizedAmount === 0 &&
+            (
+                $this->payment->status->authorizedAmount -
+                $this->payment->status->cancelledAmount -
+                $this->payment->status->capturedAmount === 0
+            ) &&
             $this->payment->status->requestedAmount === $this->payment->status->cancelledAmount;
     }
 
@@ -133,7 +141,11 @@ class Checkout extends Model
 
         return
             $this->payment->status->capturedAmount > 0 &&
-            $this->payment->status->authorizedAmount === 0 &&
+            (
+                $this->payment->status->authorizedAmount -
+                $this->payment->status->cancelledAmount -
+                $this->payment->status->capturedAmount === 0
+            ) &&
             $this->payment->status->capturedAmount === $this->payment->status->refundedAmount;
     }
 
