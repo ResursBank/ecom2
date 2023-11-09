@@ -1375,10 +1375,10 @@
     }
   },
   {
-    "id": "failed-clearing-cart",
+    "id": "failed-to-resolve-callback-url",
     "translation": {
-      "en": "Clearing cart failed",
-      "sv": "Tömning av kundvagn misslyckades."
+      "en": "Failed to resolve callback URL",
+      "sv": "Kunde inte sammanställa callback URL"
     }
   }
 ]

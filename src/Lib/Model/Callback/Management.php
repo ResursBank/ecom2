@@ -36,6 +36,7 @@ class Management extends Model implements CallbackInterface
         public readonly Action $action,
         public readonly string $actionId,
         public readonly string $created,
+        public readonly ?string $checkoutId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validatePaymentId();
@@ -49,6 +50,14 @@ class Management extends Model implements CallbackInterface
     public function getPaymentId(): string
     {
         return $this->paymentId;
+    }
+
+    /**
+     * Property wrapper to fulfill contract.
+     */
+    public function getCheckoutId(): ?string
+    {
+        return $this->checkoutId;
     }
 
     /**
