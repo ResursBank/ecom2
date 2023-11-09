@@ -1377,8 +1377,15 @@
   {
     "id": "failed-clearing-cart",
     "translation": {
-      "en": "Clearing cart failed",
+      "en": "Clearing cart failed.",
       "sv": "Tömning av kundvagn misslyckades."
+    }
+  },
+  {
+    "id": "failed-to-resolve-callback-url",
+    "translation": {
+      "en": "Failed to resolve callback URL",
+      "sv": "Kunde inte sammanställa callback URL"
     }
   }
 ]
