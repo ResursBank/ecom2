@@ -1,9 +1,10 @@
 <?php
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 
@@ -11,6 +12,7 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -20,10 +22,12 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Throwable;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
@@ -178,6 +182,11 @@ class PaymentInformation extends Widget
         return (float) $this->payment->order?->refundedAmount;
     }
 
+    public function getCancelledAmount(): float
+    {
+        return (float) $this->payment->order?->canceledAmount;
+    }
+
     /**
      * Take supplied amount value and format with currency symbol etc.
      */
@@ -186,6 +195,22 @@ class PaymentInformation extends Widget
         return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
             $this->currencySymbol . ' ' . $amount :
             $amount . ' ' . $this->currencySymbol;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public function getPaymentIdLabel(): string
+    {
+        $result = 'ID';
+
+        try {
+            $result = Translator::translate(phraseId: 'payment-id');
+        } catch (Throwable $error) {
+            //Config::getLogger()->error(message: $error);
+        }
+
+        return $result;
     }
 
     /**

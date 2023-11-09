@@ -1,9 +1,10 @@
 <?php
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 
@@ -11,6 +12,7 @@ namespace Resursbank\Ecom\Module\Rco\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -20,12 +22,14 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation as Original;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Rco\Repository;
+use Throwable;
 
 /**
  * RCO Plus specific payment information widget.
@@ -101,7 +105,7 @@ class PaymentInformation extends Original
 
     public function getPaymentMethodName(): string
     {
-        return (string) $this->checkout->paymentMethods?->methods->getMethodName(
+        return (string) $this->checkout->payment?->methods->getMethodName(
             methodId: (string) $this->checkout->payment?->selection->methodId
         );
     }
@@ -134,5 +138,36 @@ class PaymentInformation extends Original
     public function getRefundedAmount(): float
     {
         return (float) $this->checkout->payment?->status->refundedAmount;
+    }
+
+    public function getCancelledAmount(): float
+    {
+        return (float) $this->checkout->payment?->status->cancelledAmount;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public function getPaymentIdLabel(): string
+    {
+        $result = 'ID';
+
+        try {
+            $result = Translator::translate(phraseId: 'checkout-id');
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Take supplied amount value and format with currency symbol etc.
+     */
+    public function getFormattedAmount(float $amount): string
+    {
+        return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
+            $this->currencySymbol . ' ' . $amount/100 :
+            $amount/100 . ' ' . $this->currencySymbol;
     }
 }
