@@ -20,7 +20,9 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation as Original;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -57,42 +59,51 @@ class PaymentInformation extends Original
 
     public function hasAddress(): bool
     {
-        return $this->checkout->customer->billing !== null;
+        return $this->getCustomerAddress() !== null;
+    }
+
+    public function getCustomerAddress(): ?Address
+    {
+        return $this->checkout->customer->useSeparateDeliveryAddress() ?
+            $this->checkout->customer->delivery?->address :
+            $this->checkout->customer->billing?->address;
     }
 
     public function getAddressRow2(): string
     {
-        return (string) $this->checkout->customer->billing?->address?->addressLine;
+        return (string) $this->getCustomerAddress()?->addressLine;
     }
 
     public function getAddressRow1(): string
     {
-        return (string) $this->checkout->customer->billing?->address?->street;
+        return (string) $this->getCustomerAddress()?->street;
     }
 
     public function getCity(): string
     {
-        return (string) $this->checkout->customer->billing?->address?->city;
+        return (string) $this->getCustomerAddress()?->city;
     }
 
     public function getCountryCode(): string
     {
-        return (string) $this->checkout->customer->billing?->address?->countryCode?->value;
+        return (string) $this->getCustomerAddress()?->countryCode?->value;
     }
 
     public function getPostalCode(): string
     {
-        return (string) $this->checkout->customer->billing?->address?->postalCode;
+        return (string) $this->getCustomerAddress()?->postalCode;
     }
 
     public function getStatus(): string
     {
-        return (string) $this->checkout->payment?->status->status?->value;
+        return (string) $this->checkout->payment?->status->type?->value;
     }
 
     public function getPaymentMethodName(): string
     {
-        return (string) $this->checkout->payment?->selection->methodId;
+        return (string) $this->checkout->paymentMethods?->methods->getMethodName(
+            methodId: (string) $this->checkout->payment?->selection->methodId
+        );
     }
 
     public function getCustomerName(): string
@@ -122,16 +133,6 @@ class PaymentInformation extends Original
 
     public function getRefundedAmount(): float
     {
-        return (float) (float) $this->checkout->payment?->status->refundedAmount;
-    }
-
-    /**
-     * Take supplied amount value and format with currency symbol etc.
-     */
-    public function getFormattedAmount(float $amount): string
-    {
-        return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
-            $this->currencySymbol . ' ' . intval(value: $amount) :
-            intval(value: $amount) . ' ' . $this->currencySymbol;
+        return (float) $this->checkout->payment?->status->refundedAmount;
     }
 }

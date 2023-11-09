@@ -20,4 +20,19 @@ class PaymentMethodCollection extends Collection
     {
         parent::__construct(data: $data, type: PaymentMethod::class);
     }
+
+    public function getMethodName(string $methodId): string
+    {
+        $result = $methodId;
+
+        /** @var PaymentMethod $method */
+        foreach ($this->getData() as $method) {
+            if ($method->methodId === $methodId) {
+                $result = $method->name;
+                break;
+            }
+        }
+
+        return $result;
+    }
 }
