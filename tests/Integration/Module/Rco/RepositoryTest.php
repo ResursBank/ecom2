@@ -146,8 +146,6 @@ final class RepositoryTest extends TestCase
     /**
      * Fetch a new payment object.
      *
-     * @param string|null $orderReference
-     * @return Checkout
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

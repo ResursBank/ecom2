@@ -9,17 +9,13 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection;
-use Resursbank\Ecom\Lib\Utilities\Strings;
-use Throwable;
 
 /**
  * Integrity test of RCO Checkout PaymentMethodCollection model class.
