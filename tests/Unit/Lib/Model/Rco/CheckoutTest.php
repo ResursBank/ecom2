@@ -49,12 +49,6 @@ class CheckoutTest extends TestCase
     /**
      * Get mocked Checkout model instance.
      *
-     * @param string|null $id
-     * @param string|null $storeId
-     * @param string|null $orderReference
-     * @param string|null $version
-     * @param Payment|null $payment
-     * @return Checkout
      * @throws AttributeCombinationException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -163,7 +157,9 @@ class CheckoutTest extends TestCase
             cancelledAmount: $cancelledAmount ?? 0,
             capturedAmount: $capturedAmount ?? 0,
             refundedAmount: $refundedAmount ?? 0,
-            availableActions: $availableActions ?? new AvailableActionsCollection(data: []),
+            availableActions: $availableActions ?? new AvailableActionsCollection(
+                data: []
+            ),
             type: PaymentStatusEnum::NONE
         );
     }

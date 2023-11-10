@@ -21,7 +21,6 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\UrlValidationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -147,12 +146,19 @@ final class RepositoryTest extends TestCase
     /**
      * Fetch a new payment object.
      *
+     * @param string|null $orderReference
+     * @return Checkout
+     * @throws ApiException
+     * @throws AuthException
      * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws UrlValidationException
-     * @throws Exception
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     private function initFull(
         ?string $orderReference = null
@@ -252,11 +258,17 @@ final class RepositoryTest extends TestCase
     /**
      * Assert that Init returns a Payment object.
      *
+     * @throws ApiException
+     * @throws AuthException
      * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws UrlValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      * @throws Exception
      * @todo Expand this to not just test the orderReference.
      */
@@ -280,12 +292,12 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws UrlValidationException
      */
     public function testSetCart(): void
     {
@@ -319,12 +331,12 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws UrlValidationException
      */
     public function testPatchCart(): void
     {
@@ -356,12 +368,12 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws UrlValidationException
      */
     public function testSetShippingMethods(): void
     {
@@ -408,12 +420,12 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws UrlValidationException
      */
     public function testDeleteCartItem(): void
     {
@@ -449,12 +461,12 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws UrlValidationException
      * @throws Exception
      */
     public function testSetOrderReference(): void
@@ -482,11 +494,11 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testGet(): void
@@ -502,10 +514,11 @@ final class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws EmptyValueException
+     * @throws AttributeCombinationException
      * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws IllegalCharsetException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testValidateCheckoutModel(): void
     {
@@ -552,11 +565,11 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testCapture(): void
@@ -590,15 +603,17 @@ final class RepositoryTest extends TestCase
      * Verify that partial captures work and capture the correct amount.
      *
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws MissingKeyException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testPartialCapture(): void
@@ -671,11 +686,11 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testCancel(): void
@@ -713,11 +728,11 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testRefund(): void
@@ -776,11 +791,11 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
      */
     public function testPartialRefund(): void
@@ -842,6 +857,7 @@ final class RepositoryTest extends TestCase
      * Assert that updating a checkout's status works.
      *
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -851,9 +867,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
      * @throws ValidationException
-     * @throws AttributeCombinationException
      */
     public function testUpdate(): void
     {
@@ -905,7 +919,6 @@ final class RepositoryTest extends TestCase
 
         $updated = Repository::update(
             id: $fetched->id,
-            version: $fetched->version,
             data: new UpdateCheckout(
                 status: new SetStatus(
                     type: CheckoutStatus::VALIDATED,
@@ -913,9 +926,10 @@ final class RepositoryTest extends TestCase
                 ),
                 selectedPaymentMethodId: $fetched->payment->selection->methodId,
                 customer: $newCustomer,
-                orderReference: $fetched->orderReference,
-                cart: $cart
-            )
+                cart: $cart,
+                orderReference: $fetched->orderReference
+            ),
+            version: $fetched->version
         );
 
         $this->assertEquals(
@@ -935,15 +949,15 @@ final class RepositoryTest extends TestCase
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws UrlValidationException
+     * @throws TranslationException
      * @throws ValidationException
      * @throws WebhookException
-     * @throws FilesystemException
-     * @throws TranslationException
      */
     public function testGetWebhookRequestData(): void
     {
@@ -982,12 +996,12 @@ final class RepositoryTest extends TestCase
      * @throws CurlException
      * @throws EmptyValueException
      * @throws FilesystemException
+     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
-     * @throws UrlValidationException
      * @throws ValidationException
      * @throws WebhookException
      */
