@@ -408,7 +408,7 @@ final class StringValidationTest extends TestCase
     {
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '198001010001'
+                value: '198305147715'
             )
         );
     }
@@ -462,24 +462,24 @@ final class StringValidationTest extends TestCase
     {
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '188001010001'
+                value: '188305147715'
             )
         );
 
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '198001010001'
+                value: '198305147715'
             )
         );
 
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '208001010001'
+                value: '208305147715'
             )
         );
 
         $this->expectException(exception: IllegalValueException::class);
-        $this->stringValidation->isSwedishSsn(value: '178001010001');
+        $this->stringValidation->isSwedishSsn(value: '178305147715');
     }
 
     /**

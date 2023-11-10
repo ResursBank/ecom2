@@ -578,7 +578,7 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -621,7 +621,7 @@ final class RepositoryTest extends TestCase
             id: $checkout->id,
             version: $checkout->version
         );
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -699,7 +699,7 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -741,7 +741,7 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -804,7 +804,7 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8001010001');
+        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -904,7 +904,7 @@ final class RepositoryTest extends TestCase
 
         $newCustomer = new CustomerModel(
             type: $fetched->customer->type,
-            governmentId: 'SE8001010001',
+            governmentId: 'SE8305147715',
             billing: $fetched->customer->billing,
             delivery: $fetched->customer->delivery
         );

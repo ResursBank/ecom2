@@ -57,20 +57,16 @@ class Customer extends Model
         return
             $this->delivery?->address?->addressLine ||
             $this->delivery?->address?->city ||
-            $this->delivery?->address?->countryCode !== CountryCode::UNKNOWN ||
-            /* @phpstan-ignore-next-line */
+            (
+                $this->delivery?->address?->countryCode !== CountryCode::UNKNOWN &&
+                $this->delivery?->address?->countryCode !== null
+            ) ||
             $this->delivery?->address?->postalCode ||
-            /* @phpstan-ignore-next-line */
             $this->delivery?->address?->street ||
-            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->phone ||
-            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->email ||
-            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->firstName ||
-            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->lastName ||
-            /* @phpstan-ignore-next-line */
             $this->delivery?->name;
     }
 }

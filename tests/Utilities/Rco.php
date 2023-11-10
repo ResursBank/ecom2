@@ -162,7 +162,7 @@ class Rco
             options: new Options(),
             customer: new Customer(
                 type: Type::B2C,
-                governmentId: 'SE8001010001',
+                governmentId: 'SE8305147715',
                 billing: new Recipient(
                     name: 'John Doe',
                     contact: new Contact(
