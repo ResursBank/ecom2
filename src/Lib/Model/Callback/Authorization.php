@@ -54,7 +54,7 @@ class Authorization extends Model implements CallbackInterface
      */
     public function getCheckoutId(): ?string
     {
-        return $this->checkoutId;
+        return null;
     }
 
     /**
@@ -66,6 +66,7 @@ class Authorization extends Model implements CallbackInterface
      * @throws FilesystemException
      * @throws TranslationException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function getNote(): string
     {

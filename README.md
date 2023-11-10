@@ -5,6 +5,12 @@ complete API coverage.
 
 ---
 
+## Setup
+
+When setting up the project for development please be sure the parent directory
+is not called **src** since this will break PHPCS configuration (meaning the
+**src** directory of the project cannot be located at **src/src**).
+
 ## Config
 
 The **Config::setup()** must always be called before performing any API call.

@@ -49,8 +49,17 @@ class CheckoutTest extends TestCase
     /**
      * Get mocked Checkout model instance.
      *
+     * @param string|null $id
+     * @param string|null $storeId
+     * @param string|null $orderReference
+     * @param string|null $version
+     * @param Payment|null $payment
+     * @return Checkout
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws Exception
      */
     private function generateCheckoutModel(
@@ -72,10 +81,10 @@ class CheckoutTest extends TestCase
             version: $version ?? Strings::getUuid(),
             options: new Options(),
             customer: new Customer(type: Type::B2C),
-            payment: $payment ?? $this->generatePayment(),
             status: new Status(
                 type: CheckoutStatus::INITIATED
-            )
+            ),
+            payment: $payment ?? $this->generatePayment()
         );
     }
 
@@ -87,6 +96,7 @@ class CheckoutTest extends TestCase
      * @throws ReflectionException
      * @throws AttributeCombinationException
      * @throws IllegalTypeException
+     * @throws Exception
      */
     private function generatePayment(
         ?PaymentStatus $paymentStatus = null
@@ -115,19 +125,18 @@ class CheckoutTest extends TestCase
                     ])
                 )
             ]),
+            selection: new PaymentSelection(
+                methodId: $paymentMethodId,
+                type: PaymentSelectionEnum::DEFAULT
+            ),
             status: $paymentStatus ?? new PaymentStatus(
                 requestedAmount: 0,
                 authorizedAmount: 0,
                 cancelledAmount: 0,
                 capturedAmount: 0,
                 refundedAmount: 0,
-                status: PaymentStatusEnum::NONE,
-                availableActions: new AvailableActionsCollection(data: [
-                ])
-            ),
-            selection: new PaymentSelection(
-                methodId: $paymentMethodId,
-                type: PaymentSelectionEnum::DEFAULT
+                availableActions: new AvailableActionsCollection(data: []),
+                type: PaymentStatusEnum::NONE
             )
         );
     }
@@ -154,11 +163,8 @@ class CheckoutTest extends TestCase
             cancelledAmount: $cancelledAmount ?? 0,
             capturedAmount: $capturedAmount ?? 0,
             refundedAmount: $refundedAmount ?? 0,
-            status: PaymentStatusEnum::NONE,
-            availableActions: $availableActions ?? new AvailableActionsCollection(
-                data: [
-                ]
-            )
+            availableActions: $availableActions ?? new AvailableActionsCollection(data: []),
+            type: PaymentStatusEnum::NONE
         );
     }
 
@@ -178,8 +184,11 @@ class CheckoutTest extends TestCase
     /**
      * Assert validation rules for id property.
      *
-     * @throws EmptyValueException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testIdValidation(): void
     {
@@ -201,8 +210,11 @@ class CheckoutTest extends TestCase
     /**
      * Assert validation rules for storeId property.
      *
-     * @throws EmptyValueException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testStoreIdValidation(): void
     {
@@ -224,8 +236,11 @@ class CheckoutTest extends TestCase
     /**
      * Assert validation rules for orderReference property.
      *
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
-     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ReflectionException
      * @throws Exception
      */
     public function testOrderReferenceValidation(): void
@@ -261,8 +276,11 @@ class CheckoutTest extends TestCase
     /**
      * Assert validation rules for version property.
      *
-     * @throws EmptyValueException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testVersionValidation(): void
     {
@@ -285,7 +303,6 @@ class CheckoutTest extends TestCase
      * Verify that the canCapture method works as intended.
      *
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -323,7 +340,6 @@ class CheckoutTest extends TestCase
      * Verify that the canCancel method works as intended.
      *
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -361,7 +377,6 @@ class CheckoutTest extends TestCase
      * Verify that the canRefund method works as intended.
      *
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -399,7 +414,6 @@ class CheckoutTest extends TestCase
      * Verify that the isCaptured method works as intended.
      *
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -474,7 +488,6 @@ class CheckoutTest extends TestCase
      * Verify that the isCancelled method works as intended.
      *
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -485,11 +498,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 500,
                     authorizedAmount: 500,
+                    cancelledAmount: 500,
                     capturedAmount: 0,
                     refundedAmount: 0,
-                    cancelledAmount: 500,
-                    requestedAmount: 500,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::REFUND
                     ])
@@ -502,11 +515,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 250,
                     authorizedAmount: 500,
+                    cancelledAmount: 250,
                     capturedAmount: 0,
                     refundedAmount: 0,
-                    requestedAmount: 250,
-                    cancelledAmount: 250,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::REFUND
                     ])
@@ -519,11 +532,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 250,
                     authorizedAmount: 0,
+                    cancelledAmount: 500,
                     capturedAmount: 0,
                     refundedAmount: 0,
-                    requestedAmount: 250,
-                    cancelledAmount: 500,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::REFUND
                     ])
@@ -538,7 +551,6 @@ class CheckoutTest extends TestCase
      * Verify that the isRefunded method works as intended.
      *
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
@@ -549,11 +561,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 500,
                     authorizedAmount: 500,
+                    cancelledAmount: 0,
                     capturedAmount: 500,
                     refundedAmount: 500,
-                    requestedAmount: 500,
-                    cancelledAmount: 0,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::CANCEL
                     ])
@@ -566,11 +578,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 250,
                     authorizedAmount: 0,
+                    cancelledAmount: 00,
                     capturedAmount: 0,
                     refundedAmount: 0,
-                    requestedAmount: 250,
-                    cancelledAmount: 00,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::REFUND
                     ])
@@ -583,11 +595,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 500,
                     authorizedAmount: 250,
+                    cancelledAmount: 0,
                     capturedAmount: 250,
                     refundedAmount: 0,
-                    requestedAmount: 500,
-                    cancelledAmount: 0,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::REFUND
                     ])
@@ -600,11 +612,11 @@ class CheckoutTest extends TestCase
         $checkout = $this->generateCheckoutModel(
             payment: $this->generatePayment(
                 paymentStatus: $this->generatePaymentStatus(
+                    requestedAmount: 500,
                     authorizedAmount: 0,
+                    cancelledAmount: 0,
                     capturedAmount: 250,
                     refundedAmount: 230,
-                    requestedAmount: 500,
-                    cancelledAmount: 0,
                     availableActions: new AvailableActionsCollection(data: [
                         AvailableActions::REFUND
                     ])

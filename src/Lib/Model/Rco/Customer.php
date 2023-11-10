@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
@@ -24,6 +27,9 @@ class Customer extends Model
      * @param string|null $governmentId Government id supplied by the customer.
      * @param Recipient|null $billing Billing address object.
      * @param Recipient|null $delivery Delivery address object.
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
         public readonly Type $type,
@@ -44,7 +50,7 @@ class Customer extends Model
      * delivery address. In a nutshell, if there is a value for any property
      * associated with the delivery address, then there is a delivery address.
      *
-     * @return bool
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function useSeparateDeliveryAddress(): bool
     {
@@ -52,12 +58,19 @@ class Customer extends Model
             $this->delivery?->address?->addressLine ||
             $this->delivery?->address?->city ||
             $this->delivery?->address?->countryCode !== CountryCode::UNKNOWN ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->address?->postalCode ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->address?->street ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->phone ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->email ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->firstName ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->contact?->lastName ||
+            /* @phpstan-ignore-next-line */
             $this->delivery?->name;
     }
 }

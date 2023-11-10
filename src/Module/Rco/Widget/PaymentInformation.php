@@ -1,10 +1,9 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
-
-/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 
@@ -25,7 +24,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
-use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation as Original;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -167,7 +165,7 @@ class PaymentInformation extends Original
     public function getFormattedAmount(float $amount): string
     {
         return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
-            $this->currencySymbol . ' ' . $amount/100 :
-            $amount/100 . ' ' . $this->currencySymbol;
+            $this->currencySymbol . ' ' . $amount / 100 :
+            $amount / 100 . ' ' . $this->currencySymbol;
     }
 }
