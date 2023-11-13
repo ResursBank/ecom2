@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\EnabledCustomerTypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
 /**
@@ -23,7 +24,7 @@ class Options extends Model
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly ?bool $b2bEnabled = null,
+        public readonly ?EnabledCustomerTypeCollection $enabledCustomerTypes = null,
         public readonly ?bool $renderCart = null,
         public readonly ?bool $calculateShipping = null,
         public readonly ?bool $lookupB2CAddress = null,
