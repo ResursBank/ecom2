@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -204,8 +205,8 @@ class PaymentInformation extends Widget
 
         try {
             $result = Translator::translate(phraseId: 'payment-id');
-        } catch (Throwable) {
-            //Config::getLogger()->error(message: $error);
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
         }
 
         return $result;

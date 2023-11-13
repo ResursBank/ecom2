@@ -578,7 +578,10 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(
+            checkout: $validated,
+            ssn: $_ENV['RCO_JWT_GOVERNMENT_ID']
+        );
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -621,7 +624,10 @@ final class RepositoryTest extends TestCase
             id: $checkout->id,
             version: $checkout->version
         );
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(
+            checkout: $validated,
+            ssn: $_ENV['RCO_JWT_GOVERNMENT_ID']
+        );
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -699,7 +705,10 @@ final class RepositoryTest extends TestCase
             version: $response->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(
+            checkout: $validated,
+            ssn: $_ENV['RCO_JWT_GOVERNMENT_ID']
+        );
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -741,7 +750,10 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(
+            checkout: $validated,
+            ssn: $_ENV['RCO_JWT_GOVERNMENT_ID']
+        );
 
         $fetched = Repository::get(id: $validated->id);
 
@@ -804,7 +816,10 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        MockSignerRco::approveRco(checkout: $validated, ssn: '8305147715');
+        MockSignerRco::approveRco(
+            checkout: $validated,
+            ssn: $_ENV['RCO_JWT_GOVERNMENT_ID']
+        );
 
         $fetched = Repository::get(id: $validated->id);
 
