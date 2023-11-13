@@ -24,9 +24,8 @@ class PaymentStatus extends Model
         public readonly int $cancelledAmount,
         public readonly int $capturedAmount,
         public readonly int $refundedAmount,
-        public readonly ?PaymentStatusEnum $status = null,
         public readonly ?AvailableActionsCollection $availableActions = null,
-        public readonly ?Enum\PaymentStatus $type = null
+        public readonly ?PaymentStatusEnum $type = null
     ) {
         parent::__construct();
     }

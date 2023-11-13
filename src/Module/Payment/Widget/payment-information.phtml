@@ -24,7 +24,7 @@ use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
       </th>
     </tr>
     <tr>
-      <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'payment-id') ?></td>
+      <td class="rb-pi-row-header"><?= $this->getPaymentIdLabel() ?></td>
       <td><?= $this->paymentId ?></td>
     </tr>
     <tr>
@@ -39,6 +39,10 @@ use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'refunded-amount') ?></td>
       <td><?= $this->getFormattedAmount(amount: $this->getRefundedAmount()) ?></td>
     </tr>
+  <tr>
+      <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'cancelled-amount') ?></td>
+      <td><?= $this->getFormattedAmount(amount: $this->getCancelledAmount()) ?></td>
+  </tr>
     <tr>
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'status') ?></td>
       <td><?= $this->getStatus() ?></td>

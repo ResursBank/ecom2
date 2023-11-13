@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActionsCollection;
@@ -31,21 +33,24 @@ class PaymentStatusTest extends TestCase
      * Get mocked model instance.
      *
      * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws JsonException
+     * @throws AttributeCombinationException
      */
     private function generateModel(
         ?array $availableActions = null
     ): void {
         new PaymentStatus(
+            requestedAmount: 0,
             authorizedAmount: 0,
             cancelledAmount: 0,
             capturedAmount: 0,
             refundedAmount: 0,
-            requestedAmount: 0,
-            status: PaymentStatusEnum::AUTHORIZED,
             availableActions: is_array(value: $availableActions) ?
                 new AvailableActionsCollection(
                     data: $availableActions
-                ) : null
+                ) : null,
+            type: PaymentStatusEnum::AUTHORIZED
         );
     }
 

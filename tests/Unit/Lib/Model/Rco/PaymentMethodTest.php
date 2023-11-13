@@ -22,9 +22,6 @@ use Throwable;
 
 /**
  * Integrity test of RCO Checkout PaymentMethod model class.
-
-/**
- * Unit tests for PaymentMethod.
  */
 class PaymentMethodTest extends TestCase
 {

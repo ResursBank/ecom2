@@ -1387,5 +1387,19 @@
       "en": "Failed to resolve callback URL",
       "sv": "Kunde inte sammanställa callback URL"
     }
+  },
+  {
+    "id": "checkout-id",
+    "translation": {
+      "en": "Checkout-ID",
+      "sv": "Checkout-ID"
+    }
+  },
+  {
+    "id": "cancelled-amount",
+    "translation": {
+      "en": "Cancelled amount",
+      "sv": "Avbrutet belopp"
+    }
   }
 ]
