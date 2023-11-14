@@ -1410,7 +1410,7 @@
     }
   },
   {
-    "id": "failed-missing-discount-code",
+    "id": "missing-discount-code",
     "translation": {
       "en": "Missing discount code.",
       "sv": "Rabattkod saknas."
