@@ -11,7 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\CustomerType;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\EnabledCustomerTypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
@@ -29,7 +29,7 @@ class Options extends Model
      */
     public function __construct(
         public readonly ?EnabledCustomerTypeCollection $enabledCustomerTypes = new EnabledCustomerTypeCollection(
-            data: [CustomerType::B2C, CustomerType::B2B]
+            data: [Type::B2C, Type::B2B]
         ),
         public readonly ?bool $renderCart = null,
         public readonly ?bool $calculateShipping = null,

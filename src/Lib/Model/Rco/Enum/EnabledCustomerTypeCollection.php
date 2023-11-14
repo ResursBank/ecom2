@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco\Enum;
 
 use Resursbank\Ecom\Lib\Collection\EnumCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 
 /**
  * Collection of Customer Types.
@@ -18,6 +19,6 @@ class EnabledCustomerTypeCollection extends EnumCollection
 {
     public function __construct(array $data)
     {
-        parent::__construct(data: $data, type: CustomerType::class);
+        parent::__construct(data: $data, type: Type::class);
     }
 }
