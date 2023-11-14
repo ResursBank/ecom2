@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Enum;
 use Resursbank\Ecom\Lib\Collection\EnumCollection;
 
 /**
- * Collection of Required values.
+ * Collection of Customer Types.
  */
 class EnabledCustomerTypeCollection extends EnumCollection
 {

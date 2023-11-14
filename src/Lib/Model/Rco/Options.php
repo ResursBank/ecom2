@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CustomerType;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\EnabledCustomerTypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
@@ -21,10 +23,14 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 class Options extends Model
 {
     /**
+     * @param EnabledCustomerTypeCollection|null $enabledCustomerTypes Defaults to both active.
+     * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly ?EnabledCustomerTypeCollection $enabledCustomerTypes = null,
+        public readonly ?EnabledCustomerTypeCollection $enabledCustomerTypes = new EnabledCustomerTypeCollection(
+            data: [CustomerType::B2C, CustomerType::B2B]
+        ),
         public readonly ?bool $renderCart = null,
         public readonly ?bool $calculateShipping = null,
         public readonly ?bool $lookupB2CAddress = null,
