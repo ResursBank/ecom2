@@ -1401,5 +1401,19 @@
       "en": "Cancelled amount",
       "sv": "Avbrutet belopp"
     }
+  },
+  {
+    "id": "failed-applying-discount-code",
+    "translation": {
+      "en": "Failed to apply discount code.",
+      "sv": "Kunde inte applicera rabattkod."
+    }
+  },
+  {
+    "id": "failed-missing-discount-code",
+    "translation": {
+      "en": "Missing discount code.",
+      "sv": "Rabattkod saknas."
+    }
   }
 ]

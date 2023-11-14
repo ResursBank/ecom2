@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation as Original;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -61,39 +62,39 @@ class PaymentInformation extends Original
 
     public function hasAddress(): bool
     {
-        return $this->getCustomerAddress() !== null;
+        return $this->getCustomerRecipient()?->address !== null;
     }
 
-    public function getCustomerAddress(): ?Address
+    public function getCustomerRecipient(): ?Recipient
     {
         return $this->checkout->customer->useSeparateDeliveryAddress() ?
-            $this->checkout->customer->delivery?->address :
-            $this->checkout->customer->billing?->address;
+            $this->checkout->customer->delivery :
+            $this->checkout->customer->billing;
     }
 
     public function getAddressRow2(): string
     {
-        return (string) $this->getCustomerAddress()?->addressLine;
+        return (string) $this->getCustomerRecipient()?->address?->addressLine;
     }
 
     public function getAddressRow1(): string
     {
-        return (string) $this->getCustomerAddress()?->street;
+        return (string) $this->getCustomerRecipient()?->address?->street;
     }
 
     public function getCity(): string
     {
-        return (string) $this->getCustomerAddress()?->city;
+        return (string) $this->getCustomerRecipient()?->address?->city;
     }
 
     public function getCountryCode(): string
     {
-        return (string) $this->getCustomerAddress()?->countryCode?->value;
+        return (string) $this->getCustomerRecipient()?->address?->countryCode?->value;
     }
 
     public function getPostalCode(): string
     {
-        return (string) $this->getCustomerAddress()?->postalCode;
+        return (string) $this->getCustomerRecipient()?->address?->postalCode;
     }
 
     public function getStatus(): string
@@ -110,17 +111,17 @@ class PaymentInformation extends Original
 
     public function getCustomerName(): string
     {
-        return (string) $this->checkout->customer->billing?->name;
+        return (string) $this->getCustomerRecipient()?->name;
     }
 
     public function getTelephone(): string
     {
-        return (string) $this->checkout->customer->billing?->contact?->phone;
+        return (string) $this->getCustomerRecipient()?->contact?->phone;
     }
 
     public function getEmail(): string
     {
-        return (string) $this->checkout->customer->billing?->contact?->email;
+        return (string) $this->getCustomerRecipient()?->contact?->email;
     }
 
     public function getAuthorizedAmount(): float
