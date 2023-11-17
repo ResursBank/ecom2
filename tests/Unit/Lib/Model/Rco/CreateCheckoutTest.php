@@ -48,7 +48,8 @@ class CreateCheckoutTest extends TestCase
                     description: 'An item',
                     quantityUnit: 'st',
                     unitPrice: 1500,
-                    quantity: 1
+                    quantity: 1,
+                    taxRate: 25
                 )
             ])),
             merchant: new Merchant(

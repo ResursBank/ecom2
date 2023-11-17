@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -60,9 +61,7 @@ class PaymentMethods
             $result = $cache->read();
 
             if (!$result instanceof PaymentMethodCollection) {
-                $result = self::getApi(
-                    storeId: $storeId
-                )->call();
+                $result = self::getApi(storeId: $storeId)->call();
 
                 if (!$result instanceof PaymentMethodCollection) {
                     throw new ApiException(message: 'Invalid API response.');
@@ -106,7 +105,7 @@ class PaymentMethods
 
         return new Cache(
             key: 'payment-methods-' . sha1(
-                string: serialize(value: compact('storeId'))
+                string: serialize(value: compact(var_name: 'storeId'))
             ),
             model: PaymentMethod::class,
             ttl: 3600

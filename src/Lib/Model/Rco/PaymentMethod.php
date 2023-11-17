@@ -46,7 +46,7 @@ class PaymentMethod extends Model
         public readonly TypeCollection $customerTypes,
         public readonly int $minLimit,
         public readonly int $maxLimit,
-        public int $sortOrder = 0, // Not provided by the API.
+        public int $sortOrder = 0,
         private readonly ArrayValidation $arrayValidation = new ArrayValidation()
     ) {
         $this->validateDescriptions();
@@ -56,7 +56,8 @@ class PaymentMethod extends Model
     {
         return in_array(
             needle: CustomerType::B2B,
-            haystack: $this->customerTypes->getData()
+            haystack: $this->customerTypes->getData(),
+            strict: true
         );
     }
 
@@ -64,7 +65,8 @@ class PaymentMethod extends Model
     {
         return in_array(
             needle: CustomerType::B2C,
-            haystack: $this->customerTypes->getData()
+            haystack: $this->customerTypes->getData(),
+            strict: true
         );
     }
 
