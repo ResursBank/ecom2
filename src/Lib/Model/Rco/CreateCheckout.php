@@ -33,7 +33,7 @@ class CreateCheckout extends Model
         public readonly CreateCart $cart,
         public readonly Merchant $merchant,
         public readonly ?string $orderReference = null,
-        public readonly ?Options $options = null,
+        public readonly ?CreateOptions $options = null,
         public readonly ?Customer $customer = null,
         public readonly ?Redirects $redirects = null,
         public readonly ?Callbacks $callbacks = null,

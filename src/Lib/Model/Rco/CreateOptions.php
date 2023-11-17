@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
@@ -19,11 +20,11 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
 /**
- * Implementation of OptionsDto object.
+ * Implementation of CreateOptionsDto object.
  *
  * @SuppressWarnings(PHPMD.CamelCaseClassName)
  */
-class Options extends Model
+class CreateOptions extends Model
 {
     /**
      * @param TypeCollection|null $enabledCustomerTypes Defaults to both active.
