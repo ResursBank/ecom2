@@ -1415,5 +1415,19 @@
       "en": "Missing discount code.",
       "sv": "Rabattkod saknas."
     }
+  },
+  {
+    "id": "available-customer-types",
+    "translation": {
+      "en": "Available customer types",
+      "sv": "Tillgängliga kundtyper"
+    }
+  },
+  {
+    "id": "enable-lookup-customer-address",
+    "translation": {
+      "en": "Enable lookup customer address",
+      "sv": "Aktivera stöd för att hämta kundinformation"
+    }
   }
 ]
