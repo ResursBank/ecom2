@@ -40,21 +40,23 @@ class Request extends BaseRequest
     public function __construct(
         string $route,
         RequestMethod $requestMethod,
+        string $model = Checkout::class,
         array $params = [],
         array $headers = [],
-        string $version = ''
+        string $version = '',
+        string $extractProperty = ''
     ) {
         if ($version !== '') {
             $headers[] = new Header(key: 'X-Checkout-Version', value: $version);
         }
 
         parent::__construct(
-            model: Checkout::class,
+            model: $model,
             route: $route,
             requestMethod: $requestMethod,
             api: new Rco(),
             params: $params,
-            extractProperty: '',
+            extractProperty: $extractProperty,
             headers: $headers,
             contentType: ContentType::JSON
         );

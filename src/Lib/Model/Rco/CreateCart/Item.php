@@ -38,7 +38,7 @@ class Item extends Model
         #[StringLength(min: 1, max: 32)] public readonly string $quantityUnit,
         public readonly int $unitPrice,
         #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly ?int $quantity,
-        #[IntValue(min: 0, max: 100)] public readonly ?int $taxRate = null,
+        #[IntValue(min: 0, max: 100)] public readonly int $taxRate,
         #[IntValue(
             min: 0,
             max: (2 ** 31) - 1
