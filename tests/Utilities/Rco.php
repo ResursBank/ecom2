@@ -27,13 +27,13 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateOptions;
 use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Lib\Model\Rco\Redirects;
 use Resursbank\Ecom\Lib\Model\Rco\Webhook;
@@ -159,7 +159,7 @@ class Rco
                 homepageUrl: $_ENV['RCOPLUS_HOMEPAGE_URL']
             ),
             orderReference: $orderReference,
-            options: new Options(),
+            options: new CreateOptions(),
             customer: new Customer(
                 type: Type::B2C,
                 governmentId: 'SE8305147715',
