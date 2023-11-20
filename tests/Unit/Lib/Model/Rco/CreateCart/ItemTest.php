@@ -59,6 +59,10 @@ class ItemTest extends TestCase
             $unitPrice = 0;
         }
 
+        if ($taxRate === null) {
+            $taxRate = 25;
+        }
+
         new Item(
             type: CartItemType::PRODUCT,
             itemId: $itemId,

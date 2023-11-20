@@ -16,8 +16,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 
 /**
- * Generic functionality to perform a GET call against RCO+ and
- * convert the response to model instance(s).
+ * Generic functionality to perform a GET call against RCO+ and convert the
+ * response to model instance(s).
  */
 class Get extends Request
 {
@@ -26,8 +26,15 @@ class Get extends Request
      * @throws EmptyValueException
      */
     public function __construct(
-        string $route
+        string $route,
+        string $model,
+        string $extractProperty = ''
     ) {
-        parent::__construct(route: $route, requestMethod: RequestMethod::GET);
+        parent::__construct(
+            route: $route,
+            requestMethod: RequestMethod::GET,
+            model: $model,
+            extractProperty: $extractProperty
+        );
     }
 }

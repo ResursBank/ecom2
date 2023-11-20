@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -33,6 +34,7 @@ class CreateCartTest extends TestCase
      * @throws EmptyValueException
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
+     * @throws Exception
      */
     public function testTooLongCode(): void
     {
@@ -45,7 +47,8 @@ class CreateCartTest extends TestCase
                     description: Strings::generateRandomString(length: 12),
                     quantityUnit: Strings::generateRandomString(length: 2),
                     unitPrice: 1000,
-                    quantity: 1
+                    quantity: 1,
+                    taxRate: 25
                 )
             ]),
             code: Strings::generateRandomString(length: 129)
@@ -59,6 +62,7 @@ class CreateCartTest extends TestCase
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws Exception
      */
     public function testValidCode(): void
     {
@@ -73,7 +77,8 @@ class CreateCartTest extends TestCase
                     description: Strings::generateRandomString(length: 12),
                     quantityUnit: Strings::generateRandomString(length: 2),
                     unitPrice: 1000,
-                    quantity: 1
+                    quantity: 1,
+                    taxRate: 25
                 )
             ]),
             code: $min
@@ -86,7 +91,8 @@ class CreateCartTest extends TestCase
                     description: Strings::generateRandomString(length: 12),
                     quantityUnit: Strings::generateRandomString(length: 2),
                     unitPrice: 1000,
-                    quantity: 1
+                    quantity: 1,
+                    taxRate: 25
                 )
             ]),
             code: $max
@@ -103,6 +109,7 @@ class CreateCartTest extends TestCase
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws Exception
      */
     public function testValidItems(): void
     {
@@ -113,7 +120,8 @@ class CreateCartTest extends TestCase
                 description: Strings::generateRandomString(length: 32),
                 quantity: 1,
                 unitPrice: 1000,
-                quantityUnit: Strings::generateRandomString(length: 2)
+                quantityUnit: Strings::generateRandomString(length: 2),
+                taxRate: 25
             )
         ];
         $maxData = [];
@@ -125,7 +133,8 @@ class CreateCartTest extends TestCase
                 description: Strings::generateRandomString(length: 32),
                 quantity: 1,
                 unitPrice: 1000,
-                quantityUnit: Strings::generateRandomString(length: 2)
+                quantityUnit: Strings::generateRandomString(length: 2),
+                taxRate: 25
             );
         }
 
@@ -155,6 +164,7 @@ class CreateCartTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
+     * @throws Exception
      */
     public function testEmptyItems(): void
     {
@@ -172,6 +182,7 @@ class CreateCartTest extends TestCase
      * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws Exception
      */
     public function testTooManyItems(): void
     {
@@ -185,7 +196,8 @@ class CreateCartTest extends TestCase
                 description: Strings::generateRandomString(length: 32),
                 quantity: 1,
                 unitPrice: 1000,
-                quantityUnit: Strings::generateRandomString(length: 2)
+                quantityUnit: Strings::generateRandomString(length: 2),
+                taxRate: 25
             );
         }
 

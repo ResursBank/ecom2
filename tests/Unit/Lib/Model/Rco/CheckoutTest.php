@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActionsCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
@@ -116,7 +117,12 @@ class CheckoutTest extends TestCase
                             label: Strings::generateRandomString(length: 12),
                             url: 'https://example.com'
                         )
-                    ])
+                    ]),
+                    customerTypes: new TypeCollection(
+                        data: [Type::B2C, Type::B2B]
+                    ),
+                    minLimit: 10,
+                    maxLimit: 50000
                 )
             ]),
             selection: new PaymentSelection(

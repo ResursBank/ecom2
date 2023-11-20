@@ -11,6 +11,8 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\Type as CustomerType;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
@@ -40,7 +42,12 @@ class PaymentMethodCollectionTest extends TestCase
             subtitle: '',
             descriptions: [],
             terms: '',
-            links: new LinkCollection(data: [])
+            links: new LinkCollection(data: []),
+            customerTypes: new TypeCollection(
+                data: [CustomerType::B2C, CustomerType::B2B]
+            ),
+            minLimit: 10,
+            maxLimit: 50000
         );
     }
 

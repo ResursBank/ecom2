@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
@@ -23,7 +24,7 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  *
  * @SuppressWarnings(PHPMD.LongVariable)
  */
-class PaymentMethod extends Model
+class PaymentMethod extends Model implements PaymentMethodInterface
 {
     /**
      * @throws EmptyValueException
@@ -52,6 +53,31 @@ class PaymentMethod extends Model
         $this->validateMaxPurchaseLimit();
         $this->validateMinApplicationLimit();
         $this->validateMaxApplicationLimit();
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getMinLimit(): float
+    {
+        return $this->minPurchaseLimit;
+    }
+
+    public function getMaxLimit(): float
+    {
+        return $this->maxPurchaseLimit;
+    }
+
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
     }
 
     /**

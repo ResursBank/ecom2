@@ -7,13 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Enum\Customer;
+namespace Resursbank\Ecom\Lib\Model\Rco\Customer;
 
 use Resursbank\Ecom\Lib\Collection\EnumCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 
 /**
- * Collection of Customer Types.
+ * Enum collection for customer types in RCO+.
  */
 class TypeCollection extends EnumCollection
 {

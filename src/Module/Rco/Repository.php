@@ -249,7 +249,10 @@ class Repository
     public static function get(
         string $id
     ): Checkout {
-        $response = (new Get(route: Rco::CHECKOUT_ROUTE . '/' . $id))->call();
+        $response = (new Get(
+            route: Rco::CHECKOUT_ROUTE . '/' . $id,
+            model: Checkout::class
+        ))->call();
 
         return self::validateCheckoutModel(model: $response);
     }

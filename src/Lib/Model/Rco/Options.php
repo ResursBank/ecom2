@@ -15,7 +15,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\Customer\TypeCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 
 /**
@@ -35,9 +35,7 @@ class Options extends Model
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        public readonly ?TypeCollection $enabledCustomerTypes = new TypeCollection(
-            data: [Type::B2C, Type::B2B]
-        ),
+        public readonly ?TypeCollection $enabledCustomerTypes = new TypeCollection(data: [Type::B2C, Type::B2B]),
         public readonly ?bool $renderCart = null,
         public readonly ?bool $calculateShipping = null,
         public readonly ?bool $lookupB2CAddress = null,
