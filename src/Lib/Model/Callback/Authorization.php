@@ -35,6 +35,7 @@ class Authorization extends Model implements CallbackInterface
         public readonly string $paymentId,
         public readonly Status $status,
         public readonly string $created,
+        public readonly ?string $checkoutId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validatePaymentId();
@@ -54,7 +55,7 @@ class Authorization extends Model implements CallbackInterface
      */
     public function getCheckoutId(): ?string
     {
-        return null;
+        return $this->checkoutId;
     }
 
     /**
