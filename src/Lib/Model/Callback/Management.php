@@ -69,6 +69,7 @@ class Management extends Model implements CallbackInterface
      * @throws TranslationException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public function getNote(): string
     {
