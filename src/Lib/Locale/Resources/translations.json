@@ -1296,5 +1296,124 @@
       "en": "Logging",
       "sv": "Loggning"
     }
+  },
+  {
+      "id": "rcoplus",
+      "translation": {
+          "en": "RCO Plus",
+          "sv": "RCO Plus"
+      }
+  },
+  {
+    "id": "failed-applying-billing-address",
+    "translation": {
+      "en": "Failed to update billing address.",
+      "sv": "Kunde inte uppdatera faktureringsadress."
+    }
+  },
+  {
+    "id": "failed-applying-delivery-address",
+    "translation": {
+      "en": "Failed to update delivery address.",
+      "sv": "Kunde inte uppdatera leveransadress."
+    }
+  },
+  {
+    "id": "failed-applying-shipping-method",
+    "translation": {
+      "en": "Failed to update shipping method selection.",
+      "sv": "Kunde inte uppdatera val av fraktmetod."
+    }
+  },
+  {
+    "id": "failed-applying-payment-method",
+    "translation": {
+      "en": "Failed to update payment method selection.",
+      "sv": "Kunde inte uppdatera val av betalmetod."
+    }
+  },
+  {
+    "id": "failed-placing-order",
+    "translation": {
+      "en": "Failed to place order.",
+      "sv": "Kunde inte genomför beställning."
+    }
+  },
+  {
+    "id": "invalid-webhook-data",
+    "translation": {
+      "en": "Invalid webhook data submitted from Resurs Bank.",
+      "sv": "Ogiltig webhook data skickad från Resurs Bank."
+    }
+  },
+  {
+    "id": "advanced-settings-for-rcoplus",
+    "translation": {
+      "en": "Advanced Settings for RCO Plus",
+      "sv": "Avancerade inställningar för RCO Plus"
+    }
+  },
+  {
+    "id": "terms-url",
+    "translation": {
+      "en": "Terms URL",
+      "sv": "Länk till villkor"
+    }
+  },
+  {
+    "id": "terms-url-description",
+    "translation": {
+      "en": "Must be an HTTPS URL on the same domain as your store",
+      "sv": "Måste vara en HTTPS-URL på samma domän som er butik"
+    }
+  },
+  {
+    "id": "invalid-webhook-auth-token",
+    "translation": {
+      "en": "Invalid auth token.",
+      "sv": "Ogiltigt auth token."
+    }
+  },
+  {
+    "id": "failed-clearing-cart",
+    "translation": {
+      "en": "Clearing cart failed.",
+      "sv": "Tömning av kundvagn misslyckades."
+    }
+  },
+  {
+    "id": "failed-to-resolve-callback-url",
+    "translation": {
+      "en": "Failed to resolve callback URL",
+      "sv": "Kunde inte sammanställa callback URL"
+    }
+  },
+  {
+    "id": "checkout-id",
+    "translation": {
+      "en": "Checkout-ID",
+      "sv": "Checkout-ID"
+    }
+  },
+  {
+    "id": "cancelled-amount",
+    "translation": {
+      "en": "Cancelled amount",
+      "sv": "Avbrutet belopp"
+    }
+  },
+  {
+    "id": "failed-applying-discount-code",
+    "translation": {
+      "en": "Failed to apply discount code.",
+      "sv": "Kunde inte applicera rabattkod."
+    }
+  },
+  {
+    "id": "missing-discount-code",
+    "translation": {
+      "en": "Missing discount code.",
+      "sv": "Rabattkod saknas."
+    }
   }
 ]
