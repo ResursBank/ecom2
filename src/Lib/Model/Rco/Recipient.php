@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
@@ -29,6 +30,29 @@ class Recipient extends Model
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateName();
+    }
+
+    /**
+     * Prefix country code dial code.
+     */
+
+    public static function prefixPhoneDialCode(
+        ?string $phone,
+        CountryCode $countryCode
+    ): ?string {
+        $result = $phone;
+
+        if ($phone !== null && str_starts_with(haystack: $phone, needle: '0')) {
+            $result = match ($countryCode) {
+                CountryCode::UNKNOWN => '0',
+                CountryCode::SE => '+46',
+                CountryCode::NO => '+47',
+                CountryCode::DK => '+45',
+                CountryCode::FI => '+358'
+            } . substr(string: $phone, offset: 1);
+        }
+
+        return $result;
     }
 
     /**
