@@ -35,7 +35,9 @@ class CreateOptions extends Model
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        public readonly ?TypeCollection $enabledCustomerTypes = new TypeCollection(data: [Type::B2C, Type::B2B]),
+        public readonly ?TypeCollection $enabledCustomerTypes = new TypeCollection(
+            data: [Type::B2C, Type::B2B]
+        ),
         public readonly ?bool $renderCart = null,
         public readonly ?bool $calculateShipping = null,
         public readonly ?bool $lookupB2CAddress = null,
