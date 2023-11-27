@@ -12,6 +12,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
@@ -47,6 +48,61 @@ class RecipientTest extends TestCase
                 message: 'Failed to generate Recipient model instance.'
             );
         }
+    }
+
+    /**
+     * Test phone prefixing.
+     */
+    public function testPrefixPhoneDialCode(): void
+    {
+        $number = '709999999';
+
+        $this->assertSame(
+            expected: "+45$number",
+            actual: Recipient::prefixPhoneDialCode(
+                phone: "0$number",
+                countryCode: CountryCode::DK
+            )
+        );
+
+        $this->assertSame(
+            expected: "+46$number",
+            actual: Recipient::prefixPhoneDialCode(
+                phone: "0$number",
+                countryCode: CountryCode::SE
+            )
+        );
+
+        $this->assertSame(
+            expected: "+47$number",
+            actual: Recipient::prefixPhoneDialCode(
+                phone: "0$number",
+                countryCode: CountryCode::NO
+            )
+        );
+
+        $this->assertSame(
+            expected: "+358$number",
+            actual: Recipient::prefixPhoneDialCode(
+                phone: "0$number",
+                countryCode: CountryCode::FI
+            )
+        );
+
+        $this->assertNull(
+            actual: Recipient::prefixPhoneDialCode(
+                phone: null,
+                countryCode: CountryCode::UNKNOWN
+            )
+        );
+
+        $this->assertSame(
+            expected: $number,
+            actual: Recipient::prefixPhoneDialCode(
+                phone: $number,
+                countryCode: CountryCode::UNKNOWN
+            )
+        );
     }
 
     /**
