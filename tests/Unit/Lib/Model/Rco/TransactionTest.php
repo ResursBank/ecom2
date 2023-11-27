@@ -142,7 +142,7 @@ class TransactionTest extends TestCase
         new Transaction(
             type: CartItemType::GENERIC,
             description: Strings::generateRandomString(length: 32),
-            unitPrice: -1
+            unitPrice: -(2 ** 31)
         );
     }
 
@@ -172,7 +172,7 @@ class TransactionTest extends TestCase
         $lowerLimit = new Transaction(
             type: CartItemType::GENERIC,
             description: Strings::generateRandomString(length: 32),
-            unitPrice: 0
+            unitPrice: -(2 ** 31) + 1
         );
         $upperLimit = new Transaction(
             type: CartItemType::GENERIC,
@@ -180,7 +180,10 @@ class TransactionTest extends TestCase
             unitPrice: (2 ** 31) - 1
         );
 
-        $this->assertEquals(expected: 0, actual: $lowerLimit->unitPrice);
+        $this->assertEquals(
+            expected: -(2 ** 31) + 1,
+            actual: $lowerLimit->unitPrice
+        );
         $this->assertEquals(
             expected: (2 ** 31) - 1,
             actual: $upperLimit->unitPrice
