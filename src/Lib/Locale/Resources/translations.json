@@ -1063,7 +1063,7 @@
     "id": "cannot-remove-refund",
     "translation": {
       "en": "Refunds cannot be removed from Resurs Bank payment.",
-      "sv": "Återbetalningar kan inte tas bort from Resurs Bank betalningar."
+      "sv": "Återbetalningar kan inte tas bort från Resurs Bank betalningar."
     }
   },
   {
@@ -1435,6 +1435,13 @@
     "translation": {
       "en": "Enable csutomer notes",
       "sv": "Aktivera stöd för kund kommentar"
+    }
+  },
+  {
+    "id": "payment-already-captured",
+    "translation": {
+      "en": "Payment is already captured.",
+      "sv": "Betalningen har redan debiterats."
     }
   }
 ]
