@@ -1438,6 +1438,13 @@
     }
   },
   {
+    "id": "part-payment-widget-rcoplus-incompatibility-warning",
+    "translation": {
+      "en": "This widget is not compatible with the RCO Plus API.",
+      "sv": "Denna widget är inte kompatibel med RCO Plus API:et."
+    }
+  },
+  {
     "id": "payment-already-captured",
     "translation": {
       "en": "Payment is already captured.",
