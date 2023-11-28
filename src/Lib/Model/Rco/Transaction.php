@@ -32,7 +32,7 @@ class Transaction extends Model
             max: (2 ** 31) - 1
         )] public readonly ?int $quantity = null,
         #[IntValue(
-            min: 0,
+            min: -(2 ** 31) + 1,
             max: (2 ** 31) - 1
         )] public readonly ?int $unitPrice = null,
         #[IntValue(min: 0, max: 100)] public readonly ?int $taxRate = null
