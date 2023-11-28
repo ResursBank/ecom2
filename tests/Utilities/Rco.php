@@ -20,13 +20,13 @@ use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Callback;
 use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Checkbox;
-use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Contact;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCheckbox;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateOptions;
 use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
@@ -206,8 +206,8 @@ class Rco
             webhooks: self::getWebhooks(auth: $auth),
             locale: Locale::sv_SE,
             currency: Currency::SEK,
-            checkboxes: new CheckboxCollection(data: [
-                new Checkbox(
+            checkboxes: new CreateCheckboxCollection(data: [
+                new CreateCheckbox(
                     id: 'terms',
                     label: 'Terms and conditions',
                     checked: true,

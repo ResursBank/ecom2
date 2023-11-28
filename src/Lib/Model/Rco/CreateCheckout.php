@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -40,7 +41,7 @@ class CreateCheckout extends Model
         public readonly ?Webhooks $webhooks = null,
         public readonly ?Locale $locale = null,
         public readonly ?Currency $currency = null,
-        public readonly ?CheckboxCollection $checkboxes = null,
+        public readonly ?CreateCheckboxCollection $checkboxes = null,
         public readonly ?SetStatus $initialStatus = null,
         public readonly ?string $selectedPaymentMethodId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
