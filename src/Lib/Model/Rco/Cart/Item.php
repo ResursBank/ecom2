@@ -11,6 +11,8 @@ namespace Resursbank\Ecom\Lib\Model\Rco\Cart;
 
 use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 
@@ -24,8 +26,9 @@ class Item extends Model
      */
     public function __construct(
         public readonly string $description,
-        public readonly string $imageUrl,
-        public readonly string $itemId,
+        #[StringMatchesUrl] public readonly string $imageUrl,
+        #[StringLength(min: 1, max: 36)] public readonly string $itemId,
+        #[StringLength(min: 1, max: 36)] public readonly string $itemIdDisplay,
         #[IntValue(max: (2 ** 31) - 1)] public readonly int $maxQuantity,
         public readonly bool $mutable,
         #[IntValue(max: (2 ** 31) - 1)] public readonly int $quantity,
@@ -37,7 +40,7 @@ class Item extends Model
         #[IntValue(max: (2 ** 31) - 1)] public readonly int $totalTax,
         public readonly CartItemType $type,
         #[IntValue(max: (2 ** 31) - 1)] public readonly int $unitPrice,
-        public readonly string $url
+        #[StringMatchesUrl] public readonly string $url
     ) {
         parent::__construct();
     }
