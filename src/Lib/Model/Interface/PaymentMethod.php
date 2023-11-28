@@ -15,8 +15,12 @@ namespace Resursbank\Ecom\Lib\Model\Interface;
 interface PaymentMethod
 {
     public function getId(): string;
+
     public function getName(): string;
+
     public function getMinLimit(): float;
+
     public function getMaxLimit(): float;
+
     public function getSortOrder(): int;
 }

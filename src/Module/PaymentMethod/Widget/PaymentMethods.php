@@ -17,7 +17,6 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection as RcoPaymentMethodCollection;
 use Resursbank\Ecom\Lib\Widget\Widget;
@@ -46,7 +45,6 @@ class PaymentMethods extends Widget
     public readonly string $missingWarning;
 
     /**
-     * @param PaymentMethodCollection|RcoPaymentMethodCollection $paymentMethods
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
