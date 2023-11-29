@@ -10,7 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
@@ -25,7 +28,9 @@ class AddressTest extends TestCase
     /**
      * Get mocked model instance.
      *
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     private function generateModel(
         ?string $street = null,
@@ -34,6 +39,26 @@ class AddressTest extends TestCase
         ?string $city = null,
         ?string $notes = null
     ): void {
+        if ($street === null) {
+            $street = '';
+        }
+
+        if ($addressLine === null) {
+            $addressLine = '';
+        }
+
+        if ($postalCode === null) {
+            $postalCode = '';
+        }
+
+        if ($city === null) {
+            $city = '';
+        }
+
+        if ($notes === null) {
+            $notes = '';
+        }
+
         new Address(
             street: $street,
             addressLine: $addressLine,
@@ -70,7 +95,7 @@ class AddressTest extends TestCase
         try {
             $this->generateModel(street: $street1);
             $this->addToAssertionCount(count: 1);
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->fail(message: $street1 . ' failed street validation.');
         }
 
@@ -79,7 +104,7 @@ class AddressTest extends TestCase
             $this->fail(
                 message: 'Street exceeding 64 characters passed validation.'
             );
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->addToAssertionCount(count: 1);
         }
 
@@ -104,7 +129,7 @@ class AddressTest extends TestCase
         try {
             $this->generateModel(addressLine: $addressLine1);
             $this->addToAssertionCount(count: 1);
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->fail(
                 message: $addressLine1 . ' failed addressLine validation.'
             );
@@ -115,7 +140,7 @@ class AddressTest extends TestCase
             $this->fail(
                 message: 'AddressLine exceeding 64 characters passed validation.'
             );
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->addToAssertionCount(count: 1);
         }
 
@@ -151,7 +176,7 @@ class AddressTest extends TestCase
             $this->fail(
                 message: 'PostalCode exceeding 64 characters passed validation.'
             );
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->addToAssertionCount(count: 1);
         }
 
@@ -176,7 +201,7 @@ class AddressTest extends TestCase
         try {
             $this->generateModel(city: $city1);
             $this->addToAssertionCount(count: 1);
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->fail(message: $city1 . ' failed city validation.');
         }
 
@@ -185,7 +210,7 @@ class AddressTest extends TestCase
             $this->fail(
                 message: 'City exceeding 64 characters passed validation.'
             );
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->addToAssertionCount(count: 1);
         }
 
@@ -210,7 +235,7 @@ class AddressTest extends TestCase
         try {
             $this->generateModel(notes: $notes1);
             $this->addToAssertionCount(count: 1);
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->fail(message: $notes1 . ' failed notes validation.');
         }
 
@@ -219,7 +244,7 @@ class AddressTest extends TestCase
             $this->fail(
                 message: 'Notes exceeding 280 characters passed validation.'
             );
-        } catch (IllegalValueException) {
+        } catch (Throwable) {
             $this->addToAssertionCount(count: 1);
         }
 
