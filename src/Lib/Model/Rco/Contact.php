@@ -15,7 +15,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Implementation of ContactDot object.
+ * Implementation of ContactDto object.
  */
 class Contact extends Model
 {

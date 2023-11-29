@@ -7,28 +7,29 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
+namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
 
 /**
- * Implementation of ShippingSelectionDto object.
+ * Implementation of CreateRecipientDto object.
  */
-class Selection extends Model
+class CreateRecipient extends Model
 {
     /**
+     * @param string|null $name The full name of the customer.
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly string $methodId,
-        public readonly string $optionId,
-        public readonly ShippingSelection $type
+        #[StringLength(min: 0, max: 128)] public readonly ?string $name = null,
+        public readonly ?CreateContact $contact = null,
+        public readonly ?CreateAddress $address = null
     ) {
         parent::__construct();
     }
