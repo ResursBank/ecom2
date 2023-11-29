@@ -20,5 +20,6 @@ class Link extends Model
         public readonly string $label,
         public readonly string $url
     ) {
+        parent::__construct();
     }
 }

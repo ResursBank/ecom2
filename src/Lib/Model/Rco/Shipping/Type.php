@@ -18,4 +18,5 @@ enum Type: string
     case IN_STORE = 'IN_STORE';
     case MAILBOX = 'MAILBOX';
     case DELIVERY = 'DELIVERY';
+    case NONE = 'NONE';
 }

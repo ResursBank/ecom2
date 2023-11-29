@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCheckbox;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -26,7 +27,7 @@ class Link extends Model
      */
     public function __construct(
         public readonly ?string $text = null,
-        public readonly ?string $url = null,
+        #[StringMatchesUrl] public readonly ?string $url = null,
         public readonly ?string $body = null,
         public readonly ?bool $requiredReadAll = null
     ) {

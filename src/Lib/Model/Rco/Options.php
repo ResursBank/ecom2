@@ -35,6 +35,7 @@ class Options extends Model
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
+        // phpcs:ignore
         public readonly ?TypeCollection $enabledCustomerTypes = new TypeCollection(data: [Type::B2C, Type::B2B]),
         public readonly ?bool $renderCart = null,
         public readonly ?bool $calculateShipping = null,

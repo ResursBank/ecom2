@@ -32,7 +32,7 @@ class CreateCheckbox extends Model
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly string $id,
+        #[StringLength(min: 1, max: 32)] public readonly string $id,
         #[StringLength(max: 512)] public readonly string $label,
         public readonly ?bool $checked = null,
         public readonly ?bool $required = null,

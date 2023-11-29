@@ -41,10 +41,15 @@ class ItemTest extends TestCase
         ?int $totalDiscount = null,
         ?string $url = null,
         ?string $imageUrl = null,
-        ?array $tags = null
+        ?array $tags = null,
+        ?string $itemIdDisplay = null
     ): void {
         if ($itemId === null) {
             $itemId = Random::getString(length: 36);
+        }
+
+        if ($itemIdDisplay === null) {
+            $itemIdDisplay = Random::getString(length: 36);
         }
 
         if ($description === null) {
@@ -63,9 +68,14 @@ class ItemTest extends TestCase
             $taxRate = 25;
         }
 
+        if ($quantity === null) {
+            $quantity = 0;
+        }
+
         new Item(
             type: CartItemType::PRODUCT,
             itemId: $itemId,
+            itemIdDisplay: $itemIdDisplay,
             description: $description,
             quantityUnit: $quantityUnit,
             unitPrice: $unitPrice,
@@ -198,8 +208,8 @@ class ItemTest extends TestCase
     public function testTotalDiscount(): void
     {
         DataIntegrity::testValueIntegrity(
-            accepted: [0, 1, 2568],
-            rejected: [-1, -512],
+            rejected: [1, 2568],
+            accepted: [0, -1, -512],
             callback: fn (int $v) => $this->generateModel(totalDiscount: $v),
             test: $this
         );

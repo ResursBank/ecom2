@@ -55,7 +55,6 @@ use Resursbank\Ecom\Lib\Model\Rco\SetStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
@@ -201,7 +200,7 @@ final class RepositoryTest extends TestCase
                 type: ShippingType::MAILBOX,
                 carrier: Carrier::POSTNORD,
                 description: 'Lorem ipsum',
-                price: new Price(
+                price: new CreateShippingMethod\Price(
                     display: '49 kr',
                     calculate: 4900,
                     calculateTax: 25
@@ -220,7 +219,7 @@ final class RepositoryTest extends TestCase
                 type: ShippingType::MAILBOX,
                 carrier: Carrier::GENERIC,
                 description: 'Dolor sit amet',
-                price: new Price(
+                price: new CreateShippingMethod\Price(
                     display: '79 kr',
                     calculate: 7900,
                     calculateTax: 25

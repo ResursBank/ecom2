@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
+namespace Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 
 use JsonException;
 use ReflectionException;
@@ -16,14 +16,14 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Implementation of ShippingPriceDto object.
+ * Implementation of CreateShippingPriceDto object.
  */
 class Price extends Model
 {
     /**
-     * @param string $display The display price, this is shown in the checkout.
-     * @param int $calculate Price inc tax in minor units create a shipping-cart line if calculateShipping is true.
-     * @param int $calculateTax The tax rate used for the calculation as a whole number: 25 for 25%.
+     * @param string|null $display The display price, this is shown in the checkout.
+     * @param int|null $calculate Price inc tax in minor units create a shipping-cart line if calculateShipping is true.
+     * @param int|null $calculateTax The tax rate used for the calculation as a whole number: 25 for 25%.
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
@@ -32,9 +32,9 @@ class Price extends Model
         #[StringLength(
             min: 0,
             max: 128
-        )] public readonly string $display,
-        public readonly int $calculate,
-        public readonly int $calculateTax
+        )] public readonly ?string $display = null,
+        public readonly ?int $calculate = null,
+        public readonly ?int $calculateTax = null
     ) {
         parent::__construct();
     }
