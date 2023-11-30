@@ -1450,5 +1450,19 @@
       "en": "Payment is already captured.",
       "sv": "Betalningen har redan debiterats."
     }
+  },
+  {
+    "id": "connection-failed",
+    "translation": {
+      "en": "The connection to Resurs Bank failed.",
+      "sv": "Kontakten med Resurs Bank misslyckades."
+    }
+  },
+  {
+    "id": "please-try-again",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter."
+    }
   }
 ]
