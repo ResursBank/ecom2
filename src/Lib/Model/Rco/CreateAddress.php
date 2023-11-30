@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 
 /**
- * Implementation of AddressDto object.
+ * Implementation of CreateAddressDto object.
  */
 class CreateAddress extends Model
 {
