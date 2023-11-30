@@ -122,19 +122,17 @@ class Repository
         string $itemId,
         string $version,
         int $quantity
-    ): Checkout
-    {
+    ): Checkout {
         $response = (new Patch(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/cart',
             version: $version,
             params: [
-                'items' =>
+                'items' => [
                     [
-                        [
-                            'itemId' => $itemId,
-                            'quantity' => $quantity
-                        ]
+                        'itemId' => $itemId,
+                        'quantity' => $quantity
                     ]
+                ]
             ]
         ))->call();
 
