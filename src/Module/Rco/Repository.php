@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\InvoiceLabels;
 use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
@@ -128,9 +129,9 @@ class Repository
             version: $version,
             params: [
                 'items' => [
-            [
-                    'itemId' => $itemId,
-                    'quantity' => $quantity
+                    [
+                        'itemId' => $itemId,
+                        'quantity' => $quantity
                     ]
                 ]
             ]
@@ -303,12 +304,22 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?TransactionCollection $transactionLines = null
+        ?TransactionCollection $transactionLines = null,
+        ?InvoiceLabels $invoiceLabels = null
     ): Checkout {
+        $params = [];
+
+        if ($transactionLines !== null) {
+            $params['transactionLines'] = $transactionLines->toArray();
+        }
+        if ($invoiceLabels !== null) {
+            $params['invoiceLabels'] = $invoiceLabels->toArray();
+        }
+        
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             version: $version,
-            params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
+            params: $params
         ))->call(forceObject: !($transactionLines !== null));
 
         return self::validateCheckoutModel(model: $response);
@@ -411,7 +422,7 @@ class Repository
             }
 
             $data = json_decode(
-                json: (string) $post,
+                json: (string)$post,
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
