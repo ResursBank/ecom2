@@ -312,10 +312,11 @@ class Repository
         if ($transactionLines !== null) {
             $params['transactionLines'] = $transactionLines->toArray();
         }
+
         if ($invoiceLabels !== null) {
             $params['invoiceLabels'] = $invoiceLabels->toArray();
         }
-        
+
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             version: $version,
