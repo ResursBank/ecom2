@@ -39,6 +39,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Contact;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
@@ -59,6 +60,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Payment;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentSelection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus as RcoPaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Lib\Model\Rco\SetStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
@@ -514,6 +516,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testValidateCheckoutModel(): void
     {
@@ -549,7 +552,26 @@ final class RepositoryTest extends TestCase
             ]),
             notes: '',
             customer: new CustomerModel(
-                type: Type::B2C
+                type: Type::B2C,
+                delivery: new Recipient(
+                    name: Strings::generateRandomString(length: 12),
+                    contact: new Contact(
+                        firstName: Strings::generateRandomString(length: 32),
+                        lastName: Strings::generateRandomString(length: 32),
+                        phone: '+46701234567',
+                        email: Strings::generateRandomString(length: 32)
+                    )
+                ),
+                billing: new Recipient(
+                    name: Strings::generateRandomString(length: 12),
+                    contact: new Contact(
+                        firstName: Strings::generateRandomString(length: 32),
+                        lastName: Strings::generateRandomString(length: 32),
+                        phone: '+46701234567',
+                        email: Strings::generateRandomString(length: 32)
+                    )
+                ),
+                governmentId: 'SE' . $_ENV['RCO_JWT_GOVERNMENT_ID']
             ),
             shipping: new Shipping(
                 tracking: new Tracking(

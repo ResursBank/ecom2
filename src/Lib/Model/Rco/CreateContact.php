@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -23,6 +26,9 @@ class CreateContact extends Model
      * @param string|null $lastName The lastName of the contact.
      * @param string|null $email The email address to the contact person.
      * @param string|null $phone The phone number to the contact person.
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
         #[StringLength(
@@ -35,7 +41,7 @@ class CreateContact extends Model
         )] public readonly ?string $lastName = null,
         public readonly ?string $email = null,
         #[StringMatchesRegex(
-            '/^$|^\+\d{6,19}$/'
+            pattern: '/^$|^\+\d{6,19}$/'
         )] public readonly ?string $phone = null
     ) {
         parent::__construct();
