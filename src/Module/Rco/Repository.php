@@ -41,6 +41,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Throwable;
+
 use function is_object;
 
 /**
