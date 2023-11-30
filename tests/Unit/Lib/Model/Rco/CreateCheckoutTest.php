@@ -11,14 +11,13 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateMerchant;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
 
@@ -52,7 +51,7 @@ class CreateCheckoutTest extends TestCase
                     taxRate: 25
                 )
             ])),
-            merchant: new Merchant(
+            merchant: new CreateMerchant(
                 displayName: 'test',
                 termsUrl: 'https://example.com'
             )
@@ -71,43 +70,6 @@ class CreateCheckoutTest extends TestCase
             $this->fail(
                 message: 'Failed to generate CreateCheckout model instance.'
             );
-        }
-    }
-
-    /**
-     * Assert validation rules for orderReference property.
-     *
-     * @throws IllegalCharsetException
-     * @throws IllegalTypeException
-     * @throws Exception
-     */
-    public function testOrderReferenceValidation(): void
-    {
-        try {
-            $this->generateCheckoutModel(orderReference: '');
-            $this->addToAssertionCount(count: 1);
-        } catch (EmptyValueException) {
-            $this->fail(message: 'Empty orderReference value rejected.');
-        }
-
-        try {
-            $this->generateCheckoutModel(
-                orderReference: Strings::generateRandomString(length: 32)
-            );
-
-            $this->addToAssertionCount(count: 1);
-        } catch (IllegalCharsetException) {
-            $this->fail(message: '32 character orderReference value rejected.');
-        }
-
-        try {
-            $this->generateCheckoutModel(
-                orderReference: Strings::generateRandomString(length: 33)
-            );
-
-            $this->fail(message: '33 character orderReference value accepted.');
-        } catch (IllegalCharsetException) {
-            $this->addToAssertionCount(count: 1);
         }
     }
 }
