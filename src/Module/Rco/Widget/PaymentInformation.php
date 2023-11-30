@@ -98,13 +98,13 @@ class PaymentInformation extends Original
 
     public function getStatus(): string
     {
-        return (string) $this->checkout->payment?->status->type?->value;
+        return (string) $this->checkout->payment->status->type?->value;
     }
 
     public function getPaymentMethodName(): string
     {
-        return (string) $this->checkout->payment?->methods->getMethodName(
-            methodId: (string) $this->checkout->payment?->selection->methodId
+        return (string) $this->checkout->payment->methods->getMethodName(
+            methodId: (string) $this->checkout->payment->selection->methodId
         );
     }
 
@@ -125,22 +125,22 @@ class PaymentInformation extends Original
 
     public function getAuthorizedAmount(): float
     {
-        return (float) $this->checkout->payment?->status->authorizedAmount;
+        return (float) $this->checkout->payment->status->authorizedAmount;
     }
 
     public function getCapturedAmount(): float
     {
-        return (float) $this->checkout->payment?->status->capturedAmount;
+        return (float) $this->checkout->payment->status->capturedAmount;
     }
 
     public function getRefundedAmount(): float
     {
-        return (float) $this->checkout->payment?->status->refundedAmount;
+        return (float) $this->checkout->payment->status->refundedAmount;
     }
 
     public function getCancelledAmount(): float
     {
-        return (float) $this->checkout->payment?->status->cancelledAmount;
+        return (float) $this->checkout->payment->status->cancelledAmount;
     }
 
     /**
