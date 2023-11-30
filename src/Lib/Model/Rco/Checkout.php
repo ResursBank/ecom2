@@ -49,13 +49,13 @@ class Checkout extends Model
         public readonly Options $options,
         public readonly Customer $customer,
         public readonly Status $status,
-        public readonly ?Cart $cart = null,
-        public readonly ?Shipping $shipping = null,
-        public readonly ?PaymentMethods $paymentMethods = null,
-        public readonly ?Payment $payment = null,
-        public readonly ?Merchant $merchant = null,
-        public readonly ?CheckboxCollection $checkboxes = null,
-        public readonly ?string $notes = null
+        public readonly Cart $cart,
+        public readonly Shipping $shipping,
+        public readonly Payment $payment,
+        public readonly Merchant $merchant,
+        public readonly CheckboxCollection $checkboxes,
+        public readonly string $notes,
+        public readonly ?PaymentMethods $paymentMethods = null
     ) {
         parent::__construct();
     }
@@ -97,10 +97,6 @@ class Checkout extends Model
      */
     public function isCaptured(): bool
     {
-        if ($this->payment === null) {
-            return false;
-        }
-
         return
             !$this->canCapture() &&
             (
@@ -117,10 +113,6 @@ class Checkout extends Model
      */
     public function isCancelled(): bool
     {
-        if ($this->payment === null) {
-            return false;
-        }
-
         return
             (
                 $this->payment->status->authorizedAmount -
@@ -135,10 +127,6 @@ class Checkout extends Model
      */
     public function isRefunded(): bool
     {
-        if ($this->payment === null) {
-            return false;
-        }
-
         return
             $this->payment->status->capturedAmount > 0 &&
             (
@@ -154,7 +142,7 @@ class Checkout extends Model
      */
     private function canPerformAction(AvailableActions $actionType): bool
     {
-        if (!$this->payment || !$this->payment->status->availableActions) {
+        if (!$this->payment->status->availableActions) {
             return false;
         }
 

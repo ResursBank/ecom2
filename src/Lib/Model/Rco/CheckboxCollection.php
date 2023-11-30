@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Checkbox collection.
+ * CheckboxDto collection.
  */
 class CheckboxCollection extends Collection
 {

@@ -19,6 +19,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
+use Resursbank\Ecom\Lib\Model\Rco\Cart;
+use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
@@ -32,13 +34,20 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentSelection as PaymentSelectionEnum;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus as PaymentStatusEnum;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
+use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Payment;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentSelection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
+use Resursbank\Ecom\Lib\Model\Rco\Tracking;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
 
@@ -64,6 +73,11 @@ class CheckoutTest extends TestCase
         ?string $version = null,
         ?Payment $payment = null
     ): Checkout {
+        $shippingSelection = new Shipping\Selection(
+            methodId: Strings::getUuid(),
+            optionId: Strings::getUuid(),
+            type: ShippingSelection::DEFAULT
+        );
         return new Checkout(
             id: $id ?? Strings::getUuid(),
             storeId: $storeId ?? Strings::getUuid(),
@@ -79,7 +93,42 @@ class CheckoutTest extends TestCase
             status: new Status(
                 type: CheckoutStatus::INITIATED
             ),
-            payment: $payment ?? $this->generatePayment()
+            payment: $payment ?? $this->generatePayment(),
+            cart: new Cart(
+                items: new Cart\ItemCollection(data: []),
+                code: Strings::generateRandomString(length: 12)
+            ),
+            checkboxes: new CheckboxCollection(data: []),
+            merchant: new Merchant(
+                displayName: Strings::generateRandomString(length: 12),
+                logoUrl: 'https://example.com',
+                termsUrl: 'https://example.com',
+                homepageUrl: 'https://example.com'
+            ),
+            shipping: new Shipping(
+                tracking: new Tracking(
+                    url: 'https://example.com'
+                ),
+                selection: $shippingSelection,
+                methods: new Shipping\MethodCollection(data: [
+                    new Method(
+                        methodId: $shippingSelection->methodId,
+                        description: Strings::generateRandomString(length: 12),
+                        type: Shipping\Type::DELIVERY,
+                        carrier: Carrier::GENERIC,
+                        name: Strings::generateRandomString(length: 12),
+                        deliveryEta: Strings::generateRandomString(length: 12),
+                        price: new Shipping\Price(
+                            display: '5,00',
+                            calculateTax: 100,
+                            calculate: 500
+                        ),
+                        options: new OptionCollection(data: []),
+                        required: new RequiredCollection(data: [])
+                    )
+                ])
+            ),
+            notes: ''
         );
     }
 
