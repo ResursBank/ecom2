@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type as CustomerType;
@@ -17,9 +18,6 @@ use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\Type;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-
-use function is_string;
 
 /**
  * Implementation of PaymentMethodDto object.
@@ -41,16 +39,15 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         public readonly int $fee,
         public readonly RequiredCollection $required,
         public readonly string $subtitle,
-        public readonly array $descriptions,
+        #[ArrayOfStrings] public readonly array $descriptions,
         public readonly string $terms,
         public readonly LinkCollection $links,
         public readonly TypeCollection $customerTypes,
         public readonly int $minLimit,
         public readonly int $maxLimit,
-        public int $sortOrder = 0,
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
+        public int $sortOrder = 0
     ) {
-        $this->validateDescriptions();
+        parent::__construct();
     }
 
     public function getId(): string
@@ -93,18 +90,6 @@ class PaymentMethod extends Model implements PaymentMethodInterface
             needle: CustomerType::B2C,
             haystack: $this->customerTypes->getData(),
             strict: true
-        );
-    }
-
-    /**
-     * @throws IllegalTypeException
-     */
-    private function validateDescriptions(): void
-    {
-        $this->arrayValidation->isOfType(
-            data: $this->descriptions,
-            type: 'string',
-            compareFn: static fn (mixed $value) => is_string(value: $value)
         );
     }
 }
