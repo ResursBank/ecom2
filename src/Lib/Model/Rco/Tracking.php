@@ -9,31 +9,28 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of TrackingDto object.
  */
 class Tracking extends Model
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     public function __construct(
-        public readonly ?string $url = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringMatchesRegex(
+            pattern: '/$^|^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
+        )]
+        public readonly ?string $url = null
     ) {
-        $this->validateUrl();
-    }
-
-    private function validateUrl(): void
-    {
-        // Comparison to empty string added to get around API returning this value.
-        if ($this->url === null || $this->url === '') {
-            return;
-        }
-
-        $this->stringValidation->matchRegex(
-            value: $this->url,
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]/'
-        );
+        parent::__construct();
     }
 }
