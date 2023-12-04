@@ -55,18 +55,18 @@ class Customer extends Model
     public function useSeparateDeliveryAddress(): bool
     {
         return
-            $this->delivery->address?->addressLine ||
-            $this->delivery->address?->city ||
+            $this->delivery->address->addressLine ||
+            $this->delivery->address->city ||
             (
-                $this->delivery->address?->countryCode !== CountryCode::UNKNOWN &&
-                $this->delivery->address?->countryCode !== null
+                $this->delivery->address->countryCode !== CountryCode::UNKNOWN &&
+                $this->delivery->address->countryCode !== null
             ) ||
-            $this->delivery->address?->postalCode ||
-            $this->delivery->address?->street ||
-            $this->delivery->contact?->phone ||
-            $this->delivery->contact?->email ||
-            $this->delivery->contact?->firstName ||
-            $this->delivery->contact?->lastName ||
+            $this->delivery->address->postalCode ||
+            $this->delivery->address->street ||
+            $this->delivery->contact->phone ||
+            $this->delivery->contact->email ||
+            $this->delivery->contact->firstName ||
+            $this->delivery->contact->lastName ||
             $this->delivery->name;
     }
 }

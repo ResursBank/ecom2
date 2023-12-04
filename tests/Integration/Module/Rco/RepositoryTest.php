@@ -35,6 +35,7 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
@@ -567,7 +568,8 @@ final class RepositoryTest extends TestCase
                         lastName: Strings::generateRandomString(length: 32),
                         phone: '+46701234567',
                         email: Strings::generateRandomString(length: 32)
-                    )
+                    ),
+                    address: new Address()
                 ),
                 billing: new Recipient(
                     name: Strings::generateRandomString(length: 12),
@@ -576,7 +578,8 @@ final class RepositoryTest extends TestCase
                         lastName: Strings::generateRandomString(length: 32),
                         phone: '+46701234567',
                         email: Strings::generateRandomString(length: 32)
-                    )
+                    ),
+                    address: new Address()
                 ),
                 governmentId: 'SE' . $_ENV['RCO_JWT_GOVERNMENT_ID']
             ),

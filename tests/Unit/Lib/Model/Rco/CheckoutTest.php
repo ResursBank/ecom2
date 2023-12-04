@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
+use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
@@ -106,7 +107,8 @@ class CheckoutTest extends TestCase
                         lastName: Strings::generateRandomString(length: 32),
                         phone: '+46701234567',
                         email: Strings::generateRandomString(length: 32)
-                    )
+                    ),
+                    address: new Address()
                 ),
                 delivery: new Recipient(
                     name: Strings::generateRandomString(length: 12),
@@ -115,7 +117,8 @@ class CheckoutTest extends TestCase
                         lastName: Strings::generateRandomString(length: 32),
                         phone: '+46701234567',
                         email: Strings::generateRandomString(length: 32)
-                    )
+                    ),
+                    address: new Address()
                 )
             ),
             status: new Status(
