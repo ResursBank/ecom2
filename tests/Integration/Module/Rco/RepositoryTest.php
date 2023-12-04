@@ -547,7 +547,14 @@ final class RepositoryTest extends TestCase
             locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: Strings::getUuid(),
-            options: new Options(),
+            options: new Options(
+                renderCart: true,
+                calculateShipping: true,
+                lookupB2CAddress: true,
+                renderCartCode: true,
+                renderNotes: true,
+                allowDelayedAuthorization: true
+            ),
             checkboxes: new CheckboxCollection(data: [
             ]),
             notes: '',

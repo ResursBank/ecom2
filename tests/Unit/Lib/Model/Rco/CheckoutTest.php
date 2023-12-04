@@ -88,7 +88,14 @@ class CheckoutTest extends TestCase
             locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: $version ?? Strings::getUuid(),
-            options: new Options(),
+            options: new Options(
+                renderCart: true,
+                calculateShipping: true,
+                lookupB2CAddress: true,
+                renderCartCode: true,
+                renderNotes: true,
+                allowDelayedAuthorization: true
+            ),
             customer: new Customer(
                 type: Type::B2C,
                 governmentId: 'SE' . $_ENV['RCO_JWT_GOVERNMENT_ID'],
