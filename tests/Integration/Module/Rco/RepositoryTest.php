@@ -623,7 +623,9 @@ final class RepositoryTest extends TestCase
             ),
             merchant: new Merchant(
                 displayName: 'Jocke',
-                termsUrl: 'https://example.com'
+                termsUrl: 'https://example.com',
+                homepageUrl: 'https://example.com',
+                logoUrl: 'https://example.com'
             )
         ));
     }

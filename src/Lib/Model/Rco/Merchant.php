@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -20,8 +23,11 @@ class Merchant extends Model
 {
     /**
      * @param string $displayName Human readable display name.
-     * @param ?string $logoUrl Https url pointing to a small logo. SVG is recommended.
-     * @param ?string $homepageUrl Https fallback url pointing to the main page.
+     * @param string $logoUrl Https url pointing to a small logo. SVG is recommended.
+     * @param string $homepageUrl Https fallback url pointing to the main page.
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
@@ -33,11 +39,11 @@ class Merchant extends Model
         #[StringMatchesRegex(
             pattern: '/^$|^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]$/'
         )]
-        public readonly ?string $logoUrl = null,
+        public readonly string $logoUrl,
         #[StringMatchesRegex(
             pattern: '/^$|^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#\/%=~_|]$/'
         )]
-        public readonly ?string $homepageUrl = null
+        public readonly string $homepageUrl
     ) {
         parent::__construct();
     }
