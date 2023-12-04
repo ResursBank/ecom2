@@ -31,7 +31,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
-use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
@@ -303,7 +303,7 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?TransactionCollection $transactionLines = null
+        ?CreateTransactionLineCollection $transactionLines = null
     ): Checkout {
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
@@ -358,7 +358,7 @@ class Repository
     public static function refund(
         string $id,
         string $version,
-        ?TransactionCollection $transactionLines = null
+        ?CreateTransactionLineCollection $transactionLines = null
     ): Checkout {
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',

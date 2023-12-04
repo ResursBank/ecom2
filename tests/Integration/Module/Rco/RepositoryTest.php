@@ -44,6 +44,8 @@ use Resursbank\Ecom\Lib\Model\Rco\Contact;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLine;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
@@ -71,8 +73,6 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Model\Rco\Tracking;
-use Resursbank\Ecom\Lib\Model\Rco\Transaction;
-use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -725,11 +725,12 @@ final class RepositoryTest extends TestCase
 
         /** @var Cart\Item $captureItem */
         $captureItem = $fetched->cart->items->toArray()[0];
-        $transactionLines = new TransactionCollection(data: [
-            new Transaction(
+        $transactionLines = new CreateTransactionLineCollection(data: [
+            new CreateTransactionLine(
                 type: $captureItem->type,
                 description: $captureItem->description,
                 itemId: $captureItem->itemId,
+                itemIdDisplay: $captureItem->itemIdDisplay,
                 quantityUnit: $captureItem->quantityUnit,
                 quantity: $captureItem->quantity,
                 unitPrice: $captureItem->unitPrice,
@@ -887,11 +888,12 @@ final class RepositoryTest extends TestCase
 
         /** @var Cart\Item $cartItem */
         $cartItem = $captured->cart->items->toArray()[0];
-        $transactionLines = new TransactionCollection(data: [
-            new Transaction(
+        $transactionLines = new CreateTransactionLineCollection(data: [
+            new CreateTransactionLine(
                 type: $cartItem->type,
                 description: $cartItem->description,
                 itemId: $cartItem->itemId,
+                itemIdDisplay: $cartItem->itemIdDisplay,
                 quantityUnit: $cartItem->quantityUnit,
                 quantity: $cartItem->quantity,
                 unitPrice: $cartItem->unitPrice,
