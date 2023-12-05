@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Rco\CreateCheckout;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
