@@ -142,10 +142,6 @@ class Checkout extends Model
      */
     private function canPerformAction(AvailableActions $actionType): bool
     {
-        if (!$this->payment->status->availableActions) {
-            return false;
-        }
-
         foreach ($this->payment->status->availableActions as $action) {
             if ($action === $actionType) {
                 return true;
