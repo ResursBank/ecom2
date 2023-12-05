@@ -7,9 +7,9 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Rco\Webhook;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateWebhook;
 
-class WebhookTest extends TestCase
+class CreateWebhookTest extends TestCase
 {
     /**
      * Validate a bad url as bad.
@@ -17,7 +17,7 @@ class WebhookTest extends TestCase
     public function testBadWebHook(): void
     {
         $this->expectException(exception: IllegalUrlException::class);
-        new Webhook(
+        new CreateWebhook(
             url: 'hppt://www.test.com',
             authorization: '',
             continueOnNoResponse: false,
@@ -31,8 +31,8 @@ class WebhookTest extends TestCase
     public function testWebHook(): void
     {
         self::assertInstanceOf(
-            expected: Webhook::class,
-            actual: new Webhook(
+            expected: CreateWebhook::class,
+            actual: new CreateWebhook(
                 url: 'https://test.resurs.com/docs',
                 authorization: '',
                 continueOnNoResponse: false,
@@ -48,7 +48,7 @@ class WebhookTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
 
-        new Webhook(
+        new CreateWebhook(
             url: 'https://test.resurs.com/docs',
             authorization: '',
             continueOnNoResponse: false,
