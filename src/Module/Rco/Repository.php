@@ -128,9 +128,9 @@ class Repository
             version: $version,
             params: [
                 'items' => [
-            [
-                    'itemId' => $itemId,
-                    'quantity' => $quantity
+                    [
+                        'itemId' => $itemId,
+                        'quantity' => $quantity
                     ]
                 ]
             ]
@@ -411,7 +411,7 @@ class Repository
             }
 
             $data = json_decode(
-                json: (string) $post,
+                json: (string)$post,
                 associative: false,
                 depth: 512,
                 flags: JSON_THROW_ON_ERROR
