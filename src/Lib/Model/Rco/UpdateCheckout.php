@@ -28,7 +28,7 @@ class UpdateCheckout extends Model
     public function __construct(
         public readonly ?SetStatus $status = null,
         public readonly ?string $selectedPaymentMethodId = null,
-        public readonly ?Customer $customer = null,
+        public readonly ?UpdateCustomer $customer = null,
         public readonly ?CreateCart $cart = null,
         public readonly ?string $orderReference = null
     ) {

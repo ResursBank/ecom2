@@ -41,7 +41,10 @@ use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\Contact;
+use Resursbank\Ecom\Lib\Model\Rco\CreateAddress;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
+use Resursbank\Ecom\Lib\Model\Rco\CreateContact;
+use Resursbank\Ecom\Lib\Model\Rco\CreateRecipient;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLine;
@@ -74,6 +77,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
 use Resursbank\Ecom\Lib\Model\Rco\Tracking;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\UpdateCustomer;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -960,11 +964,43 @@ final class RepositoryTest extends TestCase
             items: new CreateCart\ItemCollection(data: $items)
         );
 
-        $newCustomer = new CustomerModel(
+        $newCustomer = new UpdateCustomer(
             type: $fetched->customer->type,
             governmentId: 'SE8305147715',
-            billing: $fetched->customer->billing,
-            delivery: $fetched->customer->delivery
+            billing: new CreateRecipient(
+                name: $fetched->customer->billing->name,
+                contact: new CreateContact(
+                    firstName: $fetched->customer->billing->contact->firstName,
+                    lastName: $fetched->customer->billing->contact->lastName,
+                    email: $fetched->customer->billing->contact->email,
+                    phone: $fetched->customer->billing->contact->phone
+                ),
+                address: new CreateAddress(
+                    street: $fetched->customer->billing->address->street,
+                    addressLine: $fetched->customer->billing->address->addressLine,
+                    postalCode: $fetched->customer->billing->address->postalCode,
+                    city: $fetched->customer->billing->address->city,
+                    notes: $fetched->customer->billing->address->notes,
+                    countryCode: $fetched->customer->billing->address->countryCode
+                )
+            ),
+            delivery: new CreateRecipient(
+                name: $fetched->customer->delivery->name,
+                contact: new CreateContact(
+                    firstName: $fetched->customer->delivery->contact->firstName,
+                    lastName: $fetched->customer->delivery->contact->lastName,
+                    email: $fetched->customer->delivery->contact->email,
+                    phone: $fetched->customer->delivery->contact->phone
+                ),
+                address: new CreateAddress(
+                    street: $fetched->customer->delivery->address->street,
+                    addressLine: $fetched->customer->delivery->address->addressLine,
+                    postalCode: $fetched->customer->delivery->address->postalCode,
+                    city: $fetched->customer->delivery->address->city,
+                    notes: $fetched->customer->delivery->address->notes,
+                    countryCode: $fetched->customer->delivery->address->countryCode
+                )
+            )
         );
 
         $updated = Repository::update(
