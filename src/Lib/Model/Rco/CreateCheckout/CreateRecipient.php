@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\CreateAddress;
 use Resursbank\Ecom\Lib\Model\Rco\CreateContact;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 
 /**
  * Implementation of CreateRecipientDto object.
@@ -34,5 +35,28 @@ class CreateRecipient extends Model
         public readonly ?CreateAddress $address = null
     ) {
         parent::__construct();
+    }
+
+    /**
+     * Prefix country code dial code.
+     */
+
+    public static function prefixPhoneDialCode(
+        ?string $phone,
+        CountryCode $countryCode
+    ): ?string {
+        $result = $phone;
+
+        if ($phone !== null && str_starts_with(haystack: $phone, needle: '0')) {
+            $result = match ($countryCode) {
+                    CountryCode::UNKNOWN => '0',
+                    CountryCode::SE => '+46',
+                    CountryCode::NO => '+47',
+                    CountryCode::DK => '+45',
+                    CountryCode::FI => '+358'
+                } . substr(string: $phone, offset: 1);
+        }
+
+        return $result;
     }
 }
