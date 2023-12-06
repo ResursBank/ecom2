@@ -18,7 +18,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRecipient;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 
 /**
  * Implementation of WebhookChangeRequestDto object.
@@ -33,10 +33,10 @@ class ChangeRequest extends Model
     public function __construct(
         public readonly ?CreateRecipient $delivery,
         public readonly ?CreateRecipient $billing,
-        public readonly ?MethodCollection $shippingMethods,
+        public readonly ?CreateShippingMethodCollection $shippingMethods,
         #[StringLength(min: 0, max: 128)] public readonly ?string $cartCode,
         #[StringMatchesRegex(
-            '/^$|^[a-zA-Z0-9]{1,32}$/'
+            pattern: '/^$|^[a-zA-Z0-9]{1,32}$/'
         )] public readonly ?string $orderReference,
         #[CollectionSize(
             min: 1,
