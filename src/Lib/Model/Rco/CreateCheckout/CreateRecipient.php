@@ -54,7 +54,7 @@ class CreateRecipient extends Model
                     CountryCode::NO => '+47',
                     CountryCode::DK => '+45',
                     CountryCode::FI => '+358'
-                } . substr(string: $phone, offset: 1);
+            } . substr(string: $phone, offset: 1);
         }
 
         return $result;
