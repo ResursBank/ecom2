@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco;
+namespace Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 
 use JsonException;
 use ReflectionException;
@@ -19,13 +19,13 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Implementation of WebhookDto object.
+ * Implementation of CreateWebhookDto object.
  */
-class Webhook extends Model
+class CreateWebhook extends Model
 {
     /**
      * @param string $url A https url to that will be posted to when [...]
-     * @param string $authorization The Authorization header to set when doing the webhook.
+     * @param string|null $authorization The Authorization header to set when doing the webhook.
      * @param bool|null $continueOnNoResponse Continue if no/unexpected response is returned from the webhook post.
      * @param int|null $timeout Timeout in seconds before giving up on a request.
      * @throws ReflectionException
@@ -37,7 +37,7 @@ class Webhook extends Model
         #[StringLength(
             min: 0,
             max: 16000
-        )] public readonly string $authorization,
+        )] public readonly ?string $authorization = null,
         public readonly ?bool $continueOnNoResponse = null,
         #[IntValue(
             min: 0,

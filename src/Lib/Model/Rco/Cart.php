@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection;
 
@@ -17,6 +20,11 @@ use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection;
  */
 class Cart extends Model
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     public function __construct(
         public readonly ItemCollection $items,
         public readonly string $code

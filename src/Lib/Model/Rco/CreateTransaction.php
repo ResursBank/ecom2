@@ -12,12 +12,14 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Implementation of PspPaymentDto object.
+ * Implementation of CreateTransactionDto
  */
-class PspPayment extends Model
+class CreateTransaction extends Model
 {
     public function __construct(
-        public readonly ?PaymentStatus $paymentStatus
+        public readonly CreateTransactionLineCollection $transactionLines,
+        public readonly InvoiceLabels $invoiceLabels
     ) {
+        parent::__construct();
     }
 }

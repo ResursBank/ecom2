@@ -7,16 +7,16 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Model\Rco;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Rco\CreateCheckout;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Lib\Model\Rco\Redirects;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRedirects;
 
 /**
  * Unit tests for Lib\Model\Rco\Redirects.
  */
-class RedirectsTest extends TestCase
+class CreateRedirectsTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -29,8 +29,8 @@ class RedirectsTest extends TestCase
     public function testValidUrls(): void
     {
         $this->assertInstanceOf(
-            expected: Redirects::class,
-            actual: new Redirects(
+            expected: CreateRedirects::class,
+            actual: new CreateRedirects(
                 checkout: 'https://www.example.com/{checkoutId}',
                 success: 'https://www.example.com/{checkoutId}',
                 failure: 'https://www.example.com/{checkoutId}',
@@ -45,7 +45,7 @@ class RedirectsTest extends TestCase
     public function testInvalidCheckout(): void
     {
         $this->expectException(exception: IllegalCharsetException::class);
-        new Redirects(checkout: 'foobar');
+        new CreateRedirects(checkout: 'foobar');
     }
 
     /**
@@ -54,7 +54,7 @@ class RedirectsTest extends TestCase
     public function testInvalidSuccess(): void
     {
         $this->expectException(exception: IllegalCharsetException::class);
-         new Redirects(success: 'foobar');
+        new CreateRedirects(success: 'foobar');
     }
 
     /**
@@ -63,7 +63,7 @@ class RedirectsTest extends TestCase
     public function testInvalidFailure(): void
     {
         $this->expectException(exception: IllegalCharsetException::class);
-        new Redirects(failure: 'foobar');
+        new CreateRedirects(failure: 'foobar');
     }
 
     /**
@@ -72,6 +72,6 @@ class RedirectsTest extends TestCase
     public function testInvalidCancel(): void
     {
         $this->expectException(exception: IllegalCharsetException::class);
-        new Redirects(cancel: 'foobar');
+        new CreateRedirects(cancel: 'foobar');
     }
 }

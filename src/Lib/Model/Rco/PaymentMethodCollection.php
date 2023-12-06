@@ -21,6 +21,9 @@ class PaymentMethodCollection extends Collection
         parent::__construct(data: $data, type: PaymentMethod::class);
     }
 
+    /**
+     * Find name of method with specific ID.
+     */
     public function getMethodName(string $methodId): string
     {
         $result = $methodId;

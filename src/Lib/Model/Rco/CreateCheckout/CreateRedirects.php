@@ -7,31 +7,31 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rco;
+namespace Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Implementation of RedirectsDto object.
+ * Implementation of CreateRedirectsDto object.
  */
-class Redirects extends Model
+class CreateRedirects extends Model
 {
     public function __construct(
         #[StringMatchesRegex(
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+&@#\/%=~_|]{1,100}/'
         )]
         public readonly ?string $checkout = null,
         #[StringMatchesRegex(
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+&@#\/%=~_|]{1,100}/'
         )]
         public readonly ?string $success = null,
         #[StringMatchesRegex(
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+&@#\/%=~_|]{1,100}/'
         )]
         public readonly ?string $failure = null,
         #[StringMatchesRegex(
-            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+?&@#\/%=~_|]{0,100}/'
+            pattern: '/^https?:\/\/[-a-zA-Z0-9+&@#\/%?=~_|!:,.]{1,100}([{]checkoutId})?[-a-zA-Z0-9+&@#\/%=~_|]{1,100}/'
         )]
         public readonly ?string $cancel = null
     ) {

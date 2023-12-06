@@ -37,6 +37,7 @@ class ItemTest extends TestCase
     // phpcs:ignore
     private function generateModel(
         ?string $itemId = null,
+        ?string $itemIdDisplay = null,
         ?string $description = null,
         ?string $quantityUnit = null,
         ?int $quantity = null,
@@ -53,6 +54,10 @@ class ItemTest extends TestCase
     ): void {
         if ($itemId === null) {
             $itemId = Random::getString(length: 36);
+        }
+
+        if ($itemIdDisplay === null) {
+            $itemIdDisplay = Random::getString(length: 36);
         }
 
         if ($description === null) {
@@ -88,11 +93,11 @@ class ItemTest extends TestCase
         }
 
         if ($url === null) {
-            $url = Random::getString(length: 1234);
+            $url = 'https://example.com/' . Random::getString(length: 12);
         }
 
         if ($imageUrl === null) {
-            $imageUrl = Random::getString(length: 1123);
+            $imageUrl = 'https://example.com/' . Random::getString(length: 12);
         }
 
         if ($tags === null) {
@@ -110,6 +115,7 @@ class ItemTest extends TestCase
         new Item(
             type: CartItemType::PRODUCT,
             itemId: $itemId,
+            itemIdDisplay: $itemIdDisplay,
             description: $description,
             quantityUnit: $quantityUnit,
             unitPrice: $unitPrice,

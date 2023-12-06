@@ -35,33 +35,49 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Contact;
+use Resursbank\Ecom\Lib\Model\Rco\CreateAddress;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRecipient;
+use Resursbank\Ecom\Lib\Model\Rco\CreateContact;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLine;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActionsCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentSelection as PaymentSelectionType;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
+use Resursbank\Ecom\Lib\Model\Rco\Payment;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentSelection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus as RcoPaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Recipient;
 use Resursbank\Ecom\Lib\Model\Rco\SetStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Shipping\Price;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Scope as ShippingScope;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\Type as ShippingType;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
-use Resursbank\Ecom\Lib\Model\Rco\Transaction;
-use Resursbank\Ecom\Lib\Model\Rco\TransactionCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Tracking;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\UpdateCustomer;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Rco\Repository;
@@ -73,6 +89,7 @@ use Throwable;
 /**
  * Tests for RCO+ module Repository class.
  *
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @noinspection EfferentObjectCouplingInspection
  */
 final class RepositoryTest extends TestCase
@@ -201,7 +218,7 @@ final class RepositoryTest extends TestCase
                 type: ShippingType::MAILBOX,
                 carrier: Carrier::POSTNORD,
                 description: 'Lorem ipsum',
-                price: new Price(
+                price: new CreateShippingMethod\Price(
                     display: '49 kr',
                     calculate: 4900,
                     calculateTax: 25
@@ -220,7 +237,7 @@ final class RepositoryTest extends TestCase
                 type: ShippingType::MAILBOX,
                 carrier: Carrier::GENERIC,
                 description: 'Dolor sit amet',
-                price: new Price(
+                price: new CreateShippingMethod\Price(
                     display: '79 kr',
                     calculate: 7900,
                     calculateTax: 25
@@ -385,13 +402,6 @@ final class RepositoryTest extends TestCase
             version: $checkout->version
         );
 
-        if ($result->shipping === null) {
-            throw new IllegalValueException(
-                message: 'Property "shipping" missing from setShippingMethods' .
-                ' response'
-            );
-        }
-
         $fetchedMethods = $result->shipping->methods;
 
         $this->assertCount(
@@ -431,24 +441,18 @@ final class RepositoryTest extends TestCase
 
         $this->assertNotNull(actual: $checkout->cart);
 
+        $originalItemCount = count(value: $checkout->cart->items);
+
         $result = Repository::deleteCartItem(
             id: $checkout->id,
             itemId: $checkout->cart->items->toArray()[0]->itemId,
             version: $checkout->version
         );
 
-        if ($result->cart !== null) {
-            // When successfully deleting a single item in a cart that only contains one item,
-            // the final result is still iterable - not null. If cart object is null, something went wrong
-            // in the API and this test should fail.
-            $this->assertCount(
-                expectedCount: 1,
-                haystack: $result->cart->items
-            );
-            return;
-        }
-
-        $this->fail(message: 'Cart returned as null.');
+        $this->assertCount(
+            expectedCount: $originalItemCount - 1,
+            haystack: $result->cart->items
+        );
     }
 
     /**
@@ -517,6 +521,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testValidateCheckoutModel(): void
     {
@@ -533,6 +538,12 @@ final class RepositoryTest extends TestCase
             $this->addToAssertionCount(count: 1);
         }
 
+        $shippingSelection = new Shipping\Selection(
+            methodId: Strings::getUuid(),
+            optionId: Strings::getUuid(),
+            type: ShippingSelection::DEFAULT
+        );
+
         Repository::validateCheckoutModel(model: new Checkout(
             id: Strings::getUuid(),
             storeId: Strings::getUuid(),
@@ -541,9 +552,83 @@ final class RepositoryTest extends TestCase
             locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: Strings::getUuid(),
-            options: new Options(),
+            options: new Options(
+                renderCart: true,
+                calculateShipping: true,
+                lookupB2CAddress: true,
+                renderCartCode: true,
+                renderNotes: true,
+                allowDelayedAuthorization: true
+            ),
+            checkboxes: new CheckboxCollection(data: [
+            ]),
+            notes: '',
             customer: new CustomerModel(
-                type: Type::B2C
+                type: Type::B2C,
+                delivery: new Recipient(
+                    name: Strings::generateRandomString(length: 12),
+                    contact: new Contact(
+                        firstName: Strings::generateRandomString(length: 32),
+                        lastName: Strings::generateRandomString(length: 32),
+                        phone: '+46701234567',
+                        email: Strings::generateRandomString(length: 32)
+                    ),
+                    address: new Address()
+                ),
+                billing: new Recipient(
+                    name: Strings::generateRandomString(length: 12),
+                    contact: new Contact(
+                        firstName: Strings::generateRandomString(length: 32),
+                        lastName: Strings::generateRandomString(length: 32),
+                        phone: '+46701234567',
+                        email: Strings::generateRandomString(length: 32)
+                    ),
+                    address: new Address()
+                ),
+                governmentId: 'SE' . $_ENV['RCO_JWT_GOVERNMENT_ID']
+            ),
+            shipping: new Shipping(
+                tracking: new Tracking(
+                    url: 'https://example.com'
+                ),
+                selection: $shippingSelection,
+                methods: new Shipping\MethodCollection(data: [
+                    new Method(
+                        methodId: $shippingSelection->methodId,
+                        description: Strings::generateRandomString(length: 12),
+                        type: Shipping\Type::DELIVERY,
+                        carrier: Carrier::GENERIC,
+                        name: Strings::generateRandomString(length: 12),
+                        deliveryEta: Strings::generateRandomString(length: 12),
+                        price: new Shipping\Price(
+                            display: '5,00',
+                            calculateTax: 100,
+                            calculate: 500
+                        ),
+                        options: new OptionCollection(data: []),
+                        required: new RequiredCollection(data: [])
+                    )
+                ])
+            ),
+            payment: new Payment(
+                methods: new PaymentMethodCollection(data: [
+                ]),
+                selection: new PaymentSelection(
+                    methodId: Strings::getUuid(),
+                    type: PaymentSelectionType::DEFAULT
+                ),
+                status: new RcoPaymentStatus(
+                    requestedAmount: 1000,
+                    authorizedAmount: 1000,
+                    cancelledAmount: 0,
+                    capturedAmount: 0,
+                    refundedAmount: 0,
+                    availableActions: new AvailableActionsCollection(data: [
+                        AvailableActions::CAPTURE,
+                        AvailableActions::CANCEL
+                    ]),
+                    type: PaymentStatus::AUTHORIZED
+                )
             ),
             status: new Status(type: CheckoutStatus::CREATED),
             cart: new Cart(
@@ -552,7 +637,9 @@ final class RepositoryTest extends TestCase
             ),
             merchant: new Merchant(
                 displayName: 'Jocke',
-                termsUrl: 'https://example.com'
+                termsUrl: 'https://example.com',
+                homepageUrl: 'https://example.com',
+                logoUrl: 'https://example.com'
             )
         ));
     }
@@ -631,12 +718,6 @@ final class RepositoryTest extends TestCase
 
         $fetched = Repository::get(id: $validated->id);
 
-        if ($fetched->cart === null) {
-            throw new EmptyValueException(
-                message: 'Cart missing from response!'
-            );
-        }
-
         $fetchedItems = $fetched->cart->items;
 
         if (
@@ -648,11 +729,12 @@ final class RepositoryTest extends TestCase
 
         /** @var Cart\Item $captureItem */
         $captureItem = $fetched->cart->items->toArray()[0];
-        $transactionLines = new TransactionCollection(data: [
-            new Transaction(
+        $transactionLines = new CreateTransactionLineCollection(data: [
+            new CreateTransactionLine(
                 type: $captureItem->type,
                 description: $captureItem->description,
                 itemId: $captureItem->itemId,
+                itemIdDisplay: $captureItem->itemIdDisplay,
                 quantityUnit: $captureItem->quantityUnit,
                 quantity: $captureItem->quantity,
                 unitPrice: $captureItem->unitPrice,
@@ -665,10 +747,6 @@ final class RepositoryTest extends TestCase
             version: $fetched->version,
             transactionLines: $transactionLines
         );
-
-        if ($result->payment === null) {
-            throw new EmptyValueException(message: 'Payment object missing!');
-        }
 
         if (!$result->payment->status instanceof RcoPaymentStatus) {
             throw new EmptyValueException(
@@ -770,22 +848,6 @@ final class RepositoryTest extends TestCase
             version: $fetched->version
         );
 
-        if (
-            $captured->payment?->status === null
-        ) {
-            throw new EmptyValueException(
-                message: 'Missing payment or payment status info on $captured object'
-            );
-        }
-
-        if (
-            $refunded->payment?->status === null
-        ) {
-            throw new EmptyValueException(
-                message: 'Missing payment or payment status info on $refunded object'
-            );
-        }
-
         $this->assertEquals(
             expected: $captured->payment->status->capturedAmount,
             actual: $refunded->payment->status->refundedAmount
@@ -828,17 +890,14 @@ final class RepositoryTest extends TestCase
             version: $fetched->version
         );
 
-        if ($captured->cart?->items === null) {
-            throw new EmptyValueException(message: 'Cart items not present');
-        }
-
         /** @var Cart\Item $cartItem */
         $cartItem = $captured->cart->items->toArray()[0];
-        $transactionLines = new TransactionCollection(data: [
-            new Transaction(
+        $transactionLines = new CreateTransactionLineCollection(data: [
+            new CreateTransactionLine(
                 type: $cartItem->type,
                 description: $cartItem->description,
                 itemId: $cartItem->itemId,
+                itemIdDisplay: $cartItem->itemIdDisplay,
                 quantityUnit: $cartItem->quantityUnit,
                 quantity: $cartItem->quantity,
                 unitPrice: $cartItem->unitPrice,
@@ -853,12 +912,6 @@ final class RepositoryTest extends TestCase
             version: $fetched->version,
             transactionLines: $transactionLines
         );
-
-        if ($result->payment?->status === null) {
-            throw new EmptyValueException(
-                message: 'Missing payment object on $result'
-            );
-        }
 
         $this->assertEquals(
             expected: $cartItem->totalPrice,
@@ -889,12 +942,6 @@ final class RepositoryTest extends TestCase
 
         $items = [];
 
-        if ($fetched->cart === null) {
-            throw new EmptyValueException(
-                message: 'No cart object in fetched Checkout'
-            );
-        }
-
         /** @var Cart\Item $item */
         foreach ($fetched->cart->items as $item) {
             $items[] = new CreateCart\Item(
@@ -917,18 +964,44 @@ final class RepositoryTest extends TestCase
             items: new CreateCart\ItemCollection(data: $items)
         );
 
-        $newCustomer = new CustomerModel(
+        $newCustomer = new UpdateCustomer(
             type: $fetched->customer->type,
             governmentId: 'SE8305147715',
-            billing: $fetched->customer->billing,
-            delivery: $fetched->customer->delivery
+            billing: new CreateRecipient(
+                name: $fetched->customer->billing->name,
+                contact: new CreateContact(
+                    firstName: $fetched->customer->billing->contact->firstName,
+                    lastName: $fetched->customer->billing->contact->lastName,
+                    email: $fetched->customer->billing->contact->email,
+                    phone: $fetched->customer->billing->contact->phone
+                ),
+                address: new CreateAddress(
+                    street: $fetched->customer->billing->address->street,
+                    addressLine: $fetched->customer->billing->address->addressLine,
+                    postalCode: $fetched->customer->billing->address->postalCode,
+                    city: $fetched->customer->billing->address->city,
+                    notes: $fetched->customer->billing->address->notes,
+                    countryCode: $fetched->customer->billing->address->countryCode
+                )
+            ),
+            delivery: new CreateRecipient(
+                name: $fetched->customer->delivery->name,
+                contact: new CreateContact(
+                    firstName: $fetched->customer->delivery->contact->firstName,
+                    lastName: $fetched->customer->delivery->contact->lastName,
+                    email: $fetched->customer->delivery->contact->email,
+                    phone: $fetched->customer->delivery->contact->phone
+                ),
+                address: new CreateAddress(
+                    street: $fetched->customer->delivery->address->street,
+                    addressLine: $fetched->customer->delivery->address->addressLine,
+                    postalCode: $fetched->customer->delivery->address->postalCode,
+                    city: $fetched->customer->delivery->address->city,
+                    notes: $fetched->customer->delivery->address->notes,
+                    countryCode: $fetched->customer->delivery->address->countryCode
+                )
+            )
         );
-
-        if ($fetched->payment === null) {
-            throw new EmptyValueException(
-                message: 'No payment object in fetched Checkout'
-            );
-        }
 
         $updated = Repository::update(
             id: $fetched->id,

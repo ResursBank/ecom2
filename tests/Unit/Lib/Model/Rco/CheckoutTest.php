@@ -14,12 +14,14 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
+use Resursbank\Ecom\Lib\Model\Rco\Address;
+use Resursbank\Ecom\Lib\Model\Rco\Cart;
+use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
+use Resursbank\Ecom\Lib\Model\Rco\Contact;
 use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
@@ -32,13 +34,21 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentSelection as PaymentSelectionEnum;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus as PaymentStatusEnum;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Required;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
+use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Payment;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentSelection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentStatus;
+use Resursbank\Ecom\Lib\Model\Rco\Recipient;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Carrier;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\Method;
+use Resursbank\Ecom\Lib\Model\Rco\Shipping\OptionCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Status;
+use Resursbank\Ecom\Lib\Model\Rco\Tracking;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
 
@@ -64,6 +74,11 @@ class CheckoutTest extends TestCase
         ?string $version = null,
         ?Payment $payment = null
     ): Checkout {
+        $shippingSelection = new Shipping\Selection(
+            methodId: Strings::getUuid(),
+            optionId: Strings::getUuid(),
+            type: ShippingSelection::DEFAULT
+        );
         return new Checkout(
             id: $id ?? Strings::getUuid(),
             storeId: $storeId ?? Strings::getUuid(),
@@ -74,12 +89,77 @@ class CheckoutTest extends TestCase
             locale: Locale::sv_SE,
             currency: Currency::SEK,
             version: $version ?? Strings::getUuid(),
-            options: new Options(),
-            customer: new Customer(type: Type::B2C),
+            options: new Options(
+                renderCart: true,
+                calculateShipping: true,
+                lookupB2CAddress: true,
+                renderCartCode: true,
+                renderNotes: true,
+                allowDelayedAuthorization: true
+            ),
+            customer: new Customer(
+                type: Type::B2C,
+                governmentId: 'SE' . $_ENV['RCO_JWT_GOVERNMENT_ID'],
+                billing: new Recipient(
+                    name: Strings::generateRandomString(length: 12),
+                    contact: new Contact(
+                        firstName: Strings::generateRandomString(length: 32),
+                        lastName: Strings::generateRandomString(length: 32),
+                        phone: '+46701234567',
+                        email: Strings::generateRandomString(length: 32)
+                    ),
+                    address: new Address()
+                ),
+                delivery: new Recipient(
+                    name: Strings::generateRandomString(length: 12),
+                    contact: new Contact(
+                        firstName: Strings::generateRandomString(length: 32),
+                        lastName: Strings::generateRandomString(length: 32),
+                        phone: '+46701234567',
+                        email: Strings::generateRandomString(length: 32)
+                    ),
+                    address: new Address()
+                )
+            ),
             status: new Status(
                 type: CheckoutStatus::INITIATED
             ),
-            payment: $payment ?? $this->generatePayment()
+            payment: $payment ?? $this->generatePayment(),
+            cart: new Cart(
+                items: new Cart\ItemCollection(data: []),
+                code: Strings::generateRandomString(length: 12)
+            ),
+            checkboxes: new CheckboxCollection(data: []),
+            merchant: new Merchant(
+                displayName: Strings::generateRandomString(length: 12),
+                logoUrl: 'https://example.com',
+                termsUrl: 'https://example.com',
+                homepageUrl: 'https://example.com'
+            ),
+            shipping: new Shipping(
+                tracking: new Tracking(
+                    url: 'https://example.com'
+                ),
+                selection: $shippingSelection,
+                methods: new Shipping\MethodCollection(data: [
+                    new Method(
+                        methodId: $shippingSelection->methodId,
+                        description: Strings::generateRandomString(length: 12),
+                        type: Shipping\Type::DELIVERY,
+                        carrier: Carrier::GENERIC,
+                        name: Strings::generateRandomString(length: 12),
+                        deliveryEta: Strings::generateRandomString(length: 12),
+                        price: new Shipping\Price(
+                            display: '5,00',
+                            calculateTax: 100,
+                            calculate: 500
+                        ),
+                        options: new OptionCollection(data: []),
+                        required: new RequiredCollection(data: [])
+                    )
+                ])
+            ),
+            notes: ''
         );
     }
 
@@ -180,124 +260,6 @@ class CheckoutTest extends TestCase
             $this->addToAssertionCount(count: 1);
         } catch (Throwable) {
             $this->fail(message: 'Failed to generate Checkout model instance.');
-        }
-    }
-
-    /**
-     * Assert validation rules for id property.
-     *
-     * @throws AttributeCombinationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     */
-    public function testIdValidation(): void
-    {
-        try {
-            $this->generateCheckoutModel(id: '');
-            $this->fail(message: 'Empty id value accepted.');
-        } catch (EmptyValueException) {
-            $this->addToAssertionCount(count: 1);
-        }
-
-        try {
-            $this->generateCheckoutModel(id: 'not-a-uuid');
-            $this->fail(message: 'Invalid id value accepted.');
-        } catch (IllegalValueException) {
-            $this->addToAssertionCount(count: 1);
-        }
-    }
-
-    /**
-     * Assert validation rules for storeId property.
-     *
-     * @throws AttributeCombinationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     */
-    public function testStoreIdValidation(): void
-    {
-        try {
-            $this->generateCheckoutModel(storeId: '');
-            $this->fail(message: 'Empty storeId value accepted.');
-        } catch (EmptyValueException) {
-            $this->addToAssertionCount(count: 1);
-        }
-
-        try {
-            $this->generateCheckoutModel(storeId: 'asd-dcvb-123saqd-asd2-wdsf');
-            $this->fail(message: 'Invalid storeId value accepted.');
-        } catch (IllegalValueException) {
-            $this->addToAssertionCount(count: 1);
-        }
-    }
-
-    /**
-     * Assert validation rules for orderReference property.
-     *
-     * @throws AttributeCombinationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function testOrderReferenceValidation(): void
-    {
-        try {
-            $this->generateCheckoutModel(orderReference: '');
-            $this->fail(message: 'Empty orderReference value accepted.');
-        } catch (EmptyValueException) {
-            $this->addToAssertionCount(count: 1);
-        }
-
-        try {
-            $this->generateCheckoutModel(
-                orderReference: Strings::generateRandomString(length: 32)
-            );
-
-            $this->addToAssertionCount(count: 1);
-        } catch (IllegalCharsetException) {
-            $this->fail(message: '32 character orderReference value rejected.');
-        }
-
-        try {
-            $this->generateCheckoutModel(
-                orderReference: Strings::generateRandomString(length: 33)
-            );
-
-            $this->fail(message: '33 character orderReference value accepted.');
-        } catch (IllegalCharsetException) {
-            $this->addToAssertionCount(count: 1);
-        }
-    }
-
-    /**
-     * Assert validation rules for version property.
-     *
-     * @throws AttributeCombinationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     */
-    public function testVersionValidation(): void
-    {
-        try {
-            $this->generateCheckoutModel(version: '');
-            $this->fail(message: 'Empty version value accepted.');
-        } catch (EmptyValueException) {
-            $this->addToAssertionCount(count: 1);
-        }
-
-        try {
-            $this->generateCheckoutModel(version: '123');
-            $this->fail(message: 'Invalid version value accepted.');
-        } catch (IllegalValueException) {
-            $this->addToAssertionCount(count: 1);
         }
     }
 

@@ -49,7 +49,9 @@ class PaymentStatusTest extends TestCase
             availableActions: is_array(value: $availableActions) ?
                 new AvailableActionsCollection(
                     data: $availableActions
-                ) : null,
+                ) : new AvailableActionsCollection(
+                    data: []
+                ),
             type: PaymentStatusEnum::AUTHORIZED
         );
     }

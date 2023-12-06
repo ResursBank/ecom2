@@ -9,33 +9,25 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
-use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 
 /**
- * Implementation of TransactionLineDto
+ * Implementation of TransactionDto
  */
 class Transaction extends Model
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     public function __construct(
         public readonly CartItemType $type,
-        #[StringLength(min: 0, max: 280)] public readonly string $description,
-        public readonly ?string $itemId = null,
-        #[StringLength(
-            min: 1,
-            max: 32
-        )] public readonly ?string $quantityUnit = null,
-        #[IntValue(
-            min: 1,
-            max: (2 ** 31) - 1
-        )] public readonly ?int $quantity = null,
-        #[IntValue(
-            min: -(2 ** 31) + 1,
-            max: (2 ** 31) - 1
-        )] public readonly ?int $unitPrice = null,
-        #[IntValue(min: 0, max: 100)] public readonly ?int $taxRate = null
+        public readonly TransactionLineCollection $transactionLines
     ) {
         parent::__construct();
     }

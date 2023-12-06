@@ -50,7 +50,7 @@ class StringLength implements StringInterface
 
         if ($this->max !== null && strlen(string: $value) > $this->max) {
             throw new IllegalValueException(
-                message: $name . ' is longer than its specified minimum length of ' . $this->min
+                message: $name . ' is longer than its specified maximum length of ' . $this->max
             );
         }
     }

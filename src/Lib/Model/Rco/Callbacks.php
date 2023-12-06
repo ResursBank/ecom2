@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -16,9 +19,15 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Callbacks extends Model
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     public function __construct(
         public readonly ?Callback $authorization = null,
         public readonly ?Callback $management = null
     ) {
+        parent::__construct();
     }
 }

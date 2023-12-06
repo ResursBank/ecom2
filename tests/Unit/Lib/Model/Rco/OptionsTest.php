@@ -33,6 +33,12 @@ class OptionsTest extends TestCase
         ?array $requiredFields = null
     ): void {
         new Options(
+            renderCart: true,
+            calculateShipping: true,
+            lookupB2CAddress: true,
+            renderCartCode: true,
+            renderNotes: true,
+            allowDelayedAuthorization: true,
             requiredFields: new RequiredCollection(
                 data: $requiredFields ?? Required::cases()
             )

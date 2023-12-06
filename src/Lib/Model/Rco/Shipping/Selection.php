@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\Shipping;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
 
@@ -17,10 +20,16 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
  */
 class Selection extends Model
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     public function __construct(
         public readonly string $methodId,
         public readonly string $optionId,
         public readonly ShippingSelection $type
     ) {
+        parent::__construct();
     }
 }

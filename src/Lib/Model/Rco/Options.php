@@ -26,7 +26,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 class Options extends Model
 {
     /**
-     * @param TypeCollection|null $enabledCustomerTypes Defaults to both active.
+     * @param TypeCollection $enabledCustomerTypes Defaults to both active.
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -34,18 +34,16 @@ class Options extends Model
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @SuppressWarnings(PHPMD.LongVariable)
      */
-    // phpcs:ignore
     public function __construct(
-        public readonly ?TypeCollection $enabledCustomerTypes = new TypeCollection(
-            data: [Type::B2C, Type::B2B]
-        ),
-        public readonly ?bool $renderCart = null,
-        public readonly ?bool $calculateShipping = null,
-        public readonly ?bool $lookupB2CAddress = null,
-        public readonly ?bool $renderCartCode = null,
-        public readonly ?bool $renderNotes = null,
-        public readonly ?RequiredCollection $requiredFields = null,
-        public readonly ?bool $allowDelayedAuthorization = null
+        public readonly bool $renderCart,
+        public readonly bool $calculateShipping,
+        public readonly bool $lookupB2CAddress,
+        public readonly bool $renderCartCode,
+        public readonly bool $renderNotes,
+        public readonly bool $allowDelayedAuthorization,
+        // phpcs:ignore
+        public readonly TypeCollection $enabledCustomerTypes = new TypeCollection(data: [Type::B2C, Type::B2B]),
+        public readonly ?RequiredCollection $requiredFields = null
     ) {
         parent::__construct();
     }

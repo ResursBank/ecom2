@@ -17,27 +17,26 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
-use Resursbank\Ecom\Lib\Model\Rco\Address;
-use Resursbank\Ecom\Lib\Model\Rco\Callback;
-use Resursbank\Ecom\Lib\Model\Rco\Callbacks;
-use Resursbank\Ecom\Lib\Model\Rco\Checkbox;
-use Resursbank\Ecom\Lib\Model\Rco\CheckboxCollection;
-use Resursbank\Ecom\Lib\Model\Rco\Contact;
+use Resursbank\Ecom\Lib\Model\Rco\CreateAddress;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\Item;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCallback;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCallbacks;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCheckbox;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCheckboxCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateCustomer;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateMerchant;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRecipient;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateWebhook;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateWebhooks;
+use Resursbank\Ecom\Lib\Model\Rco\CreateContact;
 use Resursbank\Ecom\Lib\Model\Rco\CreateOptions;
-use Resursbank\Ecom\Lib\Model\Rco\Customer;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CartItemType;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
-use Resursbank\Ecom\Lib\Model\Rco\Merchant;
-use Resursbank\Ecom\Lib\Model\Rco\Recipient;
-use Resursbank\Ecom\Lib\Model\Rco\Redirects;
-use Resursbank\Ecom\Lib\Model\Rco\Webhook;
-use Resursbank\Ecom\Lib\Model\Rco\Webhooks;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 /**
@@ -116,7 +115,7 @@ class Rco
                     ]
                 )
             ),
-            merchant: new Merchant(
+            merchant: new CreateMerchant(
                 displayName: 'Resurs Stuff AB',
                 termsUrl: 'https://example.com'
             )
@@ -152,7 +151,7 @@ class Rco
                 items: self::getItemCollection(),
                 code: ''
             ),
-            merchant: new Merchant(
+            merchant: new CreateMerchant(
                 displayName: 'Resurs Stuff AB',
                 termsUrl: 'https://example.com',
                 logoUrl: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/logoUrl.jpg',
@@ -160,18 +159,18 @@ class Rco
             ),
             orderReference: $orderReference,
             options: new CreateOptions(),
-            customer: new Customer(
+            customer: new CreateCustomer(
                 type: Type::B2C,
                 governmentId: 'SE8305147715',
-                billing: new Recipient(
+                billing: new CreateRecipient(
                     name: 'John Doe',
-                    contact: new Contact(
+                    contact: new CreateContact(
                         firstName: 'John',
                         lastName: 'Doe',
                         email: 'johndoe@example.com',
                         phone: '+46701234567'
                     ),
-                    address: new Address(
+                    address: new CreateAddress(
                         street: 'Glassgatan 15',
                         addressLine: '',
                         postalCode: '41655',
@@ -180,15 +179,15 @@ class Rco
                         countryCode: CountryCode::SE
                     )
                 ),
-                delivery: new Recipient(
+                delivery: new CreateRecipient(
                     name: 'John Doe',
-                    contact: new Contact(
+                    contact: new CreateContact(
                         firstName: 'John',
                         lastName: 'Doe',
                         email: 'johndoe@example.com',
                         phone: '+46701234567'
                     ),
-                    address: new Address(
+                    address: new CreateAddress(
                         street: 'Glassgatan 15',
                         addressLine: '',
                         postalCode: '41655',
@@ -198,7 +197,7 @@ class Rco
                     )
                 )
             ),
-            redirects: new Redirects(
+            redirects: new CreateCheckout\CreateRedirects(
                 checkout: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/checkout',
                 success: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/success'
             ),
@@ -206,8 +205,8 @@ class Rco
             webhooks: self::getWebhooks(auth: $auth),
             locale: Locale::sv_SE,
             currency: Currency::SEK,
-            checkboxes: new CheckboxCollection(data: [
-                new Checkbox(
+            checkboxes: new CreateCheckboxCollection(data: [
+                new CreateCheckbox(
                     id: 'terms',
                     label: 'Terms and conditions',
                     checked: true,
@@ -248,13 +247,13 @@ class Rco
     /**
      * Get Callbacks property.
      */
-    public static function getCallbacks(): Callbacks
+    public static function getCallbacks(): CreateCallbacks
     {
-        return new Callbacks(
-            authorization: new Callback(
+        return new CreateCallbacks(
+            authorization: new CreateCallback(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/authorized'
             ),
-            management: new Callback(
+            management: new CreateCallback(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/management'
             )
         );
@@ -263,34 +262,34 @@ class Rco
     /**
      * Fetch web hooks.
      */
-    public static function getWebhooks(string $auth): Webhooks
+    public static function getWebhooks(string $auth): CreateWebhooks
     {
-        return new Webhooks(
-            customer: new Webhook(
+        return new CreateWebhooks(
+            customer: new CreateWebhook(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/customer',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
             ),
-            cart: new Webhook(
+            cart: new CreateWebhook(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/cart',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
             ),
-            shipping: new Webhook(
+            shipping: new CreateWebhook(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/shipping',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
             ),
-            payment: new Webhook(
+            payment: new CreateWebhook(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/payment',
                 authorization: $auth,
                 continueOnNoResponse: true,
                 timeout: 60
             ),
-            validate: new Webhook(
+            validate: new CreateWebhook(
                 url: $_ENV['RCOPLUS_HOMEPAGE_URL'] . '/webhooks/validate',
                 authorization: $auth,
                 continueOnNoResponse: true,

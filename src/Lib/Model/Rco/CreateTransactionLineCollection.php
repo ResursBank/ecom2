@@ -14,10 +14,10 @@ use Resursbank\Ecom\Lib\Collection\Collection;
 /**
  * Transaction collection
  */
-class TransactionCollection extends Collection
+class CreateTransactionLineCollection extends Collection
 {
     public function __construct(array $data)
     {
-        parent::__construct(data: $data, type: Transaction::class);
+        parent::__construct(data: $data, type: CreateTransactionLine::class);
     }
 }

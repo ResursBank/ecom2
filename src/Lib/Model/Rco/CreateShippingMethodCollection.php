@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
@@ -16,6 +17,9 @@ use Resursbank\Ecom\Lib\Collection\Collection;
  */
 class CreateShippingMethodCollection extends Collection
 {
+    /**
+     * @throws IllegalTypeException
+     */
     public function __construct(array $data)
     {
         parent::__construct(data: $data, type: CreateShippingMethod::class);

@@ -33,6 +33,7 @@ class CartTest extends TestCase
             new Item(
                 type: CartItemType::GENERIC,
                 itemId: Strings::generateRandomString(length: 12),
+                itemIdDisplay: Strings::generateRandomString(length: 12),
                 description: Strings::generateRandomString(length: 12),
                 quantityUnit: Strings::generateRandomString(length: 2),
                 quantity: 1,

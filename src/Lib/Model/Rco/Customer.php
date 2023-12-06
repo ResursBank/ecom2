@@ -24,9 +24,9 @@ class Customer extends Model
 {
     /**
      * @param Type $type Customer type enum.
-     * @param string|null $governmentId Government id supplied by the customer.
-     * @param Recipient|null $billing Billing address object.
-     * @param Recipient|null $delivery Delivery address object.
+     * @param string $governmentId Government id supplied by the customer.
+     * @param Recipient $billing Billing address object.
+     * @param Recipient $delivery Delivery address object.
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
@@ -38,9 +38,9 @@ class Customer extends Model
             pattern: '/^$|^(?:SE|FI|DK|NO)[-+A-Za-z0-9\*]{6,18}$/'
             //pattern: '/^$|^(?:SE|FI|DK|NO)[-+A-Za-z0-9]{6,18}$/'
         )]
-        public readonly ?string $governmentId = null,
-        public readonly ?Recipient $billing = null,
-        public readonly ?Recipient $delivery = null
+        public readonly string $governmentId,
+        public readonly Recipient $billing,
+        public readonly Recipient $delivery
     ) {
         parent::__construct();
     }
@@ -55,18 +55,18 @@ class Customer extends Model
     public function useSeparateDeliveryAddress(): bool
     {
         return
-            $this->delivery?->address?->addressLine ||
-            $this->delivery?->address?->city ||
+            $this->delivery->address->addressLine ||
+            $this->delivery->address->city ||
             (
-                $this->delivery?->address?->countryCode !== CountryCode::UNKNOWN &&
-                $this->delivery?->address?->countryCode !== null
+                $this->delivery->address->countryCode !== CountryCode::UNKNOWN &&
+                $this->delivery->address->countryCode !== null
             ) ||
-            $this->delivery?->address?->postalCode ||
-            $this->delivery?->address?->street ||
-            $this->delivery?->contact?->phone ||
-            $this->delivery?->contact?->email ||
-            $this->delivery?->contact?->firstName ||
-            $this->delivery?->contact?->lastName ||
-            $this->delivery?->name;
+            $this->delivery->address->postalCode ||
+            $this->delivery->address->street ||
+            $this->delivery->contact->phone ||
+            $this->delivery->contact->email ||
+            $this->delivery->contact->firstName ||
+            $this->delivery->contact->lastName ||
+            $this->delivery->name;
     }
 }
