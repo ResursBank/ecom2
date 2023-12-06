@@ -14,6 +14,7 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRecipient;
 use Resursbank\Ecom\Lib\Model\Rco\Customer\Type;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 

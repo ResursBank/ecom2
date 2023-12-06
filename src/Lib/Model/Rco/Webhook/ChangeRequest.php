@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart\ItemCollection;
-use Resursbank\Ecom\Lib\Model\Rco\CreateRecipient;
+use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRecipient;
 use Resursbank\Ecom\Lib\Model\Rco\Shipping\MethodCollection;
 
 /**
