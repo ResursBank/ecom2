@@ -32,6 +32,7 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
+use Resursbank\Ecom\Lib\Model\Rco\InvoiceLabels;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
@@ -303,13 +304,24 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?CreateTransactionLineCollection $transactionLines = null
+        ?CreateTransactionLineCollection $transactionLines = null,
+        ?InvoiceLabels $invoiceLabels = null,
     ): Checkout {
+        $params = [];
+
+        if ($transactionLines !== null) {
+            $params['transactionLines'] = $transactionLines->toArray();
+        }
+
+        if ($invoiceLabels !== null) {
+            $params['invoiceLabels'] = $invoiceLabels->toArray();
+        }
+
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             version: $version,
-            params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
-        ))->call(forceObject: !($transactionLines !== null));
+            params: $params
+        ))->call(forceObject: empty($params));
 
         return self::validateCheckoutModel(model: $response);
     }
@@ -364,7 +376,7 @@ class Repository
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
             version: $version,
             params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
-        ))->call(forceObject: !($transactionLines !== null));
+        ))->call(forceObject: $transactionLines === null);
 
         return self::validateCheckoutModel(model: $response);
     }
