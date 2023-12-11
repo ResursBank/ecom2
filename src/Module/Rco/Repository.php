@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransaction;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
@@ -303,13 +304,29 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?CreateTransactionLineCollection $transactionLines = null
+        ?CreateTransaction $transaction = null
     ): Checkout {
+        $parameters = [];
+        $forceObject = true;
+
+        if ($transaction !== null) {
+            if ($transaction->transactionLines !== null) {
+                $forceObject = false;
+                $parameters['transactionLines'] =
+                    $transaction->transactionLines->toArray();
+            }
+
+            if ($transaction->invoiceLabels !== null) {
+                $parameters['invoiceLabels'] =
+                    $transaction->invoiceLabels->toArray();
+            }
+        }
+
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             version: $version,
-            params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
-        ))->call(forceObject: !($transactionLines !== null));
+            params: $parameters
+        ))->call(forceObject: $forceObject);
 
         return self::validateCheckoutModel(model: $response);
     }

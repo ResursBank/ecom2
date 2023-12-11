@@ -47,6 +47,7 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout\CreateRecipient;
 use Resursbank\Ecom\Lib\Model\Rco\CreateContact;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethod;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rco\CreateTransaction;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLine;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Customer as CustomerModel;
@@ -60,6 +61,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentSelection as PaymentSelectionType;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
+use Resursbank\Ecom\Lib\Model\Rco\InvoiceLabels;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Payment;
@@ -745,7 +747,10 @@ final class RepositoryTest extends TestCase
         $result = Repository::capture(
             id: $fetched->id,
             version: $fetched->version,
-            transactionLines: $transactionLines
+            transaction: new CreateTransaction(
+                transactionLines: $transactionLines,
+                invoiceLabels: new InvoiceLabels()
+            )
         );
 
         if (!$result->payment->status instanceof RcoPaymentStatus) {
