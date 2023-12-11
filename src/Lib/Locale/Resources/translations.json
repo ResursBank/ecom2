@@ -1464,5 +1464,19 @@
       "en": "Please try again in a few minutes.",
       "sv": "Vänligen försök igen om några minuter."
     }
+  },
+  {
+    "id": "please-try-again",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter."
+    }
+  },
+  {
+    "id": "failed-adjusting-cart-contents",
+    "translation": {
+      "en": "Failed adjusting cart contents.",
+      "sv": "Kunde inte uppdatera varukorg."
+    }
   }
 ]

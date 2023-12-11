@@ -33,6 +33,7 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateShippingMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransaction;
 use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
+use Resursbank\Ecom\Lib\Model\Rco\InvoiceLabels;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Delete;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
@@ -304,29 +305,27 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?CreateTransaction $transaction = null
+        ?CreateTransaction $createTransaction = null
     ): Checkout {
         $parameters = [];
-        $forceObject = true;
 
-        if ($transaction !== null) {
-            if ($transaction->transactionLines !== null) {
-                $forceObject = false;
-                $parameters['transactionLines'] =
-                    $transaction->transactionLines->toArray();
-            }
+        if ($createTransaction?->transactionLines !== null) {
+            $parameters['transactionLines'] = $createTransaction
+                ?->transactionLines
+                ->toArray();
+        }
 
-            if ($transaction->invoiceLabels !== null) {
-                $parameters['invoiceLabels'] =
-                    $transaction->invoiceLabels->toArray();
-            }
+        if ($createTransaction?->invoiceLabels !== null) {
+            $parameters['invoiceLabels'] = $createTransaction
+                ?->invoiceLabels
+                ->toArray();
         }
 
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             version: $version,
             params: $parameters
-        ))->call(forceObject: $forceObject);
+        ))->call(forceObject: empty($parameters));
 
         return self::validateCheckoutModel(model: $response);
     }
@@ -381,7 +380,7 @@ class Repository
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
             version: $version,
             params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
-        ))->call(forceObject: !($transactionLines !== null));
+        ))->call(forceObject: $transactionLines === null);
 
         return self::validateCheckoutModel(model: $response);
     }
