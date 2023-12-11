@@ -305,7 +305,7 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?CreateTransaction $createTransaction
+        ?CreateTransaction $createTransaction = null
     ): Checkout {
         $params = [];
 
