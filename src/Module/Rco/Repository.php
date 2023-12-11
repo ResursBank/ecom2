@@ -305,17 +305,20 @@ class Repository
     public static function capture(
         string $id,
         string $version,
-        ?CreateTransactionLineCollection $transactionLines = null,
-        ?InvoiceLabels $invoiceLabels = null,
+        ?CreateTransaction $createTransaction
     ): Checkout {
         $params = [];
 
-        if ($transactionLines !== null) {
-            $params['transactionLines'] = $transactionLines->toArray();
+        if ($createTransaction?->transactionLines !== null) {
+            $params['transactionLines'] = $createTransaction
+                ?->transactionLines
+                ->toArray();
         }
 
-        if ($invoiceLabels !== null) {
-            $params['invoiceLabels'] = $invoiceLabels->toArray();
+        if ($createTransaction?->invoiceLabels !== null) {
+            $params['invoiceLabels'] = $createTransaction
+                ?->invoiceLabels
+                ->toArray();
         }
 
         $response = (new Post(
