@@ -307,16 +307,16 @@ class Repository
         string $version,
         ?CreateTransaction $createTransaction = null
     ): Checkout {
-        $params = [];
+        $parameters = [];
 
         if ($createTransaction?->transactionLines !== null) {
-            $params['transactionLines'] = $createTransaction
+            $parameters['transactionLines'] = $createTransaction
                 ?->transactionLines
                 ->toArray();
         }
 
         if ($createTransaction?->invoiceLabels !== null) {
-            $params['invoiceLabels'] = $createTransaction
+            $parameters['invoiceLabels'] = $createTransaction
                 ?->invoiceLabels
                 ->toArray();
         }
@@ -324,8 +324,8 @@ class Repository
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
             version: $version,
-            params: $params
-        ))->call(forceObject: empty($params));
+            params: $parameters
+        ))->call(forceObject: empty($parameters));
 
         return self::validateCheckoutModel(model: $response);
     }
