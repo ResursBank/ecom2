@@ -351,7 +351,7 @@ class Repository
         $response = (new Post(
             route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
             version: $version
-        ))->call();
+        ))->call(forceObject: true);
 
         return self::validateCheckoutModel(model: $response);
     }

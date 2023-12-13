@@ -747,7 +747,7 @@ final class RepositoryTest extends TestCase
         $result = Repository::capture(
             id: $fetched->id,
             version: $fetched->version,
-            transaction: new CreateTransaction(
+            createTransaction: new CreateTransaction(
                 transactionLines: $transactionLines,
                 invoiceLabels: new InvoiceLabels()
             )
