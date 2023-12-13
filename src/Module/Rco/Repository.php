@@ -310,13 +310,13 @@ class Repository
 
         if ($createTransaction?->transactionLines !== null) {
             $parameters['transactionLines'] = $createTransaction
-                ?->transactionLines
+                ->transactionLines
                 ->toArray();
         }
 
         if ($createTransaction?->invoiceLabels !== null) {
             $parameters['invoiceLabels'] = $createTransaction
-                ?->invoiceLabels
+                ->invoiceLabels
                 ->toArray();
         }
 

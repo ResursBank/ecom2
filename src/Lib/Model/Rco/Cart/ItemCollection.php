@@ -26,6 +26,9 @@ class ItemCollection extends Collection
         parent::__construct(data: $data, type: Item::class);
     }
 
+    /**
+     * Get item by ID.
+     */
     public function getByItemId(string $itemId): ?Item
     {
         /** @var Item $item */
