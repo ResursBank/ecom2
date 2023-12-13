@@ -27,8 +27,7 @@ class ItemCollection extends Collection
     }
 
     /**
-     * @param string $itemId
-     * @return Item|null
+     * Get item by ID.
      */
     public function getByItemId(string $itemId): ?Item
     {
