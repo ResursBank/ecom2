@@ -24,7 +24,7 @@ class CreateTransactionLine extends Model
         #[StringLength(min: 0, max: 280)] public readonly string $description,
         #[StringLength(min: 1, max: 36)] public readonly string $itemId,
         #[IntValue(min: 1, max: (2 ** 31) - 1)] public readonly int $quantity,
-        #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly int $unitPrice,
+        public readonly int $unitPrice,
         #[IntValue(min: 0, max: 100)] public readonly int $taxRate,
         #[StringLength(
             min: 1,
