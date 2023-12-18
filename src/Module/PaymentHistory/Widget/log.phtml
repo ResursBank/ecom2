@@ -1,0 +1,98 @@
+<?php
+
+/** @noinspection PhpUnhandledExceptionInspection */
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var Log $this */
+
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Type;
+use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
+?>
+<script>
+    function showExtra(data) {
+        document.getElementById('rb-ph-extra-content').innerHTML = data;
+        document.getElementById('rb-ph-log-table').style.display = 'none';
+        document.getElementById('rb-ph-extra').style.display = 'block';
+    }
+
+    function showLogTable() {
+        document.getElementById('rb-ph-extra').style.display = 'none';
+        document.getElementById('rb-ph-log-table').style.display = '';
+    }
+</script>
+<div id="rb-ph">
+  <div id="rb-ph-button">
+    <p>
+      <a onClick="document.getElementById('rb-ph-hidden').style.display='block';" href="#">
+          <?= Translator::translate(phraseId: 'link') ?>
+      </a>
+    </p>
+  </div>
+  <div id="rb-ph-hidden" style="display:none;">
+    <div id="rb-ph-background" onclick="document.getElementById('rb-ph-hidden').style.display='none';"></div>
+    <div id="rb-ph-content-container">
+      <div id="rb-ph-payment-id">
+        <?= $this->getWidgetTitle() ?>
+      </div>
+      <div id="rb-ph-log">
+        <div id="rb-ph-extra" style="display: none;">
+          <div id="rb-ph-go-back">
+            <a onClick="showLogTable();" href="#">
+              <?= Translator::translate(phraseId: 'go-back') ?>
+            </a>
+          </div>
+          <div id="rb-ph-extra-content"></div>
+        </div>
+        <table id="rb-ph-log-table">
+          <thead>
+            <tr>
+              <th><?= Translator::translate(phraseId: 'event') ?></th>
+              <th><?= Translator::translate(phraseId: 'user') ?></th>
+              <th><?= Translator::translate(phraseId: 'previous-status') ?></th>
+              <th><?= Translator::translate(phraseId: 'current-status') ?></th>
+              <th><?= Translator::translate(phraseId: 'extra') ?></th>
+              <th><?= Translator::translate(phraseId: 'status') ?></th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php foreach ($this->entries as $entry): ?>
+              <?php
+              $typeClass = match ($entry->type) {
+                  Type::SUCCESS => 'success-entry',
+                  Type::ERROR => 'error-entry',
+                  default => '',
+              };
+              ?>
+            <tr class="<?= $typeClass ?>">
+              <td><?= Translator::translate(phraseId: $entry->event->value) ?></td>
+              <td><?= Translator::translate(phraseId: $entry->user->value) ?></td>
+              <td><?= $entry->previousOrderStatus ?></td>
+              <td><?= $entry->currentOrderStatus ?></td>
+              <td>
+                <p class="rb-rh-show-extra-btn">
+                  <a onClick="showExtra('<?= $this->getExtraData(entry: $entry) ?>');" href="#">
+                      <?= Translator::translate(phraseId: 'show-extra') ?>
+                  </a>
+                </p>
+              </td>
+              <?php if ($entry->type === Type::ERROR): ?>
+              <td class="error-icon">&#10008;</td>
+              <?php endif; ?>
+              <?php if ($entry->type === Type::SUCCESS): ?>
+                <td class="sucess-icon">&#10008;</td>
+              <?php endif; ?>
+            </tr>
+          <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

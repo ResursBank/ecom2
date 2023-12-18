@@ -1,0 +1,191 @@
+[
+  {
+    "id": "event-captured",
+    "translation": {
+      "en": "Payment fully captured.",
+      "sv": "Betalning fullt debiterad."
+    }
+  },
+  {
+    "id": "event-partially-captured",
+    "translation": {
+      "en": "Payment partially captured.",
+      "sv": "Betalning delvis debiterad."
+    }
+  },
+  {
+    "id": "event-refunded",
+    "translation": {
+      "en": "Payment fully refunded.",
+      "sv": "Betalning fullt återbetald."
+    }
+  },
+  {
+    "id": "event-partially-refunded",
+    "translation": {
+      "en": "Payment partially refunded.",
+      "sv": "Betalning delvis återbetald."
+    }
+  },
+  {
+    "id": "event-cancelled",
+    "translation": {
+      "en": "Payment fully cancelled.",
+      "sv": "Betalning fullt annullerad."
+    }
+  },
+  {
+    "id": "event-partially-cancelled",
+    "translation": {
+      "en": "Payment partially cancelled.",
+      "sv": "Betalning delvis annullerad."
+    }
+  },
+  {
+    "id": "event-credit-denied",
+    "translation": {
+      "en": "Customer was denied credit application.",
+      "sv": "Kunden nekades kreditansökan."
+    }
+  },
+  {
+    "id": "event-aborted",
+    "translation": {
+      "en": "Customer aborted the purchase.",
+      "sv": "Kunden avbröt köpet."
+    }
+  },
+  {
+    "id": "event-capture-requested",
+    "translation": {
+      "en": "Sending request to capture payment...",
+      "sv": "Skickar anrop för att debitera betalning..."
+    }
+  },
+  {
+    "id": "event-cancel-requested",
+    "translation": {
+      "en": "Sending request to cancel payment...",
+      "sv": "Skickar anrop för att annullera betalning..."
+    }
+  },
+  {
+    "id": "event-refund-requested",
+    "translation": {
+      "en": "Sending request to refund payment...",
+      "sv": "Skickar anrop för att återbetala..."
+    }
+  },
+  {
+    "id": "event-api-request-rejected",
+    "translation": {
+      "en": "The request failed.",
+      "sv": "Anropet misslyckades."
+    }
+  },
+  {
+    "id": "user-customer",
+    "translation": {
+      "en": "Customer",
+      "sv": "Kund"
+    }
+  },
+  {
+    "id": "user-cron",
+    "translation": {
+      "en": "Cron",
+      "sv": "Cron"
+    }
+  },
+  {
+    "id": "user-admin",
+    "translation": {
+      "en": "Admin",
+      "sv": "Admin"
+    }
+  },
+  {
+    "id": "user-api",
+    "translation": {
+      "en": "API",
+      "sv": "API"
+    }
+  },
+  {
+    "id": "link",
+    "translation": {
+      "en": "Resurs Bank payment history",
+      "sv": "Resurs Bank betalhistorik"
+    }
+  },
+  {
+    "id": "go-back",
+    "translation": {
+      "en": "Go back",
+      "sv": "Gå tillbaka"
+    }
+  },
+  {
+    "id": "event",
+    "translation": {
+      "en": "Event",
+      "sv": "Händelse"
+    }
+  },
+  {
+    "id": "previous-status",
+    "translation": {
+      "en": "Previous order status",
+      "sv": "Föregående orderstatus"
+    }
+  },
+  {
+    "id": "current-status",
+    "translation": {
+      "en": "Current order status",
+      "sv": "Nuvarande orderstatus"
+    }
+  },
+  {
+    "id": "extra",
+    "translation": {
+      "en": "Extra",
+      "sv": "Extra"
+    }
+  },
+  {
+    "id": "user",
+    "translation": {
+      "en": "User",
+      "sv": "Användare"
+    }
+  },
+  {
+    "id": "show-extra",
+    "translation": {
+      "en": "Show",
+      "sv": "Visa"
+    }
+  },
+  {
+    "id": "widget-title",
+    "translation": {
+      "en": "Order #%d",
+      "sv": "Beställning #%d"
+    }
+  },
+  {
+    "id": "event-request-failed",
+    "translation": {
+      "en": "The request failed.",
+      "sv": "Anropet misslyckades."
+    }
+  },
+  {
+    "id": "status",
+    "translation": {
+      "en": "Status",
+      "sv": "Status"
+    }
+  }
+]
