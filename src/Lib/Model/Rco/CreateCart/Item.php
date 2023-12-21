@@ -34,13 +34,13 @@ class Item extends Model
      */
     public function __construct(
         public readonly CartItemType $type,
-        #[StringLength(min: 1, max: 36)] public readonly string $itemId,
+        #[StringLength(min: 1, max: 255)] public readonly string $itemId,
         #[StringLength(min: 0, max: 280)] public readonly string $description,
         #[StringLength(min: 1, max: 32)] public readonly string $quantityUnit,
         public readonly int $unitPrice,
         #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly int $quantity,
         #[IntValue(min: 0, max: 100)] public readonly int $taxRate,
-        #[StringLength(min: 1, max: 36)]
+        #[StringLength(min: 1, max: 255)]
         public readonly ?string $itemIdDisplay = null,
         #[IntValue(
             min: -(2 ** 31) + 1,
