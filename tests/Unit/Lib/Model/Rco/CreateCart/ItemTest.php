@@ -116,8 +116,8 @@ class ItemTest extends TestCase
             ],
             rejected: [
                 '',
-                Random::getString(length: 37),
-                Random::getString(length: 100)
+                Random::getString(length: 256),
+                Random::getString(length: 300)
             ],
             callback: fn (string $v) => $this->generateModel(itemId: $v),
             test: $this
