@@ -27,16 +27,17 @@
     </rule>
     <rule ref="rulesets/unusedcode.xml" />
 
-    <!-- Re-introduce rule with specific config. -->
+    <!-- Re-introduce ShortVariable rule with specific config. -->
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
             <property name="exceptions" value="id,ch,ip,en,sv,da,fi,no,js"/>
         </properties>
     </rule>
 
-    <!-- Re-introduce rule with specific config. -->
+    <!-- Re-introduce LongVariable rule with specific config. -->
     <rule ref="rulesets/naming.xml/LongVariable">
         <properties>
+            <!-- There is no "exceptions" for LongVariable. -->
             <property name="subtract-prefixes" value="paymentHistory"/>
         </properties>
     </rule>
