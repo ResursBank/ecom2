@@ -18,9 +18,10 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
-use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Status;
 use Resursbank\Ecom\Lib\Widget\Widget;
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
 
 /**
  * Payment methods table widget.
@@ -34,7 +35,6 @@ class Log extends Widget
     public readonly string $css;
 
     /**
-     * @param EntryCollection $entries
      * @throws FilesystemException
      */
     public function __construct(
@@ -45,7 +45,6 @@ class Log extends Widget
     }
 
     /**
-     * @return string
      * @throws CollectionException
      * @throws FilesystemException
      * @throws JsonException
@@ -57,9 +56,11 @@ class Log extends Widget
      */
     public function getWidgetTitle(): string
     {
+        $entry = $this->entries->current();
+
         return sprintf(
             Translator::translate(phraseId: 'widget-title'),
-            (string) $this->entries->current()?->paymentId
+            $entry instanceof Entry ? $entry->paymentId : ''
         );
     }
 
@@ -82,10 +83,14 @@ class Log extends Widget
     }
 
     /**
-     * Resolve CSS class for status icon element.
+     * Get row class based on entry status.
      */
     public function getStatusClass(Entry $entry): string
     {
-        return strtolower(string: $entry->type->value) . '-icon';
+        return match ($entry->status) {
+            Status::SUCCESS => 'success-entry',
+            Status::ERROR => 'error-entry',
+            default => '',
+        };
     }
 }

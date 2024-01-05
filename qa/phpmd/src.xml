@@ -23,6 +23,7 @@
     <rule ref="rulesets/naming.xml">
         <!-- Exclude rules in order to re-introduce them with specific config. -->
         <exclude name="ShortVariable" />
+        <exclude name="LongVariable" />
     </rule>
     <rule ref="rulesets/unusedcode.xml" />
 
@@ -30,6 +31,13 @@
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
             <property name="exceptions" value="id,ch,ip,en,sv,da,fi,no,js"/>
+        </properties>
+    </rule>
+
+    <!-- Re-introduce rule with specific config. -->
+    <rule ref="rulesets/naming.xml/LongVariable">
+        <properties>
+            <property name="subtract-prefixes" value="paymentHistory"/>
         </properties>
     </rule>
 

@@ -31,10 +31,10 @@ class Entry extends Model
         #[StringIsUuid] public readonly string $paymentId,
         public readonly Event $event,
         public readonly User $user,
-        public readonly Type $type,
-        public readonly ?string $extra,
-        public readonly ?string $previousOrderStatus,
-        public readonly ?string $currentOrderStatus
+        public readonly Status $status = Status::INFO,
+        public readonly ?string $extra = null,
+        public readonly ?string $previousOrderStatus = null,
+        public readonly ?string $currentOrderStatus = null
     ) {
         parent::__construct();
     }

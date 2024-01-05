@@ -1,3 +1,8 @@
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 #rb-ph {
     font-family: 'ResursSans-Regular', Arial, sans-serif;
     text-decoration: none;
@@ -31,7 +36,7 @@
     top: 50%;
     max-width: 95vw;
     max-height: calc(100vh - 25px);
-    overflow-y: auto;
+    overflow-y: hidden;
     margin-bottom: 25px;
     transform: translate(-50%, -50%);
 }
@@ -141,9 +146,10 @@
 
 #rb-ph-go-back {
     float: right;
+    padding: 0 25px 25px 25px;
 }
 
-.go-back-link {
+.btn-link {
     display: inline-block;
     padding: 10px 15px;
     background-color: #007BFF;
@@ -154,13 +160,6 @@
     line-height: 20px;
 }
 
-.back-arrow {
-    margin-right: 5px;
-    font-size: 20px;
-    position: relative;
-    top: -1px;
-}
-
 #rb-ph-payment-id {
     color: #c0c0c0;
     background: #111;
@@ -169,9 +168,48 @@
     padding: 10px;
 }
 
+#rb-ph-log table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+#rb-ph-log thead th,
+#rb-ph-log tbody td {
+    display: table-cell;
+    padding: 15px 10px;
+    box-sizing: border-box;
+    min-width: 120px;
+}
+
+#rb-ph-log thead th:nth-child(2),
+#rb-ph-log tbody td:nth-child(2) { width: 100px; }
+
+#rb-ph-log thead th:nth-child(5),
+#rb-ph-log tbody td:nth-child(5) { width: 70px; }
+
+#rb-ph-log thead th:nth-child(6),
+#rb-ph-log tbody td:nth-child(6) { width: 80px; }
+
+#rb-ph-log-table .success-entry .rb-ph-status-icon::before {
+    content: '\2713';
+    color: #ffffff;
+    font-size: 28px;
+}
+
+#rb-ph-log-table .error-entry .rb-ph-status-icon::before {
+    content: '\2717';
+    color: #000000;
+    font-size: 28px;
+}
+
+#rb-ph-log-table .rb-ph-status-icon::before {
+    display: inline-block;
+    margin-right: 5px;
+}
+
 @media screen and (min-width: 1280px) {
     #rb-ph-log {
         width: 1214px;
     }
 }
-    

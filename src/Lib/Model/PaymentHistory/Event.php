@@ -14,16 +14,16 @@ namespace Resursbank\Ecom\Lib\Model\PaymentHistory;
  */
 enum Event: string
 {
+    case CAPTURE_REQUESTED = 'event-capture-requested';
     case CAPTURED = 'event-captured';
     case PARTIALLY_CAPTURED = 'event-partially-captured';
+    case REFUND_REQUESTED = 'event-refund-requested';
     case REFUNDED = 'event-refunded';
     case PARTIALLY_REFUNDED = 'event-partially-refunded';
+    case CANCEL_REQUESTED = 'event-cancel-requested';
     case CANCELLED = 'event-cancelled';
     case PARTIALLY_CANCELLED = 'event-partially-cancelled';
     case CREDIT_DENIED = 'event-credit-denied';
     case ABORTED = 'event-aborted';
-    case CAPTURE_REQUESTED = 'event-capture-requested';
-    case REFUND_REQUESTED = 'event-refund-requested';
-    case CANCEL_REQUESTED = 'event-cancel-requested';
     case REQUEST_FAILED = 'event-request-failed';
 }

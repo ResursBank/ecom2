@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\PaymentHistory;
 /**
  * Available event types. Helps us filter/mark log entries.
  */
-enum Type: string
+enum Status: string
 {
     case INFO = 'INFO';
     case ERROR = 'ERROR';

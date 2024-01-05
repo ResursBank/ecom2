@@ -12,8 +12,8 @@ declare(strict_types=1);
 /** @var Log $this */
 
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Type;
 use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
+
 ?>
 <script>
     function showExtra(data) {
@@ -30,7 +30,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
 <div id="rb-ph">
   <div id="rb-ph-button">
     <p>
-      <a onClick="document.getElementById('rb-ph-hidden').style.display='block';" href="#">
+      <a onClick="document.getElementById('rb-ph-hidden').style.display='block';" href="#" class="btn-link">
           <?= Translator::translate(phraseId: 'link') ?>
       </a>
     </p>
@@ -44,7 +44,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
       <div id="rb-ph-log">
         <div id="rb-ph-extra" style="display: none;">
           <div id="rb-ph-go-back">
-            <a onClick="showLogTable();" href="#">
+            <a onClick="showLogTable();" href="#" class="btn-link">
               <?= Translator::translate(phraseId: 'go-back') ?>
             </a>
           </div>
@@ -63,14 +63,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
           </thead>
           <tbody>
           <?php foreach ($this->entries as $entry): ?>
-              <?php
-              $typeClass = match ($entry->type) {
-                  Type::SUCCESS => 'success-entry',
-                  Type::ERROR => 'error-entry',
-                  default => '',
-              };
-              ?>
-            <tr class="<?= $typeClass ?>">
+            <tr class="<?= $this->getStatusClass(entry: $entry) ?>">
               <td><?= Translator::translate(phraseId: $entry->event->value) ?></td>
               <td><?= Translator::translate(phraseId: $entry->user->value) ?></td>
               <td><?= $entry->previousOrderStatus ?></td>
@@ -82,12 +75,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
                   </a>
                 </p>
               </td>
-              <?php if ($entry->type === Type::ERROR): ?>
-              <td class="error-icon">&#10008;</td>
-              <?php endif; ?>
-              <?php if ($entry->type === Type::SUCCESS): ?>
-                <td class="sucess-icon">&#10008;</td>
-              <?php endif; ?>
+              <td class="rb-ph-status-icon"></td>
             </tr>
           <?php endforeach; ?>
           </tbody>

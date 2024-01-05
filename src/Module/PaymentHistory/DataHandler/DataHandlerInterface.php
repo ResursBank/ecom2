@@ -7,12 +7,15 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\PaymentHistory;
+namespace Resursbank\Ecom\Module\PaymentHistory\DataHandler;
+
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 
 /**
  * Contract to implement log data handler.
  */
-interface LogInterface
+interface DataHandlerInterface
 {
     /**
      * Resolve list of all log entries associated with supplied payment id.

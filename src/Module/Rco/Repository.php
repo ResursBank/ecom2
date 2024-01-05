@@ -13,6 +13,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -300,6 +301,8 @@ class Repository
      * @throws ConfigException
      * @throws ReflectionException
      * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws Throwable
      */
     public static function capture(
         string $id,
