@@ -30,8 +30,8 @@ class TransactionLine extends Model
     public function __construct(
         public readonly CartItemType $type,
         #[StringLength(min: 0, max: 280)] public readonly string $description,
-        #[StringLength(min: 1, max: 36)] public readonly string $itemId,
-        #[StringLength(min: 1, max: 36)] public readonly string $itemIdDisplay,
+        #[StringLength(min: 1, max: 255)] public readonly string $itemId,
+        #[StringLength(min: 1, max: 255)] public readonly string $itemIdDisplay,
         #[StringLength(min: 1, max: 32)] public readonly string $quantityUnit,
         #[IntValue(min: 1, max: (2 ** 31) - 1)] public readonly int $quantity,
         #[IntValue(min: 0, max: (2 ** 31) - 1)] public readonly int $unitPrice,

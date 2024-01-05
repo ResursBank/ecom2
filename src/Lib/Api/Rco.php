@@ -28,7 +28,7 @@ class Rco
     /**
      * Integration mock test endpoint.
      */
-    public const URL_TEST = 'https://web-integration-mock-rco-plus.integration.resurs.com/';
+    public const URL_TEST = 'https://rco.integration.resurs.com/';
 
     /**
      * JWT Production endpoint.
