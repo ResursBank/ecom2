@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 use Attribute;
 use Exception;
 use ReflectionParameter;
+use Resursbank\Ecom\Exception\AttributeParameterException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 
@@ -24,11 +25,18 @@ class IntValue implements IntInterface
     /**
      * @param int|null $min Minimum value
      * @param int|null $max Maximum value
+     * @throws AttributeParameterException
      */
     public function __construct(
         public readonly ?int $min = null,
         public readonly ?int $max = null
     ) {
+        if ($min !== null && $max !== null && $min > $max) {
+            throw new AttributeParameterException(
+                message: 'Attribute min parameter value (' .
+                $min . ') is greater than max parameter value (' . $max . ')!'
+            );
+        }
     }
 
     /**
