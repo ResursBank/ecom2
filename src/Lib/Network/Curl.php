@@ -38,6 +38,7 @@ use stdClass;
 class Curl
 {
     public readonly CurlHandle $ch;
+
     public readonly ContentType $responseContentType;
 
     /**
