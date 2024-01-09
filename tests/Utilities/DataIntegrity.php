@@ -58,6 +58,8 @@ class DataIntegrity
     }
 
     /**
+     * Centralized business logic.
+     *
      * Centralized business logic to confirm ValidationException handling for
      * various values.
      *
