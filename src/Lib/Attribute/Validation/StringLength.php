@@ -119,7 +119,9 @@ class StringLength implements StringInterface
         $result = [];
 
         // Add threshold values.
-        $result[] = Strings::generateRandomString(length: $this->min - 1);
+        if ($this->min > 0) {
+            $result[] = Strings::generateRandomString(length: $this->min - 1);
+        }
 
         if ($this->max !== null) {
             $result[] = Strings::generateRandomString(length: $this->max + 1);
@@ -156,12 +158,13 @@ class StringLength implements StringInterface
                 $count++;
             }
 
-            if ($this->min > 0) {
-                $result[] = Strings::generateRandomString(
-                    length: random_int(min: 0, max: $this->min - 1)
-                );
+            if ($this->min <= 0) {
+                continue;
             }
 
+            $result[] = Strings::generateRandomString(
+                length: random_int(min: 0, max: $this->min - 1)
+            );
             $count++;
         }
     }
