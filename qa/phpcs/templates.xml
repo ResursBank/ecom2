@@ -52,7 +52,8 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference" />
-    <rule ref="SlevomatCodingStandard.Classes.PropertyDeclaration">
+    <rule ref="SlevomatCodingStandard.Classes.PropertyDeclaration" />
+    <rule ref="SlevomatCodingStandard.Classes.PropertySpacing">
         <properties>
             <property name="minLinesCountBeforeWithComment" value="1" />
             <property name="maxLinesCountBeforeWithComment" value="1" />
@@ -60,7 +61,6 @@
             <property name="maxLinesCountBeforeWithoutComment" value="1" />
         </properties>
     </rule>
-    <rule ref="SlevomatCodingStandard.Classes.PropertySpacing" />
     <rule ref="SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion" />
     <rule ref="SlevomatCodingStandard.Classes.RequireMultiLineMethodSignature" />
     <rule ref="SlevomatCodingStandard.Classes.TraitUseDeclaration" />
