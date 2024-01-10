@@ -19,4 +19,5 @@ enum CheckoutStatus: string
     case VALIDATED = 'VALIDATED';
     case PAID = 'PAID';
     case DELIVERED = 'DELIVERED';
+    case VERIFYING = 'VERIFYING';
 }
