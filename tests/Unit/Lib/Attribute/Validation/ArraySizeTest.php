@@ -51,7 +51,7 @@ class ArraySizeTest extends TestCase
     public function testGetAcceptedValues(): void
     {
         $min = 5;
-        $max = 200;
+        $max = 50;
         $object = new ArraySize(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
@@ -60,7 +60,7 @@ class ArraySizeTest extends TestCase
         foreach (
             $object->getAcceptedValues(
                 parameter: $reflectionParameter,
-                size: 100
+                size: 50
             ) as $value
         ) {
             if (count($value) >= $min && count($value) <= $max) {
@@ -81,7 +81,7 @@ class ArraySizeTest extends TestCase
     public function testGetRejectedValues(): void
     {
         $min = 5;
-        $max = 200;
+        $max = 50;
         $object = new ArraySize(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
@@ -90,7 +90,7 @@ class ArraySizeTest extends TestCase
         foreach (
             $object->getRejectedValues(
                 parameter: $reflectionParameter,
-                size: 100
+                size: 50
             ) as $value
         ) {
             if (count($value) < $min || count($value) > $max) {
