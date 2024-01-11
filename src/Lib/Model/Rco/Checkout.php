@@ -18,6 +18,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 
@@ -106,6 +107,14 @@ class Checkout extends Model
             ) &&
             $this->payment->status->capturedAmount > 0 &&
             $this->payment->status->capturedAmount !== $this->payment->status->refundedAmount;
+    }
+
+    /**
+     * Checks if payment is frozen.
+     */
+    public function isFrozen(): bool
+    {
+        return $this->status->type === CheckoutStatus::VERIFYING;
     }
 
     /**
