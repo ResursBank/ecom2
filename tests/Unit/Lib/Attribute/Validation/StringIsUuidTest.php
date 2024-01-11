@@ -9,74 +9,69 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
-use Resursbank\Ecom\Exception\AttributeParameterException;
-use Resursbank\Ecom\Lib\Attribute\Validation\CollectionSize;
-use Throwable;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 
 /**
- * Unit tests for the CollectionSze validation attribute.
+ * Unit tests for the StringIsUuid validation attribute.
  */
-class CollectionSizeTest extends TestCase
+class StringIsUuidTest extends TestCase
 {
     /**
      * Validate the output of getAcceptedValues.
      *
-     * @throws AttributeParameterException
-     * @throws Throwable
+     * @throws Exception
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function testGetAcceptedValues(): void
     {
-        $min = 5;
-        $max = 50;
-        $object = new CollectionSize(min: $min, max: $max);
+        $obj = new StringIsUuid();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
 
         foreach (
-            $object->getAcceptedValues(
+            $obj->getAcceptedValues(
                 parameter: $reflectionParameter,
-                size: 50
+                size: 10
             ) as $value
         ) {
-            if (count($value) >= $min && count($value) <= $max) {
+            try {
+                $obj->validate(name: $value, value: $value);
                 $this->addToAssertionCount(count: 1);
-                continue;
+            } catch (IllegalValueException) {
+                $this->fail(message: 'Value is empty');
             }
-
-            $this->fail(message: 'Value is outside of configured range!');
         }
     }
 
     /**
      * Validate the output of getRejectedValues.
      *
-     * @throws AttributeParameterException
-     * @throws Throwable
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function testGetRejectedValues(): void
     {
-        $min = 5;
-        $max = 50;
-        $object = new CollectionSize(min: $min, max: $max);
+        $obj = new StringIsUuid();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
 
         foreach (
-            $object->getRejectedValues(
+            $obj->getRejectedValues(
                 parameter: $reflectionParameter,
-                size: 50
+                size: 10
             ) as $value
         ) {
-            if (count($value) < $min || count($value) > $max) {
+            try {
+                $obj->validate(name: $value, value: $value);
+                $this->fail(message: 'Value ' . $value . ' was not rejected');
+            } catch (IllegalValueException) {
                 $this->addToAssertionCount(count: 1);
-                continue;
             }
-
-            $this->fail(message: 'Value is within configured range!');
         }
     }
 }

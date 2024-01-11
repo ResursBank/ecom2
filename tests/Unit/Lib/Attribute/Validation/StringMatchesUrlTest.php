@@ -9,74 +9,69 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
-use Resursbank\Ecom\Exception\AttributeParameterException;
-use Resursbank\Ecom\Lib\Attribute\Validation\CollectionSize;
-use Throwable;
+use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 
 /**
- * Unit tests for the CollectionSze validation attribute.
+ * Unit tests for the StringMatchesUrl validation attribute.
  */
-class CollectionSizeTest extends TestCase
+class StringMatchesUrlTest extends TestCase
 {
     /**
      * Validate the output of getAcceptedValues.
      *
-     * @throws AttributeParameterException
-     * @throws Throwable
+     * @throws Exception
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function testGetAcceptedValues(): void
     {
-        $min = 5;
-        $max = 50;
-        $object = new CollectionSize(min: $min, max: $max);
+        $obj = new StringMatchesUrl();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
 
         foreach (
-            $object->getAcceptedValues(
+            $obj->getAcceptedValues(
                 parameter: $reflectionParameter,
-                size: 50
+                size: 10
             ) as $value
         ) {
-            if (count($value) >= $min && count($value) <= $max) {
+            try {
+                $obj->validate(name: $value, value: $value);
                 $this->addToAssertionCount(count: 1);
-                continue;
+            } catch (IllegalUrlException) {
+                $this->fail(message: 'Value is empty');
             }
-
-            $this->fail(message: 'Value is outside of configured range!');
         }
     }
 
     /**
      * Validate the output of getRejectedValues.
      *
-     * @throws AttributeParameterException
-     * @throws Throwable
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function testGetRejectedValues(): void
     {
-        $min = 5;
-        $max = 50;
-        $object = new CollectionSize(min: $min, max: $max);
+        $obj = new StringMatchesUrl();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
 
         foreach (
-            $object->getRejectedValues(
+            $obj->getRejectedValues(
                 parameter: $reflectionParameter,
-                size: 50
+                size: 10
             ) as $value
         ) {
-            if (count($value) < $min || count($value) > $max) {
+            try {
+                $obj->validate(name: $value, value: $value);
                 $this->addToAssertionCount(count: 1);
-                continue;
+            } catch (IllegalUrlException) {
+                $this->addToAssertionCount(count: 1);
             }
-
-            $this->fail(message: 'Value is within configured range!');
         }
     }
 }
