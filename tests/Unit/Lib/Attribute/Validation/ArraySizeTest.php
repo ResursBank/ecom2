@@ -12,14 +12,36 @@ namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
-use Resursbank\Ecom\Lib\Attribute\Validation\CollectionSize;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
 use Throwable;
 
 /**
- * Unit tests for the CollectionSze validation attribute.
+ * Unit tests for the ArraySize validation attribute.
  */
-class CollectionSizeTest extends TestCase
+class ArraySizeTest extends TestCase
 {
+    /**
+     * Confirm that an AttributeParameterException is thrown for min > max.
+     *
+     * @throws AttributeParameterException
+     */
+    public function testMinLargerThanMax(): void
+    {
+        $this->expectException(exception: AttributeParameterException::class);
+        new ArraySize(min: 10, max: 5);
+    }
+
+    /**
+     * Confirm that an AttributeParameterException is thrown for negative min.
+     *
+     * @throws AttributeParameterException
+     */
+    public function testNegativeLimits(): void
+    {
+        $this->expectException(exception: AttributeParameterException::class);
+        new ArraySize(min: -2, max: -1);
+    }
+
     /**
      * Validate the output of getAcceptedValues.
      *
@@ -30,7 +52,7 @@ class CollectionSizeTest extends TestCase
     {
         $min = 5;
         $max = 50;
-        $object = new CollectionSize(min: $min, max: $max);
+        $object = new ArraySize(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
@@ -60,7 +82,7 @@ class CollectionSizeTest extends TestCase
     {
         $min = 5;
         $max = 50;
-        $object = new CollectionSize(min: $min, max: $max);
+        $object = new ArraySize(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
