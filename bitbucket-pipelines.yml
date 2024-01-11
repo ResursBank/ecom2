@@ -8,10 +8,8 @@ pipelines:
               - composer
             script:
               - apt-get update && apt-get install -y unzip git redis
-              #- apt-get install -y locate
-              #- updatedb
-              #- locate php.ini
               - cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+              - sed -i 's/memory_limit = 128M/memory_limit = 2G/' /usr/local/etc/php/php.ini
               - grep memory_limit /usr/local/etc/php/php.ini
               - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
               - pecl install redis
