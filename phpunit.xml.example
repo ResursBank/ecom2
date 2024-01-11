@@ -31,6 +31,6 @@
         <env name="RCO_JWT_AUTH_GRANT_TYPE" value="client_credentials" force="true" />
         <env name="RCO_PAYMENT_METHOD_ID" value="REPLACEME" />
         <env name="RCOPLUS_HOMEPAGE_URL" value="https://web-integration-rco-plus-testpage.integration.resurs.com" force="true" />
-        <ini name="memory_limit" value="512M" />
+        <ini name="memory_limit" value="1024M" />
     </php>
 </phpunit>
