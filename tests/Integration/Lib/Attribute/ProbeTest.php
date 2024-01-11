@@ -152,9 +152,7 @@ class ProbeTest extends TestCase
         ) ?? [];
 
         /** @noinspection OffsetOperationsInspection */
-        /** @noinspection PhpArrayIsAlwaysEmptyInspection */
         return !empty($accepted)
-            /* @phpstan-ignore-next-line */
             ? $accepted[array_rand(array: $accepted)]
             : null;
     }
