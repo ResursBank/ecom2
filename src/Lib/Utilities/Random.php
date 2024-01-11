@@ -45,7 +45,6 @@ class Random
     {
         $cases = DataType::cases();
 
-        /* @phpstan-ignore-next-line */
         return $cases[array_rand(array: $cases)];
     }
 
