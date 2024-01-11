@@ -13,6 +13,8 @@ pipelines:
               - docker-php-ext-enable redis
               - echo "127.0.0.1 redis" >>/etc/hosts
               - grep -v "env name" phpunit.xml.example >phpunit.xml
+              - ls -l /usr/local/etc/php/conf.d/docker-php-memlimit.ini
+              - echo 'memory_limit = 2048M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini;
               - composer install
               - composer require phpunit/phpunit
               - vendor/bin/phpunit --configuration ./phpunit.xml
