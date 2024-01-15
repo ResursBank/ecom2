@@ -244,7 +244,6 @@ class RandomTest extends TestCase
     {
         for ($i = 0; $i < 10; $i++) {
             $size = random_int(min: 1, max: 99);
-            /* @phpstan-ignore-next-line */
             $type = DataType::cases()[array_rand(array: DataType::cases())];
             $value = Random::getArray(size: $size, type: $type);
 
