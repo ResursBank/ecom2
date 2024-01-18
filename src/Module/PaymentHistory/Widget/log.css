@@ -188,6 +188,10 @@
 #rb-ph-log thead th:nth-child(7),
 #rb-ph-log tbody td:nth-child(7) { width: 80px; }
 
+#rb-ph-log-table td {
+    vertical-align: top;
+}
+
 #rb-ph-log-table .rb-ph-result-icon {
     padding-top: 0;
     padding-bottom: 0;
@@ -196,12 +200,12 @@
 
 #rb-ph-log-table .success-entry .rb-ph-result-icon::before {
     content: '\2713';
-    color: #ffffff;
+    color: #e1be00;
 }
 
 #rb-ph-log-table .error-entry .rb-ph-result-icon::before {
     content: '\2717';
-    color: #000000;
+    color: #c85f00;
 }
 
 #rb-ph-log-table .rb-ph-result-icon::before {

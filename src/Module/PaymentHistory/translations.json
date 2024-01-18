@@ -264,5 +264,26 @@
       "en": "Customer redirected to gateway.",
       "sv": "Kunden skickades till gateway."
     }
+  },
+  {
+    "id": "status",
+    "translation": {
+      "en": "Status",
+      "sv": "Status"
+    }
+  },
+  {
+    "id": "state",
+    "translation": {
+      "en": "State",
+      "sv": "State"
+    }
+  },
+  {
+    "id": "unchanged",
+    "translation": {
+      "en": "Unchanged",
+      "sv": "Oförändrad"
+    }
   }
 ]
