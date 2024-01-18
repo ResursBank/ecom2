@@ -15,7 +15,7 @@ use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\ArrayInterface;
-use Resursbank\Ecom\Lib\Utilities\Random;
+use Resursbank\Ecom\Lib\Attribute\Validation\Traits\ArrayValidation;
 
 use function count;
 
@@ -25,6 +25,8 @@ use function count;
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class ArraySize implements ArrayInterface
 {
+    use ArrayValidation;
+
     /**
      * @param int $min Minimum number of array elements
      * @param int|null $max Maximum number of array elements
@@ -140,54 +142,5 @@ class ArraySize implements ArrayInterface
         );
 
         return $result;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getRandom(
-        int $min,
-        int $max
-    ): array {
-        $result = [];
-        $count = random_int(min: $min, max: $max);
-
-        for ($i = 0; $i < $count; $i++) {
-            $result[] = Random::getValue();
-        }
-
-        return $result;
-    }
-
-    /**
-     * Append randomized values which will be rejected by property validation.
-     *
-     * Note: cannot generate rejected random values without min / max (no min
-     * / max = all values are allowed).
-     *
-     * @throws Exception
-     */
-    private function addRandomRejectedValues(
-        array &$result,
-        int $size,
-        int $min,
-        ?int $max
-    ): void {
-        $count = 0;
-
-        // Generate random values.
-        while ($count < $size) {
-            if ($max !== null) {
-                $result[] = $this->getRandom(min: $max + 1, max: $max + 49);
-                $count++;
-            }
-
-            if ($min <= 0) {
-                continue;
-            }
-
-            $result[] = $this->getRandom(min: 0, max: $min - 1);
-            $count++;
-        }
     }
 }
