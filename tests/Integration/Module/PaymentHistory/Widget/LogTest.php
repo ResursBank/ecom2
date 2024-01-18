@@ -29,7 +29,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Status;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
@@ -81,10 +81,11 @@ class LogTest extends TestCase
                 paymentId: Strings::getUuid(),
                 event: $this->getRandomEvent(),
                 user: $this->getRandomUser(),
-                status: $type,
+                result: $type,
                 extra: $this->getRandomExtra(type: $type),
                 previousOrderStatus: $this->getRandomStatus(),
-                currentOrderStatus: $this->getRandomStatus()
+                currentOrderStatus: $this->getRandomStatus(),
+                time: time()
             );
         }
 
@@ -105,22 +106,22 @@ class LogTest extends TestCase
         return $cases[array_rand(array: $cases)];
     }
 
-    private function getRandomType(): Status
+    private function getRandomType(): Result
     {
-        $cases = Status::cases();
+        $cases = Result::cases();
         /* @phpstan-ignore-next-line */
         return $cases[array_rand(array: $cases)];
     }
 
-    private function getRandomExtra(Status $type): string
+    private function getRandomExtra(Result $type): string
     {
         // If $type is SUCCESS, return an empty string.
-        if ($type === Status::SUCCESS) {
+        if ($type === Result::SUCCESS) {
             return '';
         }
 
         // If $type is ERROR, create a spoofed Exception and return its trace.
-        if ($type === Status::ERROR) {
+        if ($type === Result::ERROR) {
             $exception = new TestException(message: 'Spoofed Exception');
             return $exception->getTraceAsString();
         }
@@ -184,16 +185,16 @@ class LogTest extends TestCase
         /** @var Entry $entry */
         foreach ($entries as $entry) {
             // Check if the correct classes are applied based on the entry type.
-            $typeClass = match ($entry->status) {
-                Status::SUCCESS => 'success-entry',
-                Status::ERROR => 'error-entry',
+            $typeClass = match ($entry->result) {
+                Result::SUCCESS => 'success-entry',
+                Result::ERROR => 'error-entry',
                 default => '',
             };
 
             $this->assertStringContainsString(
                 needle: "<tr class=\"$typeClass\">",
                 haystack: $content,
-                message: "Entry type class not found for entry with type: {$entry->status->value}"
+                message: "Entry type class not found for entry with type: {$entry->result->value}"
             );
 
             // Check translated phrases for entry event, user, and value.
@@ -261,10 +262,11 @@ class LogTest extends TestCase
                 paymentId: Strings::getUuid(),
                 event: $this->getRandomEvent(),
                 user: $this->getRandomUser(),
-                status: Status::SUCCESS,
+                result: Result::SUCCESS,
                 extra: '',
                 previousOrderStatus: $this->getRandomStatus(),
-                currentOrderStatus: $this->getRandomStatus()
+                currentOrderStatus: $this->getRandomStatus(),
+                time: time()
             )
         ]);
 
@@ -293,10 +295,11 @@ class LogTest extends TestCase
                 paymentId: Strings::getUuid(),
                 event: $this->getRandomEvent(),
                 user: $this->getRandomUser(),
-                status: Status::ERROR,
+                result: Result::ERROR,
                 extra: 'Spoofed Exception',
                 previousOrderStatus: $this->getRandomStatus(),
-                currentOrderStatus: $this->getRandomStatus()
+                currentOrderStatus: $this->getRandomStatus(),
+                time: time()
             )
         ]);
 

@@ -89,6 +89,7 @@ final class Config
             cache: $cache,
             basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
+            paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
             userAgent: $userAgent,
             isProduction: $isProduction,
@@ -96,8 +97,7 @@ final class Config
             proxyType: $proxyType,
             timeout: $timeout,
             language: $language,
-            location: $location,
-            paymentHistoryDataHandler: $paymentHistoryDataHandler
+            location: $location
         );
     }
 

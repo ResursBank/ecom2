@@ -16,7 +16,7 @@ namespace Resursbank\Ecom\Lib\Model\PaymentHistory;
 enum User: string
 {
     case CUSTOMER = 'user-customer';
-    case API = 'user-api';
+    case RESURSBANK = 'user-resursbank';
     case CRON = 'user-cron';
     case ADMIN = 'user-admin';
 }

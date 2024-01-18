@@ -14,6 +14,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Locale\Translator as Original;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
+use Throwable;
 
 /**
  * Repository layer against payment history persistent storage.
@@ -38,9 +39,23 @@ class Repository extends Original
      */
     public static function getList(
         string $paymentId
-    ): EntryCollection {
+    ): ?EntryCollection {
         return Config::getPaymentHistoryDataHandler()->getList(
             paymentId: $paymentId
         );
+    }
+
+    /**
+     * Resolve formatted error message from Throwable.
+     */
+    public static function getError(
+        Throwable $error
+    ): string {
+        $result = $error->getMessage() . "\n";
+        $result .= $error->getFile() . ' :: ' . $error->getLine() . "\n";
+        $result .= "--------------------------------------------------------------\n\n";
+        $result .= $error->getTraceAsString();
+
+        return $result;
     }
 }

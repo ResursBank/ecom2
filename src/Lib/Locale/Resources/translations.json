@@ -1506,5 +1506,12 @@
       "en": "The value to use for the XDEBUG_SESSION parameter",
       "sv": "Det värde som används för XDEBUG_SESSION-parametern"
     }
+  },
+  {
+    "id": "price-format",
+    "translation": {
+      "en": "$%s",
+      "sv": "%s SEK"
+    }
   }
 ]

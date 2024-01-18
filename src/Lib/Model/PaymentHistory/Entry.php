@@ -20,6 +20,8 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Entry extends Model
 {
+    public readonly int $time;
+
     /**
      * @param string $paymentId Payment or Checkout ID
      * @throws JsonException
@@ -31,11 +33,16 @@ class Entry extends Model
         #[StringIsUuid] public readonly string $paymentId,
         public readonly Event $event,
         public readonly User $user,
-        public readonly Status $status = Status::INFO,
+        ?int $time = null, // Avoid property promotion to assign default value in body.
+        public readonly Result $result = Result::INFO,
         public readonly ?string $extra = null,
         public readonly ?string $previousOrderStatus = null,
-        public readonly ?string $currentOrderStatus = null
+        public readonly ?string $currentOrderStatus = null,
+        public readonly ?string $reference = null,
+        public readonly ?string $userReference = null
     ) {
+        $this->time = $time === null ? time() : $time;
+
         parent::__construct();
     }
 }

@@ -20,7 +20,7 @@ interface DataHandlerInterface
     /**
      * Resolve list of all log entries associated with supplied payment id.
      */
-    public function getList(string $paymentId): EntryCollection;
+    public function getList(string $paymentId): ?EntryCollection;
 
     /**
      * Write Entry instance to permanent storage.

@@ -20,7 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Status;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -79,8 +79,9 @@ class FileDataHandlerTest extends TestCase
             paymentId: Strings::getUuid(),
             event: Event::CAPTURE_REQUESTED,
             user: User::ADMIN,
-            status: Status::INFO,
+            result: Result::INFO,
             extra: 'extra data',
+            time: time(),
             previousOrderStatus: 'previous status 1',
             currentOrderStatus: 'current status 1'
         );
@@ -131,8 +132,9 @@ class FileDataHandlerTest extends TestCase
             paymentId: Strings::getUuid(),
             event: Event::CAPTURE_REQUESTED,
             user: User::ADMIN,
-            status: Status::INFO,
+            result: Result::INFO,
             extra: 'extra data',
+            time: time(),
             previousOrderStatus: 'previous status 1',
             currentOrderStatus: 'current status 1'
         );
@@ -158,7 +160,8 @@ class FileDataHandlerTest extends TestCase
             paymentId: $paymentId,
             event: Event::CAPTURED,
             user: User::ADMIN,
-            status: Status::SUCCESS
+            result: Result::SUCCESS,
+            time: time()
         );
         $handler->write(entry: $entry2);
 
@@ -166,10 +169,11 @@ class FileDataHandlerTest extends TestCase
             paymentId: $paymentId,
             event: Event::CANCELLED,
             user: User::ADMIN,
-            status: Status::ERROR,
+            result: Result::ERROR,
             extra: (string) json_encode(
                 value: (new TestException(message: 'test'))->getTrace()
-            )
+            ),
+            time: time()
         );
         $handler->write(entry: $entry3);
 

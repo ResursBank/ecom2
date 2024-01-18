@@ -28,6 +28,10 @@ use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
@@ -41,6 +45,8 @@ use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Throwable;
 
 use function is_object;
@@ -309,27 +315,58 @@ class Repository
         string $version,
         ?CreateTransaction $createTransaction = null
     ): Checkout {
-        $parameters = [];
+        PaymentHistoryRepository::write(entry: new Entry(
+            paymentId: $id,
+            event: Event::CAPTURE_REQUESTED,
+            user: User::ADMIN,
+            extra: $createTransaction !== null ?
+                Price::format(
+                    value: $createTransaction->transactionLines->getTotal() / 100
+                ) : null
+        ));
 
-        if ($createTransaction?->transactionLines !== null) {
-            $parameters['transactionLines'] = $createTransaction
-                ->transactionLines
-                ->toArray();
+        try {
+            $parameters = [];
+
+            if ($createTransaction?->transactionLines !== null) {
+                $parameters['transactionLines'] = $createTransaction
+                    ->transactionLines
+                    ->toArray();
+            }
+
+            if ($createTransaction?->invoiceLabels !== null) {
+                $parameters['invoiceLabels'] = $createTransaction
+                    ->invoiceLabels
+                    ->toArray();
+            }
+
+            $response = (new Post(
+                route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
+                version: $version,
+                params: $parameters
+            ))->call(forceObject: empty($parameters));
+
+            $checkout = self::validateCheckoutModel(model: $response);
+
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $id,
+                event: $checkout->isCaptured() ? Event::CAPTURED : Event::PARTIALLY_CAPTURED,
+                user: User::ADMIN,
+                result: Result::SUCCESS
+            ));
+
+            return $checkout;
+        } catch (Throwable $error) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $id,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                extra: PaymentHistoryRepository::getError(error: $error),
+                result: Result::ERROR
+            ));
+
+            throw $error;
         }
-
-        if ($createTransaction?->invoiceLabels !== null) {
-            $parameters['invoiceLabels'] = $createTransaction
-                ->invoiceLabels
-                ->toArray();
-        }
-
-        $response = (new Post(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
-            version: $version,
-            params: $parameters
-        ))->call(forceObject: empty($parameters));
-
-        return self::validateCheckoutModel(model: $response);
     }
 
     /**
@@ -337,6 +374,7 @@ class Repository
      *
      * @param string $id Checkout/payment ID
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -346,17 +384,45 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public static function cancel(
         string $id,
         string $version
     ): Checkout {
-        $response = (new Post(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
-            version: $version
-        ))->call(forceObject: true);
+        PaymentHistoryRepository::write(entry: new Entry(
+            paymentId: $id,
+            event: Event::CANCEL_REQUESTED,
+            user: User::ADMIN,
+        ));
 
-        return self::validateCheckoutModel(model: $response);
+        try {
+            $response = (new Post(
+                route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
+                version: $version
+            ))->call(forceObject: true);
+
+            $checkout = self::validateCheckoutModel(model: $response);
+
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $id,
+                event: $checkout->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
+                user: User::ADMIN,
+                result: Result::SUCCESS
+            ));
+
+            return $checkout;
+        } catch (Throwable $error) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $id,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                extra: PaymentHistoryRepository::getError(error: $error),
+                result: Result::ERROR
+            ));
+
+            throw $error;
+        }
     }
 
     /**
@@ -372,19 +438,52 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws Throwable
      */
     public static function refund(
         string $id,
         string $version,
         ?CreateTransactionLineCollection $transactionLines = null
     ): Checkout {
-        $response = (new Post(
-            route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
-            version: $version,
-            params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
-        ))->call(forceObject: $transactionLines === null);
+        PaymentHistoryRepository::write(entry: new Entry(
+            paymentId: $id,
+            event: Event::REFUND_REQUESTED,
+            user: User::ADMIN,
+            extra: $transactionLines !== null ?
+                Price::format(
+                    value: $transactionLines->getTotal() / 100
+                ) : null
+        ));
 
-        return self::validateCheckoutModel(model: $response);
+        try {
+            $response = (new Post(
+                route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
+                version: $version,
+                params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
+            ))->call(forceObject: $transactionLines === null);
+
+            $checkout = self::validateCheckoutModel(model: $response);
+
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $id,
+                event: $checkout->isRefunded() ? Event::REFUNDED : Event::PARTIALLY_REFUNDED,
+                user: User::ADMIN,
+                result: Result::SUCCESS
+            ));
+
+            return $checkout;
+        } catch (Throwable $error) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $id,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                extra: PaymentHistoryRepository::getError(error: $error),
+                result: Result::ERROR
+            ));
+
+            throw $error;
+        }
     }
 
     /**

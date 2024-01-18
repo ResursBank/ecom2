@@ -29,11 +29,10 @@ class VoidDataHandler implements DataHandlerInterface
 
     /**
      * @inheritDoc
-     * @throws IllegalTypeException
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      */
-    public function getList(string $paymentId): EntryCollection
+    public function getList(string $paymentId): ?EntryCollection
     {
-        return new EntryCollection(data: []);
+        return null;
     }
 }

@@ -3,7 +3,7 @@
     "id": "event-captured",
     "translation": {
       "en": "Payment fully captured.",
-      "sv": "Betalning fullt debiterad."
+      "sv": "Betalning helt debiterad."
     }
   },
   {
@@ -17,7 +17,7 @@
     "id": "event-refunded",
     "translation": {
       "en": "Payment fully refunded.",
-      "sv": "Betalning fullt återbetald."
+      "sv": "Betalning helt återbetald."
     }
   },
   {
@@ -28,10 +28,10 @@
     }
   },
   {
-    "id": "event-cancelled",
+    "id": "event-canceled",
     "translation": {
-      "en": "Payment fully cancelled.",
-      "sv": "Betalning fullt annullerad."
+      "en": "Payment fully canceled.",
+      "sv": "Betalning helt annullerad."
     }
   },
   {
@@ -77,13 +77,6 @@
     }
   },
   {
-    "id": "event-api-request-rejected",
-    "translation": {
-      "en": "The request failed.",
-      "sv": "Anropet misslyckades."
-    }
-  },
-  {
     "id": "user-customer",
     "translation": {
       "en": "Customer",
@@ -105,10 +98,10 @@
     }
   },
   {
-    "id": "user-api",
+    "id": "user-resursbank",
     "translation": {
-      "en": "API",
-      "sv": "API"
+      "en": "Resursbank",
+      "sv": "Resursbank"
     }
   },
   {
@@ -136,14 +129,14 @@
     "id": "previous-status",
     "translation": {
       "en": "Previous order status",
-      "sv": "Föregående orderstatus"
+      "sv": "Dåvarande orderstatus"
     }
   },
   {
     "id": "current-status",
     "translation": {
-      "en": "Current order status",
-      "sv": "Nuvarande orderstatus"
+      "en": "New order status",
+      "sv": "Ny orderstatus"
     }
   },
   {
@@ -170,8 +163,8 @@
   {
     "id": "widget-title",
     "translation": {
-      "en": "Order #%d",
-      "sv": "Beställning #%d"
+      "en": "Payment #%s [%s]",
+      "sv": "Betalning #%s [%s]"
     }
   },
   {
@@ -182,10 +175,94 @@
     }
   },
   {
-    "id": "status",
+    "id": "result",
     "translation": {
-      "en": "Status",
-      "sv": "Status"
+      "en": "Result",
+      "sv": "Result"
+    }
+  },
+  {
+    "id": "test",
+    "translation": {
+      "en": "Test",
+      "sv": "Test"
+    }
+  },
+  {
+    "id": "production",
+    "translation": {
+      "en": "Production",
+      "sv": "Produktion"
+    }
+  },
+  {
+    "id": "time",
+    "translation": {
+      "en": "Time",
+      "sv": "Tid"
+    }
+  },
+  {
+    "id": "event-callback-authorization",
+    "translation": {
+      "en": "Authorization callback accepted.",
+      "sv": "Authorization callback accepterad."
+    }
+  },
+  {
+    "id": "event-callback-management",
+    "translation": {
+      "en": "Management callback accepted.",
+      "sv": "Management callback accepterad."
+    }
+  },
+  {
+    "id": "event-callback-completed",
+    "translation": {
+      "en": "Callback completed.",
+      "sv": "Callback avslutad."
+    }
+  },
+  {
+    "id": "event-callback-failed",
+    "translation": {
+      "en": "Callback failed.",
+      "sv": "Callback misslyckades."
+    }
+  },
+  {
+    "id": "event-reached-order-success-page",
+    "translation": {
+      "en": "Reached order success page.",
+      "sv": "Nådde sidan med orderbekräftelse."
+    }
+  },
+  {
+    "id": "event-reached-order-failure-page",
+    "translation": {
+      "en": "Reached order failure page.",
+      "sv": "Nådde sidan för misslyckad beställning."
+    }
+  },
+  {
+    "id": "event-order-canceled",
+    "translation": {
+      "en": "Order canceled.",
+      "sv": "Beställning mackulerad."
+    }
+  },
+  {
+    "id": "event-invoice-created",
+    "translation": {
+      "en": "Invoice created.",
+      "sv": "Faktura skapad."
+    }
+  },
+  {
+    "id": "event-redirected-to-gateway",
+    "translation": {
+      "en": "Customer redirected to gateway.",
+      "sv": "Kunden skickades till gateway."
     }
   }
 ]

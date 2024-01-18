@@ -50,7 +50,7 @@ class FileDataHandler implements DataHandlerInterface
      * @throws ReflectionException
      * @throws IllegalValueException
      */
-    public function getList(string $paymentId): EntryCollection
+    public function getList(string $paymentId): ?EntryCollection
     {
         $result = $this->filterListContent(
             content: $this->getFileContent(),
@@ -58,11 +58,8 @@ class FileDataHandler implements DataHandlerInterface
         );
 
         $collection = !empty($result) ?
-            DataConverter::arrayToCollection(
-                data: $result,
-                type: Entry::class
-            ) :
-            new EntryCollection(data: []);
+            DataConverter::arrayToCollection(data: $result, type: Entry::class) :
+            null;
 
         if (!$collection instanceof EntryCollection) {
             throw new IllegalTypeException(

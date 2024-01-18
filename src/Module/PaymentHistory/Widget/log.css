@@ -152,7 +152,7 @@
 .btn-link {
     display: inline-block;
     padding: 10px 15px;
-    background-color: #007BFF;
+    background-color: #009b96;
     color: #ffffff !important;
     text-decoration: none;
     border-radius: 5px;
@@ -182,34 +182,29 @@
     min-width: 120px;
 }
 
-#rb-ph-log thead th:nth-child(2),
-#rb-ph-log tbody td:nth-child(2) { width: 100px; }
+#rb-ph-log thead th:nth-child(1),
+#rb-ph-log tbody td:nth-child(1) { width: 150px; }
 
-#rb-ph-log thead th:nth-child(5),
-#rb-ph-log tbody td:nth-child(5) { width: 70px; }
+#rb-ph-log thead th:nth-child(7),
+#rb-ph-log tbody td:nth-child(7) { width: 80px; }
 
-#rb-ph-log thead th:nth-child(6),
-#rb-ph-log tbody td:nth-child(6) { width: 80px; }
+#rb-ph-log-table .rb-ph-result-icon {
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 28px;
+}
 
-#rb-ph-log-table .success-entry .rb-ph-status-icon::before {
+#rb-ph-log-table .success-entry .rb-ph-result-icon::before {
     content: '\2713';
     color: #ffffff;
-    font-size: 28px;
 }
 
-#rb-ph-log-table .error-entry .rb-ph-status-icon::before {
+#rb-ph-log-table .error-entry .rb-ph-result-icon::before {
     content: '\2717';
     color: #000000;
-    font-size: 28px;
 }
 
-#rb-ph-log-table .rb-ph-status-icon::before {
+#rb-ph-log-table .rb-ph-result-icon::before {
     display: inline-block;
     margin-right: 5px;
-}
-
-@media screen and (min-width: 1280px) {
-    #rb-ph-log {
-        width: 1214px;
-    }
 }

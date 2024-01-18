@@ -20,4 +20,18 @@ class CreateTransactionLineCollection extends Collection
     {
         parent::__construct(data: $data, type: CreateTransactionLine::class);
     }
+
+    public function getTotal(): int
+    {
+        $result = 0;
+
+        /** @var CreateTransactionLine $line */
+        foreach ($this->getData() as $line) {
+            if ($line->quantity > 0) {
+                $result += $line->unitPrice * $line->quantity;
+            }
+        }
+
+        return $result;
+    }
 }

@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentHistory\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
@@ -19,7 +20,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Status;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 
@@ -60,7 +61,8 @@ class Log extends Widget
 
         return sprintf(
             Translator::translate(phraseId: 'widget-title'),
-            $entry instanceof Entry ? $entry->paymentId : ''
+            $entry instanceof Entry ? ($entry->reference !== null ? $entry->reference : $entry->paymentId) : '',
+            Translator::translate(phraseId: Config::isProduction() ? 'production' : 'test')
         );
     }
 
@@ -85,12 +87,37 @@ class Log extends Widget
     /**
      * Get row class based on entry status.
      */
-    public function getStatusClass(Entry $entry): string
+    public function getResultClass(Entry $entry): string
     {
-        return match ($entry->status) {
-            Status::SUCCESS => 'success-entry',
-            Status::ERROR => 'error-entry',
+        return match ($entry->result) {
+            Result::SUCCESS => 'success-entry',
+            Result::ERROR => 'error-entry',
             default => '',
         };
+    }
+
+    public function showExtraBtn(Entry $entry): bool
+    {
+        return $entry->extra !== null && strlen(string: $entry->extra) > 40;
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function getUser(Entry $entry): string
+    {
+        $result = Translator::translate(phraseId: $entry->user->value);
+
+        if ((string) $entry->userReference !== '') {
+            $result .= " ($entry->userReference)";
+        }
+
+        return $result;
     }
 }
