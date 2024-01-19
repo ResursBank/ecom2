@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\PaymentHistory\DataHandler;
 
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 

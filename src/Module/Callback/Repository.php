@@ -89,32 +89,10 @@ class Repository
         CallbackInterface $callback,
         callable $process
     ): int {
-        $paymentId = $callback->getCheckoutId() !== null ?
-            $callback->getCheckoutId() :
-            $callback->getPaymentId();
+        $paymentId = $callback->getCheckoutId() ?? $callback->getPaymentId();
 
         self::trackInit(paymentId: $paymentId, callback: $callback);
-
-        if ($callback instanceof Management) {
-            Config::getLogger()->debug(
-                message: sprintf(
-                    'Processing management callback for %s, action %s (%s)',
-                    $callback->getPaymentId(),
-                    $callback->action->value,
-                    $callback->actionId
-                )
-            );
-        }
-
-        if ($callback instanceof Authorization) {
-            Config::getLogger()->debug(
-                message: sprintf(
-                    'Processing authorization callback for %s, status %s',
-                    $callback->getPaymentId(),
-                    $callback->status->value
-                )
-            );
-        }
+        self::addDebugLogs(callback: $callback);
 
         $code = 202;
 
@@ -135,10 +113,7 @@ class Repository
                 $code = $e->getCode();
             }
 
-            self::trackError(
-                paymentId: $paymentId,
-                error: $e
-            );
+            self::trackError(paymentId: $paymentId, error: $e);
         }
 
         Config::getLogger()->debug(message: "Responding with code $code");
@@ -168,6 +143,7 @@ class Repository
 
     /**
      * @throws ConfigException
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public static function trackInit(
         string $paymentId,
@@ -192,5 +168,37 @@ class Repository
         } catch (Throwable $e) {
             self::logException(exception: $e);
         }
+    }
+
+    /**
+     * Append debug log entries.
+     *
+     * @throws ConfigException
+     */
+    public static function addDebugLogs(
+        CallbackInterface $callback
+    ): void {
+        if ($callback instanceof Management) {
+            Config::getLogger()->debug(
+                message: sprintf(
+                    'Processing management callback for %s, action %s (%s)',
+                    $callback->getPaymentId(),
+                    $callback->action->value,
+                    $callback->actionId
+                )
+            );
+        }
+
+        if (!($callback instanceof Authorization)) {
+            return;
+        }
+
+        Config::getLogger()->debug(
+            message: sprintf(
+                'Processing authorization callback for %s, status %s',
+                $callback->getPaymentId(),
+                $callback->status->value
+            )
+        );
     }
 }

@@ -61,7 +61,6 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentSelection as PaymentSelectionType;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\ShippingSelection;
-use Resursbank\Ecom\Lib\Model\Rco\InvoiceLabels;
 use Resursbank\Ecom\Lib\Model\Rco\Merchant;
 use Resursbank\Ecom\Lib\Model\Rco\Options;
 use Resursbank\Ecom\Lib\Model\Rco\Payment;
@@ -205,7 +204,10 @@ final class RepositoryTest extends TestCase
     }
 
     /**
+     * @throws AttributeCombinationException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     private function getShippingMethods(): CreateShippingMethodCollection
     {
@@ -381,6 +383,7 @@ final class RepositoryTest extends TestCase
      * Assert that setting shipping methods actually sets them.
      *
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -523,6 +526,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Exception
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testValidateCheckoutModel(): void
@@ -648,6 +652,7 @@ final class RepositoryTest extends TestCase
 
     /**
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -657,6 +662,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testCapture(): void
@@ -704,6 +710,7 @@ final class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws MissingKeyException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testPartialCapture(): void
@@ -748,8 +755,7 @@ final class RepositoryTest extends TestCase
             id: $fetched->id,
             version: $fetched->version,
             createTransaction: new CreateTransaction(
-                transactionLines: $transactionLines,
-                invoiceLabels: new InvoiceLabels()
+                transactionLines: $transactionLines
             )
         );
 
@@ -769,6 +775,7 @@ final class RepositoryTest extends TestCase
      * Assert that cancelling a payment works as intended.
      *
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -778,6 +785,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testCancel(): void
@@ -814,6 +822,7 @@ final class RepositoryTest extends TestCase
      * Assert that full refund refunds the full amount.
      *
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -823,6 +832,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testRefund(): void
@@ -873,6 +883,7 @@ final class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testPartialRefund(): void
@@ -1055,7 +1066,7 @@ final class RepositoryTest extends TestCase
         $faultyData = '{"some":"corrupted","data":"set","here":55}';
 
         try {
-            Repository::getWebhookRequestData($faultyData);
+            Repository::getWebhookRequestData(post: $faultyData);
             $this->fail(message: 'Invalid webhook data accepted.');
         } catch (WebhookException) {
             $this->addToAssertionCount(count: 1);
@@ -1066,7 +1077,7 @@ final class RepositoryTest extends TestCase
             value: $this->initFull(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData($full);
+        Repository::getWebhookRequestData(post: $full);
         $this->addToAssertionCount(count: 1);
 
         // Simulate a minimal CheckoutDto object in $_POST
@@ -1074,7 +1085,7 @@ final class RepositoryTest extends TestCase
             value: $this->initMini(),
             flags: JSON_THROW_ON_ERROR
         );
-        Repository::getWebhookRequestData($mini);
+        Repository::getWebhookRequestData(post: $mini);
         $this->addToAssertionCount(count: 1);
     }
 

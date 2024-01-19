@@ -61,8 +61,10 @@ class Log extends Widget
 
         return sprintf(
             Translator::translate(phraseId: 'widget-title'),
-            $entry instanceof Entry ? ($entry->reference !== null ? $entry->reference : $entry->paymentId) : '',
-            Translator::translate(phraseId: Config::isProduction() ? 'production' : 'test')
+            $entry instanceof Entry ? ((string) $entry->reference !== '' ? $entry->reference : $entry->paymentId) : '',
+            Translator::translate(
+                phraseId: Config::isProduction() ? 'production' : 'test'
+            )
         );
     }
 
@@ -96,6 +98,10 @@ class Log extends Widget
         };
     }
 
+    /**
+     * If the extra content is shorter than 40 characters, do not show the
+     * extra button, display content directly.
+     */
     public function showExtraBtn(Entry $entry): bool
     {
         return $entry->extra !== null && strlen(string: $entry->extra) > 40;

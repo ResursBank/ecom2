@@ -34,10 +34,10 @@ class FileDataHandler implements DataHandlerInterface
     public function write(Entry $entry): void
     {
         $currentCollection = $this->getList(paymentId: $entry->paymentId);
-        $currentCollection->offsetSet(offset: null, value: $entry);
+        $currentCollection?->offsetSet(offset: null, value: $entry);
 
         $jsonData = json_encode(
-            value: $currentCollection->toArray(),
+            value: $currentCollection?->toArray() ?? [],
             flags: JSON_PRETTY_PRINT
         );
 
@@ -58,8 +58,10 @@ class FileDataHandler implements DataHandlerInterface
         );
 
         $collection = !empty($result) ?
-            DataConverter::arrayToCollection(data: $result, type: Entry::class) :
-            null;
+            DataConverter::arrayToCollection(
+                data: $result,
+                type: Entry::class
+            ) : null;
 
         if (!$collection instanceof EntryCollection) {
             throw new IllegalTypeException(

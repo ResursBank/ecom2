@@ -167,7 +167,7 @@ class FileDataHandlerTest extends TestCase
 
         $entry3 = new Entry(
             paymentId: $paymentId,
-            event: Event::CANCELLED,
+            event: Event::CANCELED,
             user: User::ADMIN,
             result: Result::ERROR,
             extra: (string) json_encode(

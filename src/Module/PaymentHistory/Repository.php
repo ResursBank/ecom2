@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\PaymentHistory;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Lib\Locale\Translator as Original;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Throwable;
@@ -19,7 +18,7 @@ use Throwable;
 /**
  * Repository layer against payment history persistent storage.
  */
-class Repository extends Original
+class Repository
 {
     /**
      * Connect to configured payment history storage and write info.
