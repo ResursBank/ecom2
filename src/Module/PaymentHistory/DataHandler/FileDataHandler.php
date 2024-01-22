@@ -34,15 +34,13 @@ class FileDataHandler implements DataHandlerInterface
      */
     public function write(Entry $entry): void
     {
-        $currentCollection = $this->getList(paymentId: $entry->paymentId);
-        $currentCollection?->offsetSet(offset: null, value: $entry);
-
-        $jsonData = json_encode(
-            value: $currentCollection?->toArray() ?? [],
-            flags: JSON_PRETTY_PRINT
+        $currentCollection = $this->getList();
+        $data = $currentCollection?->toArray() ?? [];
+        $data[] = $entry;
+        file_put_contents(
+            filename: $this->file,
+            data: json_encode(value: $data)
         );
-
-        file_put_contents(filename: $this->file, data: $jsonData);
     }
 
     /**
@@ -52,24 +50,28 @@ class FileDataHandler implements DataHandlerInterface
      * @throws IllegalValueException
      */
     public function getList(
-        string $paymentId,
+        ?string $paymentId = null,
         ?Event $event = null
     ): ?EntryCollection {
-        $result = $this->filterListContent(
-            content: $this->getFileContent(),
-            paymentId: $paymentId,
-            event: $event
-        );
+        $content = $this->getFileContent();
 
-        $collection = !empty($result) ?
+        $collection = !empty($content) ?
             DataConverter::arrayToCollection(
-                data: $result,
+                data: $content,
                 type: Entry::class
             ) : null;
 
-        if (!$collection instanceof EntryCollection) {
-            throw new IllegalTypeException(
-                message: 'The conversion did not result in an EntryCollection instance.'
+        if ($collection !== null) {
+            if (!$collection instanceof EntryCollection) {
+                throw new IllegalTypeException(
+                    message: 'The conversion did not result in an EntryCollection instance.'
+                );
+            }
+
+            $this->filterCollection(
+                collection: $collection,
+                paymentId: $paymentId,
+                event: $event
             );
         }
 
@@ -79,26 +81,27 @@ class FileDataHandler implements DataHandlerInterface
     /**
      * Filter Entry data from array based on supplied paymentId.
      */
-    private function filterListContent(
-        array $content,
-        string $paymentId,
+    private function filterCollection(
+        EntryCollection &$collection,
+        ?string $paymentId = null,
         ?Event $event = null
-    ): array {
-        foreach ($content as $key => $entry) {
-            if (!isset($entry->paymentId) || $entry->paymentId === $paymentId) {
-                continue;
-            }
-
-            if ($event !== null &&
-                !isset($entry->event) || $entry->event !== $event
+    ): void {
+        foreach ($collection as $key => $entry) {
+            if (
+                (
+                    $paymentId === null ||
+                    $entry->paymentId === $paymentId
+                ) &&
+                (
+                    $event === null ||
+                    $entry->event === $event
+                )
             ) {
                 continue;
             }
 
-            unset($content[$key]);
+            $collection->offsetUnset(offset: $key);
         }
-
-        return $content;
     }
 
     /**

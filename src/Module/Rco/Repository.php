@@ -339,7 +339,9 @@ class Repository
 
             PaymentHistoryRepository::write(entry: new Entry(
                 paymentId: $id,
-                event: $checkout->isCaptured() ? Event::CAPTURED : Event::PARTIALLY_CAPTURED,
+                event: $checkout->isCaptured() ?
+                    Event::CAPTURED :
+                    Event::PARTIALLY_CAPTURED,
                 user: User::ADMIN,
                 result: Result::SUCCESS
             ));
@@ -395,7 +397,9 @@ class Repository
 
             PaymentHistoryRepository::write(entry: new Entry(
                 paymentId: $id,
-                event: $checkout->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
+                event: $checkout->isCancelled() ?
+                    Event::CANCELED :
+                    Event::PARTIALLY_CANCELLED,
                 user: User::ADMIN,
                 result: Result::SUCCESS
             ));
@@ -449,14 +453,18 @@ class Repository
             $response = (new Post(
                 route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
                 version: $version,
-                params: $transactionLines !== null ? ['transactionLines' => $transactionLines->toArray()] : []
+                params: $transactionLines !== null ? [
+                    'transactionLines' => $transactionLines->toArray()
+                ] : []
             ))->call(forceObject: $transactionLines === null);
 
             $checkout = self::validateCheckoutModel(model: $response);
 
             PaymentHistoryRepository::write(entry: new Entry(
                 paymentId: $id,
-                event: $checkout->isRefunded() ? Event::REFUNDED : Event::PARTIALLY_REFUNDED,
+                event: $checkout->isRefunded() ?
+                    Event::REFUNDED :
+                    Event::PARTIALLY_REFUNDED,
                 user: User::ADMIN,
                 result: Result::SUCCESS
             ));

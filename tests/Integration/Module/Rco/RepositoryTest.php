@@ -35,6 +35,7 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Rco\Locale;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\Rco\Address;
 use Resursbank\Ecom\Lib\Model\Rco\Cart;
 use Resursbank\Ecom\Lib\Model\Rco\Cart\ItemCollection as CartItemCollection;
@@ -81,6 +82,7 @@ use Resursbank\Ecom\Lib\Model\Rco\UpdateCheckout;
 use Resursbank\Ecom\Lib\Model\Rco\UpdateCustomer;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Module\PaymentHistory\DataHandler\FileDataHandler;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\EcomTest\Data\Models\Instrument;
 use Resursbank\EcomTest\Utilities\MockSignerRco;
@@ -96,6 +98,7 @@ use Throwable;
 final class RepositoryTest extends TestCase
 {
     private string $orderReference = '';
+    private string $historyFile = '/tmp/resursbank/test/rco/payment-history.log';
 
     /**
      * Set up the Ecom+ config.
@@ -105,7 +108,17 @@ final class RepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        parent::setUp();
+        if (!is_dir(filename: dirname(path: $this->historyFile))) {
+            mkdir(
+                directory: dirname(path: $this->historyFile),
+                permissions: 0755,
+                recursive: true
+            );
+        }
+
+        if (!is_file(filename: $this->historyFile)) {
+            touch(filename: $this->historyFile);
+        }
 
         Config::setup(
             logger: new NoneLogger(),
@@ -117,10 +130,24 @@ final class RepositoryTest extends TestCase
                 grantType: GrantType::from(
                     value: $_ENV['RCO_JWT_AUTH_GRANT_TYPE']
                 )
+            ),
+            paymentHistoryDataHandler: new FileDataHandler(
+                file: $this->historyFile
             )
         );
 
         $this->orderReference = Strings::generateRandomString(length: 12);
+
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        if (is_file(filename: $this->historyFile)) {
+            unlink(filename: $this->historyFile);
+        }
+
+        parent::tearDown();
     }
 
     /**
@@ -688,10 +715,16 @@ final class RepositoryTest extends TestCase
         $this->assertNotNull(actual: $result->payment);
         $this->assertNotNull(actual: $result->payment->status);
         $this->assertNotNull(actual: $result->payment->status->type);
-
         $this->assertSame(
             expected: PaymentStatus::CAPTURED,
             actual: $result->payment->status->type
+        );
+        $this->assertCount(
+            expectedCount: 1,
+            haystack: Config::getPaymentHistoryDataHandler()->getList(
+                paymentId: $result->id,
+                event: Event::CAPTURED
+            )
         );
     }
 
