@@ -17,8 +17,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 class CreateTransaction extends Model
 {
     public function __construct(
-        public readonly CreateTransactionLineCollection $transactionLines,
-        public readonly InvoiceLabels $invoiceLabels
+        public readonly ?CreateTransactionLineCollection $transactionLines = null,
+        public readonly ?InvoiceLabels $invoiceLabels = null
     ) {
         parent::__construct();
     }

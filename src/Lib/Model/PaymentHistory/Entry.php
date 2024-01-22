@@ -20,6 +20,9 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Entry extends Model
 {
+    /**
+     * Avoid property promotion to assign default value in body.
+     */
     public readonly int $time;
 
     /**
@@ -27,13 +30,14 @@ class Entry extends Model
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo Consider ensuring $extra is JSON encoded. Not sure if this is desirable but seems sensible.
      */
     public function __construct(
         #[StringIsUuid] public readonly string $paymentId,
         public readonly Event $event,
         public readonly User $user,
-        ?int $time = null, // Avoid property promotion to assign default value in body.
+        ?int $time = null,
         public readonly Result $result = Result::INFO,
         public readonly ?string $extra = null,
         public readonly ?string $previousOrderStatus = null,
@@ -41,7 +45,7 @@ class Entry extends Model
         public readonly ?string $reference = null,
         public readonly ?string $userReference = null
     ) {
-        $this->time = $time === null ? time() : $time;
+        $this->time = $time ?? time();
 
         parent::__construct();
     }

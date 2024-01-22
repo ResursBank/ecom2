@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\PaymentHistory\Widget;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -31,6 +32,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
+use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
@@ -41,7 +43,18 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
 class LogTest extends TestCase
 {
     /**
+     * Log instance used in various tests.
+     */
+    private Log $log;
+
+    /**
+     * @throws AttributeCombinationException
      * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     protected function setUp(): void
     {
@@ -58,7 +71,54 @@ class LogTest extends TestCase
             )
         );
 
+        $this->log = new Log(entries: $this->getEntries());
+
         parent::setUp();
+    }
+
+    /**
+     * Wrapper to generate Entry model instance.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    private function getEntry(
+        ?Result $result = null,
+        ?string $extra = null,
+        ?string $reference = null,
+        ?string $userReference = null
+    ): Entry {
+        if ($result === null) {
+            $result = $this->getRandomResult();
+        }
+
+        if ($extra === null) {
+            $extra = $this->getRandomExtra(type: $result);
+        }
+
+        if ($reference === null) {
+            $reference = Random::getString(length: 50);
+        }
+
+        if ($userReference === null) {
+            $userReference = Random::getString(length: 50);
+        }
+
+        return new Entry(
+            paymentId: Strings::getUuid(),
+            event: $this->getRandomEvent(),
+            user: $this->getRandomUser(),
+            result: $result,
+            extra: $extra,
+            previousOrderStatus: $this->getRandomStatus(),
+            currentOrderStatus: $this->getRandomStatus(),
+            time: time(),
+            userReference: $userReference,
+            reference: $reference
+        );
     }
 
     /**
@@ -69,6 +129,7 @@ class LogTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Exception
      */
     private function getEntries(): EntryCollection
     {
@@ -76,17 +137,7 @@ class LogTest extends TestCase
         $size = rand(min: 1, max: 50);
 
         for ($i = 0; $i < $size; $i++) {
-            $type = $this->getRandomType();
-            $data[] = new Entry(
-                paymentId: Strings::getUuid(),
-                event: $this->getRandomEvent(),
-                user: $this->getRandomUser(),
-                result: $type,
-                extra: $this->getRandomExtra(type: $type),
-                previousOrderStatus: $this->getRandomStatus(),
-                currentOrderStatus: $this->getRandomStatus(),
-                time: time()
-            );
+            $data[] = $this->getEntry();
         }
 
         return new EntryCollection(data: $data);
@@ -106,7 +157,7 @@ class LogTest extends TestCase
         return $cases[array_rand(array: $cases)];
     }
 
-    private function getRandomType(): Result
+    private function getRandomResult(): Result
     {
         $cases = Result::cases();
         /* @phpstan-ignore-next-line */
@@ -178,12 +229,10 @@ class LogTest extends TestCase
      */
     public function testRenderLogWidget(): void
     {
-        $entries = $this->getEntries();
-        $log = new Log(entries: $entries);
-        $content = $log->content;
+        $content = $this->log->content;
 
         /** @var Entry $entry */
-        foreach ($entries as $entry) {
+        foreach ($this->log->entries as $entry) {
             // Check if the correct classes are applied based on the entry type.
             $typeClass = match ($entry->result) {
                 Result::SUCCESS => 'success-entry',
@@ -208,6 +257,14 @@ class LogTest extends TestCase
                 needle: Translator::translate(phraseId: $entry->user->value),
                 haystack: $content,
                 message: "Translated phrase not found for user: {$entry->user->value}"
+            );
+
+            $user = Translator::translate(phraseId: $entry->user->value);
+            $ref = $entry->userReference;
+
+            $this->assertStringContainsString(
+                needle: "$user ($ref)",
+                haystack: $content
             );
         }
 
@@ -258,16 +315,7 @@ class LogTest extends TestCase
     public function testRenderSuccessEntry(): void
     {
         $entries = new EntryCollection(data: [
-            new Entry(
-                paymentId: Strings::getUuid(),
-                event: $this->getRandomEvent(),
-                user: $this->getRandomUser(),
-                result: Result::SUCCESS,
-                extra: '',
-                previousOrderStatus: $this->getRandomStatus(),
-                currentOrderStatus: $this->getRandomStatus(),
-                time: time()
-            )
+            $this->getEntry(result: Result::SUCCESS)
         ]);
 
         $this->assertStringContainsString(
@@ -289,25 +337,199 @@ class LogTest extends TestCase
      */
     public function testRenderErrorEntry(): void
     {
-        // Arrange
         $entries = new EntryCollection(data: [
-            new Entry(
-                paymentId: Strings::getUuid(),
-                event: $this->getRandomEvent(),
-                user: $this->getRandomUser(),
-                result: Result::ERROR,
-                extra: 'Spoofed Exception',
-                previousOrderStatus: $this->getRandomStatus(),
-                currentOrderStatus: $this->getRandomStatus(),
-                time: time()
-            )
+            $this->getEntry(result: Result::ERROR)
         ]);
 
-        // Assert
         $this->assertStringContainsString(
             needle: '<tr class="error-entry">',
             haystack: (new Log(entries: $entries))->content,
             message: 'ERROR entry not found in HTML content.'
+        );
+    }
+
+    /**
+     * Make sure the
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws Exception
+     */
+    public function testGetUser(): void
+    {
+        /** @var Entry $entry */
+        foreach ($this->log->entries as $entry) {
+            $user = Translator::translate(phraseId: $entry->user->value);
+            $ref = $entry->userReference;
+
+            $this->assertSame(
+                actual: $this->log->getUser(entry: $entry),
+                expected: "$user ($ref)"
+            );
+        }
+
+        // Assert only user type is returned when userReference isn't provided.
+        $entry = $this->getEntry(userReference: '');
+
+        $this->assertSame(
+            actual: $this->log->getUser(entry: $entry),
+            expected: Translator::translate(phraseId: $entry->user->value)
+        );
+    }
+
+    /**
+     * Assert that extra content with less or equal to than 40 characters
+     * results in the content being displayed directly in the table.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws FilesystemException
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function testShortExtraContent(): void
+    {
+        $extra = Random::getString(length: 40);
+        $entry = $this->getEntry(extra: $extra);
+        $log = new Log(entries: new EntryCollection(data: [$entry]));
+
+        $this->assertMatchesRegularExpression(
+            pattern: '/<td>\s*' . $extra . '\s*<\/td>/m',
+            string: $log->content,
+            message: 'Missing td element containing extra info.'
+        );
+
+        $this->assertStringNotContainsString(
+            needle: 'rb-rh-show-extra-btn',
+            haystack: $log->content
+        );
+
+        $this->assertFalse(
+            condition: $log->showExtraBtn(entry: $entry)
+        );
+    }
+
+    /**
+     * Assert that extra content with more than 40 characters results in the
+     * content being displayed directly in the table.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws FilesystemException
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function testLongExtraContent(): void
+    {
+        $extra = Random::getString(length: 100);
+        $entry = $this->getEntry(extra: $extra);
+        $log = new Log(entries: new EntryCollection(data: [$entry]));
+
+        $this->assertDoesNotMatchRegularExpression(
+            pattern: '/<td>\s*' . $extra . '\s*<\/td>/m',
+            string: $log->content,
+            message: 'Missing td element containing extra info.'
+        );
+
+        $this->assertStringContainsString(
+            needle: 'rb-rh-show-extra-btn',
+            haystack: $log->content
+        );
+
+        $this->assertTrue(
+            condition: $log->showExtraBtn(entry: $entry)
+        );
+    }
+
+    /**
+     * Assert getResultClass method resolve accurate class based on result.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testGetResultClass(): void
+    {
+        $info = $this->getEntry(result: Result::INFO);
+        $success = $this->getEntry(result: Result::SUCCESS);
+        $error = $this->getEntry(result: Result::ERROR);
+
+        $this->assertEmpty(actual: $this->log->getResultClass(entry: $info));
+        $this->assertSame(
+            actual: $this->log->getResultClass(entry: $success),
+            expected: 'success-entry'
+        );
+        $this->assertSame(
+            actual: $this->log->getResultClass(entry: $error),
+            expected: 'error-entry'
+        );
+    }
+
+    /**
+     * Assert widget title is generated correctly depending on data provided to
+     * the first entry model in the assigned entry collection.
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws Exception
+     */
+    public function testGetWidgetTitle(): void
+    {
+        $entry = $this->getEntry();
+        $log = new Log(entries: new EntryCollection(data: [$entry]));
+
+        $this->assertStringContainsString(
+            needle: 'Payment #' . $entry->reference . ' [' .
+                Translator::translate(
+                    phraseId: Config::isProduction() ? 'production' : 'test'
+                ) . ']',
+            haystack: $log->content
+        );
+
+        $entry = $this->getEntry(reference: '');
+        $log = new Log(entries: new EntryCollection(data: [$entry]));
+
+        $this->assertStringContainsString(
+            needle: 'Payment #' . $entry->paymentId . ' [' .
+            Translator::translate(
+                phraseId: Config::isProduction() ? 'production' : 'test'
+            ) . ']',
+            haystack: $log->content
+        );
+    }
+
+    /**
+     * Assert the method getExtraData properly escapes and converts data.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testGetExtraData(): void
+    {
+        $entry = $this->getEntry(extra: "A'simple-test\n\r");
+
+        $this->assertSame(
+            expected: "A\\&#039;simple-test<br />",
+            actual: $this->log->getExtraData(entry: $entry)
         );
     }
 }

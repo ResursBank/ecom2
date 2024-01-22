@@ -319,26 +319,15 @@ class Repository
             paymentId: $id,
             event: Event::CAPTURE_REQUESTED,
             user: User::ADMIN,
-            extra: $createTransaction !== null ?
-                Price::format(
-                    value: $createTransaction->transactionLines->getTotal() / 100
-                ) : null
+            extra: (
+                $createTransaction?->transactionLines !== null
+            ) ? Price::format(
+                value: $createTransaction->transactionLines->getTotal() / 100
+            ) : null
         ));
 
         try {
-            $parameters = [];
-
-            if ($createTransaction?->transactionLines !== null) {
-                $parameters['transactionLines'] = $createTransaction
-                    ->transactionLines
-                    ->toArray();
-            }
-
-            if ($createTransaction?->invoiceLabels !== null) {
-                $parameters['invoiceLabels'] = $createTransaction
-                    ->invoiceLabels
-                    ->toArray();
-            }
+            $parameters = $createTransaction?->toArray() ?? [];
 
             $response = (new Post(
                 route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
@@ -393,7 +382,7 @@ class Repository
         PaymentHistoryRepository::write(entry: new Entry(
             paymentId: $id,
             event: Event::CANCEL_REQUESTED,
-            user: User::ADMIN,
+            user: User::ADMIN
         ));
 
         try {
