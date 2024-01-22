@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentHistory\DataHandler;
 
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 
 /**
  * Contract to implement log data handler.
@@ -20,7 +21,7 @@ interface DataHandlerInterface
     /**
      * Resolve list of all log entries associated with supplied payment id.
      */
-    public function getList(string $paymentId): ?EntryCollection;
+    public function getList(string $paymentId, ?Event $event): ?EntryCollection;
 
     /**
      * Write Entry instance to permanent storage.

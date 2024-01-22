@@ -14,6 +14,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 /**
@@ -50,11 +51,14 @@ class FileDataHandler implements DataHandlerInterface
      * @throws ReflectionException
      * @throws IllegalValueException
      */
-    public function getList(string $paymentId): ?EntryCollection
-    {
+    public function getList(
+        string $paymentId,
+        ?Event $event = null
+    ): ?EntryCollection {
         $result = $this->filterListContent(
             content: $this->getFileContent(),
-            paymentId: $paymentId
+            paymentId: $paymentId,
+            event: $event
         );
 
         $collection = !empty($result) ?
@@ -75,10 +79,17 @@ class FileDataHandler implements DataHandlerInterface
      */
     private function filterListContent(
         array $content,
-        string $paymentId
+        string $paymentId,
+        ?Event $event = null
     ): array {
         foreach ($content as $key => $entry) {
             if (!isset($entry->paymentId) || $entry->paymentId === $paymentId) {
+                continue;
+            }
+
+            if ($event !== null &&
+                !isset($entry->event) || $entry->event !== $event
+            ) {
                 continue;
             }
 
