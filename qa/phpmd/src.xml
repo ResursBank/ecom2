@@ -37,7 +37,7 @@
     <!-- Re-introduce LongVariable rule with specific config. -->
     <rule ref="rulesets/naming.xml/LongVariable">
         <properties>
-            <!-- There is no "exceptions" for LongVariable. -->
+            <!-- There is no "exceptions" property for LongVariable. -->
             <property name="subtract-prefixes" value="paymentHistory"/>
         </properties>
     </rule>

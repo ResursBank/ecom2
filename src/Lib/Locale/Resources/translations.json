@@ -1480,28 +1480,28 @@
     }
   },
   {
-    "id": "rb-enable-developer-mode",
+    "id": "enable-developer-mode",
     "translation": {
       "en": "Enable developer mode",
       "sv": "Aktivera utvecklarläge"
     }
   },
   {
-    "id": "rb-enable-developer-mode-comment",
+    "id": "enable-developer-mode-comment",
     "translation": {
       "en": "Should not be used in production environments! Adds the XDEBUG_SESSION parameter to webhook and callback URLs.",
       "sv": "Bör ej användas i produktionsmiljöer! Lägger till XDEBUG_SESSION-parametern till webhook- och callbackadresser."
     }
   },
   {
-    "id": "rb-xdebug-session-value",
+    "id": "xdebug-session-value",
     "translation": {
       "en": "XDEBUG_SESSION parameter value",
       "sv": "Parametervärde för XDEBUG_SESSION"
     }
   },
   {
-    "id": "rb-xdebug-session-value-comment",
+    "id": "xdebug-session-value-comment",
     "translation": {
       "en": "The value to use for the XDEBUG_SESSION parameter",
       "sv": "Det värde som används för XDEBUG_SESSION-parametern"
@@ -1512,6 +1512,13 @@
     "translation": {
       "en": "$%s",
       "sv": "%s SEK"
+    }
+  },
+  {
+    "id": "enable-delayed-authorization",
+    "translation": {
+      "en": "Enable delayed authorization",
+      "sv": "Tillåt fördröjt ordergodkännande"
     }
   }
 ]

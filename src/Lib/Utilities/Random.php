@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Random\DataType;
 use stdClass;
 
+use function in_array;
 use function strlen;
 
 /**
@@ -40,12 +41,23 @@ class Random
 
     /**
      * Get random DataType case.
+     *
+     * @param array<DataType> $exclude Types to exclude
      */
-    public static function getType(): DataType
+    public static function getType(array $exclude = []): DataType
     {
-        $cases = DataType::cases();
+        //$cases = DataType::cases();
+        $cases = [];
 
-        /* @phpstan-ignore-next-line */
+        foreach (DataType::cases() as $case) {
+            if (in_array(needle: $case, haystack: $exclude, strict: true)) {
+                continue;
+            }
+
+            $cases[] = $case;
+        }
+
+        // @phpstan-ignore-next-line
         return $cases[array_rand(array: $cases)];
     }
 
@@ -150,11 +162,34 @@ class Random
     }
 
     /**
-     * @return stdClass
+     * Generate an stdClass object with random data.
+     *
+     * @param int|null $propertyCount Number of properties to generate
+     * @param bool $includeObjects Set to false to not include child objects
+     * @throws Exception
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function getObject(): object
-    {
-        return new stdClass();
+    public static function getObject(
+        ?int $propertyCount = null,
+        bool $includeObjects = true
+    ): object {
+        if ($propertyCount === null) {
+            $propertyCount = random_int(min: 1, max: 10);
+        }
+
+        $object = new stdClass();
+
+        for ($i = 0; $i < $propertyCount; $i++) {
+            $propertyName = self::getUniquePropertyName(object: $object);
+
+            $type = self::getType(
+                exclude: $includeObjects === false ? [DataType::OBJECT] : []
+            );
+
+            $object->$propertyName = self::getPropertyValue(type: $type);
+        }
+
+        return $object;
     }
 
     /**
@@ -173,6 +208,38 @@ class Random
         }
 
         return $result;
+    }
+
+    /**
+     * Get a property value, for use by getObject.
+     *
+     * @throws Exception
+     */
+    private static function getPropertyValue(DataType $type): mixed
+    {
+        if ($type === DataType::OBJECT) {
+            return self::getObject(includeObjects: false);
+        }
+
+        return self::getTypeValue(type: $type);
+    }
+
+    /**
+     * Get a unique property name.
+     *
+     * @throws Exception
+     */
+    private static function getUniquePropertyName(object $object): string
+    {
+        do {
+            $propertyName = self::getString(
+                length: random_int(min: 3, max: 12)
+            );
+        } while (
+            property_exists(object_or_class: $object, property: $propertyName)
+        );
+
+        return $propertyName;
     }
 
     /**

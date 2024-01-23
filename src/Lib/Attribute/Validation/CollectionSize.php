@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
 use ReflectionParameter;
+use Resursbank\Ecom\Exception\AttributeParameterException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\CollectionInterface;
 use Resursbank\Ecom\Lib\Collection\Collection;
@@ -28,11 +29,18 @@ class CollectionSize implements CollectionInterface
     /**
      * @param int $min Minimum number of Collection elements
      * @param int|null $max Maximum number of Collection elements
+     * @throws AttributeParameterException
      */
     public function __construct(
         public readonly int $min = 0,
         public readonly ?int $max = null
     ) {
+        if ($min > $max) {
+            throw new AttributeParameterException(
+                message: 'Attribute min parameter value (' .
+                $min . ') is greater than max parameter value (' . $max . ')!'
+            );
+        }
     }
 
     /**

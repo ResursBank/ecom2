@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 use Attribute;
 use Exception;
 use ReflectionParameter;
+use Resursbank\Ecom\Exception\AttributeParameterException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\ArrayInterface;
 use Resursbank\Ecom\Lib\Utilities\Random;
@@ -25,13 +26,27 @@ use function count;
 class ArraySize implements ArrayInterface
 {
     /**
-     * @param int|null $min Minimum number of array elements
+     * @param int $min Minimum number of array elements
      * @param int|null $max Maximum number of array elements
+     * @throws AttributeParameterException
      */
     public function __construct(
-        public readonly ?int $min = null,
+        public readonly int $min = 0,
         public readonly ?int $max = null
     ) {
+        if ($min > $max) {
+            throw new AttributeParameterException(
+                message: 'Attribute min parameter value (' .
+                $min . ') is greater than max parameter value (' . $max . ')!'
+            );
+        }
+
+        if ($min < 0) {
+            throw new AttributeParameterException(
+                message: 'Array size min and max values must both be ' .
+                'positive, found min = ' . $min . ' and max = ' . $max . '!'
+            );
+        }
     }
 
     /**
@@ -102,15 +117,11 @@ class ArraySize implements ArrayInterface
         $result = [];
 
         // Add threshold values.
-        if ($this->min !== null) {
-            if ($this->min > 0) {
-                $result[] = $this->getRandom(
-                    min: $this->min - 1,
-                    max: $this->min - 1
-                );
-            }
-        } else {
-            $result[] = [];
+        if ($this->min > 0) {
+            $result[] = $this->getRandom(
+                min: $this->min - 1,
+                max: $this->min - 1
+            );
         }
 
         if ($this->max !== null) {

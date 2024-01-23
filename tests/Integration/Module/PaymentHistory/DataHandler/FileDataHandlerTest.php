@@ -31,6 +31,7 @@ use Resursbank\EcomTest\Utilities\PaymentHistory;
 class FileDataHandlerTest extends PaymentHistory
 {
     private FileDataHandler $handler;
+
     private string $testFilePath = '/tmp/resursbank/ecom/payment-history.json';
 
     /**

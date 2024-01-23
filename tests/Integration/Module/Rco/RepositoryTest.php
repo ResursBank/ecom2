@@ -98,6 +98,7 @@ use Throwable;
 final class RepositoryTest extends TestCase
 {
     private string $orderReference = '';
+
     private string $historyFile = '/tmp/resursbank/test/rco/payment-history.log';
 
     /**

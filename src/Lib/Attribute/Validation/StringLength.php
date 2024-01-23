@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 use Attribute;
 use Exception;
 use ReflectionParameter;
+use Resursbank\Ecom\Exception\AttributeParameterException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -25,13 +26,27 @@ use function strlen;
 class StringLength implements StringInterface
 {
     /**
-     * @param int|null $min Minimum string length
+     * @param int $min Minimum string length
      * @param int|null $max Maximum string length
+     * @throws AttributeParameterException
      */
     public function __construct(
-        public readonly ?int $min = null,
+        public readonly int $min = 0,
         public readonly ?int $max = null
     ) {
+        if ($min < 0) {
+            throw new AttributeParameterException(
+                message: 'Attribute min parameter value (' . $min .
+                ') is less than 0'
+            );
+        }
+
+        if ($max < $min) {
+            throw new AttributeParameterException(
+                message: 'Attribute min parameter value (' .
+                $min . ') is greater than max parameter value (' . $max . ')!'
+            );
+        }
     }
 
     /**
@@ -42,7 +57,7 @@ class StringLength implements StringInterface
      */
     public function validate(string $name, string $value): void
     {
-        if ($this->min !== null && strlen(string: $value) < $this->min) {
+        if (strlen(string: $value) < $this->min) {
             throw new IllegalValueException(
                 message: $name . ' is shorter than its specified minimum length of ' . $this->min
             );
@@ -70,11 +85,7 @@ class StringLength implements StringInterface
         $result = [];
 
         // Add threshold values.
-        if ($this->min !== null) {
-            $result[] = Strings::generateRandomString(length: $this->min);
-        } else {
-            $result[] = '';
-        }
+        $result[] = Strings::generateRandomString(length: $this->min);
 
         if ($this->max !== null) {
             $result[] = Strings::generateRandomString(length: $this->max);
@@ -108,17 +119,12 @@ class StringLength implements StringInterface
         $result = [];
 
         // Add threshold values.
-        if ($this->min !== null && $this->min > 0) {
+        if ($this->min > 0) {
             $result[] = Strings::generateRandomString(length: $this->min - 1);
         }
 
         if ($this->max !== null) {
             $result[] = Strings::generateRandomString(length: $this->max + 1);
-        }
-
-        // Must have either min or max value to generate values.
-        if ($this->min === null && $this->max === null) {
-            return $result;
         }
 
         $this->addRandomRejectedValues(result: $result, size: $size);
@@ -152,7 +158,7 @@ class StringLength implements StringInterface
                 $count++;
             }
 
-            if ((int) $this->min <= 0) {
+            if ($this->min <= 0) {
                 continue;
             }
 

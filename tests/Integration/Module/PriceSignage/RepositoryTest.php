@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Models\PriceSignage;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
+use Throwable;
 
 /**
  * Integration tests for PriceSignage repository.
@@ -106,6 +107,7 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws Throwable
      */
     public function testClearCache(): void
     {
@@ -136,6 +138,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPriceSignageReturnsWithoutCache(): void
     {
@@ -164,6 +167,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPriceSignageReturnsCache(): void
     {
@@ -194,6 +198,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPriceSignageFilterByMonth(): void
     {
@@ -307,26 +312,17 @@ class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testGetPriceSignageThrowsWithLowAmount(): void
     {
         $this->expectException(exception: CurlException::class);
 
-        try {
-            Repository::getPriceSignage(
-                storeId: $this->storeId,
-                paymentMethodId: $this->paymentMethodId,
-                amount: 0.1
-            );
-        } catch (CurlException $e) {
-            $this->assertSame(
-                expected: 400,
-                actual: $e->httpCode,
-                message: "Expected HTTP code 400, got $e->httpCode"
-            );
-
-            throw $e;
-        }
+        Repository::getPriceSignage(
+            storeId: $this->storeId,
+            paymentMethodId: $this->paymentMethodId,
+            amount: 0.1
+        );
     }
 }

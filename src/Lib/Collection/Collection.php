@@ -30,6 +30,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     private const TYPE_ERR_NO_DATA = 'No type or data specified';
 
     protected string $type;
+
     private int $position;
 
     /**

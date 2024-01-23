@@ -72,7 +72,7 @@ EOD;
             );
         }
 
-        /** @phpstan-ignore-next-line */
+        // @phpstan-ignore-next-line
         $randIndex = array_rand(array: $data);
 
         if (!is_int(value: $randIndex)) {
