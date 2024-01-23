@@ -57,7 +57,6 @@ class Random
             $cases[] = $case;
         }
 
-        // @phpstan-ignore-next-line
         return $cases[array_rand(array: $cases)];
     }
 
