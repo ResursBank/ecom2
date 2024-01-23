@@ -14,7 +14,7 @@ use Exception;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\ArrayInterface;
-use Resursbank\Ecom\Lib\Utilities\Random;
+use Resursbank\Ecom\Lib\Attribute\Validation\Traits\ArrayValidation;
 use Resursbank\Ecom\Lib\Utilities\Random\DataType;
 
 use function is_string;
@@ -25,6 +25,8 @@ use function is_string;
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class ArrayOfStrings implements ArrayInterface
 {
+    use ArrayValidation;
+
     /**
      * @throws IllegalTypeException
      */
@@ -103,25 +105,9 @@ class ArrayOfStrings implements ArrayInterface
             result: $result,
             size: $size,
             min: (int) $min,
-            max: $max
+            max: $max,
+            type: DataType::STRING
         );
-
-        return $result;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getRandom(
-        int $min,
-        int $max
-    ): array {
-        $result = [];
-        $count = random_int(min: $min, max: $max);
-
-        for ($i = 0; $i < $count; $i++) {
-            $result[] = Random::getTypeValue(type: DataType::STRING);
-        }
 
         return $result;
     }
@@ -135,37 +121,5 @@ class ArrayOfStrings implements ArrayInterface
         $attributes = $parameter->getAttributes(name: ArraySize::class);
 
         return isset($attributes[0]) ? $attributes[0]->newInstance() : null;
-    }
-
-    /**
-     * Append randomized values which will be rejected by property validation.
-     *
-     * Note: cannot generate rejected random values without min / max (no min
-     * / max = all values are allowed).
-     *
-     * @throws Exception
-     */
-    private function addRandomRejectedValues(
-        array &$result,
-        int $size,
-        int $min,
-        ?int $max
-    ): void {
-        $count = 0;
-
-        // Generate random values.
-        while ($count < $size) {
-            if ($max !== null) {
-                $result[] = $this->getRandom(min: $max + 1, max: $max + 49);
-                $count++;
-            }
-
-            if ($min <= 0) {
-                continue;
-            }
-
-            $result[] = $this->getRandom(min: 0, max: $min - 1);
-            $count++;
-        }
     }
 }
