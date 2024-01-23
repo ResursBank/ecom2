@@ -105,7 +105,7 @@ class FileDataHandler implements DataHandlerInterface
     }
 
     /**
-     * Filter Entry data from array based on supplied paymentId.
+     * Filter Entry data from array based on supplied paymentId and event.
      *
      * @throws IllegalTypeException
      */
@@ -126,13 +126,16 @@ class FileDataHandler implements DataHandlerInterface
             $collection->offsetUnset(offset: $key);
         }
 
-        /* Remove elements from the collection messes up the pointer. This can
+        /* Removing elements from the collection messes up its pointer. This can
            cause problems when iterating the collection, re-create to avoid. */
         return new EntryCollection(
             data: array_values(array: $collection->getData())
         );
     }
 
+    /**
+     * Whether paymentId matches the paymentId on the Entry instance.
+     */
     public function isIdMatch(
         Entry $entry,
         ?string $paymentId
@@ -140,6 +143,9 @@ class FileDataHandler implements DataHandlerInterface
         return $paymentId === null || $entry->paymentId === $paymentId;
     }
 
+    /**
+     * Whether event matches the event on the Entry instance.
+     */
     public function isEventMatch(
         Entry $entry,
         ?Event $event

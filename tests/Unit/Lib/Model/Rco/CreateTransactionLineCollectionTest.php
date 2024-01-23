@@ -54,6 +54,7 @@ class CreateTransactionLineCollectionTest extends TestCase
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Exception
      */
     public function testGetTotal(): void
     {

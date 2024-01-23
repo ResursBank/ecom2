@@ -24,6 +24,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Module\PaymentHistory\Repository;
 
 /**
  * Methods relevant for testing of payment history entries.
@@ -38,6 +39,7 @@ class PaymentHistory extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws Exception
+     * @noinspection PhpTooManyParametersInspection
      */
     // @codingStandardsIgnoreStart
     protected function getEntry(
@@ -112,61 +114,35 @@ class PaymentHistory extends TestCase
     protected function getRandomEvent(): Event
     {
         $cases = Event::cases();
-        /* @phpstan-ignore-next-line */
         return $cases[array_rand(array: $cases)];
     }
 
     protected function getRandomUser(): User
     {
         $cases = User::cases();
-        /* @phpstan-ignore-next-line */
         return $cases[array_rand(array: $cases)];
     }
 
     protected function getRandomResult(): Result
     {
         $cases = Result::cases();
-        /* @phpstan-ignore-next-line */
         return $cases[array_rand(array: $cases)];
     }
 
+    /**
+     * @throws Exception
+     */
     protected function getRandomExtra(Result $type): string
     {
-        // If $type is SUCCESS, return an empty string.
-        if ($type === Result::SUCCESS) {
-            return '';
-        }
-
-        // If $type is ERROR, create a spoofed Exception and return its trace.
-        if ($type === Result::ERROR) {
-            $exception = new TestException(message: 'Spoofed Exception');
-            return $exception->getTraceAsString();
-        }
-
-        // For INFO type.
-        $maxLength = 2400;
-
-        $words = [
-            'Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
-            'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
-            'magna', 'aliqua', 'Ut', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
-            'exercitation', 'ullamco', 'laboris', 'nisi', 'ut', 'aliquip', 'ex', 'ea',
-            'commodo', 'consequat', 'Duis', 'aute', 'irure', 'dolor', 'in', 'reprehenderit',
-            'in', 'voluptate', 'velit', 'esse', 'cillum', 'dolore', 'eu', 'fugiat', 'nulla',
-            'pariatur', 'Excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident', 'sunt',
-            'in', 'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum'
-        ];
-
-        // Generate and return the lorem ipsum text.
-        $loremIpsumText = '';
-
-        while (strlen(string: $loremIpsumText) < $maxLength) {
-            /* @phpstan-ignore-next-line */
-            $randomWord = $words[array_rand(array: $words)];
-            $loremIpsumText .= ' ' . $randomWord;
-        }
-
-        return substr(string: $loremIpsumText, offset: 0, length: $maxLength);
+        return match ($type) {
+            Result::SUCCESS => '',
+            Result::ERROR => Repository::getError(
+                error: new TestException(message: 'Spoofed Exception')
+            ),
+            Result::INFO => Random::getString(
+                length: Random::getInt(min: 0, max: 255)
+            )
+        };
     }
 
     protected function getRandomStatus(): string
@@ -177,7 +153,6 @@ class PaymentHistory extends TestCase
             'Closed (closed)',
         ];
 
-        /* @phpstan-ignore-next-line */
         return $statuses[array_rand(array: $statuses)];
     }
 }

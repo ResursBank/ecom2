@@ -56,6 +56,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @noinspection PhpUnused
      */
     public static function triggerTest(
         string $url,
@@ -122,6 +123,8 @@ class Repository
     }
 
     /**
+     * Log error in payment history.
+     *
      * @throws ConfigException
      */
     public static function trackError(
@@ -142,6 +145,8 @@ class Repository
     }
 
     /**
+     * Log callback initialization in payment history.
+     *
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.ElseExpression)
      */

@@ -14,7 +14,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 
 /**
- * Class to avoid payment history tracking, default.
+ * Class to avoid payment history tracking.
  */
 class VoidDataHandler implements DataHandlerInterface
 {

@@ -17,14 +17,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Api\GrantType;
-use Resursbank\Ecom\Lib\Api\Scope;
-use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
@@ -45,7 +39,6 @@ class LogTest extends PaymentHistory
 
     /**
      * @throws AttributeCombinationException
-     * @throws EmptyValueException
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -54,18 +47,7 @@ class LogTest extends PaymentHistory
      */
     protected function setUp(): void
     {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new None(),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
-        );
+        Config::setup();
 
         $this->log = new Log(entries: $this->getEntries());
 
@@ -73,7 +55,7 @@ class LogTest extends PaymentHistory
     }
 
     /**
-     * Assert rendering logs widget works as expected.
+     * Assert rendering log widget works as expected.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -93,7 +75,7 @@ class LogTest extends PaymentHistory
             $typeClass = match ($entry->result) {
                 Result::SUCCESS => 'success-entry',
                 Result::ERROR => 'error-entry',
-                default => '',
+                Result::INFO => 'info-entry'
             };
 
             $this->assertStringContainsString(
@@ -152,10 +134,6 @@ class LogTest extends PaymentHistory
                 message: "Translated phrase not found for phraseId: $phraseId"
             );
         }
-
-        // Create an HTML file and write the content to it.
-        $htmlFileName = '/etc/waddle/project/rendered_log_widget.html';
-        file_put_contents(filename: $htmlFileName, data: $content);
     }
 
     /**
@@ -205,7 +183,7 @@ class LogTest extends PaymentHistory
     }
 
     /**
-     * Make sure the
+     * Make sure that user value is rendered with userReference if it exists.
      *
      * @throws AttributeCombinationException
      * @throws ConfigException
@@ -274,8 +252,8 @@ class LogTest extends PaymentHistory
     }
 
     /**
-     * Assert that extra content with more than 40 characters results in the
-     * content being displayed directly in the table.
+     * Assert that extra content with more than 40 characters results in a
+     * button being displayed, which when clicked displays the extra content.
      *
      * @throws IllegalTypeException
      * @throws ReflectionException
@@ -321,7 +299,10 @@ class LogTest extends PaymentHistory
         $success = $this->getEntry(result: Result::SUCCESS);
         $error = $this->getEntry(result: Result::ERROR);
 
-        $this->assertEmpty(actual: $this->log->getResultClass(entry: $info));
+        $this->assertSame(
+            actual: $this->log->getResultClass(entry: $info),
+            expected: 'info-entry'
+        );
         $this->assertSame(
             actual: $this->log->getResultClass(entry: $success),
             expected: 'success-entry'

@@ -25,7 +25,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 
 /**
- * Payment methods table widget.
+ * Payment history log widget.
  */
 class Log extends Widget
 {
@@ -46,6 +46,9 @@ class Log extends Widget
     }
 
     /**
+     * Resolve title content (displayed above the entry table), intended to
+     * reflect relating order/payment and environment.
+     *
      * @throws CollectionException
      * @throws FilesystemException
      * @throws JsonException
@@ -61,7 +64,9 @@ class Log extends Widget
 
         return sprintf(
             Translator::translate(phraseId: 'widget-title'),
-            $entry instanceof Entry ? ((string) $entry->reference !== '' ? $entry->reference : $entry->paymentId) : '',
+                $entry instanceof Entry ?
+                    ((string) $entry->reference !== '' ? $entry->reference : $entry->paymentId) :
+                    '',
             Translator::translate(
                 phraseId: Config::isProduction() ? 'production' : 'test'
             )
@@ -69,7 +74,7 @@ class Log extends Widget
     }
 
     /**
-     * Format extra data with <br/> elements and escaped double quotes.
+     * Escape and format extra data.
      */
     public function getExtraData(Entry $entry): string
     {
@@ -87,14 +92,14 @@ class Log extends Widget
     }
 
     /**
-     * Get row class based on entry status.
+     * Get row class based on entry result.
      */
     public function getResultClass(Entry $entry): string
     {
         return match ($entry->result) {
             Result::SUCCESS => 'success-entry',
             Result::ERROR => 'error-entry',
-            default => '',
+            Result::INFO => 'info-entry'
         };
     }
 
@@ -108,6 +113,8 @@ class Log extends Widget
     }
 
     /**
+     * Resolve content for user column as "Entry.user (Entry.userReference)"
+     *
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException

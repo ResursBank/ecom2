@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Throwable;
 
 /**
- * Repository layer against payment history persistent storage.
+ * Repository of against payment history storage.
  */
 class Repository
 {
@@ -35,6 +35,9 @@ class Repository
     /**
      * Connect to configured payment history storage and get all log entries.
      *
+     * @param string $paymentId Only returns entries with matching paymentId.
+     * @param Event|null $event Only return entries with matching event.
+     * @return EntryCollection|null
      * @throws ConfigException
      */
     public static function getList(
@@ -48,9 +51,11 @@ class Repository
     }
 
     /**
-     * Check whether event has executed for payment id.
+     * Connect to configured payment history storage, extract all entries with
+     * matching paymentId and event and confirm whether there were any.
      *
      * @throws ConfigException
+     * @noinspection PhpUnused
      */
     public static function hasExecuted(
         string $paymentId,

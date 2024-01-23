@@ -58,22 +58,22 @@
   {
     "id": "event-capture-requested",
     "translation": {
-      "en": "Sending request to capture payment...",
-      "sv": "Skickar anrop för att debitera betalning..."
+      "en": "Sending request to capture payment.",
+      "sv": "Skickar anrop för att debitera betalning."
     }
   },
   {
     "id": "event-cancel-requested",
     "translation": {
-      "en": "Sending request to cancel payment...",
-      "sv": "Skickar anrop för att annullera betalning..."
+      "en": "Sending request to cancel payment.",
+      "sv": "Skickar anrop för att annullera betalning."
     }
   },
   {
     "id": "event-refund-requested",
     "translation": {
-      "en": "Sending request to refund payment...",
-      "sv": "Skickar anrop för att återbetala..."
+      "en": "Sending request to refund payment.",
+      "sv": "Skickar anrop för att återbetala."
     }
   },
   {
@@ -105,7 +105,7 @@
     }
   },
   {
-    "id": "link",
+    "id": "link-title",
     "translation": {
       "en": "Resurs Bank payment history",
       "sv": "Resurs Bank betalhistorik"

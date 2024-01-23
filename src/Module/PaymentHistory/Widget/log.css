@@ -68,21 +68,11 @@
     padding: 15px 10px;
 }
 
-#rb-ph-log table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
 #rb-ph-log thead tr,
 #rb-ph-log tbody tr {
     display: table;
     width: 100%;
     table-layout: fixed;
-}
-
-#rb-ph-log thead th,
-#rb-ph-log tbody td {
-    box-sizing: border-box;
 }
 
 #rb-ph-log thead th {

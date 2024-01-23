@@ -124,8 +124,8 @@ class FileDataHandlerTest extends PaymentHistory
         $this->assertNotNull(actual: $collection1);
         $this->assertCount(expectedCount: 1, haystack: $collection1);
         $this->assertEquals(
-            expected: [$entry1],
-            actual: $collection1->getData()
+            expected: new EntryCollection(data: [$entry1]),
+            actual: $collection1
         );
 
         /* Write multiple entries to the file, pick up only the new entries
@@ -143,11 +143,9 @@ class FileDataHandlerTest extends PaymentHistory
 
         $this->assertNotNull(actual: $collection2);
         $this->assertCount(expectedCount: 2, haystack: $collection2);
-
-        // Compare array_values to avoid keys from array.
         $this->assertEquals(
-            expected: array_values(array: $collection2->getData()),
-            actual: [$entry2, $entry3]
+            expected: new EntryCollection(data: [$entry2, $entry3]),
+            actual: $collection2
         );
     }
 
@@ -236,36 +234,32 @@ class FileDataHandlerTest extends PaymentHistory
         }
 
         $this->assertEquals(
-            expected: array_values(array: [
+            expected: new EntryCollection(data: [
                 $entries[0],
                 $entries[1],
                 $entries[5],
                 $entries[6]
             ]),
-            actual: array_values(
-                array: (array) $this->handler->getList(
-                    paymentId: $paymentId1,
-                    event: Event::REFUNDED
-                )?->getData()
+            actual: $this->handler->getList(
+                paymentId: $paymentId1,
+                event: Event::REFUNDED
             )
         );
 
         $this->assertEquals(
-            expected: array_values(array: [
+            expected: new EntryCollection(data: [
                 $entries[2],
                 $entries[3],
                 $entries[8]
             ]),
-            actual: array_values(
-                array: (array) $this->handler->getList(
-                    paymentId: $paymentId1,
-                    event: Event::CAPTURED
-                )?->getData()
+            actual: $this->handler->getList(
+                paymentId: $paymentId1,
+                event: Event::CAPTURED
             )
         );
 
         $this->assertEquals(
-            expected: array_values(array: [
+            expected: new EntryCollection(data: [
                 $entries[4],
                 $entries[7],
                 $entries[9],
@@ -275,42 +269,33 @@ class FileDataHandlerTest extends PaymentHistory
                 $entries[13],
                 $entries[14]
             ]),
-            actual: array_values(
-                array: (array) $this->handler->getList(
-                    paymentId: $paymentId1,
-                    event: Event::CANCELED
-                )?->getData()
+            actual: $this->handler->getList(
+                paymentId: $paymentId1,
+                event: Event::CANCELED
             )
         );
 
         $this->assertEquals(
-            expected: array_values(array: [
-                $entries2[0],
-                $entries2[6]
-            ]),
-            actual: array_values(
-                array: (array) $this->handler->getList(
-                    paymentId: $paymentId2,
-                    event: Event::REFUNDED
-                )?->getData()
+            expected: new EntryCollection(data: [$entries2[0], $entries2[6]]),
+            actual: $this->handler->getList(
+                paymentId: $paymentId2,
+                event: Event::REFUNDED
             )
         );
 
         $this->assertEquals(
-            expected: array_values(array: [
-                $entries2[1],
-                $entries2[14]
-            ]),
-            actual: array_values(
-                array: (array) $this->handler->getList(
-                    paymentId: $paymentId2,
-                    event: Event::REDIRECTED_TO_GATEWAY
-                )?->getData()
+            expected: new EntryCollection(data: [$entries2[1], $entries2[14]]),
+            actual: $this->handler->getList(
+                paymentId: $paymentId2,
+                event: Event::REDIRECTED_TO_GATEWAY
             )
         );
     }
 
     /**
+     * Assert we can confirm whether an event has (or has not) executed for a
+     * given payment id.
+     *
      * @throws AttributeCombinationException
      * @throws IllegalTypeException
      * @throws IllegalValueException
