@@ -27,4 +27,9 @@ interface DataHandlerInterface
      * Write Entry instance to permanent storage.
      */
     public function write(Entry $entry): void;
+
+    /**
+     * Confirm whether an event has executed.
+     */
+    public function hasExecuted(string $paymentId, Event $event): bool;
 }

@@ -13,6 +13,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Throwable;
 
 /**
@@ -37,10 +38,27 @@ class Repository
      * @throws ConfigException
      */
     public static function getList(
-        string $paymentId
+        string $paymentId,
+        ?Event $event = null
     ): ?EntryCollection {
         return Config::getPaymentHistoryDataHandler()->getList(
-            paymentId: $paymentId
+            paymentId: $paymentId,
+            event: $event
+        );
+    }
+
+    /**
+     * Check whether event has executed for payment id.
+     *
+     * @throws ConfigException
+     */
+    public static function hasExecuted(
+        string $paymentId,
+        Event $event
+    ): bool {
+        return Config::getPaymentHistoryDataHandler()->hasExecuted(
+            paymentId: $paymentId,
+            event: $event
         );
     }
 

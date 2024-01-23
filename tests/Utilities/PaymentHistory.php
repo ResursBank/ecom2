@@ -39,6 +39,7 @@ class PaymentHistory extends TestCase
      * @throws ReflectionException
      * @throws Exception
      */
+    // @codingStandardsIgnoreStart
     protected function getEntry(
         ?Result $result = null,
         ?string $extra = null,
@@ -84,6 +85,7 @@ class PaymentHistory extends TestCase
             reference: $reference
         );
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * Resolve collection of log entries.

@@ -719,11 +719,26 @@ final class RepositoryTest extends TestCase
             expected: PaymentStatus::CAPTURED,
             actual: $result->payment->status->type
         );
-        $this->assertCount(
-            expectedCount: 1,
-            haystack: Config::getPaymentHistoryDataHandler()->getList(
+
+        // Confirm events are tracked by payment history.
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::CAPTURE_REQUESTED
+            )
+        );
+
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
                 paymentId: $result->id,
                 event: Event::CAPTURED
+            )
+        );
+
+        $this->assertFalse(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::PARTIALLY_CAPTURED
             )
         );
     }
@@ -802,6 +817,28 @@ final class RepositoryTest extends TestCase
             expected: $captureItem->unitPrice * $captureItem->quantity,
             actual: $result->payment->status->capturedAmount
         );
+
+        // Confirm events are tracked by payment history.
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::CAPTURE_REQUESTED
+            )
+        );
+
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::PARTIALLY_CAPTURED
+            )
+        );
+
+        $this->assertFalse(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::CAPTURED
+            )
+        );
     }
 
     /**
@@ -848,6 +885,28 @@ final class RepositoryTest extends TestCase
         $this->assertSame(
             expected: PaymentStatus::CANCELLED,
             actual: $result->payment->status->type
+        );
+
+        // Confirm events are tracked by payment history.
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::CANCEL_REQUESTED
+            )
+        );
+
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::CANCELED
+            )
+        );
+
+        $this->assertFalse(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::PARTIALLY_CANCELLED
+            )
         );
     }
 
@@ -899,6 +958,28 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: $captured->payment->status->capturedAmount,
             actual: $refunded->payment->status->refundedAmount
+        );
+
+        // Confirm events are tracked by payment history.
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $refunded->id,
+                event: Event::REFUND_REQUESTED
+            )
+        );
+
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $refunded->id,
+                event: Event::REFUNDED
+            )
+        );
+
+        $this->assertFalse(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $refunded->id,
+                event: Event::PARTIALLY_REFUNDED
+            )
         );
     }
 
@@ -965,6 +1046,28 @@ final class RepositoryTest extends TestCase
         $this->assertEquals(
             expected: $cartItem->totalPrice,
             actual: $result->payment->status->refundedAmount
+        );
+
+        // Confirm events are tracked by payment history.
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::REFUND_REQUESTED
+            )
+        );
+
+        $this->assertTrue(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::PARTIALLY_REFUNDED
+            )
+        );
+
+        $this->assertFalse(
+            condition: Config::getPaymentHistoryDataHandler()->hasExecuted(
+                paymentId: $result->id,
+                event: Event::REFUNDED
+            )
         );
     }
 

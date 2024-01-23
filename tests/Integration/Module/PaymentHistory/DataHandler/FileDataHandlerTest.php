@@ -158,9 +158,11 @@ class FileDataHandlerTest extends PaymentHistory
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testFilterListOnEvent(): void
     {
+        /** @var Entry $entry */
         foreach ($this->getEntries() as $entry) {
             $this->handler->write(entry: $entry);
         }
@@ -240,10 +242,10 @@ class FileDataHandlerTest extends PaymentHistory
                 $entries[6]
             ]),
             actual: array_values(
-                array: $this->handler->getList(
+                array: (array) $this->handler->getList(
                     paymentId: $paymentId1,
                     event: Event::REFUNDED
-                )->getData()
+                )?->getData()
             )
         );
 
@@ -254,10 +256,10 @@ class FileDataHandlerTest extends PaymentHistory
                 $entries[8]
             ]),
             actual: array_values(
-                array: $this->handler->getList(
+                array: (array) $this->handler->getList(
                     paymentId: $paymentId1,
                     event: Event::CAPTURED
-                )->getData()
+                )?->getData()
             )
         );
 
@@ -273,10 +275,10 @@ class FileDataHandlerTest extends PaymentHistory
                 $entries[14]
             ]),
             actual: array_values(
-                array: $this->handler->getList(
+                array: (array) $this->handler->getList(
                     paymentId: $paymentId1,
                     event: Event::CANCELED
-                )->getData()
+                )?->getData()
             )
         );
 
@@ -286,10 +288,10 @@ class FileDataHandlerTest extends PaymentHistory
                 $entries2[6]
             ]),
             actual: array_values(
-                array: $this->handler->getList(
+                array: (array) $this->handler->getList(
                     paymentId: $paymentId2,
                     event: Event::REFUNDED
-                )->getData()
+                )?->getData()
             )
         );
 
@@ -299,11 +301,52 @@ class FileDataHandlerTest extends PaymentHistory
                 $entries2[14]
             ]),
             actual: array_values(
-                array: $this->handler->getList(
+                array: (array) $this->handler->getList(
                     paymentId: $paymentId2,
                     event: Event::REDIRECTED_TO_GATEWAY
-                )->getData()
+                )?->getData()
             )
         );
+    }
+
+    /**
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testHasExecuted(): void
+    {
+        $paymentId = Strings::getUuid();
+        $entries = [
+            $this->getEntry(paymentId: $paymentId, event: Event::REFUNDED),
+            $this->getEntry(
+                paymentId: $paymentId,
+                event: Event::REDIRECTED_TO_GATEWAY
+            ),
+            $this->getEntry(paymentId: $paymentId, event: Event::CANCELED)
+        ];
+
+        foreach ($entries as $entry) {
+            $this->handler->write(entry: $entry);
+        }
+
+        $this->assertTrue(condition: $this->handler->hasExecuted(
+            paymentId: $paymentId,
+            event: Event::REFUNDED
+        ));
+        $this->assertTrue(condition: $this->handler->hasExecuted(
+            paymentId: $paymentId,
+            event: Event::REDIRECTED_TO_GATEWAY
+        ));
+        $this->assertFalse(condition: $this->handler->hasExecuted(
+            paymentId: $paymentId,
+            event: Event::CAPTURED
+        ));
+        $this->assertFalse(condition: $this->handler->hasExecuted(
+            paymentId: $paymentId,
+            event: Event::CALLBACK_AUTHORIZATION
+        ));
     }
 }

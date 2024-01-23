@@ -37,4 +37,15 @@ class VoidDataHandler implements DataHandlerInterface
     ): ?EntryCollection {
         return null;
     }
+
+    /**
+     * @inheritDoc
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     */
+    public function hasExecuted(
+        string $paymentId,
+        Event $event
+    ): bool {
+        return true;
+    }
 }

@@ -68,7 +68,7 @@ class FileDataHandler implements DataHandlerInterface
                 );
             }
 
-            $this->filterCollection(
+            $collection = $this->filterCollection(
                 collection: $collection,
                 paymentId: $paymentId,
                 event: $event
@@ -79,35 +79,78 @@ class FileDataHandler implements DataHandlerInterface
     }
 
     /**
-     * Filter Entry data from array based on supplied paymentId.
+     * @inheritDoc
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws IllegalValueException
      */
-    private function filterCollection(
-        EntryCollection &$collection,
+    public function hasExecuted(
+        string $paymentId,
+        Event $event
+    ): bool {
+        $collection = $this->getList(paymentId: $paymentId, event: $event);
+
+        if ($collection === null) {
+            return false;
+        }
+
+        /** @var Entry $entry */
+        foreach ($collection as $entry) {
+            if ($entry->event === $event) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Filter Entry data from array based on supplied paymentId.
+     *
+     * @throws IllegalTypeException
+     */
+    public function filterCollection(
+        EntryCollection $collection,
         ?string $paymentId = null,
         ?Event $event = null
-    ): void {
+    ): EntryCollection {
         foreach ($collection as $key => $entry) {
             if (
-                (
-                    $paymentId === null ||
-                    $entry->paymentId === $paymentId
-                ) &&
-                (
-                    $event === null ||
-                    $entry->event === $event
-                )
+                $entry instanceof Entry &&
+                $this->isIdMatch(entry: $entry, paymentId: $paymentId) &&
+                $this->isEventMatch(entry: $entry, event: $event)
             ) {
                 continue;
             }
 
             $collection->offsetUnset(offset: $key);
         }
+
+        /* Remove elements from the collection messes up the pointer. This can
+           cause problems when iterating the collection, re-create to avoid. */
+        return new EntryCollection(
+            data: array_values(array: $collection->getData())
+        );
+    }
+
+    public function isIdMatch(
+        Entry $entry,
+        ?string $paymentId
+    ): bool {
+        return $paymentId === null || $entry->paymentId === $paymentId;
+    }
+
+    public function isEventMatch(
+        Entry $entry,
+        ?Event $event
+    ): bool {
+        return $event === null || $entry->event === $event;
     }
 
     /**
      * Resolve file content as array of stdClass instances.
      */
-    private function getFileContent(): array
+    public function getFileContent(): array
     {
         if (!file_exists(filename: $this->file)) {
             return [];
