@@ -37,7 +37,6 @@ class Repository
      *
      * @param string $paymentId Only returns entries with matching paymentId.
      * @param Event|null $event Only return entries with matching event.
-     * @return EntryCollection|null
      * @throws ConfigException
      */
     public static function getList(

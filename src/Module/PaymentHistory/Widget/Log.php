@@ -64,7 +64,7 @@ class Log extends Widget
 
         return sprintf(
             Translator::translate(phraseId: 'widget-title'),
-                $entry instanceof Entry ?
+            $entry instanceof Entry ?
                     ((string) $entry->reference !== '' ? $entry->reference : $entry->paymentId) :
                     '',
             Translator::translate(
