@@ -63,8 +63,7 @@ class FileDataHandlerTest extends PaymentHistory
     }
 
     /**
-     * Assert write functionality works by reading file contents back manually,
-     * decoding it, and ensuring data integrity is maintained.
+     * Assert write functionality works by reading file contents back manually.
      *
      * @throws AttributeCombinationException
      * @throws IllegalTypeException
@@ -293,8 +292,7 @@ class FileDataHandlerTest extends PaymentHistory
     }
 
     /**
-     * Assert we can confirm whether an event has (or has not) executed for a
-     * given payment id.
+     * Assert check to confirm whether an event has (or has not) executed.
      *
      * @throws AttributeCombinationException
      * @throws IllegalTypeException

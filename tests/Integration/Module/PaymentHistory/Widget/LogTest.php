@@ -218,6 +218,8 @@ class LogTest extends PaymentHistory
     }
 
     /**
+     * Assert short extra content is displayed directly in the table column.
+     *
      * Assert that extra content with less or equal to than 40 characters
      * results in the content being displayed directly in the table.
      *
@@ -252,6 +254,8 @@ class LogTest extends PaymentHistory
     }
 
     /**
+     * Assert that the button to display extra content is rendered.
+     *
      * Assert that extra content with more than 40 characters results in a
      * button being displayed, which when clicked displays the extra content.
      *
@@ -314,8 +318,7 @@ class LogTest extends PaymentHistory
     }
 
     /**
-     * Assert widget title is generated correctly depending on data provided to
-     * the first entry model in the assigned entry collection.
+     * Assert widget title is generated correctly.
      *
      * @throws AttributeCombinationException
      * @throws ConfigException

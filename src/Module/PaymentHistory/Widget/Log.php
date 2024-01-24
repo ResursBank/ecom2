@@ -46,8 +46,10 @@ class Log extends Widget
     }
 
     /**
-     * Resolve title content (displayed above the entry table), intended to
-     * reflect relating order/payment and environment.
+     * Resolve title content.
+     *
+     * This is displayed above the entry table. It's intended to reflect
+     * relating order/payment and environment.
      *
      * @throws CollectionException
      * @throws FilesystemException
@@ -104,8 +106,9 @@ class Log extends Widget
     }
 
     /**
-     * If the extra content is shorter than 40 characters, do not show the
-     * extra button, display content directly.
+     * If the extra content is shorter than 40 characters, hide extra button.
+     *
+     * The extra content will instead be displayed directly in the table column.
      */
     public function showExtraBtn(Entry $entry): bool
     {

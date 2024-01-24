@@ -50,6 +50,8 @@ class Repository
     }
 
     /**
+     * Check whether an event has executed for given payment id.
+     *
      * Connect to configured payment history storage, extract all entries with
      * matching paymentId and event and confirm whether there were any.
      *
