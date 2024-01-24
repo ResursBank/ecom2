@@ -34,7 +34,6 @@ class Collection implements ArrayAccess, Iterator, Countable
     private int $position;
 
     /**
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function __construct(private array $data, ?string $type = null)

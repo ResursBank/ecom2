@@ -19,6 +19,8 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
+use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
 
 use function dirname;
 
@@ -50,14 +52,15 @@ final class Config
         public readonly CacheInterface $cache,
         public readonly ?Basic $basicAuth,
         public readonly ?Jwt $jwtAuth,
-        public readonly LogLevel $logLevel = LogLevel::INFO,
-        public readonly string $userAgent = '',
-        public readonly bool $isProduction = false,
-        public readonly string $proxy = '',
-        public readonly int $proxyType = 0,
-        public readonly int $timeout = 60,
-        public readonly Language $language = Language::en,
-        public readonly Location $location = Location::SE
+        public readonly DataHandlerInterface $paymentHistoryDataHandler,
+        public readonly LogLevel $logLevel,
+        public readonly string $userAgent,
+        public readonly bool $isProduction,
+        public readonly string $proxy,
+        public readonly int $proxyType,
+        public readonly int $timeout,
+        public readonly Language $language,
+        public readonly Location $location
     ) {
     }
 
@@ -71,6 +74,7 @@ final class Config
         CacheInterface $cache = new None(),
         ?Basic $basicAuth = null,
         ?Jwt $jwtAuth = null,
+        DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
         LogLevel $logLevel = LogLevel::INFO,
         string $userAgent = '',
         bool $isProduction = false,
@@ -85,6 +89,7 @@ final class Config
             cache: $cache,
             basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
+            paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
             userAgent: $userAgent,
             isProduction: $isProduction,
@@ -147,6 +152,15 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->logger;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getPaymentHistoryDataHandler(): DataHandlerInterface
+    {
+        self::validateInstance();
+        return self::$instance->paymentHistoryDataHandler;
     }
 
     /**

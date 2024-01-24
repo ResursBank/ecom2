@@ -12,3 +12,11 @@ parameters:
         -
             message: '#Cannot access property .* on Resursbank\\Ecom\\Config\|null\.*#'
             reportUnmatched: false
+
+        -
+            message: '#Missing parameter \$input \(array\) in call to function array_rand\.#'
+            reportUnmatched: false
+
+        -
+            message: '#Unknown parameter \$array in call to function array_rand\.#'
+            reportUnmatched: false

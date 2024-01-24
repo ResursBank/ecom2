@@ -1508,6 +1508,13 @@
     }
   },
   {
+    "id": "price-format",
+    "translation": {
+      "en": "$%s",
+      "sv": "%s SEK"
+    }
+  },
+  {
     "id": "enable-delayed-authorization",
     "translation": {
       "en": "Enable delayed authorization",

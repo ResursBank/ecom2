@@ -107,6 +107,7 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws Throwable
      */
     public function testClearCache(): void
     {
@@ -137,6 +138,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPriceSignageReturnsWithoutCache(): void
     {
@@ -165,6 +167,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPriceSignageReturnsCache(): void
     {
@@ -195,6 +198,7 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPriceSignageFilterByMonth(): void
     {
