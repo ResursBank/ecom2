@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Rco;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -25,13 +24,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Exception\WebhookException;
 use Resursbank\Ecom\Lib\Api\Rco;
-use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Locale\Translator;
-use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Model\Rco\Checkout;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 use Resursbank\Ecom\Lib\Model\Rco\CreateCheckout;
@@ -44,18 +36,20 @@ use Resursbank\Ecom\Lib\Repository\Api\Rco\Get;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Patch;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Put;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Lib\Utilities\Price;
-use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Module\Rco\Repository\Cancel;
+use Resursbank\Ecom\Module\Rco\Repository\Capture;
+use Resursbank\Ecom\Module\Rco\Repository\Refund;
+use Resursbank\Ecom\Module\Rco\Repository\Webhook;
+use Resursbank\Ecom\Module\Rco\Traits\Repository as RepositoryTraits;
 use Throwable;
-
-use function is_object;
 
 /**
  * Main entrypoint for interfacing with the RCO+ API programmatically.
  */
 class Repository
 {
+    use RepositoryTraits;
+
     /**
      * Initialize a new checkout.
      *
@@ -315,49 +309,11 @@ class Repository
         string $version,
         ?CreateTransaction $createTransaction = null
     ): Checkout {
-        PaymentHistoryRepository::write(entry: new Entry(
-            paymentId: $id,
-            event: Event::CAPTURE_REQUESTED,
-            user: User::ADMIN,
-            extra: (
-                $createTransaction?->transactionLines !== null
-            ) ? Price::format(
-                value: $createTransaction->transactionLines->getTotal() / 100
-            ) : null
-        ));
-
-        try {
-            $parameters = $createTransaction?->toArray() ?? [];
-
-            $response = (new Post(
-                route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/capture',
-                version: $version,
-                params: $parameters
-            ))->call(forceObject: empty($parameters));
-
-            $checkout = self::validateCheckoutModel(model: $response);
-
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $id,
-                event: $checkout->isCaptured() ?
-                    Event::CAPTURED :
-                    Event::PARTIALLY_CAPTURED,
-                user: User::ADMIN,
-                result: Result::SUCCESS
-            ));
-
-            return $checkout;
-        } catch (Throwable $error) {
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $id,
-                event: Event::REQUEST_FAILED,
-                user: User::ADMIN,
-                extra: PaymentHistoryRepository::getError(error: $error),
-                result: Result::ERROR
-            ));
-
-            throw $error;
-        }
+        return Capture::capture(
+            id: $id,
+            version: $version,
+            createTransaction: $createTransaction
+        );
     }
 
     /**
@@ -381,41 +337,7 @@ class Repository
         string $id,
         string $version
     ): Checkout {
-        PaymentHistoryRepository::write(entry: new Entry(
-            paymentId: $id,
-            event: Event::CANCEL_REQUESTED,
-            user: User::ADMIN
-        ));
-
-        try {
-            $response = (new Post(
-                route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/cancel',
-                version: $version
-            ))->call(forceObject: true);
-
-            $checkout = self::validateCheckoutModel(model: $response);
-
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $id,
-                event: $checkout->isCancelled() ?
-                    Event::CANCELED :
-                    Event::PARTIALLY_CANCELLED,
-                user: User::ADMIN,
-                result: Result::SUCCESS
-            ));
-
-            return $checkout;
-        } catch (Throwable $error) {
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $id,
-                event: Event::REQUEST_FAILED,
-                user: User::ADMIN,
-                extra: PaymentHistoryRepository::getError(error: $error),
-                result: Result::ERROR
-            ));
-
-            throw $error;
-        }
+        return Cancel::cancel(id: $id, version: $version);
     }
 
     /**
@@ -439,66 +361,11 @@ class Repository
         string $version,
         ?CreateTransactionLineCollection $transactionLines = null
     ): Checkout {
-        PaymentHistoryRepository::write(entry: new Entry(
-            paymentId: $id,
-            event: Event::REFUND_REQUESTED,
-            user: User::ADMIN,
-            extra: $transactionLines !== null ?
-                Price::format(
-                    value: $transactionLines->getTotal() / 100
-                ) : null
-        ));
-
-        try {
-            $response = (new Post(
-                route: Rco::CHECKOUT_ROUTE . '/' . $id . '/payment/refund',
-                version: $version,
-                params: $transactionLines !== null ? [
-                    'transactionLines' => $transactionLines->toArray()
-                ] : []
-            ))->call(forceObject: $transactionLines === null);
-
-            $checkout = self::validateCheckoutModel(model: $response);
-
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $id,
-                event: $checkout->isRefunded() ?
-                    Event::REFUNDED :
-                    Event::PARTIALLY_REFUNDED,
-                user: User::ADMIN,
-                result: Result::SUCCESS
-            ));
-
-            return $checkout;
-        } catch (Throwable $error) {
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $id,
-                event: Event::REQUEST_FAILED,
-                user: User::ADMIN,
-                extra: PaymentHistoryRepository::getError(error: $error),
-                result: Result::ERROR
-            ));
-
-            throw $error;
-        }
-    }
-
-    /**
-     * Centralised business logic to ensure type safety for all endpoint
-     * implementations in this class.
-     *
-     * @throws IllegalTypeException
-     */
-    public static function validateCheckoutModel(
-        Collection|Model $model
-    ): Checkout {
-        if (!$model instanceof Checkout) {
-            throw new IllegalTypeException(
-                message: 'Expected ' . Checkout::class . ', got ' . $model::class
-            );
-        }
-
-        return $model;
+        return Refund::refund(
+            id: $id,
+            version: $version,
+            transactionLines: $transactionLines
+        );
     }
 
     /**
@@ -516,47 +383,6 @@ class Repository
      */
     public static function getWebhookRequestData(?string $post = null): Checkout
     {
-        /** @noinspection BadExceptionsProcessingInspection */
-        try {
-            $data = $post ?? file_get_contents(filename: 'php://input');
-
-            if (!$data) {
-                throw new WebhookException(message: 'Missing data.');
-            }
-
-            $data = json_decode(
-                json: (string)$post,
-                associative: false,
-                depth: 512,
-                flags: JSON_THROW_ON_ERROR
-            );
-
-            if (!is_object(value: $data)) {
-                throw new WebhookException(
-                    message: 'Failed converting submitted data into an object.'
-                );
-            }
-
-            $result = DataConverter::stdClassToType(
-                object: $data,
-                type: Checkout::class
-            );
-
-            if (!$result instanceof Checkout) {
-                throw new IllegalValueException(
-                    message: 'Received data could not be converted to CheckoutDto instance.'
-                );
-            }
-        } catch (Throwable $error) {
-            Config::getLogger()->debug(message: $error);
-
-            throw new WebhookException(
-                message: Translator::translate(
-                    phraseId: 'invalid-webhook-data'
-                )
-            );
-        }
-
-        return $result;
+        return Webhook::getRequestData(post: $post);
     }
 }
