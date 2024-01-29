@@ -21,6 +21,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\AvailableActions;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
+use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
 
 /**
  * Implementation of CheckoutDto object.
@@ -115,6 +116,14 @@ class Checkout extends Model
     public function isFrozen(): bool
     {
         return $this->status->type === CheckoutStatus::VERIFYING;
+    }
+
+    /**
+     * Checks if payment is failed.
+     */
+    public function isFailed(): bool
+    {
+        return $this->payment->status->type === PaymentStatus::FAILED;
     }
 
     /**
