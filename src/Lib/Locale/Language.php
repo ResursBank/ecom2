@@ -16,4 +16,7 @@ enum Language: string
 {
     case en = 'en';
     case sv = 'sv';
+    case no = 'no';
+    case fi = 'fi';
+    case da = 'da';
 }
