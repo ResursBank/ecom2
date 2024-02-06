@@ -1063,7 +1063,7 @@
     "id": "cannot-remove-refund",
     "translation": {
       "en": "Refunds cannot be removed from Resurs Bank payment.",
-      "sv": "Återbetalningar kan inte tas bort from Resurs Bank betalningar."
+      "sv": "Återbetalningar kan inte tas bort från Resurs Bank betalningar."
     }
   },
   {
@@ -1295,6 +1295,188 @@
     "translation": {
       "en": "Logging",
       "sv": "Loggning"
+    }
+  },
+  {
+      "id": "rcoplus",
+      "translation": {
+          "en": "RCO Plus",
+          "sv": "RCO Plus"
+      }
+  },
+  {
+    "id": "failed-applying-billing-address",
+    "translation": {
+      "en": "Failed to update billing address.",
+      "sv": "Kunde inte uppdatera faktureringsadress."
+    }
+  },
+  {
+    "id": "failed-applying-delivery-address",
+    "translation": {
+      "en": "Failed to update delivery address.",
+      "sv": "Kunde inte uppdatera leveransadress."
+    }
+  },
+  {
+    "id": "failed-applying-shipping-method",
+    "translation": {
+      "en": "Failed to update shipping method selection.",
+      "sv": "Kunde inte uppdatera val av fraktmetod."
+    }
+  },
+  {
+    "id": "failed-applying-payment-method",
+    "translation": {
+      "en": "Failed to update payment method selection.",
+      "sv": "Kunde inte uppdatera val av betalmetod."
+    }
+  },
+  {
+    "id": "failed-placing-order",
+    "translation": {
+      "en": "Failed to place order.",
+      "sv": "Kunde inte genomför beställning."
+    }
+  },
+  {
+    "id": "invalid-webhook-data",
+    "translation": {
+      "en": "Invalid webhook data submitted from Resurs Bank.",
+      "sv": "Ogiltig webhook data skickad från Resurs Bank."
+    }
+  },
+  {
+    "id": "advanced-settings-for-rcoplus",
+    "translation": {
+      "en": "Advanced Settings for RCO Plus",
+      "sv": "Avancerade inställningar för RCO Plus"
+    }
+  },
+  {
+    "id": "terms-url",
+    "translation": {
+      "en": "Terms URL",
+      "sv": "Länk till villkor"
+    }
+  },
+  {
+    "id": "terms-url-description",
+    "translation": {
+      "en": "Must be an HTTPS URL on the same domain as your store",
+      "sv": "Måste vara en HTTPS-URL på samma domän som er butik"
+    }
+  },
+  {
+    "id": "invalid-webhook-auth-token",
+    "translation": {
+      "en": "Invalid auth token.",
+      "sv": "Ogiltigt auth token."
+    }
+  },
+  {
+    "id": "failed-clearing-cart",
+    "translation": {
+      "en": "Clearing cart failed.",
+      "sv": "Tömning av kundvagn misslyckades."
+    }
+  },
+  {
+    "id": "failed-to-resolve-callback-url",
+    "translation": {
+      "en": "Failed to resolve callback URL",
+      "sv": "Kunde inte sammanställa callback URL"
+    }
+  },
+  {
+    "id": "checkout-id",
+    "translation": {
+      "en": "Checkout-ID",
+      "sv": "Checkout-ID"
+    }
+  },
+  {
+    "id": "cancelled-amount",
+    "translation": {
+      "en": "Cancelled amount",
+      "sv": "Avbrutet belopp"
+    }
+  },
+  {
+    "id": "failed-applying-discount-code",
+    "translation": {
+      "en": "Failed to apply discount code.",
+      "sv": "Kunde inte applicera rabattkod."
+    }
+  },
+  {
+    "id": "missing-discount-code",
+    "translation": {
+      "en": "Missing discount code.",
+      "sv": "Rabattkod saknas."
+    }
+  },
+  {
+    "id": "available-customer-types",
+    "translation": {
+      "en": "Available customer types",
+      "sv": "Tillgängliga kundtyper"
+    }
+  },
+  {
+    "id": "enable-lookup-customer-address",
+    "translation": {
+      "en": "Enable lookup customer address",
+      "sv": "Aktivera stöd för att hämta kundinformation"
+    }
+  },
+  {
+    "id": "enable-customer-notes",
+    "translation": {
+      "en": "Enable customer notes",
+      "sv": "Aktivera stöd för kund kommentar"
+    }
+  },
+  {
+    "id": "part-payment-widget-rcoplus-incompatibility-warning",
+    "translation": {
+      "en": "This widget is not compatible with the RCO Plus API.",
+      "sv": "Denna widget är inte kompatibel med RCO Plus API:et."
+    }
+  },
+  {
+    "id": "payment-already-captured",
+    "translation": {
+      "en": "Payment is already captured.",
+      "sv": "Betalningen har redan debiterats."
+    }
+  },
+  {
+    "id": "connection-failed",
+    "translation": {
+      "en": "The connection to Resurs Bank failed.",
+      "sv": "Kontakten med Resurs Bank misslyckades."
+    }
+  },
+  {
+    "id": "please-try-again",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter."
+    }
+  },
+  {
+    "id": "please-try-again",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter."
+    }
+  },
+  {
+    "id": "failed-adjusting-cart-contents",
+    "translation": {
+      "en": "Failed adjusting cart contents.",
+      "sv": "Kunde inte uppdatera varukorg."
     }
   }
 ]
