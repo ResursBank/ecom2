@@ -134,6 +134,8 @@ class LogTest extends PaymentHistory
                 message: "Translated phrase not found for phraseId: $phraseId"
             );
         }
+
+        file_put_contents('/etc/waddle/project/test.html', $content);
     }
 
     /**

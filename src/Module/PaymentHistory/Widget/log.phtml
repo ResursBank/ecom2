@@ -26,25 +26,36 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
         document.getElementById('rb-ph-extra').style.display = 'none';
         document.getElementById('rb-ph-log-table').style.display = '';
     }
+
+    function showWidget() {
+        document.getElementById('rb-ph-hidden').style.display='block';
+    }
+
+    function hideWidget() {
+        document.getElementById('rb-ph-hidden').style.display='none';
+    }
 </script>
 <div id="rb-ph">
   <div id="rb-ph-button">
     <p>
-      <a onClick="document.getElementById('rb-ph-hidden').style.display='block';" href="#" class="btn-link">
+      <a onclick="showWidget();" href="#" class="btn-link">
           <?= Translator::translate(phraseId: 'link-title') ?>
       </a>
     </p>
   </div>
   <div id="rb-ph-hidden" style="display:none;">
-    <div id="rb-ph-background" onclick="document.getElementById('rb-ph-hidden').style.display='none';"></div>
+    <div id="rb-ph-background" onclick="hideWidget();"></div>
     <div id="rb-ph-content-container">
       <div id="rb-ph-payment-id">
         <?= $this->getWidgetTitle() ?>
+        <div onclick="hideWidget();" class="close-window-link">
+            <div class="close-symbol">x</div>
+        </div>
       </div>
       <div id="rb-ph-log">
         <div id="rb-ph-extra" style="display: none;">
           <div id="rb-ph-go-back">
-            <a onClick="showLogTable();" href="#" class="btn-link">
+            <a onclick="showLogTable();" href="#" class="btn-link">
               <?= Translator::translate(phraseId: 'go-back') ?>
             </a>
           </div>
@@ -73,7 +84,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
               <td>
               <?php if ($this->showExtraBtn(entry: $entry)): ?>
                 <p class="rb-rh-show-extra-btn">
-                  <a onClick="showExtra('<?= $this->getExtraData(entry: $entry) ?>');" href="#">
+                  <a onclick="showExtra('<?= $this->getExtraData(entry: $entry) ?>');" href="#">
                       <?= Translator::translate(phraseId: 'show-extra') ?>
                   </a>
                 </p>
