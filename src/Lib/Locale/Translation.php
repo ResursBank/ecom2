@@ -19,11 +19,15 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 class Translation extends Model
 {
+    /** @var string Translation string for Finnish (fi_FI).  */
     public string $fi;
+    /** @var string Translation string for Norwegian (Variants no_NO, nb_NO, nn_NO). */
     public string $no;
+    /** @var string Translation string for Danish (da_DK). */
     public string $da;
 
     /**
+     * Translations for multiple languages, with failover to english.
      * @throws EmptyValueException
      */
     public function __construct(

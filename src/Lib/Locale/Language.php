@@ -16,6 +16,7 @@ enum Language: string
 {
     case en = 'en';
     case sv = 'sv';
+    /** Norwegian may have multiple definitions (i.e. nb-norsk bokmål, nn-nynorsk, no="default"). */
     case no = 'no';
     case fi = 'fi';
     case da = 'da';

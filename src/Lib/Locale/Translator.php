@@ -183,7 +183,6 @@ abstract class Translator
             (self::$cacheKey . '-' . $translationFile) :
             (self::$cacheKey . '-' . self::$translationsFilePath)
         );
-
         $key = preg_replace(
             pattern: '/[^a-zA-Z\d\-_]/',
             replacement: '-',

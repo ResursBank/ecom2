@@ -36,9 +36,12 @@ class UniqueSellingPoint extends Widget
     public readonly string $message;
 
     /**
+     * @param PaymentMethod $paymentMethod
+     * @param float $amount
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
