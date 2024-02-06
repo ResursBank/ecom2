@@ -36,8 +36,6 @@ class UniqueSellingPoint extends Widget
     public readonly string $message;
 
     /**
-     * @param PaymentMethod $paymentMethod
-     * @param float $amount
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -63,8 +61,6 @@ class UniqueSellingPoint extends Widget
     /**
      * Fetches the localized USP translation for a payment method type.
      *
-     * @param Type $paymentMethodType
-     * @return string
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
