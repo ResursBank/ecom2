@@ -43,7 +43,7 @@ class Strings
     public static function base64urlEncode(string $data): string
     {
         return rtrim(
-            string: strtr(base64_encode($data), '+/', '-_'),
+            string: strtr(base64_encode(string: $data), '+/', '-_'),
             characters: '='
         );
     }
@@ -58,7 +58,8 @@ class Strings
                 string: strtr($data, '-_', '+/'),
                 length: strlen(string: $data) % 4,
                 pad_string: '='
-            )
+            ),
+            strict: true
         );
     }
 

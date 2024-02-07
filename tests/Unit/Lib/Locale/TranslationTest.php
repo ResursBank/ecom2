@@ -38,6 +38,22 @@ class TranslationTest extends TestCase
         );
     }
 
+    /**
+     * When non-mandatory translations are empty, we should fall back to english.
+     * @return void
+     */
+    public function testValidateIdIfNorwegianEmpty(): void
+    {
+        $noEmpty = new Translation(en: 'asdf-fallback', sv: 'asdf', no: '');
+
+        $this->assertInstanceOf(
+            expected: Translation::class,
+            actual: $noEmpty
+        );
+
+        $this->assertTrue(condition: $noEmpty->no === 'asdf-fallback');
+    }
+
     public function testValidateIdThrowsIfEnEmpty(): void
     {
         $this->expectException(exception: EmptyValueException::class);
