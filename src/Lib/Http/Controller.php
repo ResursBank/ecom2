@@ -63,7 +63,6 @@ class Controller
     {
         return match (get_class(object: $exception)) {
             HttpException::class => $exception->getCode(),
-            /* @phpstan-ignore-next-line */
             CurlException::class => $exception->httpCode,
             default => 400
         };

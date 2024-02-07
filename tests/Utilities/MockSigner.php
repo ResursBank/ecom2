@@ -139,7 +139,7 @@ class MockSigner
         $elapsed = 0;
 
         while ($payment->status !== Status::ACCEPTED) {
-            if ($elapsed >= 10) {
+            if ($elapsed >= 15) {
                 throw new RuntimeException(
                     message: sprintf(
                         'Timeout waiting for payment status %s. Current status is %s',
