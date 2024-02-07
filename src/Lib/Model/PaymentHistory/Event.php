@@ -31,6 +31,7 @@ enum Event: string
     case REACHED_ORDER_SUCCESS_PAGE = 'event-reached-order-success-page';
     case REACHED_ORDER_FAILURE_PAGE = 'event-reached-order-failure-page';
     case ORDER_CANCELED = 'event-order-canceled';
+    case ORDER_CANCELED_CRON = 'event-order-canceled-cron';
     case INVOICE_CREATED = 'event-invoice-created';
     case REDIRECTED_TO_GATEWAY = 'event-redirected-to-gateway';
 }
