@@ -187,4 +187,19 @@ class TranslatorTest extends TestCase
             message: 'Translated string does not match expected output'
         );
     }
+
+    public function testMissingFallbackTranslateFromAlternateTranslationFile(): void
+    {
+        $this->setupConfig(locale: Language::fi);
+        $source = __DIR__ . '/../../../Data/Translator/alternate.json';
+
+        $this->assertEquals(
+            expected: 'This is a test string',
+            actual: Translator::translate(
+                phraseId: 'test-string',
+                translationFile: $source
+            ),
+            message: 'Translated string does not match expected output'
+        );
+    }
 }
