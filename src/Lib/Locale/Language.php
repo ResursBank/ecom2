@@ -14,10 +14,22 @@ namespace Resursbank\Ecom\Lib\Locale;
  */
 enum Language: string
 {
+    /** en_EN */
     case en = 'en';
+
+    /** se_SV */
     case sv = 'sv';
-    /** Norwegian may have multiple definitions (i.e. nb-norsk bokmål, nn-nynorsk, no="default"). */
+
+    /**
+     * Remember on integrations where Norwegian locales are not defined as NO.
+     * Norwegian may have multiple definitions (e.g., nb-Norwegian Bokmål, nn-Nynorsk).
+     * no_NO / nb_NO / nn_NO
+     */
     case no = 'no';
+
+    /** fi_FI */
     case fi = 'fi';
+
+    /** dk_DA */
     case da = 'da';
 }
