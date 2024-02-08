@@ -248,14 +248,14 @@
     "id": "event-order-canceled",
     "translation": {
       "en": "Order canceled.",
-      "sv": "Beställning mackulerad."
+      "sv": "Beställning makulerad."
     }
   },
   {
     "id": "event-order-canceled-cron",
     "translation": {
       "en": "Order canceled by cron job.",
-      "sv": "Beställning mackulerad av cronjobb."
+      "sv": "Beställning makulerad av cronjobb."
     }
   },
   {
