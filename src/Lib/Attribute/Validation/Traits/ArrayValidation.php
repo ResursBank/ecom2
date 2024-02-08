@@ -30,9 +30,11 @@ trait ArrayValidation
         $count = random_int(min: $min, max: $max);
 
         for ($i = 0; $i < $count; $i++) {
-            $result[] = match($type) {
+            $result[] = match ($type) {
                 DataType::STRING => Random::getString(),
-                default => Random::getTypeValue(type: $type ?? Random::getType())
+                default => Random::getTypeValue(
+                    type: $type ?? Random::getType()
+                )
             };
         }
 
