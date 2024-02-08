@@ -252,6 +252,13 @@
     }
   },
   {
+    "id": "event-order-canceled-cron",
+    "translation": {
+      "en": "Order canceled by cron job.",
+      "sv": "Beställning mackulerad av cronjobb."
+    }
+  },
+  {
     "id": "event-invoice-created",
     "translation": {
       "en": "Invoice created.",
