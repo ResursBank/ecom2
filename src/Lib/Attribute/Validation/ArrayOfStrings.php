@@ -58,18 +58,26 @@ class ArrayOfStrings implements ArrayInterface
 
         // Add threshold values.
         if ((int) $min > 0) {
-            $this->getRandom(min: (int) $min, max: (int) $min);
+            $this->getRandom(
+                min: (int) $min,
+                max: (int) $min,
+                type: DataType::STRING
+            );
         } else {
             $result[] = [];
         }
 
         if ($max !== null) {
-            $this->getRandom(min: $max, max: $max);
+            $this->getRandom(min: $max, max: $max, type: DataType::STRING);
         }
 
         // Add randomized values.
         for ($i = 0; $i < $size; $i++) {
-            $result[] = $this->getRandom(min: $min ?? 0, max: $max ?? 100);
+            $result[] = $this->getRandom(
+                min: $min ?? 0,
+                max: $max ?? 100,
+                type: DataType::STRING
+            );
         }
 
         return $result;

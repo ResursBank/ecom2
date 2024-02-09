@@ -202,3 +202,22 @@
     display: inline-block;
     margin-right: 5px;
 }
+
+#rb-ph .close-window-link {
+    float:right;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #dddddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#rb-ph .close-window-link .close-symbol {
+    color: rgb(46, 46, 46);
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: -2px;
+}

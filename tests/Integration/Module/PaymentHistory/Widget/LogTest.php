@@ -203,8 +203,8 @@ class LogTest extends PaymentHistory
             $ref = $entry->userReference;
 
             $this->assertSame(
-                actual: $this->log->getUser(entry: $entry),
-                expected: "$user ($ref)"
+                expected: "$user ($ref)",
+                actual: $this->log->getUser(entry: $entry)
             );
         }
 
@@ -212,8 +212,8 @@ class LogTest extends PaymentHistory
         $entry = $this->getEntry(userReference: '');
 
         $this->assertSame(
-            actual: $this->log->getUser(entry: $entry),
-            expected: Translator::translate(phraseId: $entry->user->value)
+            expected: Translator::translate(phraseId: $entry->user->value),
+            actual: $this->log->getUser(entry: $entry)
         );
     }
 
@@ -304,16 +304,16 @@ class LogTest extends PaymentHistory
         $error = $this->getEntry(result: Result::ERROR);
 
         $this->assertSame(
-            actual: $this->log->getResultClass(entry: $info),
-            expected: 'info-entry'
+            expected: 'info-entry',
+            actual: $this->log->getResultClass(entry: $info)
         );
         $this->assertSame(
-            actual: $this->log->getResultClass(entry: $success),
-            expected: 'success-entry'
+            expected: 'success-entry',
+            actual: $this->log->getResultClass(entry: $success)
         );
         $this->assertSame(
-            actual: $this->log->getResultClass(entry: $error),
-            expected: 'error-entry'
+            expected: 'error-entry',
+            actual: $this->log->getResultClass(entry: $error)
         );
     }
 
