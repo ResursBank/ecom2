@@ -85,7 +85,7 @@
     }
   },
   {
-    "id": "pspCard",
+    "id": "CARD",
     "translation": {
       "no": "Betal for kjøpet med ditt VISA eller Mastercard. Når du har bekreftet kjøpet ved å klikke på \"Fullfør kjøp\" i kassen, må du oppgi kortopplysninger for å fullføre betalingen. Transaksjonen skjer via sertifisert betalingsaktør og med SSL-kryptering, noe som betyr at ingen uvedkommende kan se dine opplysninger. Resurs Bank behandler eller lagrer ingen kortinformasjon. Vi aksepterer ikke kort som er utstedt av en bank utenfor Norden.",
       "en": "Pay for your purchase with your VISA or Mastercard. Once you have confirmed the purchase by clicking on \"Complete Purchase\" at checkout, you must enter your card details to complete the payment. The transaction occurs via a certified payment operator and with SSL encryption, which means that no unauthorized persons can see your information. Resurs Bank does not process or store any card information. We do not accept cards issued by a bank outside the Nordic countries.",
@@ -95,7 +95,7 @@
     }
   },
   {
-    "id": "pspTrustly",
+    "id": "TRUSTLY",
     "translation": {
       "no": "Betal direkte fra bankkontoen din på nett, støttet av sikkerhet på banknivå. Ingen kort, ingen app-nedlasting, ingen registrering.",
       "en": "Pay directly from your bank account online, supported by bank-level security. No card, no app download, no registration.",
