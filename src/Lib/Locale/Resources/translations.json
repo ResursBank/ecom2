@@ -1520,5 +1520,33 @@
       "en": "Enable delayed authorization",
       "sv": "Tillåt fördröjt ordergodkännande"
     }
+  },
+  {
+    "id": "clean-up-pending-orders",
+    "translation": {
+      "en": "Clean up old pending orders",
+      "sv": "Rensa upp gamla väntande beställningar"
+    }
+  },
+  {
+    "id": "clean-up-pending-frequency",
+    "translation": {
+      "en": "Clean up frequency",
+      "sv": "Intervall för rensning"
+    }
+  },
+  {
+    "id": "clean-up-startup-time",
+    "translation": {
+      "en": "Start time for cleanup",
+      "sv": "Starttid för rensning"
+    }
+  },
+  {
+    "id": "clean-up-order-age",
+    "translation": {
+      "en": "Minimum order age in hours",
+      "sv": "Minsta ålder på beställningar i timmar"
+    }
   }
 ]
