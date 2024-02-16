@@ -1298,11 +1298,11 @@
     }
   },
   {
-      "id": "rcoplus",
-      "translation": {
-          "en": "RCO Plus",
-          "sv": "RCO Plus"
-      }
+    "id": "rcoplus",
+    "translation": {
+      "en": "RCO Plus",
+      "sv": "RCO Plus"
+    }
   },
   {
     "id": "failed-applying-billing-address",
@@ -1519,6 +1519,13 @@
     "translation": {
       "en": "Enable delayed authorization",
       "sv": "Tillåt fördröjt ordergodkännande"
+    }
+  },
+  {
+    "id": "payment-group-section",
+    "translation": {
+      "en": "<div class='resursbank-payment-logo'></div><div class='resursbank-payment-description'>The easier and more flexible it is for your customers to shop, the more you sell. With Resurs checkout, you increase the possibility of more purchases and more satisfied customers.</div>",
+      "sv": "<div class='resursbank-payment-logo'></div><div class='resursbank-payment-description'>Ju enklare och mer flexibelt det är för dina kunder att handla, desto mer säljer du. Med Resurs kassa ökar du möjligheten till fler köp och fler nöjda kunder.</div>"
     }
   },
   {
