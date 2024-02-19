@@ -1298,11 +1298,11 @@
     }
   },
   {
-      "id": "rcoplus",
-      "translation": {
-          "en": "RCO Plus",
-          "sv": "RCO Plus"
-      }
+    "id": "rcoplus",
+    "translation": {
+      "en": "RCO Plus",
+      "sv": "RCO Plus"
+    }
   },
   {
     "id": "failed-applying-billing-address",
@@ -1526,6 +1526,34 @@
     "translation": {
       "en": "<div class='resursbank-payment-logo'></div><div class='resursbank-payment-description'>The easier and more flexible it is for your customers to shop, the more you sell. With Resurs checkout, you increase the possibility of more purchases and more satisfied customers.</div>",
       "sv": "<div class='resursbank-payment-logo'></div><div class='resursbank-payment-description'>Ju enklare och mer flexibelt det är för dina kunder att handla, desto mer säljer du. Med Resurs kassa ökar du möjligheten till fler köp och fler nöjda kunder.</div>"
+    }
+  },
+  {
+    "id": "clean-up-pending-orders",
+    "translation": {
+      "en": "Clean up old pending orders",
+      "sv": "Rensa upp gamla väntande beställningar"
+    }
+  },
+  {
+    "id": "clean-up-pending-frequency",
+    "translation": {
+      "en": "Clean up frequency",
+      "sv": "Intervall för rensning"
+    }
+  },
+  {
+    "id": "clean-up-startup-time",
+    "translation": {
+      "en": "Start time for cleanup",
+      "sv": "Starttid för rensning"
+    }
+  },
+  {
+    "id": "clean-up-order-age",
+    "translation": {
+      "en": "Minimum order age in hours",
+      "sv": "Minsta ålder på beställningar i timmar"
     }
   }
 ]
