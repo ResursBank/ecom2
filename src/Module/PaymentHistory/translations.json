@@ -273,6 +273,13 @@
     }
   },
   {
+    "id": "event-legacy",
+    "translation": {
+      "en": "Legacy event",
+      "sv": "Legacyhändelse"
+    }
+  },
+  {
     "id": "status",
     "translation": {
       "en": "Status",
