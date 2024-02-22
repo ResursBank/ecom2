@@ -34,4 +34,5 @@ enum Event: string
     case ORDER_CANCELED_CRON = 'event-order-canceled-cron';
     case INVOICE_CREATED = 'event-invoice-created';
     case REDIRECTED_TO_GATEWAY = 'event-redirected-to-gateway';
+    case LEGACY = 'event-legacy';
 }
