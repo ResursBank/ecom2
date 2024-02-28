@@ -17,6 +17,24 @@ use Resursbank\Ecom\Exception\FilesystemException;
 class Widget
 {
     /**
+     * Get list of unique tag names in rendered content.
+     *
+     * This is useful to platforms requiring us to escape content we echo.
+     */
+    public static function getTagNames(string $content): array
+    {
+        $tagNames = [];
+
+        preg_match_all(
+            pattern: '/<([a-zA-Z0-9\-]+)\b[^>]*>/',
+            subject: $content,
+            matches: $tagNames
+        );
+
+        return array_unique($tagNames[1]);
+    }
+
+    /**
      * @throws FilesystemException
      */
     public function render(
@@ -33,24 +51,5 @@ class Widget
         require $file;
 
         return (string) ob_get_clean();
-    }
-
-
-    /**
-     * Get list of unique tag names in rendered content.
-     *
-     * This is useful to platforms requiring us to escape content we echo.
-     */
-    public static function getTagNames(string $content): array
-    {
-        $tagNames = [];
-
-        preg_match_all(
-            pattern: '/<([a-zA-Z0-9\-]+)\b[^>]*>/',
-            subject: $content,
-            matches: $tagNames
-        );
-
-        return array_unique($tagNames[1]);
     }
 }

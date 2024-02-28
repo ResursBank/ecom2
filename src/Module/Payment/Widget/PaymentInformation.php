@@ -84,8 +84,7 @@ class PaymentInformation extends Widget
 
     public function getAddressRow1(): string
     {
-        return $this->payment->customer->deliveryAddress?->addressRow1;
-
+        return (string) $this->payment->customer->deliveryAddress?->addressRow1;
     }
 
     public function getCity(): string
@@ -159,39 +158,9 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * Render widget components (kept in separate method, so it can be executed
-     * from subclasses).
-     *
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     */
-    protected function renderWidget(): void
-    {
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
-
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
-            );
-        }
-
-        // Make logotype smaller with inline CSS.
-        $logo = str_replace(
-            search: '<svg',
-            replace: '<svg style="height:1.2em; float: right; width: auto;"',
-            subject: $logo
-        );
-
-        /* @phpstan-ignore-next-line */
-        $this->logo = $logo;
-        /* @phpstan-ignore-next-line */
-        $this->content = $this->render(
-            file: __DIR__ . '/payment-information.phtml'
-        );
-    }
-
-    /**
      * Get TD element with inline CSS.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function getTdEl(
         string $content,
@@ -201,7 +170,11 @@ class PaymentInformation extends Widget
             $isHeader ?
                 ' text-align:right; min-width:22ch; font-weight:bold; vertical-align:top;' :
                 ' width:100%;'
-        ) . '">' . ($isHeader ? Translator::translate(phraseId: $content) : $content) . '</td>';
+        ) . '">' . (
+            $isHeader ?
+                Translator::translate(phraseId: $content) :
+                $content
+            ) . '</td>';
     }
 
     /**
@@ -256,5 +229,37 @@ class PaymentInformation extends Widget
         $data[] = $country . ($country !== '' ? ' - ' : '') . $this->getPostalCode();
 
         return implode(separator: '<br />', array: $data);
+    }
+
+    /**
+     * Render widget components (kept in separate method, so it can be executed
+     * from subclasses).
+     *
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     */
+    protected function renderWidget(): void
+    {
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
+            );
+        }
+
+        // Make logotype smaller with inline CSS.
+        $logo = str_replace(
+            search: '<svg',
+            replace: '<svg style="height:1.2em; float: right; width: auto;"',
+            subject: $logo
+        );
+
+        /* @phpstan-ignore-next-line */
+        $this->logo = $logo;
+        /* @phpstan-ignore-next-line */
+        $this->content = $this->render(
+            file: __DIR__ . '/payment-information.phtml'
+        );
     }
 }

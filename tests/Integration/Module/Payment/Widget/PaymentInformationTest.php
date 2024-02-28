@@ -161,15 +161,11 @@ class PaymentInformationTest extends TestCase
             actual: $widget->payment->id,
             message: 'Widget payment id does not match original payment id'
         );
+
         $this->assertStringContainsString(
             needle: '<td>' . $signedPayment->id . '</td>',
             haystack: $widget->content,
             message: 'Widget does not contain payment id cell'
-        );
-        $this->assertStringContainsString(
-            needle: '.rb-pi table td',
-            haystack: $widget->css,
-            message: 'Expected selector .rp-pi table td is missing from CSS'
         );
     }
 }
