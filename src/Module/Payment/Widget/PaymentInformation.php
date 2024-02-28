@@ -42,10 +42,9 @@ class PaymentInformation extends Widget
     public readonly string $content;
 
     /** @var string */
-    public readonly string $css;
-
-    /** @var string */
     public readonly string $logo;
+
+    private bool $eventTr = false;
 
     /**
      * @throws JsonException
@@ -69,48 +68,6 @@ class PaymentInformation extends Widget
         $this->renderWidget();
     }
 
-    /**
-     * Fetches CSS without instantiating an object.
-     *
-     * @throws EmptyValueException
-     */
-    public static function getCss(): string
-    {
-        $css = file_get_contents(
-            filename: __DIR__ . '/payment-information.css'
-        );
-
-        if (!$css) {
-            throw new EmptyValueException(
-                message: 'Failed to load stylesheet data'
-            );
-        }
-
-        return $css;
-    }
-
-    /**
-     * Fetch formatted delivery address.
-     *
-     * @deprecated Use methods to collect individual values instead.
-     */
-    public function getAddress(): string
-    {
-        if ($this->payment->customer->deliveryAddress) {
-            return $this->payment->customer->deliveryAddress->addressRow1 . '<br />' . PHP_EOL .
-                ($this->payment->customer->deliveryAddress->addressRow2 ?
-                    $this->payment->customer->deliveryAddress->addressRow2 . '<br />' . PHP_EOL :
-                    ''
-                ) .
-                $this->payment->customer->deliveryAddress->postalArea . '<br />' . PHP_EOL .
-                ($this->payment->customer->deliveryAddress->countryCode !== null ?
-                $this->payment->customer->deliveryAddress->countryCode->value . ' - ' : '') .
-                $this->payment->customer->deliveryAddress->postalCode;
-        }
-
-        return '';
-    }
-
     public function hasAddress(): bool
     {
         return $this->payment->customer->deliveryAddress !== null;
@@ -123,7 +80,8 @@ class PaymentInformation extends Widget
 
     public function getAddressRow1(): string
     {
-        return (string) $this->payment->customer->deliveryAddress?->addressRow1;
+        return $this->payment->customer->deliveryAddress?->addressRow1;
+
     }
 
     public function getCity(): string
@@ -197,22 +155,6 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * @throws ConfigException
-     */
-    public function getPaymentIdLabel(): string
-    {
-        $result = 'ID';
-
-        try {
-            $result = Translator::translate(phraseId: 'payment-id');
-        } catch (Throwable $error) {
-            Config::getLogger()->error(message: $error);
-        }
-
-        return $result;
-    }
-
-    /**
      * Render widget components (kept in separate method, so it can be executed
      * from subclasses).
      *
@@ -222,6 +164,11 @@ class PaymentInformation extends Widget
     protected function renderWidget(): void
     {
         $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $logo = str_replace(
+            search: '<svg',
+            replace: '<svg style="height:1.2em; float: right; width: auto;"',
+            subject: $logo
+        );
 
         if (!$logo) {
             throw new EmptyValueException(
@@ -235,7 +182,86 @@ class PaymentInformation extends Widget
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
         );
-        /* @phpstan-ignore-next-line */
-        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
+    }
+
+    /**
+     * Get TD element with inline CSS.
+     */
+    public function getTdEl(
+        string $content,
+        bool $isHeader = false
+    ): string {
+        return '<td style="padding:0.3em 0.5em;' . (
+            $isHeader ?
+                ' text-align:right; min-width:22ch; font-weight:bold; vertical-align:top;' :
+                ' width:100%;'
+        ) . '">' . ($isHeader ? Translator::translate(phraseId: $content) : $content) . '</td>';
+    }
+
+    /**
+     * Get TR element containing two TD elements using this structure:
+     *
+     * <tr>
+     *     <td>[TITLE]</td>
+     *     <td>[CONTENT]</td>
+     * </tr>
+     */
+    public function getTrEl(
+        string $title,
+        string $content
+    ): string {
+        return '<tr style="' . $this->getTrStyle() . '">' .
+            $this->getTdEl(content: $title, isHeader: true) .
+            $this->getTdEl(content: $content) . '</tr>';
+    }
+
+    /**
+     * In the template we need to render some TR elements manually, we must ensure to keep odd/even background-color
+     * intact, which is why this is separated to its method outside getTrEl()
+     */
+    public function getTrStyle(): string
+    {
+        $result = 'background-color: #' . ($this->eventTr ? '006464' : '009b96') . ';';
+
+        $this->eventTr = !$this->eventTr;
+
+        return $result;
+    }
+
+    /**
+     * Assemble address data and separate with <br />
+     */
+    public function getAddressContent(): string
+    {
+        $data = [
+            $this->getAddressRow1()
+        ];
+
+        $addressRow2 = $this->getAddressRow2();
+
+        if ($addressRow2 !== '') {
+            $data[] = $addressRow2;
+        }
+
+        $data[] = $this->getCity();
+
+        $country = $this->getCountryCode();
+
+        $data[] = $country . ($country !== '' ? ' - ' : '') . $this->getPostalCode();
+
+        return implode(separator: '<br />', array: $data);
+    }
+
+    public function getTagNames(): array
+    {
+        $tagNames = [];
+
+        preg_match_all(
+            pattern: '/<([a-zA-Z0-9\-]+)\b[^>]*>/',
+            subject: $this->content,
+            matches: $tagNames
+        );
+
+        return array_unique($tagNames[1]);
     }
 }
