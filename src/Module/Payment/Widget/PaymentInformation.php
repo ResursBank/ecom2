@@ -35,6 +35,11 @@ use Throwable;
  */
 class PaymentInformation extends Widget
 {
+    /**
+     * This is over-written by other implementations extending this class.
+     */
+    public const PAYMENT_ID_LABEL = 'payment-id';
+
     /** @var Payment */
     public readonly Payment $payment;
 
@@ -44,6 +49,9 @@ class PaymentInformation extends Widget
     /** @var string */
     public readonly string $logo;
 
+    /**
+     * Keeps track of whether we are rendering odd or even TR element in widget table.
+     */
     private bool $eventTr = false;
 
     /**
@@ -250,18 +258,5 @@ class PaymentInformation extends Widget
         $data[] = $country . ($country !== '' ? ' - ' : '') . $this->getPostalCode();
 
         return implode(separator: '<br />', array: $data);
-    }
-
-    public function getTagNames(): array
-    {
-        $tagNames = [];
-
-        preg_match_all(
-            pattern: '/<([a-zA-Z0-9\-]+)\b[^>]*>/',
-            subject: $this->content,
-            matches: $tagNames
-        );
-
-        return array_unique($tagNames[1]);
     }
 }

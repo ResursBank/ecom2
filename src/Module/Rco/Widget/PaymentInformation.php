@@ -34,6 +34,11 @@ use Throwable;
  */
 class PaymentInformation extends Original
 {
+    /**
+     * This is over-written by other implementations extending this class.
+     */
+    public const PAYMENT_ID_LABEL = 'checkout-id';
+
     public readonly Checkout $checkout;
 
     /**

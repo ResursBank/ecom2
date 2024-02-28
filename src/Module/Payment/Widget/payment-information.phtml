@@ -28,7 +28,7 @@ $thStyle = 'font-size:1.3em; text-align:left; padding:0.2em 0.4em;';
             <th></th>
         </tr
         </tr>
-        <?= $this->getTrEl(title: 'payment-id', content: $this->getFormattedAmount($this->getAuthorizedAmount())) ?>
+        <?= $this->getTrEl(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
         <?= $this->getTrEl(title: 'authorized-amount', content: $this->getFormattedAmount($this->getAuthorizedAmount())) ?>
         <?= $this->getTrEl(title: 'captured-amount', content: $this->getFormattedAmount($this->getCapturedAmount())) ?>
         <?= $this->getTrEl(title: 'refunded-amount', content: $this->getFormattedAmount($this->getRefundedAmount())) ?>
