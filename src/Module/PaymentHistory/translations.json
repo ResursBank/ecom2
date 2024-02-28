@@ -100,8 +100,8 @@
   {
     "id": "user-resursbank",
     "translation": {
-      "en": "Resursbank",
-      "sv": "Resursbank"
+      "en": "Resurs Bank",
+      "sv": "Resurs Bank"
     }
   },
   {
@@ -275,8 +275,8 @@
   {
     "id": "event-legacy",
     "translation": {
-      "en": "Legacy event",
-      "sv": "Legacyhändelse"
+      "en": "Legacy event.",
+      "sv": "Legacyhändelse."
     }
   },
   {
