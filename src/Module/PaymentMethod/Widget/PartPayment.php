@@ -94,7 +94,8 @@ class PartPayment extends Widget
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly string $apiUrl,
-        public readonly int $decimals = 2
+        public readonly int $decimals = 2,
+        public readonly bool $displayInfoText = true
     ) {
         $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
@@ -132,9 +133,11 @@ class PartPayment extends Widget
     /**
      * Fetches translated and formatted "Starting at %1 per month..." string
      *
+     * @return string
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
