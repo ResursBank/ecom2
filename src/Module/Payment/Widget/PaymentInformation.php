@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -26,12 +25,9 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Throwable;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
- *
- * @todo Refactor this file. Contains several null pointers, file_get_contents can return false, etc.
  */
 class PaymentInformation extends Widget
 {
@@ -172,17 +168,19 @@ class PaymentInformation extends Widget
     protected function renderWidget(): void
     {
         $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
-        $logo = str_replace(
-            search: '<svg',
-            replace: '<svg style="height:1.2em; float: right; width: auto;"',
-            subject: $logo
-        );
 
         if (!$logo) {
             throw new EmptyValueException(
                 message: 'Failed to load logo image data'
             );
         }
+
+        // Make logotype smaller with inline CSS.
+        $logo = str_replace(
+            search: '<svg',
+            replace: '<svg style="height:1.2em; float: right; width: auto;"',
+            subject: $logo
+        );
 
         /* @phpstan-ignore-next-line */
         $this->logo = $logo;
