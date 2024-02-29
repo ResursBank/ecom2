@@ -216,14 +216,16 @@
     "id": "pay-in-installments-with-resurs-bank",
     "translation": {
       "en": "Pay in installments with Resurs Bank",
-      "sv": "Delbetala med Resurs Bank"
+      "sv": "Delbetala med Resurs Bank",
+      "no": "Delbetale med Resurs Bank"
     }
   },
   {
     "id": "starting-at",
     "translation": {
       "en": "Starting at %1 per month, for %2",
-      "sv": "Från %1 per månad, i %2"
+      "sv": "Från %1 per månad, i %2",
+      "no": "Delbetale fra %1 per måned, i %2"
     }
   },
   {
@@ -1298,11 +1300,11 @@
     }
   },
   {
-      "id": "rcoplus",
-      "translation": {
-          "en": "RCO Plus",
-          "sv": "RCO Plus"
-      }
+    "id": "rcoplus",
+    "translation": {
+      "en": "RCO Plus",
+      "sv": "RCO Plus"
+    }
   },
   {
     "id": "failed-applying-billing-address",

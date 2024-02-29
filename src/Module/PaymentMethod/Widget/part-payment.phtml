@@ -17,8 +17,10 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 <div class="rb-pp">
   <!-- Logo -->
   <div id="rb-pp-logo-container"><?= $this->logo ?></div>
-  <!-- Pay in installments -->
-  <div id="rb-pp-info"><p><?= $this->infoText ?></p></div>
+  <?php if ($this->displayInfoText): ?>
+    <!-- Pay in installments -->
+    <div id="rb-pp-info"><p><?= $this->infoText ?></p></div>
+  <?php endif; ?>
   <!-- Example line here -->
   <div id="rb-pp-example"><p><?= $this->startingAt ?></p></div>
   <!-- Error message -->
