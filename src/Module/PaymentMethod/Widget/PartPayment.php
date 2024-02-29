@@ -82,6 +82,7 @@ class PartPayment extends Widget
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws MissingKeyException
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ValidationException
@@ -124,6 +125,8 @@ class PartPayment extends Widget
 
     /**
      * Return payment method
+     *
+     * @noinspection PhpUnused
      */
     public function getPaymentMethod(): PaymentMethod
     {
@@ -133,7 +136,6 @@ class PartPayment extends Widget
     /**
      * Fetches translated and formatted "Starting at %1 per month..." string
      *
-     * @return string
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -214,11 +216,6 @@ class PartPayment extends Widget
             message: 'Could not find matching payment plan'
         );
     }
-    /*
-     * Return total amount of product
-     *
-     * @return float
-     */
 
     /**
      * Fetch a Cost object from the Price signage API
