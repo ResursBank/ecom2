@@ -28,6 +28,7 @@ use function dirname;
  * API communication object.
  *
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  */
