@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Throwable;
+
 use function number_format;
 
 /**
