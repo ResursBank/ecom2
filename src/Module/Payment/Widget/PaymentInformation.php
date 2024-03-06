@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Throwable;
+use function number_format;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
@@ -191,9 +192,16 @@ class PaymentInformation extends Widget
      */
     public function getFormattedAmount(float $amount): string
     {
+        $formattedAmount = number_format(
+            num: $amount,
+            decimals: 2,
+            decimal_separator: ',',
+            thousands_separator: ' '
+        );
+
         return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
-            $this->currencySymbol . ' ' . $amount :
-            $amount . ' ' . $this->currencySymbol;
+            $this->currencySymbol . ' ' . $formattedAmount :
+            $formattedAmount . ' ' . $this->currencySymbol;
     }
 
     /**
