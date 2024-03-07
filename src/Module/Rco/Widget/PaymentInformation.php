@@ -29,6 +29,8 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Rco\Repository;
 use Throwable;
 
+use function number_format;
+
 /**
  * RCO Plus specific payment information widget.
  */
@@ -164,8 +166,15 @@ class PaymentInformation extends Original
      */
     public function getFormattedAmount(float $amount): string
     {
+        $formattedAmount = number_format(
+            num: $amount / 100,
+            decimals: 2,
+            decimal_separator: ',',
+            thousands_separator: ' '
+        );
+
         return $this->currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
-            $this->currencySymbol . ' ' . $amount / 100 :
-            $amount / 100 . ' ' . $this->currencySymbol;
+            $this->currencySymbol . ' ' . $formattedAmount :
+            $formattedAmount . ' ' . $this->currencySymbol;
     }
 }
