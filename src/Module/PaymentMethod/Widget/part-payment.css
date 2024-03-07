@@ -43,7 +43,7 @@
 }
 
 #rb-pp-iframe-container {
-  z-index:1000;
+  z-index:999999;
   position:fixed;
   left:50%;
   top:50%;
