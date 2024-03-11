@@ -43,10 +43,13 @@
 }
 
 #rb-pp-iframe-container {
+  display:flex;
+  justify-content:center;
   z-index:999999;
   position:fixed;
   left:50%;
   top:50%;
+  width: 90% !important;
   max-width:95vw;
   max-height:90vh;
   transform: translate(-50%, -50%);
@@ -64,6 +67,6 @@
 
 @media screen and (min-width: 1280px) {
   #rb-pp-iframe {
-    width:1214px;
+    width:1200px;
   }
 }

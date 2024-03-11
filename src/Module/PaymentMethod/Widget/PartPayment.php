@@ -86,6 +86,7 @@ class PartPayment extends Widget
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         private readonly string $storeId,
