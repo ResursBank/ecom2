@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment;
 
+use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -30,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
@@ -243,6 +245,47 @@ class Repository
         Metadata $metadata
     ): Metadata {
         return (new Put())->call(paymentId: $paymentId, metadata: $metadata);
+    }
+
+    /**
+     * Get client information metadata.
+     *
+     * @throws IllegalTypeException
+     * @throws Exception
+     */
+    public static function getIntegrationInfoMetadata(
+        string $platform,
+        string $platformVersion,
+        string $pluginVersion
+    ): Metadata {
+        $generic = new Generic();
+        return new Metadata(
+            custom: new Metadata\EntryCollection(data: [
+                new Metadata\Entry(
+                    key: 'resurs_platform',
+                    value: $platform
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_version',
+                    value: $platformVersion
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_plugin_version',
+                    value: $pluginVersion
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_php_version',
+                    value: PHP_VERSION
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_ecom2_version',
+                    value: $generic->getVersionByComposer(
+                        location: __DIR__,
+                        maxDepth: 4
+                    )
+                )
+            ])
+        );
     }
 
     /**
