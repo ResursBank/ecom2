@@ -926,7 +926,7 @@
     "translation": {
       "en": "Successfully captured %s of payment at Resurs Bank.",
       "sv": "Lyckades debitera %s av betalningen hos Resurs Bank.",
-      "no": "Vellykket fanget %s av betalingen hos Resurs Bank."
+      "no": "Vellykket debiteret %s av betalingen hos Resurs Bank."
     }
   },
   {
@@ -966,7 +966,7 @@
     "translation": {
       "en": "Enable Capture",
       "sv": "Aktivera debitering",
-      "no": "Aktiver Fanging"
+      "no": "Aktiver fakturering"
     }
   },
   {
@@ -1022,7 +1022,7 @@
     "translation": {
       "en": "Capture",
       "sv": "Fånga",
-      "no": "Fang"
+      "no": "Debitering"
     }
   },
   {
@@ -1046,7 +1046,7 @@
     "translation": {
       "en": "Payment must have been captured before it can be refunded.",
       "sv": "Betalning måste ha debiterats innan den kan krediteras.",
-      "no": "Betaling må ha blitt fanget før den kan refunderes."
+      "no": "Betalingen må ha blitt debiteret før den kan krediteres."
     }
   },
   {
@@ -1150,7 +1150,7 @@
     "translation": {
       "en": "Capturing payment at Resurs Bank failed (%s).",
       "sv": "Betalningen kunde inte fångas hos Resurs Bank (%s).",
-      "no": "Fangst av betaling hos Resurs Bank mislyktes (%s)."
+      "no": "Debitering av betaling hos Resurs Bank mislyktes (%s)."
     }
   },
   {
@@ -1638,7 +1638,7 @@
     "translation": {
       "en": "Payment is already captured.",
       "sv": "Betalningen har redan debiterats.",
-      "no": "Betalingen er allerede fanget."
+      "no": "Betalingen er allerede debiteret."
     }
   },
   {
