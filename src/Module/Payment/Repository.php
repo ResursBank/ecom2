@@ -250,11 +250,6 @@ class Repository
     /**
      * Get client information metadata.
      *
-     * @param string $platform
-     * @param string $platformVersion
-     * @param string $pluginVersion
-     *
-     * @return Metadata
      * @throws IllegalTypeException
      * @throws Exception
      */
@@ -284,7 +279,10 @@ class Repository
                 ),
                 new Metadata\Entry(
                     key: 'resurs_platform_ecom2_version',
-                    value: $generic->getVersionByComposer(location: __DIR__, maxDepth: 4)
+                    value: $generic->getVersionByComposer(
+                        location: __DIR__,
+                        maxDepth: 4
+                    )
                 )
             ])
         );
