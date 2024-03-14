@@ -518,7 +518,7 @@
     "translation": {
       "en": "Captured amount",
       "sv": "Debiterat belopp",
-      "no": "Fakturert beløp"
+      "no": "Belastet beløp"
     }
   },
   {
@@ -566,7 +566,7 @@
     "translation": {
       "en": "Payment captured.",
       "sv": "Betalningen debiterades.",
-      "no": "Betaling fakturert."
+      "no": "Betaling belastet."
     }
   },
   {
@@ -966,7 +966,7 @@
     "translation": {
       "en": "Enable Capture",
       "sv": "Aktivera debitering",
-      "no": "Aktiver fakturering"
+      "no": "Aktiver belastning"
     }
   },
   {
