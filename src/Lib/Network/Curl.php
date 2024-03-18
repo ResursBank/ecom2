@@ -23,34 +23,25 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Network\Response;
+use Resursbank\Ecom\Lib\Network\Curl\Auth;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 use Resursbank\Ecom\Lib\Network\Curl\Header;
+use Resursbank\Ecom\Lib\Network\Curl\Response as ResponseHandler;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use stdClass;
 
-use function is_array;
-use function is_string;
-
 /**
- * Curl wrapper.
+ * Curl connection wrapper.
  *
- * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  * @noinspection EfferentObjectCouplingInspection
- * @todo Check if ConfigException validation need testing in class methods.
- * @todo Refactor this class, its' too long (exceeds 250 lines). ECP-344
  */
-// phpcs:ignore
 class Curl
 {
-    /** @var CurlHandle */
     public readonly CurlHandle $ch;
 
-    /** @var ContentType */
     public readonly ContentType $responseContentType;
 
     /**
-     * @param array $headers
-     * @param array $payload
      * @param bool $forceObject Enforces the JSON_FORCE_OBJECT flag on json_encode of payload
      * @throws ApiException
      * @throws AuthException
@@ -61,9 +52,8 @@ class Curl
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @todo $headers and associated methods should be moved to a collection model / service layer.
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         string $url,
@@ -73,9 +63,9 @@ class Curl
         public readonly ContentType $contentType = ContentType::JSON,
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
-        private readonly StringValidation $stringValidation = new StringValidation(),
         ?ContentType $responseContentType = null,
-        private readonly bool $forceObject = false
+        private readonly bool $forceObject = false,
+        private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->responseContentType = $responseContentType ?? $contentType;
 
@@ -89,7 +79,6 @@ class Curl
     }
 
     /**
-     * @param array $payload
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -118,7 +107,6 @@ class Curl
     }
 
     /**
-     * @param array $payload
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -148,6 +136,7 @@ class Curl
     /**
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -155,7 +144,6 @@ class Curl
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
      */
     public static function delete(
         string $url,
@@ -171,7 +159,6 @@ class Curl
     }
 
     /**
-     * @param array $payload
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -210,60 +197,39 @@ class Curl
      * @throws JsonException
      * @throws IllegalValueException
      * @throws ConfigException
-     * @todo Needs refactoring, method is too large. See ECP-345
+     * @throws ValidationException
      */
-    // phpcs:ignore
     public function exec(): Response
     {
-        /** @noinspection DuplicatedCode */
         $body = curl_exec(handle: $this->ch);
+        $code = ResponseHandler::getCode(ch: $this->ch);
 
-        // We want to check for errors immediately after running curl_exec
+        // Validate request response.
         $errorHandler = new ErrorHandler(
             body: $body,
             ch: $this->ch,
             contentType: $this->responseContentType
         );
 
-        $errorHandler->validate();
+        try {
+            $errorHandler->validate();
 
-        if (!is_string(value: $body)) {
-            $exception = new IllegalTypeException(
-                message: 'Curl response type is ' . gettype(
-                    $body
-                ) . ', expected string'
-            );
-            Config::getLogger()->error(message: $exception->getMessage());
-            Config::getLogger()->error(message: $exception);
-            throw $exception;
+            /* Having passed validation means $body must be a string, since we
+               always apply CURLOPT_RETURNTRANSFER. */
+            $body = (string) $body;
+        } catch (CurlException | IllegalTypeException | AuthException $error) {
+            Config::getLogger()->error(message: $error);
+            throw $error;
         }
-
-        $code = (int)curl_getinfo(
-            handle: $this->ch,
-            option: CURLINFO_RESPONSE_CODE
-        );
 
         if ($this->responseContentType === ContentType::JSON) {
-            $this->stringValidation->notEmpty(value: $body);
-            $body = json_decode(
-                json: $body,
-                associative: false,
-                depth: 768,
-                flags: JSON_THROW_ON_ERROR
-            );
+            $body = ResponseHandler::getJsonBody(body: $body);
         } elseif ($this->responseContentType === ContentType::RAW) {
-            $bodyObj = new stdClass();
-            $bodyObj->message = $body;
-            $body = $bodyObj;
+            $body = (object) ['message' => $body];
         }
 
-        if (!($body instanceof stdClass) && !is_array(value: $body)) {
-            $exception = new IllegalTypeException(
-                message: 'Curl response body is not an object or an array.'
-            );
-            Config::getLogger()->error(message: $exception->getMessage());
-            Config::getLogger()->error(message: $exception);
-            throw $exception;
+        if (!$body instanceof stdClass) {
+            throw new IllegalTypeException(message: 'Body is not an object.');
         }
 
         curl_close(handle: $this->ch);
@@ -272,52 +238,21 @@ class Curl
     }
 
     /**
-     * Fetch CURLINFO_EFFECTIVE_URL
-     */
-    public function getEffectiveUrl(): string
-    {
-        return (string) curl_getinfo(
-            handle: $this->ch,
-            option: CURLINFO_EFFECTIVE_URL
-        );
-    }
-
-    public function hasBodyData(): bool
-    {
-        return
-            $this->requestMethod === RequestMethod::POST ||
-            $this->requestMethod === RequestMethod::PUT ||
-            $this->requestMethod === RequestMethod::DELETE
-        ;
-    }
-
-    /**
-     * @param array $payload
      * @throws JsonException
      * @throws ValidationException
-     * @throws ConfigException
-     * @todo Add URL prefix based on $this->authType?
      */
     public function generateUrl(string $url, array $payload): string
     {
-        $url .= $this->hasBodyData() || empty($payload)
+        $url .= $this->requestMethod !== RequestMethod::GET || empty($payload)
             ? '' :
             '?' . $this->getPayloadData(payload: $payload);
 
-        if (!filter_var(value: $url, filter: FILTER_VALIDATE_URL)) {
-            $exception = new ValidationException(
-                message: 'Invalid URL requested (' . $url . ').'
-            );
-            Config::getLogger()->error(message: $exception->getMessage());
-            Config::getLogger()->error(message: $exception);
-            throw $exception;
-        }
+        $this->stringValidation->isUrl(value: $url);
 
         return $url;
     }
 
     /**
-     * @param array $payload
      * @throws JsonException
      * @todo Consider caching this is a local variable on this instance to avoid subsequent calls. NOTE: Generating this
      * @todo data directly in the constructor harms refactoring.
@@ -342,8 +277,6 @@ class Curl
     }
 
     /**
-     * @param array $headers
-     * @param array $payload
      * @throws JsonException
      * @throws ValidationException
      * @throws Exception
@@ -376,10 +309,10 @@ class Curl
                     headers: $headers,
                     payloadData: $this->getPayloadData(payload: $payload),
                     contentType: $this->contentType,
-                    hasBodyData: $this->hasBodyData()
+                    hasBodyData: $this->requestMethod !== RequestMethod::GET
                 )
             ),
-            CURLOPT_CUSTOMREQUEST => $this->getCustomRequestValue(),
+            CURLOPT_CUSTOMREQUEST => $this->requestMethod->value,
             CURLOPT_URL => $this->generateUrl(url: $url, payload: $payload),
             CURLOPT_SSLVERSION => CURL_SSLVERSION_DEFAULT,
         ];
@@ -391,8 +324,8 @@ class Curl
 
         if (Config::getTimeout()) {
             $options[CURLOPT_CONNECTTIMEOUT] = ceil(
-                num: Config::getTimeout()
-            ) / 2;
+                    num: Config::getTimeout()
+                ) / 2;
             $options[CURLOPT_TIMEOUT] = ceil(num: Config::getTimeout());
         }
 
@@ -403,20 +336,9 @@ class Curl
         return $ch;
     }
 
-    private function getCustomRequestValue(): string
-    {
-        return match ($this->requestMethod) {
-            RequestMethod::GET => 'GET',
-            RequestMethod::POST => 'POST',
-            RequestMethod::PUT => 'PUT',
-            RequestMethod::DELETE => 'DELETE'
-        };
-    }
-
     /**
      * Append POST | PUT data / options to CURL.
      *
-     * @param array $payload
      * @throws JsonException
      */
     private function setContent(CurlHandle $ch, array $payload): void
@@ -427,7 +349,7 @@ class Curl
 
         $data = $this->getPayloadData(payload: $payload);
 
-        if ($data !== '' && $this->hasBodyData()) {
+        if ($data !== '' && $this->requestMethod !== RequestMethod::GET) {
             curl_setopt(handle: $ch, option: CURLOPT_POSTFIELDS, value: $data);
         }
 
@@ -453,11 +375,11 @@ class Curl
     {
         switch ($this->authType) {
             case AuthType::BASIC:
-                Curl\Auth::setBasicAuth(ch: $ch);
+                Auth::setBasicAuth(ch: $ch);
                 break;
 
             case AuthType::JWT:
-                Curl\Auth::setJwtAuth(ch: $ch);
+                Auth::setJwtAuth(ch: $ch);
                 break;
 
             case AuthType::NONE:
