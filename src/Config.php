@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright Â© Resurs Bank AB. All rights reserved.
+ * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
 
