@@ -136,6 +136,14 @@ class Payment extends Model
     }
 
     /**
+     * Returns true if payment is rejected.
+     */
+    public function isRejected(): bool
+    {
+        return $this->status === Status::REJECTED;
+    }
+
+    /**
      * Returns true if payment is denied.
      */
     public function isDenied(): bool

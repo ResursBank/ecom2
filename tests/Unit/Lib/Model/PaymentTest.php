@@ -110,8 +110,14 @@ class PaymentTest extends TestCase
         $this->assertTrue(
             condition: $isDenied->isDenied()
         );
+        $this->assertTrue(
+            condition: $isDenied->isRejected()
+        );
         $this->assertFalse(
             condition: $notDenied->isDenied()
+        );
+        $this->assertFalse(
+            condition: $notDenied->isRejected()
         );
     }
 
@@ -128,11 +134,14 @@ class PaymentTest extends TestCase
             rejectedReasonCategory: RejectedReasonCategory::ABORTED_BY_CUSTOMER
         );
         $isDenied = $this->createDummyPayment(
-            status: Status::ACCEPTED,
+            status: Status::REJECTED,
             rejectedReasonCategory: RejectedReasonCategory::CREDIT_DENIED
         );
         $notAborted = $this->createDummyPayment(status: Status::ACCEPTED);
 
+        $this->assertTrue(
+            condition: $isDenied->isRejected()
+        );
         $this->assertTrue(
             condition: $isAborted->isAbortedByCustomer()
         );
