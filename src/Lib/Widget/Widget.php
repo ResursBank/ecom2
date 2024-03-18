@@ -31,7 +31,7 @@ class Widget
             matches: $tagNames
         );
 
-        return array_unique($tagNames[1]);
+        return isset($tagNames[1]) ? array_unique($tagNames[1]) : [];
     }
 
     /**
