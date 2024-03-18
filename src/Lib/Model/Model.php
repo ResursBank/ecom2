@@ -105,7 +105,7 @@ class Model
             $attribute instanceof FloatInterface ||
             $attribute instanceof CollectionInterface ||
             $attribute instanceof ArrayInterface
-            ;
+        ;
     }
 
     /**
