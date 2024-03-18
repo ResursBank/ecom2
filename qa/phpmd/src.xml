@@ -49,3 +49,4 @@
     <exclude-pattern>Lib/Model/PaymentMethod/ApplicationFormSpecResponse/ApplicationFormSpecElementResponse/Type.php</exclude-pattern>
     <exclude-pattern>Lib/Utilities/Random/DataType.php</exclude-pattern>
 </ruleset>
+
