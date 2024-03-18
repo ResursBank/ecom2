@@ -5,8 +5,6 @@
  * See LICENSE for license details.
  */
 
-/** @noinspection DuplicatedCode */
-
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Widget;
