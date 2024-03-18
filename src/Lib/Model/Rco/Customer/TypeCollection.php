@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Resursbank\Ecom\Lib\Model\Rco\Customer;
+
+use Resursbank\Ecom\Lib\Collection\EnumCollection;
+
+/**
+ * Enum collection for customer types in RCO+.
+ */
+class TypeCollection extends EnumCollection
+{
+    public function __construct(array $data)
+    {
+        parent::__construct(data: $data, type: Type::class);
+    }
+}
