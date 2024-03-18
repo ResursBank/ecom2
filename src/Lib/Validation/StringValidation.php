@@ -9,11 +9,13 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Validation;
 
+use JsonException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 
 use function in_array;
 use function is_string;
@@ -28,7 +30,6 @@ class StringValidation
      * Validates the supplied array contains an element named $key and that
      * element contains a string. Returns the validated string.
      *
-     * @param array $data
      * @throws MissingKeyException
      * @throws IllegalTypeException
      */
@@ -93,8 +94,8 @@ class StringValidation
         if (!in_array(needle: $value, haystack: $set, strict: true)) {
             throw new IllegalValueException(
                 message:
-                    "$value is not one of " .
-                    implode(separator: ',', array: $set)
+                "$value is not one of " .
+                implode(separator: ',', array: $set)
             );
         }
 
@@ -245,6 +246,31 @@ class StringValidation
     {
         if (!filter_var(value: $value, filter: FILTER_VALIDATE_URL)) {
             throw new IllegalValueException(message: 'Not a valid URL.');
+        }
+
+        return true;
+    }
+
+    /**
+     * Confirm string is JSON encoded.
+     *
+     * @throws NotJsonEncodedException
+     */
+    public function isJson(string $value): bool
+    {
+        try {
+            json_decode(
+                json: $value,
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
+        } catch (JsonException) {
+            if (json_last_error() === JSON_ERROR_NONE) {
+                throw new NotJsonEncodedException(
+                    message: $value . ' is not JSON encoded.'
+                );
+            }
         }
 
         return true;
