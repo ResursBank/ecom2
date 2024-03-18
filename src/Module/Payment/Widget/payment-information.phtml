@@ -24,7 +24,7 @@ $thStyle = 'font-size:1.3em; text-align:left; padding:0.2em 0.4em;';
                 <span><?= Translator::translate(phraseId: 'payment') ?></span>
                 <span class="rb-pi-logo"><?= $this->logo ?></span>
             </th>
-            <?php // Magento will strip colspan attribute. ?>
+            <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
             <th></th>
         </tr
         <?= $this->getTrEl(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
@@ -48,7 +48,7 @@ $thStyle = 'font-size:1.3em; text-align:left; padding:0.2em 0.4em;';
         <?= $this->getTrEl(title: 'payment-method', content: $this->getPaymentMethodName()) ?>
         <tr style="<?= $this->getTrStyle() ?>">
             <th style="<?= $thStyle ?>"><?= Translator::translate(phraseId: 'customer') ?></th>
-            <?php // Magento will strip colspan attribute. ?>
+            <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
             <th></th>
         </tr>
         <?= $this->getTrEl(title: 'name', content: $this->getCustomerName()) ?>
