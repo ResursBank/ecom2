@@ -17,10 +17,10 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
 
 /**
  * Implementation of Authorization callback data.
@@ -35,6 +35,7 @@ class Authorization extends Model implements CallbackInterface
         public readonly string $paymentId,
         public readonly Status $status,
         public readonly string $created,
+        public readonly ?string $checkoutId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validatePaymentId();
@@ -50,6 +51,14 @@ class Authorization extends Model implements CallbackInterface
     }
 
     /**
+     * Property wrapper to fulfill contract.
+     */
+    public function getCheckoutId(): ?string
+    {
+        return $this->checkoutId;
+    }
+
+    /**
      * Get note explaining what happened.
      *
      * @throws JsonException
@@ -58,6 +67,7 @@ class Authorization extends Model implements CallbackInterface
      * @throws FilesystemException
      * @throws TranslationException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function getNote(): string
     {
