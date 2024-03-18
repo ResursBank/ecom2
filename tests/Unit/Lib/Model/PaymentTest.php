@@ -19,9 +19,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReason;
+use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
@@ -39,8 +40,9 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
-    private function createDummyPayment(Status $status, ?RejectedReason $rejectedReason = null): Payment
+    private function createDummyPayment(Status $status, ?RejectedReasonCategory $rejectedReasonCategory = null): Payment
     {
         return new Payment(
             id: Strings::getUuid(),
@@ -50,7 +52,9 @@ class PaymentTest extends TestCase
                 customerType: CustomerType::NATURAL
             ),
             status: $status,
-            rejectedReason: $rejectedReason,
+            rejectedReason: new RejectedReason(
+                category: $rejectedReasonCategory
+            ),
             paymentActions: [],
             paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
             order: new Payment\Order(
@@ -78,14 +82,8 @@ class PaymentTest extends TestCase
      */
     public function testIsFrozen(): void
     {
-        $isFrozen = $this->createDummyPayment(
-            status: Status::FROZEN,
-            rejectedReason: null
-        );
-        $notFrozen = $this->createDummyPayment(
-            status: Status::ACCEPTED,
-            rejectedReason: null
-        );
+        $isFrozen = $this->createDummyPayment(status: Status::FROZEN);
+        $notFrozen = $this->createDummyPayment(status: Status::ACCEPTED);
 
         $this->assertTrue(
             condition: $isFrozen->isFrozen()
@@ -105,12 +103,9 @@ class PaymentTest extends TestCase
     {
         $isDenied = $this->createDummyPayment(
             status: Status::REJECTED,
-            rejectedReason: RejectedReason::CREDIT_DENIED
+            rejectedReasonCategory: RejectedReasonCategory::CREDIT_DENIED
         );
-        $notDenied = $this->createDummyPayment(
-            status: Status::ACCEPTED,
-            rejectedReason: null
-        );
+        $notDenied = $this->createDummyPayment(status: Status::ACCEPTED);
 
         $this->assertTrue(
             condition: $isDenied->isDenied()
@@ -130,11 +125,11 @@ class PaymentTest extends TestCase
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
-            rejectedReason: RejectedReason::ABORTED_BY_CUSTOMER
+            rejectedReasonCategory: RejectedReasonCategory::ABORTED_BY_CUSTOMER
         );
         $isDenied = $this->createDummyPayment(
             status: Status::ACCEPTED,
-            rejectedReason: RejectedReason::CREDIT_DENIED
+            rejectedReasonCategory: RejectedReasonCategory::CREDIT_DENIED
         );
         $notAborted = $this->createDummyPayment(status: Status::ACCEPTED);
 

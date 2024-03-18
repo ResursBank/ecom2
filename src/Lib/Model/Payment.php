@@ -18,11 +18,12 @@ use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReason;
+use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
@@ -139,7 +140,8 @@ class Payment extends Model
      */
     public function isDenied(): bool
     {
-        return $this->rejectedReason === RejectedReason::CREDIT_DENIED;
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::CREDIT_DENIED;
     }
 
     /**
@@ -147,7 +149,8 @@ class Payment extends Model
      */
     public function isAbortedByCustomer(): bool
     {
-        return $this->rejectedReason === RejectedReason::ABORTED_BY_CUSTOMER;
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::ABORTED_BY_CUSTOMER;
     }
 
     /**

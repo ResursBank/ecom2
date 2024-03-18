@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Payment\Enum;
 /**
  * Enum for payment statuses when rejected.
  */
-enum RejectedReason: string
+enum RejectedReasonCategory: string
 {
     case UNKNOWN = 'UNKNOWN';
     case TECHNICAL_ERROR = 'TECHNICAL_ERROR';
