@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Module\Payment\Enum\RejectedReason;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
@@ -36,7 +37,6 @@ class Payment extends Model
      * Search compatible with the Payment model, we are temporary setting the missing fields
      * with empty defaults.
      *
-     * @param array $paymentActions
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -48,6 +48,7 @@ class Payment extends Model
         public readonly string $storeId,
         public readonly Customer $customer,
         public readonly Status $status,
+        public readonly ?RejectedReason $rejectedReason = null,
         public readonly array $paymentActions = [],
         public readonly ?PaymentMethod $paymentMethod = null,
         public readonly ?CountryCode $countryCode = null,
@@ -131,6 +132,22 @@ class Payment extends Model
     public function isFrozen(): bool
     {
         return $this->status === Status::FROZEN;
+    }
+
+    /**
+     * Returns true if payment is denied.
+     */
+    public function isDenied(): bool
+    {
+        return $this->rejectedReason === RejectedReason::CREDIT_DENIED;
+    }
+
+    /**
+     * Returns true if payment is aborted by customer.
+     */
+    public function isAbortedByCustomer(): bool
+    {
+        return $this->rejectedReason === RejectedReason::ABORTED_BY_CUSTOMER;
     }
 
     /**
