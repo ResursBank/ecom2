@@ -196,11 +196,11 @@ class GetAddressControllerTest extends TestCase
 //     * @throws IllegalValueException
 //     * @throws JsonException
      */
-    public function testExecWithInvalidStoreId(): void
-    {
-        $this->markTestSkipped(
-            message: 'This does not work, causes error. Disabled for now'
-        );
+//    public function testExecWithInvalidStoreId(): void
+//    {
+//        $this->markTestSkipped(
+//            message: 'This does not work, causes error. Disabled for now'
+//        );
 
 //        $data = $this->callController(
 //            govId: '198305147715',
@@ -220,7 +220,7 @@ class GetAddressControllerTest extends TestCase
 //        $this->assertIsObject(actual: $obj);
 //        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
 //        $this->assertNotEmpty(actual: $obj->error);
-    }
+//    }
 
     /**
      * Assert exec() fetches address data for company customer.
