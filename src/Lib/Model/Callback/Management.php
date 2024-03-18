@@ -36,6 +36,7 @@ class Management extends Model implements CallbackInterface
         public readonly Action $action,
         public readonly string $actionId,
         public readonly string $created,
+        public readonly ?string $checkoutId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validatePaymentId();
@@ -52,6 +53,14 @@ class Management extends Model implements CallbackInterface
     }
 
     /**
+     * Property wrapper to fulfill contract.
+     */
+    public function getCheckoutId(): ?string
+    {
+        return $this->checkoutId;
+    }
+
+    /**
      * Get note explaining what happened.
      *
      * @throws ConfigException
@@ -60,6 +69,7 @@ class Management extends Model implements CallbackInterface
      * @throws TranslationException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws IllegalValueException
      */
     public function getNote(): string
     {
