@@ -23,6 +23,15 @@
         <env name="PAYMENT_METHOD_ID" value="REPLACEME" force="true" />
         <env name="APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID" value="REPLACEME" force="true" />
         <env name="GOVERNMENT_ID_HAPPY_NATURAL" value="REPLACEME" force="true" />
+        <env name="RCO_JWT_GOVERNMENT_ID" value="REPLACEME" force="true" />
         <env name="ANNUITY_PAYMENT_METHOD_ID" value="REPLACEME" force="true" />
+        <env name="RCO_JWT_AUTH_CLIENT_ID" value="REPLACEME" force="true" />
+        <env name="RCO_JWT_AUTH_CLIENT_SECRET" value="REPLACEME" force="true" />
+        <env name="RCO_JWT_AUTH_SCOPE" value="mock-merchant-api" force="true" />
+        <env name="RCO_JWT_AUTH_GRANT_TYPE" value="client_credentials" force="true" />
+        <env name="RCO_PAYMENT_METHOD_ID" value="REPLACEME" />
+        <env name="RCOPLUS_HOMEPAGE_URL" value="https://web-integration-rco-plus-testpage.integration.resurs.com" force="true" />
+        <ini name="memory_limit" value="1024M" />
     </php>
 </phpunit>
+
