@@ -162,10 +162,10 @@ class PaymentInformationTest extends TestCase
             message: 'Widget payment id does not match original payment id'
         );
 
-        $this->assertStringContainsString(
-            needle: '<td>' . $signedPayment->id . '</td>',
-            haystack: $widget->content,
-            message: 'Widget does not contain payment id cell'
+        $this->assertMatchesRegularExpression(
+            pattern: "/<td[^>]+style=.*>{$signedPayment->id}<\/td>/s",
+            string: $widget->content,
+            message: 'Widget does not contain payment id cell.'
         );
     }
 }
