@@ -40,6 +40,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
@@ -134,16 +135,6 @@ class PutTest extends TestCase
     }
 
     /**
-     * Generate a dummy order reference
-     *
-     * @throws Exception
-     */
-    private function generateOrderReference(): string
-    {
-        return bin2hex(string: random_bytes(length: 12));
-    }
-
-    /**
      * Verify that Metadata updates work
      *
      * @throws ValidationException
@@ -166,7 +157,7 @@ class PutTest extends TestCase
 
         // Create payment
         $payment = $this->createPayment(
-            orderReference: $this->generateOrderReference()
+            orderReference: Strings::generateRandomString(length: 12)
         );
 
         // Sign
