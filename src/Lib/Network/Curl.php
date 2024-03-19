@@ -324,8 +324,8 @@ class Curl
 
         if (Config::getTimeout()) {
             $options[CURLOPT_CONNECTTIMEOUT] = ceil(
-                    num: Config::getTimeout()
-                ) / 2;
+                num: Config::getTimeout()
+            ) / 2;
             $options[CURLOPT_TIMEOUT] = ceil(num: Config::getTimeout());
         }
 
