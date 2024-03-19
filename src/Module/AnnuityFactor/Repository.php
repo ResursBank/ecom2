@@ -54,6 +54,7 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws Throwable
      */
     public static function getAnnuityFactors(
         string $storeId,

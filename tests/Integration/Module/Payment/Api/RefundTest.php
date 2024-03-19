@@ -39,6 +39,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
@@ -66,16 +67,6 @@ class RefundTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
-    }
-
-    /**
-     * Generate a dummy order reference
-     *
-     * @throws Exception
-     */
-    private function generateOrderReference(): string
-    {
-        return bin2hex(string: random_bytes(length: 12));
     }
 
     /**
@@ -132,7 +123,7 @@ class RefundTest extends TestCase
                 ),
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
-                email: 'test@hosted.resurs',
+                email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
@@ -158,7 +149,7 @@ class RefundTest extends TestCase
     public function testRefundEntirePayment(): void
     {
         // Create payment
-        $orderReference = $this->generateOrderReference();
+        $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
@@ -200,7 +191,7 @@ class RefundTest extends TestCase
     public function testRefundSingleOrderLine(): void
     {
         // Create payment
-        $orderReference = $this->generateOrderReference();
+        $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
@@ -263,7 +254,7 @@ class RefundTest extends TestCase
     {
         // Create payment
         /** @noinspection DuplicatedCode */
-        $orderReference = $this->generateOrderReference();
+        $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
@@ -273,7 +264,7 @@ class RefundTest extends TestCase
         Repository::capture(paymentId: $payment->id);
 
         // Refund
-        $transactionId = $this->generateOrderReference();
+        $transactionId = Strings::generateRandomString(length: 12);
         $refundResponse = Repository::refund(
             paymentId: $payment->id,
             transactionId: $transactionId
@@ -317,7 +308,7 @@ class RefundTest extends TestCase
     {
         // Create payment
         /** @noinspection DuplicatedCode */
-        $orderReference = $this->generateOrderReference();
+        $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
@@ -327,7 +318,7 @@ class RefundTest extends TestCase
         Repository::capture(paymentId: $payment->id);
 
         // Refund
-        $creator = $this->generateOrderReference();
+        $creator = Strings::generateRandomString(length: 12);
         $refundResponse = Repository::refund(
             paymentId: $payment->id,
             creator: $creator

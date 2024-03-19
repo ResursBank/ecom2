@@ -35,6 +35,7 @@ class Authorization extends Model implements CallbackInterface
         public readonly string $paymentId,
         public readonly Status $status,
         public readonly string $created,
+        public readonly ?string $checkoutId = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validatePaymentId();
@@ -50,6 +51,14 @@ class Authorization extends Model implements CallbackInterface
     }
 
     /**
+     * Property wrapper to fulfill contract.
+     */
+    public function getCheckoutId(): ?string
+    {
+        return $this->checkoutId;
+    }
+
+    /**
      * Get note explaining what happened.
      *
      * @throws JsonException
@@ -58,6 +67,7 @@ class Authorization extends Model implements CallbackInterface
      * @throws FilesystemException
      * @throws TranslationException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      */
     public function getNote(): string
     {

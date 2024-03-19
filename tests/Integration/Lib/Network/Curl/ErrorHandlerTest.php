@@ -13,11 +13,11 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 
@@ -35,12 +35,12 @@ class ErrorHandlerTest extends TestCase
     /**
      * Assert validate() throws IllegalTypeException when body isn't string.
      *
+     * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws AuthException
+     * @throws NotJsonEncodedException
      */
     public function testValidateThrowsWithoutJsonContent(): void
     {
@@ -60,10 +60,10 @@ class ErrorHandlerTest extends TestCase
      *
      * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      */
     public function testValidateThrowsWithEmptyJsonContent(): void
     {
@@ -83,14 +83,14 @@ class ErrorHandlerTest extends TestCase
      *
      * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      */
     public function testValidateThrowsWithInvalidJsonContent(): void
     {
-        $this->expectException(exception: JsonException::class);
+        $this->expectException(exception: NotJsonEncodedException::class);
 
         $handler = new ErrorHandler(
             ch: curl_init(),
@@ -109,10 +109,10 @@ class ErrorHandlerTest extends TestCase
      *
      * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      */
     public function testValidateThrowsWithJsonMessage(): void
     {
@@ -143,11 +143,10 @@ class ErrorHandlerTest extends TestCase
      *
      * @throws AuthException
      * @throws CurlException
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws ConfigException
+     * @throws NotJsonEncodedException
      */
     public function testValidateThrowsWithHttpCode0(): void
     {

@@ -9,8 +9,8 @@
   {
     "id": "customer.governmentId is not valid",
     "translation": {
-      "en": "Government ID/Corporate government ID is not valid",
-      "sv": "Personnummer/Organisationsnummer är ej korrekt"
+      "en": "Government ID is not valid",
+      "sv": "Personnummer är ej korrekt"
     }
   },
   {

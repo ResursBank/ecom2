@@ -13,11 +13,15 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 
 ?>
 
-<?php if ($this->iframeUrl !== ''): ?>
+<?php
+
+if ($this->iframeUrl !== '') : ?>
   <div class="rb-pp">
     <!-- Logo -->
     <div id="rb-pp-logo-container"><?= $this->logo ?></div>
-      <?php if ($this->displayInfoText): ?>
+      <?php
+
+if ($this->displayInfoText) : ?>
         <!-- Pay in installments -->
         <div id="rb-pp-info"><p><?= $this->infoText ?></p></div>
       <?php endif; ?>

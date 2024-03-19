@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -407,7 +408,7 @@ final class StringValidationTest extends TestCase
     {
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '198001010001'
+                value: '198305147715'
             )
         );
     }
@@ -461,24 +462,24 @@ final class StringValidationTest extends TestCase
     {
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '188001010001'
+                value: '188305147715'
             )
         );
 
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '198001010001'
+                value: '198305147715'
             )
         );
 
         $this->assertTrue(
             condition: $this->stringValidation->isSwedishSsn(
-                value: '208001010001'
+                value: '208305147715'
             )
         );
 
         $this->expectException(exception: IllegalValueException::class);
-        $this->stringValidation->isSwedishSsn(value: '178001010001');
+        $this->stringValidation->isSwedishSsn(value: '178305147715');
     }
 
     /**
@@ -628,5 +629,43 @@ final class StringValidationTest extends TestCase
 
         $this->expectException(exception: IllegalValueException::class);
         $this->stringValidation->isUrl(value: 'NoURL');
+    }
+
+    /**
+     * Test isJson method with various values.
+     *
+     * @throws NotJsonEncodedException
+     */
+    public function testIsJson(): void
+    {
+        $badValues = [
+            '',
+            'I am not encoded',
+            'not-json',
+            '{"data": "some", "value": 123, next: nada}',
+            '{"data": "some", "value": 123  "next": nada}'
+        ];
+
+        foreach ($badValues as $badValue) {
+            try {
+                $this->stringValidation->isJson(value: $badValue);
+                $this->fail(
+                    message: 'None JSON encoded data inaccurately confirmed as JSON'
+                );
+            } catch (NotJsonEncodedException) {
+                $this->addToAssertionCount(count: 1);
+            }
+        }
+
+        $goodValues = [
+            '{}',
+            '{"data": "some", "value": "123", "next": true, "tune": 12}'
+        ];
+
+        foreach ($goodValues as $goodValue) {
+            $this->assertTrue(
+                condition: $this->stringValidation->isJson(value: $goodValue)
+            );
+        }
     }
 }

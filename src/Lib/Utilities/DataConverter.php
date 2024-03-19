@@ -18,11 +18,13 @@ use ReflectionObject;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Collection\EnumCollection;
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
 
 use function call_user_func;
 use function is_object;
+use function is_string;
 
 /**
  * Utility class for data type conversions.
@@ -84,10 +86,20 @@ class DataConverter
 
                 if (is_iterable(value: $value)) {
                     foreach ($value as $item) {
-                        $converted[] = self::stdClassToType(
-                            object: $item,
-                            type: $dummyCollectionType
-                        );
+                        if (
+                            is_string(value: $item) &&
+                            is_subclass_of(
+                                object_or_class: $propertyType,
+                                class: EnumCollection::class
+                            )
+                        ) {
+                            $converted[] = $dummyCollectionType::from($item);
+                        } else {
+                            $converted[] = self::stdClassToType(
+                                object: $item,
+                                type: $dummyCollectionType
+                            );
+                        }
                     }
                 }
 
@@ -103,11 +115,12 @@ class DataConverter
                 // If our property is an enum we need to convert the value
                 // to the enum value it represents.
                 // @todo enum_exists guarantees UnitEnum, we expect BackedEnum. See ECP-339
-                $arguments[$name] = call_user_func(
+                $arguments[$name] = $value !== null ?
+                    call_user_func(
                     /* @phpstan-ignore-next-line */
-                    $propertyType . '::from',
-                    $value instanceof BackedEnum ? $value->value : $value
-                );
+                        $propertyType . '::from',
+                        $value instanceof BackedEnum ? $value->value : $value
+                    ) : null;
             } elseif (is_object(value: $value)) {
                 $arguments[$name] = self::stdClassToType(
                     object: $value,

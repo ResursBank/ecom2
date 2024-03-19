@@ -27,8 +27,13 @@ use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
 use Resursbank\Ecom\Lib\Model\Callback\Management;
 use Resursbank\Ecom\Lib\Model\Callback\TestResponse;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Throwable;
 
 /**
@@ -51,6 +56,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @noinspection PhpUnused
      */
     public static function triggerTest(
         string $url,
@@ -84,6 +90,99 @@ class Repository
         CallbackInterface $callback,
         callable $process
     ): int {
+        $paymentId = $callback->getCheckoutId() ?? $callback->getPaymentId();
+
+        self::trackInit(paymentId: $paymentId, callback: $callback);
+        self::addDebugLogs(callback: $callback);
+
+        $code = 202;
+
+        try {
+            $process($callback);
+
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::CALLBACK_COMPLETED,
+                user: User::RESURSBANK,
+                result: Result::SUCCESS
+            ));
+        } catch (Throwable $e) {
+            self::logException(exception: $e);
+            $code = 408;
+
+            if ($e instanceof HttpException) {
+                $code = $e->getCode();
+            }
+
+            self::trackError(paymentId: $paymentId, error: $e);
+        }
+
+        Config::getLogger()->debug(message: "Responding with code $code");
+
+        return $code;
+    }
+
+    /**
+     * Log error in payment history.
+     *
+     * @throws ConfigException
+     */
+    public static function trackError(
+        string $paymentId,
+        Throwable $error
+    ): void {
+        try {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::CALLBACK_FAILED,
+                user: User::ADMIN,
+                extra: PaymentHistoryRepository::getError(error: $error),
+                result: Result::ERROR
+            ));
+        } catch (Throwable $e) {
+            self::logException(exception: $e);
+        }
+    }
+
+    /**
+     * Log callback initialization in payment history.
+     *
+     * @throws ConfigException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public static function trackInit(
+        string $paymentId,
+        CallbackInterface $callback
+    ): void {
+        try {
+            $extra = null;
+
+            if ($callback instanceof Authorization) {
+                $event = Event::CALLBACK_AUTHORIZATION;
+                $extra = $callback->status->value;
+            } else {
+                $event = Event::CALLBACK_MANAGEMENT;
+            }
+
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: $event,
+                user: User::RESURSBANK,
+                extra: $extra
+            ));
+        } catch (Throwable $e) {
+            self::logException(exception: $e);
+        }
+    }
+
+    /**
+     * Append debug log entries.
+     *
+     * @throws ConfigException
+     */
+    public static function addDebugLogs(
+        CallbackInterface $callback
+    ): void {
         if ($callback instanceof Management) {
             Config::getLogger()->debug(
                 message: sprintf(
@@ -95,31 +194,16 @@ class Repository
             );
         }
 
-        if ($callback instanceof Authorization) {
-            Config::getLogger()->debug(
-                message: sprintf(
-                    'Processing authorization callback for %s, status %s',
-                    $callback->getPaymentId(),
-                    $callback->status->value
-                )
-            );
+        if (!($callback instanceof Authorization)) {
+            return;
         }
 
-        $code = 202;
-
-        try {
-            $process($callback);
-        } catch (Throwable $e) {
-            self::logException(exception: $e);
-            $code = 408;
-
-            if ($e instanceof HttpException) {
-                $code = $e->getCode();
-            }
-        }
-
-        Config::getLogger()->debug(message: "Responding with code $code");
-
-        return $code;
+        Config::getLogger()->debug(
+            message: sprintf(
+                'Processing authorization callback for %s, status %s',
+                $callback->getPaymentId(),
+                $callback->status->value
+            )
+        );
     }
 }
