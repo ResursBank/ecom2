@@ -153,6 +153,50 @@ class Payment extends Model
     }
 
     /**
+     * Returns true if payment is denied.
+     */
+    public function isCreditDenied(): bool
+    {
+        return $this->isDenied();
+    }
+
+    /**
+     * Returns true if payment timed out.
+     */
+    public function isTimeout(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::TIMEOUT;
+    }
+
+    /**
+     * Returns true if payment has insufficient funds.
+     */
+    public function isInsufficientFunds(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::INSUFFICIENT_FUNDS;
+    }
+
+    /**
+     * Returns true if payment is canceled.
+     */
+    public function isCanceled(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::CANCELED;
+    }
+
+    /**
+     * Returns true if payment is denied.
+     */
+    public function isTechnicalError(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::TECHNICAL_ERROR;
+    }
+
+    /**
      * Returns true if payment is aborted by customer.
      */
     public function isAbortedByCustomer(): bool

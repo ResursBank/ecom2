@@ -111,6 +111,9 @@ class PaymentTest extends TestCase
             condition: $isDenied->isDenied()
         );
         $this->assertTrue(
+            condition: $isDenied->isCreditDenied()
+        );
+        $this->assertTrue(
             condition: $isDenied->isRejected()
         );
         $this->assertFalse(
@@ -127,29 +130,87 @@ class PaymentTest extends TestCase
      * @throws IllegalValueException
      * @throws IllegalCharsetException
      */
-    public function testIsAborted(): void
+    public function testIsAbortedByCustomer(): void
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
             rejectedReasonCategory: RejectedReasonCategory::ABORTED_BY_CUSTOMER
         );
-        $isDenied = $this->createDummyPayment(
-            status: Status::REJECTED,
-            rejectedReasonCategory: RejectedReasonCategory::CREDIT_DENIED
-        );
-        $notAborted = $this->createDummyPayment(status: Status::ACCEPTED);
 
-        $this->assertTrue(
-            condition: $isDenied->isRejected()
-        );
         $this->assertTrue(
             condition: $isAborted->isAbortedByCustomer()
         );
-        $this->assertFalse(
-            condition: $notAborted->isAbortedByCustomer()
+    }
+
+    /**
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsTimeout(): void
+    {
+        $isAborted = $this->createDummyPayment(
+            status: Status::REJECTED,
+            rejectedReasonCategory: RejectedReasonCategory::TIMEOUT
         );
-        $this->assertFalse(
-            condition: $isDenied->isAbortedByCustomer()
+
+        $this->assertTrue(
+            condition: $isAborted->isTimeout()
+        );
+    }
+
+    /**
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsCanceled(): void
+    {
+        $isAborted = $this->createDummyPayment(
+            status: Status::REJECTED,
+            rejectedReasonCategory: RejectedReasonCategory::CANCELED
+        );
+
+        $this->assertTrue(
+            condition: $isAborted->isCanceled()
+        );
+    }
+
+    /**
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsInsufficientFunds(): void
+    {
+        $isAborted = $this->createDummyPayment(
+            status: Status::REJECTED,
+            rejectedReasonCategory: RejectedReasonCategory::INSUFFICIENT_FUNDS
+        );
+
+        $this->assertTrue(
+            condition: $isAborted->isInsufficientFunds()
+        );
+    }
+
+    /**
+     * @throws EmptyValueException
+     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsTechnicalError(): void
+    {
+        $isAborted = $this->createDummyPayment(
+            status: Status::REJECTED,
+            rejectedReasonCategory: RejectedReasonCategory::TECHNICAL_ERROR
+        );
+
+        $this->assertTrue(
+            condition: $isAborted->isTechnicalError()
         );
     }
 }
