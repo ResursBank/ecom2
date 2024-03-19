@@ -30,6 +30,7 @@ use Resursbank\Ecom\Lib\Model\Rco\CreateTransactionLineCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Rco\Post;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Module\Rco\Repository;
 use Resursbank\Ecom\Module\Rco\Traits\Repository as RepositoryTraits;
 use Throwable;
 
@@ -61,13 +62,17 @@ class Refund
         string $version,
         ?CreateTransactionLineCollection $transactionLines = null
     ): Checkout {
+        $checkout = Repository::get(id: $id);
+
         PaymentHistoryRepository::write(entry: new Entry(
             paymentId: $id,
             event: Event::REFUND_REQUESTED,
             user: User::ADMIN,
             extra: $transactionLines !== null ?
                 Price::format(
-                    value: $transactionLines->getTotal() / 100
+                    value: $transactionLines->getTotal() / 100,
+                    currencyFormat: $checkout->getCurrencyFormat(),
+                    currencySymbol: $checkout->getCurrencySymbol()
                 ) : null
         ));
 
