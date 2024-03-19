@@ -74,7 +74,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
             </tr>
           </thead>
           <tbody>
-          <?php foreach ($this->entries as $entry): ?>
+          <?php foreach ($this->entries as $entry) : ?>
             <tr class="<?= $this->getResultClass(entry: $entry) ?>">
               <td><?= date(format: 'Y-m-d H:i:s', timestamp: $entry->time) ?></td>
               <td><?= Translator::translate(phraseId: $entry->event->value) ?></td>
@@ -82,15 +82,15 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
               <td><?= $entry->previousOrderStatus ?></td>
               <td><?= $entry->currentOrderStatus ?></td>
               <td>
-              <?php if ($this->showExtraBtn(entry: $entry)): ?>
+                <?php if ($this->showExtraBtn(entry: $entry)) : ?>
                 <p class="rb-rh-show-extra-btn">
                   <a onclick="showExtra('<?= $this->getExtraData(entry: $entry) ?>');" href="#">
                       <?= Translator::translate(phraseId: 'show-extra') ?>
                   </a>
                 </p>
-              <?php elseif ($entry->extra !== null): ?>
-                <?= $entry->extra ?>
-              <?php endif; ?>
+                <?php elseif ($entry->extra !== null) : ?>
+                    <?= $entry->extra ?>
+                <?php endif; ?>
               </td>
               <td class="rb-ph-result-icon"></td>
             </tr>

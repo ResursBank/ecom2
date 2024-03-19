@@ -58,21 +58,23 @@ use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
       <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'name') ?></td>
       <td><?= $this->getCustomerName() ?></td>
     </tr>
-      <?php if ($this->hasAddress()): ?>
+      <?php if ($this->hasAddress()) : ?>
         <tr>
           <td class="rb-pi-row-header"><?= Translator::translate(phraseId: 'address') ?></td>
           <td>
               <?= $this->getAddressRow1() ?>
             <br />
-              <?php if ($this->getAddressRow2() !== ''): ?>
-                  <?= $this->getAddressRow2() ?>
+              <?php if ($this->getAddressRow2() !== '') : ?>
+                    <?= $this->getAddressRow2() ?>
                 <br />
               <?php endif; ?>
               <?= $this->getCity() ?>
             <br />
             <span>
               <?= $this->getCountryCode() ?>
-                <?php if ($this->getCountryCode() !== ''): ?> - <?php endif; ?>
+                <?php if ($this->getCountryCode() !== '') :
+                    ?> - <?php
+                endif; ?>
                 <?= $this->getPostalCode() ?>
           </span>
           </td>

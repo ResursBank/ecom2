@@ -13,7 +13,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 
 ?>
 
-<?php if ($this->iframeUrl !== ''): ?>
+<?php if ($this->iframeUrl !== '') : ?>
         async function getStartingAtCost(amount) {
             let url ='<?= $this->apiUrl ?>&amount=' + amount.toString();
 
