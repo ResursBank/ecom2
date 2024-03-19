@@ -36,7 +36,9 @@ final class FileLoggerTest extends TestCase
     private bool $isPipeline = false;
 
     private string $path;
+
     private string $filename;
+
     private string $message;
 
     /**
@@ -382,8 +384,8 @@ final class FileLoggerTest extends TestCase
     public function testValidatePathWhichIsNotDirectory(): void
     {
         $filePath = $this->path . DIRECTORY_SEPARATOR . bin2hex(
-            string: random_bytes(length: 8)
-        );
+                string: random_bytes(length: 8)
+            );
 
         if (!touch(filename: $filePath)) {
             $this::markTestSkipped(message: 'Failed to create file for test');
