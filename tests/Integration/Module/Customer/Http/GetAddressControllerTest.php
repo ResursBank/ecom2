@@ -146,7 +146,7 @@ class GetAddressControllerTest extends TestCase
      */
     public function testExec(): void
     {
-        $govId = '198001010001';
+        $govId = '198305147715';
         $customerType = CustomerType::NATURAL;
 
         $data = $this->callController(
@@ -173,7 +173,7 @@ class GetAddressControllerTest extends TestCase
         );
 
         $this->assertInstanceOf(expected: Address::class, actual: $address);
-        $this->assertSame(expected: 'Göteborg', actual: $address->postalArea);
+        $this->assertSame(expected: 'GÃ¶teborg', actual: $address->postalArea);
 
         // Assert our controller stored the SSN data in the session.
         $request = new GetAddressRequest(
@@ -192,9 +192,9 @@ class GetAddressControllerTest extends TestCase
      * error property when we use a none existing store id (simulating a failed
      * API call to fetch address data).
      *
-//     * @throws EmptyValueException
-//     * @throws IllegalValueException
-//     * @throws JsonException
+    //     * @throws EmptyValueException
+    //     * @throws IllegalValueException
+    //     * @throws JsonException
      */
     public function testExecWithInvalidStoreId(): void
     {
@@ -203,7 +203,7 @@ class GetAddressControllerTest extends TestCase
         );
 
 //        $data = $this->callController(
-//            govId: '198001010001',
+//            govId: '198305147715',
 //            customerType: CustomerType::NATURAL,
 //            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
 //        );
@@ -340,7 +340,7 @@ class GetAddressControllerTest extends TestCase
     {
         $controller = $this->getControllerWithMockedInputData(
             data: [
-                'govId' => '198001010001',
+                'govId' => '198305147715',
                 'customerType' => CustomerType::NATURAL->value,
             ]
         );
@@ -352,6 +352,6 @@ class GetAddressControllerTest extends TestCase
             actual: $data->customerType
         );
 
-        $this->assertSame(expected: '198001010001', actual: $data->govId);
+        $this->assertSame(expected: '198305147715', actual: $data->govId);
     }
 }
