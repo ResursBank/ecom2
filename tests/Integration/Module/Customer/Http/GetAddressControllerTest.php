@@ -173,7 +173,7 @@ class GetAddressControllerTest extends TestCase
         );
 
         $this->assertInstanceOf(expected: Address::class, actual: $address);
-        $this->assertSame(expected: 'GÃ¶teborg', actual: $address->postalArea);
+        $this->assertSame(expected: 'Göteborg', actual: $address->postalArea);
 
         // Assert our controller stored the SSN data in the session.
         $request = new GetAddressRequest(
@@ -192,9 +192,9 @@ class GetAddressControllerTest extends TestCase
      * error property when we use a none existing store id (simulating a failed
      * API call to fetch address data).
      *
-    //     * @throws EmptyValueException
-    //     * @throws IllegalValueException
-    //     * @throws JsonException
+    // * @throws EmptyValueException
+    // * @throws IllegalValueException
+    // * @throws JsonException
      */
     public function testExecWithInvalidStoreId(): void
     {
