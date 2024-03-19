@@ -75,7 +75,9 @@ $paymentMethods = $this->paymentMethods;
   }
 </style>
 
-<?php if (count($paymentMethods) !== 0) : ?>
+<?php
+
+if (count($paymentMethods) !== 0) : ?>
   <div class="rb-payment-methods">
     <table>
       <thead>
@@ -88,14 +90,24 @@ $paymentMethods = $this->paymentMethods;
       </thead>
       <tbody>
       <?php /** @var PaymentMethod $method */ ?>
-      <?php foreach ($paymentMethods as $method) : ?>
+      <?php
+
+foreach ($paymentMethods as $method) : ?>
         <tr id="rb-pm-<?= $method->getId() ?>">
           <td><?= $method->getName() ?></td>
-          <td><?= number_format(num: $method->getMinLimit(), decimals: 2) ?></td>
-          <td><?= number_format(num: $method->getMaxLimit(), decimals: 2) ?></td>
+          <td><?= number_format(
+	num: $method->getMinLimit(),
+	decimals: 2
+) ?></td>
+          <td><?= number_format(
+	num: $method->getMaxLimit(),
+	decimals: 2
+) ?></td>
           <td><?= $method->getSortOrder() ?></td>
         </tr>
-      <?php endforeach; ?>
+      <?php endforeach;
+
+ ?>
       </tbody>
     </table>
   </div>
