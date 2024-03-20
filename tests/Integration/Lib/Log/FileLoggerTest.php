@@ -36,7 +36,9 @@ final class FileLoggerTest extends TestCase
     private bool $isPipeline = false;
 
     private string $path;
+
     private string $filename;
+
     private string $message;
 
     /**

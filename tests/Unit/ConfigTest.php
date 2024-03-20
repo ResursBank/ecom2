@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -75,6 +76,14 @@ class ConfigTest extends TestCase
             expected: Location::SE,
             actual: Config::getLocation()
         );
+    }
+
+    /**
+     * Unset config before each test runs.
+     */
+    public function setUp(): void
+    {
+        Config::unsetInstance();
     }
 
     /**
@@ -203,5 +212,29 @@ class ConfigTest extends TestCase
                 path: '/tmp/'
             )
         );
+    }
+
+    /**
+     * Verifies that before setup the $instance property is set to null
+     */
+    public function testInstanceNullBeforeSetup(): void
+    {
+        $reflectionClass = new ReflectionClass(objectOrClass: Config::class);
+        $uninitializedValue = $reflectionClass->getStaticPropertyValue(
+            name: 'instance'
+        );
+
+        $this->assertNull(actual: $uninitializedValue);
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: FileLogger::class),
+            cache: $this->createMock(originalClassName: None::class)
+        );
+
+        $initializedValue = $reflectionClass->getStaticPropertyValue(
+            name: 'instance'
+        );
+
+        $this->assertNotNull(actual: $initializedValue);
     }
 }

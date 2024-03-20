@@ -49,6 +49,22 @@ class Strings
     }
 
     /**
+     * Generates a random string of characters.
+     *
+     * @throws Exception
+     */
+    public static function generateRandomString(int $length): string
+    {
+        return substr(
+            string: bin2hex(
+                string: random_bytes(length: max(1, $length))
+            ),
+            offset: 0,
+            length: $length
+        );
+    }
+
+    /**
      * Base64-decoded data, but with URL-safe characters.
      */
     public static function base64urlDecode(string $data): string
@@ -59,7 +75,7 @@ class Strings
                 length: strlen(string: $data) % 4,
                 pad_string: '='
             ),
-            strict: true
+            strict: false
         );
     }
 

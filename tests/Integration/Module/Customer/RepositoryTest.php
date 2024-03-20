@@ -250,7 +250,7 @@ class RepositoryTest extends TestCase
         try {
             Repository::getAddress(
                 storeId: $this->getStoreId(),
-                governmentId: '1980010100012',
+                governmentId: '1983051477152',
                 customerType: CustomerType::NATURAL
             );
         } catch (GetAddressException $e) {
@@ -283,7 +283,7 @@ class RepositoryTest extends TestCase
         $this->enableSession();
 
         $data = new GetAddressRequest(
-            govId: '198001010001',
+            govId: '198305147715',
             customerType: CustomerType::NATURAL
         );
 
@@ -315,7 +315,7 @@ class RepositoryTest extends TestCase
         $this->disableSession();
 
         $data = new GetAddressRequest(
-            govId: '198001010001',
+            govId: '198305147715',
             customerType: CustomerType::NATURAL
         );
 
@@ -334,7 +334,7 @@ class RepositoryTest extends TestCase
         $this->disableSession();
 
         $data = new GetAddressRequest(
-            govId: '198001010001',
+            govId: '198305147715',
             customerType: CustomerType::NATURAL
         );
 

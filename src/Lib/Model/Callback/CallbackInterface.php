@@ -20,6 +20,11 @@ interface CallbackInterface
     public function getPaymentId(): string;
 
     /**
+     * Resolve checkout id related to callback.
+     */
+    public function getCheckoutId(): ?string;
+
+    /**
      * Resolve note (such as an order comment entry).
      */
     public function getNote(): string;

@@ -205,7 +205,9 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
         const handleFetchAddressResponse = (response) => {
             if (!response.ok) {
                 setFetchAddressMessage(
-                    "<?= Translator::translate(phraseId: 'get-address-server-error') ?>",
+                    "<?= Translator::translate(
+	phraseId: 'get-address-server-error'
+) ?>",
                     true
                 );
             } else {
@@ -223,13 +225,17 @@ $inputErrorClass = 'rb-customer-widget-getAddress-message-error';
             if (data.error) {
                 if (data.error === 'Invalid POST data.') {
                     setFetchAddressMessage(
-                        "<?= Translator::translate(phraseId: 'get-address-could-not-fetch-address') ?>",
+                        "<?= Translator::translate(
+	phraseId: 'get-address-could-not-fetch-address'
+) ?>",
                         true
                     );
                 }
             } else if (typeof CALLBACK_FETCH_ADDRESS !== 'function') {
                 setFetchAddressMessage(
-                    "<?= Translator::translate(phraseId: 'get-address-no-callback-function') ?>",
+                    "<?= Translator::translate(
+	phraseId: 'get-address-no-callback-function'
+) ?>",
                     true
                 );
             } else {

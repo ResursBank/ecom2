@@ -1698,14 +1698,6 @@
     }
   },
   {
-    "id": "price-format",
-    "translation": {
-      "en": "$%s",
-      "sv": "%s SEK",
-      "no": "%s NOK"
-    }
-  },
-  {
     "id": "enable-delayed-authorization",
     "translation": {
       "en": "Enable delayed authorization",

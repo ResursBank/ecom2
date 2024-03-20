@@ -34,7 +34,6 @@ class Collection implements ArrayAccess, Iterator, Countable
     private int $position;
 
     /**
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function __construct(private array $data, ?string $type = null)
@@ -43,6 +42,32 @@ class Collection implements ArrayAccess, Iterator, Countable
         $this->verifyDataArrayType(data: $data, type: $type);
         $this->type = $type;
         $this->position = 0;
+    }
+
+    /**
+     * Check if property with value exists.
+     *
+     * @param string $propertyName Name of property to search for
+     * @param mixed $propertyValue Value to search for
+     */
+    public function hasObjectWithPropertyValue(
+        string $propertyName,
+        mixed $propertyValue
+    ): bool {
+        foreach ($this->data as $object) {
+            if (
+                is_object(value: $object) &&
+                property_exists(
+                    object_or_class: $object,
+                    property: $propertyName
+                ) &&
+                $object->$propertyName === $propertyValue
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -88,6 +113,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Get data array from collection
      *
+     * @param bool $full Expand all child objects
      * @return array
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -97,9 +123,28 @@ class Collection implements ArrayAccess, Iterator, Countable
         $data = $full ? [] : $this->data;
 
         if ($full) {
-            /** @var Model $model */
-            foreach ($this->data as $model) {
-                $data[] = $model->toArray(full: $full);
+            $data = $this->fullToArray();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get full data array from collection.
+     *
+     * @return array
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    private function fullToArray(): array
+    {
+        $data = [];
+
+        /** @var Model $model */
+        foreach ($this->data as $model) {
+            if (method_exists(object_or_class: $model, method: 'toArray')) {
+                $data[] = $model->toArray(full: true);
+            } else {
+                $data[] = $model;
             }
         }
 

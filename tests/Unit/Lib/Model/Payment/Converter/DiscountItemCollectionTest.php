@@ -31,8 +31,11 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 class DiscountItemCollectionTest extends TestCase
 {
     private DiscountItemCollection $collection;
+
     private DiscountItem $rate6;
+
     private DiscountItem $rate12;
+
     private DiscountItem $rate25;
 
     /**

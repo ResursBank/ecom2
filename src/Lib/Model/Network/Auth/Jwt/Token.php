@@ -61,4 +61,9 @@ class Token extends Model
     {
         $this->stringValidation->notEmpty(value: $this->token_type);
     }
+
+    public function __toString(): string
+    {
+        return $this->access_token;
+    }
 }

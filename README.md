@@ -5,6 +5,16 @@ complete API coverage.
 
 ---
 
+## Setup
+
+When setting up the project for development please be sure the parent directory
+is not called **src** since this will break PHPCS configuration (meaning the
+**src** directory of the project cannot be located at **src/src**).
+
+When using PHPStorm, right-click the **tests** directory, select
+"Mark Directory as" -> "Test Source". Remember to import code style and
+inspections settings from qa/phpstorm.
+
 ## Config
 
 The **Config::setup()** must always be called before performing any API call.

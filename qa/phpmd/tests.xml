@@ -23,10 +23,13 @@
     <rule ref="rulesets/design.xml">
         <exclude name="CouplingBetweenObjects" />
     </rule>
+    <rule ref="rulesets/unusedcode.xml" />
     <rule ref="rulesets/naming.xml">
+        <!-- Exclude rules in order to re-introduce them with specific config. -->
         <exclude name="ShortVariable" />
     </rule>
-    <rule ref="rulesets/unusedcode.xml" />
+
+    <!-- Re-introduce rule with specific config. -->
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
             <property name="exceptions" value="id,ch,ip,en,sv,da,fi,no,js"/>

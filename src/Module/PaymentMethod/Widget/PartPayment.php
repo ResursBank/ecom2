@@ -26,6 +26,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
@@ -162,11 +163,12 @@ class PartPayment extends Widget
      */
     public function getFormattedStartingAtCost(): string
     {
-        if ($this->currencyFormat === CurrencyFormat::SYMBOL_FIRST) {
-            return $this->currencySymbol . ' ' . $this->getStartingAtCost();
-        }
-
-        return $this->getStartingAtCost() . ' ' . $this->currencySymbol;
+        return Price::format(
+            value: $this->cost->monthlyCost,
+            decimals: $this->decimals,
+            currencySymbol: $this->currencySymbol,
+            currencyFormat: $this->currencyFormat
+        );
     }
 
     /**
@@ -174,14 +176,9 @@ class PartPayment extends Widget
      */
     public function getStartingAtCost(): string
     {
-        return number_format(
-            num: round(
-                num: $this->cost->monthlyCost,
-                precision: 2
-            ),
-            decimals: $this->decimals,
-            decimal_separator: ',',
-            thousands_separator: ' '
+        return Price::format(
+            value: $this->cost->monthlyCost,
+            decimals: $this->decimals
         );
     }
 
