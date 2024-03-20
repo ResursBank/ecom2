@@ -50,7 +50,7 @@ class PaymentInformation extends Widget
     /**
      * Keeps track of whether we are rendering odd or even TR element in widget table.
      */
-    private bool $eventTr = false;
+    public bool $eventTr = false;
 
     /**
      * @throws JsonException
@@ -64,11 +64,13 @@ class PaymentInformation extends Widget
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly bool $renderLogo = true
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
@@ -249,20 +251,24 @@ class PaymentInformation extends Widget
      */
     protected function renderWidget(): void
     {
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $logo = '';
 
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
+        if ($this->renderLogo) {
+            $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+
+            if (!$logo) {
+                throw new EmptyValueException(
+                    message: 'Failed to load logo image data'
+                );
+            }
+
+            // Modify logotype size using inline CSS.
+            $logo = str_replace(
+                search: '<svg',
+                replace: '<svg style="height:1.2em; float: right; width: auto;"',
+                subject: $logo
             );
         }
-
-        // Make logotype smaller with inline CSS.
-        $logo = str_replace(
-            search: '<svg',
-            replace: '<svg style="height:1.2em; float: right; width: auto;"',
-            subject: $logo
-        );
 
         /* @phpstan-ignore-next-line */
         $this->logo = $logo;

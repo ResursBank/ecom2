@@ -22,7 +22,9 @@ $thStyle = 'font-size:1.3em; text-align:left; padding:0.2em 0.4em;';
         <tr style="<?= $this->getTrStyle() ?>">
             <th style="<?= $thStyle ?>">
                 <span><?= Translator::translate(phraseId: 'payment') ?></span>
+                <?php if ($this->renderLogo): ?>
                 <span class="rb-pi-logo"><?= $this->logo ?></span>
+                <?php endif; ?>
             </th>
             <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
             <th></th>
