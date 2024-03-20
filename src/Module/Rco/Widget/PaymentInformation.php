@@ -55,8 +55,8 @@ class PaymentInformation extends Original
      * @throws ReflectionException
      * @throws ValidationException
      * @throws FilesystemException
-     * @noinspection PhpMissingParentConstructorInspection
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(
         public readonly string $paymentId,
