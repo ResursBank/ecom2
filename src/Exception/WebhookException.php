@@ -9,11 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Exception;
 
-use Exception;
-
 /**
  * Specifies a problem when processing an incoming webhook request.
  */
-class WebhookException extends Exception
+class WebhookException extends HttpException
 {
 }
