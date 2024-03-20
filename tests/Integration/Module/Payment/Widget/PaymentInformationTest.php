@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
@@ -49,6 +50,10 @@ use Resursbank\EcomTest\Utilities\MockSigner;
  */
 class PaymentInformationTest extends TestCase
 {
+    private Payment $payment;
+    private PaymentInformation $widget;
+    private string $orderReference;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -66,6 +71,16 @@ class PaymentInformationTest extends TestCase
             ),
             language: Language::sv
         );
+
+        $this->orderReference = Strings::generateRandomString(length: 12);
+        $this->payment = $this->createPayment(
+            orderReference: $this->orderReference
+        );
+        $this->widget = new PaymentInformation(
+            paymentId: $this->payment->id,
+            currencySymbol: 'kr',
+            currencyFormat: CurrencyFormat::SYMBOL_LAST
+        );
     }
 
     /**
@@ -82,7 +97,7 @@ class PaymentInformationTest extends TestCase
      */
     private function createPayment(string $orderReference): Payment
     {
-        return Repository::create(
+        $payment = Repository::create(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
@@ -125,6 +140,10 @@ class PaymentInformationTest extends TestCase
                 deviceInfo: new DeviceInfo()
             )
         );
+
+        MockSigner::approve(payment: $payment);
+
+        return Repository::get(paymentId: $payment->id);
     }
 
     /**
@@ -145,27 +164,70 @@ class PaymentInformationTest extends TestCase
      */
     public function testRenderWidget(): void
     {
-        $orderReference = Strings::generateRandomString(length: 12);
-        $payment = $this->createPayment(orderReference: $orderReference);
-        MockSigner::approve(payment: $payment);
-        $signedPayment = Repository::get(paymentId: $payment->id);
-
-        $widget = new PaymentInformation(
-            paymentId: $signedPayment->id,
-            currencySymbol: 'kr',
-            currencyFormat: CurrencyFormat::SYMBOL_LAST
-        );
-
         $this->assertEquals(
-            expected: $signedPayment->id,
-            actual: $widget->payment->id,
+            expected: $this->payment->id,
+            actual: $this->widget->payment->id,
             message: 'Widget payment id does not match original payment id'
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>{$signedPayment->id}<\/td>/s",
-            string: $widget->content,
+            pattern: "/<td[^>]+style=.*>{$this->payment->id}<\/td>/s",
+            string: $this->widget->content,
             message: 'Widget does not contain payment id cell.'
+        );
+    }
+
+    /**
+     * Verify that getTdEl() returns a td element with the given content.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws FilesystemException
+     * @throws Exception
+     */
+    public function testGetTdEl(): void
+    {
+        $tdEl = $this->widget->getTdEl(content: $this->payment->id);
+        $this->assertMatchesRegularExpression(
+            pattern: "/<td[^>]+style=.*>{$this->payment->id}<\/td>/s",
+            string: $tdEl,
+            message: 'getTdEl() does not return a td element with the given content.'
+        );
+
+        // Verify any content I supply is returned in the td element.
+        $content = 'test content';
+        $this->assertMatchesRegularExpression(
+            pattern: "/<td[^>]+style=.*>{$content}<\/td>/s",
+            string: $this->widget->getTdEl(content: $content),
+            message: 'getTdEl() does not return a td element with the given content.'
+        );
+
+        // Verify that if $isHeader is true, renders header element.
+        $headerEl = $this->widget->getTdEl(
+            content: 'captured-amount',
+            isHeader: true
+        );
+
+        // Assert style attribute contains font-weight:bold to confirm styling.
+        $this->assertMatchesRegularExpression(
+            pattern: "/<td[^>]+style=.*font-weight:bold.*>.*<\/td>/s",
+            string: $headerEl,
+            message: 'getTdEl() does not return a td element with the given content.'
+        );
+
+        // Assert that the content of the header element is translated.
+        $this->assertMatchesRegularExpression(
+            pattern: "/<td[^>]+style=.*>.*" . Translator::translate(phraseId: 'captured-amount') . ".*<\/td>/s",
+            string: $headerEl,
+            message: 'getTdEl() does not return a td element with the given content.'
         );
     }
 }
