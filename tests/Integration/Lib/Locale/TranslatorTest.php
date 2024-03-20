@@ -35,7 +35,7 @@ class TranslatorTest extends TestCase
         parent::setUp();
     }
 
-    private function setupConfig(Language $locale = Language::en): void
+    private function setupConfig(Language $locale = Language::EN): void
     {
         Config::setup(
             logger: $this->createMock(
@@ -60,7 +60,7 @@ class TranslatorTest extends TestCase
         $this->assertSame(expected: 'Read More', actual: $result);
 
         // Test translating into swedish.
-        $this->setupConfig(locale: Language::sv);
+        $this->setupConfig(locale: Language::SV);
         $result = Translator::translate(phraseId: 'read-more');
         $this->assertSame(expected: 'Läs Mer', actual: $result);
     }
@@ -175,7 +175,7 @@ class TranslatorTest extends TestCase
 
     public function testNorweiganTranslateFromAlternateTranslationFile(): void
     {
-        $this->setupConfig(locale: Language::no);
+        $this->setupConfig(locale: Language::NO);
         $source = __DIR__ . '/../../../Data/Translator/alternate.json';
 
         $this->assertEquals(
@@ -190,7 +190,7 @@ class TranslatorTest extends TestCase
 
     public function testMissingFallbackTranslateFromAlternateTranslationFile(): void
     {
-        $this->setupConfig(locale: Language::fi);
+        $this->setupConfig(locale: Language::FI);
         $source = __DIR__ . '/../../../Data/Translator/alternate.json';
 
         $this->assertEquals(

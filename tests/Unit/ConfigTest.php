@@ -69,7 +69,7 @@ class ConfigTest extends TestCase
             actual: Config::getTimeout()
         );
         self::assertEquals(
-            expected: Language::en,
+            expected: Language::EN,
             actual: Config::getLanguage()
         );
         self::assertEquals(
@@ -110,7 +110,7 @@ class ConfigTest extends TestCase
             logLevel: LogLevel::DEBUG,
             userAgent: 'Foo',
             timeout: 42,
-            language: Language::sv
+            language: Language::SV
         );
 
         self::assertInstanceOf(
@@ -148,7 +148,7 @@ class ConfigTest extends TestCase
             actual: Config::getTimeout()
         );
         self::assertEquals(
-            expected: Language::sv,
+            expected: Language::SV,
             actual: Config::getLanguage()
         );
     }
