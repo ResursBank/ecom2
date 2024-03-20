@@ -167,7 +167,6 @@ class PaymentInformation extends Widget
     }
 
     /**
-<<<<<<< HEAD
      * Get TD element with inline CSS.
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)

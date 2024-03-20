@@ -24,5 +24,11 @@ final class WidgetTest extends TestCase
             actual: Widget::getTagNames(content:
                 '<html><body><span><a href="testing">Testing</a><div class="famous">People walking</div></span></body>')
         );
+
+        // Assert empty content generates empty array.
+        $this->assertSame(
+            expected: [],
+            actual: Widget::getTagNames(content: '')
+        );
     }
 }
