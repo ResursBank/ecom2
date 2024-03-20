@@ -12,6 +12,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Cache\Redis;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Phrase;
@@ -40,8 +41,8 @@ class TranslatorTest extends TestCase
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
             ),
-            language: $locale,
-            cache: new Redis(host: $_ENV['REDIS_HOST'])
+            cache: new Redis(host: $_ENV['REDIS_HOST']),
+            language: $locale
         );
     }
 
@@ -156,9 +157,40 @@ class TranslatorTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @throws IllegalValueException
      */
     public function testTranslateFromAlternateTranslationFile(): void
     {
+        $source = __DIR__ . '/../../../Data/Translator/alternate.json';
+
+        $this->assertEquals(
+            expected: 'This is a test string',
+            actual: Translator::translate(
+                phraseId: 'test-string',
+                translationFile: $source
+            ),
+            message: 'Translated string does not match expected output'
+        );
+    }
+
+    public function testNorweiganTranslateFromAlternateTranslationFile(): void
+    {
+        $this->setupConfig(locale: Language::no);
+        $source = __DIR__ . '/../../../Data/Translator/alternate.json';
+
+        $this->assertEquals(
+            expected: 'Dette er en teststreng',
+            actual: Translator::translate(
+                phraseId: 'test-string',
+                translationFile: $source
+            ),
+            message: 'Translated string does not match expected output'
+        );
+    }
+
+    public function testMissingFallbackTranslateFromAlternateTranslationFile(): void
+    {
+        $this->setupConfig(locale: Language::fi);
         $source = __DIR__ . '/../../../Data/Translator/alternate.json';
 
         $this->assertEquals(

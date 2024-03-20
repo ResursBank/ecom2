@@ -18,7 +18,7 @@ use stdClass;
 class Response extends Model
 {
     public function __construct(
-        public readonly stdClass $body,
+        public readonly stdClass|array $body,
         public readonly int $code
     ) {
     }

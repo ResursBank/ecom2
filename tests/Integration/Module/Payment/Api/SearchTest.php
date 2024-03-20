@@ -121,7 +121,7 @@ class SearchTest extends TestCase
                 ),
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
-                email: 'test@resurs.com',
+                email: 'test@hosted.resurs.com',
                 governmentId: self::GOVERNMENT_ID,
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()

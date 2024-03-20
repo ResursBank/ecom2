@@ -192,9 +192,9 @@ class GetAddressControllerTest extends TestCase
      * error property when we use a none existing store id (simulating a failed
      * API call to fetch address data).
      *
-//     * @throws EmptyValueException
-//     * @throws IllegalValueException
-//     * @throws JsonException
+    // * @throws EmptyValueException
+    // * @throws IllegalValueException
+    // * @throws JsonException
      */
 //    public function testExecWithInvalidStoreId(): void
 //    {

@@ -15,8 +15,12 @@ declare(strict_types=1);
 <script defer src="<?= $this->getScriptUrl() ?>"></script>
 <style>
   rco-checkout {
-    <?php foreach ($this->getStyleOptions() as $option): ?>
-      <?= $option ?>
-    <?php endforeach; ?>
+    <?php
+
+foreach ($this->getStyleOptions() as $option) : ?>
+        <?= $option ?>
+    <?php endforeach;
+
+ ?>
   }
 </style>

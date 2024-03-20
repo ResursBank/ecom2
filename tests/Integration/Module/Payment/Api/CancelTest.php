@@ -119,13 +119,13 @@ class CancelTest extends TestCase
             customer: new Customer(
                 deliveryAddress: new Address(
                     addressRow1: 'Glassgatan 15',
-                    postalArea: 'Göteborg',
+                    postalArea: 'GÃ¶teborg',
                     postalCode: '41655',
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
-                email: 'test@resurs.com',
+                email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()

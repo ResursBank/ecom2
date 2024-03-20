@@ -75,32 +75,44 @@ $paymentMethods = $this->paymentMethods;
   }
 </style>
 
-<?php if (count($paymentMethods) !== 0) : ?>
-    <div class="rb-payment-methods">
-        <table>
-            <thead>
-            <tr>
-                <th><?= $this->nameLabel ?></th>
-                <th><?= $this->minTotalLabel ?></th>
-                <th><?= $this->maxTotalLabel ?></th>
-                <th><?= $this->sortOrderLabel ?></th>
-            </tr>
-            </thead>
-            <tbody>
-                <?php /** @var PaymentMethod $method */ ?>
-                <?php foreach ($paymentMethods as $method) : ?>
-                    <tr id="rb-pm-<?= $method->getId() ?>">
-                        <td><?= $method->getName() ?></td>
-                        <td><?= number_format(num: $method->getMinLimit(), decimals: 2) ?></td>
-                        <td><?= number_format(num: $method->getMaxLimit(), decimals: 2) ?></td>
-                        <td><?= $method->getSortOrder() ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+<?php
+
+if (count($paymentMethods) !== 0) : ?>
+  <div class="rb-payment-methods">
+    <table>
+      <thead>
+      <tr>
+        <th><?= $this->nameLabel ?></th>
+        <th><?= $this->minTotalLabel ?></th>
+        <th><?= $this->maxTotalLabel ?></th>
+        <th><?= $this->sortOrderLabel ?></th>
+      </tr>
+      </thead>
+      <tbody>
+      <?php /** @var PaymentMethod $method */ ?>
+      <?php
+
+foreach ($paymentMethods as $method) : ?>
+        <tr id="rb-pm-<?= $method->getId() ?>">
+          <td><?= $method->getName() ?></td>
+          <td><?= number_format(
+	num: $method->getMinLimit(),
+	decimals: 2
+) ?></td>
+          <td><?= number_format(
+	num: $method->getMaxLimit(),
+	decimals: 2
+) ?></td>
+          <td><?= $method->getSortOrder() ?></td>
+        </tr>
+      <?php endforeach;
+
+ ?>
+      </tbody>
+    </table>
+  </div>
 <?php else : ?>
-    <p class="rb-payment-methods-warning">
-        <?= $this->missingWarning ?>
-    </p>
+  <p class="rb-payment-methods-warning">
+      <?= $this->missingWarning ?>
+  </p>
 <?php endif; ?>

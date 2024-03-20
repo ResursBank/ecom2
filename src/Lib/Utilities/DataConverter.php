@@ -116,11 +116,11 @@ class DataConverter
                 // to the enum value it represents.
                 // @todo enum_exists guarantees UnitEnum, we expect BackedEnum. See ECP-339
                 $arguments[$name] = $value !== null ?
-                        call_user_func(
-                            /* @phpstan-ignore-next-line */
-                            $propertyType . '::from',
-                            $value instanceof BackedEnum ? $value->value : $value
-                        ) : null;
+                    call_user_func(
+                    /* @phpstan-ignore-next-line */
+                        $propertyType . '::from',
+                        $value instanceof BackedEnum ? $value->value : $value
+                    ) : null;
             } elseif (is_object(value: $value)) {
                 $arguments[$name] = self::stdClassToType(
                     object: $value,

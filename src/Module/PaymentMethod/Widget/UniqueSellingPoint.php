@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
@@ -38,6 +39,7 @@ class UniqueSellingPoint extends Widget
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
@@ -59,12 +61,13 @@ class UniqueSellingPoint extends Widget
     /**
      * Fetches the localized USP translation for a payment method type.
      *
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws TranslationException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     * @throws IllegalValueException
      */
     private function getBasicTranslation(Type $paymentMethodType): string
     {

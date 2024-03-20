@@ -94,8 +94,8 @@ class StringValidation
         if (!in_array(needle: $value, haystack: $set, strict: true)) {
             throw new IllegalValueException(
                 message:
-                    "$value is not one of " .
-                    implode(separator: ',', array: $set)
+                "$value is not one of " .
+                implode(separator: ',', array: $set)
             );
         }
 

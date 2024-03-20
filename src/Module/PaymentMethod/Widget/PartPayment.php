@@ -82,9 +82,11 @@ class PartPayment extends Widget
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws MissingKeyException
      * @throws ReflectionException
      * @throws TranslationException
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         private readonly string $storeId,
@@ -94,7 +96,8 @@ class PartPayment extends Widget
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly string $apiUrl,
-        public readonly int $decimals = 2
+        public readonly int $decimals = 2,
+        public readonly bool $displayInfoText = true
     ) {
         $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
@@ -123,6 +126,8 @@ class PartPayment extends Widget
 
     /**
      * Return payment method
+     *
+     * @noinspection PhpUnused
      */
     public function getPaymentMethod(): PaymentMethod
     {
@@ -135,6 +140,7 @@ class PartPayment extends Widget
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
@@ -211,11 +217,6 @@ class PartPayment extends Widget
             message: 'Could not find matching payment plan'
         );
     }
-    /*
-     * Return total amount of product
-     *
-     * @return float
-     */
 
     /**
      * Fetch a Cost object from the Price signage API

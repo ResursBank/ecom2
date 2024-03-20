@@ -124,7 +124,7 @@ class CaptureTest extends TestCase
                 ),
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
-                email: 'test@resurs.com',
+                email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
