@@ -56,11 +56,13 @@ class PaymentInformation extends Original
      * @throws ValidationException
      * @throws FilesystemException
      * @noinspection PhpMissingParentConstructorInspection
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly bool $renderLogo = true
     ) {
         $this->checkout = Repository::get(id: $this->paymentId);
         $this->renderWidget();

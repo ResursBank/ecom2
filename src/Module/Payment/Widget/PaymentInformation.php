@@ -244,15 +244,13 @@ class PaymentInformation extends Widget
 
     /**
      * Render widget components (kept in separate method, so it can be executed
-     * from subclasses).
+     * from subclasses because the constructor defines the resource to be used).
      *
      * @throws EmptyValueException
      * @throws FilesystemException
      */
     protected function renderWidget(): void
     {
-        $logo = '';
-
         if ($this->renderLogo) {
             $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
 
@@ -271,7 +269,7 @@ class PaymentInformation extends Widget
         }
 
         /* @phpstan-ignore-next-line */
-        $this->logo = $logo;
+        $this->logo = $logo ?? '';
         /* @phpstan-ignore-next-line */
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
