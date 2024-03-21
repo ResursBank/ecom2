@@ -195,7 +195,7 @@ class GetAddressControllerTest extends TestCase
     {
         $this->expectException(exception: GetAddressException::class);
 
-        $data = $this->callController(
+        $this->callController(
             govId: '198305147715',
             customerType: CustomerType::NATURAL,
             storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
