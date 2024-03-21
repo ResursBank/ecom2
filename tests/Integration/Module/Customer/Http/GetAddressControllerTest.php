@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -188,38 +189,17 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
-     * Assert exec() responds with an stdClass instance containing a non-empty
-     * error property when we use a none existing store id (simulating a failed
-     * API call to fetch address data).
-     *
-    // * @throws EmptyValueException
-    // * @throws IllegalValueException
-    // * @throws JsonException
+     * Assert that an exception is thrown when using an invalid store ID.
      */
     public function testExecWithInvalidStoreId(): void
     {
-        $this->markTestSkipped(
-            message: 'This does not work, causes error. Disabled for now'
-        );
+        $this->expectException(exception: GetAddressException::class);
 
-//        $data = $this->callController(
-//            govId: '198305147715',
-//            customerType: CustomerType::NATURAL,
-//            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
-//        );
-//
-//        $this->assertResponseContains(needle: 'error', haystack: $data);
-//
-//        $obj = json_decode(
-//            json: $data,
-//            associative: false,
-//            depth: 512,
-//            flags: JSON_THROW_ON_ERROR
-//        );
-//
-//        $this->assertIsObject(actual: $obj);
-//        $this->assertObjectHasAttribute(attributeName: 'error', object: $obj);
-//        $this->assertNotEmpty(actual: $obj->error);
+        $this->callController(
+            govId: '198305147715',
+            customerType: CustomerType::NATURAL,
+            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
+        );
     }
 
     /**
