@@ -46,55 +46,35 @@ class RepositoryTest extends TestCase
      */
     public function testGetIntegrationInfoMetadata(): void
     {
-        $platform = 'Test';
-        $platformVersion = '1.0';
-        $pluginVersion = '1.5';
+        $values = [
+            'resurs_platform' => 'Test',
+            'resurs_platform_version' => '1.0',
+            'resurs_platform_plugin_version' => '1.5'
+        ];
+
         $data = Repository::getIntegrationInfoMetadata(
-            platform: $platform,
-            platformVersion: $platformVersion,
-            pluginVersion: $pluginVersion
+            platform: $values['resurs_platform'],
+            platformVersion: $values['resurs_platform_version'],
+            pluginVersion: $values['resurs_platform_plugin_version']
         );
 
         if ($data->custom === null) {
             $this->fail(message: 'Received empty Entry collection.');
         }
 
-        if (
-            $this->collectionHasKey(
-                collection: $data->custom,
-                key: 'resurs_platform',
-                value: $platform
-            )
-        ) {
-            $this->addToAssertionCount(count: 1);
-        } else {
-            $this->fail(message: "'resurs_platform' value not found!");
-        }
+        foreach ($values as $key => $value) {
+            if (
+                $this->collectionHasKey(
+                    collection: $data->custom,
+                    key: $key,
+                    value: $value
+                )
+            ) {
+                $this->addToAssertionCount(count: 1);
+                continue;
+            }
 
-        if (
-            $this->collectionHasKey(
-                collection: $data->custom,
-                key: 'resurs_platform_version',
-                value: $platformVersion
-            )
-        ) {
-            $this->addToAssertionCount(count: 1);
-        } else {
-            $this->fail(message: "'resurs_platform_version' value not found!");
-        }
-
-        if (
-            $this->collectionHasKey(
-                collection: $data->custom,
-                key: 'resurs_platform_plugin_version',
-                value: $pluginVersion
-            )
-        ) {
-            $this->addToAssertionCount(count: 1);
-        } else {
-            $this->fail(
-                message: "'resurs_platform_plugin_version' value not found!"
-            );
+            $this->fail(message: 'Failed on key ' . $key);
         }
     }
 }
