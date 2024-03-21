@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Payment\Customer;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Information and details about a payment.
@@ -26,25 +26,11 @@ class DeviceInfo extends Model
          * @todo Don't know how to validate ip-address.
          */
         public readonly ?string $ip = null,
-        public readonly ?string $userAgent = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
-    ) {
-        $this->validateUserAgent();
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateUserAgent(): void
-    {
-        if ($this->userAgent === null) {
-            return;
-        }
-
-        $this->stringValidation->length(
-            value: $this->userAgent,
+        #[StringLength(
             min: 1,
             max: 200
-        );
+        )] public readonly ?string $userAgent = null
+    ) {
+        parent::__construct();
     }
 }
