@@ -72,7 +72,7 @@ class PaymentInformationTest extends TestCase
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            language: Language::sv
+            language: Language::SV
         );
 
         $this->orderReference = Strings::generateRandomString(length: 12);

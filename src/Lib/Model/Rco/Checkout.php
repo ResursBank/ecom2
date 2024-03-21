@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Enum\CheckoutStatus;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\CountryCode;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\Currency;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\PaymentStatus;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 /**
  * Implementation of CheckoutDto object.
@@ -153,6 +154,24 @@ class Checkout extends Model
                 $this->payment->status->capturedAmount === 0
             ) &&
             $this->payment->status->capturedAmount === $this->payment->status->refundedAmount;
+    }
+
+    /**
+     * Get currency symbol.
+     */
+    public function getCurrencySymbol(): string
+    {
+        return $this->currency !== Currency::EUR ? 'kr' : '€';
+    }
+
+    /**
+     * Get currency format.
+     */
+    public function getCurrencyFormat(): CurrencyFormat
+    {
+        return $this->currency !== Currency::EUR ?
+            CurrencyFormat::SYMBOL_LAST :
+            CurrencyFormat::SYMBOL_FIRST;
     }
 
     /**
