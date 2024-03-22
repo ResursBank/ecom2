@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -27,15 +26,17 @@ use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Throwable;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
- *
- * @todo Refactor this file. Contains several null pointers, file_get_contents can return false, etc.
  */
 class PaymentInformation extends Widget
 {
+    /**
+     * This is over-written by other implementations extending this class.
+     */
+    public const PAYMENT_ID_LABEL = 'payment-id';
+
     /** @var Payment */
     public readonly Payment $payment;
 
@@ -43,10 +44,12 @@ class PaymentInformation extends Widget
     public readonly string $content;
 
     /** @var string */
-    public readonly string $css;
-
-    /** @var string */
     public readonly string $logo;
+
+    /**
+     * Keeps track of whether we are rendering odd or even TR element in widget table.
+     */
+    public bool $eventTr = false;
 
     /**
      * @throws JsonException
@@ -60,56 +63,16 @@ class PaymentInformation extends Widget
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly bool $renderLogo = true
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
-    }
-
-    /**
-     * Fetches CSS without instantiating an object.
-     *
-     * @throws EmptyValueException
-     */
-    public static function getCss(): string
-    {
-        $css = file_get_contents(
-            filename: __DIR__ . '/payment-information.css'
-        );
-
-        if (!$css) {
-            throw new EmptyValueException(
-                message: 'Failed to load stylesheet data'
-            );
-        }
-
-        return $css;
-    }
-
-    /**
-     * Fetch formatted delivery address.
-     *
-     * @deprecated Use methods to collect individual values instead.
-     */
-    public function getAddress(): string
-    {
-        if ($this->payment->customer->deliveryAddress) {
-            return $this->payment->customer->deliveryAddress->addressRow1 . '<br />' . PHP_EOL .
-                ($this->payment->customer->deliveryAddress->addressRow2 ?
-                    $this->payment->customer->deliveryAddress->addressRow2 . '<br />' . PHP_EOL :
-                    ''
-                ) .
-                $this->payment->customer->deliveryAddress->postalArea . '<br />' . PHP_EOL .
-                ($this->payment->customer->deliveryAddress->countryCode !== null ?
-                    $this->payment->customer->deliveryAddress->countryCode->value . ' - ' : '') .
-                $this->payment->customer->deliveryAddress->postalCode;
-        }
-
-        return '';
     }
 
     public function hasAddress(): bool
@@ -203,45 +166,110 @@ class PaymentInformation extends Widget
     }
 
     /**
-     * @throws ConfigException
+     * Get TD element with inline CSS.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function getPaymentIdLabel(): string
-    {
-        $result = 'ID';
+    public function getTdEl(
+        string $content,
+        bool $isHeader = false
+    ): string {
+        return '<td style="padding:0.3em 0.5em;' . (
+            $isHeader ?
+                ' text-align:right; min-width:22ch; font-weight:bold; vertical-align:top;' :
+                ' width:100%;'
+        ) . '">' . (
+            $isHeader ?
+                Translator::translate(phraseId: $content) :
+                $content
+            ) . '</td>';
+    }
 
-        try {
-            $result = Translator::translate(phraseId: 'payment-id');
-        } catch (Throwable $error) {
-            Config::getLogger()->error(message: $error);
-        }
+    /**
+     * Get TR element containing two TD elements using this structure:
+     *
+     * <tr>
+     *     <td>[TITLE]</td>
+     *     <td>[CONTENT]</td>
+     * </tr>
+     */
+    public function getTrEl(
+        string $title,
+        string $content
+    ): string {
+        return '<tr style="' . $this->getTrStyle() . '">' .
+            $this->getTdEl(content: $title, isHeader: true) .
+            $this->getTdEl(content: $content) . '</tr>';
+    }
+
+    /**
+     * In the template we need to render some TR elements manually, we must ensure to keep odd/even background-color
+     * intact, which is why this is separated to its method outside getTrEl()
+     */
+    public function getTrStyle(): string
+    {
+        $result = 'background-color: #' . ($this->eventTr ? '006464' : '009b96') . ';';
+
+        $this->eventTr = !$this->eventTr;
 
         return $result;
     }
 
     /**
+     * Assemble address data and separate with <br />
+     */
+    public function getAddressContent(): string
+    {
+        $data = [
+            $this->getAddressRow1()
+        ];
+
+        $addressRow2 = $this->getAddressRow2();
+
+        if ($addressRow2 !== '') {
+            $data[] = $addressRow2;
+        }
+
+        $data[] = $this->getCity();
+
+        $country = $this->getCountryCode();
+
+        $data[] = $country . ($country !== '' ? ' - ' : '') . $this->getPostalCode();
+
+        return implode(separator: '<br />', array: $data);
+    }
+
+    /**
      * Render widget components (kept in separate method, so it can be executed
-     * from subclasses).
+     * from subclasses because the constructor defines the resource to be used).
      *
      * @throws EmptyValueException
      * @throws FilesystemException
      */
     protected function renderWidget(): void
     {
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        if ($this->renderLogo) {
+            $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
 
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
+            if (!$logo) {
+                throw new EmptyValueException(
+                    message: 'Failed to load logo image data'
+                );
+            }
+
+            // Modify logotype size using inline CSS.
+            $logo = str_replace(
+                search: '<svg',
+                replace: '<svg style="height:1.2em; float: right; width: auto;"',
+                subject: $logo
             );
         }
 
         /* @phpstan-ignore-next-line */
-        $this->logo = $logo;
+        $this->logo = $logo ?? '';
         /* @phpstan-ignore-next-line */
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
         );
-        /* @phpstan-ignore-next-line */
-        $this->css = $this->render(file: __DIR__ . '/payment-information.css');
     }
 }

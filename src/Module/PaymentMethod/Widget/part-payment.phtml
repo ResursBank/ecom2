@@ -45,7 +45,10 @@ if ($this->displayInfoText) : ?>
           of it, but this compensates for the issues with the touch area not moving based on the screen resolution used.
           -->
         <div id="x-button"
-             style="cursor: pointer; position: absolute; top: 0px; right: 0px; font-size: 24px; z-index: 10; background-color: white; padding: 5px;"
+             style="
+                cursor: pointer; position: absolute; top: 0px; right: 0px; font-size: 24px; z-index: 10;
+                background-color: white; padding: 5px;
+             "
              onclick="document.getElementById('rb-pp-hidden').style.display='none';">X
         </div>
         <iframe id="rb-pp-iframe" src="<?= $this->iframeUrl ?>" loading="eager"></iframe>

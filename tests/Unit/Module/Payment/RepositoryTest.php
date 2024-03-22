@@ -55,46 +55,33 @@ class RepositoryTest extends TestCase
             pluginVersion: $pluginVersion
         );
 
-        if ($data->custom === null) {
-            $this->fail(message: 'Received empty Entry collection.');
-        }
+        $this->assertNotNull($data->custom, 'Received empty Entry collection.');
 
-        if (
+        $this->assertTrue(
             $this->collectionHasKey(
                 collection: $data->custom,
                 key: 'resurs_platform',
                 value: $platform
-            )
-        ) {
-            $this->addToAssertionCount(count: 1);
-        } else {
-            $this->fail(message: "'resurs_platform' value not found!");
-        }
+            ),
+            "'resurs_platform' value not found!"
+        );
 
-        if (
+        $this->assertTrue(
             $this->collectionHasKey(
                 collection: $data->custom,
                 key: 'resurs_platform_version',
                 value: $platformVersion
-            )
-        ) {
-            $this->addToAssertionCount(count: 1);
-        } else {
-            $this->fail(message: "'resurs_platform_version' value not found!");
-        }
+            ),
+            "'resurs_platform_version' value not found!"
+        );
 
-        if (
+        $this->assertTrue(
             $this->collectionHasKey(
                 collection: $data->custom,
                 key: 'resurs_platform_plugin_version',
                 value: $pluginVersion
-            )
-        ) {
-            $this->addToAssertionCount(count: 1);
-        } else {
-            $this->fail(
-                message: "'resurs_platform_plugin_version' value not found!"
-            );
-        }
+            ),
+            "'resurs_platform_plugin_version' value not found!"
+        );
     }
 }
