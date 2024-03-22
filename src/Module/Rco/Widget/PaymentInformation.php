@@ -35,6 +35,11 @@ use Throwable;
  */
 class PaymentInformation extends Original
 {
+    /**
+     * This is over-written by other implementations extending this class.
+     */
+    public const PAYMENT_ID_LABEL = 'checkout-id';
+
     public readonly Checkout $checkout;
 
     /**
@@ -49,12 +54,14 @@ class PaymentInformation extends Original
      * @throws ReflectionException
      * @throws ValidationException
      * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly bool $renderLogo = true
     ) {
         $this->checkout = Repository::get(id: $this->paymentId);
         $this->renderWidget();
