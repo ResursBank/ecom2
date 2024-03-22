@@ -40,7 +40,7 @@ class SupportInfoTest extends TestCase
                 originalClassName: LoggerInterface::class
             ),
             cache: new None(),
-            language: Language::sv,
+            language: Language::SV,
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],

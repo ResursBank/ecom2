@@ -82,7 +82,7 @@ final class Config
         string $proxy = '',
         int $proxyType = 0,
         int $timeout = 0,
-        Language $language = Language::en,
+        Language $language = Language::EN,
         Location $location = Location::SE
     ): void {
         self::$instance = new Config(
