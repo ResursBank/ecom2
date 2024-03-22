@@ -18,10 +18,12 @@ use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
@@ -36,7 +38,6 @@ class Payment extends Model
      * Search compatible with the Payment model, we are temporary setting the missing fields
      * with empty defaults.
      *
-     * @param array $paymentActions
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -48,6 +49,7 @@ class Payment extends Model
         public readonly string $storeId,
         public readonly Customer $customer,
         public readonly Status $status,
+        public readonly ?RejectedReason $rejectedReason = null,
         public readonly array $paymentActions = [],
         public readonly ?PaymentMethod $paymentMethod = null,
         public readonly ?CountryCode $countryCode = null,
@@ -131,6 +133,76 @@ class Payment extends Model
     public function isFrozen(): bool
     {
         return $this->status === Status::FROZEN;
+    }
+
+    /**
+     * Returns true if payment is rejected.
+     */
+    public function isRejected(): bool
+    {
+        return $this->status === Status::REJECTED;
+    }
+
+    /**
+     * Returns true if payment is denied.
+     */
+    public function isDenied(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::CREDIT_DENIED;
+    }
+
+    /**
+     * Returns true if payment is denied.
+     */
+    public function isCreditDenied(): bool
+    {
+        return $this->isDenied();
+    }
+
+    /**
+     * Returns true if payment timed out.
+     */
+    public function isTimeout(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::TIMEOUT;
+    }
+
+    /**
+     * Returns true if payment has insufficient funds.
+     */
+    public function isInsufficientFunds(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::INSUFFICIENT_FUNDS;
+    }
+
+    /**
+     * Returns true if payment is canceled.
+     */
+    public function isCanceled(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::CANCELED;
+    }
+
+    /**
+     * Returns true if payment is denied.
+     */
+    public function isTechnicalError(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::TECHNICAL_ERROR;
+    }
+
+    /**
+     * Returns true if payment is aborted by customer.
+     */
+    public function isAbortedByCustomer(): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === RejectedReasonCategory::ABORTED_BY_CUSTOMER;
     }
 
     /**

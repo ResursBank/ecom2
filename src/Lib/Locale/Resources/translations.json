@@ -1242,6 +1242,16 @@
     }
   },
   {
+    "id": "credit-denied-try-again",
+    "translation": {
+      "en": "Unfortunately, your credit application could not be approved, please contact Resurs Bank for more information or choose another payment method to complete your order",
+      "sv": "Dessvärre kunde din kreditansökan inte beviljas, vänligen kontakta Resurs Bank för mer information eller välj ett annat betalsätt för att slutföra din beställning",
+      "no": "Dessverre kunne din kredittsøknad ikke innvilges, vennligst kontakt Resurs Bank for mer informasjon eller velg en annen betalingsmåte for å fullføre din bestilling",
+      "da": "Desværre kunne din kreditansøgning ikke godkendes, venligst kontakt Resurs Bank for mere information, eller vælg en anden betalingsmetode for at fuldføre din ordre",
+      "fi": "Valitettavasti luottohakemustasi ei voitu hyväksyä, ole hyvä ja ota yhteyttä Resurs Bankiin saadaksesi lisätietoja tai valitse toinen maksutapa tilauksesi loppuunsaattamiseksi"
+    }
+  },
+  {
     "id": "callbacks",
     "translation": {
       "en": "Callbacks",
