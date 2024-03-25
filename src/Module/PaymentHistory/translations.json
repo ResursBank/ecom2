@@ -299,5 +299,13 @@
       "en": "Unchanged",
       "sv": "Oförändrad"
     }
+  },
+  {
+    "id": "authorization-callback-received",
+    "translation": {
+      "en": "Authorization callback received with status %s.",
+      "sv": "Authorization callback inkom med status %s.",
+      "no": "Autorisasjons tilbakeringing mottatt med status %s."
+    }
   }
 ]
