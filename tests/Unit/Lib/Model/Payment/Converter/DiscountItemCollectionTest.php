@@ -81,7 +81,7 @@ class DiscountItemCollectionTest extends TestCase
     private function getRandomPrice(): float
     {
         $int = random_int(min: 1, max: 9999999999);
-        $dec = random_int(min: 1, max: 9999999999) / 100;
+        $dec = random_int(min: 1, max: 999) / 100;
 
         return round(num: $int + $dec, precision: 2);
     }

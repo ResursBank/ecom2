@@ -24,7 +24,7 @@ class GenericTest extends TestCase
      * @throws ReflectionException
      * @throws IllegalValueException
      */
-    public function getVersionByDocBlockTest(): void
+    public function testGetVersionByDocBlock(): void
     {
         $this->assertTrue(
             condition: version_compare(
@@ -40,7 +40,7 @@ class GenericTest extends TestCase
     /**
      * @throws Exception
      */
-    public function getVersionByComposerTest(): void
+    public function testGetVersionByComposer(): void
     {
         $generic = $this->createMock(originalClassName: Generic::class);
         $generic->method('getVersionByComposer')->willReturn(value: '1.0.0');
@@ -57,7 +57,7 @@ class GenericTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function getVersionByAnythingFound(): void
+    public function testGetVersionByAnythingFound(): void
     {
         $generic = $this->createMock(originalClassName: Generic::class);
         $generic->method('getVersionByAny')->willReturn(value: '1.0.0');
@@ -77,7 +77,7 @@ class GenericTest extends TestCase
     /**
      * @throws Exception
      */
-    public function getAnotherComposerTag(): void
+    public function testGetAnotherComposerTag(): void
     {
         $willReturn = 'resursbank/ecom';
 
@@ -93,7 +93,7 @@ class GenericTest extends TestCase
     /**
      * @throws Exception
      */
-    public function getVendorTest(): void
+    public function testGetVendor(): void
     {
         $this->assertSame(
             expected: 'resursbank',

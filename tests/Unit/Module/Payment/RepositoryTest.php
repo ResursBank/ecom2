@@ -58,9 +58,7 @@ class RepositoryTest extends TestCase
             pluginVersion: $values['resurs_platform_plugin_version']
         );
 
-        if ($data->custom === null) {
-            $this->fail(message: 'Received empty Entry collection.');
-        }
+        $this->assertNotNull($data->custom, 'Received empty Entry collection.');
 
         foreach ($values as $key => $value) {
             if (
