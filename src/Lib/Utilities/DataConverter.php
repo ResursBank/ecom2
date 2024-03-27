@@ -136,7 +136,6 @@ class DataConverter
     }
 
     /**
-     * @param array $data
      * @param class-string $type
      * @throws IllegalTypeException
      * @throws IllegalValueException

@@ -244,7 +244,6 @@ class Random
     /**
      * Get random string made up of characters from specified array.
      *
-     * @param array $charset
      * @throws IllegalValueException
      */
     private static function getStringWithCharset(

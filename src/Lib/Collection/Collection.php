@@ -73,7 +73,6 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Set new data array
      *
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function setData(array $data): void
@@ -83,9 +82,6 @@ class Collection implements ArrayAccess, Iterator, Countable
         $this->data = $data;
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
@@ -114,7 +110,6 @@ class Collection implements ArrayAccess, Iterator, Countable
      * Get data array from collection
      *
      * @param bool $full Expand all child objects
-     * @return array
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function toArray(
@@ -132,7 +127,6 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * Get full data array from collection.
      *
-     * @return array
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
     private function fullToArray(): array

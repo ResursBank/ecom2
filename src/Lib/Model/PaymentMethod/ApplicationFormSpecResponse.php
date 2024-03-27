@@ -69,7 +69,6 @@ class ApplicationFormSpecResponse extends Model
     /**
      * Filters out specified fields from field collection
      *
-     * @param array $fields
      * @throws IllegalTypeException
      */
     public function filter(string $property, array $fields): self
