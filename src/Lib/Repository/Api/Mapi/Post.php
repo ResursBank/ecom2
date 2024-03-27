@@ -34,10 +34,10 @@ class Post extends Request
      * @throws IllegalTypeException
      */
     public function __construct(
-        protected string $model,
-        protected string $route,
-        protected array $params = [],
-        protected string $extractProperty = ''
+        string $model,
+        string $route,
+        array $params = [],
+        string $extractProperty = ''
     ) {
         parent::__construct(
             model: $model,
@@ -47,5 +47,6 @@ class Post extends Request
             params: $params,
             extractProperty: $extractProperty
         );
+
     }
 }

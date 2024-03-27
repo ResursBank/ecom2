@@ -43,12 +43,12 @@ class Request
      * @throws IllegalTypeException
      */
     public function __construct(
-        protected string $model,
-        protected string $route,
-        protected RequestMethod $requestMethod,
+        protected readonly string $model,
+        protected readonly string $route,
+        protected readonly RequestMethod $requestMethod,
         protected Mapi|Rco $api,
-        protected array $params = [],
-        protected string $extractProperty = '',
+        protected readonly array $params = [],
+        protected readonly string $extractProperty = '',
         protected readonly array $headers = [],
         protected readonly ContentType $contentType = ContentType::JSON
     ) {
