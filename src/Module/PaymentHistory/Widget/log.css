@@ -119,15 +119,22 @@
     background-color: #009b91;
 }
 
-.rb-rh-show-extra-btn a:link,
-.rb-rh-show-extra-btn a:visited {
+.rb-ph-show-extra-btn {
     padding: 6px 10px 7px 10px;
     background: rgb(0, 43, 100);
     font-size: 14px;
     -moz-border-radius: 10%;
     -webkit-border-radius: 10%;
     border-radius: 10%;
+    border-width:0.1em;
+    border-color:#ddd;
     color: #dddddd !important;
+}
+
+.rb-ph-show-extra-btn:hover {
+    background: rgb(40, 83, 140);
+    color:#fff !important;
+    border-color:#fff;
 }
 
 #rb-ph-extra {
@@ -136,16 +143,24 @@
 
 #rb-ph-go-back {
     float: right;
-    padding: 0 25px 25px 25px;
+    padding: 6px 10px 7px 10px;
+    background: rgb(0, 43, 100);
+    font-size: 14px;
+    -moz-border-radius: 10%;
+    -webkit-border-radius: 10%;
+    border-radius: 10%;
+    background-color: #009b96;
+    color: #ffffff !important;
 }
 
-.btn-link {
+#rb-ph-button {
     display: inline-block;
     padding: 10px 15px;
     background-color: #009b96;
     color: #ffffff !important;
     text-decoration: none;
     border-radius: 5px;
+    border-width:0;
     font-size: 16px;
     line-height: 20px;
 }
@@ -205,14 +220,16 @@
 
 #rb-ph .close-window-link {
     float:right;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background-color: #dddddd;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    text-align:center;
+    overflow:hidden;
 }
 
 #rb-ph .close-window-link .close-symbol {
