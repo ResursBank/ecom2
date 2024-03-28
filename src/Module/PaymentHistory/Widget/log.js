@@ -1,20 +1,24 @@
-function showExtra(data) {
+function showExtra(data)
+{
     document.getElementById('rb-ph-extra-content').innerHTML = data;
     document.getElementById('rb-ph-log-table').style.display = 'none';
     document.getElementById('rb-ph-extra').style.display = 'block';
 }
 
-function showLogTable() {
+function showLogTable()
+{
     document.getElementById('rb-ph-extra').style.display = 'none';
     document.getElementById('rb-ph-log-table').style.display = '';
 }
 
-function showWidget() {
-    document.getElementById('rb-ph-hidden').style.display='block';
+function showWidget()
+{
+    document.getElementById('rb-ph-hidden').style.display = 'block';
 }
 
-function hideWidget() {
-    document.getElementById('rb-ph-hidden').style.display='none';
+function hideWidget()
+{
+    document.getElementById('rb-ph-hidden').style.display = 'none';
 }
 
 window.onload = () => {
@@ -32,7 +36,7 @@ window.onload = () => {
 
     let phExtraButtons = document.querySelectorAll(".rb-ph-show-extra-btn");
     phExtraButtons.forEach(function (el) {
-        el.addEventListener('click', function() {
+        el.addEventListener('click', function () {
             showExtra(el.children[0].textContent);
         });
     });

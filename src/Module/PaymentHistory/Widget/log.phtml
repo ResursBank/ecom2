@@ -48,11 +48,7 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
                     <tbody>
 <?php foreach ($this->entries as $entry) : ?>
     <tr class="<?= $this->getResultClass(entry: $entry) ?>">
-        <td><?= date(
-            format: 'Y-m-d H:i:s',
-            timestamp: $entry->time
-            ) ?>
-        </td>
+        <td><?= date(format: 'Y-m-d H:i:s', timestamp: $entry->time) ?></td>
         <td><?= Translator::translate(phraseId: $entry->event->value) ?></td>
         <td><?= $this->getUser(entry: $entry) ?></td>
         <td><?= $entry->previousOrderStatus ?></td>
