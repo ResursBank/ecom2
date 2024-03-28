@@ -109,7 +109,6 @@ class CurlException extends Exception
     /**
      * Extract parameters from body.
      *
-     * @return array
      * @throws ConfigException
      */
     private function extractParameters(mixed $body): array

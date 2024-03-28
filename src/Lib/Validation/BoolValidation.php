@@ -23,7 +23,6 @@ class BoolValidation
      * Validates the supplied array contains an element named $key and that
      * element contains a boolean value. Returns the validated boolean.
      *
-     * @param array $data
      * @throws MissingKeyException
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.BooleanGetMethodName)

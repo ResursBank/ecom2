@@ -16,9 +16,6 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class ArrayPropertyDummy extends Model
 {
-    /**
-     * @param array $array
-     */
     public function __construct(
         public array $array,
         public string $message

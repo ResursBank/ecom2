@@ -77,8 +77,6 @@ class Checkout extends Widget
 
     /**
      * Get a pre-rendered set of styling option strings.
-     *
-     * @return array
      */
     public function getStyleOptions(): array
     {

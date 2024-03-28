@@ -24,7 +24,6 @@ class IntValidation
      * Validates the supplied array contains an element named $key and that
      * element contains an integer. Returns the validated integer.
      *
-     * @param array $data
      * @throws MissingKeyException
      * @throws IllegalTypeException
      */

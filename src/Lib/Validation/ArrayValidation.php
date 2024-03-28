@@ -48,7 +48,6 @@ class ArrayValidation
     /**
      * Validate supplied array is sequential.
      *
-     * @param array $data
      * @throws IllegalValueException
      */
     public function isSequential(array $data): bool
@@ -66,7 +65,6 @@ class ArrayValidation
     /**
      * Validate supplied array is associative.
      *
-     * @param array $data
      * @throws IllegalValueException
      */
     public function isAssoc(array $data): bool
@@ -84,7 +82,6 @@ class ArrayValidation
     /**
      * Validate depth of multidimensional array.
      *
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function isMultiDimensional(array $data, int $depth): bool
@@ -109,7 +106,6 @@ class ArrayValidation
     /**
      * Validate one-dimensional array contains only stdClass instances.
      *
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function isStdClassCollection(
@@ -130,8 +126,6 @@ class ArrayValidation
     /**
      * Ensure array only defines keys in $allowed.
      *
-     * @param array $data
-     * @param array $allowed
      * @throws IllegalValueException
      */
     public function allowedKeys(array $data, array $allowed): bool
@@ -151,7 +145,6 @@ class ArrayValidation
      * Validate that a one-dimensional array contains only data of specified
      * type.
      *
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function isOfType(
@@ -172,7 +165,6 @@ class ArrayValidation
     }
 
     /**
-     * @param array $data
      * @throws IllegalValueException
      */
     public function length(array $data, int $min, int $max): bool
@@ -206,8 +198,6 @@ class ArrayValidation
     /**
      * in_array, but when the needle is an array.
      *
-     * @param array $needle
-     * @param array $haystack
      * @throws IllegalValueException
      */
     public function inArrayMulti(array $needle, array $haystack): bool
