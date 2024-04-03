@@ -35,6 +35,9 @@ class Log extends Widget
     /** @var string */
     public readonly string $css;
 
+    /** @var string */
+    public readonly string $js;
+
     /**
      * @throws FilesystemException
      */
@@ -43,6 +46,7 @@ class Log extends Widget
     ) {
         $this->content = $this->render(file: __DIR__ . '/log.phtml');
         $this->css = $this->render(file: __DIR__ . '/log.css');
+        $this->js = $this->render(file: __DIR__ . '/log.js');
     }
 
     /**
