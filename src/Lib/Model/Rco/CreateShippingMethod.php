@@ -30,7 +30,6 @@ class CreateShippingMethod extends Model
     /**
      * @param string $methodId An unique id set by the merchant.
      * @param string $name Name of the shipping method.
-     * @param array $scope
      * @param Type $type Type of pickup can be: PICKUP,IN_STORE,MAILBOX,DELIVERY.
      * @param Carrier|null $carrier Can be one of predefined carriers or GENERIC for other carriers: POSTNORD,GENERIC.
      * @param string|null $description Descriptive text shown to the user in the checkout.

@@ -244,7 +244,7 @@ class LogTest extends PaymentHistory
         );
 
         $this->assertStringNotContainsString(
-            needle: 'rb-rh-show-extra-btn',
+            needle: 'rb-ph-show-extra-btn',
             haystack: $log->content
         );
 
@@ -280,7 +280,7 @@ class LogTest extends PaymentHistory
         );
 
         $this->assertStringContainsString(
-            needle: 'rb-rh-show-extra-btn',
+            needle: 'rb-ph-show-extra-btn',
             haystack: $log->content
         );
 

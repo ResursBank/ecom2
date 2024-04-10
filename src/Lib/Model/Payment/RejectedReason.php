@@ -7,18 +7,15 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Data\DataConverter;
+namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 
-/**
- * To test stdClass class conversion of objects specifying arrays.
- */
-class ArrayDummy extends Model
+class RejectedReason extends Model
 {
     public function __construct(
-        public int $int,
-        public array $arr
+        public readonly ?RejectedReasonCategory $category = null
     ) {
     }
 }

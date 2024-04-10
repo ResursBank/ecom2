@@ -18,7 +18,6 @@ use Resursbank\Ecom\Lib\Collection\Collection;
 class StoreCollection extends Collection
 {
     /**
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function __construct(array $data)

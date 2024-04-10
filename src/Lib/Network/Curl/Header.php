@@ -97,8 +97,6 @@ class Header
     }
 
     /**
-     * @param array $headers
-     * @return array
      * @throws ConfigException
      */
     public static function getHeadersData(
@@ -149,7 +147,6 @@ class Header
     }
 
     /**
-     * @param array $headers
      * @throws ConfigException
      */
     private static function validateHeaderArray(

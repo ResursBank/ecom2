@@ -28,7 +28,6 @@ class FloatValidation
      * Validates the supplied array contains an element named $key and that
      * element contains a float. Returns the validated float.
      *
-     * @param array $data
      * @throws IllegalTypeException
      * @throws MissingKeyException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
