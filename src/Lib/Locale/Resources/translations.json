@@ -1404,9 +1404,9 @@
   {
     "id": "mapi",
     "translation": {
-      "en": "Two step Magento Checkout with Resurs payment methods",
-      "sv": "Tvåstegs Magento-kassa med Resurs-betalningsmetoder",
-      "no": "To-trinns Magento-utsjekking med Resurs betalingsmetoder"
+      "en": "MAPI",
+      "sv": "MAPI",
+      "no": "MAPI"
     }
   },
   {
