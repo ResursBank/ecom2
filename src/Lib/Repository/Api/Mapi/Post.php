@@ -47,6 +47,5 @@ class Post extends Request
             params: $params,
             extractProperty: $extractProperty
         );
-
     }
 }
