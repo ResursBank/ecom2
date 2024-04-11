@@ -138,7 +138,7 @@ class Repository
         return new Get(
             model: PaymentMethod::class,
             route: Mapi::STORE_ROUTE . '/' . $storeId . '/payment_methods',
-            params: compact('storeId', 'amount'),
+            params: compact('amount'),
             extractProperty: 'content'
         );
     }
