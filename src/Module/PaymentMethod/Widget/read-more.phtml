@@ -16,21 +16,26 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 <?php
 
 if ($this->url !== '') : ?>
-<div class="rb-rm">
+  <div class="rb-rm">
     <div class="rb-logo"></div>
     <div class="rb-rm-link">
-        <p onclick="document.getElementById('rb-rm-model-<?= $this->paymentMethod->id ?>').style.display='block';">
-            <?= $this->label ?>
-        </p>
+      <p onclick="document.getElementById('rb-rm-model-<?= $this->paymentMethod->id ?>').style.display='block';">
+          <?= $this->label ?>
+      </p>
     </div>
     <div id="rb-rm-model-<?= $this->paymentMethod->id ?>" style="display:none;">
-        <div class="rb-rm-background"
-            onclick="document.getElementById('rb-rm-model-<?= $this->paymentMethod->id ?>').style.display='none';">
+      <div class="rb-rm-background"
+           onclick="document.getElementById('rb-rm-model-<?= $this->paymentMethod->id ?>').style.display='none';">
+      </div>
+      <div class="rb-rm-iframe-container">
+        <div style="
+                cursor: pointer; position: absolute; top: 0; right: 0; font-size: 24px; z-index: 10;
+                background-color: white; padding: 5px;"
+             onclick="document.getElementById('rb-rm-model-<?= $this->paymentMethod->id ?>').style.display='none';">X
         </div>
-        <div class="rb-rm-iframe-container">
-            <iframe class="rb-rm-iframe" src="<?= $this->url ?><?= $this->amount ?>" loading="lazy">
-            </iframe>
-        </div>
+        <iframe class="rb-rm-iframe" src="<?= $this->url ?><?= $this->amount ?>" loading="lazy">
+        </iframe>
+      </div>
     </div>
-</div>
+  </div>
 <?php endif; ?>
