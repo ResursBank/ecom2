@@ -159,7 +159,8 @@ class Repository
         return new Get(
             model: AnnuityFactors::class,
             route: Mapi::STORE_ROUTE . "/$storeId/payment_methods/$paymentMethodId/annuity_factors",
-            params: compact('storeId', 'paymentMethodId')
+            //params: compact('storeId', 'paymentMethodId')
+            params: []
         );
     }
 
