@@ -49,7 +49,7 @@
   position: fixed;
   left: 50%;
   top: 50%;
-  width: 100%;
+  width: 100% !important;
   max-width: 95vw;
   max-height: 90vh;
   transform: translate(-50%, -50%);
