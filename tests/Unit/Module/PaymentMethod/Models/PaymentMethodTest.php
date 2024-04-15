@@ -95,7 +95,9 @@ class PaymentMethodTest extends TestCase
      * Assert validateId() raises Error when id is empty.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
@@ -119,7 +121,9 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testIdAssigned(): void
     {
@@ -132,7 +136,9 @@ class PaymentMethodTest extends TestCase
      * is empty.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testValidatedNameThrowsWithEmptyValue(): void
     {
@@ -144,7 +150,9 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testNameWasAssigned(): void
     {
@@ -169,7 +177,9 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testMinPurchaseLimitWasAssigned(): void
     {
@@ -197,7 +207,9 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testMaxPurchaseLimitWasAssigned(): void
     {
@@ -226,6 +238,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -256,6 +269,7 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws ReflectionException
      * @throws TestException
      */
@@ -272,7 +286,9 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testLegalLinksWasAssigned(): void
     {
@@ -293,7 +309,9 @@ class PaymentMethodTest extends TestCase
      * Assert legalLinks property accepts empty array.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testLegalLinksMayBeEmpty(): void
     {
@@ -310,7 +328,9 @@ class PaymentMethodTest extends TestCase
      * Assert property was assigned during object conversion.
      *
      * @throws IllegalTypeException
-     * @throws ReflectionException|TestException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
      */
     public function testTypeAssigned(): void
     {
