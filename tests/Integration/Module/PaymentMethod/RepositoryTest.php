@@ -146,9 +146,9 @@ class RepositoryTest extends TestCase
         );
         // Iterates through the existing payment method types and checks for any new additions from Resurs Bank.
         // If new types are detected, this will trigger exceptions in pipelines to alert us about it.
-        $this->testGetPaymentMethodsTypes(
+        $this->getPaymentMethodTypes(
             paymentMethods: $paymentMethods,
-            enumType: null
+            enumType: ''
         );
         $this->assertNotEmpty(actual: $paymentMethods);
     }
@@ -159,7 +159,7 @@ class RepositoryTest extends TestCase
     public function testNonExistentMethodType(): void
     {
         $this->expectException(exception: ValueError::class);
-        $this->testGetPaymentMethodsTypes(
+        $this->getPaymentMethodTypes(
             paymentMethods: null,
             enumType: 'NON_EXISTENT_MEtHOD_TYPE'
         );
@@ -170,11 +170,11 @@ class RepositoryTest extends TestCase
      *
      * @noinspection PhpExpressionResultUnusedInspection
      */
-    public function testGetPaymentMethodsTypes(?PaymentMethodCollection $paymentMethods, ?string $enumType): void
+    public function getPaymentMethodTypes(?PaymentMethodCollection $paymentMethods, string $enumType = ''): void
     {
-        if ($enumType !== null) {
+        if ($enumType !== '') {
             // Specifically test a type.
-            PaymentMethodType::from(value: $enumType);
+            PaymentMethodType::from(value: (string)$enumType);
             return;
         }
 
