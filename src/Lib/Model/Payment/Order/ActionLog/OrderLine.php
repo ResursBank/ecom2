@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
@@ -32,7 +33,7 @@ class OrderLine extends Model
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public readonly float $quantity,
+        #[FloatVa] public readonly float $quantity,
         public readonly string $quantityUnit,
         public readonly float $vatRate,
         public readonly float $totalAmountIncludingVat,
@@ -48,7 +49,6 @@ class OrderLine extends Model
         $this->validateReference();
         $this->validateQuantityUnit();
         $this->validateVatRate();
-        $this->validateQuantity();
         $this->validateUnitAmountIncludingVat();
         $this->validateTotalAmountIncludingVat();
         $this->validateTotalVatAmount();
@@ -109,20 +109,6 @@ class OrderLine extends Model
             value: $this->vatRate,
             min: 0,
             max: 99.99
-        );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateQuantity(): void
-    {
-        $this->floatValidation->length(value: $this->quantity, min: 0, max: 2);
-
-        $this->floatValidation->inRange(
-            value: $this->quantity,
-            min: 0,
-            max: 9999999999.99
         );
     }
 
