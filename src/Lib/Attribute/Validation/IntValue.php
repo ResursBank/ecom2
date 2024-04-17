@@ -31,6 +31,12 @@ class IntValue implements IntInterface
         public readonly ?int $min = null,
         public readonly ?int $max = null
     ) {
+        if ($min === null && $max === null) {
+            throw new AttributeParameterException(
+                message: 'Attribute min and max parameters cannot both be null!'
+            );
+        }
+
         if ($min !== null && $max !== null && $min > $max) {
             throw new AttributeParameterException(
                 message: 'Attribute min parameter value (' .

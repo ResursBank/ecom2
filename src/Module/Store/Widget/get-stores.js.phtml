@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -71,13 +70,7 @@ class Resursbank_FetchStores {
 
             storeSelect.length = 0;
 
-            let url = '';
-            let urlCallback = <?= $this->fetchUrlCallback ?>;
-            if (typeof urlCallback === 'function') {
-                url = urlCallback();
-            }
-
-            fetch(url, {
+            fetch('<?= $this->fetchUrl ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -104,16 +97,12 @@ class Resursbank_FetchStores {
     getSelectStoreElement() {
         let result = null;
 
-        <?php
-
-if ($this->storeSelectId !== null) : ?>
+        <?php if ($this->storeSelectId !== null): ?>
         result = document.getElementById('<?= $this->storeSelectId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-store-select'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-select') ?>');
         }
 
         return result;
@@ -127,16 +116,12 @@ if ($this->storeSelectId !== null) : ?>
     getSelectEnvironmentElement() {
         let result = null;
 
-        <?php
-
-if ($this->environmentSelectId !== null) : ?>
+        <?php if ($this->environmentSelectId !== null): ?>
         result = document.getElementById('<?= $this->environmentSelectId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-environment-select'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-environment-select') ?>');
         }
 
         return result;
@@ -150,16 +135,12 @@ if ($this->environmentSelectId !== null) : ?>
     getClientIdInputElement() {
         let result = null;
 
-        <?php
-
-if ($this->clientIdInputId !== null) : ?>
+        <?php if ($this->clientIdInputId !== null): ?>
         result = document.getElementById('<?= $this->clientIdInputId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-client-id-input'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-id-input') ?>');
         }
 
         return result;
@@ -173,16 +154,12 @@ if ($this->clientIdInputId !== null) : ?>
     getClientSecretInputElement() {
         let result = null;
 
-        <?php
-
-if ($this->clientSecretInputId !== null) : ?>
+        <?php if ($this->clientSecretInputId !== null): ?>
         result = document.getElementById('<?= $this->clientSecretInputId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-client-secret-input'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-secret-input') ?>');
         }
 
         return result;
@@ -238,17 +215,13 @@ if ($this->clientSecretInputId !== null) : ?>
         if (this.fetching) {
             storeSelect.setAttribute('disabled', '');
 
-            <?php
-
-if ($this->spinnerClass !== null) : ?>
+            <?php if ($this->spinnerClass !== null): ?>
             storeSelect.parentElement.classList.add('<?= $this->spinnerClass ?>');
             <?php endif; ?>
         } else {
             storeSelect.removeAttribute('disabled');
 
-            <?php
-
-if ($this->spinnerClass !== null) : ?>
+            <?php if ($this->spinnerClass !== null): ?>
             storeSelect.parentElement.classList.remove('<?= $this->spinnerClass ?>');
             <?php endif; ?>
         }
@@ -263,9 +236,7 @@ if ($this->spinnerClass !== null) : ?>
     handleFetchResponse(response) {
         if (!response.ok) {
             throw new Error(
-                '<?= Translator::translate(
-	phraseId: 'get-stores-server-error'
-) ?>'
+                '<?= Translator::translate(phraseId: 'get-stores-server-error') ?>'
             );
         } else {
             return response.json();
@@ -325,9 +296,7 @@ if ($this->spinnerClass !== null) : ?>
     }
 }
 
-<?php
-
-if ($this->automatic) : ?>
+<?php if ($this->automatic): ?>
 document.addEventListener(
     'DOMContentLoaded',
     function () {
