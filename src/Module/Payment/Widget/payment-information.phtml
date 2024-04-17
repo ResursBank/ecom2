@@ -13,43 +13,44 @@ declare(strict_types=1);
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
 
-$thStyle = 'font-size:1.3em; text-align:left; padding:0.2em 0.4em;';
 
 ?>
 
-<div class="rb-pi" style="font-family:'ResursSans-Regular', Arial, sans-serif;">
+<style>
+    <?= $this->getCss() ?>
+</style>
+
+<div class="rb-pi">
     <table style="color: #fff; border-collapse:collapse;">
-        <tr style="<?= $this->getTrStyle() ?>">
-            <th style="<?= $thStyle ?>">
+        <tr>
+            <th class="rb-pi-logo-bg">
                 <span><?= Translator::translate(phraseId: 'payment') ?></span>
-                <?php if ($this->renderLogo): ?>
                 <span class="rb-pi-logo"><?= $this->logo ?></span>
-                <?php endif; ?>
             </th>
             <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
             <th></th>
-        </tr
+        </tr>
         <?= $this->getTrEl(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
         <?= $this->getTrEl(
-                title: 'authorized-amount',
-                content: $this->getFormattedAmount($this->getAuthorizedAmount())
+            title: 'authorized-amount',
+            content: $this->getFormattedAmount($this->getAuthorizedAmount())
         ) ?>
         <?= $this->getTrEl(
-                title: 'captured-amount',
-                content: $this->getFormattedAmount($this->getCapturedAmount())
+            title: 'captured-amount',
+            content: $this->getFormattedAmount($this->getCapturedAmount())
         ) ?>
         <?= $this->getTrEl(
-                title: 'refunded-amount',
-                content: $this->getFormattedAmount($this->getRefundedAmount())
+            title: 'refunded-amount',
+            content: $this->getFormattedAmount($this->getRefundedAmount())
         ) ?>
         <?= $this->getTrEl(
-                title: 'cancelled-amount',
-                content: $this->getFormattedAmount($this->getCancelledAmount())
+            title: 'cancelled-amount',
+            content: $this->getFormattedAmount($this->getCancelledAmount())
         ) ?>
         <?= $this->getTrEl(title: 'status', content: $this->getStatus()) ?>
         <?= $this->getTrEl(title: 'payment-method', content: $this->getPaymentMethodName()) ?>
-        <tr style="<?= $this->getTrStyle() ?>">
-            <th style="<?= $thStyle ?>"><?= Translator::translate(phraseId: 'customer') ?></th>
+        <tr>
+            <th><?= Translator::translate(phraseId: 'customer') ?></th>
             <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
             <th></th>
         </tr>

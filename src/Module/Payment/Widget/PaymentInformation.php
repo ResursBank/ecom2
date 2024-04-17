@@ -68,11 +68,30 @@ class PaymentInformation extends Widget
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat,
-        public readonly bool $renderLogo = true
+        public readonly CurrencyFormat $currencyFormat
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
+    }
+
+    /**
+     * Fetches CSS without instantiating an object.
+     *
+     * @throws EmptyValueException
+     */
+    public static function getCss(): string
+    {
+        $css = file_get_contents(
+            filename: __DIR__ . '/payment-information.css'
+        );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet data'
+            );
+        }
+
+        return $css;
     }
 
     public function hasAddress(): bool
@@ -174,17 +193,11 @@ class PaymentInformation extends Widget
         string $content,
         bool $isHeader = false
     ): string {
-        return '<td style="padding:0.3em 0.5em;' . (
-            $isHeader ?
-                ' text-align:right; min-width:22ch; font-weight:bold; vertical-align:top;' :
-                ' width:100%;'
-        ) . '">' . (
-            $isHeader ?
-                Translator::translate(phraseId: $content) :
-                $content
-            ) . '</td>';
+        return '<td' .
+            ($isHeader ? ' class="rb-pi-row-header"' : '') . '">' .
+            ($isHeader ? Translator::translate(phraseId: $content) : $content)
+            . '</td>';
     }
-
     /**
      * Get TR element containing two TD elements using this structure:
      *
@@ -248,20 +261,11 @@ class PaymentInformation extends Widget
      */
     protected function renderWidget(): void
     {
-        if ($this->renderLogo) {
-            $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
 
-            if (!$logo) {
-                throw new EmptyValueException(
-                    message: 'Failed to load logo image data'
-                );
-            }
-
-            // Modify logotype size using inline CSS.
-            $logo = str_replace(
-                search: '<svg',
-                replace: '<svg style="height:1.2em; float: right; width: auto;"',
-                subject: $logo
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
             );
         }
 
