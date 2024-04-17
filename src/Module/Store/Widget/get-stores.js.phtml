@@ -132,9 +132,7 @@ if ($this->storeSelectId !== null) : ?>
     getSelectEnvironmentElement() {
         let result = null;
 
-        <?php
-
-if ($this->environmentSelectId !== null) : ?>
+        <?php if ($this->environmentSelectId !== null): ?>
         result = document.getElementById('<?= $this->environmentSelectId ?>');
         <?php endif; ?>
 
@@ -142,6 +140,22 @@ if ($this->environmentSelectId !== null) : ?>
             throw new Error('<?= Translator::translate(
 	phraseId: 'get-stores-missing-environment-select'
 ) ?>');
+        }
+
+        return result;
+    }
+
+    getSelectFlowElement() {
+        let result = null;
+
+        <?php if ($this->flowSelectId !== null): ?>
+        result = document.getElementById('<?= $this->flowSelectId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(
+                phraseId: 'get-stores-missing-flow-select'
+            ) ?>');
         }
 
         return result;
@@ -202,7 +216,8 @@ if ($this->clientSecretInputId !== null) : ?>
         return {
             environment: this.getSelectEnvironmentElement().value,
             clientId: this.getClientIdInputElement().value,
-            clientSecret: this.getClientSecretInputElement().value
+            clientSecret: this.getClientSecretInputElement().value,
+            flow: this.getSelectFlowElement().value
         };
     }
 
