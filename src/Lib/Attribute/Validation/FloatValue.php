@@ -24,8 +24,6 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 class FloatValue implements FloatInterface
 {
     /**
-     * @param float|null $min Minimum value
-     * @param float|null $max Maximum value
      * @throws AttributeParameterException
      */
     public function __construct(
@@ -59,15 +57,24 @@ class FloatValue implements FloatInterface
         }
 
         // Confirm value contains no more decimals than allowed by specified precision.
-        if (str_contains((string) $value, '.')) {
-            $decimals = strlen(explode('.', (string) $value)[1]);
-
-            if ($decimals > $this->precision) {
-                throw new IllegalValueException(
-                    message: 'Value of ' . $name . ' contains more decimals than specified precision of ' . $this->precision
-                );
-            }
+        if ($this->getNumberOfDecimals($value) > $this->precision) {
+            throw new IllegalValueException(
+                message: 'Value of ' . $name . ' contains more decimals than specified precision of ' .
+                    $this->precision
+            );
         }
+    }
+
+    /**
+     * Get number of decimals in float value.
+     */
+    public function getNumberOfDecimals(float $value): int
+    {
+        if (!str_contains((string) $value, '.')) {
+            return 0;
+        }
+
+        return strlen(explode('.', (string) $value)[1]);
     }
 
     /**
@@ -139,15 +146,14 @@ class FloatValue implements FloatInterface
     /**
      * Resolve random float value between min and max.
      *
-     * @param float $min
-     * @param float $max
-     * @param int|null $precision
-     * @return float
      * @throws RandomException
      */
     public function getRandomValue(float $min, float $max, ?int $precision = null): float
     {
-        $result = random_int((int) $min, (int) $max) + $this->getRandomDecimal();
+        $result = random_int(
+            (int) $min,
+            (int) $max
+        ) + $this->getRandomDecimal();
 
         if ($result > $max) {
             $result = $max;
@@ -158,8 +164,6 @@ class FloatValue implements FloatInterface
 
     /**
      * Generate a value between 0.00 and 0.99
-     *
-     * @return float
      */
     public function getRandomDecimal(): float
     {
@@ -191,21 +195,22 @@ class FloatValue implements FloatInterface
                 $count++;
             }
 
-            if ($this->min === null) {
-                continue;
+            // Generate values below min.
+            if ($this->min !== null) {
+                $result[] = $this->getRandomValue(
+                    min: $this->min - 999999,
+                    max: $this->min - 1
+                );
+                $count++;
             }
 
-            // Generate values below min.
-            $result[] = $this->getRandomValue(
-                min: $this->min - 999999,
-                max: $this->min - 1
-            );
-            $count++;
-
             // Generate values exceeding precision.
+            $min = ($this->min ?? -999999999 + $this->getRandomDecimal());
+            $max = ($this->max ?? 999999999 + $this->getRandomDecimal());
+
             $result[] = $this->getRandomValue(
-                min: $this->min,
-                max: $this->max,
+                min: $min,
+                max: $max,
                 precision: $this->precision + 1
             );
         }

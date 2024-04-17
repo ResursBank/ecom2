@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
+use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
@@ -33,7 +33,7 @@ class OrderLine extends Model
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        #[FloatVa] public readonly float $quantity,
+        #[FloatValue(min: 0.01, precision: 2)] public readonly float $quantity,
         public readonly string $quantityUnit,
         public readonly float $vatRate,
         public readonly float $totalAmountIncludingVat,
