@@ -198,6 +198,7 @@ class PaymentInformation extends Widget
             ($isHeader ? Translator::translate(phraseId: $content) : $content)
             . '</td>';
     }
+
     /**
      * Get TR element containing two TD elements using this structure:
      *
