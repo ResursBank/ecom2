@@ -35,7 +35,6 @@ class GetStores extends Widget
         public readonly string $fetchUrlCallback,
         public readonly bool $automatic = true,
         public readonly ?string $storeSelectId = null,
-        public readonly ?string $flowSelectId = null,
         public readonly ?string $environmentSelectId = null,
         public readonly ?string $clientIdInputId = null,
         public readonly ?string $clientSecretInputId = null,

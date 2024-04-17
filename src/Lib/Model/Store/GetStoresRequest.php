@@ -28,7 +28,6 @@ class GetStoresRequest extends Model
         public readonly Environment $environment,
         public readonly string $clientId,
         public readonly string $clientSecret,
-        public readonly string $flow,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateClientId();

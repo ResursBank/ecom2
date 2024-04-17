@@ -1444,14 +1444,6 @@
     }
   },
   {
-    "id": "get-stores-missing-flow-select",
-    "translation": {
-      "en": "Failed to obtain flow selection box.",
-      "sv": "Kunde inte hitta select box för val av flöde.",
-      "no": "Kunne ikke finne valgboks for flyt."
-    }
-  },
-  {
     "id": "get-stores-missing-client-id-input",
     "translation": {
       "en": "Failed to obtain client id input element.",
