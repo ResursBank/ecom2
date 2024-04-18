@@ -32,8 +32,12 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse\Type;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponseCollection;
+use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type as PaymentMethodType;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Throwable;
+use ValueError;
 
 /**
  * Integration tests for PaymentMethods repository.
@@ -104,6 +108,7 @@ class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testClearCache(): void
@@ -131,15 +136,56 @@ class RepositoryTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     public function testGetPaymentMethodsReturnsWithoutCache(): void
     {
         $this->assertNull(actual: $this->cache->read());
-        $this->assertNotEmpty(
-            actual: Repository::getPaymentMethods(
-                storeId: $this->storeId
-            )
+        $paymentMethods = Repository::getPaymentMethods(
+            storeId: $this->storeId
         );
+        // Iterates through the existing payment method types and checks for any new additions from Resurs Bank.
+        // If new types are detected, this will trigger exceptions in pipelines to alert us about it.
+        $this->getPaymentMethodTypes(
+            paymentMethods: $paymentMethods,
+            enumType: ''
+        );
+        $this->assertNotEmpty(actual: $paymentMethods);
+    }
+
+    /**
+     * Test behaviours of non existent payment method types.
+     */
+    public function testNonExistentMethodType(): void
+    {
+        $this->expectException(exception: ValueError::class);
+        $this->getPaymentMethodTypes(
+            paymentMethods: null,
+            enumType: 'NON_EXISTENT_MEtHOD_TYPE'
+        );
+    }
+
+    /**
+     * Test payment method types and throw exception on nonexistent (new types) from Resurs.
+     *
+     * @noinspection PhpExpressionResultUnusedInspection
+     */
+    public function getPaymentMethodTypes(?PaymentMethodCollection $paymentMethods, string $enumType = ''): void
+    {
+        if ($enumType !== '') {
+            // Specifically test a type.
+            PaymentMethodType::from(value: (string)$enumType);
+            return;
+        }
+
+        if ($paymentMethods === null) {
+            return;
+        }
+
+        /** @var PaymentMethod $paymentMethod */
+        foreach ($paymentMethods as $paymentMethod) {
+            PaymentMethodType::from(value: $paymentMethod->type->value);
+        }
     }
 
     /**
@@ -156,6 +202,7 @@ class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testGetPaymentMethodsReturnsCache(): void
@@ -190,6 +237,7 @@ class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testDataSeparatedByAmount(): void
@@ -248,6 +296,7 @@ class RepositoryTest extends TestCase
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testGetByIdFindResult(): void
@@ -276,14 +325,15 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
-     * @throws ConfigException
      */
     public function testGetByIdReturnsNull(): void
     {
