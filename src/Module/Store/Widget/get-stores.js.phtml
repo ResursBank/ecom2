@@ -71,7 +71,18 @@ class Resursbank_FetchStores {
 
             storeSelect.length = 0;
 
-            fetch('<?= $this->fetchUrl ?>', {
+            let url = '';
+            let urlCallback = <?= $this->fetchUrlCallback ?>;
+            if (typeof urlCallback === 'function') {
+                url = urlCallback();
+            }
+
+            if (typeof url !== 'string' || url.trim() === '') {
+                alert("No URL to fetch stores implemented. Aborting procedure.");
+                return;
+            }
+
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

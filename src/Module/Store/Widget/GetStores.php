@@ -21,7 +21,7 @@ class GetStores extends Widget
     public readonly string $content;
 
     /**
-     * @param string $fetchUrl Endpoint where we fetch stores.
+     * @param string $fetchUrlCallback Name of a Javascript function which returns the complete controller URL.
      * @param bool $automatic Automatically search on field change
      * @param string|null $storeSelectId ID of element to populate with new stores.
      * @param string|null $environmentSelectId ID of element containing environments.
@@ -32,7 +32,7 @@ class GetStores extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly string $fetchUrl,
+        public readonly string $fetchUrlCallback,
         public readonly bool $automatic = true,
         public readonly ?string $storeSelectId = null,
         public readonly ?string $environmentSelectId = null,
