@@ -47,11 +47,6 @@ class PaymentInformation extends Widget
     public readonly string $logo;
 
     /**
-     * Keeps track of whether we are rendering odd or even TR element in widget table.
-     */
-    public bool $eventTr = false;
-
-    /**
      * @throws JsonException
      * @throws ReflectionException
      * @throws ApiException
@@ -79,7 +74,7 @@ class PaymentInformation extends Widget
      *
      * @throws EmptyValueException
      */
-    public static function getCss(): string
+    public function getCss(): string
     {
         $css = file_get_contents(
             filename: __DIR__ . '/payment-information.css'
@@ -87,7 +82,7 @@ class PaymentInformation extends Widget
 
         if (!$css) {
             throw new EmptyValueException(
-                message: 'Failed to load stylesheet data'
+                message: 'Failed to load stylesheet.'
             );
         }
 
@@ -194,7 +189,7 @@ class PaymentInformation extends Widget
         bool $isHeader = false
     ): string {
         return '<td' .
-            ($isHeader ? ' class="rb-pi-row-header"' : '') . '">' .
+            ($isHeader ? ' class="rb-pi-row-header"' : '') . '>' .
             ($isHeader ? Translator::translate(phraseId: $content) : $content)
             . '</td>';
     }
@@ -211,22 +206,9 @@ class PaymentInformation extends Widget
         string $title,
         string $content
     ): string {
-        return '<tr style="' . $this->getTrStyle() . '">' .
+        return '<tr>' .
             $this->getTdEl(content: $title, isHeader: true) .
             $this->getTdEl(content: $content) . '</tr>';
-    }
-
-    /**
-     * In the template we need to render some TR elements manually, we must ensure to keep odd/even background-color
-     * intact, which is why this is separated to its method outside getTrEl()
-     */
-    public function getTrStyle(): string
-    {
-        $result = 'background-color: #' . ($this->eventTr ? '006464' : '009b96') . ';';
-
-        $this->eventTr = !$this->eventTr;
-
-        return $result;
     }
 
     /**

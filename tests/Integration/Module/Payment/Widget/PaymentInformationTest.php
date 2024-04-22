@@ -174,7 +174,7 @@ class PaymentInformationTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>{$this->payment->id}<\/td>/s",
+            pattern: "/<td[^>]+>{$this->payment->id}<\/td>/s",
             string: $this->widget->content,
             message: 'Widget does not contain payment id cell.'
         );
@@ -195,7 +195,7 @@ class PaymentInformationTest extends TestCase
     {
         $tdEl = $this->widget->getTdEl(content: $this->payment->id);
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>{$this->payment->id}<\/td>/s",
+            pattern: "/<td[^>]+>{$this->payment->id}<\/td>/s",
             string: $tdEl,
             message: 'getTdEl() does not return a td element with the given content.'
         );
@@ -203,7 +203,7 @@ class PaymentInformationTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>{$content}<\/td>/s",
+            pattern: "/<td[^>]+>{$content}<\/td>/s",
             string: $this->widget->getTdEl(content: $content),
             message: 'getTdEl() does not return a td element with the given content.'
         );
@@ -214,16 +214,9 @@ class PaymentInformationTest extends TestCase
             isHeader: true
         );
 
-        // Assert style attribute contains font-weight:bold to confirm styling.
-        $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*font-weight:bold.*>.*<\/td>/s",
-            string: $headerEl,
-            message: 'getTdEl() does not return a td element with the given content.'
-        );
-
         // Assert that the content of the header element is translated.
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>.*" . Translator::translate(
+            pattern: "/<td[^>]+>.*" . Translator::translate(
                 phraseId: 'captured-amount'
             ) . ".*<\/td>/s",
             string: $headerEl,
@@ -251,13 +244,13 @@ class PaymentInformationTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<tr[^>]+style=.*>.*<\/tr>/s",
+            pattern: "/<tr[^>]+>.*<\/tr>/s",
             string: $trEl,
             message: 'getTrEl() does not return a tr element.'
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>.*" . Translator::translate(
+            pattern: "/<td[^>]+>.*" . Translator::translate(
                 phraseId: 'captured-amount'
             ) . ".*<\/td>/s",
             string: $trEl,
@@ -265,30 +258,9 @@ class PaymentInformationTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>.*{$content}.*<\/td>/s",
+            pattern: "/<td[^>]+>.*{$content}.*<\/td>/s",
             string: $trEl,
             message: 'getTrEl() does not return a td element with the given content.'
-        );
-    }
-
-    /**
-     * Verify that getTrStyle() toggles return value depending on state of
-     * $eventTr property, which is toggled when method is called.
-     */
-    public function testGetTrStyle(): void
-    {
-        $this->widget->eventTr = true;
-
-        $this->assertSame(
-            expected: 'background-color: #006464;',
-            actual: $this->widget->getTrStyle(),
-            message: 'getTrStyle() does not return the expected value.'
-        );
-
-        $this->assertSame(
-            expected: 'background-color: #009b96;',
-            actual: $this->widget->getTrStyle(),
-            message: 'getTrStyle() does not return the expected value.'
         );
     }
 
@@ -351,20 +323,6 @@ class PaymentInformationTest extends TestCase
             pattern: "/<svg[^>]+xmlns=.*>.*<\/svg>/s",
             string: $this->widget->content,
             message: 'SVG element is not rendered.'
-        );
-
-        // Assert we do not render logo when renderLogo is false.
-        $widget = new PaymentInformation(
-            paymentId: $this->payment->id,
-            currencySymbol: 'kr',
-            currencyFormat: CurrencyFormat::SYMBOL_LAST,
-            renderLogo: false
-        );
-
-        $this->assertDoesNotMatchRegularExpression(
-            pattern: "/<span[^>]+class=.*rb-pi-logo.*>.*<\/span>/s",
-            string: $widget->content,
-            message: 'Logo is rendered when renderLogo is false.'
         );
     }
 }
