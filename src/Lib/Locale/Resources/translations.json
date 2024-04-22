@@ -246,7 +246,8 @@
     "translation": {
       "en": "Pay in installments with Resurs Bank",
       "sv": "Delbetala med Resurs Bank",
-      "no": "Delbetale med Resurs Bank"
+      "no": "Delbetale med Resurs Bank",
+      "fi": "Maksa osissa Resurs Bankilla"
     }
   },
   {
@@ -255,7 +256,7 @@
       "en": "Starting at %1 per month, for %2",
       "sv": "Från %1 per månad, i %2",
       "no": "Fra %1 per måned, for %2",
-      "fi": "Alk. %1 / kk - %2kk rahoituksella"
+      "fi": "Alk. %1 / kk - %2 kk rahoituksella"
     }
   },
   {
