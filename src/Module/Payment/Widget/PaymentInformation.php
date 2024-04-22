@@ -44,6 +44,9 @@ class PaymentInformation extends Widget
     public readonly string $content;
 
     /** @var string */
+    public readonly string $css;
+
+    /** @var string */
     public readonly string $logo;
 
     /**
@@ -67,26 +70,6 @@ class PaymentInformation extends Widget
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
-    }
-
-    /**
-     * Fetches CSS without instantiating an object.
-     *
-     * @throws EmptyValueException
-     */
-    public function getCss(): string
-    {
-        $css = file_get_contents(
-            filename: __DIR__ . '/payment-information.css'
-        );
-
-        if (!$css) {
-            throw new EmptyValueException(
-                message: 'Failed to load stylesheet.'
-            );
-        }
-
-        return $css;
     }
 
     public function hasAddress(): bool
@@ -254,9 +237,23 @@ class PaymentInformation extends Widget
 
         /* @phpstan-ignore-next-line */
         $this->logo = $logo ?? '';
+
         /* @phpstan-ignore-next-line */
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
         );
+
+        // Render CSS.
+        $css = file_get_contents(
+            filename: __DIR__ . '/payment-information.css'
+        );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet.'
+            );
+        }
+
+        $this->css = $css;
     }
 }
