@@ -44,12 +44,10 @@ class PaymentInformation extends Widget
     public readonly string $content;
 
     /** @var string */
-    public readonly string $logo;
+    public readonly string $css;
 
-    /**
-     * Keeps track of whether we are rendering odd or even TR element in widget table.
-     */
-    public bool $eventTr = false;
+    /** @var string */
+    public readonly string $logo;
 
     /**
      * @throws JsonException
@@ -68,11 +66,30 @@ class PaymentInformation extends Widget
     public function __construct(
         public readonly string $paymentId,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat,
-        public readonly bool $renderLogo = true
+        public readonly CurrencyFormat $currencyFormat
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
+    }
+
+    /**
+     * Get CSS statically on demand.
+     *
+     * @throws EmptyValueException
+     */
+    public static function getCss(): string
+    {
+        $css = file_get_contents(
+            filename: __DIR__ . '/payment-information.css'
+        );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet.'
+            );
+        }
+
+        return $css;
     }
 
     public function hasAddress(): bool
@@ -174,15 +191,10 @@ class PaymentInformation extends Widget
         string $content,
         bool $isHeader = false
     ): string {
-        return '<td style="padding:0.3em 0.5em;' . (
-            $isHeader ?
-                ' text-align:right; min-width:22ch; font-weight:bold; vertical-align:top;' :
-                ' width:100%;'
-        ) . '">' . (
-            $isHeader ?
-                Translator::translate(phraseId: $content) :
-                $content
-            ) . '</td>';
+        return '<td' .
+            ($isHeader ? ' class="rb-pi-row-header"' : '') . '>' .
+            ($isHeader ? Translator::translate(phraseId: $content) : $content)
+            . '</td>';
     }
 
     /**
@@ -197,22 +209,9 @@ class PaymentInformation extends Widget
         string $title,
         string $content
     ): string {
-        return '<tr style="' . $this->getTrStyle() . '">' .
+        return '<tr>' .
             $this->getTdEl(content: $title, isHeader: true) .
             $this->getTdEl(content: $content) . '</tr>';
-    }
-
-    /**
-     * In the template we need to render some TR elements manually, we must ensure to keep odd/even background-color
-     * intact, which is why this is separated to its method outside getTrEl()
-     */
-    public function getTrStyle(): string
-    {
-        $result = 'background-color: #' . ($this->eventTr ? '006464' : '009b96') . ';';
-
-        $this->eventTr = !$this->eventTr;
-
-        return $result;
     }
 
     /**
@@ -248,28 +247,34 @@ class PaymentInformation extends Widget
      */
     protected function renderWidget(): void
     {
-        if ($this->renderLogo) {
-            $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
 
-            if (!$logo) {
-                throw new EmptyValueException(
-                    message: 'Failed to load logo image data'
-                );
-            }
-
-            // Modify logotype size using inline CSS.
-            $logo = str_replace(
-                search: '<svg',
-                replace: '<svg style="height:1.2em; float: right; width: auto;"',
-                subject: $logo
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
             );
         }
 
         /* @phpstan-ignore-next-line */
         $this->logo = $logo ?? '';
+
         /* @phpstan-ignore-next-line */
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
         );
+
+        // Render CSS.
+        $css = file_get_contents(
+            filename: __DIR__ . '/payment-information.css'
+        );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet.'
+            );
+        }
+
+        /* @phpstan-ignore-next-line */
+        $this->css = self::getCss();
     }
 }
