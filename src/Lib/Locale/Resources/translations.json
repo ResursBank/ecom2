@@ -1756,5 +1756,13 @@
       "sv": "Minsta ålder på beställningar i timmar",
       "no": "Minimumsalder på bestillinger i timer"
     }
+  },
+  {
+    "id": "payment-information-widget-failed-rendering",
+    "translation": {
+      "en": "Payment information could not be retrieved from Resurs Bank.",
+      "sv": "Betalningsinformation kunde inte hämtas från Resurs Bank.",
+      "no": "Betalingsinformasjon kunne ikke hentes fra Resurs Bank."
+    }
   }
 ]
