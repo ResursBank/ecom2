@@ -296,7 +296,6 @@ class PaymentInformationTest extends TestCase
     /**
      * Assert that the logo is rendered correctly depending on the value of
      * renderLogo.
-     *
      */
     public function testLogoRendering(): void
     {
