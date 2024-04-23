@@ -72,6 +72,26 @@ class PaymentInformation extends Widget
         $this->renderWidget();
     }
 
+    /**
+     * Get CSS statically on demand.
+     *
+     * @throws EmptyValueException
+     */
+    public static function getCss(): string
+    {
+        $css = file_get_contents(
+            filename: __DIR__ . '/payment-information.css'
+        );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet.'
+            );
+        }
+
+        return $css;
+    }
+
     public function hasAddress(): bool
     {
         return $this->payment->customer->deliveryAddress !== null;
@@ -255,6 +275,6 @@ class PaymentInformation extends Widget
         }
 
         /* @phpstan-ignore-next-line */
-        $this->css = $css;
+        $this->css = self::getCss();
     }
 }
