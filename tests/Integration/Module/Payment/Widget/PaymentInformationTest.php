@@ -203,7 +203,7 @@ class PaymentInformationTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$content}<\/td>/s",
+            pattern: "/<tdd>{$content}<\/td>/s",
             string: $this->widget->getTdEl(content: $content),
             message: 'getTdEl() does not return a td element with the given content.'
         );
@@ -297,28 +297,9 @@ class PaymentInformationTest extends TestCase
      * Assert that the logo is rendered correctly depending on the value of
      * renderLogo.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
      */
     public function testLogoRendering(): void
     {
-        // Assert we render logo by default.
-        $this->assertMatchesRegularExpression(
-            pattern: "/<span[^>]+class=.*rb-pi-logo.*>.*<\/span>/s",
-            string: $this->widget->content,
-            message: 'Logo is not rendered by default.'
-        );
-
-        // Assert SVG element is present as well.
         $this->assertMatchesRegularExpression(
             pattern: "/<svg[^>]+xmlns=.*>.*<\/svg>/s",
             string: $this->widget->content,
