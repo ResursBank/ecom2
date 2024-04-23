@@ -100,7 +100,7 @@ class PaymentInformationTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+style=.*>{$widget->checkout->id}<\/td>/s",
+            pattern: "/<td>{$widget->checkout->id}<\/td>/s",
             string: $widget->content,
             message: 'Widget does not contain payment id cell.'
         );
