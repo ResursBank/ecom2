@@ -46,7 +46,7 @@ class GetStoresTest extends TestCase
      */
     public function testRenderedContent(): void
     {
-        $fetchUrl = 'https://example.com/foo';
+        $fetchUrlCallback = 'fetchUrlCallbackFunctionName';
         $environmentSelectId = 'environment_select';
         $clientIdInputId = 'client_id_input';
         $clientSecretInputId = 'client_secret_input';
@@ -54,7 +54,7 @@ class GetStoresTest extends TestCase
         $spinnerClass = 'spinner_class';
 
         $widget = new GetStores(
-            fetchUrl: $fetchUrl,
+            fetchUrlCallback: $fetchUrlCallback,
             environmentSelectId: $environmentSelectId,
             clientIdInputId: $clientIdInputId,
             clientSecretInputId: $clientSecretInputId,
@@ -83,7 +83,7 @@ class GetStoresTest extends TestCase
             haystack: $widget->content
         );
         $this->assertStringContainsString(
-            needle: "fetch('" . $fetchUrl . "', {",
+            needle: "let urlCallback = " . $fetchUrlCallback . ";",
             haystack: $widget->content
         );
     }

@@ -30,25 +30,25 @@ class OrderLine
 [
     {
         "description": "Bok",
-        "quantity": 2.00000,
+        "quantity": 2.00,
         "reference": "T-800",
         "type": "PHYSICAL_GOODS",
         "quantityUnit": "st",
-        "unitAmountIncludingVat": 150.75000,
-        "vatRate": 25.00000,
-        "totalAmountIncludingVat": 301.50000,
-        "totalVatAmount": 60.30000
+        "unitAmountIncludingVat": 150.75,
+        "vatRate": 25.02,
+        "totalAmountIncludingVat": 301.50,
+        "totalVatAmount": 60.30
     },
     {
         "description": "Album",
-        "quantity": 1.00000,
+        "quantity": 1.00,
         "reference": "ALBUM-012G-VV",
         "type": "DIGITAL_GOODS",
         "quantityUnit": "st",
-        "unitAmountIncludingVat": 120.00000,
-        "vatRate": 25.00000,
-        "totalAmountIncludingVat": 199.90000,
-        "totalVatAmount": 79.90000
+        "unitAmountIncludingVat": 120.00,
+        "vatRate": 25.00,
+        "totalAmountIncludingVat": 199.90,
+        "totalVatAmount": 79.90
     }
 ]
 EOD;
