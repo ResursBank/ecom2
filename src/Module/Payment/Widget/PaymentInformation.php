@@ -47,6 +47,9 @@ class PaymentInformation extends Widget
     public readonly string $css;
 
     /** @var string */
+    private static ?string $cssStatic;
+
+    /** @var string */
     public readonly string $logo;
 
     /**
@@ -219,6 +222,31 @@ class PaymentInformation extends Widget
     }
 
     /**
+     * Get CSS statically on demand.
+     *
+     * @return string
+     * @throws EmptyValueException
+     */
+    public static function getCss(): string
+    {
+        if (self::$cssStatic === null) {
+            $css = file_get_contents(
+                filename: __DIR__ . '/payment-information.css'
+            );
+
+            if (!$css) {
+                throw new EmptyValueException(
+                    message: 'Failed to load stylesheet.'
+                );
+            }
+
+            self::$cssStatic = $css;
+        }
+
+        return self::$cssStatic;
+    }
+
+    /**
      * Render widget components (kept in separate method, so it can be executed
      * from subclasses because the constructor defines the resource to be used).
      *
@@ -255,6 +283,6 @@ class PaymentInformation extends Widget
         }
 
         /* @phpstan-ignore-next-line */
-        $this->css = $css;
+        $this->css = self::getCss();
     }
 }
