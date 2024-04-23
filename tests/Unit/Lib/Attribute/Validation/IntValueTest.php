@@ -48,7 +48,7 @@ class IntValueTest extends TestCase
         foreach (
             $object->getAcceptedValues(
                 parameter: $reflectionParameter,
-                size: 100
+                size: 1000
             ) as $value
         ) {
             if ($value >= $min && $value <= $max) {
@@ -77,7 +77,7 @@ class IntValueTest extends TestCase
         foreach (
             $object->getRejectedValues(
                 parameter: $reflectionParameter,
-                size: 100
+                size: 1000
             ) as $value
         ) {
             if ($value < $min || $value > $max) {
@@ -86,5 +86,14 @@ class IntValueTest extends TestCase
                 $this->fail(message: 'Value is within configured range!');
             }
         }
+    }
+
+    /**
+     * Assert that the min and max parameters cannot both be null.
+     */
+    public function testNullMinMaxParameters(): void
+    {
+        $this->expectException(exception: AttributeParameterException::class);
+        new IntValue(min: null, max: null);
     }
 }
