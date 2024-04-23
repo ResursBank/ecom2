@@ -305,4 +305,32 @@ class PaymentInformationTest extends TestCase
             message: 'SVG element is not rendered.'
         );
     }
+
+    /**
+     * Assert getCss() method works, and that the css property is assigned when
+     * the widget is instantiated.
+     */
+    public function testCss(): void
+    {
+        // Assert that the css property on the widget instance is not empty.
+        $this->assertNotEmpty($this->widget->css);
+
+        // Assert that the static getCss() method returns a string.
+        $this->assertIsString(PaymentInformation::getCss());
+
+        // Assert that the static getCss() method returns the same value as the
+        // css property on the widget instance.
+        $this->assertEquals(
+            expected: $this->widget->css,
+            actual: PaymentInformation::getCss(),
+            message: 'getCss() does not return the same value as the css property.'
+        );
+
+        // Assert that the css property contains CSS rules.
+        $this->assertMatchesRegularExpression(
+            pattern: "/\w+:\w+;/",
+            string: $this->widget->css,
+            message: 'CSS property does not contain CSS rules.'
+        );
+    }
 }
