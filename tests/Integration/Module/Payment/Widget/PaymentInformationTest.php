@@ -174,7 +174,7 @@ class PaymentInformationTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+>{$this->payment->id}<\/td>/s",
+            pattern: "/<td>{$this->payment->id}<\/td>/s",
             string: $this->widget->content,
             message: 'Widget does not contain payment id cell.'
         );
@@ -195,7 +195,7 @@ class PaymentInformationTest extends TestCase
     {
         $tdEl = $this->widget->getTdEl(content: $this->payment->id);
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+>{$this->payment->id}<\/td>/s",
+            pattern: "/<td>{$this->payment->id}<\/td>/s",
             string: $tdEl,
             message: 'getTdEl() does not return a td element with the given content.'
         );
@@ -203,7 +203,7 @@ class PaymentInformationTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<td[^>]+>{$content}<\/td>/s",
+            pattern: "/<td>{$content}<\/td>/s",
             string: $this->widget->getTdEl(content: $content),
             message: 'getTdEl() does not return a td element with the given content.'
         );
@@ -244,7 +244,7 @@ class PaymentInformationTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<tr[^>]+>.*<\/tr>/s",
+            pattern: "/<tr>.*<\/tr>/s",
             string: $trEl,
             message: 'getTrEl() does not return a tr element.'
         );

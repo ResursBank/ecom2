@@ -254,6 +254,7 @@ class PaymentInformation extends Widget
             );
         }
 
+        /* @phpstan-ignore-next-line */
         $this->css = $css;
     }
 }

@@ -18,12 +18,8 @@ use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
 <div class="rb-pi">
     <table>
         <tr>
-            <th class="rb-pi-logo-bg">
-                <span><?= Translator::translate(phraseId: 'payment') ?></span>
-                <span class="rb-pi-logo"><?= $this->logo ?></span>
-            </th>
-            <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
-            <th></th>
+            <th><?= Translator::translate(phraseId: 'payment') ?></th>
+            <th><?= $this->logo ?></th>
         </tr>
         <?= $this->getTrEl(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
         <?= $this->getTrEl(
