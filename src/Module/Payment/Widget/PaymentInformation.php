@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Widget;
 
+use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -16,6 +17,7 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -26,6 +28,7 @@ use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Throwable;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
@@ -122,9 +125,29 @@ class PaymentInformation extends Widget
         return (string) $this->payment->customer->deliveryAddress?->postalCode;
     }
 
+    /**
+     * @return string
+     */
     public function getStatus(): string
     {
-        return $this->payment->status->value;
+        $result = $this->payment->status->value;
+
+        $reason = str_replace(
+            search: '_',
+            replace: '-',
+            subject: strtolower(string: (string)$this->payment->rejectedReason?->category?->value)
+        );
+
+        if ($reason !== '') {
+            try {
+                $result .= ' (' . Translator::translate(phraseId: "reject-reason-$reason") . ')';
+            } catch (Throwable) {
+                // In case we get translation problems with nonexistent phrases.
+                $result .= ' (' . sprintf('reject-reason-%s', $reason) . ')';
+            }
+        }
+
+        return $result;
     }
 
     public function getPaymentMethodName(): string

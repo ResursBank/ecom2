@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Payment\Widget;
 
-use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -57,6 +57,20 @@ class PaymentInformationTest extends TestCase
 
     private string $orderReference;
 
+    /**
+     * @throws ValidationException
+     * @throws CurlException
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws IllegalTypeException
+     * @throws AuthException
+     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ConfigException
+     * @throws ApiException
+     * @throws ReflectionException
+     * @throws FilesystemException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -97,8 +111,9 @@ class PaymentInformationTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      */
-    private function createPayment(string $orderReference): Payment
+    private function createPayment(string $orderReference, string $governmentId = '198305147715'): Payment
     {
         $payment = Repository::create(
             storeId: $_ENV['STORE_ID'],
@@ -138,10 +153,10 @@ class PaymentInformationTest extends TestCase
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
-                governmentId: '198305147715',
+                governmentId: $governmentId,
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
         );
 
         MockSigner::approve(payment: $payment);
@@ -151,19 +166,6 @@ class PaymentInformationTest extends TestCase
 
     /**
      * Verify that widget renders
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws FilesystemException
-     * @throws Exception
      */
     public function testRenderWidget(): void
     {
