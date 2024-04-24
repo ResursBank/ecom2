@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Payment\Widget;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -44,7 +45,9 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\EcomTest\Unit\Lib\Model\PaymentTest;
 use Resursbank\EcomTest\Utilities\MockSigner;
+use Throwable;
 
 /**
  * Tests for the payment information widget.
@@ -55,7 +58,33 @@ class PaymentInformationTest extends TestCase
 
     private PaymentInformation $widget;
 
+    /** @noinspection PhpPrivateFieldCanBeLocalVariableInspection */
     private string $orderReference;
+
+    /**
+     * Temporarily stored payment to test failures.
+     */
+    private Payment $paymentCache;
+
+    /**
+     * @throws EmptyValueException
+     */
+    protected function setUpEnglish(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            language: Language::EN
+        );
+    }
 
     /**
      * @throws ValidationException
@@ -156,8 +185,10 @@ class PaymentInformationTest extends TestCase
                 governmentId: $governmentId,
                 mobilePhone: '46701234567',
                 deviceInfo: new DeviceInfo()
-            ),
+            )
         );
+
+        $this->paymentCache = $payment;
 
         MockSigner::approve(payment: $payment);
 
@@ -205,7 +236,7 @@ class PaymentInformationTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<tdd>{$content}<\/td>/s",
+            pattern: "/<td>{$content}<\/td>/s",
             string: $this->widget->getTdEl(content: $content),
             message: 'getTdEl() does not return a td element with the given content.'
         );
@@ -333,6 +364,51 @@ class PaymentInformationTest extends TestCase
             pattern: "/\w+:\w+;/",
             string: $this->widget->css,
             message: 'CSS property does not contain CSS rules.'
+        );
+    }
+
+    /**
+     * Verify that realtime credit denial works. For tests related to the rejectedReasons model, see PaymentTest.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Exception
+     * @see PaymentTest
+     */
+    public function testCreditDenied(): void
+    {
+        $this->setUpEnglish();
+        $orderReference = Strings::generateRandomString(length: 12);
+
+        try {
+            $this->createPayment(
+                orderReference: $orderReference,
+                governmentId: '195012026430'
+            );
+            $this->fail(message: 'Payment should have been rejected.');
+        } catch (Throwable $e) {
+            $this->assertStringContainsString('REJECTED', $e->getMessage());
+        }
+
+        $widget = new PaymentInformation(
+            paymentId: $this->paymentCache->id,
+            currencySymbol: 'kr',
+            currencyFormat: CurrencyFormat::SYMBOL_LAST
+        );
+
+        $this->assertMatchesRegularExpression(
+            pattern: '/<td(.*?)>Status<\/td><td>REJECTED \(Credit denied\)<\/td>/s',
+            string: $widget->content,
+            message: 'Payment was not rejected with CREDIT_DENIED.'
         );
     }
 }

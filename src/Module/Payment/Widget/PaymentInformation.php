@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Payment\Widget;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -17,7 +16,6 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -125,9 +123,6 @@ class PaymentInformation extends Widget
         return (string) $this->payment->customer->deliveryAddress?->postalCode;
     }
 
-    /**
-     * @return string
-     */
     public function getStatus(): string
     {
         $result = $this->payment->status->value;
@@ -135,12 +130,16 @@ class PaymentInformation extends Widget
         $reason = str_replace(
             search: '_',
             replace: '-',
-            subject: strtolower(string: (string)$this->payment->rejectedReason?->category?->value)
+            subject: strtolower(
+                string: (string)$this->payment->rejectedReason?->category?->value
+            )
         );
 
         if ($reason !== '') {
             try {
-                $result .= ' (' . Translator::translate(phraseId: "reject-reason-$reason") . ')';
+                $result .= ' (' . Translator::translate(
+                    phraseId: "reject-reason-$reason"
+                ) . ')';
             } catch (Throwable) {
                 // In case we get translation problems with nonexistent phrases.
                 $result .= ' (' . sprintf('reject-reason-%s', $reason) . ')';

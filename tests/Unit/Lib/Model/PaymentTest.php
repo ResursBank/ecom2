@@ -94,6 +94,8 @@ class PaymentTest extends TestCase
     }
 
     /**
+     * CREDIT_DENIED test. Realtime tests can be found in PaymentInformationTest.
+     *
      * @throws IllegalTypeException
      * @throws EmptyValueException
      * @throws IllegalValueException
