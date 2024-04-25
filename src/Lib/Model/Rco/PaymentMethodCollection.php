@@ -12,12 +12,14 @@ namespace Resursbank\Ecom\Lib\Model\Rco;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection as
+    PaymentMethodCollectionInterface;
 
 /**
  * PaymentMethod collection.
  */
-class PaymentMethodCollection extends Collection implements \Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection
+class PaymentMethodCollection extends Collection
+    implements PaymentMethodCollectionInterface
 {
     /**
      * @param array $data
@@ -58,7 +60,7 @@ class PaymentMethodCollection extends Collection implements \Resursbank\Ecom\Lib
      */
     public function getById(string $methodId): PaymentMethod
     {
-        /** @var \Resursbank\Ecom\Lib\Model\Rco\PaymentMethod $method */
+        /** @var PaymentMethod $method */
         foreach ($this->getData() as $method) {
             if ($method->getId() === $methodId) {
                 return $method;
