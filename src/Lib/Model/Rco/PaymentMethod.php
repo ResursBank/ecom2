@@ -18,6 +18,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\Type;
+use function in_array;
 
 /**
  * Implementation of PaymentMethodDto object.
