@@ -9,20 +9,30 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod;
 
 /**
  * PaymentMethod collection.
  */
-class PaymentMethodCollection extends Collection
+class PaymentMethodCollection extends Collection implements \Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection
 {
+    /**
+     * @param array $data
+     * @throws IllegalTypeException
+     */
     public function __construct(array $data)
     {
         parent::__construct(data: $data, type: PaymentMethod::class);
     }
 
     /**
-     * Find name of method with specific ID.
+     * @inheritDoc
+     *
+     * @param string $methodId
+     * @return string
      */
     public function getMethodName(string $methodId): string
     {
@@ -30,12 +40,32 @@ class PaymentMethodCollection extends Collection
 
         /** @var PaymentMethod $method */
         foreach ($this->getData() as $method) {
-            if ($method->methodId === $methodId) {
-                $result = $method->name;
+            if ($method->getId() === $methodId) {
+                $result = $method->getName();
                 break;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param string $methodId
+     * @return PaymentMethod
+     * @throws MissingValueException
+     */
+    public function getById(string $methodId): PaymentMethod
+    {
+        /** @var \Resursbank\Ecom\Lib\Model\Rco\PaymentMethod $method */
+        foreach ($this->getData() as $method) {
+            if ($method->getId() === $methodId) {
+                return $method;
+            }
+        }
+
+        throw new MissingValueException(message: 'Method with id ' . $methodId .
+            ' does not exist in collection.');
     }
 }
