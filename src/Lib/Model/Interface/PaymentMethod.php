@@ -23,4 +23,8 @@ interface PaymentMethod
     public function getMaxLimit(): float;
 
     public function getSortOrder(): int;
+
+    public function enabledForB2b(): bool;
+
+    public function enabledForB2c(): bool;
 }
