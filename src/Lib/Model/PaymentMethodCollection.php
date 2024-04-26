@@ -12,16 +12,14 @@ namespace Resursbank\Ecom\Lib\Model;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection as CollectionInterface;
 
 /**
  * Defines a PaymentMethod collection.
  */
-class PaymentMethodCollection extends Collection
-    implements Interface\PaymentMethodCollection
+class PaymentMethodCollection extends Collection implements CollectionInterface
 {
     /**
-     * @param array<int, PaymentMethod> $data
      * @throws IllegalTypeException
      */
     public function __construct(array $data)
@@ -31,9 +29,6 @@ class PaymentMethodCollection extends Collection
 
     /**
      * @inheritDoc
-     *
-     * @param string $methodId
-     * @return string
      */
     public function getMethodName(string $methodId): string
     {
@@ -52,14 +47,10 @@ class PaymentMethodCollection extends Collection
 
     /**
      * @inheritDoc
-     *
-     * @param string $methodId
-     * @return PaymentMethod
-     * @throws MissingValueException
      */
     public function getById(string $methodId): PaymentMethod
     {
-        /** @var \Resursbank\Ecom\Lib\Model\PaymentMethod $method */
+        /** @var PaymentMethod $method */
         foreach ($this->getData() as $method) {
             if ($method->getId() === $methodId) {
                 return $method;

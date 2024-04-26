@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco;
 
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -18,6 +17,7 @@ use Resursbank\Ecom\Lib\Model\Rco\Customer\TypeCollection;
 use Resursbank\Ecom\Lib\Model\Rco\Enum\RequiredCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\LinkCollection;
 use Resursbank\Ecom\Lib\Model\Rco\PaymentMethod\Type;
+
 use function in_array;
 
 /**
@@ -30,7 +30,6 @@ class PaymentMethod extends Model implements PaymentMethodInterface
      * fetching a list of payment methods from the API, to ensure payment
      * methods are sorted accurately in various implementations.
      *
-     * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(

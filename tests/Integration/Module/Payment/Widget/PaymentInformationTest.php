@@ -203,7 +203,7 @@ class PaymentInformationTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<tdd>{$content}<\/td>/s",
+            pattern: "/<td>{$content}<\/td>/s",
             string: $this->widget->getTdEl(content: $content),
             message: 'getTdEl() does not return a td element with the given content.'
         );

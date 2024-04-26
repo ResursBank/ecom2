@@ -24,10 +24,12 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
@@ -162,27 +164,30 @@ class Repository
         string $paymentMethodId,
         ?float $amount = null
     ): ?PaymentMethod {
-        $result = null;
-
         $paymentMethods = self::getPaymentMethods(
             storeId: $storeId,
             amount: $amount
         );
 
-        /** @var PaymentMethod $paymentMethod */
-        foreach ($paymentMethods as $paymentMethod) {
-            if ($paymentMethod->id !== $paymentMethodId) {
-                continue;
-            }
-
-            $result = $paymentMethod;
+        try {
+            return $paymentMethods->getById(methodId: $paymentMethodId);
+        } catch (MissingValueException) {
+            return null;
         }
-
-        return $result;
     }
 
     /**
-     * @throws Exception
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
      */
     public static function getApplicationDataSpecification(
         string $storeId,
@@ -205,10 +210,11 @@ class Repository
      * Fetches the USP for specified payment method type
      *
      * @throws ConfigException
+     * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws FilesystemException
      * @throws TranslationException
      */
     public static function getUniqueSellingPoint(
