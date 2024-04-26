@@ -32,12 +32,13 @@ class PaymentMethodTest extends TestCase
      *
      * @throws IllegalTypeException
      */
-    private function generateModel(): void
-    {
-        new PaymentMethod(
+    private function generateModel(
+        Type $type = Type::GENERIC
+    ): PaymentMethod {
+        return new PaymentMethod(
             methodId: '',
             name: '',
-            type: Type::GENERIC,
+            type: $type,
             fee: 0,
             required: new RequiredCollection(data: []),
             subtitle: '',
@@ -100,5 +101,30 @@ class PaymentMethodTest extends TestCase
             minLimit: 10,
             maxLimit: 50000
         );
+    }
+
+    /**
+     * Assert that isInternal gives correct responses depending on the method's
+     * type.
+     */
+    public function testIsInternal(): void
+    {
+        $validCases = [
+            Type::RESURS_CARD,
+            Type::RESURS_INVOICE,
+            Type::RESURS_PART_PAYMENT,
+            Type::RESURS_REVOLVING_CREDIT
+        ];
+
+        foreach (Type::cases() as $case) {
+            $method = $this->generateModel(type: $case);
+
+            if (in_array(needle: $case, haystack: $validCases, strict: true)) {
+                $this->assertTrue(condition: $method->isInternal());
+                continue;
+            }
+
+            $this->assertFalse(condition: $method->isInternal());
+        }
     }
 }

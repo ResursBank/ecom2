@@ -27,4 +27,8 @@ interface PaymentMethod
     public function enabledForB2b(): bool;
 
     public function enabledForB2c(): bool;
+
+    public function getTypeValue(): string;
+
+    public function isInternal(): bool;
 }
