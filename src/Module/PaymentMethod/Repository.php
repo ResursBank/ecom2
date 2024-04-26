@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\PaymentMethod;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -29,7 +28,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;

@@ -58,7 +58,9 @@ class PaymentMethodCollection extends Collection implements CollectionInterface
             }
         }
 
-        throw new MissingValueException(message: 'Method with id ' . $methodId .
-            ' does not exist in collection.');
+        throw new MissingValueException(
+            message: 'Method with id ' . $methodId .
+                ' does not exist in collection.'
+        );
     }
 }
