@@ -108,6 +108,16 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         return $this->enabledForNaturalCustomer;
     }
 
+    public function isInternal(): bool
+    {
+        return str_starts_with(haystack: $this->type->value, needle: 'RESURS_');
+    }
+
+    public function getTypeValue(): string
+    {
+        return $this->type->value;
+    }
+
     /**
      * @throws EmptyValueException
      * @throws IllegalValueException
