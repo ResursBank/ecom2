@@ -32,6 +32,24 @@ class Callback extends Widget
         $this->renderWidget();
     }
 
+    /**
+     * Load widget stylesheet.
+     *
+     * @throws EmptyValueException
+     */
+    public static function getCss(): string
+    {
+        $css = file_get_contents(filename: __DIR__ . '/callback.css');
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet.'
+            );
+        }
+
+        return $css;
+    }
+
     public function getAuthorizationUrl(): ?string
     {
         return $this->authorizationUrl ??
@@ -42,27 +60,6 @@ class Callback extends Widget
     {
         return $this->managementUrl ??
             Translator::translate(phraseId: 'failed-to-resolve-callback-url');
-    }
-
-    /**
-     * Load widget stylesheet.
-     *
-     * @return string
-     * @throws EmptyValueException
-     */
-    public static function getCss(): string
-    {
-        $css = file_get_contents(
-            filename: __DIR__ . '/callback.css'
-        );
-
-        if (!$css) {
-            throw new EmptyValueException(
-                message: 'Failed to load stylesheet.'
-            );
-        }
-
-        return $css;
     }
 
     /**
