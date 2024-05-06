@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Callback\Widget;
 
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -20,6 +21,9 @@ class Callback extends Widget
 {
     /** @var string */
     public readonly string $content;
+
+    /** @var string */
+    public readonly string $css;
 
     public function __construct(
         private readonly ?string $authorizationUrl = null,
@@ -41,12 +45,38 @@ class Callback extends Widget
     }
 
     /**
+     * Load widget stylesheet.
+     *
+     * @return string
+     * @throws EmptyValueException
+     */
+    public static function getCss(): string
+    {
+        $css = file_get_contents(
+            filename: __DIR__ . '/callback.css'
+        );
+
+        if (!$css) {
+            throw new EmptyValueException(
+                message: 'Failed to load stylesheet.'
+            );
+        }
+
+        return $css;
+    }
+
+    /**
      * Render widget content.
      *
      * @throws FilesystemException
+     * @throws EmptyValueException
      */
     protected function renderWidget(): void
     {
+        /* @phpstan-ignore-next-line */
         $this->content = $this->render(file: __DIR__ . '/callback.phtml');
+
+        /* @phpstan-ignore-next-line */
+        $this->css = self::getCss();
     }
 }

@@ -13,13 +13,13 @@ use Resursbank\Ecom\Module\Callback\Widget\Callback;
  */
 ?>
 
-<div style="max-width: 600px; overflow-x: scroll;">
-    <p style="font-weight: bold;">[AUTHORIZATION]</p>
-    <p style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #c0c0c0;">
+<div class="rb-cb">
+    <p class="rb-cb-header">[AUTHORIZATION]</p>
+    <p class="rb-cb-url">
         <?= $this->getAuthorizationUrl() ?>
     </p>
-    <p style="font-weight: bold;">[MANAGEMENT]</p>
-    <p style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #c0c0c0;">
+    <p class="rb-cb-header">[MANAGEMENT]</p>
+    <p class="rb-cb-url">
         <?= $this->getManagementUrl() ?>
     </p>
 </div>
