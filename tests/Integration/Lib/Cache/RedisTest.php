@@ -38,7 +38,7 @@ class RedisTest extends TestCase
     {
         if ((bool)$_ENV['IS_PIPELINE']) {
             $this->markTestSkipped(
-                message: 'Pipeline runs as root, privileges breaks this tests.'
+                message: 'Redis may break pipelines with 2 hour runs. Skipping!'
             );
         }
 
