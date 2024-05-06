@@ -36,6 +36,12 @@ class RedisTest extends TestCase
      */
     protected function setUp(): void
     {
+        if ((bool)$_ENV['IS_PIPELINE']) {
+            $this->markTestSkipped(
+                message: 'Pipeline runs as root, privileges breaks this tests.'
+            );
+        }
+
         $this->redis = new Redis(host: $_ENV['REDIS_HOST']);
         $this->key = $this->getKey();
 
