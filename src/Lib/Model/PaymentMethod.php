@@ -98,6 +98,26 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         return str_starts_with(haystack: $this->type->name, needle: 'RESURS_');
     }
 
+    public function enabledForB2b(): bool
+    {
+        return $this->enabledForLegalCustomer;
+    }
+
+    public function enabledForB2c(): bool
+    {
+        return $this->enabledForNaturalCustomer;
+    }
+
+    public function isInternal(): bool
+    {
+        return str_starts_with(haystack: $this->type->value, needle: 'RESURS_');
+    }
+
+    public function getTypeValue(): string
+    {
+        return $this->type->value;
+    }
+
     /**
      * @throws EmptyValueException
      * @throws IllegalValueException

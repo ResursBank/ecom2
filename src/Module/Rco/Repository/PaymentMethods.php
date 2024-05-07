@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
@@ -147,20 +148,13 @@ class PaymentMethods
         string $storeId,
         string $paymentMethodId
     ): ?PaymentMethod {
-        $result = null;
-
         $paymentMethods = self::getPaymentMethods(storeId: $storeId);
 
-        /** @var PaymentMethod $paymentMethod */
-        foreach ($paymentMethods as $paymentMethod) {
-            if ($paymentMethod->methodId !== $paymentMethodId) {
-                continue;
-            }
-
-            $result = $paymentMethod;
+        try {
+            return $paymentMethods->getById(methodId: $paymentMethodId);
+        } catch (MissingValueException) {
+            return null;
         }
-
-        return $result;
     }
 
     /**

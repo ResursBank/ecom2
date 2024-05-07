@@ -1764,5 +1764,85 @@
       "sv": "Betalningsinformation kunde inte hämtas från Resurs Bank.",
       "no": "Betalingsinformasjon kunne ikke hentes fra Resurs Bank."
     }
+  },
+  {
+    "id": "reject-reason-unknown",
+    "translation": {
+      "en": "Unknown",
+      "sv": "Okänd",
+      "no": "Ukjent"
+    }
+  },
+  {
+    "id": "reject-reason-technical-error",
+    "translation": {
+      "en": "Technical error",
+      "sv": "Tekniskt fel",
+      "no": "Teknisk feil"
+    }
+  },
+  {
+    "id": "reject-reason-credit-denied",
+    "translation": {
+      "en": "Credit denied",
+      "sv": "Kredit nekad",
+      "no": "Kreditt avvist"
+    }
+  },
+  {
+    "id": "reject-reason-payment-frozen",
+    "translation": {
+      "en": "Payment frozen",
+      "sv": "Betalningen är fryst",
+      "no": "Betalingen er frosset"
+    }
+  },
+  {
+    "id": "reject-reason-timeout",
+    "translation": {
+      "en": "Timeout",
+      "sv": "Tidsgräns överskriden",
+      "no": "Tidsavbrudd"
+    }
+  },
+  {
+    "id": "reject-reason-aborted-by-customer",
+    "translation": {
+      "en": "Aborted by customer",
+      "sv": "Avbruten av kunden",
+      "no": "Avbrutt av kunden"
+    }
+  },
+  {
+    "id": "reject-reason-insufficient-funds",
+    "translation": {
+      "en": "Insufficient funds",
+      "sv": "Otillräckliga medel",
+      "no": "Utilstrekkelige midler"
+    }
+  },
+  {
+    "id": "reject-reason-canceled",
+    "translation": {
+      "en": "Canceled",
+      "sv": "Avbokad",
+      "no": "Avlyst"
+    }
+  },
+  {
+    "id": "reject-reason-manual-application-required",
+    "translation": {
+      "en": "Manual application required",
+      "sv": "Manuell ansökan krävs",
+      "no": "Manuell søknad nødvendig"
+    }
+  },
+  {
+    "id": "reject-reason-not-allowed-to-sign",
+    "translation": {
+      "en": "Not allowed to sign",
+      "sv": "Inte tillåten att signera",
+      "no": "Ikke tillatt å signere"
+    }
   }
 ]
