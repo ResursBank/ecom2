@@ -1526,6 +1526,14 @@
     }
   },
   {
+    "id": "failed-placing-order-try-again",
+    "translation": {
+      "en": "Failed to place order. Please review your information and try again.",
+      "sv": "Kunde inte genomför beställning. Vänligen kontrollera dina uppgifter och försök igen.",
+      "no": "Kunne ikke gjennomføre bestilling. Vennligst gjennomgå informasjonen din og prøv igjen."
+    }
+  },
+  {
     "id": "invalid-webhook-data",
     "translation": {
       "en": "Invalid webhook data submitted from Resurs Bank.",
