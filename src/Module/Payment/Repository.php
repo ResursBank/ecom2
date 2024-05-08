@@ -216,13 +216,15 @@ class Repository
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
-        ?string $transactionId = null
+        ?string $transactionId = null,
+        ?string $refundNoteId = null
     ): Payment {
         return (new Refund())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
             creator: $creator,
-            transactionId: $transactionId
+            transactionId: $transactionId,
+            refundNoteId: $refundNoteId
         );
     }
 

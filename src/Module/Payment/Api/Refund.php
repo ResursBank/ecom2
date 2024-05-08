@@ -57,7 +57,8 @@ class Refund
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
-        ?string $transactionId = null
+        ?string $transactionId = null,
+        ?string $refundNoteId = null
     ): Payment {
         $payload = [];
 
@@ -73,6 +74,10 @@ class Refund
             $payload['transactionId'] = $transactionId;
         }
 
+        if ($refundNoteId) {
+            $payload['refundNoteOptions'] = ['refundNoteId' => $refundNoteId];
+        }
+
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/refund'
@@ -86,6 +91,18 @@ class Refund
 
         $data = $curl->exec()->body;
 
+        return $this->processResponse(data: $data);
+    }
+
+    /**
+     * Convert response to Payment object.
+     *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private function processResponse(mixed $data): Payment
+    {
         $content = $data instanceof stdClass ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(
