@@ -101,7 +101,7 @@ class PaymentTest extends TestCase
      * @throws IllegalValueException
      * @throws IllegalCharsetException
      */
-    public function testIsCreditDenied(): void
+    public function testIsRejectionReasonCreditDenied(): void
     {
         $isDenied = $this->createDummyPayment(
             status: Status::REJECTED,
@@ -110,16 +110,13 @@ class PaymentTest extends TestCase
         $notDenied = $this->createDummyPayment(status: Status::ACCEPTED);
 
         $this->assertTrue(
-            condition: $isDenied->isDenied()
-        );
-        $this->assertTrue(
-            condition: $isDenied->isCreditDenied()
+            condition: $isDenied->isRejectionReasonCreditDenied()
         );
         $this->assertTrue(
             condition: $isDenied->isRejected()
         );
         $this->assertFalse(
-            condition: $notDenied->isDenied()
+            condition: $notDenied->isRejectionReasonCreditDenied()
         );
         $this->assertFalse(
             condition: $notDenied->isRejected()
@@ -132,7 +129,7 @@ class PaymentTest extends TestCase
      * @throws IllegalValueException
      * @throws IllegalCharsetException
      */
-    public function testIsAbortedByCustomer(): void
+    public function testIsRejectionReasonAbortedByCustomer(): void
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
@@ -140,7 +137,7 @@ class PaymentTest extends TestCase
         );
 
         $this->assertTrue(
-            condition: $isAborted->isAbortedByCustomer()
+            condition: $isAborted->isRejectionReaseonAbortedByCustomer()
         );
     }
 
@@ -150,7 +147,7 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testIsTimeout(): void
+    public function testIsRejectionReasonTimeout(): void
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
@@ -158,7 +155,7 @@ class PaymentTest extends TestCase
         );
 
         $this->assertTrue(
-            condition: $isAborted->isTimeout()
+            condition: $isAborted->isRejectionReasonTimeout()
         );
     }
 
@@ -168,7 +165,7 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testIsCanceled(): void
+    public function testIsRejectionReasonCanceled(): void
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
@@ -176,7 +173,7 @@ class PaymentTest extends TestCase
         );
 
         $this->assertTrue(
-            condition: $isAborted->isCanceled()
+            condition: $isAborted->isRejectionReasonCanceled()
         );
     }
 
@@ -186,7 +183,7 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testIsInsufficientFunds(): void
+    public function testIsRejectionReasonInsufficientFunds(): void
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
@@ -194,7 +191,7 @@ class PaymentTest extends TestCase
         );
 
         $this->assertTrue(
-            condition: $isAborted->isInsufficientFunds()
+            condition: $isAborted->isRejectionReasonInsufficientFunds()
         );
     }
 
@@ -204,7 +201,7 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
-    public function testIsTechnicalError(): void
+    public function testIsRejectionReasonTechnicalError(): void
     {
         $isAborted = $this->createDummyPayment(
             status: Status::REJECTED,
@@ -212,7 +209,7 @@ class PaymentTest extends TestCase
         );
 
         $this->assertTrue(
-            condition: $isAborted->isTechnicalError()
+            condition: $isAborted->isRejectionReasonTechnicalError()
         );
     }
 }
