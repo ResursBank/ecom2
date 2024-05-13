@@ -158,9 +158,7 @@ class Payment extends Model
      */
     public function isRejectionReasonTimeout(): bool
     {
-        return $this->isRejectedReason(
-            reason: RejectedReasonCategory::TIMEOUT
-        );
+        return $this->isRejectedReason(reason: RejectedReasonCategory::TIMEOUT);
     }
 
     /**
@@ -201,18 +199,6 @@ class Payment extends Model
         return $this->isRejectedReason(
             reason: RejectedReasonCategory::ABORTED_BY_CUSTOMER
         );
-    }
-
-    /**
-     * Checks if rejection reason is the supplied reason.
-     *
-     * @param RejectedReasonCategory $reason
-     * @return bool
-     */
-    private function isRejectedReason(RejectedReasonCategory $reason): bool
-    {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === $reason;
     }
 
     /**
@@ -273,6 +259,15 @@ class Payment extends Model
             $this->order->authorizedAmount === 0.0 &&
             $this->order->canceledAmount === $this->order->totalOrderAmount
         ;
+    }
+
+    /**
+     * Checks if rejection reason is the supplied reason.
+     */
+    private function isRejectedReason(RejectedReasonCategory $reason): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === $reason;
     }
 
     /**
