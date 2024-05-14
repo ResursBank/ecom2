@@ -9,24 +9,26 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\SupportInfo\Widget;
 
-use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
+use function defined;
 
 /**
  * Support info widget which displays basic information about the state of the library.
  */
 class SupportInfo extends Widget
 {
+    /** @var string */
     private readonly string $html;
+
+    /** @var string */
+    private readonly string $css;
 
     /**
      * @param string $pluginVersion Version of the calling plugin/addon
@@ -36,6 +38,7 @@ class SupportInfo extends Widget
         public readonly string $pluginVersion = ''
     ) {
         $this->html = $this->render(file: __DIR__ . '/support-info.phtml');
+        $this->css = file_get_contents(filename: __DIR__ . '/support-info.css');
     }
 
     /**
@@ -44,6 +47,16 @@ class SupportInfo extends Widget
     public function getHtml(): string
     {
         return $this->html;
+    }
+
+    /**
+     * Return the widget CSS.
+     *
+     * @return string
+     */
+    public function getCss(): string
+    {
+        return $this->css;
     }
 
     /**
@@ -84,11 +97,6 @@ class SupportInfo extends Widget
      *  Attempt to fetch the current version of Ecom from the composer.json file.
      *
      * @throws ConfigException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws FilesystemException
-     * @throws TranslationException
-     * @throws IllegalTypeException
      */
     public function getEcomVersion(): string
     {
