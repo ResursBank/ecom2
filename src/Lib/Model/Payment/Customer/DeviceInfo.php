@@ -29,7 +29,7 @@ class DeviceInfo extends Model
         public readonly ?string $ip = null,
         #[StringLength(
             min: 1,
-            max: 255
+            max: 200
         )] public readonly ?string $userAgent = null
     ) {
         parent::__construct();
