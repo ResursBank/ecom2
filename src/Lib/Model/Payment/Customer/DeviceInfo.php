@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Customer;
 
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -19,16 +21,15 @@ use Resursbank\Ecom\Lib\Model\Model;
 class DeviceInfo extends Model
 {
     /**
-     * @throws IllegalValueException
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function __construct(
-        /**
-         * @todo Don't know how to validate ip-address.
-         */
         public readonly ?string $ip = null,
         #[StringLength(
             min: 1,
-            max: 200
+            max: 255
         )] public readonly ?string $userAgent = null
     ) {
         parent::__construct();
