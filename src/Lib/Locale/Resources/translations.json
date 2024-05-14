@@ -1852,5 +1852,39 @@
       "sv": "Inte tillåten att signera",
       "no": "Ikke tillatt å signere"
     }
+  },
+  {
+    "id": "callback-error-no-resource-id",
+    "translation": {
+      "en": "No payment/checkout ID found in callback data.",
+      "sv": "Ingen betalnings-/kassa-ID hittades i callback data.",
+      "no": "Ingen betalings-/utsjekkings-ID funnet i tilbakeringingsdata."
+    }
+  },
+  {
+    "id": "callback-error-failed-processing-authorization",
+    "translation": {
+      "en": "Failed to process authorization callback.",
+      "sv": "Kunde inte processa autorisationscallback.",
+      "no": "Kunne ikke behandle autorisasjonstilbakeringing."
+    }
+  },
+  {
+    "id": "called-error-order-not-ready",
+    "translation": {
+      "en": "Order not ready for callback.",
+      "sv": "Beställning ej redo för callback.",
+      "no": "Bestillingen er ikke klar for tilbakeringing."
+    }
+  },
+
+  {
+    "id": "called-error-order-not-found",
+    "translation": {
+      "en": "Order not found.",
+      "sv": "Beställning ej hittad.",
+      "no": "Bestillingen ble ikke funnet."
+    }
   }
 ]
+
