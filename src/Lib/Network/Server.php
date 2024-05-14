@@ -48,7 +48,7 @@ class Server
 
         if (
             is_string(value: $userAgent) &&
-            strlen(string: $userAgent) <= 255
+            strlen(string: $userAgent) <= 200
         ) {
             return $userAgent;
         }
