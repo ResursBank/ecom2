@@ -13,7 +13,7 @@ use Resursbank\Ecom\Lib\Network\Server;
 
 class ServerSideTest extends TestCase
 {
-    protected string $ip4Default = '192.168.17.43';
+    protected string $ip4normal = '192.168.17.43';
 
     private string $ipEmpty = '';
 
@@ -45,12 +45,12 @@ class ServerSideTest extends TestCase
     public function testDeviceInfoFullDefaultIp(): void
     {
         $deviceInfo = new DeviceInfo(
-            ip: $this->ip4Default,
+            ip: $this->ip4normal,
             userAgent: 'UA Plugin 1.0.0'
         );
 
         $this->assertEquals(
-            expected: $this->ip4Default,
+            expected: $this->ip4normal,
             actual: $deviceInfo->ip
         );
     }
@@ -102,8 +102,8 @@ class ServerSideTest extends TestCase
     public function testIpCheckV4default(): void
     {
         $this->assertSame(
-            expected: $this->ip4Default,
-            actual: Server::getValidatedIp(ip: $this->ip4Default)
+            expected: $this->ip4normal,
+            actual: Server::getValidatedIp(ip: $this->ip4normal)
         );
     }
 
