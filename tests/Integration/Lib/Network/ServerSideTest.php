@@ -21,11 +21,11 @@ class ServerSideTest extends TestCase
 
     private string $strangeCloudflare = '1.2.3.4, 1.2.3.4, 1.2.3.4';
 
-    private string $ipV6long = '2001:460:B00:AA:BB:CC:DD:999';
+    private string $ipV6long = '2001:460:FFFF:AAAA:BBBB:CCCC:DDDD:EEEE';
 
-    private string $ipV6short = '2001:460:B00::999';
+    private string $ipV6short = '2001:460:FFFF::999';
 
-    private string $ipv6Invalid = '2001:460:B00:AA:BB:CC:DD:OOPS:999';
+    private string $ipv6Invalid = '2001:460:FFFF:AAAA:BBBB:CCCC:DDDD:OOPS:FFFF';
 
     /**
      * 192.168.10.1, as a decimal value.
