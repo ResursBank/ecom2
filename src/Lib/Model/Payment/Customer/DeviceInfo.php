@@ -38,6 +38,8 @@ class DeviceInfo extends Model
 
     /**
      * Get and return a valid ip address.
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public static function getIp(): ?string
     {

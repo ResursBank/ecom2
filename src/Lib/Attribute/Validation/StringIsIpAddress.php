@@ -10,7 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
+use Exception;
+use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\IllegalIpException;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 use function filter_var;
 
@@ -20,7 +23,7 @@ use const FILTER_VALIDATE_IP;
  * Used for validation of IP addresses.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
-class StringIsIpAddress
+class StringIsIpAddress extends StringValidation
 {
     /**
      * Validates the given IP address.
@@ -37,5 +40,38 @@ class StringIsIpAddress
                 message: $name . ' value ' . $value . ' is not a valid IP address'
             );
         }
+    }
+
+    /**
+     * @inheritDoc
+     * @param ReflectionParameter $parameter
+     * @param int $size
+     * @return array
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     */
+    public function getAcceptedValues(ReflectionParameter $parameter, int $size = 5): array
+    {
+        return [
+            '192.168.17.43',
+            '2001:460:FFFF:AAAA:BBBB:CCCC:DDDD:EEEE',
+            '2001:460:FFFF::999',
+            'fe80::'
+
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     * @throws Exception
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     */
+    public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array
+    {
+        return [
+            'I.Am.Bad.IP',
+            '1.2.3.4, 1.2.3.4, 1.2.3.4',
+            '2001:460:FFFF:AAAA:BBBB:CCCC:DDDD:OOPS:FFFF',
+            '3232238081'
+        ];
     }
 }
