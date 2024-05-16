@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Customer;
 
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsIpAddress;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -19,18 +22,52 @@ use Resursbank\Ecom\Lib\Model\Model;
 class DeviceInfo extends Model
 {
     /**
-     * @throws IllegalValueException
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function __construct(
-        /**
-         * @todo Don't know how to validate ip-address.
-         */
-        public readonly ?string $ip = null,
+        #[StringIsIpAddress] public readonly ?string $ip = null,
         #[StringLength(
             min: 1,
             max: 200
         )] public readonly ?string $userAgent = null
     ) {
         parent::__construct();
+    }
+
+    /**
+     * Get and return a valid ip address.
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public static function getIp(): ?string
+    {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+
+        if (!empty($ip) && filter_var(value: $ip, filter: FILTER_VALIDATE_IP)) {
+            return $ip;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get and return a valid User-Agent.
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public static function getUserAgent(): ?string
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+
+        if (
+            is_string(value: $userAgent) &&
+            strlen(string: $userAgent) <= 200
+        ) {
+            return $userAgent;
+        }
+
+        return null;
     }
 }

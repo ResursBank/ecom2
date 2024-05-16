@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\CollectionInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsIpAddress;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
@@ -100,6 +101,7 @@ class Model
             // Adding this because I'm just trying to fix the tests and don't want to get bogged down in writing the
             // methods for test data.
             $attribute instanceof StringMatchesRegex ||
+            $attribute instanceof StringIsIpAddress ||
             $attribute instanceof StringInterface ||
             $attribute instanceof IntInterface ||
             $attribute instanceof FloatInterface ||
