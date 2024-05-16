@@ -139,6 +139,25 @@ class Resursbank_FetchStores {
     }
 
     /**
+     * Resolve flow selection element.
+     *
+     * @returns {HTMLElement}
+     */
+    getSelectFlowElement() {
+        let result = null;
+
+        <?php if ($this->flowSelectId !== null): ?>
+        result = document.getElementById('<?= $this->flowSelectId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-flow-select') ?>');
+        }
+
+        return result;
+    }
+
+    /**
      * Resolve client id input element.
      *
      * @returns {HTMLInputElement}

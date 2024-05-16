@@ -38,7 +38,8 @@ class GetStores extends Widget
         public readonly ?string $environmentSelectId = null,
         public readonly ?string $clientIdInputId = null,
         public readonly ?string $clientSecretInputId = null,
-        public readonly ?string $spinnerClass = null
+        public readonly ?string $spinnerClass = null,
+        public readonly ?string $flowSelectId = null
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-stores.js.phtml');
     }
