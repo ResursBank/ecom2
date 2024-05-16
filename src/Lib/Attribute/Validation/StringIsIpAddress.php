@@ -27,10 +27,10 @@ class StringIsIpAddress
      *
      * @throws IllegalIpException
      */
-    public function validate(string $name, string $value): void
+    public function validate(string $name, ?string $value = null): void
     {
         if (
-            $value !== '' &&
+            $value !== null &&
             !filter_var(value: $value, filter: FILTER_VALIDATE_IP)
         ) {
             throw new IllegalIpException(
