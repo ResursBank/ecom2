@@ -139,60 +139,33 @@ class Resursbank_FetchStores {
     }
 
     /**
-     * Resolve flow selection element.
+     * Fetch client ID.
      *
-     * @returns {HTMLElement}
+     * @returns {*|string}
      */
-    getSelectFlowElement() {
-        let result = null;
+    getClientId() {
+        let clientIdCallback = <?= $this->clientIdCallback ?>;
 
-        <?php if ($this->flowSelectId !== null): ?>
-        result = document.getElementById('<?= $this->flowSelectId ?>');
-        <?php endif; ?>
-
-        if (result === null) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-flow-select') ?>');
+        if (typeof clientIdCallback === 'function') {
+            return clientIdCallback();
         }
 
-        return result;
+        return '';
     }
 
     /**
-     * Resolve client id input element.
+     * Get client secret.
      *
-     * @returns {HTMLInputElement}
+     * @returns {*|string}
      */
-    getClientIdInputElement() {
-        let result = null;
+    getClientSecret() {
+        let clientSecretCallback = <?= $this->clientSecretCallback ?>;
 
-        <?php if ($this->clientIdInputId !== null): ?>
-        result = document.getElementById('<?= $this->clientIdInputId ?>');
-        <?php endif; ?>
-
-        if (result === null) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-id-input') ?>');
+        if (typeof clientSecretCallback === 'function') {
+            return clientSecretCallback();
         }
 
-        return result;
-    }
-
-    /**
-     * Resolve client secret input element.
-     *
-     * @returns {HTMLInputElement}
-     */
-    getClientSecretInputElement() {
-        let result = null;
-
-        <?php if ($this->clientSecretInputId !== null): ?>
-        result = document.getElementById('<?= $this->clientSecretInputId ?>');
-        <?php endif; ?>
-
-        if (result === null) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-secret-input') ?>');
-        }
-
-        return result;
+        return '';
     }
 
     /**
@@ -203,8 +176,8 @@ class Resursbank_FetchStores {
     getPostData() {
         return {
             environment: this.getSelectEnvironmentElement().value,
-            clientId: this.getClientIdInputElement().value,
-            clientSecret: this.getClientSecretInputElement().value
+            clientId: this.getClientId(),
+            clientSecret: this.getClientSecret()
         };
     }
 
@@ -215,9 +188,7 @@ class Resursbank_FetchStores {
      */
     getInputElements() {
         return [
-            this.getSelectEnvironmentElement(),
-            this.getClientIdInputElement(),
-            this.getClientSecretInputElement()
+            this.getSelectEnvironmentElement()
         ];
     }
 

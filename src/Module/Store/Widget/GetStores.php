@@ -22,6 +22,8 @@ class GetStores extends Widget
 
     /**
      * @param string $fetchUrlCallback Name of a Javascript function which returns the complete controller URL.
+     * @param string $clientIdCallback Name of a Javascript function which returns the Client ID,
+     * @param string $clientSecretCallback Name of a Javascript function which returns the Client secret.
      * @param bool $automatic Automatically search on field change
      * @param string|null $storeSelectId ID of element to populate with new stores.
      * @param string|null $environmentSelectId ID of element containing environments.
@@ -33,13 +35,14 @@ class GetStores extends Widget
      */
     public function __construct(
         public readonly string $fetchUrlCallback,
+        public readonly string $clientIdCallback,
+        public readonly string $clientSecretCallback,
         public readonly bool $automatic = true,
         public readonly ?string $storeSelectId = null,
         public readonly ?string $environmentSelectId = null,
         public readonly ?string $clientIdInputId = null,
         public readonly ?string $clientSecretInputId = null,
-        public readonly ?string $spinnerClass = null,
-        public readonly ?string $flowSelectId = null
+        public readonly ?string $spinnerClass = null
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-stores.js.phtml');
     }
