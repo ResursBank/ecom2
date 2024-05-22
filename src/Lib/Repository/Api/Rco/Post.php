@@ -27,8 +27,8 @@ class Post extends Request
         parent::__construct(
             route: $route,
             requestMethod: RequestMethod::POST,
-            version: $version,
-            params: $params
+            params: $params,
+            version: $version
         );
     }
 }
