@@ -15,12 +15,14 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
@@ -79,6 +81,8 @@ class MockSigner
      * @throws ReflectionException
      * @throws ApiException
      * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws AttributeCombinationException
      */
     protected static function callCustomerUrl(
         string $url,
@@ -130,6 +134,7 @@ class MockSigner
      * @throws ValidationException
      * @throws ApiException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      */
     // phpcs:ignore
     private static function getSigningUrl(
@@ -189,13 +194,21 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
      */
     private static function waitForStatusUpdate(
-        Payment $payment
+        Payment $payment,
+        string $url
     ): void {
         $elapsed = 0;
 
-        while ($payment->status !== Status::ACCEPTED) {
+        $firstStatus = $payment->status;
+
+        while (
+            $payment->status !== Status::ACCEPTED &&
+            $payment->status === $firstStatus
+        ) {
             if ($elapsed >= 10) {
                 throw new ApiException(
                     message: sprintf(
@@ -206,11 +219,56 @@ class MockSigner
                 );
             }
 
+            // Try again for each loop.
+            self::curlApprove(url: $url);
             sleep(seconds: 1);
             $elapsed++;
 
             $payment = Repository::get(paymentId: $payment->id);
         }
+
+        // When first discovered status changed, not into ACCEPTED and no longer REDIRECTION, there's something wrong.
+        if (
+            $payment->status !== $firstStatus &&
+            $payment->status !== Status::TASK_REDIRECTION_REQUIRED &&
+            $payment->status !== Status::ACCEPTED
+        ) {
+            throw new ApiException(
+                message: sprintf(
+                    'Payment status %s got problem. Current status gone into %s',
+                    Status::ACCEPTED->value,
+                    $payment->status->value
+                )
+            );
+        }
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    private static function curlApprove(string $url): void
+    {
+        // Try 10 times to resolve signing URL.
+        $curl = new Curl(
+            url: $url,
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::EMPTY,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::RAW
+        );
+
+        $curl->exec();
     }
 
     /**
@@ -224,6 +282,10 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws AttributeCombinationException
+     * @throws AttributeCombinationException
+     * @throws AttributeCombinationException
      */
     public static function approve(Payment $payment): void
     {
@@ -234,17 +296,7 @@ class MockSigner
             payment: $payment
         );
 
-        // Try 10 times to resolve signing URL.
-        $curl = new Curl(
-            url: $url,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::EMPTY,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-
-        $curl->exec();
-
-        self::waitForStatusUpdate(payment: $payment);
+        self::curlApprove(url: $url);
+        self::waitForStatusUpdate(payment: $payment, url: $url);
     }
 }
