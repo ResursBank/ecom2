@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
@@ -38,12 +39,13 @@ class ReadMore extends Widget
     public readonly string $label;
 
     /**
+     * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
-     * @throws ConfigException
+     * @throws IllegalValueException
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
@@ -63,6 +65,10 @@ class ReadMore extends Widget
         $this->css = $this->render(file: __DIR__ . '/read-more.css');
     }
 
+    /**
+     * @throws FilesystemException
+     * @noinspection PhpUnused
+     */
     public static function getCss(): string
     {
         $file = __DIR__ . '/read-more.css';

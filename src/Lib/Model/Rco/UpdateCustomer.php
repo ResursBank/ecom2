@@ -52,6 +52,8 @@ class UpdateCustomer extends Model
      * associated with the delivery address, then there is a delivery address.
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @noinspection DuplicatedCode
+     * @noinspection PhpUnused
      */
     public function useSeparateDeliveryAddress(): bool
     {

@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Http;
 
 use JsonException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Locale\Translator;
@@ -30,6 +31,8 @@ class Controller
 {
     /**
      * Output JSON data.
+     *
+     * @throws ConfigException
      */
     public function respond(
         array $data
@@ -47,6 +50,8 @@ class Controller
 
     /**
      * Shorthand method to log an Exception and create an error response.
+     *
+     * @throws ConfigException
      */
     public function respondWithError(Throwable $exception): string
     {
@@ -71,6 +76,8 @@ class Controller
     /**
      * Mask messages from exceptions other than HttpException instances, to
      * ensure sensitive information is never rendered to the end client.
+     *
+     * @throws ConfigException
      */
     public function getErrorMessage(
         Throwable $exception
@@ -85,6 +92,7 @@ class Controller
      *
      * @param class-string $model
      * @throws HttpException
+     * @throws ConfigException
      */
     public function getRequestModel(
         string $model,
@@ -115,6 +123,7 @@ class Controller
      * Get raw input data as stdClass object.
      *
      * @throws HttpException
+     * @throws ConfigException
      */
     public function getInputDataAsStdClass(): stdClass
     {
@@ -143,6 +152,7 @@ class Controller
 
     /**
      * @throws HttpException
+     * @throws ConfigException
      */
     public function getInputData(): string
     {
@@ -170,6 +180,8 @@ class Controller
 
     /**
      * Translate error message without tossing Exception.
+     *
+     * @throws ConfigException
      */
     public function translateError(
         string $phraseId

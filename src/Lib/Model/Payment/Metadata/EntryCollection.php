@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 /**
- * Defines an custom Entry collection.
+ * Defines a custom Entry collection.
  */
 class EntryCollection extends Collection
 {

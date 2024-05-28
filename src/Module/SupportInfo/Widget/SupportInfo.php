@@ -9,12 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\SupportInfo\Widget;
 
-use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Widget\Widget;
@@ -84,11 +81,6 @@ class SupportInfo extends Widget
      *  Attempt to fetch the current version of Ecom from the composer.json file.
      *
      * @throws ConfigException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws FilesystemException
-     * @throws TranslationException
-     * @throws IllegalTypeException
      */
     public function getEcomVersion(): string
     {

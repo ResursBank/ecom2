@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\PaymentMethod;
 
-use Exception;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
@@ -182,7 +181,17 @@ class Repository
     }
 
     /**
-     * @throws Exception
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
      */
     public static function getApplicationDataSpecification(
         string $storeId,
@@ -205,10 +214,11 @@ class Repository
      * Fetches the USP for specified payment method type
      *
      * @throws ConfigException
+     * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws FilesystemException
      * @throws TranslationException
      */
     public static function getUniqueSellingPoint(

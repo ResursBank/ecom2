@@ -14,11 +14,14 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
@@ -41,6 +44,7 @@ class Auth
      * @throws ReflectionException
      * @throws ApiException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      */
     public static function setJwtAuth(CurlHandle $ch): void
     {
@@ -94,13 +98,16 @@ class Auth
     /**
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     * @throws NotJsonEncodedException
      */
     private static function getJwtToken(
         Jwt $auth

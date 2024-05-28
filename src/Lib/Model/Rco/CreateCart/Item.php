@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Rco\CreateCart;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
 use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
@@ -27,9 +27,9 @@ class Item extends Model
 {
     /**
      * @param array|null $tags
-     * @throws EmptyValueException
-     * @throws IllegalCharsetException
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(

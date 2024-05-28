@@ -36,17 +36,18 @@ use function json_encode;
 class DurationsByMonthController extends Controller
 {
     /**
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
      * @throws CurlException
-     * @throws ValidationException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
      */
     public function exec(
         string $storeId,
@@ -55,12 +56,9 @@ class DurationsByMonthController extends Controller
         $stringValidation = new StringValidation();
         $return = [];
 
-        try {
-            if ($storeId === '') {
-                throw new IllegalValueException(
-                    message: 'No storeId available'
-                );
-            }
+        if ($storeId === '') {
+            throw new IllegalValueException(message: 'No storeId available');
+        }
 
             $stringValidation->isUuid(value: $paymentMethodId);
 
@@ -70,11 +68,8 @@ class DurationsByMonthController extends Controller
             );
 
             /** @var AnnuityInformation $annuityFactor */
-            foreach ($annuityFactors->content as $annuityFactor) {
-                $return[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
-            }
-        } catch (Throwable $exception) {
-            throw $exception;
+        foreach ($annuityFactors->content as $annuityFactor) {
+            $return[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
         }
 
         return json_encode(
@@ -84,6 +79,7 @@ class DurationsByMonthController extends Controller
     }
 
     /**
+     * @throws ConfigException
      * @throws HttpException
      */
     public function getRequestData(): DurationsByMonthRequest
