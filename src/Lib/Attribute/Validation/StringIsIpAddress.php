@@ -32,8 +32,7 @@ class StringIsIpAddress extends StringValidation
      */
     public function validate(string $name, ?string $value = null): void
     {
-        if (
-            $value !== null &&
+        if ($value !== null &&
             !filter_var(value: $value, filter: FILTER_VALIDATE_IP)
         ) {
             throw new IllegalIpException(
