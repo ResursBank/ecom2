@@ -60,6 +60,7 @@ class StringIsIpAddress extends StringValidation
     /**
      * @throws Exception
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     * @noinspection PhpUnusedParameterInspection
      */
     public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array
     {
