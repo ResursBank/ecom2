@@ -54,6 +54,7 @@ class Curl
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
