@@ -38,23 +38,13 @@ class TranslatorTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * For those without Redis.
-     */
-    private function getProperCache(): Redis|Filesystem
-    {
-        return class_exists('Redis')
-            ? $this->getProperCache()
-            : new Filesystem(path: self::CACHE_PATH);
-    }
-
     private function setupConfig(Language $locale = Language::EN): void
     {
         Config::setup(
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
             ),
-            cache: $this->getProperCache(),
+            cache: new Filesystem(path: self::CACHE_PATH),
             language: $locale
         );
     }
