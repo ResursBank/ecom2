@@ -37,10 +37,6 @@ class TranslatorTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @param Language $locale
-     * @return void
-     */
     private function setupConfig(Language $locale = Language::EN): void
     {
         Config::setup(
