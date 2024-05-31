@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Repository\Traits;
 
 use InvalidArgumentException;
-use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -33,10 +32,9 @@ trait ModelConverter
      * Convert JSON data to model instance(s).
      *
      * @param class-string $model
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws ReflectionException
      */
     public function convertToModel(
         string|array|stdClass $data,
@@ -47,12 +45,7 @@ trait ModelConverter
         $this->validateModel(model: $model);
 
         if (is_string(value: $data)) {
-            $data = json_decode(
-                json: $data,
-                associative: false,
-                depth: 512,
-                flags: JSON_THROW_ON_ERROR
-            );
+            $data = json_decode(json: $data, associative: false, flags: JSON_THROW_ON_ERROR);
         }
 
         if (is_array(value: $data)) {

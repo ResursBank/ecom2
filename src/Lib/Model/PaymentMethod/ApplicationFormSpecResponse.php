@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse\ApplicationFormSpecElementResponse;
@@ -69,7 +72,11 @@ class ApplicationFormSpecResponse extends Model
     /**
      * Filters out specified fields from field collection
      *
+     * @return ApplicationFormSpecResponse
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function filter(string $property, array $fields): self
     {

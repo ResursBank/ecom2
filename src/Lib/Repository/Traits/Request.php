@@ -12,12 +12,14 @@ namespace Resursbank\Ecom\Lib\Repository\Traits;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Api\Rco;
@@ -62,10 +64,12 @@ class Request
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws ValidationException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws IllegalValueException
+     * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function call(bool $forceObject = false): Collection|Model

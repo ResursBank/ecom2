@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Store\Http;
 
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Model\Store\GetStoresRequest;
@@ -20,6 +21,7 @@ class GetStoresController extends Controller
 {
     /**
      * @throws HttpException
+     * @throws ConfigException
      */
     public function getRequestData(): GetStoresRequest
     {

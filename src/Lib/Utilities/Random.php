@@ -164,7 +164,7 @@ class Random
      * Generate an stdClass object with random data.
      *
      * @param int|null $propertyCount Number of properties to generate
-     * @param bool $includeObjects Set to false to not include child objects
+     * @param bool $includeObjects To not include child objects, set to false.
      * @throws Exception
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
