@@ -33,6 +33,7 @@ use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
+use Throwable;
 
 /**
  * Renders Part payment widget HTML and CSS
@@ -85,6 +86,7 @@ class PartPayment extends Widget
      * @throws JsonException
      * @throws MissingKeyException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws TranslationException
      * @throws ValidationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -195,6 +197,7 @@ class PartPayment extends Widget
      * @throws MissingKeyException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     private function getAnnuityInformation(): AnnuityInformation
     {
@@ -228,6 +231,7 @@ class PartPayment extends Widget
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     private function getCost(): Cost

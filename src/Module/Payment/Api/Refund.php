@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -52,6 +53,7 @@ class Refund
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      */
     public function call(
         string $paymentId,

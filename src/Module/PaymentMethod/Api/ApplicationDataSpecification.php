@@ -12,12 +12,14 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Api;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\ApplicationFormSpecResponse;
@@ -43,6 +45,7 @@ class ApplicationDataSpecification
     /**
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -50,7 +53,8 @@ class ApplicationDataSpecification
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
      */
     public function call(
         string $storeId,

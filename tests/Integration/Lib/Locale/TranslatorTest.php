@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Cache\Redis;
+use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Locale\Translator;
@@ -24,6 +24,8 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
  */
 class TranslatorTest extends TestCase
 {
+    private const CACHE_PATH = '/tmp/ecom-test/repository/cache';
+
     /**
      * @throws ConfigException
      */
@@ -41,7 +43,7 @@ class TranslatorTest extends TestCase
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
             ),
-            cache: new Redis(host: $_ENV['REDIS_HOST']),
+            cache: new Filesystem(path: self::CACHE_PATH),
             language: $locale
         );
     }
