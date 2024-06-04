@@ -1885,13 +1885,28 @@
       "no": "Bestillingen er ikke klar for tilbakeringing."
     }
   },
-
   {
     "id": "called-error-order-not-found",
     "translation": {
       "en": "Order not found.",
       "sv": "Beställning ej hittad.",
       "no": "Bestillingen ble ikke funnet."
+    }
+  },
+  {
+    "id": "can-not-edit-order-due-to-frozen",
+    "translation": {
+      "en": "Order can not be edited since it is frozen by Resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den är fryst av Resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.."
+    }
+  },
+  {
+    "id": "can-not-edit-order-due-to-rejected",
+    "translation": {
+      "en": "Order can not be edited since the payment has been rejected by Resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs."
     }
   }
 ]
