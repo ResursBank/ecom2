@@ -1756,5 +1756,21 @@
       "sv": "Minsta ålder på beställningar i timmar",
       "no": "Minimumsalder på bestillinger i timer"
     }
+  },
+  {
+    "id": "can-not-edit-order-due-to-frozen",
+    "translation": {
+      "en": "Order can not be edited since it is frozen by Resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den är fryst av Resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.."
+    }
+  },
+  {
+    "id": "can-not-edit-order-due-to-rejected",
+    "translation": {
+      "en": "Order can not be edited since the payment has been rejected by Resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs."
+    }
   }
 ]
