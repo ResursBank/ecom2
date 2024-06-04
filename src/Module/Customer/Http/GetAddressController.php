@@ -67,6 +67,7 @@ class GetAddressController extends Controller
     }
 
     /**
+     * @throws ConfigException
      * @throws HttpException
      */
     public function getRequestData(): GetAddressRequest

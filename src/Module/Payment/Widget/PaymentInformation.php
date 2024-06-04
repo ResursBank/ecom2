@@ -12,10 +12,12 @@ namespace Resursbank\Ecom\Module\Payment\Widget;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -61,6 +63,7 @@ class PaymentInformation extends Widget
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
@@ -185,6 +188,13 @@ class PaymentInformation extends Widget
     /**
      * Get TD element with inline CSS.
      *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function getTdEl(
@@ -204,6 +214,14 @@ class PaymentInformation extends Widget
      *     <td>[TITLE]</td>
      *     <td>[CONTENT]</td>
      * </tr>
+     *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
      */
     public function getTrEl(
         string $title,
