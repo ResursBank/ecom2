@@ -220,7 +220,7 @@ class MockSigner
             }
 
             // Try to approve in each loop.
-            self::curlApprove(url: $url);
+            self::requestApprove(url: $url);
             sleep(seconds: 1);
             $elapsed++;
 
@@ -257,7 +257,7 @@ class MockSigner
      * @throws ReflectionException
      * @throws ValidationException
      */
-    private static function curlApprove(string $url): void
+    private static function requestApprove(string $url): void
     {
         $curl = new Curl(
             url: $url,
@@ -297,7 +297,7 @@ class MockSigner
 
         // Moved this feature for which we try 10 times to resolve/approve with the signing URL.
         // Approving each round instead of only once raises the chance for success.
-        self::curlApprove(url: $url);
+        self::requestApprove(url: $url);
         self::waitForStatusUpdate(payment: $payment, url: $url);
     }
 }
