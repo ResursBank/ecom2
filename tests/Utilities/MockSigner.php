@@ -15,12 +15,14 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
@@ -79,6 +81,7 @@ class MockSigner
      * @throws ReflectionException
      * @throws ApiException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     protected static function callCustomerUrl(
         string $url,
@@ -130,6 +133,7 @@ class MockSigner
      * @throws ValidationException
      * @throws ApiException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      */
     // phpcs:ignore
     private static function getSigningUrl(
@@ -189,6 +193,8 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
      */
     private static function waitForStatusUpdate(
         Payment $payment
@@ -206,6 +212,7 @@ class MockSigner
                 );
             }
 
+            // Wait before requesting new status.
             sleep(seconds: 1);
             $elapsed++;
 
@@ -224,9 +231,13 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function approve(Payment $payment): void
     {
+        // Wait before sending approval, in case the API has not finished prior events.
+        sleep(seconds: 1);
+
         $url = self::getSigningUrl(
             taskStatusDetails: Repository::getTaskStatusDetails(
                 paymentId: $payment->id
@@ -234,7 +245,6 @@ class MockSigner
             payment: $payment
         );
 
-        // Try 10 times to resolve signing URL.
         $curl = new Curl(
             url: $url,
             requestMethod: RequestMethod::GET,
