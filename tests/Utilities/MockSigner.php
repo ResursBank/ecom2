@@ -198,8 +198,7 @@ class MockSigner
      * @throws NotJsonEncodedException
      */
     private static function waitForStatusUpdate(
-        Payment $payment,
-        string $url
+        Payment $payment
     ): void {
         $elapsed = 0;
 
@@ -260,6 +259,6 @@ class MockSigner
 
         $curl->exec();
 
-        self::waitForStatusUpdate(payment: $payment, url: $url);
+        self::waitForStatusUpdate(payment: $payment);
     }
 }
