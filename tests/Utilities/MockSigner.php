@@ -82,7 +82,6 @@ class MockSigner
      * @throws ApiException
      * @throws ValidationException
      * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
      */
     protected static function callCustomerUrl(
         string $url,
@@ -232,9 +231,6 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
      * @throws AttributeCombinationException
      */
     public static function approve(Payment $payment): void
