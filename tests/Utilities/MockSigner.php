@@ -203,12 +203,7 @@ class MockSigner
     ): void {
         $elapsed = 0;
 
-        $firstStatus = $payment->status;
-
-        while (
-            $payment->status !== Status::ACCEPTED &&
-            $payment->status === $firstStatus
-        ) {
+        while ($payment->status !== Status::ACCEPTED) {
             if ($elapsed >= 10) {
                 throw new ApiException(
                     message: sprintf(
@@ -219,55 +214,12 @@ class MockSigner
                 );
             }
 
-            // Try to approve in each loop.
-            self::requestApprove(url: $url);
+            // Wait before requesting new status.
             sleep(seconds: 1);
             $elapsed++;
 
             $payment = Repository::get(paymentId: $payment->id);
         }
-
-        // When first discovered status changed, not into ACCEPTED and no longer REDIRECTION, there's something wrong.
-        if (
-            $payment->status !== $firstStatus &&
-            $payment->status !== Status::TASK_REDIRECTION_REQUIRED &&
-            $payment->status !== Status::ACCEPTED
-        ) {
-            throw new ApiException(
-                message: sprintf(
-                    'Payment status %s got problem. Current status gone into %s',
-                    Status::ACCEPTED->value,
-                    $payment->status->value
-                )
-            );
-        }
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AttributeCombinationException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws NotJsonEncodedException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    private static function requestApprove(string $url): void
-    {
-        $curl = new Curl(
-            url: $url,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::EMPTY,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-
-        $curl->exec();
     }
 
     /**
@@ -288,6 +240,9 @@ class MockSigner
      */
     public static function approve(Payment $payment): void
     {
+        // Wait before sending approval, in case the API has not finished prior events.
+        sleep(seconds: 1);
+
         $url = self::getSigningUrl(
             taskStatusDetails: Repository::getTaskStatusDetails(
                 paymentId: $payment->id
@@ -295,9 +250,16 @@ class MockSigner
             payment: $payment
         );
 
-        // Moved this feature for which we try 10 times to resolve/approve with the signing URL.
-        // Approving each round instead of only once raises the chance for success.
-        self::requestApprove(url: $url);
+        $curl = new Curl(
+            url: $url,
+            requestMethod: RequestMethod::GET,
+            contentType: ContentType::EMPTY,
+            authType: AuthType::NONE,
+            responseContentType: ContentType::RAW
+        );
+
+        $curl->exec();
+
         self::waitForStatusUpdate(payment: $payment, url: $url);
     }
 }
