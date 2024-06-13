@@ -311,7 +311,7 @@
     "id": "updated-status-by-callback",
     "translation": {
       "en": "Callback from Resurs Bank updated the order status.",
-      "sv": "Callback från Resurs uppdaterade beställningens status.",
+      "sv": "Callback från Resurs Bank uppdaterade beställningens status.",
       "no": "Tilbakemelding fra Resurs Bank oppdaterte ordrestatusen."
     }
   },
@@ -1470,6 +1470,14 @@
     }
   },
   {
+    "id": "get-stores-missing-flow-select",
+    "translation": {
+      "en": "Failed to obtain flow selection box.",
+      "sv": "Kunde inte hitta select box för val av flöde.",
+      "no": "Kunne ikke finne valgboks for feedvalg."
+    }
+  },
+  {
     "id": "get-stores-missing-client-id-input",
     "translation": {
       "en": "Failed to obtain client id input element.",
@@ -1547,6 +1555,14 @@
       "en": "Failed to place order.",
       "sv": "Kunde inte genomför beställning.",
       "no": "Kunne ikke gjennomføre bestilling."
+    }
+  },
+  {
+    "id": "failed-placing-order-try-again",
+    "translation": {
+      "en": "Failed to place order. Please review your information and try again.",
+      "sv": "Kunde inte genomför beställning. Vänligen kontrollera dina uppgifter och försök igen.",
+      "no": "Kunne ikke gjennomføre bestilling. Vennligst gjennomgå informasjonen din og prøv igjen."
     }
   },
   {
@@ -1998,14 +2014,6 @@
     }
   },
   {
-    "id": "order-missing-billing-address",
-    "translation": {
-      "en": "The order did not have a billing address.",
-      "sv": "Beställningen hade ingen fakturaadress.",
-      "da": "Ordren havde ingen faktureringsadresse."
-    }
-  },
-  {
     "id": "order-missing-shipping-or-billing-address",
     "translation": {
       "en": "The order does not have a shipping or billing address.",
@@ -2179,14 +2187,6 @@
       "en": "Cannot proceed without logfile.",
       "sv": "Kan inte fortsätta utan loggfil.",
       "da": "Kan ikke fortsætte uden logfil."
-    }
-  },
-  {
-    "id": "unexpected-order-instance",
-    "translation": {
-      "en": "Unexpected Order instance.",
-      "sv": "Oväntad orderinstans.",
-      "da": "Uventet ordreinstans."
     }
   },
   {
@@ -2638,14 +2638,6 @@
     }
   },
   {
-    "id": "failed-to-locate-order",
-    "translation": {
-      "en": "Failed to locate order %1.",
-      "sv": "Misslyckades med att lokalisera order %1.",
-      "da": "Kunne ikke finde ordre %1."
-    }
-  },
-  {
     "id": "invalid-digest",
     "translation": {
       "en": "Invalid digest - PaymentId: %1. Digest: %2.",
@@ -2659,14 +2651,6 @@
       "en": "Order could not be retrieved from the observed subject's data.",
       "sv": "Order kunde inte hämtas från den observerade subjektets data.",
       "da": "Ordre kunne ikke hentes fra den observerede subjekts data."
-    }
-  },
-  {
-    "id": "payment-does-not-exist-for-order",
-    "translation": {
-      "en": "Payment does not exist for order %1.",
-      "sv": "Betalning finns inte för order %1.",
-      "da": "Betaling findes ikke for ordre %1."
     }
   },
   {
@@ -2686,35 +2670,11 @@
     }
   },
   {
-    "id": "payment-does-not-exist-for-order",
-    "translation": {
-      "en": "Payment does not exist for order %1.",
-      "sv": "Betalning finns inte för order %1.",
-      "da": "Betaling findes ikke for ordre %1."
-    }
-  },
-  {
     "id": "missing-invoice-data",
     "translation": {
       "en": "Missing invoice data.",
       "sv": "Saknar fakturadata.",
       "da": "Manglende fakturadata."
-    }
-  },
-  {
-    "id": "payment-does-not-exist-for-order",
-    "translation": {
-      "en": "Payment does not exist for order %1.",
-      "sv": "Betalning finns inte för order %1.",
-      "da": "Betaling findes ikke for ordre %1."
-    }
-  },
-  {
-    "id": "payment-does-not-exist-for-order",
-    "translation": {
-      "en": "Payment does not exist for order %1.",
-      "sv": "Betalning finns inte för order %1.",
-      "da": "Betaling findes ikke for ordre %1."
     }
   },
   {
@@ -2859,6 +2819,54 @@
       "en": "Please configure duration to base prices on.",
       "sv": "Vänligen konfigurera varaktighet för att basera priser på.",
       "da": "Konfigurer venligst varighed for at basere priser på."
+    }
+  },
+  {
+    "id": "callback-error-no-resource-id",
+    "translation": {
+      "en": "No payment/checkout ID found in callback data.",
+      "sv": "Ingen betalnings-/kassa-ID hittades i callback data.",
+      "no": "Ingen betalings-/utsjekkings-ID funnet i tilbakeringingsdata."
+    }
+  },
+  {
+    "id": "callback-error-failed-processing-authorization",
+    "translation": {
+      "en": "Failed to process authorization callback.",
+      "sv": "Kunde inte processa autorisationscallback.",
+      "no": "Kunne ikke behandle autorisasjonstilbakeringing."
+    }
+  },
+  {
+    "id": "called-error-order-not-ready",
+    "translation": {
+      "en": "Order not ready for callback.",
+      "sv": "Beställning ej redo för callback.",
+      "no": "Bestillingen er ikke klar for tilbakeringing."
+    }
+  },
+  {
+    "id": "called-error-order-not-found",
+    "translation": {
+      "en": "Order not found.",
+      "sv": "Beställning ej hittad.",
+      "no": "Bestillingen ble ikke funnet."
+    }
+  },
+  {
+    "id": "can-not-edit-order-due-to-frozen",
+    "translation": {
+      "en": "Order can not be edited since it is frozen by Resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den är fryst av Resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.."
+    }
+  },
+  {
+    "id": "can-not-edit-order-due-to-rejected",
+    "translation": {
+      "en": "Order can not be edited since the payment has been rejected by Resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs."
     }
   }
 ]

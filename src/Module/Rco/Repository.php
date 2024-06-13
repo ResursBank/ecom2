@@ -63,6 +63,7 @@ class Repository
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      */
     public static function init(
         CreateCheckout $request
@@ -88,6 +89,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function setCart(
         string $id,
@@ -118,6 +120,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function patchCart(
         string $id,
@@ -156,6 +159,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function setShippingMethods(
         string $id,
@@ -188,6 +192,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function deleteCartItem(
         string $id,
@@ -217,6 +222,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function setOrderReference(
         string $id,
@@ -247,6 +253,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function get(
         string $id
@@ -272,6 +279,7 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws AttributeCombinationException
      */
     public static function update(
         string $id,

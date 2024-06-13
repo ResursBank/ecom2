@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -52,12 +53,14 @@ class Refund
      * @throws ApiException
      * @throws ConfigException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      */
     public function call(
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
-        ?string $transactionId = null
+        ?string $transactionId = null,
+        ?string $refundNoteId = null
     ): Payment {
         $payload = [];
 
@@ -73,6 +76,10 @@ class Refund
             $payload['transactionId'] = $transactionId;
         }
 
+        if ($refundNoteId) {
+            $payload['refundNoteOptions'] = ['refundNoteId' => $refundNoteId];
+        }
+
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/refund'
@@ -86,6 +93,18 @@ class Refund
 
         $data = $curl->exec()->body;
 
+        return $this->processResponse(data: $data);
+    }
+
+    /**
+     * Convert response to Payment object.
+     *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private function processResponse(mixed $data): Payment
+    {
         $content = $data instanceof stdClass ? $data : new stdClass();
 
         $result = DataConverter::stdClassToType(

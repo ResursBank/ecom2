@@ -146,63 +146,59 @@ class Payment extends Model
     /**
      * Returns true if payment is denied.
      */
-    public function isDenied(): bool
+    public function isRejectionReasonCreditDenied(): bool
     {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === RejectedReasonCategory::CREDIT_DENIED;
-    }
-
-    /**
-     * Returns true if payment is denied.
-     */
-    public function isCreditDenied(): bool
-    {
-        return $this->isDenied();
+        return $this->isRejectedReason(
+            reason: RejectedReasonCategory::CREDIT_DENIED
+        );
     }
 
     /**
      * Returns true if payment timed out.
      */
-    public function isTimeout(): bool
+    public function isRejectionReasonTimeout(): bool
     {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === RejectedReasonCategory::TIMEOUT;
+        return $this->isRejectedReason(reason: RejectedReasonCategory::TIMEOUT);
     }
 
     /**
      * Returns true if payment has insufficient funds.
      */
-    public function isInsufficientFunds(): bool
+    public function isRejectionReasonInsufficientFunds(): bool
     {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === RejectedReasonCategory::INSUFFICIENT_FUNDS;
+        return $this->isRejectedReason(
+            reason: RejectedReasonCategory::INSUFFICIENT_FUNDS
+        );
     }
 
     /**
      * Returns true if payment is canceled.
      */
-    public function isCanceled(): bool
+    public function isRejectionReasonCanceled(): bool
     {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === RejectedReasonCategory::CANCELED;
+        return $this->isRejectedReason(
+            reason: RejectedReasonCategory::CANCELED
+        );
     }
 
     /**
      * Returns true if payment is denied.
      */
-    public function isTechnicalError(): bool
+    public function isRejectionReasonTechnicalError(): bool
     {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === RejectedReasonCategory::TECHNICAL_ERROR;
+        return $this->isRejectedReason(
+            reason: RejectedReasonCategory::TECHNICAL_ERROR
+        );
     }
 
     /**
      * Returns true if payment is aborted by customer.
      */
-    public function isAbortedByCustomer(): bool
+    public function isRejectionReaseonAbortedByCustomer(): bool
     {
-        return $this->rejectedReason !== null &&
-            $this->rejectedReason->category === RejectedReasonCategory::ABORTED_BY_CUSTOMER;
+        return $this->isRejectedReason(
+            reason: RejectedReasonCategory::ABORTED_BY_CUSTOMER
+        );
     }
 
     /**
@@ -263,6 +259,15 @@ class Payment extends Model
             $this->order->authorizedAmount === 0.0 &&
             $this->order->canceledAmount === $this->order->totalOrderAmount
         ;
+    }
+
+    /**
+     * Checks if rejection reason is the supplied reason.
+     */
+    private function isRejectedReason(RejectedReasonCategory $reason): bool
+    {
+        return $this->rejectedReason !== null &&
+            $this->rejectedReason->category === $reason;
     }
 
     /**

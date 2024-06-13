@@ -51,6 +51,8 @@ class CreateCustomer extends Model
      * associated with the delivery address, then there is a delivery address.
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @noinspection PhpUnused
+     * @noinspection DuplicatedCode
      */
     public function useSeparateDeliveryAddress(): bool
     {

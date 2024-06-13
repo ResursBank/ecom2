@@ -36,6 +36,12 @@ class RedisTest extends TestCase
      */
     protected function setUp(): void
     {
+        if ((bool)$_ENV['IS_PIPELINE']) {
+            $this->markTestSkipped(
+                message: 'Redis may break pipelines with 2 hour runs. Skipping!'
+            );
+        }
+
         $this->redis = new Redis(host: $_ENV['REDIS_HOST']);
         $this->key = $this->getKey();
 
