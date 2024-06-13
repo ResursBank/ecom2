@@ -36,7 +36,7 @@ class StringMatchesUrl implements StringInterface
             )
         ) {
             throw new IllegalUrlException(
-                message: $name . ' value ' . $value . ' is not an URL'
+                message: $name . ' value ' . $value . ' is not a URL'
             );
         }
     }
