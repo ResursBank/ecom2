@@ -19,7 +19,7 @@ class Phrase extends Model
 {
     public function __construct(
         #[StringMatchesRegex(
-            pattern: '/^[a-z0-9][a-z0-9\-]+[a-z0-9]$/'
+            pattern: '/^[a-z0-9][a-z0-9\-]*[a-z0-9]$/'
         )] public string $id,
         public Translation $translation
     ) {
