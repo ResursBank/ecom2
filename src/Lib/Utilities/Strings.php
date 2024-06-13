@@ -51,17 +51,31 @@ class Strings
     /**
      * Generates a random string of characters.
      *
+     * @param string|null $characters If set the string will only contain characters from this string.
      * @throws Exception
      */
-    public static function generateRandomString(int $length): string
-    {
-        return substr(
-            string: bin2hex(
-                string: random_bytes(length: max(1, $length))
-            ),
-            offset: 0,
-            length: $length
-        );
+    public static function generateRandomString(
+        int $length,
+        ?string $characters = null
+    ): string {
+        if (!$characters) {
+            return substr(
+                string: bin2hex(
+                    string: random_bytes(length: max(1, $length))
+                ),
+                offset: 0,
+                length: $length
+            );
+        }
+
+        $generated = '';
+
+        for ($i = 0; $i < $length; ++$i) {
+            $generated .= count_chars(string: $characters, mode: 3)
+                [rand(0, strlen($characters) - 1)];
+        }
+
+        return $generated;
     }
 
     /**

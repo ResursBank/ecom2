@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Locale;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Locale\Translation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Locale\Phrase class.
@@ -27,29 +32,45 @@ class PhraseTest extends TestCase
     }
 
     /**
-     * @throws EmptyValueException
+     * Assert that valid IDs don't throw exceptions.
+     *
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
      */
-    public function testValidateIdIsValidWhenNotEmpty(): void
+    public function testValidIds(): void
     {
-        $this->assertInstanceOf(
-            expected: Phrase::class,
-            actual: new Phrase(
-                id: 'asdf',
+        for ($i = 0; $i < 10; $i++) {
+            new Phrase(
+                id: Strings::getUuid(),
                 translation: $this->getTranslationInstance()
-            )
-        );
+            );
+            $this->addToAssertionCount(count: 1);
+        }
     }
 
     /**
-     * @throws EmptyValueException
+     * Assert that an exception is thrown when using an invalid ID value.
+     *
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
-    public function testValidateIdThrowsIfEmpty(): void
+    public function testInvalidIds(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
-
-        new Phrase(
-            id: '',
-            translation: $this->getTranslationInstance()
-        );
+        for ($i = 0; $i < 10; $i++) {
+            try {
+                new Phrase(
+                    id: Strings::generateRandomString(
+                        length: 24,
+                        characters: 'ABCDEFGHIJKLMNOPQRSTUV_'
+                    ),
+                    translation: $this->getTranslationInstance()
+                );
+            } catch (IllegalCharsetException) {
+                $this->addToAssertionCount(count: 1);
+            }
+        }
     }
 }
