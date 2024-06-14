@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Metadata;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -17,8 +18,9 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Entry extends Model
 {
     public function __construct(
-        public readonly string $key,
-        public readonly string $value
+        #[StringLength(min: 1, max: 50)] public readonly string $key,
+        #[StringLength(max: 1000)] public readonly string $value
     ) {
+        parent::__construct();
     }
 }
