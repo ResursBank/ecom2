@@ -2046,14 +2046,6 @@
     }
   },
   {
-    "id": "parameter-is_company-not-set-or-not-bool",
-    "translation": {
-      "en": "Parameter [is_company] was not set or isn't a bool.",
-      "sv": "Parametern [is_company] var inte satt eller är inte en bool.",
-      "da": "Parameter [is_company] var ikke sat eller er ikke en bool."
-    }
-  },
-  {
     "id": "parameter-identifier-not-set-or-not-string",
     "translation": {
       "en": "Parameter [identifier] was not set or isn't a string.",
