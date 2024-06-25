@@ -2401,7 +2401,7 @@
     "id": "failed-to-refund-payment",
     "translation": {
       "en": "Failed to refund payment.",
-      "sv": "Misslyckades med att återbetala betalningen.",
+      "sv": "Kreditering av betalning misslyckades.",
       "da": "Kunne ikke refundere betalingen."
     }
   },
@@ -2513,7 +2513,7 @@
     "id": "failed-to-cancel-payment",
     "translation": {
       "en": "Failed to cancel payment.",
-      "sv": "Misslyckades med att avbryta betalningen.",
+      "sv": "Annullering av betalning misslyckades.",
       "da": "Kunne ikke annullere betalingen."
     }
   },
@@ -2538,7 +2538,7 @@
     "translation": {
       "en": "Failed to capture payment.",
       "sv": "Misslyckades med att fånga betalning.",
-      "da": "Kunne ikke fange betalingen."
+      "da": "Debitering av betalning misslyckades."
     }
   },
   {
@@ -2818,7 +2818,8 @@
     "translation": {
       "en": "No payment/checkout ID found in callback data.",
       "sv": "Ingen betalnings-/kassa-ID hittades i callback data.",
-      "no": "Ingen betalings-/utsjekkings-ID funnet i tilbakeringingsdata."
+      "no": "Ingen betalings-/utsjekkings-ID funnet i tilbakeringingsdata.",
+      "da": "Ingen betalings-/checkout-ID fundet i callback data."
     }
   },
   {
@@ -2826,7 +2827,8 @@
     "translation": {
       "en": "Failed to process authorization callback.",
       "sv": "Kunde inte processa autorisationscallback.",
-      "no": "Kunne ikke behandle autorisasjonstilbakeringing."
+      "no": "Kunne ikke behandle autorisasjonstilbakeringing.",
+      "da": "Kunne ikke behandle autorisationscallback."
     }
   },
   {
@@ -2834,7 +2836,8 @@
     "translation": {
       "en": "Order not ready for callback.",
       "sv": "Beställning ej redo för callback.",
-      "no": "Bestillingen er ikke klar for tilbakeringing."
+      "no": "Bestillingen er ikke klar for tilbakeringing.",
+      "da": "Bestilling ikke klar til callback."
     }
   },
   {
@@ -2842,7 +2845,8 @@
     "translation": {
       "en": "Order not found.",
       "sv": "Beställning ej hittad.",
-      "no": "Bestillingen ble ikke funnet."
+      "no": "Bestillingen ble ikke funnet.",
+      "da": "Bestilling ikke fundet."
     }
   },
   {
@@ -2850,7 +2854,8 @@
     "translation": {
       "en": "Order can not be edited since it is frozen by Resurs.",
       "sv": "Ordern kan inte redigeras eftersom den är fryst av Resurs.",
-      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.."
+      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.",
+      "da": "Bestilling kan ikke redigeres, da betalingen er frosset af Resurs."
     }
   },
   {
@@ -2858,7 +2863,26 @@
     "translation": {
       "en": "Order can not be edited since the payment has been rejected by Resurs.",
       "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
-      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs."
+      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs.",
+      "da": "Bestilling kan ikke redigeres, da betalingen er afvist af Resurs."
+    }
+  },
+  {
+    "id": "username",
+    "translation": {
+      "en": "Username",
+      "sv": "Användarnamn",
+      "no": "Brukernavn",
+      "da": "Brugernavn"
+    }
+  },
+  {
+    "id": "password",
+    "translation": {
+      "en": "Password",
+      "sv": "Lösenord",
+      "no": "Passord",
+      "da": "Adgangskode"
     }
   }
 ]
