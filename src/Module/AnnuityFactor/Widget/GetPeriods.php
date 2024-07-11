@@ -26,17 +26,20 @@ use Throwable;
  */
 class GetPeriods extends Widget
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public readonly string $content;
 
     /**
+     * @param string|null $methodElementId Required when using standard widget
+     * JavaScript functions to manage elements. See template.
+     * @param string|null $periodElementId Required when using standard widget
+     * JavaScript functions to manage elements. See template.
      * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly ?string $storeId = null,
-        public readonly ?string $paymentMethodElementId = null,
+        public readonly string $storeId,
+        public readonly ?string $methodElementId = null,
         public readonly ?string $periodElementId = null,
         public readonly bool $automatic = true
     ) {
@@ -45,46 +48,14 @@ class GetPeriods extends Widget
 
     /**
      * Resolve list of periods, sectioned by payment method.
-     *
-     * @return string
      */
-    public function getData(): string
+    public function getJsonData(): string
     {
-        $result = [];
-        $methods = $this->getPaymentMethods();
-
-        if ($methods === null) {
-            return "{}";
-        }
-
-        // Fetch annuity factors for each payment method and add them to the
-        // result array. Each payment method defines an inner array with the
-        // annuity factors for that payment method, keyed by the period.
-        /** @var PaymentMethod $paymentMethod */
-        foreach ($this->getPaymentMethods() as $paymentMethod) {
-            // Get annuity factors for the current payment method.
-            $annuityFactors = $this->getAnnuityFactors(
-                storeId: $this->storeId,
-                method: $paymentMethod
-            );
-
-            // Skip if no annuity factors were found.
-            if ($annuityFactors === null) {
-                continue;
-            }
-
-            // Add annuity factors to the result array.
-            $result[$paymentMethod->getId()] = [];
-
-            /** @var AnnuityInformation $annuityFactor */
-            foreach ($annuityFactors as $annuityFactor) {
-                $result[$paymentMethod->getId()]
-                    [$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
-            }
-        }
-
         try {
-            return json_encode(value: $result);
+            return json_encode(
+                value: $this->getPeriods(),
+                flags: JSON_THROW_ON_ERROR
+            );
         } catch (Throwable $error) {
             try {
                 Config::getLogger()->error($error);
@@ -97,7 +68,77 @@ class GetPeriods extends Widget
     }
 
     /**
-     * @return PaymentMethodCollection|null
+     * Fetch annuity factors for each payment method and add them to the result
+     * array. Each payment method defines an inner array with the annuity
+     * factors for that payment method, keyed by the period.
+     *
+     * @return array
+     */
+    private function getPeriods(): array
+    {
+        $methods = $this->getPaymentMethods();
+
+        if ($methods === null) {
+            return [];
+        }
+
+        return $this->getAnnuityFactorsForMethods($methods);
+    }
+
+    /**
+     * Resolve annuity factors from a collection of payment methods.
+     */
+    private function getAnnuityFactorsForMethods(
+        PaymentMethodCollection $methods
+    ): array {
+        $result = [];
+
+        /** @var PaymentMethod $method */
+        foreach ($methods as $method) {
+            $annuityFactors = $this->getAnnuityFactorsForMethod($method);
+
+            if ($annuityFactors === null) {
+                continue;
+            }
+
+            $result[$method->getId()] = $annuityFactors;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Resolve annuity factors for a specific payment method.
+     */
+    private function getAnnuityFactorsForMethod(PaymentMethod $method): ?array
+    {
+        $annuityFactors = $this->getAnnuityFactors($this->storeId, $method);
+
+        if ($annuityFactors === null) {
+            return null;
+        }
+
+        return $this->getAnnuityFactorsArray($annuityFactors);
+    }
+
+    /**
+     * Resolve annuity factors as an array.
+     */
+    private function getAnnuityFactorsArray(
+        AnnuityInformationCollection $annuityFactors
+    ): array {
+        $result = [];
+
+        /** @var AnnuityInformation $annuityFactor */
+        foreach ($annuityFactors as $annuityFactor) {
+            $result[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Resolve list of payment methods.
      */
     private function getPaymentMethods(): ?PaymentMethodCollection
     {
@@ -118,10 +159,6 @@ class GetPeriods extends Widget
 
     /**
      * Get annuity factors for a specific payment method.
-     *
-     * @param string $storeId
-     * @param PaymentMethod $method
-     * @return AnnuityInformationCollection|null
      */
     private function getAnnuityFactors(
         string $storeId,

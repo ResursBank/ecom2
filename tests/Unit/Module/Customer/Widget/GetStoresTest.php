@@ -47,6 +47,8 @@ class GetStoresTest extends TestCase
     public function testRenderedContent(): void
     {
         $fetchUrlCallback = 'fetchUrlCallbackFunctionName';
+        $clientIdCallback = 'clientIdCallbackFunctionName';
+        $clientSecretCallback = 'clientIdCallbackFunctionName';
         $environmentSelectId = 'environment_select';
         $clientIdInputId = 'client_id_input';
         $clientSecretInputId = 'client_secret_input';
@@ -55,6 +57,8 @@ class GetStoresTest extends TestCase
 
         $widget = new GetStores(
             fetchUrlCallback: $fetchUrlCallback,
+            clientIdCallback: $clientIdCallback,
+            clientSecretCallback: $clientSecretCallback,
             environmentSelectId: $environmentSelectId,
             clientIdInputId: $clientIdInputId,
             clientSecretInputId: $clientSecretInputId,

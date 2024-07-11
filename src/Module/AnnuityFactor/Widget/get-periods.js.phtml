@@ -7,9 +7,9 @@
 declare(strict_types=1);
 
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
 
 /** @var GetPeriods $this */
-use Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
 ?>
 
 /**
@@ -23,7 +23,7 @@ class Resursbank_GetPeriods {
      *
      * @type {boolean}
      */
-    data = <?= $this->getData() ?>;
+    data = <?= $this->getJsonData() ?>;
 
     /**
      * Safely override pre-defined functions and properties using the supplied
@@ -122,11 +122,15 @@ class Resursbank_GetPeriods {
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(phraseId: 'part-payment-get-periods-missing-period-element') ?>');
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'part-payment-get-periods-missing-period-element') ?>'
+            );
         }
 
         if (!result instanceof HTMLSelectElement) {
-            throw new Error('<?= Translator::translate(phraseId: 'part-payment-get-periods-invalid-period-element') ?>');
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'part-payment-get-periods-invalid-period-element') ?>'
+            );
         }
 
         return result;
@@ -140,16 +144,20 @@ class Resursbank_GetPeriods {
     getPaymentMethodElement() {
         let result = null;
 
-        <?php if ($this->paymentMethodElementId !== null): ?>
-        result = document.getElementById('<?= $this->paymentMethodElementId ?>');
+        <?php if ($this->methodElementId !== null): ?>
+        result = document.getElementById('<?= $this->methodElementId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(phraseId: 'part-payment-get-periods-missing-payment-method-element') ?>');
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'part-payment-get-periods-missing-payment-method-element') ?>'
+            );
         }
 
         if (!result instanceof HTMLSelectElement) {
-            throw new Error('<?= Translator::translate(phraseId: 'part-payment-get-periods-invalid-payment-method-element') ?>');
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'part-payment-get-periods-invalid-payment-method-element') ?>'
+            );
         }
 
         return result;

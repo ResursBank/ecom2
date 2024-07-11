@@ -12,8 +12,8 @@ namespace Resursbank\Ecom\Lib\Model\AnnuityFactor;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
-use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
+use Resursbank\Ecom\Lib\Model\Model;
 
 /**
  * Describes a DurationsByMonth request object

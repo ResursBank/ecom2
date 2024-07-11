@@ -24,11 +24,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
-use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
@@ -102,7 +101,6 @@ class PartPayment extends Widget
      * Fetches translated and formatted "Starting at %1 per month..." string
      * inside span element.
      *
-     * @return string
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -132,7 +130,6 @@ class PartPayment extends Widget
     }
 
     /**
-     * @return AnnuityInformation
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -169,7 +166,6 @@ class PartPayment extends Widget
     /**
      * Fetch a Cost object from the Price signage API
      *
-     * @return Cost
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException

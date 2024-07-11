@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
+
 use function defined;
 
 /**
@@ -25,10 +26,10 @@ use function defined;
 class SupportInfo extends Widget
 {
     /** @var string */
-    private readonly string $html;
+    public readonly string $html;
 
     /** @var string */
-    private readonly string $css;
+    public readonly string $css;
 
     /**
      * @param string $pluginVersion Version of the calling plugin/addon
@@ -38,25 +39,9 @@ class SupportInfo extends Widget
         public readonly string $pluginVersion = ''
     ) {
         $this->html = $this->render(file: __DIR__ . '/support-info.phtml');
-        $this->css = file_get_contents(filename: __DIR__ . '/support-info.css');
-    }
-
-    /**
-     * Return the widget HTML.
-     */
-    public function getHtml(): string
-    {
-        return $this->html;
-    }
-
-    /**
-     * Return the widget CSS.
-     *
-     * @return string
-     */
-    public function getCss(): string
-    {
-        return $this->css;
+        $this->css = (string) file_get_contents(
+            filename: __DIR__ . '/support-info.css'
+        );
     }
 
     /**

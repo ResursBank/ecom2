@@ -62,12 +62,12 @@ class SupportInfoTest extends TestCase
 
         $this->assertStringContainsString(
             needle: '<td>' . $pluginVersion . '</td>',
-            haystack: $widget->getHtml(),
+            haystack: $widget->html,
             message: 'Support Info widget is missing the plugin version'
         );
         $this->assertStringContainsString(
             needle: '<td>' . PHP_VERSION . '</td>',
-            haystack: $widget->getHtml(),
+            haystack: $widget->html,
             message: 'Support Info widget is missing the PHP version'
         );
     }
