@@ -63,7 +63,7 @@ class PartPaymentTest extends TestCase
     }
 
     /**
-     * Verify that Part payment widget appears to contain correct data
+     * Verify that Part payment widget appears to contain correct data.
      *
      * @throws JsonException
      * @throws ReflectionException
@@ -110,7 +110,7 @@ class PartPaymentTest extends TestCase
             amount: 1200,
             currencyFormat: CurrencyFormat::SYMBOL_LAST,
             currencySymbol: 'kr',
-            apiUrl: 'https://example.com'
+            fetchStartingCostUrl: 'https://example.com'
         );
 
         $this->assertStringContainsString(
@@ -138,54 +138,6 @@ class PartPaymentTest extends TestCase
             pattern: "/<iframe[^>]+src=[\"']$testUrl/s",
             string: $widget->content,
             message: 'Read more widget should contain an iframe with the correct URL.'
-        );
-    }
-
-    /**
-     * Verify that the part payment widget contains the starting at value returned by getStartingAtCost
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
-     * @throws ValidationException
-     */
-    public function testGetStartingAtCost(): void
-    {
-        $paymentMethod = Repository::getById(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
-        );
-
-        if ($paymentMethod === null) {
-            throw new EmptyValueException(
-                message: 'Payment method failed to load'
-            );
-        }
-
-        $widget = new PartPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethod: $paymentMethod,
-            months: 3,
-            amount: 1200,
-            currencyFormat: CurrencyFormat::SYMBOL_LAST,
-            currencySymbol: 'kr',
-            apiUrl: 'https://example.com'
-        );
-        $startingAt = $widget->getStartingAtCost();
-
-        $this->assertStringContainsString(
-            needle: $startingAt,
-            haystack: $widget->content,
-            message: 'Widget should contain starting at cost'
         );
     }
 }

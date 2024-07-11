@@ -18,7 +18,7 @@ use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\AnnuityFactor\Widget\DurationByMonths;
+use Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
 
 /**
  * Test for generation of JS by DurationByMonths class
@@ -52,7 +52,7 @@ class DurationByMonthsTest extends TestCase
     public function testRenderDurationByMonthsScript(): void
     {
         $url = 'https://www.example.com/foo';
-        $widget = new DurationByMonths(endpointUrl: $url);
+        $widget = new GetPeriods(endpointUrl: $url);
 
         $this->assertStringContainsString(
             needle: "let url = '" . $url,

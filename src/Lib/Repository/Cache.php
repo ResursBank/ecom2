@@ -124,6 +124,7 @@ class Cache
                 ttl: $this->ttl
             );
         } catch (TypeError | Throwable $e) {
+            $m = 'asd';
             throw new CacheException(
                 message: 'Failed writing to cache.',
                 previous: $e

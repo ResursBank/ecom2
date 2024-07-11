@@ -186,14 +186,6 @@
     }
   },
   {
-    "id": "part-payment-general-error",
-    "translation": {
-      "en": "An error occurred when updating the part payment data",
-      "sv": "Ett fel uppstod när delbetalningsdata uppdaterades",
-      "no": "En feil oppstod ved oppdatering av data for delbetaling"
-    }
-  },
-  {
     "id": "get-address-could-not-fetch-address",
     "translation": {
       "en": "Could not fetch an address for the given value. Please update the value and try again.",
@@ -289,6 +281,14 @@
       "en": "Callback from Resurs Bank updated the order status.",
       "sv": "Callback från Resurs uppdaterade beställningens status.",
       "no": "Tilbakemelding fra Resurs Bank oppdaterte ordrestatusen."
+    }
+  },
+  {
+    "id": "part-payment-widget",
+    "translation": {
+      "en": "Part Payment Widget",
+      "sv": "Delbetalningswidget",
+      "no": "Delbetalingswidget"
     }
   },
   {
@@ -1892,6 +1892,86 @@
       "en": "Order not found.",
       "sv": "Beställning ej hittad.",
       "no": "Bestillingen ble ikke funnet."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-missing-period-element",
+    "translation": {
+      "en": "Failed to obtain period selection box.",
+      "sv": "Kunde inte hitta select box för val av avbetalningsperiod.",
+      "no": "Kunne ikke finne valgboks for valg av avdragsperiode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-missing-payment-method-element",
+    "translation": {
+      "en": "Failed to obtain payment method selection box.",
+      "sv": "Kunde inte hitta select box för val av betalmetod.",
+      "no": "Kunne ikke finne valgboks for valg av betalingsmetode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-invalid-period-element",
+    "translation": {
+      "en": "Invalid period selection box.",
+      "sv": "Ogiltig select box för val av avbetalningsperiod.",
+      "no": "Ugyldig valgboks for valg av avdragsperiode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-invalid-payment-method-element",
+    "translation": {
+      "en": "Invalid payment method selection box.",
+      "sv": "Ogiltig select box för val av betalmetod.",
+      "no": "Ugyldig valgboks for valg av betalingsmetode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-no-periods-found",
+    "translation": {
+      "en": "No periods found.",
+      "sv": "Inga avbetalningsperioder hittades.",
+      "no": "Ingen avdragsperiode funnet."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-amount-element",
+    "translation": {
+      "en": "Failed to obtain amount element.",
+      "sv": "Kunde inte hitta element för belopp.",
+      "no": "Kunne ikke finne element for beløp."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-qty-element",
+    "translation": {
+      "en": "Failed to obtain quantity element.",
+      "sv": "Kunde inte hitta element för kvantitet.",
+      "no": "Kunne ikke finne element for kvantitet."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-observable-elements",
+    "translation": {
+      "en": "Failed to obtain element(s) observable for changes.",
+      "sv": "Kunde inte hitta element för att observera förändringar.",
+      "no": "Kunne ikke finne element for å observere endringer."
+    }
+  },
+  {
+    "id": "part-payment-widget-server-error",
+    "translation": {
+      "en": "Something went wrong when fetching new price information. Please reload the page to see accurate price info.",
+      "sv": "Något gick fel när ny prisinformation skulle hämtas. Vänligen ladda om sidan för att se korrekt prisinformation.",
+      "no": "Noe gikk galt da ny prisinformasjon skulle hentes. Vennligst last inn siden på nytt for å se nøyaktig prisinformasjon."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-starting-at-data",
+    "translation": {
+      "en": "Failed to obtain price information.",
+      "sv": "Kunde inte hitta prisinformation.",
+      "no": "Kunne ikke finne prisinformasjon."
     }
   }
 ]
