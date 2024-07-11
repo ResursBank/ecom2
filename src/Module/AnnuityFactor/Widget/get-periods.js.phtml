@@ -13,13 +13,14 @@ use Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
 ?>
 
 /**
- * Fetch periods available for selected payment method.
+ * Store and update periods for part payment configuration when selecting payment
+ * method.
  */
 class Resursbank_GetPeriods {
     'use strict';
 
     /**
-     * Whether an AJAX request is active.
+     * List of available periods for each payment method.
      *
      * @type {boolean}
      */
@@ -76,7 +77,7 @@ class Resursbank_GetPeriods {
     }
 
     /**
-     * Perform AJAX request to get periods.
+     * Update periods based on selected payment method.
      */
     updatePeriods() {
         try {

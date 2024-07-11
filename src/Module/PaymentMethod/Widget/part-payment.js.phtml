@@ -104,7 +104,6 @@ class Resursbank_PartPayment {
      * We use different event listeners depending on the type of element we are:
      *
      * - Form: We listen for the change event.
-     * - Div: We listen for the click event.
      * - Others: We listen for the DOMSubtreeModified event.
      *
      * @returns {Resursbank_PartPayment}
@@ -443,10 +442,14 @@ class Resursbank_PartPayment {
         if (state) {
             loader.style.display = 'block';
             overlay.style.display = 'block';
+
+            // Using visibility to avoid affecting height of the container.
             readMore.style.visibility = 'hidden';
         } else {
             loader.style.display = 'none';
             overlay.style.display = 'none';
+
+            // Using visibility to avoid affecting height of the container.
             readMore.style.visibility = 'visible';
         }
     }
