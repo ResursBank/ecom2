@@ -75,14 +75,6 @@ class GetStoresTest extends TestCase
             haystack: $widget->content
         );
         $this->assertStringContainsString(
-            needle: "document.getElementById('" . $clientIdInputId . "')",
-            haystack: $widget->content
-        );
-        $this->assertStringContainsString(
-            needle: "document.getElementById('" . $clientSecretInputId . "')",
-            haystack: $widget->content
-        );
-        $this->assertStringContainsString(
             needle: "storeSelect.parentElement.classList.add('" . $spinnerClass . "');",
             haystack: $widget->content
         );

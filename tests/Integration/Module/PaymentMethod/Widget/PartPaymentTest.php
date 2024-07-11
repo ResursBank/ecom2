@@ -23,26 +23,44 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
+use Throwable;
 
 /**
  * Integration test for the Part payment widget
  */
 class PartPaymentTest extends TestCase
 {
+    private ?PaymentMethod $method;
+
+    private PartPayment $widget;
+
     /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
      */
     protected function setUp(): void
     {
@@ -60,84 +78,234 @@ class PartPaymentTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
-    }
 
-    /**
-     * Verify that Part payment widget appears to contain correct data.
-     *
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws FilesystemException
-     * @throws TranslationException
-     * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    public function testRenderPartPayment(): void
-    {
-        $paymentMethod = Repository::getById(
+        $this->method = Repository::getById(
             storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
 
-        if ($paymentMethod === null) {
+        if ($this->method === null) {
             throw new EmptyValueException(
                 message: 'Payment method failed to load'
             );
         }
 
-        $expectedUrl = '';
-
-        /** @var LegalLink $legalLink */
-        foreach ($paymentMethod->legalLinks as $legalLink) {
-            if ($legalLink->type !== Type::PRICE_INFO) {
-                continue;
-            }
-
-            $expectedUrl = $legalLink->url;
-        }
-
-        $widget = new PartPayment(
+        $this->widget = new PartPayment(
             storeId: $_ENV['STORE_ID'],
-            paymentMethod: $paymentMethod,
+            paymentMethod: $this->method,
             months: 3,
             amount: 1200,
             currencyFormat: CurrencyFormat::SYMBOL_LAST,
             currencySymbol: 'kr',
             fetchStartingCostUrl: 'https://example.com'
         );
+    }
 
-        $this->assertStringContainsString(
-            needle: Translator::translate(phraseId: 'read-more'),
-            haystack: $widget->content,
-            message: 'Read more link not found.'
-        );
+    /**
+     * Verify that getStartingAt() returns a string matching expected format.
+     */
+    public function testGetStartingAt(): void
+    {
+        try {
+            $this->assertMatchesRegularExpression(
+                pattern: '/^Starting at [\d,.]+ .* per month \(.*\)$/',
+                string: $this->widget->getStartingAt(),
+                message: 'Starting at should be formatted correctly.'
+            );
+        } catch (Throwable) {
+            $this->fail('Starting at should not throw an exception.');
+        }
+    }
+
+    /**
+     * Confirm widget HTML content is rendered as expected.
+     */
+    public function testWidgetContent(): void
+    {
+        // Confirm main element is rendered.
         $this->assertMatchesRegularExpression(
-            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp/s',
-            string: $widget->content,
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp/',
+            string: $this->widget->content,
             message: 'Widget should contain a div with class rb-pp.'
         );
+
+        // Confirm SVG logo element is rendered.
         $this->assertMatchesRegularExpression(
-            pattern: '/<div[^>]+id=["\'][^"\']*rb-pp-iframe-container/s',
-            string: $widget->content,
-            message: 'Widget should contain a div with id rb-pp-iframe-container'
-        );
-        $testUrl = str_replace(
-            search: ['/', '?', '&', '-', '.'],
-            replace: ['\\/', '\\?', '\\&', '\\-', '\\.'],
-            subject: $expectedUrl
+            pattern: '/<svg.*>/',
+            string: $this->widget->content,
+            message: 'Widget should contain an SVG logo.'
         );
 
+        // Confirm div with class rb-pp-info is rendered when displayInfoText
+        // is true.
         $this->assertMatchesRegularExpression(
-            pattern: "/<iframe[^>]+src=[\"']$testUrl/s",
-            string: $widget->content,
-            message: 'Read more widget should contain an iframe with the correct URL.'
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-info/',
+            string: $this->widget->content,
+            message: 'Widget should contain a div with class rb-pp-info.'
+        );
+
+        if ($this->method === null) {
+            $this->fail('Payment method failed to load');
+        }
+
+        try {
+            $noInfoText = $this->widget = new PartPayment(
+                storeId: $_ENV['STORE_ID'],
+                paymentMethod: $this->method,
+                months: 3,
+                amount: 1200,
+                currencyFormat: CurrencyFormat::SYMBOL_LAST,
+                currencySymbol: 'kr',
+                fetchStartingCostUrl: 'https://example.com',
+                displayInfoText: false
+            );
+        } catch (Throwable) {
+            $this->fail('Widget should not throw an exception.');
+        }
+
+        // Confirm div with class rb-pp-info is not rendered when displayInfoText
+        // is false.
+        $this->assertDoesNotMatchRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-info/',
+            string: $noInfoText->content,
+            message: 'Widget should not contain a div with class rb-pp-info.'
+        );
+
+        // Confirm div with class rb-pp-starting-at is rendered.
+        $this->assertMatchesRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-starting-at/',
+            string: $this->widget->content,
+            message: 'Widget should contain a div with class rb-pp-starting-at.'
+        );
+
+        // Confirm starting at cost is rendered.
+        $this->assertMatchesRegularExpression(
+            pattern: '/Starting at [\d,.]+ .* per month/',
+            string: $this->widget->content,
+            message: 'Widget should contain starting at cost.'
+        );
+
+        // Confirm there is a div with the class rb-pp-error.
+        $this->assertMatchesRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-error/',
+            string: $this->widget->content,
+            message: 'Widget should contain a div with class rb-pp-error.'
+        );
+
+        // Confirm there is a rb-pp-overlay element, and that it is hidden.
+        $this->assertMatchesRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-overlay["\'][^>]*style=["\'][^"\']*display: none/',
+            string: $this->widget->content,
+            message: 'Widget should contain a div with class rb-pp-overlay and style display: none.'
+        );
+
+        // Confirm there is a rb-pp-loader element, and that it is hidden.
+        $this->assertMatchesRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-loader["\'][^>]*style=["\'][^"\']*display: none/',
+            string: $this->widget->content,
+            message: 'Widget should contain a div with class rb-pp-loader and style display: none.'
+        );
+
+        // Confirm rb-pp-spinner element is rendered.
+        $this->assertMatchesRegularExpression(
+            pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-spinner/',
+            string: $this->widget->content,
+            message: 'Widget should contain a div with class rb-pp-spinner.'
+        );
+    }
+
+    /**
+     * Confirm widget CSS content is rendered as expected.
+     */
+    public function testWidgetCss(): void
+    {
+        // Confirm CSS content is rendered.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp/',
+            string: $this->widget->css,
+            message: 'Widget should contain CSS content.'
+        );
+
+        // Confirm CSS content contains rb-pp-info.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp-info/',
+            string: $this->widget->css,
+            message: 'Widget CSS should contain rb-pp-info.'
+        );
+
+        // Confirm CSS content contains rb-pp-starting-at.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp-starting-at/',
+            string: $this->widget->css,
+            message: 'Widget CSS should contain rb-pp-starting-at.'
+        );
+
+        // Confirm CSS content contains rb-pp-error.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp-error/',
+            string: $this->widget->css,
+            message: 'Widget CSS should contain rb-pp-error.'
+        );
+
+        // Confirm CSS content contains rb-pp-overlay.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp-overlay/',
+            string: $this->widget->css,
+            message: 'Widget CSS should contain rb-pp-overlay.'
+        );
+
+        // Confirm CSS content contains rb-pp-loader.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp-loader/',
+            string: $this->widget->css,
+            message: 'Widget CSS should contain rb-pp-loader.'
+        );
+
+        // Confirm CSS content contains rb-pp-spinner.
+        $this->assertMatchesRegularExpression(
+            pattern: '/\.rb-pp-spinner/',
+            string: $this->widget->css,
+            message: 'Widget CSS should contain rb-pp-spinner.'
+        );
+    }
+
+    /**
+     * Confirm widget JavaScript content is rendered as expected.
+     */
+    public function testWidgetJs(): void
+    {
+        // Confirm class Resursbank_PartPayment is defined.
+        $this->assertMatchesRegularExpression(
+            pattern: '/class Resursbank_PartPayment/',
+            string: $this->widget->js,
+            message: 'Widget JS should define class Resursbank_PartPayment.'
+        );
+    }
+
+    /**
+     * Verify $logo property on widget instance is rendered and contains and SVG
+     * element.
+     */
+    public function testWidgetLogo(): void
+    {
+        // Confirm logo is an SVG element.
+        $this->assertMatchesRegularExpression(
+            pattern: '/^<svg.*/',
+            string: $this->widget->logo,
+            message: 'Widget logo should be an SVG element.'
+        );
+    }
+
+    /**
+     * Verify the $cost property is assigned on the widget instance when its
+     * created (make sure it's not null).
+     */
+    public function testWidgetCost(): void
+    {
+        // Confirm cost property is not null.
+        $this->assertNotNull(
+            $this->widget->cost,
+            'Widget cost property should not be null.'
         );
     }
 }

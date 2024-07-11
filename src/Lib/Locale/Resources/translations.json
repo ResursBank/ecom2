@@ -245,10 +245,10 @@
   {
     "id": "starting-at",
     "translation": {
-      "en": "Starting at %1 per month, for %2",
-      "sv": "Från %1 per månad, i %2",
-      "no": "Fra %1 per måned, for %2",
-      "fi": "Alk. %1 / kk - %2 rahoituksella"
+      "en": "Starting at %1 per month (%2)",
+      "sv": "Från %1 per månad (%2)",
+      "no": "Fra %1 per måned (%2)",
+      "fi": "Alkaen %1 kuukaudessa (%2)"
     }
   },
   {
