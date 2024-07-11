@@ -65,6 +65,10 @@ class ReadMore extends Widget
         $this->css = $this->render(file: __DIR__ . '/read-more.css');
     }
 
+    /**
+     * @throws FilesystemException
+     * @noinspection PhpUnused
+     */
     public static function getCss(): string
     {
         $file = __DIR__ . '/read-more.css';

@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Payment\Widget;
 
-use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -24,6 +23,7 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
@@ -131,16 +131,17 @@ class PaymentInformationTest extends TestCase
 
     /**
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
-     * @throws AttributeCombinationException
      */
     private function createPayment(string $orderReference, string $governmentId = '198305147715'): Payment
     {
@@ -370,18 +371,7 @@ class PaymentInformationTest extends TestCase
     /**
      * Verify that realtime credit denial works. For tests related to the rejectedReasons model, see PaymentTest.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Exception
+     * @throws Throwable
      * @see PaymentTest
      */
     public function testCreditDenied(): void

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Locale;
 
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Locale\Translation;
 
 /**
@@ -24,39 +23,43 @@ class TranslationTest extends TestCase
     {
         $this->assertInstanceOf(
             expected: Translation::class,
-            actual: new Translation(en: 'asdf', sv: 'asdf')
-        );
-    }
-
-    public function testValidateIdThrowsIfSvEmpty(): void
-    {
-        $this->expectException(exception: EmptyValueException::class);
-
-        $this->assertInstanceOf(
-            expected: Translation::class,
-            actual: new Translation(en: 'asdf', sv: '')
+            actual: new Translation(en: 'asdf')
         );
     }
 
     /**
-     * When non-mandatory translations are empty, we should fall back to english.
+     * Validate that empty translation strings default to the 'en' string.
      */
-    public function testValidateIdIfNorwegianEmpty(): void
+    public function testEmptyDefaultsToEnglish(): void
     {
-        $noEmpty = new Translation(en: 'asdf-fallback', sv: 'asdf', no: '');
-
-        $this->assertInstanceOf(expected: Translation::class, actual: $noEmpty);
-
-        $this->assertTrue(condition: $noEmpty->no === 'asdf-fallback');
-    }
-
-    public function testValidateIdThrowsIfEnEmpty(): void
-    {
-        $this->expectException(exception: EmptyValueException::class);
-
-        $this->assertInstanceOf(
-            expected: Translation::class,
-            actual: new Translation(sv: 'asdf', en: '')
+        $translation = new Translation(
+            en: 'foo',
+            sv: '',
+            fi: '',
+            no: '',
+            da: ''
         );
+
+        foreach (['sv', 'fi', 'no', 'da'] as $locale) {
+            $this->assertEquals(
+                expected: $translation->en,
+                actual: $translation->$locale
+            );
+        }
+
+        $translation = new Translation(
+            en: 'foo',
+            sv: '   ',
+            fi: '   ',
+            no: '   ',
+            da: '   '
+        );
+
+        foreach (['sv', 'fi', 'no', 'da'] as $locale) {
+            $this->assertEquals(
+                expected: $translation->en,
+                actual: $translation->$locale
+            );
+        }
     }
 }

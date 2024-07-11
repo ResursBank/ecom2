@@ -94,14 +94,15 @@ class Repository
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
-     * @throws ConfigException
      * @throws Throwable
      */
     public static function getMethods(

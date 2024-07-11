@@ -43,11 +43,9 @@ class StringIsIpAddress extends StringValidation
     }
 
     /**
-     * @inheritDoc
-     * @param ReflectionParameter $parameter
-     * @param int $size
-     * @return array
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @noinspection PhpUnusedParameterInspection
      */
     public function getAcceptedValues(ReflectionParameter $parameter, int $size = 5): array
     {
@@ -61,9 +59,10 @@ class StringIsIpAddress extends StringValidation
     }
 
     /**
-     * @inheritDoc
      * @throws Exception
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @noinspection PhpUnusedParameterInspection
      */
     public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array
     {

@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Locale;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Translated phrase. The phrase has to be translated to the languages listed
@@ -19,6 +21,9 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 class Translation extends Model
 {
+    /** @var string Translation string for Swedish (sv_SE). */
+    public string $sv;
+
     /** @var string Translation string for Finnish (fi_FI). */
     public string $fi;
 
@@ -31,44 +36,38 @@ class Translation extends Model
     /**
      * Translations for multiple languages, with failover to english.
      *
-     * @throws EmptyValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly string $sv,
-        public readonly string $en,
+        #[StringNotEmpty] public readonly string $en,
+        string $sv = '',
         string $fi = '',
         string $no = '',
-        string $da = '',
-        private readonly StringValidation $stringValidation = new StringValidation()
+        string $da = ''
     ) {
-        if ($fi === '') {
+        if (trim(string: $sv) === '') {
+            $sv = $en;
+        }
+
+        if (trim(string: $fi) === '') {
             $fi = $en;
         }
 
-        if ($no === '') {
+        if (trim(string: $no) === '') {
             $no = $en;
         }
 
-        if ($da === '') {
+        if (trim(string: $da) === '') {
             $da = $en;
         }
 
+        $this->sv = $sv;
         $this->fi = $fi;
         $this->no = $no;
         $this->da = $da;
 
-        $this->validateTranslation(value: $this->sv);
-        $this->validateTranslation(value: $this->en);
-        $this->validateTranslation(value: $this->fi);
-        $this->validateTranslation(value: $this->no);
-        $this->validateTranslation(value: $this->da);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validateTranslation(string $value): void
-    {
-        $this->stringValidation->notEmpty(value: $value);
+        parent::__construct();
     }
 }

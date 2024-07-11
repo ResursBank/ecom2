@@ -9,31 +9,20 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Locale;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * English phrase that can be translated into any language.
  */
 class Phrase extends Model
 {
-    /**
-     * @throws EmptyValueException
-     */
     public function __construct(
-        public string $id,
-        public Translation $translation,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringMatchesRegex(
+            pattern: '/^[a-z0-9][a-z0-9\-]*[a-z0-9]$/'
+        )] public string $id,
+        public Translation $translation
     ) {
-        $this->validateId(value: $this->id);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validateId(string $value): void
-    {
-        $this->stringValidation->notEmpty(value: $value);
+        parent::__construct();
     }
 }

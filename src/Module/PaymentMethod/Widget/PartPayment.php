@@ -143,6 +143,7 @@ class PartPayment extends Widget
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
+     * @throws Throwable
      */
     private function getAnnuityInformation(): AnnuityInformation
     {
@@ -176,6 +177,7 @@ class PartPayment extends Widget
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      * @throws Throwable
      */
