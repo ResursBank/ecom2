@@ -204,13 +204,6 @@ class Resursbank_PartPayment {
                 })
                     .then(this.handleFetchResponse.bind(this))
                     .then(this.handleFetchData.bind(this))
-                    .then(() => {
-                        // If the amount in the queue is the same as we just fetched, we
-                        // can clear the queue.
-                        if (this.queue.length === 1 && this.queue[0] === amount) {
-                            this.queue = [];
-                        }
-                    })
                     .then(this.toggleLoader.bind(this))
                     .then(this.onComplete.bind(this))
                     .catch(this.errorHandler.bind(this));
