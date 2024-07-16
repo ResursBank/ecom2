@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\AnnuityFactor\Models;
+namespace Resursbank\Ecom\Lib\Model\AnnuityFactor;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -23,5 +23,6 @@ class AnnuityInformation extends Model
         public readonly float $administrationFee,
         public readonly float $setupFee
     ) {
+        parent::__construct();
     }
 }

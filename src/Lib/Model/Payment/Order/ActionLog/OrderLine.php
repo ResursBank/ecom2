@@ -14,7 +14,6 @@ namespace Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -28,7 +27,6 @@ use Resursbank\Ecom\Lib\Order\OrderLineType;
 class OrderLine extends Model
 {
     /**
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException

@@ -26,10 +26,15 @@ use Resursbank\Ecom\Module\SupportInfo\Widget\SupportInfo;
  */
 class SupportInfoTest extends TestCase
 {
+    private SupportInfo $widget;
+
+    private string $pluginVersion = '1.4.4.7';
+
     /**
      * Initialize the environment.
      *
      * @throws EmptyValueException
+     * @throws FilesystemException
      */
     protected function setUp(): void
     {
@@ -48,6 +53,56 @@ class SupportInfoTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             )
         );
+
+        $this->widget = new SupportInfo(pluginVersion: $this->pluginVersion);
+    }
+
+    /**
+     * Assert getPhpVersion() method returns current PHP version.
+     */
+    public function testGetPhpVersion(): void
+    {
+        $this->assertEquals(
+            expected: PHP_VERSION,
+            actual: $this->widget->getPhpVersion(),
+            message: 'PHP version does not match'
+        );
+    }
+
+    /**
+     * Confirm that getSslVersion() returns whatever is stored in constant
+     * OPENSSL_VERSION_TEXT
+     */
+    public function testGetSslVersion(): void
+    {
+        $this->assertEquals(
+            expected: OPENSSL_VERSION_TEXT,
+            actual: $this->widget->getSslVersion(),
+            message: 'SSL version does not match'
+        );
+    }
+
+    /**
+     * Confirm that getCurlVersion() returns the version of the cURL library.
+     */
+    public function testGetCurlVersion(): void
+    {
+        $this->assertNotEmpty(
+            $this->widget->getCurlVersion(),
+            'cURL version is empty'
+        );
+    }
+
+    /**
+     * Verify getEcomVersion() resolves a version like value.
+     */
+    public function testGetEcomVersion(): void
+    {
+        $this->assertMatchesRegularExpression(
+            pattern: '/\d+\.\d+\.\d+/',
+            string: $this->widget->getEcomVersion(),
+            message: 'eCom version does not match'
+        );
     }
 
     /**
@@ -57,18 +112,63 @@ class SupportInfoTest extends TestCase
      */
     public function testRenderWidget(): void
     {
-        $pluginVersion = '1.3.3.7';
-        $widget = new SupportInfo(pluginVersion: $pluginVersion);
-
+        // Confirm top element rb-si is present.
         $this->assertStringContainsString(
-            needle: '<td>' . $pluginVersion . '</td>',
-            haystack: $widget->getHtml(),
+            needle: '<div class="rb-si">',
+            haystack: $this->widget->html,
+            message: 'Support Info widget is missing the top element'
+        );
+
+        // Confirm table element containing plugin version is present.
+        $this->assertStringContainsString(
+            needle: '<td>' . $this->pluginVersion . '</td>',
+            haystack: $this->widget->html,
             message: 'Support Info widget is missing the plugin version'
         );
+
+        // Confirm table element containing PHP version is present.
         $this->assertStringContainsString(
             needle: '<td>' . PHP_VERSION . '</td>',
-            haystack: $widget->getHtml(),
+            haystack: $this->widget->html,
             message: 'Support Info widget is missing the PHP version'
+        );
+
+        // Confirm table element containing eCom version is present.
+        $this->assertStringContainsString(
+            needle: '<td>' . $this->widget->getEcomVersion() . '</td>',
+            haystack: $this->widget->html,
+            message: 'Support Info widget is missing the eCom version'
+        );
+
+        // Confirm table element containing SSL version is present.
+        $this->assertStringContainsString(
+            needle: '<td>' . $this->widget->getSslVersion() . '</td>',
+            haystack: $this->widget->html,
+            message: 'Support Info widget is missing the SSL version'
+        );
+
+        // Confirm table element containing cURL version is present.
+        $this->assertStringContainsString(
+            needle: '<td>' . $this->widget->getCurlVersion() . '</td>',
+            haystack: $this->widget->html,
+            message: 'Support Info widget is missing the cURL version'
+        );
+    }
+
+    /**
+     * Verify that the CSS is rendered.
+     */
+    public function testRenderCss(): void
+    {
+        $this->assertNotEmpty(
+            $this->widget->css,
+            'Support Info widget CSS is empty'
+        );
+
+        $this->assertStringContainsString(
+            needle: '.rb-si',
+            haystack: $this->widget->css,
+            message: 'Support Info widget CSS is missing the top element'
         );
     }
 }

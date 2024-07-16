@@ -130,9 +130,6 @@ class PaymentInformationTest extends TestCase
     }
 
     /**
-     * @param string $orderReference
-     * @param string $governmentId
-     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -374,18 +371,7 @@ class PaymentInformationTest extends TestCase
     /**
      * Verify that realtime credit denial works. For tests related to the rejectedReasons model, see PaymentTest.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Exception
+     * @throws Throwable
      * @see PaymentTest
      */
     public function testCreditDenied(): void

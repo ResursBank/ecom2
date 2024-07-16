@@ -9,50 +9,42 @@ declare(strict_types=1);
 
 /** @var PartPayment $this */
 
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 
 ?>
 
-<?php
-
-if ($this->iframeUrl !== '') : ?>
-  <div class="rb-pp">
-    <!-- Logo -->
-    <div id="rb-pp-logo-container"><?= $this->logo ?></div>
-      <?php
-
-if ($this->displayInfoText) : ?>
-        <!-- Pay in installments -->
-        <div id="rb-pp-info"><p><?= $this->infoText ?></p></div>
-      <?php endif; ?>
-    <!-- Example line here -->
-    <div id="rb-pp-example"><p><?= $this->startingAt ?></p></div>
-    <!-- Error message -->
-    <div id="rb-pp-error" class="rb-pp-hidden" style="display:none;"><p class="rb-pp-error"><?= $this->error ?></p>
-    </div>
-    <!-- Read More link -->
-    <div id="rb-pp-readmore">
-      <p>
-        <a onClick="document.getElementById('rb-pp-hidden').style.display='block';" href="#"><?= $this->readMore ?></a>
-      </p>
-    </div>
-    <div id="rb-pp-hidden" style="display:none;">
-      <div id="rb-pp-background" onclick="document.getElementById('rb-pp-hidden').style.display='none';"></div>
-      <div id="rb-pp-iframe-container">
-        <!--
-          Note that this X-close solution has been implemented to simplify the ability to close the payment info widget
-          when it is opened modally. The side view might be affected so that there is a lot of empty space on the sides
-          of it, but this compensates for the issues with the touch area not moving based on the screen resolution used.
-          -->
-        <div id="x-button"
-             style="
-                cursor: pointer; position: absolute; top: 0px; right: 0px; font-size: 24px; z-index: 10;
-                background-color: white; padding: 5px;
-             "
-             onclick="document.getElementById('rb-pp-hidden').style.display='none';">X
+<div class="rb-pp"">
+    <?php // AJAX loading animation. ?>
+    <div class="rb-pp-loader" style="display: none;">
+        <div class="rb-pp-spinner">
+            <svg class="rb-pp-circular" viewBox="25 25 50 50">
+                <circle class="rb-pp-path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+            </svg>
         </div>
-        <iframe id="rb-pp-iframe" src="<?= $this->iframeUrl ?>" loading="eager"></iframe>
-      </div>
     </div>
-  </div>
-<?php endif; ?>
+
+    <?php // Loader content overlay. ?>
+    <div class="rb-pp-overlay" style="display: none;"></div>
+
+    <?php // Content ?>
+    <div class="rb-pp-content">
+        <?php // Logo ?>
+        <?php if ($this->logo !== ''): ?>
+        <div class="rb-pp-logo-container"><?= $this->logo ?></div>
+        <?php endif; ?>
+
+        <?php // Pay in installments. ?>
+        <?php if ($this->displayInfoText) : ?>
+            <div class="rb-pp-info">
+                <?= Translator::translate(phraseId: 'pay-in-installments-with-resurs-bank') ?>
+            </div>
+        <?php endif; ?>
+
+        <?php // Starting at cost. ?>
+        <div class="rb-pp-starting-at"><?= $this->getStartingAt() ?></div>
+
+        <?php // Error message container. ?>
+        <div class="rb-pp-error" style="display:none;"></div>
+    </div>
+</div>

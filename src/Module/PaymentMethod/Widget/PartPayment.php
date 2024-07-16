@@ -24,11 +24,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type as LegalLinkType;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
-use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityInformation;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
@@ -40,11 +39,11 @@ use Throwable;
  */
 class PartPayment extends Widget
 {
-    /** @var string */
-    public readonly string $logo;
+    /** @var Cost */
+    public readonly Cost $cost;
 
     /** @var string */
-    public readonly string $infoText;
+    public readonly string $logo;
 
     /** @var string */
     public readonly string $content;
@@ -53,27 +52,14 @@ class PartPayment extends Widget
     public readonly string $css;
 
     /** @var string */
-    public readonly string $readMore;
-
-    /** @var string */
-    public readonly string $iframeUrl;
-
-    /** @var string */
-    public readonly string $startingAt;
-
-    /** @var string */
-    public readonly string $error;
-
-    /** @var string */
     public readonly string $js;
 
-    /** @var Cost */
-    public readonly Cost $cost;
-
-    /** @var AnnuityInformation */
-    private readonly AnnuityInformation $annuityInformation;
-
     /**
+     * @param string $fetchStartingCostUrl | URL in implementation used to fetch
+     * starting cost for the part payment widget as the configuration of the
+     * product / cart changes where this widget is used. The endpoint must sit
+     * in your implementation, the JS method which uses this method can then
+     * be called to fetch the starting cost (see the template of this widget).
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -92,95 +78,54 @@ class PartPayment extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        private readonly string $storeId,
-        private readonly PaymentMethod $paymentMethod,
-        private readonly int $months,
-        private readonly float $amount,
+        public readonly string $storeId,
+        public readonly PaymentMethod $paymentMethod,
+        public readonly int $months,
+        public readonly float $amount,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
-        public readonly string $apiUrl,
+        public readonly string $fetchStartingCostUrl,
         public readonly int $decimals = 2,
         public readonly bool $displayInfoText = true
     ) {
-        $this->annuityInformation = $this->getAnnuityInformation();
         $this->cost = $this->getCost();
         $this->logo = (string) file_get_contents(
             filename: __DIR__ . '/resurs.svg'
         );
-        $this->infoText = Translator::translate(
-            phraseId: 'pay-in-installments-with-resurs-bank'
-        );
-        $this->startingAt = $this->getStartingAt();
-        $this->readMore = Translator::translate(phraseId: 'read-more');
-        $this->iframeUrl = $this->getIframeUrl();
-        $this->error = Translator::translate(
-            phraseId: 'part-payment-general-error'
-        );
-
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
-        $this->js = $this->render(file: __DIR__ . '/part-payment-js.phtml');
-    }
-
-    public function getAmount(): float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * Return payment method
-     *
-     * @noinspection PhpUnused
-     */
-    public function getPaymentMethod(): PaymentMethod
-    {
-        return $this->paymentMethod;
+        $this->js = $this->render(file: __DIR__ . '/part-payment.js.phtml');
     }
 
     /**
      * Fetches translated and formatted "Starting at %1 per month..." string
+     * inside span element.
      *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
      * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws MissingKeyException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws TranslationException
+     * @throws ValidationException
      */
     public function getStartingAt(): string
     {
         return str_replace(
             search: ['%1', '%2'],
             replace: [
-                '<span id="rb-pp-starting-at">' . $this->getFormattedStartingAtCost() . '</span>',
-                $this->annuityInformation->paymentPlanName,
+                $this->getFormattedStartingAtCost(),
+                $this->getAnnuityInformation()->paymentPlanName,
             ],
             subject: Translator::translate(phraseId: 'starting-at')
-        );
-    }
-
-    /**
-     * Fetches formatted starting at cost with currency symbol
-     */
-    public function getFormattedStartingAtCost(): string
-    {
-        return Price::format(
-            value: $this->cost->monthlyCost,
-            decimals: $this->decimals,
-            currencySymbol: $this->currencySymbol,
-            currencyFormat: $this->currencyFormat
-        );
-    }
-
-    /**
-     * Returns the starting at value, public visibility so that just the value can be extracted for AJAX purposes.
-     */
-    public function getStartingAtCost(): string
-    {
-        return Price::format(
-            value: $this->cost->monthlyCost,
-            decimals: $this->decimals
         );
     }
 
@@ -196,6 +141,7 @@ class PartPayment extends Widget
      * @throws JsonException
      * @throws MissingKeyException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      * @throws Throwable
      */
@@ -207,7 +153,7 @@ class PartPayment extends Widget
         );
 
         /** @var AnnuityInformation $annuityFactor */
-        foreach ($annuityFactors->content as $annuityFactor) {
+        foreach ($annuityFactors as $annuityFactor) {
             if ($annuityFactor->durationMonths === $this->months) {
                 return $annuityFactor;
             }
@@ -233,6 +179,7 @@ class PartPayment extends Widget
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
+     * @throws Throwable
      */
     private function getCost(): Cost
     {
@@ -259,19 +206,15 @@ class PartPayment extends Widget
     }
 
     /**
-     * Fetches iframe URL
-     *
-     * @todo: Properly render URL
+     * Fetches formatted starting at cost with currency symbol.
      */
-    private function getIframeUrl(): string
+    private function getFormattedStartingAtCost(): string
     {
-        /** @var PaymentMethod\LegalLink $legalLink */
-        foreach ($this->paymentMethod->legalLinks as $legalLink) {
-            if ($legalLink->type === LegalLinkType::PRICE_INFO) {
-                return $legalLink->url . $this->amount;
-            }
-        }
-
-        return '';
+        return Price::format(
+            value: $this->cost->monthlyCost,
+            decimals: $this->decimals,
+            currencySymbol: $this->currencySymbol,
+            currencyFormat: $this->currencyFormat
+        );
     }
 }
