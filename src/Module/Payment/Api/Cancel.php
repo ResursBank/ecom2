@@ -116,14 +116,14 @@ class Cancel
             throw new IllegalTypeException(message: 'Expected Payment');
         }
 
-<        PaymentHistoryRepository::write(
+        PaymentHistoryRepository::write(
             entry: new Entry(
                 paymentId: $paymentId,
                 event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
                 user: User::ADMIN,
                 result: Result::SUCCESS
             )
-        );>
+        );
 
         return $result;
     }
