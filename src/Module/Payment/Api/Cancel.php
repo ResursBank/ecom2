@@ -29,6 +29,12 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
 
 /**
@@ -62,6 +68,13 @@ class Cancel
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null
     ): Payment {
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::CANCEL_REQUESTED,
+                user: User::ADMIN
+            )
+        );
         $payload = [];
 
         if ($orderLines) {
@@ -93,8 +106,24 @@ class Cancel
         );
 
         if (!$result instanceof Payment) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                result: Result::ERROR,
+                extra: Translator::translate(phraseId: 'event-request-failed')
+            ));
             throw new IllegalTypeException(message: 'Expected Payment');
         }
+
+<        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
+                user: User::ADMIN,
+                result: Result::SUCCESS
+            )
+        );>
 
         return $result;
     }

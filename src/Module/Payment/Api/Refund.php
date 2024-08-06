@@ -16,9 +16,12 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
@@ -28,7 +31,14 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
+use Throwable;
 
 /**
  * POST /payments/{payment_id}/refund
@@ -43,17 +53,21 @@ class Refund
     }
 
     /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
-     * @throws ApiException
-     * @throws ConfigException
-     * @throws IllegalValueException
-     * @throws AttributeCombinationException
+     * @throws FilesystemException
+     * @throws TranslationException
+     * @throws NotJsonEncodedException
      */
     public function call(
         string $paymentId,
@@ -62,6 +76,14 @@ class Refund
         ?string $transactionId = null,
         ?string $refundNoteId = null
     ): Payment {
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::REFUND_REQUESTED,
+                user: User::ADMIN
+            )
+        );
+
         $payload = [];
 
         if ($orderLines) {
@@ -93,7 +115,28 @@ class Refund
 
         $data = $curl->exec()->body;
 
-        return $this->processResponse(data: $data);
+        try {
+            $result = $this->processResponse(data: $data);
+            PaymentHistoryRepository::write(
+                entry: new Entry(
+                    paymentId: $paymentId,
+                    event: $result->isRefunded() ? Event::REFUNDED :
+                        Event::PARTIALLY_REFUNDED,
+                    user: User::ADMIN,
+                    result: Result::SUCCESS
+                )
+            );
+            return $result;
+        } catch (Throwable $error) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                result: Result::ERROR,
+                extra: Translator::translate(phraseId: 'event-request-failed')
+            ));
+            throw $error;
+        }
     }
 
     /**
