@@ -1068,6 +1068,16 @@
     }
   },
   {
+    "id": "payment-denied-or-no-longer-available",
+    "translation": {
+      "en": "Payment denied or no longer available.",
+      "sv": "Betalning nekad eller inte längre tillgänglig.",
+      "no": "Betaling avvist eller ikke lenger tilgjengelig.",
+      "da": "Betaling afvist eller ikke længere tilgængelig.",
+      "fi": "Maksu evätty tai ei enää saatavilla."
+    }
+  },
+  {
     "id": "reason",
     "translation": {
       "en": "Reason",
