@@ -1092,6 +1092,16 @@
     }
   },
   {
+    "id": "payment-info-denied-or-no-longer-available",
+    "translation": {
+      "en": "Payment info denied or no longer available.",
+      "sv": "Betalningsinfo nekad eller inte längre tillgänglig.",
+      "no": "Betalingsinformasjon avvist eller ikke lenger tilgjengelig.",
+      "da": "Betalingsoplysninger afvist eller ikke længere tilgængelig.",
+      "fi": "Maksutiedot evätty tai eivät enää saatavilla."
+    }
+  },
+  {
     "id": "reason",
     "translation": {
       "en": "Reason",
@@ -2963,6 +2973,14 @@
       "sv": "Lösenord",
       "no": "Passord",
       "da": "Adgangskode"
+    }
+  },
+  {
+    "id": "order-changed-by-unknown-source",
+    "translation": {
+      "en": "Order changed by unknown source. Please confirm that total and contents match payment before further handling of order.",
+      "sv": "Ordern ändrades av okänd källa. Vänligen bekräfta att totalsumma och innehåll överensstämmer med betalning innan vidare hantering av ordern görs.",
+      "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas."
     }
   }
 ]
