@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Payment\Widget;
 
-use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
@@ -89,6 +90,7 @@ class PaymentInformationTest extends TestCase
     /**
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -96,7 +98,8 @@ class PaymentInformationTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -151,19 +154,6 @@ class PaymentInformationTest extends TestCase
 
     /**
      * Verify that widget renders
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws ValidationException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws FilesystemException
-     * @throws Exception
      */
     public function testRenderWidget(): void
     {

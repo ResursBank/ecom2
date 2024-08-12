@@ -287,7 +287,7 @@
     "id": "updated-status-by-callback",
     "translation": {
       "en": "Callback from Resurs Bank updated the order status.",
-      "sv": "Callback från Resurs uppdaterade beställningens status.",
+      "sv": "Callback från Resurs Bank uppdaterade beställningens status.",
       "no": "Tilbakemelding fra Resurs Bank oppdaterte ordrestatusen."
     }
   },
@@ -1779,8 +1779,16 @@
     "id": "can-not-edit-order-due-to-rejected",
     "translation": {
       "en": "Order can not be edited since the payment has been rejected by Resurs.",
-      "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
+      "sv": "Ordern kan inte redigeras eftersom den har avvisats av Resurs.",
       "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs."
+    }
+  },
+  {
+    "id": "order-changed-by-unknown-source",
+    "translation": {
+      "en": "Order changed by unknown source. Please confirm that total and contents match payment before further handling of order.",
+      "sv": "Ordern ändrades av okänd källa. Vänligen bekräfta att totalsumma och innehåll överensstämmer med betalning innan vidare hantering av ordern görs.",
+      "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas."
     }
   }
 ]
