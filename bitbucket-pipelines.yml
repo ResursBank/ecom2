@@ -14,5 +14,5 @@ pipelines:
               - composer install
               - composer require phpunit/phpunit
               - composer require brianium/paratest --dev
-              - vendor/bin/paratest --processes=10 --configuration ./phpunit.xml
+              - vendor/bin/paratest --processes=15 --configuration ./phpunit.xml
 #              - vendor/bin/phpunit --configuration ./phpunit.xml
