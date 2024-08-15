@@ -4,6 +4,7 @@ pipelines:
         - step:
             name: ECom2 for PHP 8.1
             image: php:8.1
+            size: 2x
             caches:
               - composer
             script:
