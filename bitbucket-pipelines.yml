@@ -13,4 +13,6 @@ pipelines:
               - grep -v "env name" phpunit.xml.example >phpunit.xml
               - composer install
               - composer require phpunit/phpunit
-              - vendor/bin/phpunit --configuration ./phpunit.xml
+              - composer require brianium/paratest --dev
+              - vendor/bin/paratest --processes=15 --configuration ./phpunit.xml
+#              - vendor/bin/phpunit --configuration ./phpunit.xml
