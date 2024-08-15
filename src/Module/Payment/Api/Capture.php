@@ -29,6 +29,12 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
 
 /**
@@ -71,6 +77,14 @@ class Capture
         ?string $transactionId = null,
         ?string $invoiceId = null
     ): Payment {
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::CAPTURE_REQUESTED,
+                user: User::ADMIN
+            )
+        );
+
         $payload = [];
 
         if ($orderLines) {
@@ -110,9 +124,25 @@ class Capture
         );
 
         if (!$result instanceof Payment) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                result: Result::ERROR,
+                extra: Translator::translate(phraseId: 'event-request-failed')
+            ));
             throw new IllegalTypeException(message: 'Expected Payment');
         }
 
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: $result->isCaptured() ? Event::CAPTURED
+                    : Event::PARTIALLY_CAPTURED,
+                user: User::ADMIN,
+                result: Result::SUCCESS
+            )
+        );
         return $result;
     }
 }
