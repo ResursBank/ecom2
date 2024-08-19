@@ -49,6 +49,40 @@ class Resursbank_FetchStores {
     fetching = false;
 
     /**
+     * Setup event listeners for form submission and input changes. This will
+     * prevent form submission if an AJAX request is ongoing. This will also
+     * trigger a new AJAX request when input values change.
+     *
+     * @returns {void}
+     */
+    setupEventListeners() {
+        var that = this;
+
+        try {
+            this.getSelectStoreElement().form.addEventListener(
+                'submit',
+                function (evt) {
+                    if (that.fetching) {
+                        evt.preventDefault();
+                    }
+                }
+            );
+
+            this.getInputElements().forEach((el) => {
+                if (el instanceof HTMLElement) {
+                    el.addEventListener(
+                        'change',
+                        this.fetchStores.bind(this),
+                        false
+                    );
+                }
+            });
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
      * Perform AJAX request to fetch stores.
      */
     fetchStores() {
@@ -70,15 +104,10 @@ class Resursbank_FetchStores {
 
             storeSelect.length = 0;
 
-            let url = '';
-            let urlCallback = <?= $this->fetchUrlCallback ?>;
-            if (typeof urlCallback === 'function') {
-                url = urlCallback();
-            }
+            const url = this.getUrl();
 
-            if (typeof url !== 'string' || url.trim() === '') {
-                alert("No URL to fetch stores implemented. Aborting procedure.");
-                return;
+            if (url === '') {
+                throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-fetch-url') ?>');
             }
 
             fetch(url, {
@@ -98,6 +127,18 @@ class Resursbank_FetchStores {
         } catch (e) {
             this.errorHandler(e);
         }
+    }
+
+    /**
+     * Resolve URL for AJAX request.
+     *
+     * Note that this is only a placeholder, intended to be overridden by the
+     * implementing class.
+     *
+     * @returns {string}
+     */
+    getUrl() {
+        return '';
     }
 
     /**
@@ -139,33 +180,41 @@ class Resursbank_FetchStores {
     }
 
     /**
-     * Fetch client ID.
+     * Fetch client ID input element.
      *
-     * @returns {*|string}
+     * @returns {HTMLInputElement}
      */
-    getClientId() {
-        let clientIdCallback = <?= $this->clientIdCallback ?>;
+    getClientIdElement() {
+        let result = null;
 
-        if (typeof clientIdCallback === 'function') {
-            return clientIdCallback();
+        <?php if ($this->clientIdInputId !== null): ?>
+        result = document.getElementById('<?= $this->clientIdInputId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-id-input') ?>');
         }
 
-        return '';
+        return result;
     }
 
     /**
-     * Get client secret.
+     * Get client secret input element.
      *
-     * @returns {*|string}
+     * @returns {HTMLInputElement}
      */
-    getClientSecret() {
-        let clientSecretCallback = <?= $this->clientSecretCallback ?>;
+    getClientSecretElement() {
+        let result = null;
 
-        if (typeof clientSecretCallback === 'function') {
-            return clientSecretCallback();
+        <?php if ($this->clientSecretInputId !== null): ?>
+        result = document.getElementById('<?= $this->clientSecretInputId ?>');
+        <?php endif; ?>
+
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-secret-input') ?>');
         }
 
-        return '';
+        return result;
     }
 
     /**
@@ -176,8 +225,8 @@ class Resursbank_FetchStores {
     getPostData() {
         return {
             environment: this.getSelectEnvironmentElement().value,
-            clientId: this.getClientId(),
-            clientSecret: this.getClientSecret()
+            clientId: this.getClientIdElement().value,
+            clientSecret: this.getClientSecretElement().value
         };
     }
 
@@ -301,30 +350,7 @@ class Resursbank_FetchStores {
 document.addEventListener(
     'DOMContentLoaded',
     function () {
-        const fetcher = new Resursbank_FetchStores();
-
-        try {
-            fetcher.getSelectStoreElement().form.addEventListener(
-                'submit',
-                function (evt) {
-                    if (fetcher.fetching) {
-                        evt.preventDefault();
-                    }
-                }
-            );
-
-            fetcher.getInputElements().forEach((el) => {
-                if (el instanceof HTMLElement) {
-                    el.addEventListener(
-                        'change',
-                        fetcher.fetchStores.bind(fetcher),
-                        false
-                    );
-                }
-            });
-        } catch (e) {
-            fetcher.errorHandler(e);
-        }
+        new Resursbank_FetchStores().setupEventListeners();
     }
 );
 <?php endif; ?>

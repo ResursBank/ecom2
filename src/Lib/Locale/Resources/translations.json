@@ -1504,6 +1504,14 @@
     }
   },
   {
+    "id": "get-stores-missing-fetch-url",
+    "translation": {
+      "en": "Failed to obtain fetch URL.",
+      "sv": "Kunde inte hitta fetch URL.",
+      "no": "Kunne ikke finne hent-URL."
+    }
+  },
+  {
     "id": "please-select-store",
     "translation": {
       "en": "Please select store.",
