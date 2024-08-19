@@ -46,9 +46,6 @@ class GetStoresTest extends TestCase
      */
     public function testRenderedContent(): void
     {
-        $fetchUrlCallback = 'fetchUrlCallbackFunctionName';
-        $clientIdCallback = 'clientIdCallbackFunctionName';
-        $clientSecretCallback = 'clientIdCallbackFunctionName';
         $environmentSelectId = 'environment_select';
         $clientIdInputId = 'client_id_input';
         $clientSecretInputId = 'client_secret_input';
@@ -56,9 +53,6 @@ class GetStoresTest extends TestCase
         $spinnerClass = 'spinner_class';
 
         $widget = new GetStores(
-            fetchUrlCallback: $fetchUrlCallback,
-            clientIdCallback: $clientIdCallback,
-            clientSecretCallback: $clientSecretCallback,
             environmentSelectId: $environmentSelectId,
             clientIdInputId: $clientIdInputId,
             clientSecretInputId: $clientSecretInputId,
@@ -76,10 +70,6 @@ class GetStoresTest extends TestCase
         );
         $this->assertStringContainsString(
             needle: "storeSelect.parentElement.classList.add('" . $spinnerClass . "');",
-            haystack: $widget->content
-        );
-        $this->assertStringContainsString(
-            needle: "let urlCallback = " . $fetchUrlCallback . ";",
             haystack: $widget->content
         );
     }
