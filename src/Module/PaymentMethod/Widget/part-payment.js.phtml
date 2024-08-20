@@ -392,7 +392,7 @@ class Resursbank_PartPayment {
             this.el.querySelector('.rb-pp-starting-at').innerHTML = data.startingAtHtml;
 
             <?php if ($this->threshold > 0): ?>
-            if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {
+            if (<?= $this->threshold ?> > 0 && parseFloat(data.startingAt) < <?= $this->threshold ?>) {
                 this.eligibleCost = false;
                 return;
             }

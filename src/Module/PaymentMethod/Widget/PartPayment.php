@@ -120,7 +120,10 @@ class PartPayment extends Widget
      */
     public function getStartingAt(): string
     {
-        if ($this->cost->monthlyCost < $this->threshold) {
+        if (
+            $this->threshold > 0 &&
+            $this->cost->monthlyCost < $this->threshold
+        ) {
             return Translator::translate('rb-pp-not-eligible-amount');
         }
 
