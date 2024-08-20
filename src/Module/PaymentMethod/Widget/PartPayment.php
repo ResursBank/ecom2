@@ -120,10 +120,7 @@ class PartPayment extends Widget
      */
     public function getStartingAt(): string
     {
-        if (
-            $this->threshold > 0 &&
-            $this->cost->monthlyCost < $this->threshold
-        ) {
+        if (!$this->isEligible()) {
             return Translator::translate('rb-pp-not-eligible-amount');
         }
 
@@ -134,6 +131,19 @@ class PartPayment extends Widget
                 $this->getAnnuityInformation()->paymentPlanName,
             ],
             subject: Translator::translate(phraseId: 'starting-at')
+        );
+    }
+
+    /**
+     * Check whether the current cost is eligible for part payment.
+     *
+     * @return bool
+     */
+    public function isEligible(): bool
+    {
+        return (
+            $this->threshold === 0 ||
+            $this->cost->monthlyCost >= $this->threshold
         );
     }
 

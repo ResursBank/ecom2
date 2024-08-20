@@ -120,6 +120,11 @@ class Resursbank_PartPayment {
 
         instance.reloadElementObservers();
 
+        <?php if (!$this->isEligible()): ?>
+        instance.eligibleCost = false;
+        document.querySelector('.rb-rm-link').style.visibility = 'hidden';
+        <?php endif; ?>
+
         return instance;
     }
 
@@ -392,13 +397,11 @@ class Resursbank_PartPayment {
             this.el.querySelector('.rb-pp-starting-at').innerHTML = data.startingAtHtml;
 
             <?php if ($this->threshold > 0): ?>
-            if (<?= $this->threshold ?> > 0 && parseFloat(data.startingAt) < <?= $this->threshold ?>) {
+            if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {
                 this.eligibleCost = false;
                 return;
             }
             <?php endif; ?>
-
-            console.log('New read more coming up!');
 
             // We must create a new element in order to replace the existing one.
             let newReadMore = document.createElement('div');
