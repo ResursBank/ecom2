@@ -1794,11 +1794,11 @@
   {
     "id": "debitable-amount-does-not-match-authorized-amount",
     "translation": {
-      "en": "Debitable amount does not match the authorized amount at Resurs Bank. Final charge may differ due to possible plugin misconfiguration.",
-      "sv": "Debiterbart belopp överensstämmer inte med det auktoriserade beloppet hos Resurs Bank. Slutligt belopp kan avvika på grund av eventuell plugin-felkonfiguration.",
-      "no": "Debiterbart beløp samsvarer ikke med det autoriserte beløpet hos Resurs Bank. Endelig beløp kan avvike på grunn av mulig plugin-feilkonfigurasjon.",
-      "da": "Debiterbart beløb stemmer ikke overens med det autoriserede beløb hos Resurs Bank. Det endelige beløb kan variere på grund af mulig plugin-fejlkonfiguration.",
-      "fi": "Veloitettava määrä ei vastaa Resurs Bankin hyväksyttyä määrää. Lopullinen summa voi poiketa mahdollisen lisäosan virheellisen määrityksen vuoksi."
+      "en": "Debitable amount does not match the authorized amount at Resurs Bank. Final charge may differ - check the transaction in Resurs Merchant Portal.",
+      "sv": "Debiterbart belopp överensstämmer inte med det auktoriserade beloppet hos Resurs Bank. Slutligt belopp kan avvika - kontrollera debitering i Resurs Merchant Portal.",
+      "no": "Debiterbart beløp samsvarer ikke med det autoriserte beløpet hos Resurs Bank. Endelig beløp kan avvike - kontroller transaksjonen i Resurs Merchant Portal.",
+      "da": "Debiterbart beløb stemmer ikke overens med det autoriserede beløb hos Resurs Bank. Det endelige beløb kan variere - kontroller transaktionen i Resurs Merchant Portal.",
+      "fi": "Veloitettava määrä ei vastaa Resurs Bankin hyväksyttyä määrää. Lopullinen summa voi poiketa - tarkista veloitus Resurs Merchant Portal -portaalissa."
     }
   }
 ]
