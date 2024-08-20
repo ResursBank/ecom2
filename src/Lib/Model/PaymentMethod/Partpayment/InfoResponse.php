@@ -18,7 +18,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 class InfoResponse extends Model
 {
     public function __construct(
-        #[StringNotEmpty] public readonly string $startingAt,
+        public readonly float $startingAt,
+        #[StringNotEmpty] public readonly string $startingAtHtml,
         public readonly string $readMoreWidget
     ) {
         parent::__construct();

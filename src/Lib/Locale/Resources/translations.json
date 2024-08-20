@@ -2982,5 +2982,13 @@
       "sv": "Ordern ändrades av okänd källa. Vänligen bekräfta att totalsumma och innehåll överensstämmer med betalning innan vidare hantering av ordern görs.",
       "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas."
     }
+  },
+  {
+    "id": "rb-pp-not-eligible-amount",
+    "translation": {
+      "en": "The amount is not eligible for part payment.",
+      "sv": "Beloppet är inte berättigat till delbetalning.",
+      "no": "Beløpet er ikke berettiget til delbetaling."
+    }
   }
 ]
