@@ -71,6 +71,41 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Filter the collection based on exact property value.
+     *
+     * This method both returns an instance of the collection and alters the
+     * existing instance. It also resets the array indexing of the collection's
+     * data property.
+     *
+     * @param string $property Property to filter on.
+     * @param mixed $value Property value to match.
+     * @return $this Updated collection with all non-matching objects removed.
+     * @throws CollectionException
+     */
+    public function filterByPropertyValue(
+        string $property,
+        mixed $value
+    ): Collection {
+        if (
+            !property_exists(object_or_class: $this->type, property: $property)
+        ) {
+            throw new CollectionException(
+                message: 'Filter value has to be of type ' .
+                getType($this->$property) . ', received ' . getType($value)
+            );
+        }
+
+        $this->data = array_values(array: array_filter(
+            array: $this->data,
+            callback: static fn ($object): bool => $object->$property === $value
+        ));
+
+        $this->rewind();
+
+        return $this;
+    }
+
+    /**
      * Set new data array
      *
      * @throws IllegalTypeException
