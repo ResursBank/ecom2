@@ -2990,5 +2990,15 @@
       "sv": "Ordern ändrades av okänd källa. Vänligen bekräfta att totalsumma och innehåll överensstämmer med betalning innan vidare hantering av ordern görs.",
       "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas."
     }
+  },
+  {
+    "id": "debitable-amount-does-not-match-authorized-amount",
+    "translation": {
+      "en": "Debitable amount does not match the authorized amount at Resurs Bank. Final charge may differ due to possible plugin misconfiguration.",
+      "sv": "Debiterbart belopp överensstämmer inte med det auktoriserade beloppet hos Resurs Bank. Slutligt belopp kan avvika på grund av eventuell plugin-felkonfiguration.",
+      "no": "Debiterbart beløp samsvarer ikke med det autoriserte beløpet hos Resurs Bank. Endelig beløp kan avvike på grunn av mulig plugin-feilkonfigurasjon.",
+      "da": "Debiterbart beløb stemmer ikke overens med det autoriserede beløb hos Resurs Bank. Det endelige beløb kan variere på grund af mulig plugin-fejlkonfiguration.",
+      "fi": "Veloitettava määrä ei vastaa Resurs Bankin hyväksyttyä määrää. Lopullinen summa voi poiketa mahdollisen lisäosan virheellisen määrityksen vuoksi."
+    }
   }
 ]
