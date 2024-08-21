@@ -16,6 +16,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -51,6 +53,7 @@ class Cancel
 
     /**
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -58,10 +61,11 @@ class Cancel
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws NotJsonEncodedException
+     * @throws FilesystemException
+     * @throws TranslationException
      */
     public function call(
         string $paymentId,
@@ -85,6 +89,40 @@ class Cancel
             $payload['creator'] = $creator;
         }
 
+        $result = $this->getResponse(paymentId: $paymentId, payload: $payload);
+
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
+                user: User::ADMIN,
+                result: Result::SUCCESS
+            )
+        );
+
+        return $result;
+    }
+
+    /**
+     * Call API and process response.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws TranslationException
+     */
+    private function getResponse(string $paymentId, array $payload): Payment
+    {
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/cancel'
@@ -115,15 +153,6 @@ class Cancel
             ));
             throw new IllegalTypeException(message: 'Expected Payment');
         }
-
-        PaymentHistoryRepository::write(
-            entry: new Entry(
-                paymentId: $paymentId,
-                event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
-                user: User::ADMIN,
-                result: Result::SUCCESS
-            )
-        );
 
         return $result;
     }
