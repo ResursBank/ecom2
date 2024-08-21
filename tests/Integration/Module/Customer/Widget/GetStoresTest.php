@@ -107,8 +107,8 @@ class GetStoresTest extends TestCase
             haystack: $widget->content
         );
 
-        // Confirm new Resursbank_FetchStores().setupEventListeners(); is present
-        // in the widget content.
+        // Confirm new Resursbank_FetchStores().setupEventListeners(); is not
+        //  present in the widget content.
         $this->assertStringNotContainsString(
             needle: 'new Resursbank_FetchStores().setupEventListeners();',
             haystack: $widget->content
