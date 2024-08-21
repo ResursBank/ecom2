@@ -96,6 +96,13 @@ class Resursbank_PartPayment {
     lastAmount = <?= $this->amount ?>;
 
     /**
+     * Whether current monthly cost is eligible for part payments.
+     *
+     * @type {boolean}
+     */
+    eligibleCost = true;
+
+    /**
      * Create new instance of self and setup element listeners.
      *
      * Element listeners are set up to trigger the updateStartingCost method,
@@ -112,6 +119,11 @@ class Resursbank_PartPayment {
         const instance = new Resursbank_PartPayment(el, overrides);
 
         instance.reloadElementObservers();
+
+        <?php if (!$this->isEligible()): ?>
+        instance.eligibleCost = false;
+        document.querySelector('.rb-rm-link').style.visibility = 'hidden';
+        <?php endif; ?>
 
         return instance;
     }
@@ -374,13 +386,22 @@ class Resursbank_PartPayment {
             throw new Error(data.error);
         } else if (
             data.hasOwnProperty('startingAt') &&
+            data.hasOwnProperty('startingAtHtml') &&
             data.hasOwnProperty('readMoreWidget') &&
             data.startingAt !== undefined &&
+            data.startingAtHtml !== undefined &&
             data.readMoreWidget !== undefined &&
-            data.startingAt !== "" &&
+            data.startingAtHtml !== "" &&
             data.readMoreWidget !== ""
         ) {
-            this.el.querySelector('.rb-pp-starting-at').innerHTML = data.startingAt;
+            this.el.querySelector('.rb-pp-starting-at').innerHTML = data.startingAtHtml;
+
+            <?php if ($this->threshold > 0): ?>
+            if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {
+                this.eligibleCost = false;
+                return;
+            }
+            <?php endif; ?>
 
             // We must create a new element in order to replace the existing one.
             let newReadMore = document.createElement('div');
@@ -443,7 +464,9 @@ class Resursbank_PartPayment {
             overlay.style.display = 'none';
 
             // Using visibility to avoid affecting height of the container.
-            readMore.style.visibility = 'visible';
+            if (this.eligibleCost) {
+                readMore.style.visibility = 'visible';
+            }
         }
     }
 

@@ -2992,6 +2992,14 @@
     }
   },
   {
+    "id": "rb-pp-not-eligible-amount",
+    "translation": {
+      "en": "The amount is not eligible for part payment.",
+      "sv": "Beloppet är inte berättigat till delbetalning.",
+      "no": "Beløpet er ikke berettiget til delbetaling."
+    }
+  },
+  {
     "id": "debitable-amount-does-not-match-authorized-amount",
     "translation": {
       "en": "Debitable amount does not match the authorized amount at Resurs Bank. Final charge may differ - check the transaction in Resurs Merchant Portal.",

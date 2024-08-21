@@ -86,7 +86,8 @@ class PartPayment extends Widget
         public readonly CurrencyFormat $currencyFormat,
         public readonly string $fetchStartingCostUrl,
         public readonly int $decimals = 2,
-        public readonly bool $displayInfoText = true
+        public readonly bool $displayInfoText = true,
+        public readonly float $threshold = 0
     ) {
         $this->cost = $this->getCost();
         $this->logo = (string) file_get_contents(
@@ -119,6 +120,10 @@ class PartPayment extends Widget
      */
     public function getStartingAt(): string
     {
+        if (!$this->isEligible()) {
+            return Translator::translate('rb-pp-not-eligible-amount');
+        }
+
         return str_replace(
             search: ['%1', '%2'],
             replace: [
@@ -126,6 +131,19 @@ class PartPayment extends Widget
                 $this->getAnnuityInformation()->paymentPlanName,
             ],
             subject: Translator::translate(phraseId: 'starting-at')
+        );
+    }
+
+    /**
+     * Check whether the current cost is eligible for part payment.
+     *
+     * @return bool
+     */
+    public function isEligible(): bool
+    {
+        return (
+            $this->threshold === 0 ||
+            $this->cost->monthlyCost >= $this->threshold
         );
     }
 
