@@ -130,35 +130,11 @@
     }
   },
   {
-    "id": "resurs-checkout",
-    "translation": {
-      "en": "Resurs Checkout",
-      "sv": "Resurs Checkout",
-      "no": "Resurs Kasse"
-    }
-  },
-  {
     "id": "resurs-bank",
     "translation": {
       "en": "Resurs Bank",
       "sv": "Resurs Bank",
       "no": "Resurs Bank"
-    }
-  },
-  {
-    "id": "plugin-and-account-settings",
-    "translation": {
-      "en": "Plugin and account settings",
-      "sv": "Plugin- och kontoinställningar",
-      "no": "Plugin- og kontoinnstillinger"
-    }
-  },
-  {
-    "id": "cart-is-empty",
-    "translation": {
-      "en": "Cart is empty!",
-      "sv": "Kundvagnen är tom!",
-      "no": "Handlekurven er tom!"
     }
   },
   {
@@ -170,35 +146,11 @@
     }
   },
   {
-    "id": "could-not-complete-order-due-to-a-signing-problem",
-    "translation": {
-      "en": "Could not complete order due to a signing problem.",
-      "sv": "Kunde inte slutföra beställningen på grund av ett signeringsproblem.",
-      "no": "Kunne ikke fullføre bestillingen på grunn av et signeringsproblem."
-    }
-  },
-  {
     "id": "default-quantity-unit",
     "translation": {
       "en": "pcs",
       "sv": "st",
       "no": "stk"
-    }
-  },
-  {
-    "id": "shipping-description",
-    "translation": {
-      "en": "Shipping",
-      "sv": "Frakt",
-      "no": "Frakt"
-    }
-  },
-  {
-    "id": "shipping-reference",
-    "translation": {
-      "en": "shipping",
-      "sv": "frakt",
-      "no": "frakt"
     }
   },
   {
@@ -300,14 +252,6 @@
     }
   },
   {
-    "id": "updated-status-by-callback",
-    "translation": {
-      "en": "Callback from Resurs Bank updated the order status.",
-      "sv": "Callback från Resurs Bank uppdaterade beställningens status.",
-      "no": "Tilbakemelding fra Resurs Bank oppdaterte ordrestatusen."
-    }
-  },
-  {
     "id": "part-payment-widget",
     "translation": {
       "en": "Part Payment Widget",
@@ -404,14 +348,6 @@
     }
   },
   {
-    "id": "limit-explanation",
-    "translation": {
-      "en": "Minimum monthly cost the widget is displayed for",
-      "sv": "Lägsta månadskostnad som widgeten visas för",
-      "no": "Minimum månedskostnad som widgeten vises for"
-    }
-  },
-  {
     "id": "limit-missing-store-id",
     "translation": {
       "en": "Can't configure Part payment widget without a configured store id",
@@ -441,14 +377,6 @@
       "en": "Can't configure a limit without specifying the duration to use",
       "sv": "Kan inte konfigurera gränsvärde utan att ange vilken avbetalningstid som skall användas",
       "no": "Kan ikke sette en grense uten å angi varigheten som skal brukes"
-    }
-  },
-  {
-    "id": "limit-new-value-not-numeric",
-    "translation": {
-      "en": "The specified limit is not a number",
-      "sv": "Det angivna gränsvärdet är inte ett nummer",
-      "no": "Den angitte grensen er ikke et tall"
     }
   },
   {
@@ -513,14 +441,6 @@
       "en": "No",
       "sv": "Nej",
       "no": "Nei"
-    }
-  },
-  {
-    "id": "total-order-amount",
-    "translation": {
-      "en": "Total order amount",
-      "sv": "Total ordersumma",
-      "no": "Total ordresum"
     }
   },
   {
@@ -617,22 +537,6 @@
       "en": "Leave empty to disable logging.",
       "sv": "Lämna tomt för att inaktivera loggning.",
       "no": "La stå tom for å deaktivere logging."
-    }
-  },
-  {
-    "id": "cache-path",
-    "translation": {
-      "en": "Cache path",
-      "sv": "Cachesökväg",
-      "no": "Mellomlagersti"
-    }
-  },
-  {
-    "id": "leave-empty-to-disable-cache",
-    "translation": {
-      "en": "Leave empty to disable cache.",
-      "sv": "Lämna tomt för att inaktivera cache.",
-      "no": "La stå tom for å deaktivere mellomlager."
     }
   },
   {
@@ -740,14 +644,6 @@
     }
   },
   {
-    "id": "cancel-article-row-fail",
-    "translation": {
-      "en": "Could not remove article row.",
-      "sv": "Kunde inte ta bort artikelrad.",
-      "no": "Kunne ikke fjerne artikkelraden."
-    }
-  },
-  {
     "id": "payment-methods",
     "translation": {
       "en": "Payment Methods",
@@ -780,14 +676,6 @@
     }
   },
   {
-    "id": "get-stores-failed",
-    "translation": {
-      "en": "Failed to resolve list of available stores from the Resurs Bank API.",
-      "sv": "Kunde inte hämta lista med butiker från Resurs Banks API.",
-      "no": "Klarte ikke å hente listen over tilgjengelige butikker fra Resurs Bank API."
-    }
-  },
-  {
     "id": "clear-cache-failed",
     "translation": {
       "en": "Failed to clear Resurs Bank related cache.",
@@ -809,14 +697,6 @@
       "en": "Failed to render list of available payment methods.",
       "sv": "Kunde inte rendera lista med tillgängliga betalmetoder.",
       "no": "Klarte ikke å vise listen over tilgjengelige betalingsmetoder."
-    }
-  },
-  {
-    "id": "render-settings-failed",
-    "translation": {
-      "en": "Failed to render settings.",
-      "sv": "Kunde inte rendera inställningar.",
-      "no": "Klarte ikke å vise innstillinger."
     }
   },
   {
@@ -852,62 +732,6 @@
     }
   },
   {
-    "id": "refund-unable-to-perform-operation",
-    "translation": {
-      "en": "Unable to perform refund operation: %1, please verify order state manually.",
-      "sv": "Kunde inte genomföra återbetalning: %1, vänligen verifiera orderstatus manuellt.",
-      "no": "Kunne ikke utføre refusjonsoperasjonen: %1, vennligst verifiser ordrestatus manuelt."
-    }
-  },
-  {
-    "id": "refund-wrong-return-type-from-wc-get-order",
-    "translation": {
-      "en": "wc_get_order returned object of type %1, WC_Order_Refund expected.",
-      "sv": "wc_get_order returnerade ett objekt av typen %1, WC_Order_Refund förväntades.",
-      "no": "wc_get_order returnerte objekt av typen %1, WC_Order_Refund forventet."
-    }
-  },
-  {
-    "id": "refund-unable-to-load-refund-information",
-    "translation": {
-      "en": "Unable to load refund information. Aborting refund.",
-      "sv": "Kunde ej ladda återbetalningsinformation. Avbryter återbetalning.",
-      "no": "Kunne ikke laste refusjonsinformasjon. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-payment-reference-not-a-string",
-    "translation": {
-      "en": "Fetched Resurs Bank payment reference is not a string. Aborting refund.",
-      "sv": "Hämtad betalningsreferens för Resurs Bank är inte en sträng. Avbryter återbetalning.",
-      "no": "Hentet Resurs Bank betalingsreferanse er ikke en streng. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-payment-reference-is-empty",
-    "translation": {
-      "en": "Fetched Resurs Bank payment reference is empty. Aborting refund.",
-      "sv": "Hämtad betalningsreferens för Resurs Bank är tom. Avbryter återbetalning.",
-      "no": "Hentet Resurs Bank betalingsreferanse er tom. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-unable-to-load-order-information",
-    "translation": {
-      "en": "Unable to load order information. Aborting refund.",
-      "sv": "Kunde inte ladda orderinformation. Avbryter återbetalning.",
-      "no": "Kunne ikke laste ordreinformasjon. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-error-when-fetching-order-lines",
-    "translation": {
-      "en": "Error encountered while attempting to fetch order lines from payment. Aborting refund.",
-      "sv": "Ett fel uppstod när orderrader hämtades från betalningen. Avbryter återbetalning.",
-      "no": "Feil oppstod ved forsøk på å hente ordrelinjer fra betaling. Avbryter refusjon."
-    }
-  },
-  {
     "id": "authorization-callback-received",
     "translation": {
       "en": "Authorization callback received with status %s.",
@@ -921,62 +745,6 @@
       "en": "Management callback received with action %s.",
       "sv": "Management callback inkom med händelse %s.",
       "no": "Administrasjonstilbakeringing mottatt med handling %s."
-    }
-  },
-  {
-    "id": "cancel-success",
-    "translation": {
-      "en": "Successfully cancelled payment at Resurs Bank.",
-      "sv": "Lyckades annullera betalningen hos Resurs Bank.",
-      "no": "Vellykket kansellering av betaling hos Resurs Bank."
-    }
-  },
-  {
-    "id": "refund-success",
-    "translation": {
-      "en": "Successfully refunded %s of payment at Resurs Bank.",
-      "sv": "Lyckades kreditera %s av betalningen hos Resurs Bank.",
-      "no": "Vellykket refundert %s av betalingen hos Resurs Bank."
-    }
-  },
-  {
-    "id": "partial-refund-success",
-    "translation": {
-      "en": "Successfully refunded partial payment (%s) at Resurs Bank.",
-      "sv": "Lyckades kreditera andel av betalning (%s) hos Resurs Bank.",
-      "no": "Vellykket delvis refundert betaling (%s) hos Resurs Bank."
-    }
-  },
-  {
-    "id": "capture-success",
-    "translation": {
-      "en": "Successfully captured %s of payment at Resurs Bank.",
-      "sv": "Lyckades debitera %s av betalningen hos Resurs Bank.",
-      "no": "Vellykket debiteret %s av betalingen hos Resurs Bank."
-    }
-  },
-  {
-    "id": "modify-order-success",
-    "translation": {
-      "en": "Successfully updated payment at Resurs Bank to %s",
-      "sv": "Lyckades uppdatera betalningen hos Resurs Bank till %s",
-      "no": "Vellykket oppdaterte betalingen hos Resurs Bank til %s"
-    }
-  },
-  {
-    "id": "part-cancel-not-allowed",
-    "translation": {
-      "en": "This order is not allowed to be part cancelled.",
-      "sv": "Denna order får ej del-annulleras.",
-      "no": "Denne ordren er ikke tillatt å kanselleres delvis."
-    }
-  },
-  {
-    "id": "callback-amount",
-    "translation": {
-      "en": "Amount %s in Resurs' system.",
-      "sv": "Summa %s i Resurs system.",
-      "no": "Beløp %s i Resurs' system."
     }
   },
   {
@@ -1068,14 +836,6 @@
     }
   },
   {
-    "id": "payment-must-be-captured-to-be-refunded",
-    "translation": {
-      "en": "Payment must have been captured before it can be refunded.",
-      "sv": "Betalning måste ha debiterats innan den kan krediteras.",
-      "no": "Betalingen må ha blitt debiteret før den kan krediteres."
-    }
-  },
-  {
     "id": "failed-to-resolve-sku-from-order-line-object",
     "translation": {
       "en": "Failed to resolve SKU from order line item.",
@@ -1107,22 +867,6 @@
       "en": "Reason",
       "sv": "Orsak",
       "no": "Grunn"
-    }
-  },
-  {
-    "id": "callback-url-authorization",
-    "translation": {
-      "en": "Authorization Callback URL",
-      "sv": "Authorization Callback URL",
-      "no": "Autorisasjon Tilbakeringings-URL"
-    }
-  },
-  {
-    "id": "callback-url-management",
-    "translation": {
-      "en": "Management Callback URL",
-      "sv": "Management Callback URL",
-      "no": "Administrasjon Tilbakeringings-URL"
     }
   },
   {
@@ -1174,14 +918,6 @@
     }
   },
   {
-    "id": "failed-payment-action",
-    "translation": {
-      "en": "Failed to execute requested action on the payment at Resurs Bank.",
-      "sv": "Kunde inte utföra begärd åtgärd på betalningen hos Resurs Bank.",
-      "no": "Kunne ikke utføre forespurt handling på betalingen hos Resurs Bank."
-    }
-  },
-  {
     "id": "capture-action-failed",
     "translation": {
       "en": "Capturing payment at Resurs Bank failed (%s).",
@@ -1227,14 +963,6 @@
       "en": "Failed to change order status from %s to %s. Action is not valid against Resurs Bank payment.",
       "sv": "Kunde inte ändra beställningens status från %s till %s. Åtgärden är inte giltig mot betalning hos Resurs Bank.",
       "no": "Kunne ikke endre bestillingsstatus fra %s til %s. Handlingen er ikke gyldig mot betaling hos Resurs Bank."
-    }
-  },
-  {
-    "id": "cannot-remove-refund",
-    "translation": {
-      "en": "Refunds cannot be removed from Resurs Bank payment.",
-      "sv": "Återbetalningar kan inte tas bort från Resurs Bank betalningar.",
-      "no": "Refusjoner kan ikke fjernes fra Resurs Bank betalinger."
     }
   },
   {
@@ -1480,14 +1208,6 @@
     }
   },
   {
-    "id": "get-stores-missing-flow-select",
-    "translation": {
-      "en": "Failed to obtain flow selection box.",
-      "sv": "Kunde inte hitta select box för val av flöde.",
-      "no": "Kunne ikke finne valgboks for feedvalg."
-    }
-  },
-  {
     "id": "get-stores-missing-client-id-input",
     "translation": {
       "en": "Failed to obtain client id input element.",
@@ -1528,38 +1248,6 @@
     }
   },
   {
-    "id": "failed-applying-billing-address",
-    "translation": {
-      "en": "Failed to update billing address.",
-      "sv": "Kunde inte uppdatera faktureringsadress.",
-      "no": "Kunne ikke oppdatere fakturaadresse."
-    }
-  },
-  {
-    "id": "failed-applying-delivery-address",
-    "translation": {
-      "en": "Failed to update delivery address.",
-      "sv": "Kunde inte uppdatera leveransadress.",
-      "no": "Kunne ikke oppdatere leveringsadresse."
-    }
-  },
-  {
-    "id": "failed-applying-shipping-method",
-    "translation": {
-      "en": "Failed to update shipping method selection.",
-      "sv": "Kunde inte uppdatera val av fraktmetod.",
-      "no": "Kunne ikke oppdatere valg av fraktmetode."
-    }
-  },
-  {
-    "id": "failed-applying-payment-method",
-    "translation": {
-      "en": "Failed to update payment method selection.",
-      "sv": "Kunde inte uppdatera val av betalmetod.",
-      "no": "Kunne ikke oppdatere valg av betalingsmetode."
-    }
-  },
-  {
     "id": "failed-placing-order",
     "translation": {
       "en": "Failed to place order.",
@@ -1581,38 +1269,6 @@
       "en": "Invalid webhook data submitted from Resurs Bank.",
       "sv": "Ogiltig webhook data skickad från Resurs Bank.",
       "no": "Ugyldig webhook-data sendt fra Resurs Bank."
-    }
-  },
-  {
-    "id": "terms-url",
-    "translation": {
-      "en": "Terms URL",
-      "sv": "Länk till villkor",
-      "no": "Lenke til vilkår"
-    }
-  },
-  {
-    "id": "terms-url-description",
-    "translation": {
-      "en": "Must be an HTTPS URL on the same domain as your store",
-      "sv": "Måste vara en HTTPS-URL på samma domän som er butik",
-      "no": "Må være en HTTPS-URL på samme domene som butikken din"
-    }
-  },
-  {
-    "id": "invalid-webhook-auth-token",
-    "translation": {
-      "en": "Invalid auth token.",
-      "sv": "Ogiltigt auth token.",
-      "no": "Ugyldig autentiseringstoken."
-    }
-  },
-  {
-    "id": "failed-clearing-cart",
-    "translation": {
-      "en": "Clearing cart failed.",
-      "sv": "Tömning av kundvagn misslyckades.",
-      "no": "Tømming av handlekurv mislyktes."
     }
   },
   {
@@ -1640,75 +1296,11 @@
     }
   },
   {
-    "id": "failed-applying-discount-code",
-    "translation": {
-      "en": "Failed to apply discount code.",
-      "sv": "Kunde inte applicera rabattkod.",
-      "no": "Kunne ikke anvende rabattkode."
-    }
-  },
-  {
-    "id": "missing-discount-code",
-    "translation": {
-      "en": "Missing discount code.",
-      "sv": "Rabattkod saknas.",
-      "no": "Rabattkode mangler."
-    }
-  },
-  {
-    "id": "available-customer-types",
-    "translation": {
-      "en": "Available customer types",
-      "sv": "Tillgängliga kundtyper",
-      "no": "Tilgjengelige kundetyper"
-    }
-  },
-  {
-    "id": "enable-lookup-customer-address",
-    "translation": {
-      "en": "Enable lookup customer address",
-      "sv": "Aktivera stöd för att hämta kundinformation",
-      "no": "Aktiver støtte for å hente kundeinformasjon"
-    }
-  },
-  {
-    "id": "enable-customer-notes",
-    "translation": {
-      "en": "Enable customer notes",
-      "sv": "Aktivera stöd för kund kommentar",
-      "no": "Aktiver støtte for kundekommentarer"
-    }
-  },
-  {
-    "id": "payment-already-captured",
-    "translation": {
-      "en": "Payment is already captured.",
-      "sv": "Betalningen har redan debiterats.",
-      "no": "Betalingen er allerede debiteret."
-    }
-  },
-  {
     "id": "connection-failed",
     "translation": {
       "en": "The connection to Resurs Bank failed.",
       "sv": "Kontakten med Resurs Bank misslyckades.",
       "no": "Koblingen til Resurs Bank mislyktes."
-    }
-  },
-  {
-    "id": "please-try-again",
-    "translation": {
-      "en": "Please try again in a few minutes.",
-      "sv": "Vänligen försök igen om några minuter.",
-      "no": "Vennligst prøv igjen om noen minutter."
-    }
-  },
-  {
-    "id": "failed-adjusting-cart-contents",
-    "translation": {
-      "en": "Failed adjusting cart contents.",
-      "sv": "Kunde inte uppdatera varukorg.",
-      "no": "Kunne ikke justere innholdet i handlekurven."
     }
   },
   {
@@ -1741,14 +1333,6 @@
       "en": "The value to use for the XDEBUG_SESSION parameter",
       "sv": "Det värde som används för XDEBUG_SESSION-parametern",
       "no": "Verdien som skal brukes for XDEBUG_SESSION-parameteren"
-    }
-  },
-  {
-    "id": "enable-delayed-authorization",
-    "translation": {
-      "en": "Enable delayed authorization",
-      "sv": "Tillåt fördröjt ordergodkännande",
-      "no": "Tillat forsinket godkjenning"
     }
   },
   {
@@ -1904,22 +1488,6 @@
     }
   },
   {
-    "id": "failed-to-resolve-tax-percentage-for-shipping",
-    "translation": {
-      "en": "Failed to resolve tax percentage for",
-      "sv": "Kunde inte fastställa skattesatsen för",
-      "da": "Kunne ikke fastsætte skatteprocenten for"
-    }
-  },
-  {
-    "id": "failed-to-resolve-tax-percentage-for-type",
-    "translation": {
-      "en": "Failed to resolve tax percentage for %s",
-      "sv": "Kunde inte fastställa skattesatsen för %s",
-      "da": "Kunne ikke fastsætte skatteprocenten for %s"
-    }
-  },
-  {
     "id": "placeorder-went-wrong-try-again",
     "translation": {
       "en": "Something went wrong when trying to place the order. Please try again, or select another payment method. You could also try refreshing the page.",
@@ -1936,27 +1504,11 @@
     }
   },
   {
-    "id": "missing-checkout-id",
-    "translation": {
-      "en": "Missing checkout id.",
-      "sv": "Saknar checkout-ID.",
-      "da": "Mangler checkout-ID."
-    }
-  },
-  {
     "id": "missing-payment-id",
     "translation": {
       "en": "Missing payment id.",
       "sv": "Saknar payment-ID.",
       "da": "Mangler payment-ID."
-    }
-  },
-  {
-    "id": "field-cannot-be-empty",
-    "translation": {
-      "en": "Field cannot be empty.",
-      "sv": "Fältet får inte vara tomt.",
-      "da": "Feltet må ikke være tomt."
     }
   },
   {
@@ -1968,115 +1520,11 @@
     }
   },
   {
-    "id": "credit-application-denied",
-    "translation": {
-      "en": "Your credit application was denied, please select a different payment method.",
-      "sv": "Din kreditansökan avslogs, vänligen välj en annan betalningsmetod.",
-      "da": "Din kreditansøgning blev afvist, vælg venligst en anden betalingsmetode."
-    }
-  },
-  {
     "id": "provide-valid-phone-number",
     "translation": {
       "en": "Please provide a valid phone number for your chosen country.",
       "sv": "Vänligen ange ett giltigt telefonnummer för det valda landet.",
       "da": "Angiv venligst et gyldigt telefonnummer for det valgte land."
-    }
-  },
-  {
-    "id": "payment-method-not-available-for-customer-type",
-    "translation": {
-      "en": "The selected payment method is not available for the selected customer type.",
-      "sv": "Den valda betalningsmetoden är inte tillgänglig för den valda kundtypen.",
-      "da": "Den valgte betalingsmetode er ikke tilgængelig for den valgte kundetype."
-    }
-  },
-  {
-    "id": "failed-to-fetch-address",
-    "translation": {
-      "en": "Failed to fetch address.",
-      "sv": "Misslyckades med att hämta adress.",
-      "da": "Kunne ikke hente adresse."
-    }
-  },
-  {
-    "id": "order-missing-billing-address",
-    "translation": {
-      "en": "The order did not have a billing address.",
-      "sv": "Beställningen hade ingen fakturaadress.",
-      "da": "Ordren havde ingen faktureringsadresse."
-    }
-  },
-  {
-    "id": "order-missing-shipping-or-billing-address",
-    "translation": {
-      "en": "The order does not have a shipping or billing address.",
-      "sv": "Beställningen saknar leverans- eller fakturaadress.",
-      "da": "Ordren mangler en leverings- eller faktureringsadresse."
-    }
-  },
-  {
-    "id": "order-missing-payment",
-    "translation": {
-      "en": "The order does not have a payment.",
-      "sv": "Beställningen saknar betalning.",
-      "da": "Ordren mangler en betaling."
-    }
-  },
-  {
-    "id": "payment-method-missing-identifier",
-    "translation": {
-      "en": "Payment method does not have an identifier.",
-      "sv": "Betalningsmetoden har ingen identifierare.",
-      "da": "Betalingsmetoden har ingen identifikator."
-    }
-  },
-  {
-    "id": "missing-order-reference",
-    "translation": {
-      "en": "Missing order reference.",
-      "sv": "Saknar orderreferens.",
-      "da": "Mangler ordrenummer."
-    }
-  },
-  {
-    "id": "parameter-identifier-not-set-or-not-string",
-    "translation": {
-      "en": "Parameter [identifier] was not set or isn't a string.",
-      "sv": "Parametern [identifier] var inte satt eller är inte en sträng.",
-      "da": "Parameter [identifier] var ikke sat eller er ikke en streng."
-    }
-  },
-  {
-    "id": "invalid-swedish-government-id",
-    "translation": {
-      "en": "Invalid Swedish government ID.",
-      "sv": "Ogiltigt svenskt myndighets-ID.",
-      "da": "Ugyldigt svensk myndigheds-ID."
-    }
-  },
-  {
-    "id": "param-contact-gov-id-required",
-    "translation": {
-      "en": "Parameter [contact_gov_id] was not set (or isn't a string) and is required when the customer is a company.",
-      "sv": "Parametern [contact_gov_id] var inte satt (eller är inte en sträng) och krävs när kunden är ett företag.",
-      "da": "Parameter [contact_gov_id] var ikke sat (eller er ikke en streng) og er påkrævet, når kunden er en virksomhed."
-    }
-  },
-  {
-    "id": "is-not-a-valid-country",
-    "translation": {
-      "en": "is not a valid country.",
-      "sv": "är inte ett giltigt land.",
-      "da": "er ikke et gyldigt land."
-    }
-  },
-  {
-    "id": "credit-application-denied",
-    "translation": {
-      "en": "Your credit application was denied, please select a different payment method.",
-      "sv": "Din kreditansökan avslogs, vänligen välj en annan betalningsmetod.",
-      "da": "Din kreditansøgning blev afvist, vælg venligst en anden betalingsmetode."
     }
   },
   {
@@ -2672,35 +2120,11 @@
     }
   },
   {
-    "id": "payment-info-could-not-be-retrieved",
-    "translation": {
-      "en": "Payment information could not be retrieved from Resurs Bank.",
-      "sv": "Betalningsinformation kunde inte hämtas från Resurs Bank.",
-      "da": "Betalingsinformation kunne ikke hentes fra Resurs Bank."
-    }
-  },
-  {
     "id": "payment",
     "translation": {
       "en": "Payment",
       "sv": "Betalning",
       "da": "Betaling"
-    }
-  },
-  {
-    "id": "registered-callbacks",
-    "translation": {
-      "en": "Registered Callbacks",
-      "sv": "Registrerade Callbacks",
-      "da": "Registrerede Callbacks"
-    }
-  },
-  {
-    "id": "no-registered-callbacks-found",
-    "translation": {
-      "en": "No registered callbacks found. Update callbacks, if you don't get a list of \"Registered Callbacks\", please verify that the provided username and password are accurate.",
-      "sv": "Inga registrerade callbacks hittades. Uppdatera callbacks, om du inte får en lista med \"Registrerade Callbacks\", vänligen verifiera att det angivna användarnamnet och lösenordet är korrekta.",
-      "da": "Ingen registrerede callbacks fundet. Opdater callbacks, hvis du ikke får en liste over \"Registrerede Callbacks\", bedes du verificere, at det angivne brugernavn og adgangskode er korrekte."
     }
   },
   {
@@ -2776,35 +2200,11 @@
     }
   },
   {
-    "id": "unable-to-load-product",
-    "translation": {
-      "en": "Unable to load product.",
-      "sv": "Kunde inte ladda produkten.",
-      "da": "Kunne ikke indlæse produktet."
-    }
-  },
-  {
     "id": "duration-value-may-not-be-negative",
     "translation": {
       "en": "Duration value may not be negative.",
       "sv": "Varaktighetsvärdet får inte vara negativt.",
       "da": "Varighedsværdien må ikke være negativ."
-    }
-  },
-  {
-    "id": "please-configure-payment-method",
-    "translation": {
-      "en": "Please configure payment method to base prices on.",
-      "sv": "Vänligen konfigurera betalningsmetod för att basera priser på.",
-      "da": "Konfigurer venligst betalingsmetode for at basere priser på."
-    }
-  },
-  {
-    "id": "please-configure-duration",
-    "translation": {
-      "en": "Please configure duration to base prices on.",
-      "sv": "Vänligen konfigurera varaktighet för att basera priser på.",
-      "da": "Konfigurer venligst varighed for at basere priser på."
     }
   },
   {
@@ -2832,15 +2232,6 @@
       "sv": "Beställning ej redo för callback.",
       "no": "Bestillingen er ikke klar for tilbakeringing.",
       "da": "Bestilling ikke klar til callback."
-    }
-  },
-  {
-    "id": "called-error-order-not-found",
-    "translation": {
-      "en": "Order not found.",
-      "sv": "Beställning ej hittad.",
-      "no": "Bestillingen ble ikke funnet.",
-      "da": "Bestilling ikke fundet."
     }
   },
   {
@@ -2873,14 +2264,6 @@
       "en": "Invalid payment method selection box.",
       "sv": "Ogiltig select box för val av betalmetod.",
       "no": "Ugyldig valgboks for valg av betalingsmetode."
-    }
-  },
-  {
-    "id": "part-payment-get-periods-no-periods-found",
-    "translation": {
-      "en": "No periods found.",
-      "sv": "Inga avbetalningsperioder hittades.",
-      "no": "Ingen avdragsperiode funnet."
     }
   },
   {
