@@ -177,37 +177,6 @@ to achieve this.
 
 Integration of **payment methods**, currently incomplete. Work in progress.
 
-### RCO
-
-Implementation of the Checkout API (iframe based checkout).
-
-* Repository | Repository for RCO.
-* Api/GetPayment::call() | Fetch payment information from the API.
-* Api/InitPayment::call() | Initialize payment session (iframe) with the API.
-* Api/UpdatePayment::call() | Update payment session in the API.
-* Api/UpdatePaymentReference::call() | Update payment reference in the API.
-* Model/* | Model classes for API requests and responses.
-
-Please note that all API calls should be performed through **Repository**.
-
-When using the RCO you first need to call **InitPayment** to initialize
-the payment session. You will be required to provide a reference for this
-session which should be your order number if you already have that on hand at
-this point. You will otherwise be able to update this value later using
-**UpdatePaymentReference**. **InitPayment** Will supply you with the iframe to
-allow checkout. **UpdatePayment** Allows you to update the payment session with
-new items etc. after the payment session has already been created, so you do not
-need to re-create the session every time the cart changes for example. Whenever
-the totals in your platform change you should call this endpoint to update the
-payment session which will reflect the new total within the iframe through
-JS sockets. You can call **GetPayment** to fetch the payment session
-information at any time. When the client completes their purchase the session
-will be converted to an actual payment.
-
-### RCO Callback
-
-Documentation TBD.
-
 ### Store
 
 Implementation of **stores** in the Merchant API (MAPI).

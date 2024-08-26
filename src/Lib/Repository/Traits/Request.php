@@ -22,7 +22,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
-use Resursbank\Ecom\Lib\Api\Rco;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -32,7 +31,7 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 
 /**
- * HTTP Requests centralized for both RCO+ and MAPI related calls.
+ * HTTP Requests centralized for MAPI related calls.
  */
 class Request
 {
@@ -48,7 +47,7 @@ class Request
         protected readonly string $model,
         protected readonly string $route,
         protected readonly RequestMethod $requestMethod,
-        protected Mapi|Rco $api,
+        protected Mapi $api,
         protected readonly array $params = [],
         protected readonly string $extractProperty = '',
         protected readonly array $headers = [],

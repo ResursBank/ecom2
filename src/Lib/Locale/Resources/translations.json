@@ -1528,14 +1528,6 @@
     }
   },
   {
-    "id": "rcoplus",
-    "translation": {
-      "en": "RCO Plus",
-      "sv": "RCO Plus",
-      "no": "RCO Plus"
-    }
-  },
-  {
     "id": "failed-applying-billing-address",
     "translation": {
       "en": "Failed to update billing address.",
@@ -1589,14 +1581,6 @@
       "en": "Invalid webhook data submitted from Resurs Bank.",
       "sv": "Ogiltig webhook data skickad från Resurs Bank.",
       "no": "Ugyldig webhook-data sendt fra Resurs Bank."
-    }
-  },
-  {
-    "id": "advanced-settings-for-rcoplus",
-    "translation": {
-      "en": "Advanced Settings for RCO Plus",
-      "sv": "Avancerade inställningar för RCO Plus",
-      "no": "Avanserte innstillinger for RCO Plus"
     }
   },
   {
@@ -1693,14 +1677,6 @@
       "en": "Enable customer notes",
       "sv": "Aktivera stöd för kund kommentar",
       "no": "Aktiver støtte for kundekommentarer"
-    }
-  },
-  {
-    "id": "part-payment-widget-rcoplus-incompatibility-warning",
-    "translation": {
-      "en": "This widget is not compatible with the RCO Plus API.",
-      "sv": "Denna widget är inte kompatibel med RCO Plus API:et.",
-      "no": "Denne widgeten er ikke kompatibel med RCO Plus API."
     }
   },
   {
