@@ -32,6 +32,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
+use Resursbank\Ecom\Lib\Model\PaymentCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -69,13 +70,12 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      * @throws AttributeCombinationException
-     * @todo Shouldn't this return a PaymentCollection?
      */
     public static function search(
         string $storeId,
         ?string $orderReference = null,
         ?string $governmentId = null
-    ): Collection {
+    ): PaymentCollection {
         return (new Search())->call(
             storeId: $storeId,
             orderReference: $orderReference,
