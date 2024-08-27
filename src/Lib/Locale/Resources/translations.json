@@ -2367,5 +2367,61 @@
       "da": "Debiterbart beløb stemmer ikke overens med det autoriserede beløb hos Resurs Bank. Det endelige beløb kan variere - kontroller transaktionen i Resurs Merchant Portal.",
       "fi": "Veloitettava määrä ei vastaa Resurs Bankin hyväksyttyä määrää. Lopullinen summa voi poiketa - tarkista veloitus Resurs Merchant Portal -portaalissa."
     }
+  },
+  {
+    "id": "get-address-missing-gov-id-input",
+    "translation": {
+      "en": "Failed to obtain government ID input.",
+      "sv": "Kunde inte hitta input för personnummer.",
+      "no": "Kunne ikke finne input for personnummer."
+    }
+  },
+  {
+    "id": "get-address-missing-customer-type-input-natural",
+    "translation": {
+      "en": "Failed to obtain input to define private citizen.",
+      "sv": "Kunde inte hitta input för att definiera privatperson.",
+      "no": "Kunne ikke finne input for å definere privatperson."
+    }
+  },
+  {
+    "id": "get-address-missing-customer-type-input-legal",
+    "translation": {
+      "en": "Failed to obtain input to define company.",
+      "sv": "Kunde inte hitta input för att definiera företag.",
+      "no": "Kunne ikke finne input for å definere selskap."
+    }
+  },
+  {
+    "id": "get-address-missing-selected-customer-type-input",
+    "translation": {
+      "en": "Failed to obtain selected customer type input.",
+      "sv": "Kunde inte hitta input för vald kundtyp.",
+      "no": "Kunne ikke finne input for valgt kundetype."
+    }
+  },
+  {
+    "id": "get-address-missing-fetch-button",
+    "translation": {
+      "en": "Failed to obtain fetch button.",
+      "sv": "Kunde inte hitta knapp för att hämta adress.",
+      "no": "Kunne ikke finne knapp for å hente adresse."
+    }
+  },
+  {
+    "id": "get-address-missing-update-address-implementation",
+    "translation": {
+      "en": "No implementation of the updateAddress() method.",
+      "sv": "Ingen implementation av metoden updateAddress().",
+      "no": "Ingen implementasjon av metoden updateAddress()."
+    }
+  },
+  {
+    "id": "get-address-missing-fetch-url",
+    "translation": {
+      "en": "Failed to obtain fetch URL.",
+      "sv": "Kunde inte hitta URL för att hämta adress.",
+      "no": "Kunne ikke finne URL for å hente adresse."
+    }
   }
 ]

@@ -18,22 +18,21 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class GetAddress extends Widget
 {
-    /** @var string */
     public readonly string $css;
-
-    /** @var string */
     public readonly string $content;
+    public readonly string $js;
 
     /**
      * @throws FilesystemException
      */
     public function __construct(
-        public string $fetchUrl,
+        public readonly string $url = '',
         public string $govId = '',
         public CustomerType $customerType = CustomerType::NATURAL,
-        public string $jsCallback = 'rbHandleFetchAddressResponse'
+        public readonly bool $automatic = false
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-address.phtml');
         $this->css = $this->render(file: __DIR__ . '/get-address.css');
+        $this->js = $this->render(file: __DIR__ . '/get-address.js.phtml');
     }
 }
