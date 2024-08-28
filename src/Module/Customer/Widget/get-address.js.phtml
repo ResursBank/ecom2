@@ -6,7 +6,8 @@
 
 declare(strict_types=1);
 
-use Resursbank\Ecom\Lib\Locale\Translator;use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Order\CustomerType;
 
 /** @var Resursbank\Ecom\Module\Customer\Widget\GetAddress $this */
 ?>
@@ -70,7 +71,7 @@ class Resursbank_GetAddress {
     fetchAddress() {
         try {
             // Reset error state.
-            this.toggleErrorState('', false);
+            this.toggleErrorState('', false, false);
 
             if (this.fetching || this.getGovIdElement().value === '') {
                 return;
@@ -82,11 +83,13 @@ class Resursbank_GetAddress {
                 if (customerType === 'NATURAL') {
                     this.toggleErrorState(
                         '<?= Translator::translate(phraseId: 'get-address-invalid-ssn') ?>',
+                        true,
                         true
                     );
                 } else {
                     this.toggleErrorState(
                         '<?= Translator::translate(phraseId: 'get-address-invalid-org') ?>',
+                        true,
                         true
                     );
                 }
@@ -167,7 +170,9 @@ class Resursbank_GetAddress {
         let result = document.getElementById('rb-ga-ct-natural');
 
         if (!(result instanceof HTMLInputElement)) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-address-missing-customer-type-input-natural') ?>');
+            throw new Error('<?= Translator::translate(
+                phraseId: 'get-address-missing-customer-type-input-natural')
+            ?>');
         }
 
         return result;
@@ -182,7 +187,9 @@ class Resursbank_GetAddress {
         let result = document.getElementById('rb-ga-ct-legal');
 
         if (!(result instanceof HTMLInputElement)) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-address-missing-customer-type-input-legal') ?>');
+            throw new Error('<?= Translator::translate(
+                phraseId: 'get-address-missing-customer-type-input-legal')
+            ?>');
         }
 
         return result;
@@ -199,7 +206,9 @@ class Resursbank_GetAddress {
         );
 
         if (!(result instanceof HTMLInputElement)) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-address-missing-selected-customer-type-input') ?>');
+            throw new Error('<?= Translator::translate(
+                phraseId: 'get-address-missing-selected-customer-type-input')
+            ?>');
         }
 
         return result.value;
@@ -386,8 +395,9 @@ class Resursbank_GetAddress {
      *
      * @param {String} message
      * @param {Boolean} state
+     * @param {Boolean} markInput
      */
-    toggleErrorState(message, state) {
+    toggleErrorState(message, state, markInput) {
         const errorElement = document.getElementById('rb-ga-error');
 
         if (!(errorElement instanceof HTMLElement)) {
@@ -407,6 +417,12 @@ class Resursbank_GetAddress {
             govIdElement.classList.add('error');
         } else {
             errorElement.style.display = 'none';
+            govIdElement.classList.remove('error');
+        }
+
+        if (markInput) {
+            govIdElement.classList.add('error');
+        } else {
             govIdElement.classList.remove('error');
         }
     }

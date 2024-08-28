@@ -76,6 +76,7 @@ class PartPayment extends Widget
      * @throws TranslationException
      * @throws ValidationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly string $storeId,
@@ -87,7 +88,7 @@ class PartPayment extends Widget
         public readonly string $fetchStartingCostUrl,
         public readonly int $decimals = 2,
         public readonly bool $displayInfoText = true,
-        public readonly float $threshold = 0
+        public readonly float $threshold = 0.0
     ) {
         $this->cost = $this->getCost();
         $this->logo = (string) file_get_contents(
@@ -136,15 +137,12 @@ class PartPayment extends Widget
 
     /**
      * Check whether the current cost is eligible for part payment.
-     *
-     * @return bool
      */
     public function isEligible(): bool
     {
-        return (
-            $this->threshold === 0 ||
-            $this->cost->monthlyCost >= $this->threshold
-        );
+        return
+            $this->threshold === 0.0 ||
+            $this->cost->monthlyCost >= $this->threshold;
     }
 
     /**

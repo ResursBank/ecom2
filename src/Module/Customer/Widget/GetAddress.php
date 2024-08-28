@@ -18,12 +18,24 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class GetAddress extends Widget
 {
+    /**
+     * Rendered get-address.css file.
+     */
     public readonly string $css;
+
+    /**
+     * Rendered get-address.phtml file.
+     */
     public readonly string $content;
+
+    /**
+     * Rendered get-address.js.phtml file.
+     */
     public readonly string $js;
 
     /**
      * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly string $url = '',
