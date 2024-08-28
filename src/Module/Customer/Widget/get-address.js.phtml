@@ -69,7 +69,28 @@ class Resursbank_GetAddress {
      */
     fetchAddress() {
         try {
+            // Reset error state.
+            this.toggleErrorState('', false);
+
             if (this.fetching || this.getGovIdElement().value === '') {
+                return;
+            }
+
+            const customerType = this.getCustomerType();
+
+            if (!this.validateGovId(this.getGovIdElement().value, customerType)) {
+                if (customerType === 'NATURAL') {
+                    this.toggleErrorState(
+                        '<?= Translator::translate(phraseId: 'get-address-invalid-ssn') ?>',
+                        true
+                    );
+                } else {
+                    this.toggleErrorState(
+                        '<?= Translator::translate(phraseId: 'get-address-invalid-org') ?>',
+                        true
+                    );
+                }
+
                 return;
             }
 
@@ -194,6 +215,21 @@ class Resursbank_GetAddress {
 
         if (!(result instanceof HTMLButtonElement)) {
             throw new Error('<?= Translator::translate(phraseId: 'get-address-missing-fetch-button') ?>');
+        }
+
+        return result;
+    }
+
+    /**
+     * Get widget container element.
+     *
+     * @returns {HTMLElement}
+     */
+    getWidgetElement() {
+        let result = document.getElementById('rb-ga-widget');
+
+        if (!(result instanceof HTMLElement)) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-address-missing-widget-container-element') ?>');
         }
 
         return result;
@@ -329,12 +365,49 @@ class Resursbank_GetAddress {
      * Basic error handler.
      *
      * @param {Error} message
+     * @param {String} prettyMessage
      */
-    errorHandler(message) {
+    errorHandler(message, prettyMessage = '') {
         console.warn("Resurs Bank, Get Address Widget", message);
+
+        if (prettyMessage === '') {
+            prettyMessage = '<?= Translator::translate(phraseId: 'get-address-error') ?>';
+        }
+
+        this.toggleErrorState(prettyMessage, true);
 
         if (this.fetching) {
             this.toggleFetch(false);
+        }
+    }
+
+    /**
+     * Toggle error message container, and styling for input element.
+     *
+     * @param {String} message
+     * @param {Boolean} state
+     */
+    toggleErrorState(message, state) {
+        const errorElement = document.getElementById('rb-ga-error');
+
+        if (!(errorElement instanceof HTMLElement)) {
+            if (state) {
+                alert(message);
+            }
+
+            return;
+        }
+
+        const govIdElement = this.getGovIdElement();
+
+        errorElement.innerText = message;
+
+        if (state) {
+            errorElement.style.display = 'block';
+            govIdElement.classList.add('error');
+        } else {
+            errorElement.style.display = 'none';
+            govIdElement.classList.remove('error');
         }
     }
 
