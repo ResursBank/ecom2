@@ -48,9 +48,14 @@
     white-space: nowrap;
 }
 
+#rb-ga-gov-id.error {
+    border-color: #fb3b3b;
+}
+
 /* Error message element. */
-.rb-ga-error {
-    color: #fb3b3b !important;
+#rb-ga-error {
+    margin: 5px 0 0 5px;
+    color: #fb3b3b;
 }
 
 /* Fetching animation. */
