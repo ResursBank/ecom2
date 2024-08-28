@@ -162,27 +162,11 @@
     }
   },
   {
-    "id": "get-address-could-not-fetch-address",
-    "translation": {
-      "en": "Could not fetch an address for the given value. Please update the value and try again.",
-      "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen uppdatera värdet eller ladda om sidan och försök igen.",
-      "no": "Kunne ikke hente en adresse for den gitte verdien. Vennligst oppdater verdien og prøv igjen."
-    }
-  },
-  {
     "id": "get-address-server-error",
     "translation": {
       "en": "Something went wrong when fetching the address. Please refresh the page and try again. If the problem persists, please contact the store.",
       "sv": "Något gick fel när adressen hämtades. Vänligen ladda om sidan och försök igen. Om problemet kvarstår, vänligen kontakta butiken.",
       "no": "Noe gikk galt da adressen ble hentet. Vennligst oppdater siden og prøv igjen. Hvis problemet vedvarer, vennligst kontakt butikken."
-    }
-  },
-  {
-    "id": "get-address-no-callback-function",
-    "translation": {
-      "en": "The address was fetched, but could not be handled properly. Please contact the store if the problem persists.",
-      "sv": "Adressen blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiken om problemet kvarstår.",
-      "no": "Adressen ble hentet, men kunne ikke behandles skikkelig. Vennligst kontakt butikken hvis problemet vedvarer."
     }
   },
   {
