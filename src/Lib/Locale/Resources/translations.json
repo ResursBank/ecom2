@@ -2423,5 +2423,37 @@
       "sv": "Kunde inte hitta URL för att hämta adress.",
       "no": "Kunne ikke finne URL for å hente adresse."
     }
+  },
+  {
+    "id": "get-address-error",
+    "translation": {
+      "en": "Failed to fetch address data.",
+      "sv": "Misslyckades med att hämta adressdata.",
+      "no": "Kunne ikke hente adresseinformasjon."
+    }
+  },
+  {
+    "id": "get-address-invalid-ssn",
+    "translation": {
+      "en": "Invalid government ID.",
+      "sv": "Ogiltigt personnummer.",
+      "no": "Ugyldig personnummer."
+    }
+  },
+  {
+    "id": "get-address-invalid-org",
+    "translation": {
+      "en": "Invalid company ID.",
+      "sv": "Ogiltigt organisationsnummer.",
+      "no": "Ugyldig organisasjonsnummer."
+    }
+  },
+  {
+    "id": "get-address-missing-widget-container-element",
+    "translation": {
+      "en": "Failed to obtain widget container element.",
+      "sv": "Kunde inte hitta element för widget-container.",
+      "no": "Kunne ikke finne element for widget-container."
+    }
   }
 ]
