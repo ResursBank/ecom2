@@ -162,27 +162,11 @@
     }
   },
   {
-    "id": "get-address-could-not-fetch-address",
-    "translation": {
-      "en": "Could not fetch an address for the given value. Please update the value and try again.",
-      "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen uppdatera värdet eller ladda om sidan och försök igen.",
-      "no": "Kunne ikke hente en adresse for den gitte verdien. Vennligst oppdater verdien og prøv igjen."
-    }
-  },
-  {
     "id": "get-address-server-error",
     "translation": {
       "en": "Something went wrong when fetching the address. Please refresh the page and try again. If the problem persists, please contact the store.",
       "sv": "Något gick fel när adressen hämtades. Vänligen ladda om sidan och försök igen. Om problemet kvarstår, vänligen kontakta butiken.",
       "no": "Noe gikk galt da adressen ble hentet. Vennligst oppdater siden og prøv igjen. Hvis problemet vedvarer, vennligst kontakt butikken."
-    }
-  },
-  {
-    "id": "get-address-no-callback-function",
-    "translation": {
-      "en": "The address was fetched, but could not be handled properly. Please contact the store if the problem persists.",
-      "sv": "Adressen blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiken om problemet kvarstår.",
-      "no": "Adressen ble hentet, men kunne ikke behandles skikkelig. Vennligst kontakt butikken hvis problemet vedvarer."
     }
   },
   {
@@ -2366,6 +2350,94 @@
       "no": "Debiterbart beløp samsvarer ikke med det autoriserte beløpet hos Resurs Bank. Endelig beløp kan avvike - kontroller transaksjonen i Resurs Merchant Portal.",
       "da": "Debiterbart beløb stemmer ikke overens med det autoriserede beløb hos Resurs Bank. Det endelige beløb kan variere - kontroller transaktionen i Resurs Merchant Portal.",
       "fi": "Veloitettava määrä ei vastaa Resurs Bankin hyväksyttyä määrää. Lopullinen summa voi poiketa - tarkista veloitus Resurs Merchant Portal -portaalissa."
+    }
+  },
+  {
+    "id": "get-address-missing-gov-id-input",
+    "translation": {
+      "en": "Failed to obtain government ID input.",
+      "sv": "Kunde inte hitta input för personnummer.",
+      "no": "Kunne ikke finne input for personnummer."
+    }
+  },
+  {
+    "id": "get-address-missing-customer-type-input-natural",
+    "translation": {
+      "en": "Failed to obtain input to define private citizen.",
+      "sv": "Kunde inte hitta input för att definiera privatperson.",
+      "no": "Kunne ikke finne input for å definere privatperson."
+    }
+  },
+  {
+    "id": "get-address-missing-customer-type-input-legal",
+    "translation": {
+      "en": "Failed to obtain input to define company.",
+      "sv": "Kunde inte hitta input för att definiera företag.",
+      "no": "Kunne ikke finne input for å definere selskap."
+    }
+  },
+  {
+    "id": "get-address-missing-selected-customer-type-input",
+    "translation": {
+      "en": "Failed to obtain selected customer type input.",
+      "sv": "Kunde inte hitta input för vald kundtyp.",
+      "no": "Kunne ikke finne input for valgt kundetype."
+    }
+  },
+  {
+    "id": "get-address-missing-fetch-button",
+    "translation": {
+      "en": "Failed to obtain fetch button.",
+      "sv": "Kunde inte hitta knapp för att hämta adress.",
+      "no": "Kunne ikke finne knapp for å hente adresse."
+    }
+  },
+  {
+    "id": "get-address-missing-update-address-implementation",
+    "translation": {
+      "en": "No implementation of the updateAddress() method.",
+      "sv": "Ingen implementation av metoden updateAddress().",
+      "no": "Ingen implementasjon av metoden updateAddress()."
+    }
+  },
+  {
+    "id": "get-address-missing-fetch-url",
+    "translation": {
+      "en": "Failed to obtain fetch URL.",
+      "sv": "Kunde inte hitta URL för att hämta adress.",
+      "no": "Kunne ikke finne URL for å hente adresse."
+    }
+  },
+  {
+    "id": "get-address-error",
+    "translation": {
+      "en": "Failed to fetch address data.",
+      "sv": "Misslyckades med att hämta adressdata.",
+      "no": "Kunne ikke hente adresseinformasjon."
+    }
+  },
+  {
+    "id": "get-address-invalid-ssn",
+    "translation": {
+      "en": "Invalid government ID.",
+      "sv": "Ogiltigt personnummer.",
+      "no": "Ugyldig personnummer."
+    }
+  },
+  {
+    "id": "get-address-invalid-org",
+    "translation": {
+      "en": "Invalid company ID.",
+      "sv": "Ogiltigt organisationsnummer.",
+      "no": "Ugyldig organisasjonsnummer."
+    }
+  },
+  {
+    "id": "get-address-missing-widget-container-element",
+    "translation": {
+      "en": "Failed to obtain widget container element.",
+      "sv": "Kunde inte hitta element för widget-container.",
+      "no": "Kunne ikke finne element for widget-container."
     }
   }
 ]
