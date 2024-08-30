@@ -194,7 +194,7 @@ class Payment extends Model
     /**
      * Returns true if payment is aborted by customer.
      */
-    public function isRejectionReaseonAbortedByCustomer(): bool
+    public function isRejectionReasonAbortedByCustomer(): bool
     {
         return $this->isRejectedReason(
             reason: RejectedReasonCategory::ABORTED_BY_CUSTOMER
