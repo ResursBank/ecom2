@@ -503,12 +503,27 @@ class Resursbank_PartPayment {
      */
     static parseFromContentToFloat(value) {
         // Strip potential tags.
-        const content = value.replace(/<[^>]*>?/gm, '');
+        let content = value.replace(/<[^>]*>?/gm, '');
+
+        // Check if content contains any commas.
+        if (content.includes(',')) {
+            // Check if content contains any dots.
+            if (content.includes('.')) {
+                // Remove all commas.
+                content = content.replace(/,/g, '');
+            } else {
+                // Remove all commas except for the last one.
+                content = content.replace(/,(?=[^,]*,)/g, '');
+            }
+        }
+
+        // Replace all remaining commas with dots.
+        content = content.replace(/,/g, '.');
 
         // Remove everything except digits and dots.
-        const numericContent = content.replace(/[^0-9.]/g, '');
+        content = content.replace(/[^0-9.]/g, '');
 
         // Parse the resulting string as a float.
-        return parseFloat(numericContent)
+        return parseFloat(content)
     }
 }
