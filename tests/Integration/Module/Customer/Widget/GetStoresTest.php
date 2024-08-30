@@ -7,10 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Customer\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Customer\Widget;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
@@ -40,11 +41,12 @@ class GetStoresTest extends TestCase
     }
 
     /**
-     * Test that supplied variables are set in the rendered widget.
+     * Render widget with as many parameters as possible, and check that the
+     * expected JavaScript code is present in the rendered widget.
      *
-     * @throws \Resursbank\Ecom\Exception\FilesystemException
+     * @throws FilesystemException
      */
-    public function testRenderedContent(): void
+    public function testRenderMaximal(): void
     {
         $environmentSelectId = 'environment_select';
         $clientIdInputId = 'client_id_input';
@@ -53,6 +55,7 @@ class GetStoresTest extends TestCase
         $spinnerClass = 'spinner_class';
 
         $widget = new GetStores(
+            automatic: true,
             environmentSelectId: $environmentSelectId,
             clientIdInputId: $clientIdInputId,
             clientSecretInputId: $clientSecretInputId,
@@ -60,6 +63,7 @@ class GetStoresTest extends TestCase
             spinnerClass: $spinnerClass
         );
 
+        // Assert we attempt to resolve various elements using supplied id:s.
         $this->assertStringContainsString(
             needle: "document.getElementById('" . $storeSelectId . "')",
             haystack: $widget->content
@@ -70,6 +74,43 @@ class GetStoresTest extends TestCase
         );
         $this->assertStringContainsString(
             needle: "storeSelect.parentElement.classList.add('" . $spinnerClass . "');",
+            haystack: $widget->content
+        );
+        $this->assertStringContainsString(
+            needle: "document.getElementById('" . $clientIdInputId . "')",
+            haystack: $widget->content
+        );
+        $this->assertStringContainsString(
+            needle: "document.getElementById('" . $clientSecretInputId . "')",
+            haystack: $widget->content
+        );
+
+        // Confirm new Resursbank_FetchStores().setupEventListeners(); is not
+        // present in the widget content.
+        $this->assertStringContainsString(
+            needle: 'new Resursbank_FetchStores().setupEventListeners();',
+            haystack: $widget->content
+        );
+    }
+
+    /**
+     * Render widget with as few parameters as possible, and check that the
+     * expected JavaScript code is present in the rendered widget.
+     */
+    public function testRenderMinimal(): void
+    {
+        $widget = new GetStores();
+
+        // Assert we do not attempt to resolve any elements.
+        $this->assertStringNotContainsString(
+            needle: "document.getElementById(",
+            haystack: $widget->content
+        );
+
+        // Confirm new Resursbank_FetchStores().setupEventListeners(); is not
+        //  present in the widget content.
+        $this->assertStringNotContainsString(
+            needle: 'new Resursbank_FetchStores().setupEventListeners();',
             haystack: $widget->content
         );
     }

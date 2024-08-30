@@ -42,8 +42,6 @@
         </properties>
     </rule>
 
-    <exclude-pattern>Lib/Model/Rco/Enum/ShippingSelection.php</exclude-pattern>
-    <exclude-pattern>Lib/Model/Rco/Enum/PaymentSelection.php</exclude-pattern>
     <exclude-pattern>Lib/Order/CountryCode.php</exclude-pattern>
     <exclude-pattern>Lib/Network/ContentType.php</exclude-pattern>
     <exclude-pattern>Lib/Model/PaymentMethod/ApplicationFormSpecResponse/ApplicationFormSpecElementResponse/Type.php</exclude-pattern>

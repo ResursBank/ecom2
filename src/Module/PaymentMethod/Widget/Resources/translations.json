@@ -30,16 +30,6 @@
     }
   },
   {
-    "id": "RESURS_CREDIT_CARD",
-    "translation": {
-      "en": "Buy now, pay later",
-      "sv": "Köp nu, betala senare",
-      "no": "Kjøp nå, betal senere.",
-      "fi": "Maksa omassa tahdissasi.",
-      "da": "Køb nu, betal senere"
-    }
-  },
-  {
     "id": "RESURS_NEW_CARD",
     "translation": {
       "en": "Pay everything or split",

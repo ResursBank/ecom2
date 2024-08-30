@@ -128,7 +128,12 @@ class Repository
             $result[] = $method;
         }
 
-        return new PaymentMethodCollection(data: $result);
+        $result = new PaymentMethodCollection(data: $result);
+
+        return $result->filterByPropertyValue(
+            property: 'priceSignagePossible',
+            value: true
+        );
     }
 
     /**

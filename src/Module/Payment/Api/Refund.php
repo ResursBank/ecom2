@@ -26,16 +26,16 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
 use Throwable;
@@ -84,35 +84,14 @@ class Refund
             )
         );
 
-        $payload = [];
-
-        if ($orderLines) {
-            $payload['orderLines'] = $orderLines->toArray();
-        }
-
-        if ($creator) {
-            $payload['creator'] = $creator;
-        }
-
-        if ($transactionId) {
-            $payload['transactionId'] = $transactionId;
-        }
-
-        if ($refundNoteId) {
-            $payload['refundNoteOptions'] = ['refundNoteId' => $refundNoteId];
-        }
-
-        $curl = new Curl(
-            url: $this->mapi->getUrl(
-                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/refund'
-            ),
-            requestMethod: RequestMethod::POST,
-            payload: $payload,
-            authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: empty($payload)
+        $payload = $this->getPayload(
+            orderLines: $orderLines,
+            creator: $creator,
+            transactionId: $transactionId,
+            refundNoteId: $refundNoteId
         );
 
+        $curl = $this->getCurlObject(paymentId: $paymentId, payload: $payload);
         $data = $curl->exec()->body;
 
         try {
@@ -137,6 +116,64 @@ class Refund
             ));
             throw $error;
         }
+    }
+
+    /**
+     * Get Curl object.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    private function getCurlObject(string $paymentId, array $payload): Curl
+    {
+        return new Curl(
+            url: $this->mapi->getUrl(
+                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/refund'
+            ),
+            requestMethod: RequestMethod::POST,
+            payload: $payload,
+            authType: AuthType::JWT,
+            responseContentType: ContentType::JSON,
+            forceObject: empty($payload)
+        );
+    }
+
+    /**
+     * Prepare payload.
+     */
+    private function getPayload(
+        ?OrderLineCollection $orderLines = null,
+        ?string $creator = null,
+        ?string $transactionId = null,
+        ?string $refundNoteId = null
+    ): array {
+        $payload = [];
+
+        if ($orderLines) {
+            $payload['orderLines'] = $orderLines->toArray();
+        }
+
+        if ($creator) {
+            $payload['creator'] = $creator;
+        }
+
+        if ($transactionId) {
+            $payload['transactionId'] = $transactionId;
+        }
+
+        if ($refundNoteId) {
+            $payload['refundNoteOptions'] = ['refundNoteId' => $refundNoteId];
+        }
+
+        return $payload;
     }
 
     /**

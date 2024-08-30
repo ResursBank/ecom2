@@ -9,10 +9,14 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Collection;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\EcomTest\Data\Models\Music;
+use Resursbank\EcomTest\Data\Models\MusicCollection;
 use Throwable;
 
 use function get_class;
@@ -295,5 +299,57 @@ final class CollectionTest extends TestCase
 
         $this::assertTrue(condition: $shouldBeValid);
         $this::assertNotTrue(condition: $shouldBeInvalid);
+    }
+
+    /**
+     * Verify that filtering a collection by property value works.
+     *
+     * @throws CollectionException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws \ReflectionException
+     * @throws AttributeCombinationException
+     */
+    public function testFilterByPropertyValue(): void
+    {
+        $filterGenre = 'bluegrass';
+
+        $collection = new MusicCollection(
+            data: [
+                new Music(
+                    id: 127,
+                    genre: 'rock'
+                ),
+                new Music(
+                    id: 27,
+                    genre: $filterGenre
+                ),
+                new Music(
+                    id: 11,
+                    genre: 'pop'
+                ),
+                new Music(
+                    id: 8,
+                    genre: $filterGenre
+                )
+            ]
+        );
+
+        $filtered = $collection->filterByPropertyValue(
+            property: 'genre',
+            value: $filterGenre
+        );
+
+        /** @var Music $item */
+        foreach ($filtered as $item) {
+            if ($item->genre !== $filterGenre) {
+                $this->fail(
+                    message: 'Filtering did not remove all objects that should' .
+                    ' have been removed.'
+                );
+            }
+
+            $this->addToAssertionCount(count: 1);
+        }
     }
 }

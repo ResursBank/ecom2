@@ -28,7 +28,7 @@ class Address extends Model
     public function __construct(
         #[StringLength(min: 1, max: 100)] public readonly string $addressRow1,
         #[StringLength(min: 1, max: 50)] public readonly string $postalArea,
-        #[StringMatchesRegex(pattern: '/^[\d]{1,10}$/')]
+        #[StringMatchesRegex(pattern: '/^[ \d]{1,10}$/')]
         public readonly string $postalCode,
         public readonly ?CountryCode $countryCode = null,
         #[StringLength(max: 50)] public readonly ?string $fullName = null,
