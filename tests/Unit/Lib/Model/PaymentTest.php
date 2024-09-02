@@ -137,7 +137,7 @@ class PaymentTest extends TestCase
         );
 
         $this->assertTrue(
-            condition: $isAborted->isRejectionReaseonAbortedByCustomer()
+            condition: $isAborted->isRejectionReasonAbortedByCustomer()
         );
     }
 
