@@ -21,7 +21,8 @@ class AnnuityInformation extends Model
         public readonly float $annuityFactor,
         public readonly int $durationMonths,
         public readonly float $administrationFee,
-        public readonly float $setupFee
+        public readonly float $setupFee,
+        public readonly float $interest
     ) {
         parent::__construct();
     }

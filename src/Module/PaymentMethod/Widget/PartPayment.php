@@ -33,6 +33,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Throwable;
+use function sprintf;
 
 /**
  * Renders Part payment widget HTML and CSS
@@ -122,7 +123,7 @@ class PartPayment extends Widget
     public function getStartingAt(): string
     {
         if (!$this->isEligible()) {
-            return Translator::translate('rb-pp-not-eligible-amount');
+            return $this->getNotEligibleMessage();
         }
 
         return str_replace(
@@ -143,6 +144,72 @@ class PartPayment extends Widget
         return
             $this->threshold === 0.0 ||
             $this->cost->monthlyCost >= $this->threshold;
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function getNotEligibleMessage(): string
+    {
+        $period = $this->getLongestPeriodWithZeroInterest();
+
+        return $period > 0 ?
+            sprintf(Translator::translate('rb-pp-not-eligible'), $period) :
+            '';
+    }
+
+
+    /**
+     * Find the longest period with zero interest. If no such period exists,
+     * return 0.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     */
+    public function getLongestPeriodWithZeroInterest(): int
+    {
+        $annuityFactors = Repository::getAnnuityFactors(
+            storeId: $this->storeId,
+            paymentMethodId: $this->paymentMethod->id
+        );
+
+        $longestPeriod = 0;
+
+        // Find the last period with zero interest.
+        /** @var AnnuityInformation $annuityFactor */
+        foreach ($annuityFactors as $annuityFactor) {
+            if (
+                $annuityFactor->interest === 0.0 &&
+                $annuityFactor->durationMonths > $longestPeriod
+            ) {
+                $longestPeriod = $annuityFactor->durationMonths;
+            }
+        }
+
+        return $longestPeriod;
     }
 
     /**
