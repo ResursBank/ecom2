@@ -33,6 +33,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Throwable;
+
 use function sprintf;
 
 /**
@@ -171,7 +172,6 @@ class PartPayment extends Widget
             '';
     }
 
-
     /**
      * Find the longest period with zero interest. If no such period exists,
      * return 0.
@@ -198,15 +198,16 @@ class PartPayment extends Widget
 
         $longestPeriod = 0;
 
-        // Find the last period with zero interest.
         /** @var AnnuityInformation $annuityFactor */
         foreach ($annuityFactors as $annuityFactor) {
-            if (
-                $annuityFactor->interest === 0.0 &&
-                $annuityFactor->durationMonths > $longestPeriod
-            ) {
-                $longestPeriod = $annuityFactor->durationMonths;
+            if ($annuityFactor->interest > 0.0) {
+                continue;
             }
+
+            $longestPeriod = max(
+                $annuityFactor->durationMonths,
+                $longestPeriod
+            );
         }
 
         return $longestPeriod;
