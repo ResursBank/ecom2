@@ -1032,6 +1032,38 @@
     }
   },
   {
+    "id": "callback-test-triggered-at",
+    "translation": {
+      "en": "Callback test triggered at",
+      "sv": "Test av callback skickades",
+      "no": "Test av tilbakeringing ble sendt kl"
+    }
+  },
+  {
+    "id": "callback-test-result",
+    "translation": {
+      "en": "Result of last callback test",
+      "sv": "Resultat för senaste callbacktestet",
+      "no": "Resultater for den siste callbacktesten"
+    }
+  },
+  {
+    "id": "callback-settings",
+    "translation": {
+      "en": "Callback settings",
+      "sv": "Callbackinställningar",
+      "no": "Callbackinnstillinger"
+    }
+  },
+  {
+    "id": "callback-info",
+    "translation": {
+      "en": "To show callback settings and test callback functionality, change the scope to a storeview.",
+      "sv": "För att visa callbackinställningar och testa callbackfunktionalitet, ändra scope till butiksvy.",
+      "no": "For å vise callbackinnstillinger og teste callbackfunksjonalitet, endre scope til en butikkvisning."
+    }
+  },
+  {
     "id": "test-callbacks",
     "translation": {
       "en": "Test callbacks",
