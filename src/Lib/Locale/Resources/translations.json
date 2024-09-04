@@ -2607,5 +2607,45 @@
       "sv": "Ingen delbetalningsinformation existerar för denna betalmetod.",
       "no": "Det finnes ingen delbetalingsinformasjon for denne betalingsmåten."
     }
+  },
+  {
+    "id": "select-shipping-method",
+    "translation": {
+      "en": "Select shipping method",
+      "sv": "Välj fraktsätt",
+      "no": "Velg fraktmetode"
+    }
+  },
+  {
+    "id": "connection-to-checkout-gateway-failed",
+    "translation": {
+      "en": "Connection to checkout gateway failed.",
+      "sv": "Kontakten med kassatjänsten avbröts.",
+      "no": "Kontakten med kassetjenesten ble avbrutt."
+    }
+  },
+  {
+    "id": "please-try-again-in-a-few-minutes",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter.",
+      "no": "Vennligst prøv på nytt om noen minutter."
+    }
+  },
+  {
+    "id": "we-apologize-your-session-has-expired",
+    "translation": {
+      "en": "We apologize, your session has expired and the page will reload after this message has been dismissed. Your order has not yet been placed. Please fill out your information below after reloading to proceed with placing your order.",
+      "sv": "Vi ber om ursäkt, sessionen upphörde och sidan kommer att laddas om efter det här meddelandet har avfärdats. Din beställning är ännu inte genomförd. Vänligen fyll i formuläret nedan efter omladdning för att avsluta beställningen.",
+      "no": "Vi beklager, sesjonen ble avsluttet og siden vil bli lastet inn på nytt etter at denne meldingen er avvist. Bestillingen din er ennå ikke fullført. Fyll ut skjemaet nedenfor etter at du har lastet på nytt for å fullføre bestillingen."
+    }
+  },
+  {
+    "id": "alert-customers-when-shipping-methods-change",
+    "translate": {
+      "en": "Alert customers when shipping methods update",
+      "sv": "Meddela kunder när fraktmetoder uppdateras",
+      "no": "Varsle kundene når fraktmetodene er oppdatert"
+    }
   }
 ]
