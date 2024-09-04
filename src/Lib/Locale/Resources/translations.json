@@ -2591,5 +2591,21 @@
       "sv": "Obs! API-uppgifter krävs för att denna modul skall fungera som förväntat.",
       "no": "API-legitimasjon kreves for at denne modulen skal fungere som forventet."
     }
+  },
+  {
+    "id": "per-month-for-months",
+    "translation": {
+      "en": "per month, for %1 months",
+      "sv": "per månad, i %1 månader",
+      "no": "per måned, i %1 måneder"
+    }
+  },
+  {
+    "id": "no-part-payment-information-exists-for-this-product",
+    "translation": {
+      "en": "No part payment information exists for this product.",
+      "sv": "Ingen delbetalningsinformation existerar för denna betalmetod.",
+      "no": "Det finnes ingen delbetalingsinformasjon for denne betalingsmåten."
+    }
   }
 ]
