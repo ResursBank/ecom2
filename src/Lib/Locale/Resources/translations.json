@@ -2439,5 +2439,77 @@
       "sv": "Kunde inte hitta element för widget-container.",
       "no": "Kunne ikke finne element for widget-container."
     }
+  },
+  {
+    "id": "perform-test",
+    "translation": {
+      "en": "Perform test",
+      "sv": "Utför test",
+      "no": "Utfør test"
+    }
+  },
+  {
+    "id": "update",
+    "translation": {
+      "en": "Update",
+      "sv": "Uppdatera",
+      "no": "Oppdatere"
+    }
+  },
+  {
+    "id": "callback-registration",
+    "translation": {
+      "en": "Callback registration",
+      "sv": "Registrera callbacks",
+      "no": "Registrere callbacks"
+    }
+  },
+  {
+    "id": "test-last-triggered-at",
+    "translation": {
+      "en": "Test last triggered at",
+      "sv": "Senaste test efterfrågades",
+      "no": "Siste test forespurt"
+    }
+  },
+  {
+    "id": "test-last-received-at",
+    "translation": {
+      "en": "Test last received at",
+      "sv": "Senaste test mottogs",
+      "no": "Siste test mottatt"
+    }
+  },
+  {
+    "id": "callback-settings",
+    "translation": {
+      "en": "Callback Settings",
+      "sv": "Callbacks",
+      "no": "Callbacks"
+    }
+  },
+  {
+    "id": "automatically-create-invoices",
+    "translation": {
+      "en": "Automatically create invoices",
+      "sv": "Skapa fakturor automatiskt",
+      "no": "Opprett fakturaer automatisk"
+    }
+  },
+  {
+    "id": "automatically-create-invoices-for-direct-payment-methods",
+    "translation": {
+      "en": "Automatically create invoice for direct payment methods. Swish and Trustly.",
+      "sv": "Skapa automatiskt faktura för direktbetalningsbetalmetoder. Swish och Trustly.",
+      "no": "Opprett automatisk faktura for direkte betalingsmetoder."
+    }
+  },
+  {
+    "id": "callbacks-are-handled-by-cron",
+    "translation": {
+      "en": "Callbacks are handled by cron, please ensure that cron is active.",
+      "sv": "Callbacks hanteras av cron, vänligen säkerställ att cron är aktivt.",
+      "no": "Callbacks håndteres av cron, sørg for at cron er aktiv."
+    }
   }
 ]
