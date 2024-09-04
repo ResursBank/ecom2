@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
@@ -106,21 +107,7 @@ class PartPayment extends Widget
      * Fetches translated and formatted "Starting at %1 per month..." string
      * inside span element.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
      * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws MissingKeyException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws TranslationException
-     * @throws ValidationException
      */
     public function getStartingAt(): string
     {
@@ -128,14 +115,19 @@ class PartPayment extends Widget
             return $this->getNotEligibleMessage();
         }
 
-        return str_replace(
-            search: ['%1', '%2'],
-            replace: [
-                $this->getFormattedStartingAtCost(),
-                $this->getAnnuityInformation()->paymentPlanName,
-            ],
-            subject: Translator::translate(phraseId: 'starting-at')
-        );
+        try {
+            return str_replace(
+                search: ['%1', '%2'],
+                replace: [
+                    $this->getFormattedStartingAtCost(),
+                    $this->getAnnuityInformation()->paymentPlanName,
+                ],
+                subject: Translator::translate(phraseId: 'starting-at')
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
     }
 
     /**
@@ -149,53 +141,46 @@ class PartPayment extends Widget
     }
 
     /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
      * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws TranslationException
-     * @throws ValidationException
      */
     public function getNotEligibleMessage(): string
     {
+        $result = '';
         $period = $this->getLongestPeriodWithZeroInterest();
 
-        return $period > 0 ?
-            sprintf(Translator::translate('rb-pp-not-eligible'), $period) :
-            '';
+        if ($period === 0) {
+            return $result;
+        }
+
+        try {
+            $result = sprintf(
+                Translator::translate('rb-pp-not-eligible'),
+                $period
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+        }
+
+        return $result;
     }
 
     /**
      * Find the longest period with zero interest. If no such period exists,
      * return 0.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
      * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
      */
     public function getLongestPeriodWithZeroInterest(): int
     {
-        $annuityFactors = Repository::getAnnuityFactors(
-            storeId: $this->storeId,
-            paymentMethodId: $this->paymentMethod->id
-        );
+        try {
+            $annuityFactors = Repository::getAnnuityFactors(
+                storeId: $this->storeId,
+                paymentMethodId: $this->paymentMethod->id
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return 0;
+        }
 
         $longestPeriod = 0;
 
