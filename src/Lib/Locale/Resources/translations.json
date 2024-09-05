@@ -2473,6 +2473,214 @@
     }
   },
   {
+    "id": "perform-test",
+    "translation": {
+      "en": "Perform test",
+      "sv": "Utför test",
+      "no": "Utfør test"
+    }
+  },
+  {
+    "id": "update",
+    "translation": {
+      "en": "Update",
+      "sv": "Uppdatera",
+      "no": "Oppdatere"
+    }
+  },
+  {
+    "id": "callback-registration",
+    "translation": {
+      "en": "Callback registration",
+      "sv": "Registrera callbacks",
+      "no": "Registrere callbacks"
+    }
+  },
+  {
+    "id": "test-last-triggered-at",
+    "translation": {
+      "en": "Test last triggered at",
+      "sv": "Senaste test efterfrågades",
+      "no": "Siste test forespurt"
+    }
+  },
+  {
+    "id": "test-last-received-at",
+    "translation": {
+      "en": "Test last received at",
+      "sv": "Senaste test mottogs",
+      "no": "Siste test mottatt"
+    }
+  },
+  {
+    "id": "callback-settings",
+    "translation": {
+      "en": "Callback Settings",
+      "sv": "Callbacks",
+      "no": "Callbacks"
+    }
+  },
+  {
+    "id": "automatically-create-invoices",
+    "translation": {
+      "en": "Automatically create invoices",
+      "sv": "Skapa fakturor automatiskt",
+      "no": "Opprett fakturaer automatisk"
+    }
+  },
+  {
+    "id": "automatically-create-invoices-for-direct-payment-methods",
+    "translation": {
+      "en": "Automatically create invoice for direct payment methods. Swish and Trustly.",
+      "sv": "Skapa automatiskt faktura för direktbetalningsbetalmetoder. Swish och Trustly.",
+      "no": "Opprett automatisk faktura for direkte betalingsmetoder."
+    }
+  },
+  {
+    "id": "callbacks-are-handled-by-cron",
+    "translation": {
+      "en": "Callbacks are handled by cron, please ensure that cron is active.",
+      "sv": "Callbacks hanteras av cron, vänligen säkerställ att cron är aktivt.",
+      "no": "Callbacks håndteres av cron, sørg for at cron er aktiv."
+    }
+  },
+  {
+    "id": "round-item-tax",
+    "translation": {
+      "en": "Round item tax",
+      "sv": "Avrunda produktmoms",
+      "no": "Avrund produktmva"
+    }
+  },
+  {
+    "id": "round-item-tax-percentage-to-nearest-integer",
+    "translation": {
+      "en": "Round item tax percentage to nearest integer. Only use this when your configuration results in floating tax percentage values, for instance when using percentage based shipping fees in combination with currency conversion.",
+      "sv": "Avrunda produkters momssats till närmaste heltal. Aktivera detta endast om din konfiguration resulterar i flytande momssats värden, till exempel om du nyttjar procentuella fraktpriser i samband med valutakonvertering.",
+      "no": "Avrund produktets mva-sats til nærmeste hele tall. Aktiver dette bare hvis konfigurasjonen din resulterer i flytende MVA-satsverdier, for eksempel hvis du bruker prosentvise fraktsatser i forbindelse med valutakonvertering."
+    }
+  },
+  {
+    "id": "sync-data",
+    "translation": {
+      "en": "Sync data",
+      "sv": "Synka data",
+      "no": "Synkronisere data"
+    }
+  },
+  {
+    "id": "automatically-sync-data",
+    "translation": {
+      "en": "Automatically sync data",
+      "sv": "Synka data automatiskt",
+      "no": "Synkroniser data automatisk"
+    }
+  },
+  {
+    "id": "advanced-settings",
+    "translation": {
+      "en": "Advanced Settings",
+      "sv": "Avancerade inställningar",
+      "no": "Avanserte innstillinger"
+    }
+  },
+  {
+    "id": "checkout-type",
+    "translation": {
+      "en": "Checkout type",
+      "sv": "Typ av kassa",
+      "no": "Type betalingskasse"
+    }
+  },
+  {
+    "id": "delete-aborted-orders",
+    "translation": {
+      "en": "Delete aborted orders",
+      "sv": "Ta bort avbrutna beställningar",
+      "no": "Fjern kansellerte bestillinger"
+    }
+  },
+  {
+    "id": "delete-order-when-payment-is-aborted",
+    "translation": {
+      "en": "Delete order when payment is aborted, to avoid orders with pending payment.",
+      "sv": "Ta bort beställning när betalning avbryts, för att undvika beställningar som inväntar betalning.",
+      "no": "Fjern bestillingen når betalingen er suspendert, for å unngå bestillinger som venter på betaling."
+    }
+  },
+  {
+    "id": "sync-payment-methods-and-other-data",
+    "translation": {
+      "en": "Sync payment methods and other data from Resurs Bank for all API accounts in all store views.",
+      "sv": "Synka betalmetoder och annan data från Resurs Bank för alla API konton i alla butiksvyer.",
+      "no": "Synkroniser betalingsmåter og andre data fra Resurs Bank for alle API-kontoer i alle butikkvisninger."
+    }
+  },
+  {
+    "id": "api-credentials-are-required",
+    "translation": {
+      "en": "Attention! API credentials are required for this extension to function properly.",
+      "sv": "Obs! API-uppgifter krävs för att denna modul skall fungera som förväntat.",
+      "no": "API-legitimasjon kreves for at denne modulen skal fungere som forventet."
+    }
+  },
+  {
+    "id": "per-month-for-months",
+    "translation": {
+      "en": "per month, for %1 months",
+      "sv": "per månad, i %1 månader",
+      "no": "per måned, i %1 måneder"
+    }
+  },
+  {
+    "id": "no-part-payment-information-exists-for-this-product",
+    "translation": {
+      "en": "No part payment information exists for this product.",
+      "sv": "Ingen delbetalningsinformation existerar för denna betalmetod.",
+      "no": "Det finnes ingen delbetalingsinformasjon for denne betalingsmåten."
+    }
+  },
+  {
+    "id": "select-shipping-method",
+    "translation": {
+      "en": "Select shipping method",
+      "sv": "Välj fraktsätt",
+      "no": "Velg fraktmetode"
+    }
+  },
+  {
+    "id": "connection-to-checkout-gateway-failed",
+    "translation": {
+      "en": "Connection to checkout gateway failed.",
+      "sv": "Kontakten med kassatjänsten avbröts.",
+      "no": "Kontakten med kassetjenesten ble avbrutt."
+    }
+  },
+  {
+    "id": "please-try-again-in-a-few-minutes",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter.",
+      "no": "Vennligst prøv på nytt om noen minutter."
+    }
+  },
+  {
+    "id": "we-apologize-your-session-has-expired",
+    "translation": {
+      "en": "We apologize, your session has expired and the page will reload after this message has been dismissed. Your order has not yet been placed. Please fill out your information below after reloading to proceed with placing your order.",
+      "sv": "Vi ber om ursäkt, sessionen upphörde och sidan kommer att laddas om efter det här meddelandet har avfärdats. Din beställning är ännu inte genomförd. Vänligen fyll i formuläret nedan efter omladdning för att avsluta beställningen.",
+      "no": "Vi beklager, sesjonen ble avsluttet og siden vil bli lastet inn på nytt etter at denne meldingen er avvist. Bestillingen din er ennå ikke fullført. Fyll ut skjemaet nedenfor etter at du har lastet på nytt for å fullføre bestillingen."
+    }
+  },
+  {
+    "id": "alert-customers-when-shipping-methods-change",
+    "translate": {
+      "en": "Alert customers when shipping methods update",
+      "sv": "Meddela kunder när fraktmetoder uppdateras",
+      "no": "Varsle kundene når fraktmetodene er oppdatert"
+    }
+  },
+  {
     "id": "please-contact-resurs-bank-for-more-information",
     "translation": {
       "en": "Please contact Resurs Bank for more information or choose another payment method to complete your order.",
