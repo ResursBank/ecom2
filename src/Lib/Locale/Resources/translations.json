@@ -2674,7 +2674,7 @@
   },
   {
     "id": "alert-customers-when-shipping-methods-change",
-    "translate": {
+    "translation": {
       "en": "Alert customers when shipping methods update",
       "sv": "Meddela kunder när fraktmetoder uppdateras",
       "no": "Varsle kundene når fraktmetodene er oppdatert"
