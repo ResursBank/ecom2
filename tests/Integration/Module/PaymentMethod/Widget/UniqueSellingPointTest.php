@@ -9,21 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\PaymentMethod\Widget;
 
-use JsonException;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
-use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\CacheException;
-use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -31,6 +19,7 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
 use Throwable;
@@ -40,23 +29,8 @@ use Throwable;
  */
 class UniqueSellingPointTest extends TestCase
 {
-    private PaymentMethod $method;
-
-    private string $url;
-
     /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
      * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws Throwable
      */
     protected function setUp(): void
     {
@@ -76,15 +50,10 @@ class UniqueSellingPointTest extends TestCase
     }
 
     /**
-     * Assert that the getBasicTranslation method returns a string. Indicating
-     * that we can translate a payment method type to a USP message using its
-     * custom translation file.,
-     *
-     * @return void
+     * Get list of payment methods, or fail test.
      */
-    public function testGetBasicTranslation(): void
+    private function getMethods(): PaymentMethodCollection
     {
-        // Get payment methods.
         try {
             $methods = Repository::getPaymentMethods(
                 storeId: $_ENV['STORE_ID']
@@ -95,42 +64,70 @@ class UniqueSellingPointTest extends TestCase
 
         $this->assertNotEmpty($methods);
 
-        // Generate instance of UniqueSellingPoint for each payment methods.
-        // Confirm that the getBasicTranslation method returns a string.
-        foreach ($methods as $method) {
-            try {
-                $usp = new UniqueSellingPoint(
-                    paymentMethod: $method,
-                    amount: 100
-                );
-            } catch (Throwable $e) {
-                self::fail($e->getMessage());
-            }
+        return $methods;
+    }
 
-            try {
-                $translation = $usp->getBasicTranslation($method->type);
-            } catch (Throwable $e) {
-                self::fail($e->getMessage());
-            }
+    /**
+     * Get a UniqueSellingPoint message, or fail test.
+     */
+    private function getUsp(PaymentMethod $method): string
+    {
+        try {
+            $usp = new UniqueSellingPoint(paymentMethod: $method, amount: 100);
 
-            // Assert $translation is not empty, unless the payment method
-            // type is one of the following:
-            //
-            // - PAYPAL
-            // - MASTERPASS
-            // - OTHER
-            // - REUSRS_ZERO
-            // - RESURS_INVOICE_ACCOUNT
-            if (!in_array($method->type->value, [
+            return $usp->getBasicTranslation($method->type);
+        } catch (Throwable $e) {
+            self::fail($e->getMessage());
+        }
+    }
+
+    /**
+     * The following payment method type should not have any USP messages.
+     *
+     * - PAYPAL
+     * - MASTERPASS
+     * - OTHER
+     * - REUSRS_ZERO
+     * - RESURS_INVOICE_ACCOUNT
+     */
+    private function expectEmptyUsp(PaymentMethod $method): bool
+    {
+        return in_array(
+            needle: $method->type->value,
+            haystack: [
                 'PAYPAL',
                 'MASTERPASS',
                 'OTHER',
                 'RESURS_ZERO',
                 'RESURS_INVOICE_ACCOUNT'
-            ])) {
-                $this->assertNotEmpty($translation);
+            ],
+            strict: true
+        );
+    }
+
+    /**
+     * Assert that the getBasicTranslation method returns a string. Indicating
+     * that we can translate a payment method type to a USP message using its
+     * custom translation file.
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testGetBasicTranslation(): void
+    {
+        $methods = $this->getMethods();
+
+        // Generate instance of UniqueSellingPoint for each payment methods.
+        // Confirm that the getBasicTranslation method returns a string.
+
+        /** @var PaymentMethod $method */
+        foreach ($methods as $method) {
+            $usp = $this->getUsp(method: $method);
+
+            // Assert that USP is none-empty string (unless expected).
+            if (!$this->expectEmptyUsp(method: $method)) {
+                $this->assertNotEmpty($usp);
             } else {
-                $this->assertEmpty($translation);
+                $this->assertEmpty($usp);
             }
         }
     }
