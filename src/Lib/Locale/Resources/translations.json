@@ -2471,5 +2471,13 @@
       "sv": "Kunde inte hitta element för widget-container.",
       "no": "Kunne ikke finne element for widget-container."
     }
+  },
+  {
+    "id": "please-contact-resurs-bank-for-more-information",
+    "translation": {
+      "en": "Please contact Resurs Bank for more information or choose another payment method to complete your order.",
+      "sv": "Vänligen kontakta Resurs Bank för mer information eller välj en annan betalmetod för att slutföra din order.",
+      "no": "Vennligst kontakt Resurs Bank for mer informasjon eller velg en annen betalingsmåte for å fullføre bestillingen."
+    }
   }
 ]
