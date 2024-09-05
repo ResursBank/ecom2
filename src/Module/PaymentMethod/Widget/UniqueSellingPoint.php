@@ -71,7 +71,7 @@ class UniqueSellingPoint extends Widget
      * @throws TranslationException
      * @throws IllegalValueException
      */
-    private function getBasicTranslation(Type $paymentMethodType): string
+    public function getBasicTranslation(Type $paymentMethodType): string
     {
         $return = Translator::translate(
             phraseId: str_replace(
