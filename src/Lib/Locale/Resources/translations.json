@@ -196,10 +196,10 @@
   {
     "id": "pay-in-installments-with-resurs-bank",
     "translation": {
-      "en": "Pay in installments with Resurs Bank",
-      "sv": "Delbetala med Resurs Bank",
-      "no": "Delbetale med Resurs Bank",
-      "fi": "Maksa osissa Resurs Bankilla"
+      "en": "Pay in installments with Resurs Bank AB",
+      "sv": "Delbetala med Resurs Bank AB",
+      "no": "Delbetale med Resurs Bank AB",
+      "fi": "Maksa osissa Resurs Bank AB"
     }
   },
   {
@@ -2367,11 +2367,11 @@
     }
   },
   {
-    "id": "rb-pp-not-eligible-amount",
+    "id": "rb-pp-not-eligible",
     "translation": {
-      "en": "The amount is not eligible for part payment.",
-      "sv": "Beloppet är inte berättigat till delbetalning.",
-      "no": "Beløpet er ikke berettiget til delbetaling."
+      "en": "Part pay interest-free for up to %s months with Resurs Bank AB",
+      "sv": "Delbetala räntefritt i upp till %s månader med Resurs Bank AB",
+      "no": "Delbetale rentefritt i opptil %s måneder med Resurs Bank AB"
     }
   },
   {

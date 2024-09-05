@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
@@ -33,6 +34,9 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Throwable;
+
+use function max;
+use function sprintf;
 
 /**
  * Renders Part payment widget HTML and CSS
@@ -103,36 +107,27 @@ class PartPayment extends Widget
      * Fetches translated and formatted "Starting at %1 per month..." string
      * inside span element.
      *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
      * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws MissingKeyException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws TranslationException
-     * @throws ValidationException
      */
     public function getStartingAt(): string
     {
         if (!$this->isEligible()) {
-            return Translator::translate('rb-pp-not-eligible-amount');
+            return $this->getNotEligibleMessage();
         }
 
-        return str_replace(
-            search: ['%1', '%2'],
-            replace: [
-                $this->getFormattedStartingAtCost(),
-                $this->getAnnuityInformation()->paymentPlanName,
-            ],
-            subject: Translator::translate(phraseId: 'starting-at')
-        );
+        try {
+            return str_replace(
+                search: ['%1', '%2'],
+                replace: [
+                    $this->getFormattedStartingAtCost(),
+                    $this->getAnnuityInformation()->paymentPlanName,
+                ],
+                subject: Translator::translate(phraseId: 'starting-at')
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
     }
 
     /**
@@ -143,6 +138,65 @@ class PartPayment extends Widget
         return
             $this->threshold === 0.0 ||
             $this->cost->monthlyCost >= $this->threshold;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public function getNotEligibleMessage(): string
+    {
+        $result = '';
+        $period = $this->getLongestPeriodWithZeroInterest();
+
+        if ($period === 0) {
+            return $result;
+        }
+
+        try {
+            $result = sprintf(
+                Translator::translate('rb-pp-not-eligible'),
+                $period
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Find the longest period with zero interest. If no such period exists,
+     * return 0.
+     *
+     * @throws ConfigException
+     */
+    public function getLongestPeriodWithZeroInterest(): int
+    {
+        try {
+            $annuityFactors = Repository::getAnnuityFactors(
+                storeId: $this->storeId,
+                paymentMethodId: $this->paymentMethod->id
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return 0;
+        }
+
+        $longestPeriod = 0;
+
+        /** @var AnnuityInformation $annuityFactor */
+        foreach ($annuityFactors as $annuityFactor) {
+            if ($annuityFactor->interest > 0.0) {
+                continue;
+            }
+
+            $longestPeriod = max(
+                $annuityFactor->durationMonths,
+                $longestPeriod
+            );
+        }
+
+        return $longestPeriod;
     }
 
     /**

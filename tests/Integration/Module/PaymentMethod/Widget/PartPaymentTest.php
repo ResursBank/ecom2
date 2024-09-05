@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -31,6 +32,7 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
@@ -102,6 +104,35 @@ class PartPaymentTest extends TestCase
     }
 
     /**
+     * Resolve the longest interest free duration from the annuity factors.
+     *
+     * @throws TestException
+     */
+    private function getLongestInterestFreeDuration(): int
+    {
+        try {
+            $collection = AnnuityFactorRepository::getAnnuityFactors(
+                storeId: $_ENV['STORE_ID'],
+                paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
+            );
+        } catch (Throwable) {
+            throw new TestException(message: 'Failed to load annuity factors');
+        }
+
+        $result = 0;
+
+        foreach ($collection->data as $factor) {
+            if ($factor->interest !== 0.0) {
+                continue;
+            }
+
+            $result = max($result, $factor->durationMonths);
+        }
+
+        return $result;
+    }
+
+    /**
      * Verify that getStartingAt() returns a string matching expected format.
      */
     public function testGetStartingAt(): void
@@ -115,6 +146,23 @@ class PartPaymentTest extends TestCase
         } catch (Throwable) {
             $this->fail('Starting at should not throw an exception.');
         }
+
+        // Mock return value of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::isEligible
+        // to return false, and check tha the string returned by getStartingAt()
+        // is the same as the one returned by getNotEligibleMessage().
+        $this->widget = $this->createPartialMock(
+            PartPayment::class,
+            ['isEligible']
+        );
+
+        $this->widget->method('isEligible')
+            ->willReturn(false);
+
+        $this->assertEquals(
+            expected: $this->widget->getNotEligibleMessage(),
+            actual: $this->widget->getStartingAt(),
+            message: 'Starting at should be the same as not eligible message.'
+        );
     }
 
     /**
@@ -306,6 +354,54 @@ class PartPaymentTest extends TestCase
         $this->assertNotNull(
             $this->widget->cost,
             'Widget cost property should not be null.'
+        );
+    }
+
+    /**
+     * Confirm that getLongestPeriodWithZeroInterest() returns the expected value.
+     *
+     * @throws TestException
+     * @throws ConfigException
+     */
+    public function testGetLongestPeriodWithZeroInterest(): void
+    {
+        $this->assertEquals(
+            expected: $this->getLongestInterestFreeDuration(),
+            actual: $this->widget->getLongestPeriodWithZeroInterest(),
+            message: 'Longest period with zero interest should be 36 months.'
+        );
+    }
+
+    /**
+     * Confirm that getNotEligibleMessage() returns the expected value.
+     *
+     * @throws ConfigException
+     * @throws TestException
+     */
+    public function testGetNotEligibleMessage(): void
+    {
+        $duration = $this->getLongestInterestFreeDuration();
+
+        // Confirm that getNotEligibleMessage() contains $duration.
+        $this->assertStringContainsString(
+            needle: (string) $duration,
+            haystack: $this->widget->getNotEligibleMessage(),
+            message: 'Not eligible message should contain the longest interest free duration.'
+        );
+
+        // Mock return of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::getLongestPeriodWithZeroInterest
+        // to return 0, and check that the message is empty.
+        $this->widget = $this->createPartialMock(
+            PartPayment::class,
+            ['getLongestPeriodWithZeroInterest']
+        );
+
+        $this->widget->method('getLongestPeriodWithZeroInterest')
+            ->willReturn(0);
+
+        $this->assertEmpty(
+            $this->widget->getNotEligibleMessage(),
+            'Not eligible message should be empty when longest interest free duration is 0.'
         );
     }
 }
