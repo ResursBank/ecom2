@@ -41,13 +41,6 @@ class StringMatchesRegex
 
     /**
      * @throws IllegalCharsetException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws TranslationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      */
     public function validate(string $name, string $value): void
     {
@@ -55,14 +48,9 @@ class StringMatchesRegex
             throw new IllegalCharsetException(
                 message: $name . ' value ' . $value . ' does not match ' .
                     $this->pattern,
-                friendlyMessage: str_replace(
-                    search: '%1',
-                    replace: Translator::translate(
-                        phraseId: $this->convert(propertyName: $name)
-                    ),
-                    subject: Translator::translate(
-                        phraseId: 'field-has-invalid-value'
-                    )
+                friendlyMessage: IllegalValueException::getFriendlyMessage(
+                    propertyName: $name,
+                    errorId: 'field-has-has-invalid-value'
                 )
             );
         }

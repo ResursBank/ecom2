@@ -20,7 +20,7 @@ trait TranslatifyPropertyName
      * @param string $propertyName Normally formatted property name.
      * @return string String which can be used as a translation identifier.
      */
-    public function convert(string $propertyName): string
+    public static function convert(string $propertyName): string
     {
         return strtolower(string: preg_replace(
             pattern: '/([A-Z])/',

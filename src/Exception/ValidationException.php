@@ -10,13 +10,17 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Exception;
 
 use Exception;
+use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Throwable;
 
 /**
  * Specifies a problem when validating a property.
  */
 class ValidationException extends Exception
 {
+    use TranslatifyPropertyName;
+
     public function __construct(
         string $message = "",
         int $code = 0,
@@ -28,5 +32,31 @@ class ValidationException extends Exception
             code: $code,
             previous: $previous
         );
+    }
+
+    /**
+     * Render a friendly message.
+     *
+     * @param string $propertyName Model property name
+     * @param string $errorId
+     * @return string|null
+     */
+    public static function getFriendlyMessage(
+        string $propertyName,
+        string $errorId
+    ): ?string {
+        try {
+            return str_replace(
+                search: '%1',
+                replace: Translator::translate(
+                    phraseId: self::convert(propertyName: $propertyName)
+                ),
+                subject: Translator::translate(
+                    phraseId: $errorId
+                )
+            );
+        } catch (Throwable) {
+            return null;
+        }
     }
 }

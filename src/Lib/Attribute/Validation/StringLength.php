@@ -35,6 +35,7 @@ class StringLength implements StringInterface
 {
     use TranslatifyPropertyName;
 
+
     /**
      * @param int $min Minimum string length
      * @param int|null $max Maximum string length
@@ -66,41 +67,29 @@ class StringLength implements StringInterface
      * no longer than $this->>max.
      *
      * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws TranslationException
-     * @throws IllegalTypeException
      */
     public function validate(string $name, string $value): void
     {
         if (strlen(string: $value) < $this->min) {
             throw new IllegalValueException(
-                message: $name . ' is shorter than its specified minimum length of ' . $this->min,
-                friendlyMessage: str_replace(
-                    search: '%1',
-                    replace: Translator::translate(
-                        phraseId: $this->convert(propertyName: $name)
-                    ),
-                    subject: Translator::translate(
-                        phraseId: 'field-has-too-short-value'
-                    )
+                message: $name .
+                    ' is shorter than its specified minimum length of ' .
+                    $this->min,
+                friendlyMessage: IllegalValueException::getFriendlyMessage(
+                    propertyName: $name,
+                    errorId: 'field-has-too-short-value'
                 )
             );
         }
 
         if ($this->max !== null && strlen(string: $value) > $this->max) {
             throw new IllegalValueException(
-                message: $name . ' is longer than its specified maximum length of ' . $this->max,
-                friendlyMessage: str_replace(
-                    search: '%1',
-                    replace: Translator::translate(
-                        phraseId: $this->convert(propertyName: $name)
-                    ),
-                    subject: Translator::translate(
-                        phraseId: 'field-has-too-long-value'
-                    )
+                message: $name .
+                    ' is longer than its specified maximum length of
+                    ' . $this->max,
+                friendlyMessage: IllegalValueException::getFriendlyMessage(
+                    propertyName: $name,
+                    errorId: 'field-has-too-long-value'
                 )
             );
         }
