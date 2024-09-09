@@ -142,7 +142,11 @@ class Resursbank_PartPayment {
                 element.removeEventListener('DOMSubtreeModified', this.updater);
 
                 // Add new listeners
-                if (element.tagName === 'FORM') {
+                if (element.tagName === 'FORM' ||
+                    element.tagName === 'INPUT' ||
+                    element.tagName === 'SELECT' ||
+                    element.tagName === 'TEXTAREA'
+                ) {
                     element.addEventListener('change', this.updater);
                 } else {
                     element.addEventListener('DOMSubtreeModified', this.updater);
