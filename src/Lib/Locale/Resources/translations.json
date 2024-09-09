@@ -2687,5 +2687,85 @@
       "sv": "Vänligen kontakta Resurs Bank för mer information eller välj en annan betalmetod för att slutföra din order.",
       "no": "Vennligst kontakt Resurs Bank for mer informasjon eller velg en annen betalingsmåte for å fullføre bestillingen."
     }
+  },
+  {
+    "id": "field-has-invalid-value",
+    "translation": {
+      "en": "The field %1 has an invalid value.",
+      "sv": "Fältet %1 har ett ogiltigt värde.",
+      "no": "Feltet %1 har en ugyldig verdi."
+    }
+  },
+  {
+    "id": "field-has-too-short-value",
+    "translation": {
+      "en": "The value in the field %1 is too short.",
+      "sv": "Värdet i fältet %1 är för kort.",
+      "no": "Verdien i feltet %1 er for kort."
+    }
+  },
+  {
+    "id": "field-has-too-long-value",
+    "translation": {
+      "en": "The value in the field %1 is too long.",
+      "sv": "Värdet i fältet %1 är för långt.",
+      "no": "Verdien i feltet %1 er for lang\n."
+    }
+  },
+  {
+    "id": "postal-code",
+    "translation": {
+      "en": "postal code",
+      "sv": "postnummer",
+      "no": "postnummer"
+    }
+  },
+  {
+    "id": "address-row-1",
+    "translation": {
+      "en": "address row 1",
+      "sv": "adressrad 1",
+      "no": "adresselinje 1"
+    }
+  },
+  {
+    "id": "postal-area",
+    "translation": {
+      "en": "postal area",
+      "sv": "postort",
+      "no": "postområde"
+    }
+  },
+  {
+    "id": "address-row-2",
+    "translation": {
+      "en": "address row 2",
+      "sv": "adressrad 2",
+      "no": "adresselinje 2"
+    }
+  },
+  {
+    "id": "full-name",
+    "translation": {
+      "en": "full name",
+      "sv": "fullständigt namn",
+      "no": "fullstendig navn"
+    }
+  },
+  {
+    "id": "first-name",
+    "translation": {
+      "en": "first name",
+      "sv": "förnamn",
+      "no": "fornavn"
+    }
+  },
+  {
+    "id": "last-name",
+    "translation": {
+      "en": "last name",
+      "sv": "efternamn",
+      "no": "efternavn"
+    }
   }
 ]
