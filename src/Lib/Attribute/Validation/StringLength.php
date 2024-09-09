@@ -11,18 +11,11 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
 use Exception;
-use JsonException;
-use ReflectionException;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
-use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function strlen;
@@ -34,7 +27,6 @@ use function strlen;
 class StringLength implements StringInterface
 {
     use TranslatifyPropertyName;
-
 
     /**
      * @param int $min Minimum string length
