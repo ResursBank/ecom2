@@ -11,8 +11,14 @@ namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
 use Exception;
+use JsonException;
+use ReflectionException;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
+use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
@@ -58,16 +64,14 @@ class StringLength implements StringInterface
      *
      * Check that the supplied string $value is no shorter than $this->>min and
      * no longer than $this->>max.
-     * @param string $name
-     * @param string $value
-     * @return void
+     *
      * @throws IllegalValueException
-     * @throws \JsonException
-     * @throws \ReflectionException
-     * @throws \Resursbank\Ecom\Exception\ConfigException
-     * @throws \Resursbank\Ecom\Exception\FilesystemException
-     * @throws \Resursbank\Ecom\Exception\TranslationException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws TranslationException
+     * @throws IllegalTypeException
      */
     public function validate(string $name, string $value): void
     {
@@ -87,7 +91,6 @@ class StringLength implements StringInterface
         }
 
         if ($this->max !== null && strlen(string: $value) > $this->max) {
-            $propertyName = $this->convert(propertyName: $name);
             throw new IllegalValueException(
                 message: $name . ' is longer than its specified maximum length of ' . $this->max,
                 friendlyMessage: str_replace(
