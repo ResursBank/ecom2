@@ -22,7 +22,7 @@ trait TranslatifyPropertyName
      */
     public static function convert(string $propertyName): string
     {
-        return strtolower(string: preg_replace(
+        return strtolower(string: (string)preg_replace(
             pattern: '/([A-Z])/',
             replacement: '-$1',
             subject: $propertyName
