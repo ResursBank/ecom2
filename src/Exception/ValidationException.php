@@ -38,8 +38,8 @@ class ValidationException extends Exception
      * Render a friendly message.
      *
      * @param string $propertyName Model property name
-     * @param string $errorId
-     * @return string|null
+     * @param string $errorId ID of error message to use
+     * @return string|null Human-readable friendly message or null
      */
     public static function getFriendlyMessage(
         string $propertyName,
