@@ -16,11 +16,11 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
+use Resursbank\Ecom\Lib\Locale\Translator;
+
 use function preg_match;
 
 /**
@@ -40,9 +40,6 @@ class StringMatchesRegex
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     * @return void
      * @throws IllegalCharsetException
      * @throws JsonException
      * @throws ReflectionException
