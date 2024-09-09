@@ -1459,8 +1459,10 @@
     "id": "reject-reason-canceled",
     "translation": {
       "en": "Canceled",
-      "sv": "Avbokad",
-      "no": "Avlyst"
+      "sv": "Avbruten",
+      "no": "Avlyst",
+      "da": "Annulleret",
+      "fi": "Peruutettu"
     }
   },
   {
