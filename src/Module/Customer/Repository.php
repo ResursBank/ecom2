@@ -142,8 +142,7 @@ class Repository
             Config::getLogger()->debug(message:
                 "No SSN data available in session. Client likely did not " .
                 "fetch address data from gateway. Client will need " .
-                "to supply SSN data on gateway instead."
-            );
+                "to supply SSN data on gateway instead.");
             // Failing is harmless, client can supply info on gateway.
         }
 
