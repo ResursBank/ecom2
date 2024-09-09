@@ -41,9 +41,10 @@ class RejectedReason extends Model
                     '/RejectedReason/Resources/translations.json'
                 );
             } catch (Throwable) {
+                return $this->category->value;
             }
         }
 
-        return $this->category->value;
+        return '';
     }
 }
