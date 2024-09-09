@@ -91,8 +91,9 @@ class CurlExceptionTest extends TestCase
         );
 
         $details = $error->getDetails();
+        // reformatted error message from translations.
         $this->assertStringContainsString(
-            needle: 'customer.deliveryAddress.postalCode',
+            needle: 'customer-deliveryaddress-postalcode-must-match-----d--',
             haystack: $details[0]
         );
     }
