@@ -29,18 +29,21 @@ class RejectedReason extends Model
      */
     public function getFriendlyDescription(): string
     {
-        try {
-            return Translator::translate(
-                phraseId: str_replace(
-                    search: '_',
-                    replace: '-',
-                    subject: strtolower(string: $this->category->value)
-                ),
-                translationFile: __DIR__ .
-                '/RejectedReason/Resources/translations.json'
-            );
-        } catch (Throwable) {
-            return $this->category->value;
+        if ($this->category !== null) {
+            try {
+                return Translator::translate(
+                    phraseId: str_replace(
+                        search: '_',
+                        replace: '-',
+                        subject: strtolower(string: $this->category->value)
+                    ),
+                    translationFile: __DIR__ .
+                    '/RejectedReason/Resources/translations.json'
+                );
+            } catch (Throwable) {
+            }
         }
+
+        return $this->category->value;
     }
 }
