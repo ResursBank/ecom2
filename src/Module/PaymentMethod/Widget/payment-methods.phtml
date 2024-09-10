@@ -82,10 +82,10 @@ if (count($paymentMethods) !== 0) : ?>
     <table>
       <thead>
       <tr>
-        <th><?= $this->nameLabel ?></th>
-        <th><?= $this->minTotalLabel ?></th>
-        <th><?= $this->maxTotalLabel ?></th>
-        <th><?= $this->sortOrderLabel ?></th>
+        <th><?= htmlspecialchars(string: $this->nameLabel) ?></th>
+        <th><?= htmlspecialchars(string: $this->minTotalLabel) ?></th>
+        <th><?= htmlspecialchars(string: $this->maxTotalLabel) ?></th>
+        <th><?= htmlspecialchars(string: $this->sortOrderLabel) ?></th>
       </tr>
       </thead>
       <tbody>
@@ -94,7 +94,7 @@ if (count($paymentMethods) !== 0) : ?>
 
 foreach ($paymentMethods as $method) : ?>
         <tr id="rb-pm-<?= $method->getId() ?>">
-          <td><?= $method->getName() ?></td>
+          <td><?= htmlspecialchars(string: $method->getName()) ?></td>
           <td><?= number_format(
 	num: $method->getMinLimit(),
 	decimals: 2
