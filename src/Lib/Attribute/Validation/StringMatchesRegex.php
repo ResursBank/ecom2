@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
 
@@ -33,12 +32,12 @@ class StringMatchesRegex
     }
 
     /**
-     * @throws IllegalCharsetException
+     * @throws IllegalValueException
      */
     public function validate(string $name, string $value): void
     {
         if (!preg_match(pattern: $this->pattern, subject: $value)) {
-            throw new IllegalCharsetException(
+            throw new IllegalValueException(
                 message: $name . ' value ' . $value . ' does not match ' .
                     $this->pattern,
                 friendlyMessage: IllegalValueException::getFriendlyMessage(
