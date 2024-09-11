@@ -27,7 +27,7 @@ class DiscountItem extends Model
      */
     public function __construct(
         #[FloatValue(min: 0.0, max: 99.99)] public readonly float $rate,
-        #[FloatValue(min: 0.0, max: 9999999999.99)] public float $amount = 0.0,
+        #[FloatValue(min: 0.0, max: 9999999999.99)] public float $amount = 0.0
     ) {
         parent::__construct();
     }
