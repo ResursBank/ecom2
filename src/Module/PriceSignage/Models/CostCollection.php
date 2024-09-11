@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PriceSignage\Models;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 
 /**
  * Defines cost entity collection.
