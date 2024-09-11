@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 use function chr;
