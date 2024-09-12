@@ -11,14 +11,13 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest;
 
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\CollectionSize;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines an order.
@@ -26,60 +25,17 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Order extends Model
 {
     /**
-     * @throws IllegalCharsetException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
+     * @param OrderLineCollection $orderLines
+     * @param string|null $orderReference
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly OrderLineCollection $orderLines,
-        public readonly ?string $orderReference = null,
-        private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
+        #[CollectionSize(min:1, max: 1000)] public readonly OrderLineCollection $orderLines,
+        #[StringMatchesRegex(pattern: '/^[\w\-_\/]{1,32}$/')]
+        public readonly ?string $orderReference = null
     ) {
-        $this->validateOrderLines();
-        $this->validateOrderReference();
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws IllegalTypeException
-     */
-    private function validateOrderLines(): void
-    {
-        $this->arrayValidation->isSequential(
-            data: $this->orderLines->getData()
-        );
-        $this->arrayValidation->length(
-            data: $this->orderLines->getData(),
-            min: 1,
-            max: 1000
-        );
-        $this->arrayValidation->isOfType(
-            data: $this->orderLines->getData(),
-            type: OrderLine::class,
-            compareFn: static fn (mixed $value) => $value instanceof OrderLine
-        );
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws IllegalCharsetException
-     */
-    private function validateOrderReference(): void
-    {
-        if ($this->orderReference === null) {
-            return;
-        }
-
-        $this->stringValidation->length(
-            value: $this->orderReference,
-            min: 1,
-            max: 32
-        );
-
-        $this->stringValidation->matchRegex(
-            value: $this->orderReference,
-            pattern: '/[\w\-_]+/'
-        );
+        parent::__construct();
     }
 }

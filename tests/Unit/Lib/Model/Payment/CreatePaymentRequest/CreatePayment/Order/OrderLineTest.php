@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Payment\Models\CreatePayment\Order;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Payment\CreatePaymentRequest\CreatePayment\Order;
 
 use Exception;
 use JsonException;
@@ -21,7 +21,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-
 use function strlen;
 
 /**

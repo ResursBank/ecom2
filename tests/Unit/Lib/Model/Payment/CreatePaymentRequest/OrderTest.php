@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Payment\Models;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Payment\CreatePaymentRequest;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,6 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\EcomTest\Data\Order;
 use stdClass;
-
 use function array_fill;
 
 /**

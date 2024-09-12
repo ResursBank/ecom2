@@ -23,7 +23,7 @@ class OrderLineCollection extends Collection
      * @throws IllegalTypeException
      */
     public function __construct(
-        #[ArraySize(min: 1, max: 100)] array $data
+        #[ArraySize(min: 1, max: 1000)] array $data
     ) {
         parent::__construct(data: $data, type: OrderLine::class);
     }

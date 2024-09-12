@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Payment\Models\CreatePaymentRequest;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Payment\CreatePaymentRequest;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
