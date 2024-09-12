@@ -21,5 +21,6 @@ class Callbacks extends Model
         #[StringMatchesUrl] public readonly ?Callback $authorization,
         #[StringMatchesUrl] public readonly ?Callback $management
     ) {
+        parent::__construct();
     }
 }
