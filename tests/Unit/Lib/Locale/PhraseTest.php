@@ -15,7 +15,6 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Locale\Translation;
@@ -68,7 +67,7 @@ class PhraseTest extends TestCase
                     ),
                     translation: $this->getTranslationInstance()
                 );
-            } catch (IllegalCharsetException) {
+            } catch (IllegalValueException) {
                 $this->addToAssertionCount(count: 1);
             }
         }

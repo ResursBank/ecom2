@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Store\Models;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Store;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -17,9 +17,9 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\Store\Store;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Store\Enum\Country;
-use Resursbank\Ecom\Module\Store\Models\Store;
 
 /**
  * Test data integrity of store entity model.
@@ -68,7 +68,7 @@ class StoreTest extends TestCase
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['id' => '']);
     }
 
