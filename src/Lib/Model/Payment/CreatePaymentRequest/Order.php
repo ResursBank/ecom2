@@ -25,14 +25,15 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 class Order extends Model
 {
     /**
-     * @param OrderLineCollection $orderLines
-     * @param string|null $orderReference
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
      */
     public function __construct(
-        #[CollectionSize(min:1, max: 1000)] public readonly OrderLineCollection $orderLines,
+        #[CollectionSize(
+            min:1,
+            max: 1000
+        )] public readonly OrderLineCollection $orderLines,
         #[StringMatchesRegex(pattern: '/^[\w\-_\/]{1,32}$/')]
         public readonly ?string $orderReference = null
     ) {

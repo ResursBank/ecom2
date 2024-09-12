@@ -25,6 +25,7 @@ use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\EcomTest\Data\Order;
 use stdClass;
+
 use function array_fill;
 
 /**
