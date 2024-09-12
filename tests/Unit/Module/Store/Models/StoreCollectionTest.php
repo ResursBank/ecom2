@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Module\Store\Models;
 
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Lib\Model\Store\Store;
+use Resursbank\Ecom\Lib\Model\Store\StoreCollection;
 use Resursbank\Ecom\Module\Store\Enum\Country;
-use Resursbank\Ecom\Module\Store\Models\Store;
-use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 
 /**
  * Unit tests for StoreCollection
