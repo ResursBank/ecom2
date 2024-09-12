@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest;
 
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
+use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-use Resursbank\Ecom\Lib\Validation\FloatValidation;
 
 /**
  * Application data for a payment.
@@ -20,44 +22,14 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
 class Application extends Model
 {
     /**
-     * @param array|null $applicationData
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly ?float $requestedCreditLimit,
-        public readonly ?array $applicationData,
-        private readonly FloatValidation $floatValidation = new FloatValidation(),
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
+        #[FloatValue(min: 0)] public readonly ?float $requestedCreditLimit,
+        #[ArrayOfStrings] public readonly ?array $applicationData
     ) {
-        $this->validateRequestedCreditLimit();
-        $this->validateApplicationData();
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateRequestedCreditLimit(): void
-    {
-        if ($this->requestedCreditLimit === null) {
-            return;
-        }
-
-        $this->floatValidation->inRange(
-            value: $this->requestedCreditLimit,
-            min: 1,
-            max: 9999999999
-        );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateApplicationData(): void
-    {
-        if ($this->applicationData === null) {
-            return;
-        }
-
-        $this->arrayValidation->isAssoc(data: $this->applicationData);
+        parent::__construct();
     }
 }
