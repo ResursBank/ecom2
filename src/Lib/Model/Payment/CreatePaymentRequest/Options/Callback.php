@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -16,11 +20,15 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class Callback extends Model
 {
+    /**
+     * @param string|null $url
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     public function __construct(
-        /**
-         * @todo Don't know how to validate urls.
-         */
-        public readonly ?string $url
+        #[StringMatchesUrl] public readonly ?string $url
     ) {
+        parent::__construct();
     }
 }
