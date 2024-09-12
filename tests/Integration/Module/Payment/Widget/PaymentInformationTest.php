@@ -215,7 +215,7 @@ class PaymentInformationTest extends TestCase
     }
 
     /**
-     * Verify that getTdEl() returns a td element with the given content.
+     * Verify that getTdElement() returns a td element with the given content.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -225,25 +225,25 @@ class PaymentInformationTest extends TestCase
      * @throws ReflectionException
      * @throws TranslationException
      */
-    public function testGetTdEl(): void
+    public function testGetTdElement(): void
     {
-        $tdEl = $this->widget->getTdEl(content: $this->payment->id);
+        $tdEl = $this->widget->getTdElement(content: $this->payment->id);
         $this->assertMatchesRegularExpression(
             pattern: "/<td>{$this->payment->id}<\/td>/s",
             string: $tdEl,
-            message: 'getTdEl() does not return a td element with the given content.'
+            message: 'getTdElement() does not return a td element with the given content.'
         );
 
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
             pattern: "/<td>{$content}<\/td>/s",
-            string: $this->widget->getTdEl(content: $content),
-            message: 'getTdEl() does not return a td element with the given content.'
+            string: $this->widget->getTdElement(content: $content),
+            message: 'getTdElement() does not return a td element with the given content.'
         );
 
         // Verify that if $isHeader is true, renders header element.
-        $headerEl = $this->widget->getTdEl(
+        $headerEl = $this->widget->getTdElement(
             content: 'captured-amount',
             isHeader: true
         );
@@ -254,12 +254,12 @@ class PaymentInformationTest extends TestCase
                 phraseId: 'captured-amount'
             ) . ".*<\/td>/s",
             string: $headerEl,
-            message: 'getTdEl() does not return a td element with the given content.'
+            message: 'getTdElement() does not return a td element with the given content.'
         );
     }
 
     /**
-     * Verify that getTrEl() returns a tr element with the given title and content.
+     * Verify that getTrElement() returns a tr element with the given title and content.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -269,10 +269,10 @@ class PaymentInformationTest extends TestCase
      * @throws ReflectionException
      * @throws TranslationException
      */
-    public function testGetTrEl(): void
+    public function testGetTrElement(): void
     {
         $content = 'some value';
-        $trEl = $this->widget->getTrEl(
+        $trEl = $this->widget->getTrElement(
             title: 'captured-amount',
             content: $content
         );
@@ -280,7 +280,7 @@ class PaymentInformationTest extends TestCase
         $this->assertMatchesRegularExpression(
             pattern: "/<tr>.*<\/tr>/s",
             string: $trEl,
-            message: 'getTrEl() does not return a tr element.'
+            message: 'getTrElement() does not return a tr element.'
         );
 
         $this->assertMatchesRegularExpression(
@@ -288,13 +288,13 @@ class PaymentInformationTest extends TestCase
                 phraseId: 'captured-amount'
             ) . ".*<\/td>/s",
             string: $trEl,
-            message: 'getTrEl() does not return a td element header.'
+            message: 'getTrElement() does not return a td element header.'
         );
 
         $this->assertMatchesRegularExpression(
             pattern: "/<td[^>]+>.*{$content}.*<\/td>/s",
             string: $trEl,
-            message: 'getTrEl() does not return a td element with the given content.'
+            message: 'getTrElement() does not return a td element with the given content.'
         );
     }
 

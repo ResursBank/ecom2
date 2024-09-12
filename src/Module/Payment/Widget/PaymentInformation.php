@@ -219,7 +219,7 @@ class PaymentInformation extends Widget
      * @throws TranslationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function getTdEl(
+    public function getTdElement(
         string $content,
         bool $isHeader = false
     ): string {
@@ -245,13 +245,13 @@ class PaymentInformation extends Widget
      * @throws ReflectionException
      * @throws TranslationException
      */
-    public function getTrEl(
+    public function getTrElement(
         string $title,
         string $content
     ): string {
         return '<tr>' .
-            $this->getTdEl(content: $title, isHeader: true) .
-            $this->getTdEl(content: $content) . '</tr>';
+            $this->getTdElement(content: $title, isHeader: true) .
+            $this->getTdElement(content: $content) . '</tr>';
     }
 
     /**
