@@ -25,10 +25,6 @@ class Store extends Model
 {
     /**
      * @param string $id API identifier
-     * @param int $nationalStoreId
-     * @param Country $countryCode
-     * @param string $name
-     * @param string|null $organizationNumber
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
@@ -38,7 +34,7 @@ class Store extends Model
         #[IntValue(min:1)] public readonly int $nationalStoreId,
         public readonly Country $countryCode,
         #[StringNotEmpty] public readonly string $name,
-        public readonly ?string $organizationNumber = null,
+        public readonly ?string $organizationNumber = null
     ) {
         parent::__construct();
     }
