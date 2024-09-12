@@ -199,6 +199,11 @@ class PartPayment extends Widget
         return $longestPeriod;
     }
 
+    public function getMonthlyCost(): float
+    {
+        return $this->cost->monthlyCost ?? 0;
+    }
+
     /**
      * @throws ApiException
      * @throws AuthException
@@ -232,13 +237,6 @@ class PartPayment extends Widget
         throw new MissingKeyException(
             message: 'Could not find matching payment plan'
         );
-    }
-
-    /**
-     * @return float
-     */
-    public function getMonthlyCost(): float {
-        return $this->cost->monthlyCost ?? 0;
     }
 
     /**
