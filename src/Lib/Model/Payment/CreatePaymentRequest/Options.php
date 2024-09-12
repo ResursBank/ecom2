@@ -9,11 +9,14 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options\Callbacks;
 use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options\RedirectionUrls;
-use Resursbank\Ecom\Lib\Validation\IntValidation;
 
 /**
  * Application data for a payment.
@@ -24,6 +27,9 @@ class Options extends Model
 {
     /**
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
@@ -33,27 +39,10 @@ class Options extends Model
         public readonly bool $automaticCapture = false,
         public readonly ?RedirectionUrls $redirectionUrls = null,
         public readonly ?Callbacks $callbacks = null,
-        public readonly ?int $timeToLiveInMinutes = null,
-        private readonly IntValidation $intValidation = new IntValidation()
+        #[IntValue(min: 1, max: 43200)] public readonly ?int $timeToLiveInMinutes = null
     ) {
-        $this->validateTimeToLiveInMinutes();
+        parent::__construct();
         $this->validateAutomaticCapture();
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateTimeToLiveInMinutes(): void
-    {
-        if ($this->timeToLiveInMinutes === null) {
-            return;
-        }
-
-        $this->intValidation->inRange(
-            value: $this->timeToLiveInMinutes,
-            min: 1,
-            max: 43200
-        );
     }
 
     /**
