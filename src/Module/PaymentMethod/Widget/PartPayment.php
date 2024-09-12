@@ -235,6 +235,13 @@ class PartPayment extends Widget
     }
 
     /**
+     * @return float
+     */
+    public function getMonthlyCost(): float {
+        return $this->cost->monthlyCost ?? 0;
+    }
+
+    /**
      * Fetch a Cost object from the Price signage API
      *
      * @throws ApiException

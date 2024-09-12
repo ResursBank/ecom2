@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment;
 
-use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -19,7 +18,7 @@ class InfoResponse extends Model
 {
     public function __construct(
         public readonly float $startingAt,
-         public readonly string $startingAtHtml,
+        public readonly string $startingAtHtml,
         public readonly string $readMoreWidget
     ) {
         parent::__construct();

@@ -15,6 +15,7 @@ use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function strlen;
@@ -25,6 +26,8 @@ use function strlen;
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class StringLength implements StringInterface
 {
+    use TranslatifyPropertyName;
+
     /**
      * @param int $min Minimum string length
      * @param int|null $max Maximum string length
@@ -50,6 +53,8 @@ class StringLength implements StringInterface
     }
 
     /**
+     * Validate property length.
+     *
      * Check that the supplied string $value is no shorter than $this->>min and
      * no longer than $this->>max.
      *
@@ -59,13 +64,25 @@ class StringLength implements StringInterface
     {
         if (strlen(string: $value) < $this->min) {
             throw new IllegalValueException(
-                message: $name . ' is shorter than its specified minimum length of ' . $this->min
+                message: $name .
+                    ' is shorter than its specified minimum length of ' .
+                    $this->min,
+                friendlyMessage: IllegalValueException::getFriendlyMessage(
+                    propertyName: $name,
+                    errorId: 'field-has-too-short-value'
+                )
             );
         }
 
         if ($this->max !== null && strlen(string: $value) > $this->max) {
             throw new IllegalValueException(
-                message: $name . ' is longer than its specified maximum length of ' . $this->max
+                message: $name .
+                    ' is longer than its specified maximum length of
+                    ' . $this->max,
+                friendlyMessage: IllegalValueException::getFriendlyMessage(
+                    propertyName: $name,
+                    errorId: 'field-has-too-long-value'
+                )
             );
         }
     }
