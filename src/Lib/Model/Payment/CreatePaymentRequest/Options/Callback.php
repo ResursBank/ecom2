@@ -21,7 +21,6 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Callback extends Model
 {
     /**
-     * @param string|null $url
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
