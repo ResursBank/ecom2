@@ -39,7 +39,10 @@ class Options extends Model
         public readonly bool $automaticCapture = false,
         public readonly ?RedirectionUrls $redirectionUrls = null,
         public readonly ?Callbacks $callbacks = null,
-        #[IntValue(min: 1, max: 43200)] public readonly ?int $timeToLiveInMinutes = null
+        #[IntValue(
+            min: 1,
+            max: 43200
+        )] public readonly ?int $timeToLiveInMinutes = null
     ) {
         parent::__construct();
         $this->validateAutomaticCapture();
