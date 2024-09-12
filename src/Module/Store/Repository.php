@@ -24,10 +24,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Store\Store;
+use Resursbank\Ecom\Lib\Model\Store\StoreCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Module\Store\Models\Store;
-use Resursbank\Ecom\Module\Store\Models\StoreCollection;
 use Throwable;
 
 /**

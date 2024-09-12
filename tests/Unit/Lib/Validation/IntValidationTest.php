@@ -110,27 +110,27 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert isGt() throws IllegalValueException when the value is less than
+     * Assert isGreateThan() throws IllegalValueException when the value is less than
      * supplied minimum.
      *
      * @throws IllegalValueException
      */
-    public function testIsGtThrowsOnLessThan(): void
+    public function testIsGreaterThanThrowsOnLessThan(): void
     {
         $this->expectException(exception: IllegalValueException::class);
-        $this->intValidation->isGt(value: 1, min: 2);
+        $this->intValidation->isGreaterThan(value: 1, min: 2);
     }
 
     /**
-     * Assert isGt() returns true when the value is greater than supplied
+     * Assert isGreaterThan() returns true when the value is greater than supplied
      * minimum.
      *
      * @throws IllegalValueException
      */
-    public function testIsGtReturnTrue(): void
+    public function testIsGreaterThanReturnTrue(): void
     {
         $this->assertTrue(
-            condition: $this->intValidation->isGt(value: 2, min: 1)
+            condition: $this->intValidation->isGreaterThan(value: 2, min: 1)
         );
     }
 

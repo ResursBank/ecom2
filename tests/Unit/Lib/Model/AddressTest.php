@@ -11,7 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
@@ -37,7 +37,7 @@ class AddressTest extends TestCase
      */
     public function testEmptyPostalCode(): void
     {
-        $this->expectException(exception: IllegalCharsetException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->generateAddress(postalCode: '');
     }
 
@@ -46,7 +46,7 @@ class AddressTest extends TestCase
      */
     public function testTooLongPostalCode(): void
     {
-        $this->expectException(exception: IllegalCharsetException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->generateAddress(
             postalCode: Strings::generateRandomString(length: 6)
         );
@@ -59,7 +59,7 @@ class AddressTest extends TestCase
      */
     public function testInvalidCharactersInPostalCode(): void
     {
-        $this->expectException(exception: IllegalCharsetException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->generateAddress(
             postalCode: Strings::generateRandomString(
                 length: 5,

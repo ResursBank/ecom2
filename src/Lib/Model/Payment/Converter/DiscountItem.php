@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Converter;
 
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\FloatValidation;
 
 /**
  * Object containing amount of discount applied with specific VAT rate.
@@ -19,37 +21,14 @@ use Resursbank\Ecom\Lib\Validation\FloatValidation;
 class DiscountItem extends Model
 {
     /**
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly float $rate,
-        public float $amount = 0.0,
-        private readonly FloatValidation $floatValidation = new FloatValidation()
+        #[FloatValue(min: 0.0, max: 99.99)] public readonly float $rate,
+        #[FloatValue(min: 0.0, max: 9999999999.99)] public float $amount = 0.0
     ) {
-        $this->validateRate();
-        $this->validateAmount();
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateRate(): void
-    {
-        $this->floatValidation->length(value: $this->rate, min: 0, max: 2);
-        $this->floatValidation->inRange(value: $this->rate, min: 0, max: 99.99);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateAmount(): void
-    {
-        $this->floatValidation->length(value: $this->amount, min: 0, max: 2);
-
-        $this->floatValidation->inRange(
-            value: $this->amount,
-            min: 0.0,
-            max: 9999999999.99
-        );
+        parent::__construct();
     }
 }
