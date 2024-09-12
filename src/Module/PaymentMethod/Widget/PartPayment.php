@@ -34,6 +34,7 @@ use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Throwable;
+
 use function max;
 use function sprintf;
 
