@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 use function chr;
 use function ord;
@@ -114,5 +115,21 @@ class Strings
             format: '%s%s-%s-%s-%s-%s%s%s',
             values: str_split(string: bin2hex(string: $data), length: 4)
         );
+    }
+
+    /**
+     * Check if supplied string is a UUID.
+     *
+     * @param string $value Value to check
+     * @return bool True if input value is a UUID string.
+     */
+    public static function isUuid(string $value): bool
+    {
+        try {
+            $validator = new StringValidation();
+            return $validator->isUuid(value: $value);
+        } catch (IllegalValueException) {
+            return false;
+        }
     }
 }

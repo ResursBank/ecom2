@@ -10,7 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Attribute\Validation;
 
 use Attribute;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\Traits\TranslatifyPropertyName;
 
 use function preg_match;
 
@@ -20,6 +21,8 @@ use function preg_match;
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class StringMatchesRegex
 {
+    use TranslatifyPropertyName;
+
     /**
      * @param string $pattern Regex pattern the property value has to match.
      */
@@ -29,14 +32,18 @@ class StringMatchesRegex
     }
 
     /**
-     * @throws IllegalCharsetException
+     * @throws IllegalValueException
      */
     public function validate(string $name, string $value): void
     {
         if (!preg_match(pattern: $this->pattern, subject: $value)) {
-            throw new IllegalCharsetException(
+            throw new IllegalValueException(
                 message: $name . ' value ' . $value . ' does not match ' .
-                    $this->pattern
+                    $this->pattern,
+                friendlyMessage: IllegalValueException::getFriendlyMessage(
+                    propertyName: $name,
+                    errorId: 'field-has-has-invalid-value'
+                )
             );
         }
     }

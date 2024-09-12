@@ -60,7 +60,7 @@ class IntValidation
     /**
      * @throws IllegalValueException
      */
-    public function isGt(
+    public function isGreaterThan(
         int $value,
         int $min
     ): bool {

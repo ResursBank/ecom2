@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
 
 /**
  * Application data for a payment.
@@ -23,8 +22,7 @@ class ApplicationResponse extends Model
     public function __construct(
         public readonly float $requestedCreditLimit,
         public readonly ?int $approvedCreditLimit = null,
-        public readonly ?int $reference = null,
-        public readonly ?CoApplicant $coApplicant = null
+        public readonly ?int $reference = null
     ) {
     }
 }

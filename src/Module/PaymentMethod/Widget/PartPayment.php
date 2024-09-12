@@ -27,11 +27,11 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Throwable;
 
@@ -197,6 +197,11 @@ class PartPayment extends Widget
         }
 
         return $longestPeriod;
+    }
+
+    public function getMonthlyCost(): float
+    {
+        return $this->cost->monthlyCost ?? 0;
     }
 
     /**

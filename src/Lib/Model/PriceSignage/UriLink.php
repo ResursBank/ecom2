@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PriceSignage\Models;
+namespace Resursbank\Ecom\Lib\Model\PriceSignage;
 
 use Resursbank\Ecom\Lib\Model\Model;
 
