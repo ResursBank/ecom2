@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Exception;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
@@ -75,14 +77,13 @@ class CurlExceptionTest extends TestCase
     /**
      * Test the getDetails method.
      *
-     * @throws \JsonException
-     * @throws \Resursbank\Ecom\Exception\ConfigException
+     * @throws JsonException
+     * @throws ConfigException
      */
     public function testGetDetails(): void
     {
-
         $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match \"[ \\\d]+\""}}';
+            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match test"}}';
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -91,8 +92,10 @@ class CurlExceptionTest extends TestCase
         );
 
         $details = $error->getDetails();
+
+        // reformatted error message from translations.
         $this->assertStringContainsString(
-            needle: 'customer.deliveryAddress.postalCode',
+            needle: 'Postal code is not valid',
             haystack: $details[0]
         );
     }
