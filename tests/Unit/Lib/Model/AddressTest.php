@@ -48,7 +48,10 @@ class AddressTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->generateAddress(
-            postalCode: Strings::generateRandomString(length: 6)
+            postalCode: Strings::generateRandomString(
+                length: 11,
+                characters: '0123456789'
+            )
         );
     }
 
