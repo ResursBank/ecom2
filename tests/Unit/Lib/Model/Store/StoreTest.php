@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Store\Models;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Store;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -68,7 +68,7 @@ class StoreTest extends TestCase
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['id' => '']);
     }
 

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Store\Models;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Store;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Lib\Model\Store\Store;
