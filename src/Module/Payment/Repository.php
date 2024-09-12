@@ -27,6 +27,8 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Application;
+use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
@@ -43,8 +45,6 @@ use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use Throwable;
 
 /**

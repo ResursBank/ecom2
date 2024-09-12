@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest;
+namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest;
 
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
