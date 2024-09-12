@@ -11,8 +11,8 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+
 use function chr;
 use function ord;
 use function strlen;
@@ -127,10 +127,8 @@ class Strings
     {
         try {
             $validator = new StringValidation();
-            return  $validator->isUuid(
-                value: $value
-            );
-        } catch (IllegalValueException $error) {
+            return $validator->isUuid(value: $value);
+        } catch (IllegalValueException) {
             return false;
         }
     }
