@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom;
 
+use Exception;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -19,8 +20,10 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
+use Throwable;
 
 use function dirname;
 
@@ -264,10 +267,33 @@ final class Config
     }
 
     /**
-     * Resolve path starting from project root directory.
+     * Resolve path starting from the ECom root directory.
+     *
+     * @throws Exception If the path contains invalid traversal.
      */
     public static function getPath(string $dir = ''): string
     {
-        return dirname(path: __DIR__) . ($dir !== '' ? "/$dir" : '');
+        try {
+            // Safe search for composer.json, or fall back on current directory.
+            $composerConfigLocation = (new Generic())
+                ->getComposerConfig(location: __DIR__);
+        } catch (Throwable) {
+        }
+
+        // Define the ECom root directory
+        $ecomRoot = $composerConfigLocation ?? dirname(path: __DIR__);
+
+        // Prevent directory traversal by checking for '..'
+        if (str_contains(haystack: $dir, needle: '..')) {
+            throw new Exception(
+                message: 'Invalid directory path. Directory traversal is not allowed.'
+            );
+        }
+
+        // Resolve the final path relative to the ECom root
+        return $ecomRoot . ($dir !== '' ? '/' . ltrim(
+            string: $dir,
+            characters: '/'
+        ) : '');
     }
 }
