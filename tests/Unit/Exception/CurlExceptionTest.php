@@ -99,4 +99,71 @@ class CurlExceptionTest extends TestCase
             haystack: $details[0]
         );
     }
+
+    /**
+     * Test the getDetails method and regex-match problems.
+     *
+     * @throws JsonException
+     * @throws ConfigException
+     */
+    public function testGetDetailsWithRegexContent(): void
+    {
+        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
+            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match \"/^[ \\\\d]{1,10}$/\""}}';
+
+        $error = new CurlException(
+            message: 'Test error',
+            code: 400,
+            body: $body,
+            httpCode: 400
+        );
+
+        $details = $error->getDetails();
+
+        // reformatted error message from translations.
+        $this->assertStringContainsString(
+            needle: 'Postal code is not valid',
+            haystack: $details[0]
+        );
+    }
+
+    /**
+     * Test the getDetails method and regex-match problems.
+     *
+     * This test validates that when a validation error occurs, such as an invalid postal code,
+     * the system is able to extract the correct error message from translations.
+     * It first attempts to find a specific translation for the regex validation message.
+     * If no exact match is found (due to the regex), it should fall back to a simpler property-based
+     * translation ("customer.deliveryAddress.postalCode").
+     *
+     * @throws JsonException
+     * @throws ConfigException
+     */
+    public function testGetDetailsWithUnexistentRegex(): void
+    {
+        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
+            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match \"/^[ \\\\s]{1,12}$/\""}}';
+
+        // Create a CurlException object with the sample error message.
+        $error = new CurlException(
+            message: 'Test error',
+            code: 400,
+            body: $body,
+            httpCode: 400
+        );
+
+        // Fetch the details from the exception which includes translated error messages.
+        $details = $error->getDetails();
+
+        // Assert that the correct fallback translation is returned.
+        // Even though the regex message is complex, we expect it to fallback to a simple message
+        // for the 'customer.deliveryAddress.postalCode' parameter where the regex match is different from what
+        // we expect.
+        $this->assertStringContainsString(
+            // Expected error message in English translation.
+            needle: 'Postal code is not valid',
+            // Actual translated error message.
+            haystack: $details[0]
+        );
+    }
 }
