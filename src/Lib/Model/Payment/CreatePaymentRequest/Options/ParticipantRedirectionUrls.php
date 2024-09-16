@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -17,14 +18,9 @@ use Resursbank\Ecom\Lib\Model\Model;
 class ParticipantRedirectionUrls extends Model
 {
     public function __construct(
-        /**
-         * @todo Don't know how to validate urls.
-         */
-        public readonly ?string $failUrl,
-        /**
-         * @todo Don't know how to validate urls.
-         */
-        public readonly ?string $successUrl
+        #[StringMatchesUrl] public readonly ?string $failUrl,
+        #[StringMatchesUrl] public readonly ?string $successUrl
     ) {
+        parent::__construct();
     }
 }

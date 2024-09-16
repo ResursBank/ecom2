@@ -73,7 +73,7 @@ class Strings
 
         for ($i = 0; $i < $length; ++$i) {
             $generated .= count_chars(string: $characters, mode: 3)
-                [rand(0, strlen($characters) - 1)];
+                [rand(0, strlen($characters) - 2)];
         }
 
         return $generated;
