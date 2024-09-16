@@ -18,8 +18,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Callbacks extends Model
 {
     public function __construct(
-        #[StringMatchesUrl] public readonly ?Callback $authorization,
-        #[StringMatchesUrl] public readonly ?Callback $management
+        public readonly ?Callback $authorization,
+        public readonly ?Callback $management
     ) {
         parent::__construct();
     }
