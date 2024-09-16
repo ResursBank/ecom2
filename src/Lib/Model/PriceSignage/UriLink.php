@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\PriceSignage;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -18,11 +19,11 @@ class UriLink extends Model
 {
     /**
      * @todo Can $language be empty? Is this an Enum value?
-     * @todo Can $uri be empty? Is there a regex for this?
      */
     public function __construct(
-        public readonly string $uri,
+        #[StringMatchesUrl] public readonly string $uri,
         public readonly string $language
     ) {
+        parent::__construct();
     }
 }
