@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -42,8 +43,15 @@ class ConfigTest extends TestCase
      */
     private function getComposerRoot(): string
     {
-        // Assuming composer.json is two levels up from the test directory (e.g., in ecom-rootpath)
-        return realpath(path: __DIR__ . '/../..');
+        $path = realpath(__DIR__ . '/../..');
+
+        if ($path === false) {
+            throw new RuntimeException(
+                'Could not resolve the composer root path.'
+            );
+        }
+
+        return $path;
     }
 
     /**
