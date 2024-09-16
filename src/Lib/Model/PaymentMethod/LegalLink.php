@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 
@@ -23,7 +23,7 @@ class LegalLink extends Model
      * @throws EmptyValueException
      */
     public function __construct(
-        #[StringMatchesUrl] public readonly string $url,
+        #[StringIsUrl] public readonly string $url,
         public readonly Type $type,
         public readonly bool $appendAmount
     ) {

@@ -11,6 +11,8 @@ namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
 use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
@@ -44,9 +46,9 @@ class Payment extends Model
      * @todo Missing unit tests ECP-254
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $created,
-        public readonly string $storeId,
+        #[StringIsUuid] public readonly string $id,
+        #[StringIsDatetime] public readonly string $created,
+        #[StringIsUuid] public readonly string $storeId,
         public readonly Customer $customer,
         public readonly Status $status,
         public readonly ?RejectedReason $rejectedReason = null,
@@ -60,7 +62,6 @@ class Payment extends Model
         public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-        $this->validateId();
         $this->validateCreated();
         $this->validateStoreId();
     }
@@ -280,17 +281,6 @@ class Payment extends Model
     private function validateCreated(): void
     {
         $this->stringValidation->isTimestampDate(value: $this->created);
-    }
-
-    /**
-     * Validate that an (uu)id exists on the payment.
-     *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateId(): void
-    {
-        $this->validateUuid(uuid: $this->id);
     }
 
     /**

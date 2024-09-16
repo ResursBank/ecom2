@@ -13,12 +13,12 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 
 /**
- * Unit tests for the StringMatchesUrl validation attribute.
+ * Unit tests for the StringIsUrl validation attribute.
  */
-class StringMatchesUrlTest extends TestCase
+class StringIsUrlTest extends TestCase
 {
     /**
      * Validate the output of getAcceptedValues.
@@ -28,7 +28,7 @@ class StringMatchesUrlTest extends TestCase
      */
     public function testGetAcceptedValues(): void
     {
-        $obj = new StringMatchesUrl();
+        $obj = new StringIsUrl();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
@@ -55,7 +55,7 @@ class StringMatchesUrlTest extends TestCase
      */
     public function testGetRejectedValues(): void
     {
-        $obj = new StringMatchesUrl();
+        $obj = new StringIsUrl();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
