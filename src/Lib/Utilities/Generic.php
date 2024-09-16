@@ -47,9 +47,11 @@ class Generic
     private string $internalExceptionMessage = '';
 
     /**
-     * If open_basedir-warnings has been triggered once, we store that here.
+     * If open_basedir warnings have been triggered once, we store that here.
      *
      * @todo We should use our FS classes instead to check for readability.
+     * @todo If using our FS classes, please consider including open_basedir-related errors in the exception
+     * @todo message to help partners trace issues faster.
      */
     private bool $openBaseDirExceptionTriggered = false;
 
@@ -77,7 +79,7 @@ class Generic
     {
         $return = '';
 
-        // @todo Object should be defined as stdClass or mor specific object.
+        // @todo Object should be defined as stdClass or more specific object.
 
         if (empty($this->composerData)) {
             $this->getComposerConfig(location: $location);
@@ -93,62 +95,6 @@ class Generic
         }
 
         return $return;
-    }
-
-    /**
-     * @param string $location Location of composer.json.
-     * @param int $maxDepth How deep the search for a composer.json will be. Usually you should not need more than 3.
-     * @throws Exception
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @todo Refactor, see ECP-350. Remember to remove phpcs:ignore below when done.
-     */
-    // phpcs:ignore
-    public function getComposerConfig(string $location, int $maxDepth = 3): string
-    {
-        $this->setTemporaryInternalErrorHandler();
-
-        if ($maxDepth > 3 || $maxDepth < 1) {
-            $maxDepth = 3;
-        }
-
-        // Pre-check if file exists, to also make sure that open_basedir is not a problem.
-        $locationCheck = file_exists(filename: $location);
-        $this->isOpenBaseDirException();
-
-        if (!$this->openBaseDirExceptionTriggered && !$locationCheck) {
-            throw new FilesystemException(message: 'Invalid path', code: 1013);
-        }
-
-        if ($this->isOpenBaseDirException()) {
-            return $this->getOpenBaseDirExceptionString();
-        }
-
-        $startAt = dirname(path: $location);
-
-        if ($this->hasComposerFile(location: $startAt)) {
-            $this->getComposerConfigData(location: $startAt);
-            return $startAt;
-        }
-
-        $composerLocation = null;
-
-        while ($maxDepth--) {
-            $startAt .= '/..';
-
-            if ($this->hasComposerFile(location: $startAt)) {
-                $composerLocation = $startAt;
-                break;
-            }
-        }
-
-        if ($composerLocation === null) {
-            throw new IllegalValueException(message: 'No composer.json found');
-        }
-
-        $this->getComposerConfigData(location: $composerLocation);
-
-        return $this->composerLocation;
     }
 
     /**
@@ -228,6 +174,59 @@ class Generic
                 className: $className
             )
         );
+    }
+
+    /**
+     * @throws FilesystemException
+     * @throws IllegalValueException
+     * @throws JsonException
+     */
+    public function getComposerConfig(string $location, int $maxDepth = 3): string
+    {
+        $this->setTemporaryInternalErrorHandler();
+        $maxDepth = $this->normalizeMaxDepth(maxDepth: $maxDepth);
+
+        // Pre-check the location validity and handle open_basedir exceptions.
+        $this->validateLocation(location: $location);
+
+        $startAt = dirname(path: $location);
+
+        // Try finding composer.json at the initial location.
+        if ($this->hasComposerFile(location: $startAt)) {
+            $this->loadComposerData(location: $startAt);
+            return $startAt;
+        }
+
+        // Attempt to locate composer.json in parent directories.
+        $composerLocation = $this->searchComposerInParentDirectories(
+            startAt: $startAt,
+            maxDepth: $maxDepth
+        );
+
+        if ($composerLocation === null) {
+            throw new IllegalValueException(message: 'No composer.json found');
+        }
+
+        $this->loadComposerData(location: $composerLocation);
+        return $composerLocation;
+    }
+
+    /**
+     * Validates the location, ensuring it exists and checks for open_basedir exceptions.
+     *
+     * @throws FilesystemException
+     */
+    public function validateLocation(string $location): void
+    {
+        if (!file_exists(filename: $location)) {
+            throw new FilesystemException(message: 'Invalid path', code: 1013);
+        }
+
+        if ($this->isOpenBaseDirException()) {
+            throw new FilesystemException(
+                message: $this->getOpenBaseDirExceptionString()
+            );
+        }
     }
 
     /**
@@ -381,5 +380,44 @@ class Generic
         }
 
         $this->composerData = $data;
+    }
+
+    /**
+     * Normalizes the max depth parameter to ensure it's within the acceptable range.
+     */
+    private function normalizeMaxDepth(int $maxDepth): int
+    {
+        return ($maxDepth < 1 || $maxDepth > 3) ? 3 : $maxDepth;
+    }
+
+    /**
+     * Searches for a composer.json file in parent directories up to a specified depth.
+     *
+     * @param string $startAt The directory to start searching from.
+     * @param int $maxDepth The maximum depth to search.
+     * @return string|null The directory containing composer.json, or null if not found.
+     */
+    private function searchComposerInParentDirectories(string $startAt, int $maxDepth): ?string
+    {
+        while ($maxDepth-- > 0) {
+            $startAt = dirname(path: $startAt);
+
+            if ($this->hasComposerFile(location: $startAt)) {
+                return $startAt;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Loads the composer.json data from a given location.
+     *
+     * @param string $location The directory containing composer.json.
+     * @throws JsonException
+     */
+    private function loadComposerData(string $location): void
+    {
+        $this->getComposerConfigData(location: $location);
     }
 }

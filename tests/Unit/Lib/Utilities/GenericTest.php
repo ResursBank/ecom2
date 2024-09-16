@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 
@@ -101,5 +103,47 @@ class GenericTest extends TestCase
                 composerLocation: __DIR__
             )
         );
+    }
+
+    /**
+     * Test for getComposerConfig method.
+     *
+     * @throws Exception
+     */
+    public function testGetComposerConfig(): void
+    {
+        $generic = new Generic();
+
+        // Test with a valid composer.json location.
+        $validLocation = __DIR__;
+        $this->assertNotEmpty(
+            actual: $generic->getComposerConfig(location: $validLocation),
+            message: 'The composer config should be found at a valid location.'
+        );
+
+        // Test with an invalid location (no composer.json).
+        $this->expectException(exception: FilesystemException::class);
+        $invalidLocation = '/invalid/location';
+        $generic->getComposerConfig(location: $invalidLocation);
+    }
+
+    /**
+     * @throws FilesystemException
+     * @throws IllegalValueException
+     * @throws JsonException
+     */
+    public function testGetComposerConfigTriggersOpenBaseDirException(): void
+    {
+        $generic = new Generic();
+
+        // Simulate a scenario where getComposerConfig receives a location that triggers open_basedir restriction.
+        // Set an invalid path to simulate open_basedir issues.
+        $invalidLocation = '/path/that/does/not/exist';
+
+        // Expect a FilesystemException when open_basedir restriction is active.
+        $this->expectException(exception: FilesystemException::class);
+
+        // Call getComposerConfig with a location that should trigger an open_basedir error.
+        $generic->getComposerConfig(location: $invalidLocation);
     }
 }
