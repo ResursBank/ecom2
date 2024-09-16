@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 
-use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -18,8 +17,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Callbacks extends Model
 {
     public function __construct(
-        #[StringIsUrl] public readonly ?Callback $authorization,
-        #[StringIsUrl] public readonly ?Callback $management
+        public readonly ?Callback $authorization,
+        public readonly ?Callback $management
     ) {
         parent::__construct();
     }
