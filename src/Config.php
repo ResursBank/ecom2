@@ -20,10 +20,8 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
-use Throwable;
 
 use function dirname;
 
@@ -273,15 +271,7 @@ final class Config
      */
     public static function getPath(string $dir = ''): string
     {
-        try {
-            // Safe search for composer.json, or fall back on current directory.
-            $composerConfigLocation = (new Generic())
-                ->getComposerConfig(location: __DIR__);
-        } catch (Throwable) {
-        }
-
-        // Define the ECom root directory
-        $ecomRoot = $composerConfigLocation ?? dirname(path: __DIR__);
+        $ecomRoot = dirname(path: __DIR__);
 
         // Prevent directory traversal by checking for '..'
         if (str_contains(haystack: $dir, needle: '..')) {
