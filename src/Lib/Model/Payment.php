@@ -23,7 +23,6 @@ use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
@@ -59,11 +58,9 @@ class Payment extends Model
         public readonly ?ApplicationResponse $application = null,
         public readonly ?Metadata $metadata = null,
         public readonly ?CoApplicant $coApplicant = null,
-        public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null
     ) {
-        $this->validateCreated();
-        $this->validateStoreId();
+        parent::__construct();
     }
 
     /**
@@ -269,41 +266,6 @@ class Payment extends Model
     {
         return $this->rejectedReason !== null &&
             $this->rejectedReason->category === $reason;
-    }
-
-    /**
-     * NOTE: We cannot test date format because Resurs Bank will return
-     * inconsistent values for the same properties (sometimes ATOM compatible,
-     * sometimes containing an up to 9 digit microsecond suffix).
-     *
-     * @throws IllegalValueException
-     */
-    private function validateCreated(): void
-    {
-        $this->stringValidation->isTimestampDate(value: $this->created);
-    }
-
-    /**
-     * Validate existing store (uu)id.
-     *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateStoreId(): void
-    {
-        $this->validateUuid(uuid: $this->storeId);
-    }
-
-    /**
-     * Validate that a string is an uuid and not empty.
-     *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateUuid(string $uuid): void
-    {
-        $this->stringValidation->notEmpty(value: $uuid);
-        $this->stringValidation->isUuid(value: $uuid);
     }
 
     /**
