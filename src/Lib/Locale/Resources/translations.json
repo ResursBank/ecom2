@@ -732,6 +732,54 @@
     }
   },
   {
+    "id": "cancel-success",
+    "translation": {
+      "en": "Successfully cancelled payment at Resurs Bank.",
+      "sv": "Lyckades annullera betalningen hos Resurs Bank.",
+      "no": "Vellykket kansellering av betaling hos Resurs Bank."
+    }
+  },
+  {
+    "id": "refund-success",
+    "translation": {
+      "en": "Successfully refunded %s of payment at Resurs Bank.",
+      "sv": "Lyckades kreditera %s av betalningen hos Resurs Bank.",
+      "no": "Vellykket refundert %s av betalingen hos Resurs Bank."
+    }
+  },
+  {
+    "id": "partial-refund-success",
+    "translation": {
+      "en": "Successfully refunded partial payment (%s) at Resurs Bank.",
+      "sv": "Lyckades kreditera andel av betalning (%s) hos Resurs Bank.",
+      "no": "Vellykket delvis refundert betaling (%s) hos Resurs Bank."
+    }
+  },
+  {
+    "id": "capture-success",
+    "translation": {
+      "en": "Successfully captured %s of payment at Resurs Bank.",
+      "sv": "Lyckades debitera %s av betalningen hos Resurs Bank.",
+      "no": "Vellykket debiteret %s av betalingen hos Resurs Bank."
+    }
+  },
+  {
+    "id": "modify-order-success",
+    "translation": {
+      "en": "Successfully updated payment at Resurs Bank to %s",
+      "sv": "Lyckades uppdatera betalningen hos Resurs Bank till %s",
+      "no": "Vellykket oppdaterte betalingen hos Resurs Bank til %s"
+    }
+  },
+  {
+    "id": "part-cancel-not-allowed",
+    "translation": {
+      "en": "This order is not allowed to be part cancelled.",
+      "sv": "Denna order får ej del-annulleras.",
+      "no": "Denne ordren er ikke tillatt å kanselleres delvis."
+    }
+  },
+  {
     "id": "order-management",
     "translation": {
       "en": "Order management",
