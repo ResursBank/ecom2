@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Resursbank\Ecom\Config;
@@ -26,6 +27,7 @@ use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Throwable;
 
 /**
  * Tests Config class functionality
@@ -34,6 +36,16 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
  */
 class ConfigTest extends TestCase
 {
+    /**
+     * Helper function to get the root path by resolving composer.json.
+     * This mimics the dynamic behavior of the actual method to locate composer.json.
+     */
+    private function getComposerRoot(): string
+    {
+        // Assuming composer.json is two levels up from the test directory (e.g., in ecom-rootpath)
+        return realpath(path: __DIR__ . '/../..');
+    }
+
     /**
      * Assert that Config::$instance is properly set up when setup() is called with no parameters
      *
@@ -215,7 +227,7 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * Verifies that before setup the $instance property is set to null
+     * Verifies that the $instance property is set to null before setup.
      */
     public function testInstanceNullBeforeSetup(): void
     {
@@ -236,5 +248,87 @@ class ConfigTest extends TestCase
         );
 
         $this->assertNotNull(actual: $initializedValue);
+    }
+
+    /**
+     * Test valid path without traversal
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithValidDirectory(): void
+    {
+        $path = Config::getPath(dir: 'valid/directory');
+
+        // Get the dynamically resolved ECom root using composer.json
+        $expectedPath = $this->getComposerRoot() . '/valid/directory';
+
+        $this->assertEquals(expected: $expectedPath, actual: $path);
+    }
+
+    /**
+     * Test empty path (should return ECom root)
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithEmptyDirectory(): void
+    {
+        $path = Config::getPath(dir: '');
+
+        // Expected path is just the ECom root based on composer.json
+        $expectedPath = $this->getComposerRoot();
+
+        $this->assertEquals(expected: $expectedPath, actual: $path);
+    }
+
+    /**
+     * Test directory traversal attack prevention
+     */
+    public function testGetPathWithDirectoryTraversal(): void
+    {
+        $this->expectException(exception: Throwable::class);
+        $this->expectExceptionMessage(
+            message: 'Invalid directory path. Directory traversal is not allowed.'
+        );
+
+        Config::getPath(dir: '../etc/passwd');
+    }
+
+    /**
+     * Test valid path with leading slash
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithLeadingSlash(): void
+    {
+        $path = Config::getPath(dir: '/subdir/with/leading/slash');
+        $expectedPath = $this->getComposerRoot() . '/subdir/with/leading/slash';
+
+        $this->assertEquals(expected: $expectedPath, actual: $path);
+    }
+
+    /**
+     * Test path that only contains ".." (should trigger traversal prevention)
+     */
+    public function testGetPathWithOnlyTraversal(): void
+    {
+        $this->expectException(exception: Throwable::class);
+        $this->expectExceptionMessage(
+            message: 'Invalid directory path. Directory traversal is not allowed.'
+        );
+
+        Config::getPath(dir: '..');
+    }
+
+    /**
+     * Test path containing multiple ".." segments (should trigger traversal prevention)
+     */
+    public function testGetPathWithMultipleTraversalSegments(): void
+    {
+        $this->expectException(exception: Throwable::class);
+        $this->expectExceptionMessage(
+            message: 'Invalid directory path. Directory traversal is not allowed.'
+        );
+
+        Config::getPath(dir: 'some/../../directory');
     }
 }
