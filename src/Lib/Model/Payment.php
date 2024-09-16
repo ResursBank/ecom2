@@ -11,7 +11,6 @@ namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
 use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
@@ -56,7 +55,6 @@ class Payment extends Model
         public readonly ?Order $order = null,
         public readonly ?ApplicationResponse $application = null,
         public readonly ?Metadata $metadata = null,
-        public readonly ?CoApplicant $coApplicant = null,
         public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
