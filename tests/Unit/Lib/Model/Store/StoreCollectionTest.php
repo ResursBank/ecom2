@@ -9,7 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model\Store;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Model\Store\Store;
 use Resursbank\Ecom\Lib\Model\Store\StoreCollection;
 use Resursbank\Ecom\Module\Store\Enum\Country;
@@ -22,9 +26,10 @@ class StoreCollectionTest extends TestCase
     /**
      * Generate a collection with dummy stores.
      *
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
-     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
      */
     private function getCollection(): StoreCollection
     {
@@ -59,9 +64,10 @@ class StoreCollectionTest extends TestCase
     /**
      * Test that getSelectList works.
      *
-     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalValueException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testGetSelectList(): void
     {
@@ -90,9 +96,10 @@ class StoreCollectionTest extends TestCase
     /**
      * Test that getSingleStoreId works as intended.
      *
-     * @throws \Resursbank\Ecom\Exception\Validation\EmptyValueException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalTypeException
-     * @throws \Resursbank\Ecom\Exception\Validation\IllegalValueException
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testGetSingleStoreId(): void
     {
@@ -116,5 +123,21 @@ class StoreCollectionTest extends TestCase
             expected: $singleStore->id,
             actual: $singleStoreCol->getSingleStoreId()
         );
+    }
+
+    /**
+     * Assert that filterById works as intended.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testFilterById(): void
+    {
+        $stores = $this->getCollection();
+        $store = $stores->filterById('31ecb532-2610-4972-9f09-ef7580a97ed4');
+        $this->assertInstanceOf(Store::class, $store);
+        $this->assertEquals('31ecb532-2610-4972-9f09-ef7580a97ed4', $store->id);
     }
 }

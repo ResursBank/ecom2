@@ -41,6 +41,19 @@ class StoreCollection extends Collection
     }
 
     /**
+     * Find and return store by ID.
+     */
+    public function filterById(string $id): ?Store
+    {
+        $filtered = array_filter(
+            $this->getData(),
+            static fn (Store $store) => $store->id === $id
+        );
+
+        return count($filtered) === 1 ? array_values($filtered)[0] : null;
+    }
+
+    /**
      * Resolve ID value of only available store.
      */
     public function getSingleStoreId(): ?string
