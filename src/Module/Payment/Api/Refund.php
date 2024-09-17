@@ -35,6 +35,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
@@ -102,7 +103,9 @@ class Refund
                     event: $result->isRefunded() ? Event::REFUNDED :
                         Event::PARTIALLY_REFUNDED,
                     user: User::ADMIN,
-                    result: Result::SUCCESS
+                    result: Result::SUCCESS,
+                    extra: empty($orderLines) ?
+                        null : Price::format(value: $orderLines->getTotal())
                 )
             );
             return $result;
