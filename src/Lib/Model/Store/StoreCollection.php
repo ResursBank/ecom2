@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Store;
 
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use function Amp\Promise\first;
 
 /**
  * Defines a Store collection.
@@ -38,6 +39,22 @@ class StoreCollection extends Collection
         }
 
         return $result;
+    }
+
+    /**
+     * Find and return store by ID.
+     *
+     * @param string $id
+     * @return Store|null
+     */
+    public function filterById(string $id): ?Store
+    {
+        $filtered = array_filter(
+            $this->getData(),
+            fn(Store $store) => $store->id === $id
+        );
+
+        return count($filtered) === 1 ? array_values($filtered)[0] : null;
     }
 
     /**
