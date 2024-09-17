@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Utilities;
 
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 /**
@@ -17,15 +19,15 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 class Price
 {
     /**
-     * Flexible price formatter.
+     * Flexible price formatter
+     *
+     * @throws ConfigException
      */
     public static function format(
         int|float $value,
         int $decimals = 2,
         string $decimalSeparator = ',',
-        string $thousandsSeparator = ' ',
-        ?string $currencySymbol = null,
-        ?CurrencyFormat $currencyFormat = null
+        string $thousandsSeparator = ' '
     ): string {
         $formattedAmount = number_format(
             num: $value,
@@ -34,8 +36,8 @@ class Price
             thousands_separator: $thousandsSeparator
         );
 
-        return $currencyFormat === CurrencyFormat::SYMBOL_FIRST ?
-            $currencySymbol . $formattedAmount :
-            $formattedAmount . ($currencySymbol !== null ? ' ' : '') . $currencySymbol;
+        return Config::getCurrencyFormat() === CurrencyFormat::SYMBOL_FIRST ?
+            Config::getCurrencySymbol() . $formattedAmount :
+            $formattedAmount . ' ' . Config::getCurrencySymbol();
     }
 }

@@ -181,15 +181,15 @@ class CaptureTest extends TestCase
 
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(
+                quantity: 2.00,
+                quantityUnit: 'st',
+                vatRate: 25.00,
+                totalAmountIncludingVat: 301.5,
                 description: 'Android',
                 reference: 'T-800',
-                quantityUnit: 'st',
-                quantity: 2.00,
-                vatRate: 25.00,
+                type: OrderLineType::PHYSICAL_GOODS,
                 unitAmountIncludingVat: 150.75,
-                totalAmountIncludingVat: 301.5,
-                totalVatAmount: 60.3,
-                type: OrderLineType::PHYSICAL_GOODS
+                totalVatAmount: 60.3
             ),
         ]);
 
