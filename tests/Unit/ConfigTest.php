@@ -248,10 +248,7 @@ class ConfigTest extends TestCase
     public function testGetPathWithValidDirectory(): void
     {
         $path = Config::getPath(dir: 'valid/directory');
-
-        // Get the dynamically resolved ECom root using dirname(__DIR__)
         $expectedPath = dirname(path: __DIR__, levels: 2) . '/valid/directory';
-
         $this->assertEquals(expected: $expectedPath, actual: $path);
     }
 
