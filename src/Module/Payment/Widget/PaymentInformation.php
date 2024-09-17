@@ -201,9 +201,7 @@ class PaymentInformation extends Widget
             value: $amount,
             decimals: 2,
             decimalSeparator: ',',
-            thousandsSeparator: ' ',
-            currencySymbol: $this->currencySymbol,
-            currencyFormat: $this->currencyFormat
+            thousandsSeparator: ' '
         );
     }
 
