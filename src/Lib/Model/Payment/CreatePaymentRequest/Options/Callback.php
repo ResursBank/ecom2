@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -26,7 +26,7 @@ class Callback extends Model
      * @throws AttributeCombinationException
      */
     public function __construct(
-        #[StringMatchesUrl] public readonly ?string $url
+        #[StringIsUrl] public readonly ?string $url
     ) {
         parent::__construct();
     }

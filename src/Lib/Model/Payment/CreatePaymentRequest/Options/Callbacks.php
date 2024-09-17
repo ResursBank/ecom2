@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 
-use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**

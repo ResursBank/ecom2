@@ -22,7 +22,7 @@ use function preg_match;
  * Used for regex validation of urls.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
-class StringMatchesUrl implements StringInterface
+class StringIsUrl implements StringInterface
 {
     /**
      * @throws IllegalUrlException
