@@ -287,9 +287,7 @@ class PartPayment extends Widget
     {
         return Price::format(
             value: $this->cost->monthlyCost,
-            decimals: $this->decimals,
-            currencySymbol: $this->currencySymbol,
-            currencyFormat: $this->currencyFormat
+            decimals: $this->decimals
         );
     }
 }

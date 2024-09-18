@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Resursbank\Ecom\Config;
@@ -26,6 +27,7 @@ use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Throwable;
 
 /**
  * Tests Config class functionality
@@ -215,7 +217,7 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * Verifies that before setup the $instance property is set to null
+     * Verifies that the $instance property is set to null before setup.
      */
     public function testInstanceNullBeforeSetup(): void
     {
@@ -236,5 +238,90 @@ class ConfigTest extends TestCase
         );
 
         $this->assertNotNull(actual: $initializedValue);
+    }
+
+    /**
+     * Test valid path without traversal
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithValidDirectory(): void
+    {
+        $path = Config::getPath(dir: 'valid/directory');
+        $expectedPath = dirname(path: __DIR__, levels: 2) . '/valid/directory';
+        $this->assertEquals(expected: $expectedPath, actual: $path);
+    }
+
+    /**
+     * Test empty path (should return ECom root)
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithEmptyDirectory(): void
+    {
+        $path = Config::getPath(dir: '');
+        $expectedPath = dirname(path: __DIR__, levels: 2);
+        $this->assertEquals(expected: $expectedPath, actual: $path);
+    }
+
+    /**
+     * Test directory traversal attack prevention
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithDirectoryTraversal(): void
+    {
+        $this->expectException(exception: Throwable::class);
+        $this->expectExceptionMessage(
+            message: 'Invalid directory path. Directory traversal is not allowed.'
+        );
+
+        Config::getPath(dir: '../etc/passwd');
+    }
+
+    /**
+     * Test valid path with leading slash
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithLeadingSlash(): void
+    {
+        $path = Config::getPath(dir: '/subdir/with/leading/slash');
+        $expectedPath = dirname(
+            path: __DIR__,
+            levels: 2
+        ) . '/subdir/with/leading/slash';
+
+        $this->assertEquals(expected: $expectedPath, actual: $path);
+    }
+
+    /**
+     * Test path that only contains ".." (should trigger traversal prevention)
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithOnlyTraversal(): void
+    {
+        $this->expectException(exception: Throwable::class);
+        $this->expectExceptionMessage(
+            message: 'Invalid directory path. Directory traversal is not allowed.'
+        );
+
+        Config::getPath(dir: '..');
+    }
+
+    /**
+     * Test path containing multiple ".." segments (should trigger traversal prevention)
+     *
+     * @throws Exception
+     */
+    public function testGetPathWithMultipleTraversalSegments(): void
+    {
+        $this->expectException(exception: Throwable::class);
+        $this->expectExceptionMessage(
+            message: 'Invalid directory path. Directory traversal is not allowed.'
+        );
+
+        Config::getPath(dir: 'some/../../directory');
     }
 }

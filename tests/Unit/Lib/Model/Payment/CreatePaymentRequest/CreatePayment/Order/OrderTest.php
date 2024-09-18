@@ -9,16 +9,16 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Payment\Models\CreatePayment\Order;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Payment\CreatePaymentRequest\CreatePayment\Order;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Order;
 
 /**
  * Test data integrity of order entity model.
@@ -131,7 +131,7 @@ class OrderTest extends TestCase
             )
         );
 
-        $this->expectException(exception: IllegalCharsetException::class);
+        $this->expectException(exception: IllegalValueException::class);
         new Order(
             orderLines: new OrderLineCollection(
                 data: array_fill(

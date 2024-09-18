@@ -7,22 +7,19 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\PriceSignage;
+namespace Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Defines URI link entity.
+ * Application data for a payment.
  */
-class UriLink extends Model
+class ParticipantRedirectionUrls extends Model
 {
-    /**
-     * @todo Can $language be empty? Is this an Enum value?
-     */
     public function __construct(
-        #[StringIsUrl] public readonly string $uri,
-        public readonly string $language
+        #[StringIsUrl] public readonly ?string $failUrl,
+        #[StringIsUrl] public readonly ?string $successUrl
     ) {
         parent::__construct();
     }

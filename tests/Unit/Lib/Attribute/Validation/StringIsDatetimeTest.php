@@ -12,13 +12,13 @@ namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
-use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesUrl;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
 
 /**
- * Unit tests for the StringMatchesUrl validation attribute.
+ * Unit tests for the StringIsDatetime validation attribute.
  */
-class StringMatchesUrlTest extends TestCase
+class StringIsDatetimeTest extends TestCase
 {
     /**
      * Validate the output of getAcceptedValues.
@@ -28,7 +28,7 @@ class StringMatchesUrlTest extends TestCase
      */
     public function testGetAcceptedValues(): void
     {
-        $obj = new StringMatchesUrl();
+        $obj = new StringIsDatetime();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
@@ -42,7 +42,7 @@ class StringMatchesUrlTest extends TestCase
             try {
                 $obj->validate(name: $value, value: $value);
                 $this->addToAssertionCount(count: 1);
-            } catch (IllegalUrlException) {
+            } catch (IllegalValueException) {
                 $this->fail(message: 'Value is empty');
             }
         }
@@ -55,7 +55,7 @@ class StringMatchesUrlTest extends TestCase
      */
     public function testGetRejectedValues(): void
     {
-        $obj = new StringMatchesUrl();
+        $obj = new StringIsDateTime();
         $reflectionParameter = $this->createMock(
             originalClassName: ReflectionParameter::class
         );
@@ -68,8 +68,8 @@ class StringMatchesUrlTest extends TestCase
         ) {
             try {
                 $obj->validate(name: $value, value: $value);
-                $this->addToAssertionCount(count: 1);
-            } catch (IllegalUrlException) {
+                $this->fail(message: 'Value ' . $value . ' was not rejected');
+            } catch (IllegalValueException) {
                 $this->addToAssertionCount(count: 1);
             }
         }

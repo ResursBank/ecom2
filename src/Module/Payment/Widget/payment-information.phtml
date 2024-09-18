@@ -21,35 +21,35 @@ use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
             <th><?= Translator::translate(phraseId: 'payment') ?></th>
             <th><?= $this->logo ?></th>
         </tr>
-        <?= $this->getTrEl(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
-        <?= $this->getTrEl(
+        <?= $this->getTrElement(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
+        <?= $this->getTrElement(
             title: 'authorized-amount',
             content: $this->getFormattedAmount($this->getAuthorizedAmount())
         ) ?>
-        <?= $this->getTrEl(
+        <?= $this->getTrElement(
             title: 'captured-amount',
             content: $this->getFormattedAmount($this->getCapturedAmount())
         ) ?>
-        <?= $this->getTrEl(
+        <?= $this->getTrElement(
             title: 'refunded-amount',
             content: $this->getFormattedAmount($this->getRefundedAmount())
         ) ?>
-        <?= $this->getTrEl(
+        <?= $this->getTrElement(
             title: 'cancelled-amount',
             content: $this->getFormattedAmount($this->getCancelledAmount())
         ) ?>
-        <?= $this->getTrEl(title: 'status', content: $this->getStatus()) ?>
-        <?= $this->getTrEl(title: 'payment-method', content: $this->getPaymentMethodName()) ?>
+        <?= $this->getTrElement(title: 'status', content: $this->getStatus()) ?>
+        <?= $this->getTrElement(title: 'payment-method', content: $this->getPaymentMethodName()) ?>
         <tr>
             <th><?= Translator::translate(phraseId: 'customer') ?></th>
             <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
             <th></th>
         </tr>
-        <?= $this->getTrEl(title: 'name', content: $this->getCustomerName()) ?>
+        <?= $this->getTrElement(title: 'name', content: $this->getCustomerName()) ?>
         <?php if ($this->hasAddress()): ?>
-            <?= $this->getTrEl(title: 'address', content: $this->getAddressContent()) ?>
+            <?= $this->getTrElement(title: 'address', content: $this->getAddressContent()) ?>
         <?php endif; ?>
-        <?= $this->getTrEl(title: 'telephone', content: $this->getTelephone()) ?>
-        <?= $this->getTrEl(title: 'email', content: $this->getEmail()) ?>
+        <?= $this->getTrElement(title: 'telephone', content: $this->getTelephone()) ?>
+        <?= $this->getTrElement(title: 'email', content: $this->getEmail()) ?>
     </table>
 </div>

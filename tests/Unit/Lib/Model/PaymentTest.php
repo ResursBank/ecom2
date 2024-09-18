@@ -13,7 +13,10 @@ namespace Resursbank\EcomTest\Unit\Lib\Model;
 
 use DateTime;
 use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -22,6 +25,7 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 
@@ -36,14 +40,22 @@ class PaymentTest extends TestCase
      * Create a dummy Payment object with the specified status
      *
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws Exception
      * @SuppressWarnings(PHPMD.LongVariable)
      */
-    private function createDummyPayment(Status $status, ?RejectedReasonCategory $rejectedReasonCategory = null): Payment
-    {
+    private function createDummyPayment(
+        Status $status,
+        ?RejectedReasonCategory $rejectedReasonCategory = null,
+        ?Payment\Order\PossibleActionCollection $possibleActions = null
+    ): Payment {
+        if ($possibleActions === null) {
+            $possibleActions = new Payment\Order\PossibleActionCollection(
+                data: []
+            );
+        }
+
         return new Payment(
             id: Strings::getUuid(),
             created: (new DateTime())->format(format: 'c'),
@@ -60,9 +72,7 @@ class PaymentTest extends TestCase
             order: new Payment\Order(
                 orderReference: Strings::getUuid(),
                 actionLog: new Payment\Order\ActionLogCollection(data: []),
-                possibleActions: new Payment\Order\PossibleActionCollection(
-                    data: []
-                ),
+                possibleActions: $possibleActions,
                 totalOrderAmount: 100.00,
                 canceledAmount: 0.00,
                 authorizedAmount: 100.00,
@@ -70,6 +80,79 @@ class PaymentTest extends TestCase
                 refundedAmount: 0.00
             )
         );
+    }
+
+    /**
+     * Fetches test data for the can-prefixed method test.
+     */
+    private function getCanMethodList(): array
+    {
+        return [
+            'canCancel' => [
+                'status' => Status::ACCEPTED,
+                'possibleAction' => PossibleAction::CANCEL
+            ],
+            'canPartiallyCancel' => [
+                'status' => Status::ACCEPTED,
+                'possibleAction' => PossibleAction::PARTIAL_CANCEL
+            ],
+            'canCapture' => [
+                'status' => Status::ACCEPTED,
+                'possibleAction' => PossibleAction::CAPTURE
+            ],
+            'canPartiallyCapture' => [
+                'status' => Status::ACCEPTED,
+                'possibleAction' => PossibleAction::PARTIAL_CAPTURE
+            ],
+            'canRefund' => [
+                'status' => Status::ACCEPTED,
+                'possibleAction' => PossibleAction::REFUND
+            ],
+            'canPartiallyRefund' => [
+                'status' => Status::ACCEPTED,
+                'possibleAction' => PossibleAction::PARTIAL_REFUND
+            ]
+        ];
+    }
+
+    /**
+     * Perform actual test for testCanActionMethods.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    private function actuallyTestCanActionMethod(
+        string $methodName,
+        array $values,
+        PossibleAction $case
+    ): void {
+        if ($case === $values['possibleAction']) {
+            $payment = $this->createDummyPayment(
+                status: $values['status'],
+                possibleActions: new Payment\Order\PossibleActionCollection(
+                    data: [new Payment\Order\PossibleAction(
+                        action: $values['possibleAction']
+                    )]
+                )
+            );
+
+            $this->assertTrue(condition: $payment->$methodName());
+            return;
+        }
+
+        $payment = $this->createDummyPayment(
+            status: $values['status'],
+            possibleActions: new Payment\Order\PossibleActionCollection(
+                data: [new Payment\Order\PossibleAction(
+                    action: $case
+                )]
+            )
+        );
+        $this->assertFalse(condition: $payment->$methodName());
     }
 
     /**
@@ -91,6 +174,29 @@ class PaymentTest extends TestCase
         $this->assertFalse(
             condition: $notFrozen->isFrozen()
         );
+    }
+
+    /**
+     * Verify that the can-prefixed methods work as intended.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
+    public function testCanActionMethods(): void
+    {
+        foreach ($this->getCanMethodList() as $methodName => $values) {
+            foreach (PossibleAction::cases() as $case) {
+                $this->actuallyTestCanActionMethod(
+                    methodName: $methodName,
+                    values: $values,
+                    case: $case
+                );
+            }
+        }
     }
 
     /**

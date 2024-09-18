@@ -11,7 +11,8 @@ namespace Resursbank\Ecom\Lib\Model;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Payment\Application\CoApplicant;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
@@ -21,7 +22,6 @@ use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
 use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
 use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
@@ -44,9 +44,9 @@ class Payment extends Model
      * @todo Missing unit tests ECP-254
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $created,
-        public readonly string $storeId,
+        #[StringIsUuid] public readonly string $id,
+        #[StringIsDatetime] public readonly string $created,
+        #[StringIsUuid] public readonly string $storeId,
         public readonly Customer $customer,
         public readonly Status $status,
         public readonly ?RejectedReason $rejectedReason = null,
@@ -56,13 +56,9 @@ class Payment extends Model
         public readonly ?Order $order = null,
         public readonly ?ApplicationResponse $application = null,
         public readonly ?Metadata $metadata = null,
-        public readonly ?CoApplicant $coApplicant = null,
-        public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        public readonly ?TaskRedirectionUrls $taskRedirectionUrls = null
     ) {
-        $this->validateId();
-        $this->validateCreated();
-        $this->validateStoreId();
+        parent::__construct();
     }
 
     /**
@@ -268,52 +264,6 @@ class Payment extends Model
     {
         return $this->rejectedReason !== null &&
             $this->rejectedReason->category === $reason;
-    }
-
-    /**
-     * NOTE: We cannot test date format because Resurs Bank will return
-     * inconsistent values for the same properties (sometimes ATOM compatible,
-     * sometimes containing an up to 9 digit microsecond suffix).
-     *
-     * @throws IllegalValueException
-     */
-    private function validateCreated(): void
-    {
-        $this->stringValidation->isTimestampDate(value: $this->created);
-    }
-
-    /**
-     * Validate that an (uu)id exists on the payment.
-     *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateId(): void
-    {
-        $this->validateUuid(uuid: $this->id);
-    }
-
-    /**
-     * Validate existing store (uu)id.
-     *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateStoreId(): void
-    {
-        $this->validateUuid(uuid: $this->storeId);
-    }
-
-    /**
-     * Validate that a string is an uuid and not empty.
-     *
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateUuid(string $uuid): void
-    {
-        $this->stringValidation->notEmpty(value: $uuid);
-        $this->stringValidation->isUuid(value: $uuid);
     }
 
     /**
