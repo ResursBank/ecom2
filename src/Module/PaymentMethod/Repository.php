@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
@@ -161,23 +162,16 @@ class Repository
         string $paymentMethodId,
         ?float $amount = null
     ): ?PaymentMethod {
-        $result = null;
-
         $paymentMethods = self::getPaymentMethods(
             storeId: $storeId,
             amount: $amount
         );
 
-        /** @var PaymentMethod $paymentMethod */
-        foreach ($paymentMethods as $paymentMethod) {
-            if ($paymentMethod->id !== $paymentMethodId) {
-                continue;
-            }
-
-            $result = $paymentMethod;
+        try {
+            return $paymentMethods->getById(methodId: $paymentMethodId);
+        } catch (MissingValueException) {
+            return null;
         }
-
-        return $result;
     }
 
     /**

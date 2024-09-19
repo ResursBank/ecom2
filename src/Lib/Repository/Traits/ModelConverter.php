@@ -45,7 +45,11 @@ trait ModelConverter
         $this->validateModel(model: $model);
 
         if (is_string(value: $data)) {
-            $data = json_decode(json: $data, associative: false, flags: JSON_THROW_ON_ERROR);
+            $data = json_decode(
+                json: $data,
+                associative: false,
+                flags: JSON_THROW_ON_ERROR
+            );
         }
 
         if (is_array(value: $data)) {

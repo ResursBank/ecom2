@@ -181,7 +181,11 @@ abstract class Translator
     {
         $rawKey = ($translationFile ?
             (self::$cacheKey . '-' . $translationFile) :
-            (self::$cacheKey . '-' . self::$translationsFilePath)
+            (self::$cacheKey . '-' . preg_replace(
+                pattern: '/[0-9]/',
+                replacement: '',
+                subject: sha1(string: self::$translationsFilePath)
+            ))
         );
         $key = preg_replace(
             pattern: '/[^a-zA-Z\d\-_]/',

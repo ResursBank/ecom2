@@ -77,4 +77,33 @@ class PaymentMethodTest extends TestCase
             $this->assertFalse(condition: $method->isPartPayment());
         }
     }
+
+    /**
+     * Assert that isInternal gives correct responses depending on the method's
+     * type.
+     */
+    public function testIsInternal(): void
+    {
+        $validCases = [
+            Type::RESURS_CARD,
+            Type::RESURS_INVOICE,
+            Type::RESURS_INVOICE_ACCOUNT,
+            Type::RESURS_NEW_CARD,
+            Type::RESURS_NEW_REVOLVING_CREDIT,
+            Type::RESURS_PART_PAYMENT,
+            Type::RESURS_REVOLVING_CREDIT,
+            Type::RESURS_ZERO
+        ];
+
+        foreach (Type::cases() as $case) {
+            $method = $this->generatePaymentMethodWithType(type: $case);
+
+            if (in_array(needle: $case, haystack: $validCases, strict: true)) {
+                $this->assertTrue(condition: $method->isInternal());
+                continue;
+            }
+
+            $this->assertFalse(condition: $method->isInternal());
+        }
+    }
 }

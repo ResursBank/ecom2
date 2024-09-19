@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -50,6 +49,40 @@ class Resursbank_FetchStores {
     fetching = false;
 
     /**
+     * Setup event listeners for form submission and input changes. This will
+     * prevent form submission if an AJAX request is ongoing. This will also
+     * trigger a new AJAX request when input values change.
+     *
+     * @returns {void}
+     */
+    setupEventListeners() {
+        var that = this;
+
+        try {
+            this.getSelectStoreElement().form.addEventListener(
+                'submit',
+                function (evt) {
+                    if (that.fetching) {
+                        evt.preventDefault();
+                    }
+                }
+            );
+
+            this.getInputElements().forEach((el) => {
+                if (el instanceof HTMLElement) {
+                    el.addEventListener(
+                        'change',
+                        this.fetchStores.bind(this),
+                        false
+                    );
+                }
+            });
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
      * Perform AJAX request to fetch stores.
      */
     fetchStores() {
@@ -71,7 +104,13 @@ class Resursbank_FetchStores {
 
             storeSelect.length = 0;
 
-            fetch('<?= $this->fetchUrl ?>', {
+            const url = this.getUrl();
+
+            if (url === '') {
+                throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-fetch-url') ?>');
+            }
+
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -91,6 +130,18 @@ class Resursbank_FetchStores {
     }
 
     /**
+     * Resolve URL for AJAX request.
+     *
+     * Note that this is only a placeholder, intended to be overridden by the
+     * implementing class.
+     *
+     * @returns {string}
+     */
+    getUrl() {
+        return '';
+    }
+
+    /**
      * Resolve store select element.
      *
      * @returns {HTMLSelectElement}
@@ -98,16 +149,12 @@ class Resursbank_FetchStores {
     getSelectStoreElement() {
         let result = null;
 
-        <?php
-
-if ($this->storeSelectId !== null) : ?>
+        <?php if ($this->storeSelectId !== null): ?>
         result = document.getElementById('<?= $this->storeSelectId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-store-select'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-select') ?>');
         }
 
         return result;
@@ -121,62 +168,50 @@ if ($this->storeSelectId !== null) : ?>
     getSelectEnvironmentElement() {
         let result = null;
 
-        <?php
-
-if ($this->environmentSelectId !== null) : ?>
+        <?php if ($this->environmentSelectId !== null): ?>
         result = document.getElementById('<?= $this->environmentSelectId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-environment-select'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-environment-select') ?>');
         }
 
         return result;
     }
 
     /**
-     * Resolve client id input element.
+     * Fetch client ID input element.
      *
      * @returns {HTMLInputElement}
      */
-    getClientIdInputElement() {
+    getClientIdElement() {
         let result = null;
 
-        <?php
-
-if ($this->clientIdInputId !== null) : ?>
+        <?php if ($this->clientIdInputId !== null): ?>
         result = document.getElementById('<?= $this->clientIdInputId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-client-id-input'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-id-input') ?>');
         }
 
         return result;
     }
 
     /**
-     * Resolve client secret input element.
+     * Get client secret input element.
      *
      * @returns {HTMLInputElement}
      */
-    getClientSecretInputElement() {
+    getClientSecretElement() {
         let result = null;
 
-        <?php
-
-if ($this->clientSecretInputId !== null) : ?>
+        <?php if ($this->clientSecretInputId !== null): ?>
         result = document.getElementById('<?= $this->clientSecretInputId ?>');
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(
-	phraseId: 'get-stores-missing-client-secret-input'
-) ?>');
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-client-secret-input') ?>');
         }
 
         return result;
@@ -190,8 +225,8 @@ if ($this->clientSecretInputId !== null) : ?>
     getPostData() {
         return {
             environment: this.getSelectEnvironmentElement().value,
-            clientId: this.getClientIdInputElement().value,
-            clientSecret: this.getClientSecretInputElement().value
+            clientId: this.getClientIdElement().value,
+            clientSecret: this.getClientSecretElement().value
         };
     }
 
@@ -202,9 +237,7 @@ if ($this->clientSecretInputId !== null) : ?>
      */
     getInputElements() {
         return [
-            this.getSelectEnvironmentElement(),
-            this.getClientIdInputElement(),
-            this.getClientSecretInputElement()
+            this.getSelectEnvironmentElement()
         ];
     }
 
@@ -232,17 +265,13 @@ if ($this->clientSecretInputId !== null) : ?>
         if (this.fetching) {
             storeSelect.setAttribute('disabled', '');
 
-            <?php
-
-if ($this->spinnerClass !== null) : ?>
+            <?php if ($this->spinnerClass !== null): ?>
             storeSelect.parentElement.classList.add('<?= $this->spinnerClass ?>');
             <?php endif; ?>
         } else {
             storeSelect.removeAttribute('disabled');
 
-            <?php
-
-if ($this->spinnerClass !== null) : ?>
+            <?php if ($this->spinnerClass !== null): ?>
             storeSelect.parentElement.classList.remove('<?= $this->spinnerClass ?>');
             <?php endif; ?>
         }
@@ -257,9 +286,7 @@ if ($this->spinnerClass !== null) : ?>
     handleFetchResponse(response) {
         if (!response.ok) {
             throw new Error(
-                '<?= Translator::translate(
-	phraseId: 'get-stores-server-error'
-) ?>'
+                '<?= Translator::translate(phraseId: 'get-stores-server-error') ?>'
             );
         } else {
             return response.json();
@@ -319,36 +346,11 @@ if ($this->spinnerClass !== null) : ?>
     }
 }
 
-<?php
-
-if ($this->automatic) : ?>
+<?php if ($this->automatic): ?>
 document.addEventListener(
     'DOMContentLoaded',
     function () {
-        const fetcher = new Resursbank_FetchStores();
-
-        try {
-            fetcher.getSelectStoreElement().form.addEventListener(
-                'submit',
-                function (evt) {
-                    if (fetcher.fetching) {
-                        evt.preventDefault();
-                    }
-                }
-            );
-
-            fetcher.getInputElements().forEach((el) => {
-                if (el instanceof HTMLElement) {
-                    el.addEventListener(
-                        'change',
-                        fetcher.fetchStores.bind(fetcher),
-                        false
-                    );
-                }
-            });
-        } catch (e) {
-            fetcher.errorHandler(e);
-        }
+        new Resursbank_FetchStores().setupEventListeners();
     }
 );
 <?php endif; ?>

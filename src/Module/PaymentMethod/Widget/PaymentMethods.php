@@ -17,8 +17,7 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
-use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
-use Resursbank\Ecom\Lib\Model\Rco\PaymentMethodCollection as RcoPaymentMethodCollection;
+use Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -54,7 +53,7 @@ class PaymentMethods extends Widget
      * @throws TranslationException
      */
     public function __construct(
-        public readonly PaymentMethodCollection|RcoPaymentMethodCollection $paymentMethods
+        public readonly PaymentMethodCollection $paymentMethods
     ) {
         $this->nameLabel = Translator::translate(phraseId: 'name');
         $this->minTotalLabel = Translator::translate(phraseId: 'min-total');

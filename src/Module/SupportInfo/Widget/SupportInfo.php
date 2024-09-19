@@ -18,12 +18,18 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
 
+use function defined;
+
 /**
  * Support info widget which displays basic information about the state of the library.
  */
 class SupportInfo extends Widget
 {
-    private readonly string $html;
+    /** @var string */
+    public readonly string $html;
+
+    /** @var string */
+    public readonly string $css;
 
     /**
      * @param string $pluginVersion Version of the calling plugin/addon
@@ -33,14 +39,9 @@ class SupportInfo extends Widget
         public readonly string $pluginVersion = ''
     ) {
         $this->html = $this->render(file: __DIR__ . '/support-info.phtml');
-    }
-
-    /**
-     * Return the widget HTML.
-     */
-    public function getHtml(): string
-    {
-        return $this->html;
+        $this->css = (string) file_get_contents(
+            filename: __DIR__ . '/support-info.css'
+        );
     }
 
     /**

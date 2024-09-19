@@ -24,12 +24,13 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
+use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformationCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\AnnuityFactor\Models\AnnuityFactors;
 use Throwable;
 
 /**
@@ -59,7 +60,7 @@ class Repository
     public static function getAnnuityFactors(
         string $storeId,
         string $paymentMethodId
-    ): AnnuityFactors {
+    ): AnnuityInformationCollection {
         try {
             $cache = self::getCache(
                 storeId: $storeId,
@@ -68,13 +69,13 @@ class Repository
 
             $result = $cache->read();
 
-            if (!$result instanceof AnnuityFactors) {
+            if (!$result instanceof AnnuityInformationCollection) {
                 $result = self::getApi(
                     storeId: $storeId,
                     paymentMethodId: $paymentMethodId
                 )->call();
 
-                if (!$result instanceof AnnuityFactors) {
+                if (!$result instanceof AnnuityInformationCollection) {
                     throw new ApiException(message: 'Invalid API response.');
                 }
 
@@ -102,6 +103,7 @@ class Repository
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
+     * @throws Throwable
      */
     public static function getMethods(
         string $storeId,
@@ -119,14 +121,19 @@ class Repository
                 paymentMethodId: $method->id
             );
 
-            if ($factors->content->count() === 0) {
+            if ($factors->count() === 0) {
                 continue;
             }
 
             $result[] = $method;
         }
 
-        return new PaymentMethodCollection(data: $result);
+        $result = new PaymentMethodCollection(data: $result);
+
+        return $result->filterByPropertyValue(
+            property: 'priceSignagePossible',
+            value: true
+        );
     }
 
     /**
@@ -142,7 +149,7 @@ class Repository
             key: 'payment-method-annuity' . sha1(
                 string: serialize(value: compact('storeId', 'paymentMethodId'))
             ),
-            model: AnnuityFactors::class,
+            model: AnnuityInformation::class,
             ttl: 3600
         );
     }
@@ -158,9 +165,10 @@ class Repository
         self::validateStoreId(storeId: $storeId);
 
         return new Get(
-            model: AnnuityFactors::class,
+            model: AnnuityInformation::class,
             route: Mapi::STORE_ROUTE . "/$storeId/payment_methods/$paymentMethodId/annuity_factors",
-            params: []
+            params: [],
+            extractProperty: 'content'
         );
     }
 

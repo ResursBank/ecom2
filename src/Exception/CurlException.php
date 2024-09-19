@@ -122,12 +122,39 @@ class CurlException extends Exception
         ) {
             /* @phpstan-ignore-next-line */
             foreach ($body->parameters as $property => $message) {
-                $result[] = ErrorTranslator::get(
-                    errorMessage: $property . ' ' . $message
+                $result[] = $this->getProperProperty(
+                    property: $property,
+                    message: $message
                 );
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Get a translation from properties for where we are missing translations with untranslated parameters.
+     *
+     * @throws ConfigException
+     */
+    private function getProperProperty(string $property, string $message): string
+    {
+        // Find translations with full property and message.
+        $fullPropertyErrorString = ErrorTranslator::get(
+            errorMessage: "$property $message"
+        );
+
+        // Find translations with only the property without matching parameters.
+        $simplePropertyErrorString = ErrorTranslator::get(
+            errorMessage: $property
+        );
+
+        // If the simple property's not missing in the translations, it will not be empty and therefore considered
+        // a safe exact match.
+        return ($simplePropertyErrorString !== '' &&
+            $fullPropertyErrorString !== $simplePropertyErrorString
+        )
+            ? $simplePropertyErrorString
+            : $fullPropertyErrorString;
     }
 }

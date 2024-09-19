@@ -22,6 +22,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 use function dirname;
 
@@ -62,7 +63,9 @@ final class Config
         public readonly int $proxyType,
         public readonly int $timeout,
         public readonly Language $language,
-        public readonly Location $location
+        public readonly Location $location,
+        public readonly string $currencySymbol,
+        public readonly CurrencyFormat $currencyFormat
     ) {
     }
 
@@ -84,7 +87,9 @@ final class Config
         int $proxyType = 0,
         int $timeout = 0,
         Language $language = Language::EN,
-        Location $location = Location::SE
+        Location $location = Location::SE,
+        string $currencySymbol = 'kr',
+        CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -99,7 +104,9 @@ final class Config
             proxyType: $proxyType,
             timeout: $timeout,
             language: $language,
-            location: $location
+            location: $location,
+            currencySymbol: $currencySymbol,
+            currencyFormat: $currencyFormat
         );
     }
 
@@ -262,6 +269,24 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->location;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getCurrencySymbol(): string
+    {
+        self::validateInstance();
+        return self::$instance->currencySymbol;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getCurrencyFormat(): CurrencyFormat
+    {
+        self::validateInstance();
+        return self::$instance->currencyFormat;
     }
 
     /**

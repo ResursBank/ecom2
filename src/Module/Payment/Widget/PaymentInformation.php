@@ -28,6 +28,7 @@ use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Throwable;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
@@ -127,7 +128,28 @@ class PaymentInformation extends Widget
 
     public function getStatus(): string
     {
-        return $this->payment->status->value;
+        $result = $this->payment->status->value;
+
+        $reason = str_replace(
+            search: '_',
+            replace: '-',
+            subject: strtolower(
+                string: (string)$this->payment->rejectedReason?->category?->value
+            )
+        );
+
+        if ($reason !== '') {
+            try {
+                $result .= ' (' . Translator::translate(
+                    phraseId: "reject-reason-$reason"
+                ) . ')';
+            } catch (Throwable) {
+                // In case we get translation problems with nonexistent phrases.
+                $result .= ' (' . sprintf('reject-reason-%s', $reason) . ')';
+            }
+        }
+
+        return $result;
     }
 
     public function getPaymentMethodName(): string
@@ -179,9 +201,7 @@ class PaymentInformation extends Widget
             value: $amount,
             decimals: 2,
             decimalSeparator: ',',
-            thousandsSeparator: ' ',
-            currencySymbol: $this->currencySymbol,
-            currencyFormat: $this->currencyFormat
+            thousandsSeparator: ' '
         );
     }
 
@@ -197,7 +217,7 @@ class PaymentInformation extends Widget
      * @throws TranslationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function getTdEl(
+    public function getTdElement(
         string $content,
         bool $isHeader = false
     ): string {
@@ -223,13 +243,13 @@ class PaymentInformation extends Widget
      * @throws ReflectionException
      * @throws TranslationException
      */
-    public function getTrEl(
+    public function getTrElement(
         string $title,
         string $content
     ): string {
         return '<tr>' .
-            $this->getTdEl(content: $title, isHeader: true) .
-            $this->getTdEl(content: $content) . '</tr>';
+            $this->getTdElement(content: $title, isHeader: true) .
+            $this->getTdElement(content: $content) . '</tr>';
     }
 
     /**

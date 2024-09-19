@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Customer;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -136,10 +137,13 @@ class Repository
                     );
                 }
             }
-        } catch (Throwable $e) {
-            $result = null;
-            self::logException(exception: $e);
+        } catch (Throwable) {
             // Failing is harmless, client can supply info on gateway.
+            $result = null;
+            Config::getLogger()->debug(message:
+                "No SSN data available in session. Client likely did not " .
+                "fetch address data from gateway. Client will need " .
+                "to supply SSN data on gateway instead.");
         }
 
         return $result;

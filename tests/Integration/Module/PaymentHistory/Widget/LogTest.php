@@ -123,8 +123,7 @@ class LogTest extends PaymentHistory
             'previous-status',
             'current-status',
             'extra',
-            'go-back',
-            'show-extra',
+            'go-back'
         ];
 
         foreach ($translatedPhrases as $phraseId) {

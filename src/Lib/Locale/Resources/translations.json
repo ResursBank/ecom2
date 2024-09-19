@@ -74,6 +74,14 @@
     }
   },
   {
+    "id": "id",
+    "translation": {
+      "en": "ID",
+      "sv": "ID",
+      "no": "ID"
+    }
+  },
+  {
     "id": "min-total",
     "translation": {
       "en": "Min. Purchase Limit",
@@ -82,11 +90,27 @@
     }
   },
   {
+    "id": "table-header-min-total",
+    "translation": {
+      "en": "Min total",
+      "sv": "Minsta totalsumma",
+      "da": "Mindste totalsum"
+    }
+  },
+  {
     "id": "max-total",
     "translation": {
       "en": "Max. Purchase Limit",
       "sv": "Högsta totalbelopp",
       "no": "Maks kjøpsgrense"
+    }
+  },
+  {
+    "id": "table-header-max-total",
+    "translation": {
+      "en": "Max total",
+      "sv": "Högsta totalsumma",
+      "da": "Højeste totalsum"
     }
   },
   {
@@ -106,35 +130,11 @@
     }
   },
   {
-    "id": "resurs-checkout",
-    "translation": {
-      "en": "Resurs Checkout",
-      "sv": "Resurs Checkout",
-      "no": "Resurs Kasse"
-    }
-  },
-  {
     "id": "resurs-bank",
     "translation": {
       "en": "Resurs Bank",
       "sv": "Resurs Bank",
       "no": "Resurs Bank"
-    }
-  },
-  {
-    "id": "plugin-and-account-settings",
-    "translation": {
-      "en": "Plugin and account settings",
-      "sv": "Plugin- och kontoinställningar",
-      "no": "Plugin- og kontoinnstillinger"
-    }
-  },
-  {
-    "id": "cart-is-empty",
-    "translation": {
-      "en": "Cart is empty!",
-      "sv": "Kundvagnen är tom!",
-      "no": "Handlekurven er tom!"
     }
   },
   {
@@ -146,35 +146,11 @@
     }
   },
   {
-    "id": "could-not-complete-order-due-to-a-signing-problem",
-    "translation": {
-      "en": "Could not complete order due to a signing problem.",
-      "sv": "Kunde inte slutföra beställningen på grund av ett signeringsproblem.",
-      "no": "Kunne ikke fullføre bestillingen på grunn av et signeringsproblem."
-    }
-  },
-  {
     "id": "default-quantity-unit",
     "translation": {
       "en": "pcs",
       "sv": "st",
       "no": "stk"
-    }
-  },
-  {
-    "id": "shipping-description",
-    "translation": {
-      "en": "Shipping",
-      "sv": "Frakt",
-      "no": "Frakt"
-    }
-  },
-  {
-    "id": "shipping-reference",
-    "translation": {
-      "en": "shipping",
-      "sv": "frakt",
-      "no": "frakt"
     }
   },
   {
@@ -186,35 +162,11 @@
     }
   },
   {
-    "id": "part-payment-general-error",
-    "translation": {
-      "en": "An error occurred when updating the part payment data",
-      "sv": "Ett fel uppstod när delbetalningsdata uppdaterades",
-      "no": "En feil oppstod ved oppdatering av data for delbetaling"
-    }
-  },
-  {
-    "id": "get-address-could-not-fetch-address",
-    "translation": {
-      "en": "Could not fetch an address for the given value. Please update the value and try again.",
-      "sv": "Kunde inte hämta adress för det angivna värdet. Vänligen uppdatera värdet eller ladda om sidan och försök igen.",
-      "no": "Kunne ikke hente en adresse for den gitte verdien. Vennligst oppdater verdien og prøv igjen."
-    }
-  },
-  {
     "id": "get-address-server-error",
     "translation": {
       "en": "Something went wrong when fetching the address. Please refresh the page and try again. If the problem persists, please contact the store.",
       "sv": "Något gick fel när adressen hämtades. Vänligen ladda om sidan och försök igen. Om problemet kvarstår, vänligen kontakta butiken.",
       "no": "Noe gikk galt da adressen ble hentet. Vennligst oppdater siden og prøv igjen. Hvis problemet vedvarer, vennligst kontakt butikken."
-    }
-  },
-  {
-    "id": "get-address-no-callback-function",
-    "translation": {
-      "en": "The address was fetched, but could not be handled properly. Please contact the store if the problem persists.",
-      "sv": "Adressen blev hämtad, men kunde inte hanteras korrekt. Vänligen kontakta butiken om problemet kvarstår.",
-      "no": "Adressen ble hentet, men kunne ikke behandles skikkelig. Vennligst kontakt butikken hvis problemet vedvarer."
     }
   },
   {
@@ -244,19 +196,19 @@
   {
     "id": "pay-in-installments-with-resurs-bank",
     "translation": {
-      "en": "Pay in installments with Resurs Bank",
-      "sv": "Delbetala med Resurs Bank",
-      "no": "Delbetale med Resurs Bank",
-      "fi": "Maksa osissa Resurs Bankilla"
+      "en": "Pay in installments with Resurs Bank AB",
+      "sv": "Delbetala med Resurs Bank AB",
+      "no": "Delbetale med Resurs Bank AB",
+      "fi": "Maksa osissa Resurs Bank AB"
     }
   },
   {
     "id": "starting-at",
     "translation": {
-      "en": "Starting at %1 per month, for %2",
-      "sv": "Från %1 per månad, i %2",
-      "no": "Fra %1 per måned, for %2",
-      "fi": "Alk. %1 / kk - %2 rahoituksella"
+      "en": "Starting at %1 per month (%2)",
+      "sv": "Från %1 per månad (%2)",
+      "no": "Fra %1 per måned (%2)",
+      "fi": "Alkaen %1 kuukaudessa (%2)"
     }
   },
   {
@@ -284,11 +236,11 @@
     }
   },
   {
-    "id": "updated-status-by-callback",
+    "id": "part-payment-widget",
     "translation": {
-      "en": "Callback from Resurs Bank updated the order status.",
-      "sv": "Callback från Resurs Bank uppdaterade beställningens status.",
-      "no": "Tilbakemelding fra Resurs Bank oppdaterte ordrestatusen."
+      "en": "Part Payment Widget",
+      "sv": "Delbetalningswidget",
+      "no": "Delbetalingswidget"
     }
   },
   {
@@ -380,14 +332,6 @@
     }
   },
   {
-    "id": "limit-explanation",
-    "translation": {
-      "en": "Minimum monthly cost the widget is displayed for",
-      "sv": "Lägsta månadskostnad som widgeten visas för",
-      "no": "Minimum månedskostnad som widgeten vises for"
-    }
-  },
-  {
     "id": "limit-missing-store-id",
     "translation": {
       "en": "Can't configure Part payment widget without a configured store id",
@@ -417,14 +361,6 @@
       "en": "Can't configure a limit without specifying the duration to use",
       "sv": "Kan inte konfigurera gränsvärde utan att ange vilken avbetalningstid som skall användas",
       "no": "Kan ikke sette en grense uten å angi varigheten som skal brukes"
-    }
-  },
-  {
-    "id": "limit-new-value-not-numeric",
-    "translation": {
-      "en": "The specified limit is not a number",
-      "sv": "Det angivna gränsvärdet är inte ett nummer",
-      "no": "Den angitte grensen er ikke et tall"
     }
   },
   {
@@ -489,14 +425,6 @@
       "en": "No",
       "sv": "Nej",
       "no": "Nei"
-    }
-  },
-  {
-    "id": "total-order-amount",
-    "translation": {
-      "en": "Total order amount",
-      "sv": "Total ordersumma",
-      "no": "Total ordresum"
     }
   },
   {
@@ -593,22 +521,6 @@
       "en": "Leave empty to disable logging.",
       "sv": "Lämna tomt för att inaktivera loggning.",
       "no": "La stå tom for å deaktivere logging."
-    }
-  },
-  {
-    "id": "cache-path",
-    "translation": {
-      "en": "Cache path",
-      "sv": "Cachesökväg",
-      "no": "Mellomlagersti"
-    }
-  },
-  {
-    "id": "leave-empty-to-disable-cache",
-    "translation": {
-      "en": "Leave empty to disable cache.",
-      "sv": "Lämna tomt för att inaktivera cache.",
-      "no": "La stå tom for å deaktivere mellomlager."
     }
   },
   {
@@ -716,14 +628,6 @@
     }
   },
   {
-    "id": "cancel-article-row-fail",
-    "translation": {
-      "en": "Could not remove article row.",
-      "sv": "Kunde inte ta bort artikelrad.",
-      "no": "Kunne ikke fjerne artikkelraden."
-    }
-  },
-  {
     "id": "payment-methods",
     "translation": {
       "en": "Payment Methods",
@@ -756,14 +660,6 @@
     }
   },
   {
-    "id": "get-stores-failed",
-    "translation": {
-      "en": "Failed to resolve list of available stores from the Resurs Bank API.",
-      "sv": "Kunde inte hämta lista med butiker från Resurs Banks API.",
-      "no": "Klarte ikke å hente listen over tilgjengelige butikker fra Resurs Bank API."
-    }
-  },
-  {
     "id": "clear-cache-failed",
     "translation": {
       "en": "Failed to clear Resurs Bank related cache.",
@@ -785,14 +681,6 @@
       "en": "Failed to render list of available payment methods.",
       "sv": "Kunde inte rendera lista med tillgängliga betalmetoder.",
       "no": "Klarte ikke å vise listen over tilgjengelige betalingsmetoder."
-    }
-  },
-  {
-    "id": "render-settings-failed",
-    "translation": {
-      "en": "Failed to render settings.",
-      "sv": "Kunde inte rendera inställningar.",
-      "no": "Klarte ikke å vise innstillinger."
     }
   },
   {
@@ -825,62 +713,6 @@
       "en": "Failed to update payment at Resurs Bank to %s. The amount is too great, must be %s or less.",
       "sv": "Kunde inte uppdatera betalningen hos Resurs Bank till %s. Summan är för stor, måste vara %s eller mindre.",
       "no": "Kunne ikke oppdatere betalingen hos Resurs Bank til %s. Beløpet er for stort, må være %s eller mindre."
-    }
-  },
-  {
-    "id": "refund-unable-to-perform-operation",
-    "translation": {
-      "en": "Unable to perform refund operation: %1, please verify order state manually.",
-      "sv": "Kunde inte genomföra återbetalning: %1, vänligen verifiera orderstatus manuellt.",
-      "no": "Kunne ikke utføre refusjonsoperasjonen: %1, vennligst verifiser ordrestatus manuelt."
-    }
-  },
-  {
-    "id": "refund-wrong-return-type-from-wc-get-order",
-    "translation": {
-      "en": "wc_get_order returned object of type %1, WC_Order_Refund expected.",
-      "sv": "wc_get_order returnerade ett objekt av typen %1, WC_Order_Refund förväntades.",
-      "no": "wc_get_order returnerte objekt av typen %1, WC_Order_Refund forventet."
-    }
-  },
-  {
-    "id": "refund-unable-to-load-refund-information",
-    "translation": {
-      "en": "Unable to load refund information. Aborting refund.",
-      "sv": "Kunde ej ladda återbetalningsinformation. Avbryter återbetalning.",
-      "no": "Kunne ikke laste refusjonsinformasjon. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-payment-reference-not-a-string",
-    "translation": {
-      "en": "Fetched Resurs Bank payment reference is not a string. Aborting refund.",
-      "sv": "Hämtad betalningsreferens för Resurs Bank är inte en sträng. Avbryter återbetalning.",
-      "no": "Hentet Resurs Bank betalingsreferanse er ikke en streng. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-payment-reference-is-empty",
-    "translation": {
-      "en": "Fetched Resurs Bank payment reference is empty. Aborting refund.",
-      "sv": "Hämtad betalningsreferens för Resurs Bank är tom. Avbryter återbetalning.",
-      "no": "Hentet Resurs Bank betalingsreferanse er tom. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-unable-to-load-order-information",
-    "translation": {
-      "en": "Unable to load order information. Aborting refund.",
-      "sv": "Kunde inte ladda orderinformation. Avbryter återbetalning.",
-      "no": "Kunne ikke laste ordreinformasjon. Avbryter refusjon."
-    }
-  },
-  {
-    "id": "refund-error-when-fetching-order-lines",
-    "translation": {
-      "en": "Error encountered while attempting to fetch order lines from payment. Aborting refund.",
-      "sv": "Ett fel uppstod när orderrader hämtades från betalningen. Avbryter återbetalning.",
-      "no": "Feil oppstod ved forsøk på å hente ordrelinjer fra betaling. Avbryter refusjon."
     }
   },
   {
@@ -945,14 +777,6 @@
       "en": "This order is not allowed to be part cancelled.",
       "sv": "Denna order får ej del-annulleras.",
       "no": "Denne ordren er ikke tillatt å kanselleres delvis."
-    }
-  },
-  {
-    "id": "callback-amount",
-    "translation": {
-      "en": "Amount %s in Resurs' system.",
-      "sv": "Summa %s i Resurs system.",
-      "no": "Beløp %s i Resurs' system."
     }
   },
   {
@@ -1044,14 +868,6 @@
     }
   },
   {
-    "id": "payment-must-be-captured-to-be-refunded",
-    "translation": {
-      "en": "Payment must have been captured before it can be refunded.",
-      "sv": "Betalning måste ha debiterats innan den kan krediteras.",
-      "no": "Betalingen må ha blitt debiteret før den kan krediteres."
-    }
-  },
-  {
     "id": "failed-to-resolve-sku-from-order-line-object",
     "translation": {
       "en": "Failed to resolve SKU from order line item.",
@@ -1083,22 +899,6 @@
       "en": "Reason",
       "sv": "Orsak",
       "no": "Grunn"
-    }
-  },
-  {
-    "id": "callback-url-authorization",
-    "translation": {
-      "en": "Authorization Callback URL",
-      "sv": "Authorization Callback URL",
-      "no": "Autorisasjon Tilbakeringings-URL"
-    }
-  },
-  {
-    "id": "callback-url-management",
-    "translation": {
-      "en": "Management Callback URL",
-      "sv": "Management Callback URL",
-      "no": "Administrasjon Tilbakeringings-URL"
     }
   },
   {
@@ -1150,14 +950,6 @@
     }
   },
   {
-    "id": "failed-payment-action",
-    "translation": {
-      "en": "Failed to execute requested action on the payment at Resurs Bank.",
-      "sv": "Kunde inte utföra begärd åtgärd på betalningen hos Resurs Bank.",
-      "no": "Kunne ikke utføre forespurt handling på betalingen hos Resurs Bank."
-    }
-  },
-  {
     "id": "capture-action-failed",
     "translation": {
       "en": "Capturing payment at Resurs Bank failed (%s).",
@@ -1203,14 +995,6 @@
       "en": "Failed to change order status from %s to %s. Action is not valid against Resurs Bank payment.",
       "sv": "Kunde inte ändra beställningens status från %s till %s. Åtgärden är inte giltig mot betalning hos Resurs Bank.",
       "no": "Kunne ikke endre bestillingsstatus fra %s til %s. Handlingen er ikke gyldig mot betaling hos Resurs Bank."
-    }
-  },
-  {
-    "id": "cannot-remove-refund",
-    "translation": {
-      "en": "Refunds cannot be removed from Resurs Bank payment.",
-      "sv": "Återbetalningar kan inte tas bort från Resurs Bank betalningar.",
-      "no": "Refusjoner kan ikke fjernes fra Resurs Bank betalinger."
     }
   },
   {
@@ -1293,6 +1077,38 @@
       "en": "Callback test received at",
       "sv": "Test av callback inkom",
       "no": "Test av tilbakeringing mottatt kl"
+    }
+  },
+  {
+    "id": "callback-test-triggered-at",
+    "translation": {
+      "en": "Callback test triggered at",
+      "sv": "Test av callback skickades",
+      "no": "Test av tilbakeringing ble sendt kl"
+    }
+  },
+  {
+    "id": "callback-test-result",
+    "translation": {
+      "en": "Result of last callback test",
+      "sv": "Resultat för senaste callbacktestet",
+      "no": "Resultater for den siste callbacktesten"
+    }
+  },
+  {
+    "id": "callback-settings",
+    "translation": {
+      "en": "Callback settings",
+      "sv": "Callbackinställningar",
+      "no": "Callbackinnstillinger"
+    }
+  },
+  {
+    "id": "callback-info",
+    "translation": {
+      "en": "To show callback settings and test callback functionality, change the scope to a storeview.",
+      "sv": "För att visa callbackinställningar och testa callbackfunktionalitet, ändra scope till butiksvy.",
+      "no": "For å vise callbackinnstillinger og teste callbackfunksjonalitet, endre scope til en butikkvisning."
     }
   },
   {
@@ -1426,9 +1242,9 @@
   {
     "id": "mapi",
     "translation": {
-      "en": "Two step Magento Checkout with Resurs payment methods",
-      "sv": "Tvåstegs Magento-kassa med Resurs-betalningsmetoder",
-      "no": "To-trinns Magento-utsjekking med Resurs betalingsmetoder"
+      "en": "MAPI",
+      "sv": "MAPI",
+      "no": "MAPI"
     }
   },
   {
@@ -1472,6 +1288,14 @@
     }
   },
   {
+    "id": "get-stores-missing-fetch-url",
+    "translation": {
+      "en": "Failed to obtain fetch URL.",
+      "sv": "Kunde inte hitta fetch URL.",
+      "no": "Kunne ikke finne hent-URL."
+    }
+  },
+  {
     "id": "please-select-store",
     "translation": {
       "en": "Please select store.",
@@ -1488,46 +1312,6 @@
     }
   },
   {
-    "id": "rcoplus",
-    "translation": {
-      "en": "RCO Plus",
-      "sv": "RCO Plus",
-      "no": "RCO Plus"
-    }
-  },
-  {
-    "id": "failed-applying-billing-address",
-    "translation": {
-      "en": "Failed to update billing address.",
-      "sv": "Kunde inte uppdatera faktureringsadress.",
-      "no": "Kunne ikke oppdatere fakturaadresse."
-    }
-  },
-  {
-    "id": "failed-applying-delivery-address",
-    "translation": {
-      "en": "Failed to update delivery address.",
-      "sv": "Kunde inte uppdatera leveransadress.",
-      "no": "Kunne ikke oppdatere leveringsadresse."
-    }
-  },
-  {
-    "id": "failed-applying-shipping-method",
-    "translation": {
-      "en": "Failed to update shipping method selection.",
-      "sv": "Kunde inte uppdatera val av fraktmetod.",
-      "no": "Kunne ikke oppdatere valg av fraktmetode."
-    }
-  },
-  {
-    "id": "failed-applying-payment-method",
-    "translation": {
-      "en": "Failed to update payment method selection.",
-      "sv": "Kunde inte uppdatera val av betalmetod.",
-      "no": "Kunne ikke oppdatere valg av betalingsmetode."
-    }
-  },
-  {
     "id": "failed-placing-order",
     "translation": {
       "en": "Failed to place order.",
@@ -1536,51 +1320,19 @@
     }
   },
   {
+    "id": "failed-placing-order-try-again",
+    "translation": {
+      "en": "Failed to place order. Please review your information and try again.",
+      "sv": "Kunde inte genomför beställning. Vänligen kontrollera dina uppgifter och försök igen.",
+      "no": "Kunne ikke gjennomføre bestilling. Vennligst gjennomgå informasjonen din og prøv igjen."
+    }
+  },
+  {
     "id": "invalid-webhook-data",
     "translation": {
       "en": "Invalid webhook data submitted from Resurs Bank.",
       "sv": "Ogiltig webhook data skickad från Resurs Bank.",
       "no": "Ugyldig webhook-data sendt fra Resurs Bank."
-    }
-  },
-  {
-    "id": "advanced-settings-for-rcoplus",
-    "translation": {
-      "en": "Advanced Settings for RCO Plus",
-      "sv": "Avancerade inställningar för RCO Plus",
-      "no": "Avanserte innstillinger for RCO Plus"
-    }
-  },
-  {
-    "id": "terms-url",
-    "translation": {
-      "en": "Terms URL",
-      "sv": "Länk till villkor",
-      "no": "Lenke til vilkår"
-    }
-  },
-  {
-    "id": "terms-url-description",
-    "translation": {
-      "en": "Must be an HTTPS URL on the same domain as your store",
-      "sv": "Måste vara en HTTPS-URL på samma domän som er butik",
-      "no": "Må være en HTTPS-URL på samme domene som butikken din"
-    }
-  },
-  {
-    "id": "invalid-webhook-auth-token",
-    "translation": {
-      "en": "Invalid auth token.",
-      "sv": "Ogiltigt auth token.",
-      "no": "Ugyldig autentiseringstoken."
-    }
-  },
-  {
-    "id": "failed-clearing-cart",
-    "translation": {
-      "en": "Clearing cart failed.",
-      "sv": "Tömning av kundvagn misslyckades.",
-      "no": "Tømming av handlekurv mislyktes."
     }
   },
   {
@@ -1608,83 +1360,11 @@
     }
   },
   {
-    "id": "failed-applying-discount-code",
-    "translation": {
-      "en": "Failed to apply discount code.",
-      "sv": "Kunde inte applicera rabattkod.",
-      "no": "Kunne ikke anvende rabattkode."
-    }
-  },
-  {
-    "id": "missing-discount-code",
-    "translation": {
-      "en": "Missing discount code.",
-      "sv": "Rabattkod saknas.",
-      "no": "Rabattkode mangler."
-    }
-  },
-  {
-    "id": "available-customer-types",
-    "translation": {
-      "en": "Available customer types",
-      "sv": "Tillgängliga kundtyper",
-      "no": "Tilgjengelige kundetyper"
-    }
-  },
-  {
-    "id": "enable-lookup-customer-address",
-    "translation": {
-      "en": "Enable lookup customer address",
-      "sv": "Aktivera stöd för att hämta kundinformation",
-      "no": "Aktiver støtte for å hente kundeinformasjon"
-    }
-  },
-  {
-    "id": "enable-customer-notes",
-    "translation": {
-      "en": "Enable customer notes",
-      "sv": "Aktivera stöd för kund kommentar",
-      "no": "Aktiver støtte for kundekommentarer"
-    }
-  },
-  {
-    "id": "part-payment-widget-rcoplus-incompatibility-warning",
-    "translation": {
-      "en": "This widget is not compatible with the RCO Plus API.",
-      "sv": "Denna widget är inte kompatibel med RCO Plus API:et.",
-      "no": "Denne widgeten er ikke kompatibel med RCO Plus API."
-    }
-  },
-  {
-    "id": "payment-already-captured",
-    "translation": {
-      "en": "Payment is already captured.",
-      "sv": "Betalningen har redan debiterats.",
-      "no": "Betalingen er allerede debiteret."
-    }
-  },
-  {
     "id": "connection-failed",
     "translation": {
       "en": "The connection to Resurs Bank failed.",
       "sv": "Kontakten med Resurs Bank misslyckades.",
       "no": "Koblingen til Resurs Bank mislyktes."
-    }
-  },
-  {
-    "id": "please-try-again",
-    "translation": {
-      "en": "Please try again in a few minutes.",
-      "sv": "Vänligen försök igen om några minuter.",
-      "no": "Vennligst prøv igjen om noen minutter."
-    }
-  },
-  {
-    "id": "failed-adjusting-cart-contents",
-    "translation": {
-      "en": "Failed adjusting cart contents.",
-      "sv": "Kunde inte uppdatera varukorg.",
-      "no": "Kunne ikke justere innholdet i handlekurven."
     }
   },
   {
@@ -1717,14 +1397,6 @@
       "en": "The value to use for the XDEBUG_SESSION parameter",
       "sv": "Det värde som används för XDEBUG_SESSION-parametern",
       "no": "Verdien som skal brukes for XDEBUG_SESSION-parameteren"
-    }
-  },
-  {
-    "id": "enable-delayed-authorization",
-    "translation": {
-      "en": "Enable delayed authorization",
-      "sv": "Tillåt fördröjt ordergodkännande",
-      "no": "Tillat forsinket godkjenning"
     }
   },
   {
@@ -1768,19 +1440,972 @@
     }
   },
   {
+    "id": "payment-information-widget-failed-rendering",
+    "translation": {
+      "en": "Payment information could not be retrieved from Resurs Bank.",
+      "sv": "Betalningsinformation kunde inte hämtas från Resurs Bank.",
+      "no": "Betalingsinformasjon kunne ikke hentes fra Resurs Bank."
+    }
+  },
+  {
+    "id": "reject-reason-unknown",
+    "translation": {
+      "en": "Unknown",
+      "sv": "Okänd",
+      "no": "Ukjent"
+    }
+  },
+  {
+    "id": "reject-reason-technical-error",
+    "translation": {
+      "en": "Technical error",
+      "sv": "Tekniskt fel",
+      "no": "Teknisk feil"
+    }
+  },
+  {
+    "id": "reject-reason-credit-denied",
+    "translation": {
+      "en": "Credit denied",
+      "sv": "Kredit nekad",
+      "no": "Kreditt avvist"
+    }
+  },
+  {
+    "id": "reject-reason-payment-frozen",
+    "translation": {
+      "en": "Payment frozen",
+      "sv": "Betalningen är fryst",
+      "no": "Betalingen er frosset"
+    }
+  },
+  {
+    "id": "reject-reason-timeout",
+    "translation": {
+      "en": "Timeout",
+      "sv": "Tidsgräns överskriden",
+      "no": "Tidsavbrudd"
+    }
+  },
+  {
+    "id": "reject-reason-aborted-by-customer",
+    "translation": {
+      "en": "Aborted by customer",
+      "sv": "Avbruten av kunden",
+      "no": "Avbrutt av kunden"
+    }
+  },
+  {
+    "id": "reject-reason-insufficient-funds",
+    "translation": {
+      "en": "Insufficient funds",
+      "sv": "Otillräckliga medel",
+      "no": "Utilstrekkelige midler"
+    }
+  },
+  {
+    "id": "reject-reason-canceled",
+    "translation": {
+      "en": "Canceled",
+      "sv": "Avbruten",
+      "no": "Avlyst",
+      "da": "Annulleret",
+      "fi": "Peruutettu"
+    }
+  },
+  {
+    "id": "reject-reason-manual-application-required",
+    "translation": {
+      "en": "Manual application required",
+      "sv": "Manuell ansökan krävs",
+      "no": "Manuell søknad nødvendig"
+    }
+  },
+  {
+    "id": "reject-reason-not-allowed-to-sign",
+    "translation": {
+      "en": "Not allowed to sign",
+      "sv": "Inte tillåten att signera",
+      "no": "Ikke tillatt å signere"
+    }
+  },
+  {
+    "id": "unable-to-read-payment-data-from-order",
+    "translation": {
+      "en": "Unable to read payment data from order.",
+      "no": "Kan ikke lese betalingsdata fra bestilling.",
+      "sv": "Kan inte läsa betalningsdata från ordern."
+    }
+  },
+  {
+    "id": "not-an-instance-of-store",
+    "translation": {
+      "en": "$store not an instance of Store",
+      "no": "$store er ikke en instans av Store",
+      "sv": "$store är inte en instans av Store"
+    }
+  },
+  {
+    "id": "description-adjustment",
+    "translation": {
+      "en": "Adjustment",
+      "no": "Justering",
+      "sv": "Justering"
+    }
+  },
+  {
+    "id": "placeorder-went-wrong-try-again",
+    "translation": {
+      "en": "Something went wrong when trying to place the order. Please try again, or select another payment method. You could also try refreshing the page.",
+      "sv": "Något gick fel vid försöket att lägga beställningen. Försök igen, eller välj en annan betalningsmetod. Du kan också prova att uppdatera sidan.",
+      "da": "Noget gik galt, da vi forsøgte at placere ordren. Prøv igen, eller vælg en anden betalingsmetode. Du kan også prøve at opdatere siden."
+    }
+  },
+  {
+    "id": "unable-to-read-invoice-from-command-subject",
+    "translation": {
+      "en": "Unable to read invoice from command subject.",
+      "sv": "Kunde inte läsa fakturan från kommandosubjektet.",
+      "da": "Kunne ikke læse fakturaen fra kommandosubjektet."
+    }
+  },
+  {
+    "id": "missing-payment-id",
+    "translation": {
+      "en": "Missing payment id.",
+      "sv": "Saknar payment-ID.",
+      "da": "Mangler payment-ID."
+    }
+  },
+  {
+    "id": "invalid-payment",
+    "translation": {
+      "en": "Invalid payment.",
+      "sv": "Ogiltig betalning.",
+      "da": "Ugyldig betaling."
+    }
+  },
+  {
+    "id": "provide-valid-phone-number",
+    "translation": {
+      "en": "Please provide a valid phone number for your chosen country.",
+      "sv": "Vänligen ange ett giltigt telefonnummer för det valda landet.",
+      "da": "Angiv venligst et gyldigt telefonnummer for det valgte land."
+    }
+  },
+  {
+    "id": "payment-method-does-not-have-a-code",
+    "translation": {
+      "en": "Payment method does not have a code.",
+      "sv": "Betalningsmetoden har ingen kod.",
+      "da": "Betalingsmetoden har ingen kode."
+    }
+  },
+  {
+    "id": "unexpected-response-from-ecom",
+    "translation": {
+      "en": "Unexpected response from ECom.",
+      "sv": "Oväntat svar från ECom.",
+      "da": "Uventet svar fra ECom."
+    }
+  },
+  {
+    "id": "unexpected-order-instance",
+    "translation": {
+      "en": "Unexpected Order instance.",
+      "sv": "Oväntad orderinstans.",
+      "da": "Uventet ordreinstans."
+    }
+  },
+  {
+    "id": "successfully-synchronized-data-from-resurs-bank",
+    "translation": {
+      "en": "Successfully synchronized data from Resurs Bank.",
+      "sv": "Data har synkroniserats framgångsrikt från Resurs Bank.",
+      "da": "Data er synkroniseret med succes fra Resurs Bank."
+    }
+  },
+  {
+    "id": "no-credentials-to-sync-data-from-resurs-bank",
+    "translation": {
+      "en": "There are no credentials to sync data from Resurs Bank.",
+      "sv": "Det finns inga uppgifter för att synkronisera data från Resurs Bank.",
+      "da": "Der er ingen legitimationsoplysninger til at synkronisere data fra Resurs Bank."
+    }
+  },
+  {
+    "id": "failed-to-synchronize-payment-methods",
+    "translation": {
+      "en": "Failed to synchronize payment methods.",
+      "sv": "Misslyckades med att synkronisera betalningsmetoder.",
+      "da": "Kunne ikke synkronisere betalingsmetoder."
+    }
+  },
+  {
+    "id": "failed-to-resolve-module-path",
+    "translation": {
+      "en": "Failed to resolve module path.",
+      "sv": "Misslyckades med att hitta modulvägen.",
+      "da": "Kunne ikke finde modulstien."
+    }
+  },
+  {
+    "id": "something-went-wrong-when-fetching-the-content",
+    "translation": {
+      "en": "Something went wrong when fetching the content. Please try again.",
+      "sv": "Något gick fel vid hämtningen av innehållet. Försök igen.",
+      "da": "Noget gik galt ved hentning af indholdet. Prøv igen."
+    }
+  },
+  {
+    "id": "payment-object-not-instance-of",
+    "translation": {
+      "en": "Payment object is not an instance of %1.",
+      "sv": "Betalningsobjektet är inte en instans av %1.",
+      "da": "Betalingsobjektet er ikke en instans af %1."
+    }
+  },
+  {
+    "id": "order-object-not-instance-of",
+    "translation": {
+      "en": "Order object is not an instance of %1.",
+      "sv": "Orderobjektet är inte en instans av %1.",
+      "da": "Ordreobjektet er ikke en instans af %1."
+    }
+  },
+  {
+    "id": "cannot-proceed-without-logger-name",
+    "translation": {
+      "en": "Cannot proceed without logger name.",
+      "sv": "Kan inte fortsätta utan loggnamn.",
+      "da": "Kan ikke fortsætte uden loggernavn."
+    }
+  },
+  {
+    "id": "cannot-proceed-without-logfile",
+    "translation": {
+      "en": "Cannot proceed without logfile.",
+      "sv": "Kan inte fortsätta utan loggfil.",
+      "da": "Kan ikke fortsætte uden logfil."
+    }
+  },
+  {
+    "id": "unable-to-generate-hash-missing-username",
+    "translation": {
+      "en": "Unable to generate hash. Missing username.",
+      "sv": "Kan inte generera hash. Användarnamn saknas.",
+      "da": "Kan ikke generere hash. Brugernavn mangler."
+    }
+  },
+  {
+    "id": "unable-to-generate-hash-missing-environment",
+    "translation": {
+      "en": "Unable to generate hash. Missing environment.",
+      "sv": "Kan inte generera hash. Miljö saknas.",
+      "da": "Kan ikke generere hash. Miljø mangler."
+    }
+  },
+  {
+    "id": "failed-to-resolve-method-suffix-missing-username",
+    "translation": {
+      "en": "Failed to resolve method suffix. Missing username.",
+      "sv": "Misslyckades med att lösa metodsuffix. Användarnamn saknas.",
+      "da": "Kunne ikke løse metodesuffiks. Brugernavn mangler."
+    }
+  },
+  {
+    "id": "failed-to-resolve-method-suffix-missing-environment",
+    "translation": {
+      "en": "Failed to resolve method suffix. Missing environment.",
+      "sv": "Misslyckades med att lösa metodsuffix. Miljö saknas.",
+      "da": "Kunne ikke løse metodesuffiks. Miljø mangler."
+    }
+  },
+  {
+    "id": "failed-to-apply-country-to-credentials-instance",
+    "translation": {
+      "en": "Failed to apply country to Credentials instance.",
+      "sv": "Misslyckades med att tillämpa land på Credentials-instansen.",
+      "da": "Kunne ikke anvende land til Credentials-instansen."
+    }
+  },
+  {
+    "id": "invalid-or-missing-order-increment-id",
+    "translation": {
+      "en": "Invalid or missing order increment ID.",
+      "sv": "Ogiltigt eller saknat ordernummer.",
+      "da": "Ugyldigt eller manglende ordrenummer."
+    }
+  },
+  {
+    "id": "failed-to-resolve-order-from-request-or-session",
+    "translation": {
+      "en": "Failed to resolve order from request or session.",
+      "sv": "Misslyckades med att hitta order från begäran eller session.",
+      "da": "Kunne ikke finde ordre fra anmodning eller session."
+    }
+  },
+  {
+    "id": "order-missing-valid-entity-id",
+    "translation": {
+      "en": "The order does not have a valid entity ID.",
+      "sv": "Beställningen har inget giltigt enhets-ID.",
+      "da": "Ordren har ikke et gyldigt enheds-ID."
+    }
+  },
+  {
+    "id": "failed-to-fetch-payment-methods-expected-array",
+    "translation": {
+      "en": "Failed to fetch payment methods from API. Expected Array.",
+      "sv": "Misslyckades med att hämta betalningsmetoder från API. Förväntad Array.",
+      "da": "Kunne ikke hente betalingsmetoder fra API. Forventet Array."
+    }
+  },
+  {
+    "id": "cannot-generate-payment-method-code-without-identifier",
+    "translation": {
+      "en": "Cannot generate payment method code without identifier.",
+      "sv": "Kan inte generera betalningsmetodkod utan identifierare.",
+      "da": "Kan ikke generere betalingsmetodekode uden identifikator."
+    }
+  },
+  {
+    "id": "unexpected-payment-method-data-returned-from-ecom",
+    "translation": {
+      "en": "Unexpected payment method data returned from ECom.",
+      "sv": "Oväntad betalningsmetoddata returnerad från ECom.",
+      "da": "Uventede betalingsmetodedata returneret fra ECom."
+    }
+  },
+  {
+    "id": "missing-identifier-index",
+    "translation": {
+      "en": "Missing identifier index.",
+      "sv": "Saknar identifierarindex.",
+      "da": "Manglende identifikatorindeks."
+    }
+  },
+  {
+    "id": "missing-min-order-total-index",
+    "translation": {
+      "en": "Missing min_order_total index.",
+      "sv": "Saknar min_order_total-index.",
+      "da": "Manglende min_order_total-indeks."
+    }
+  },
+  {
+    "id": "missing-max-order-total-index",
+    "translation": {
+      "en": "Missing max_order_total index.",
+      "sv": "Saknar max_order_total-index.",
+      "da": "Manglende max_order_total-indeks."
+    }
+  },
+  {
+    "id": "missing-title-index",
+    "translation": {
+      "en": "Missing title index.",
+      "sv": "Saknar titelindex.",
+      "da": "Manglende titelindeks."
+    }
+  },
+  {
+    "id": "missing-raw-index",
+    "translation": {
+      "en": "Missing raw index.",
+      "sv": "Saknar raw-index.",
+      "da": "Manglende raw-indeks."
+    }
+  },
+  {
+    "id": "credentials-has-no-country-code-assigned",
+    "translation": {
+      "en": "Credentials has no country code assigned.",
+      "sv": "Referenser har ingen landskod tilldelad.",
+      "da": "Legitimationsoplysninger har ingen landekode tildelt."
+    }
+  },
+  {
+    "id": "username-cannot-be-empty",
+    "translation": {
+      "en": "Username cannot be empty.",
+      "sv": "Användarnamnet får inte vara tomt.",
+      "da": "Brugernavnet må ikke være tomt."
+    }
+  },
+  {
+    "id": "password-cannot-be-empty",
+    "translation": {
+      "en": "Password cannot be empty.",
+      "sv": "Lösenordet får inte vara tomt.",
+      "da": "Adgangskoden må ikke være tom."
+    }
+  },
+  {
+    "id": "method-id-must-be-integer-or-null",
+    "translation": {
+      "en": "Method ID must be an integer that's more or equal to 0, or null. Use null to create a new database entry.",
+      "sv": "Metod-ID måste vara ett heltal som är större än eller lika med 0, eller null. Använd null för att skapa en ny databaspost.",
+      "da": "Metode-ID skal være et heltal, der er større end eller lig med 0, eller null. Brug null for at oprette en ny databasepost."
+    }
+  },
+  {
+    "id": "identifier-cannot-be-empty-string",
+    "translation": {
+      "en": "Identifier cannot be an empty string.",
+      "sv": "Identifieraren kan inte vara en tom sträng.",
+      "da": "Identifikatoren kan ikke være en tom streng."
+    }
+  },
+  {
+    "id": "code-cannot-be-empty-string",
+    "translation": {
+      "en": "Code cannot be an empty string.",
+      "sv": "Koden kan inte vara en tom sträng.",
+      "da": "Koden kan ikke være en tom streng."
+    }
+  },
+  {
+    "id": "sort-order-cannot-be-lower-than-0",
+    "translation": {
+      "en": "Sort order cannot be lower than 0.",
+      "sv": "Sorteringsordning kan inte vara lägre än 0.",
+      "da": "Sorteringsrækkefølgen kan ikke være lavere end 0."
+    }
+  },
+  {
+    "id": "minimum-order-total-cannot-be-lower-than-0",
+    "translation": {
+      "en": "Minimum order total cannot be lower than 0.",
+      "sv": "Minsta beställningsbelopp kan inte vara lägre än 0.",
+      "da": "Minimumsordretotalen kan ikke være lavere end 0."
+    }
+  },
+  {
+    "id": "maximum-order-total-cannot-be-lower-than-0",
+    "translation": {
+      "en": "Maximum order total cannot be lower than 0.",
+      "sv": "Högsta beställningsbelopp kan inte vara lägre än 0.",
+      "da": "Maksimumsordretotalen kan ikke være lavere end 0."
+    }
+  },
+  {
+    "id": "country-iso-must-be-2-characters",
+    "translation": {
+      "en": "Country ISO must be 2 characters long in the following format: [a-zA-Z]. Lowercase chars will be cast to uppercase.",
+      "sv": "Lands-ISO måste vara 2 tecken långt i följande format: [a-zA-Z]. Gemener kommer att omvandlas till versaler.",
+      "da": "Lands-ISO skal være 2 tegn langt i følgende format: [a-zA-Z]. Små bogstaver vil blive konverteret til store."
+    }
+  },
+  {
+    "id": "payment-failed-cart-could-not-be-rebuilt",
+    "translation": {
+      "en": "The payment failed and the cart could not be rebuilt. Please add the items back to your cart manually and try a different payment alternative. We sincerely apologize for this inconvenience.",
+      "sv": "Betalningen misslyckades och kundvagnen kunde inte återskapas. Vänligen lägg till artiklarna i din kundvagn manuellt och prova en annan betalningsmetod. Vi ber om ursäkt för detta besvär.",
+      "da": "Betalingen mislykkedes, og kurven kunne ikke genopbygges. Tilføj venligst varerne til din kurv manuelt og prøv en anden betalingsmulighed. Vi undskylder oprigtigt for denne ulejlighed."
+    }
+  },
+  {
+    "id": "failed-to-refund-payment",
+    "translation": {
+      "en": "Failed to refund payment.",
+      "sv": "Kreditering av betalning misslyckades.",
+      "da": "Kunne ikke refundere betalingen."
+    }
+  },
+  {
+    "id": "invalid-credit-memo",
+    "translation": {
+      "en": "Invalid credit memo.",
+      "sv": "Ogiltig kreditnota.",
+      "da": "Ugyldig kreditnota."
+    }
+  },
+  {
+    "id": "payment-methods-will-be-displayed-when-synced",
+    "translation": {
+      "en": "Payment methods will be displayed when synced.",
+      "sv": "Betalningsmetoder kommer att visas när de har synkroniserats.",
+      "da": "Betalingsmetoder vil blive vist, når de er synkroniseret."
+    }
+  },
+  {
+    "id": "callback-urls-successfully-registered",
+    "translation": {
+      "en": "Callback URLs were successfully registered.",
+      "sv": "Callback-URL:er registrerades framgångsrikt.",
+      "da": "Callback-URL'er blev registreret med succes."
+    }
+  },
+  {
+    "id": "callback-urls-failed-to-register",
+    "translation": {
+      "en": "Callback URLs failed to register.",
+      "sv": "Misslyckades med att registrera callback-URL:er.",
+      "da": "Kunne ikke registrere callback-URL'er."
+    }
+  },
+  {
+    "id": "test-callback-was-sent",
+    "translation": {
+      "en": "Test callback was sent.",
+      "sv": "Testcallback skickades.",
+      "da": "Testcallback blev sendt."
+    }
+  },
+  {
+    "id": "test-callback-could-not-be-triggered",
+    "translation": {
+      "en": "Test callback could not be triggered.",
+      "sv": "Testcallback kunde inte utlösas.",
+      "da": "Testcallback kunne ikke udløses."
+    }
+  },
+  {
+    "id": "order-with-quote-id-not-found-in-the-database",
+    "translation": {
+      "en": "Order with quote ID: %1 could not be found in the database.",
+      "sv": "Order med offert-ID: %1 kunde inte hittas i databasen.",
+      "da": "Ordre med tilbuds-ID: %1 kunne ikke findes i databasen."
+    }
+  },
+  {
+    "id": "data-conversion-failed-provided-data-is-invalid",
+    "translation": {
+      "en": "Data conversion failed. Provided data is invalid. %1",
+      "sv": "Dataomvandling misslyckades. Tillhandahållen data är ogiltig. %1",
+      "da": "Data konvertering mislykkedes. Leverede data er ugyldige. %1"
+    }
+  },
+  {
+    "id": "invalid-environment-value",
+    "translation": {
+      "en": "Invalid environment value %1. 0 = prod, 1 = test.",
+      "sv": "Ogiltigt miljövärde %1. 0 = prod, 1 = test.",
+      "da": "Ugyldig miljøværdi %1. 0 = prod, 1 = test."
+    }
+  },
+  {
+    "id": "payment-data-does-not-exist-for-order",
+    "translation": {
+      "en": "Payment data does not exist for order %1.",
+      "sv": "Betalningsdata finns inte för order %1.",
+      "da": "Betalingsdata findes ikke for ordre %1."
+    }
+  },
+  {
+    "id": "unable-to-find-payment-method",
+    "translation": {
+      "en": "Unable to find payment method with ID %1.",
+      "sv": "Kan inte hitta betalningsmetod med ID %1.",
+      "da": "Kan ikke finde betalingsmetode med ID %1."
+    }
+  },
+  {
+    "id": "environment-test",
+    "translation": {
+      "en": "Test",
+      "sv": "Test",
+      "da": "Test"
+    }
+  },
+  {
+    "id": "environment-production",
+    "translation": {
+      "en": "Production",
+      "sv": "Produktion",
+      "da": "Produktion"
+    }
+  },
+  {
+    "id": "failed-to-cancel-payment",
+    "translation": {
+      "en": "Failed to cancel payment.",
+      "sv": "Annullering av betalning misslyckades.",
+      "da": "Kunne ikke annullere betalingen."
+    }
+  },
+  {
+    "id": "unexpected-payment-entity",
+    "translation": {
+      "en": "Unexpected payment entity. Expected %1 but got %2.",
+      "sv": "Oväntad betalningsenhet. Förväntade %1 men fick %2.",
+      "da": "Uventet betalingsenhed. Forventede %1, men fik %2."
+    }
+  },
+  {
+    "id": "unable-to-find-payment-history-entry",
+    "translation": {
+      "en": "Unable to find payment history entry with ID %1.",
+      "sv": "Kan inte hitta betalningshistorikpost med ID %1.",
+      "da": "Kan ikke finde betalingshistorikpost med ID %1."
+    }
+  },
+  {
+    "id": "failed-to-capture-payment",
+    "translation": {
+      "en": "Failed to capture payment.",
+      "sv": "Misslyckades med att fånga betalning.",
+      "da": "Debitering av betalning misslyckades."
+    }
+  },
+  {
+    "id": "missing-expected-key-amount",
+    "translation": {
+      "en": "Missing expected key amount.",
+      "sv": "Saknar förväntad nyckelmängd.",
+      "da": "Mangler forventet nøglebeløb."
+    }
+  },
+  {
+    "id": "does-not-support-negative-credit-memos",
+    "translation": {
+      "en": "Resurs Bank does not support negative credit memos.",
+      "sv": "Resurs Bank stöder inte negativa kreditnotor.",
+      "da": "Resurs Bank understøtter ikke negative kreditnotaer."
+    }
+  },
+  {
+    "id": "failed-to-resolve-api-connection",
+    "translation": {
+      "en": "Failed to resolve API connection from order information.",
+      "sv": "Misslyckades med att lösa API-anslutning från orderinformation.",
+      "da": "Kunne ikke løse API-forbindelse fra ordreoplysninger."
+    }
+  },
+  {
+    "id": "payment-does-not-exist-for-order",
+    "translation": {
+      "en": "Payment does not exist for order %1.",
+      "sv": "Betalning finns inte för order %1.",
+      "da": "Betaling findes ikke for ordre %1."
+    }
+  },
+  {
+    "id": "order-state-could-not-be-converted",
+    "translation": {
+      "en": "Order state (%1) could not be converted.",
+      "sv": "Orderstatus (%1) kunde inte konverteras.",
+      "da": "Ordrestatus (%1) kunne ikke konverteres."
+    }
+  },
+  {
+    "id": "order-status-could-not-be-converted",
+    "translation": {
+      "en": "Order status (%1) could not be converted.",
+      "sv": "Orderstatus (%1) kunde inte konverteras.",
+      "da": "Ordrestatus (%1) kunne ikke konverteres."
+    }
+  },
+  {
+    "id": "failed-to-resolve-order-item-from-creditmemo-item",
+    "translation": {
+      "en": "Failed to resolve order item from credit memo item %1.",
+      "sv": "Misslyckades med att lösa orderpost från kreditnotapost %1.",
+      "da": "Kunne ikke løse ordrepost fra kreditnotapost %1."
+    }
+  },
+  {
+    "id": "failed-to-resolve-order-item-from-invoice-item",
+    "translation": {
+      "en": "Failed to resolve order item from invoice item %1.",
+      "sv": "Misslyckades med att lösa orderpost från fakturapost %1.",
+      "da": "Kunne ikke løse ordrepost fra fakturapost %1."
+    }
+  },
+  {
+    "id": "orderinterface-not-instance-of-order",
+    "translation": {
+      "en": "orderInterface not an instance of Order.",
+      "sv": "orderInterface är inte en instans av Order.",
+      "da": "orderInterface er ikke en instans af Order."
+    }
+  },
+  {
+    "id": "failed-to-locate-order",
+    "translation": {
+      "en": "Failed to locate order %1.",
+      "sv": "Misslyckades med att lokalisera order %1.",
+      "da": "Kunne ikke finde ordre %1."
+    }
+  },
+  {
+    "id": "missing-payment-data-on-order",
+    "translation": {
+      "en": "Missing payment data on order %1.",
+      "sv": "Betalningsdata saknas för order %1.",
+      "da": "Manglende betalingsdata på ordre %1."
+    }
+  },
+  {
+    "id": "invalid-digest",
+    "translation": {
+      "en": "Invalid digest - PaymentId: %1. Digest: %2.",
+      "sv": "Ogiltig digest - Betalnings-ID: %1. Digest: %2.",
+      "da": "Ugyldig digest - Betalings-ID: %1. Digest: %2."
+    }
+  },
+  {
+    "id": "order-could-not-be-retrieved-from-subject",
+    "translation": {
+      "en": "Order could not be retrieved from the observed subject's data.",
+      "sv": "Order kunde inte hämtas från den observerade subjektets data.",
+      "da": "Ordre kunne ikke hentes fra den observerede subjekts data."
+    }
+  },
+  {
+    "id": "no-payment-history-event-name-found",
+    "translation": {
+      "en": "No payment history event name found with observed event %1.",
+      "sv": "Inget betalningshistoriks-händelsenamn hittades för observerad händelse %1.",
+      "da": "Ingen betalingshistorik begivenhedsnavn fundet for observeret begivenhed %1."
+    }
+  },
+  {
+    "id": "order-could-not-be-retrieved-from-subject",
+    "translation": {
+      "en": "Order could not be retrieved from the observed subject's data.",
+      "sv": "Order kunde inte hämtas från den observerade subjektets data.",
+      "da": "Ordre kunne ikke hentes fra den observerede subjekts data."
+    }
+  },
+  {
+    "id": "missing-invoice-data",
+    "translation": {
+      "en": "Missing invoice data.",
+      "sv": "Saknar fakturadata.",
+      "da": "Manglende fakturadata."
+    }
+  },
+  {
+    "id": "payment-history",
+    "translation": {
+      "en": "#%1 Payment History [%2]",
+      "sv": "#%1 Betalningshistorik [%2]",
+      "da": "#%1 Betalingshistorik [%2]"
+    }
+  },
+  {
+    "id": "payment",
+    "translation": {
+      "en": "Payment",
+      "sv": "Betalning",
+      "da": "Betaling"
+    }
+  },
+  {
+    "id": "failed-to-process-test-callback",
+    "translation": {
+      "en": "Failed to process test callback.",
+      "sv": "Misslyckades med att behandla testcallback.",
+      "da": "Kunne ikke behandle testcallback."
+    }
+  },
+  {
+    "id": "missing-payment-method-entity",
+    "translation": {
+      "en": "Missing payment method entity.",
+      "sv": "Saknar betalningsmetodentitet.",
+      "da": "Manglende betalingsmetodeenhed."
+    }
+  },
+  {
+    "id": "unable-to-obtain-payment-method",
+    "translation": {
+      "en": "Unable to obtain payment method.",
+      "sv": "Kunde inte hämta betalningsmetod.",
+      "da": "Kunne ikke få betalingsmetode."
+    }
+  },
+  {
+    "id": "unexpected-annuity-returned-from-ecom",
+    "translation": {
+      "en": "Unexpected annuity returned from ECom.",
+      "sv": "Oväntad annuitet returnerad från ECom.",
+      "da": "Uventet annuitet returneret fra ECom."
+    }
+  },
+  {
+    "id": "failed-to-update-create-annuity-entity",
+    "translation": {
+      "en": "Failed to update/create annuity entity.",
+      "sv": "Misslyckades med att uppdatera/skapa annuitetsentitet.",
+      "da": "Kunne ikke opdatere/oprette annuitetsenhed."
+    }
+  },
+  {
+    "id": "annuity-id-must-be-integer-or-null",
+    "translation": {
+      "en": "Annuity ID must be an integer that's more or equal to 0, or null. Use null to create a new database entry.",
+      "sv": "Annuitets-ID måste vara ett heltal som är större än eller lika med 0, eller null. Använd null för att skapa en ny databaspost.",
+      "da": "Annuitets-ID skal være et heltal, der er større end eller lig med 0, eller null. Brug null for at oprette en ny databasepost."
+    }
+  },
+  {
+    "id": "method-id-may-not-be-negative",
+    "translation": {
+      "en": "Method ID value may not be negative.",
+      "sv": "Metod-ID-värdet får inte vara negativt.",
+      "da": "Metode-ID-værdien må ikke være negativ."
+    }
+  },
+  {
+    "id": "factor-value-may-not-be-negative",
+    "translation": {
+      "en": "Factor value may not be negative.",
+      "sv": "Faktorvärdet får inte vara negativt.",
+      "da": "Faktorværdien må ikke være negativ."
+    }
+  },
+  {
+    "id": "unable-to-find-annuity",
+    "translation": {
+      "en": "Unable to find annuity with ID %1.",
+      "sv": "Kan inte hitta annuitet med ID %1.",
+      "da": "Kan ikke finde annuitet med ID %1."
+    }
+  },
+  {
+    "id": "duration-value-may-not-be-negative",
+    "translation": {
+      "en": "Duration value may not be negative.",
+      "sv": "Varaktighetsvärdet får inte vara negativt.",
+      "da": "Varighedsværdien må ikke være negativ."
+    }
+  },
+  {
+    "id": "callback-error-no-resource-id",
+    "translation": {
+      "en": "No payment/checkout ID found in callback data.",
+      "sv": "Ingen betalnings-/kassa-ID hittades i callback data.",
+      "no": "Ingen betalings-/utsjekkings-ID funnet i tilbakeringingsdata.",
+      "da": "Ingen betalings-/checkout-ID fundet i callback data."
+    }
+  },
+  {
+    "id": "callback-error-failed-processing-authorization",
+    "translation": {
+      "en": "Failed to process authorization callback.",
+      "sv": "Kunde inte processa autorisationscallback.",
+      "no": "Kunne ikke behandle autorisasjonstilbakeringing.",
+      "da": "Kunne ikke behandle autorisationscallback."
+    }
+  },
+  {
+    "id": "called-error-order-not-ready",
+    "translation": {
+      "en": "Order not ready for callback.",
+      "sv": "Beställning ej redo för callback.",
+      "no": "Bestillingen er ikke klar for tilbakeringing.",
+      "da": "Bestilling ikke klar til callback."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-missing-period-element",
+    "translation": {
+      "en": "Failed to obtain period selection box.",
+      "sv": "Kunde inte hitta select box för val av avbetalningsperiod.",
+      "no": "Kunne ikke finne valgboks for valg av avdragsperiode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-missing-payment-method-element",
+    "translation": {
+      "en": "Failed to obtain payment method selection box.",
+      "sv": "Kunde inte hitta select box för val av betalmetod.",
+      "no": "Kunne ikke finne valgboks for valg av betalingsmetode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-invalid-period-element",
+    "translation": {
+      "en": "Invalid period selection box.",
+      "sv": "Ogiltig select box för val av avbetalningsperiod.",
+      "no": "Ugyldig valgboks for valg av avdragsperiode."
+    }
+  },
+  {
+    "id": "part-payment-get-periods-invalid-payment-method-element",
+    "translation": {
+      "en": "Invalid payment method selection box.",
+      "sv": "Ogiltig select box för val av betalmetod.",
+      "no": "Ugyldig valgboks for valg av betalingsmetode."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-amount-element",
+    "translation": {
+      "en": "Failed to obtain amount element.",
+      "sv": "Kunde inte hitta element för belopp.",
+      "no": "Kunne ikke finne element for beløp."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-qty-element",
+    "translation": {
+      "en": "Failed to obtain quantity element.",
+      "sv": "Kunde inte hitta element för kvantitet.",
+      "no": "Kunne ikke finne element for kvantitet."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-observable-elements",
+    "translation": {
+      "en": "Failed to obtain element(s) observable for changes.",
+      "sv": "Kunde inte hitta element för att observera förändringar.",
+      "no": "Kunne ikke finne element for å observere endringer."
+    }
+  },
+  {
+    "id": "part-payment-widget-server-error",
+    "translation": {
+      "en": "Something went wrong when fetching new price information. Please reload the page to see accurate price info.",
+      "sv": "Något gick fel när ny prisinformation skulle hämtas. Vänligen ladda om sidan för att se korrekt prisinformation.",
+      "no": "Noe gikk galt da ny prisinformasjon skulle hentes. Vennligst last inn siden på nytt for å se nøyaktig prisinformasjon."
+    }
+  },
+  {
+    "id": "part-payment-widget-missing-starting-at-data",
+    "translation": {
+      "en": "Failed to obtain price information.",
+      "sv": "Kunde inte hitta prisinformation.",
+      "no": "Kunne ikke finne prisinformasjon."
+    }
+  },
+  {
     "id": "can-not-edit-order-due-to-frozen",
     "translation": {
       "en": "Order can not be edited since it is frozen by Resurs.",
       "sv": "Ordern kan inte redigeras eftersom den är fryst av Resurs.",
-      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.."
+      "no": "Bestilling kan ikke redigeres siden betalingen er fryst av Resurs.",
+      "da": "Bestilling kan ikke redigeres, da betalingen er frosset af Resurs."
     }
   },
   {
     "id": "can-not-edit-order-due-to-rejected",
     "translation": {
       "en": "Order can not be edited since the payment has been rejected by Resurs.",
-      "sv": "Ordern kan inte redigeras eftersom den har avvisats av Resurs.",
-      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs."
+      "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
+      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs.",
+      "da": "Bestilling kan ikke redigeres, da betalingen er afvist af Resurs."
+    }
+  },
+  {
+    "id": "username",
+    "translation": {
+      "en": "Username",
+      "sv": "Användarnamn",
+      "no": "Brukernavn",
+      "da": "Brugernavn"
+    }
+  },
+  {
+    "id": "password",
+    "translation": {
+      "en": "Password",
+      "sv": "Lösenord",
+      "no": "Passord",
+      "da": "Adgangskode"
     }
   },
   {
@@ -1792,6 +2417,14 @@
     }
   },
   {
+    "id": "rb-pp-not-eligible",
+    "translation": {
+      "en": "Part pay interest-free for up to %s months with Resurs Bank AB",
+      "sv": "Delbetala räntefritt i upp till %s månader med Resurs Bank AB",
+      "no": "Delbetale rentefritt i opptil %s måneder med Resurs Bank AB"
+    }
+  },
+  {
     "id": "debitable-amount-does-not-match-authorized-amount",
     "translation": {
       "en": "Debitable amount does not match the authorized amount at Resurs Bank. Final charge may differ - check the transaction in Resurs Merchant Portal.",
@@ -1799,6 +2432,390 @@
       "no": "Debiterbart beløp samsvarer ikke med det autoriserte beløpet hos Resurs Bank. Endelig beløp kan avvike - kontroller transaksjonen i Resurs Merchant Portal.",
       "da": "Debiterbart beløb stemmer ikke overens med det autoriserede beløb hos Resurs Bank. Det endelige beløb kan variere - kontroller transaktionen i Resurs Merchant Portal.",
       "fi": "Veloitettava määrä ei vastaa Resurs Bankin hyväksyttyä määrää. Lopullinen summa voi poiketa - tarkista veloitus Resurs Merchant Portal -portaalissa."
+    }
+  },
+  {
+    "id": "get-address-missing-gov-id-input",
+    "translation": {
+      "en": "Failed to obtain government ID input.",
+      "sv": "Kunde inte hitta input för personnummer.",
+      "no": "Kunne ikke finne input for personnummer."
+    }
+  },
+  {
+    "id": "get-address-missing-customer-type-input-natural",
+    "translation": {
+      "en": "Failed to obtain input to define private citizen.",
+      "sv": "Kunde inte hitta input för att definiera privatperson.",
+      "no": "Kunne ikke finne input for å definere privatperson."
+    }
+  },
+  {
+    "id": "get-address-missing-customer-type-input-legal",
+    "translation": {
+      "en": "Failed to obtain input to define company.",
+      "sv": "Kunde inte hitta input för att definiera företag.",
+      "no": "Kunne ikke finne input for å definere selskap."
+    }
+  },
+  {
+    "id": "get-address-missing-selected-customer-type-input",
+    "translation": {
+      "en": "Failed to obtain selected customer type input.",
+      "sv": "Kunde inte hitta input för vald kundtyp.",
+      "no": "Kunne ikke finne input for valgt kundetype."
+    }
+  },
+  {
+    "id": "get-address-missing-fetch-button",
+    "translation": {
+      "en": "Failed to obtain fetch button.",
+      "sv": "Kunde inte hitta knapp för att hämta adress.",
+      "no": "Kunne ikke finne knapp for å hente adresse."
+    }
+  },
+  {
+    "id": "get-address-missing-update-address-implementation",
+    "translation": {
+      "en": "No implementation of the updateAddress() method.",
+      "sv": "Ingen implementation av metoden updateAddress().",
+      "no": "Ingen implementasjon av metoden updateAddress()."
+    }
+  },
+  {
+    "id": "get-address-missing-fetch-url",
+    "translation": {
+      "en": "Failed to obtain fetch URL.",
+      "sv": "Kunde inte hitta URL för att hämta adress.",
+      "no": "Kunne ikke finne URL for å hente adresse."
+    }
+  },
+  {
+    "id": "get-address-error",
+    "translation": {
+      "en": "Failed to fetch address data.",
+      "sv": "Misslyckades med att hämta adressdata.",
+      "no": "Kunne ikke hente adresseinformasjon."
+    }
+  },
+  {
+    "id": "get-address-invalid-ssn",
+    "translation": {
+      "en": "Invalid government ID.",
+      "sv": "Ogiltigt personnummer.",
+      "no": "Ugyldig personnummer."
+    }
+  },
+  {
+    "id": "get-address-invalid-org",
+    "translation": {
+      "en": "Invalid company ID.",
+      "sv": "Ogiltigt organisationsnummer.",
+      "no": "Ugyldig organisasjonsnummer."
+    }
+  },
+  {
+    "id": "get-address-missing-widget-container-element",
+    "translation": {
+      "en": "Failed to obtain widget container element.",
+      "sv": "Kunde inte hitta element för widget-container.",
+      "no": "Kunne ikke finne element for widget-container."
+    }
+  },
+  {
+    "id": "perform-test",
+    "translation": {
+      "en": "Perform test",
+      "sv": "Utför test",
+      "no": "Utfør test"
+    }
+  },
+  {
+    "id": "update",
+    "translation": {
+      "en": "Update",
+      "sv": "Uppdatera",
+      "no": "Oppdatere"
+    }
+  },
+  {
+    "id": "callback-registration",
+    "translation": {
+      "en": "Callback registration",
+      "sv": "Registrera callbacks",
+      "no": "Registrere callbacks"
+    }
+  },
+  {
+    "id": "test-last-triggered-at",
+    "translation": {
+      "en": "Test last triggered at",
+      "sv": "Senaste test efterfrågades",
+      "no": "Siste test forespurt"
+    }
+  },
+  {
+    "id": "test-last-received-at",
+    "translation": {
+      "en": "Test last received at",
+      "sv": "Senaste test mottogs",
+      "no": "Siste test mottatt"
+    }
+  },
+  {
+    "id": "callback-settings",
+    "translation": {
+      "en": "Callback Settings",
+      "sv": "Callbacks",
+      "no": "Callbacks"
+    }
+  },
+  {
+    "id": "automatically-create-invoices",
+    "translation": {
+      "en": "Automatically create invoices",
+      "sv": "Skapa fakturor automatiskt",
+      "no": "Opprett fakturaer automatisk"
+    }
+  },
+  {
+    "id": "automatically-create-invoices-for-direct-payment-methods",
+    "translation": {
+      "en": "Automatically create invoice for direct payment methods. Swish and Trustly.",
+      "sv": "Skapa automatiskt faktura för direktbetalningsbetalmetoder. Swish och Trustly.",
+      "no": "Opprett automatisk faktura for direkte betalingsmetoder."
+    }
+  },
+  {
+    "id": "callbacks-are-handled-by-cron",
+    "translation": {
+      "en": "Callbacks are handled by cron, please ensure that cron is active.",
+      "sv": "Callbacks hanteras av cron, vänligen säkerställ att cron är aktivt.",
+      "no": "Callbacks håndteres av cron, sørg for at cron er aktiv."
+    }
+  },
+  {
+    "id": "round-item-tax",
+    "translation": {
+      "en": "Round item tax",
+      "sv": "Avrunda produktmoms",
+      "no": "Avrund produktmva"
+    }
+  },
+  {
+    "id": "round-item-tax-percentage-to-nearest-integer",
+    "translation": {
+      "en": "Round item tax percentage to nearest integer. Only use this when your configuration results in floating tax percentage values, for instance when using percentage based shipping fees in combination with currency conversion.",
+      "sv": "Avrunda produkters momssats till närmaste heltal. Aktivera detta endast om din konfiguration resulterar i flytande momssats värden, till exempel om du nyttjar procentuella fraktpriser i samband med valutakonvertering.",
+      "no": "Avrund produktets mva-sats til nærmeste hele tall. Aktiver dette bare hvis konfigurasjonen din resulterer i flytende MVA-satsverdier, for eksempel hvis du bruker prosentvise fraktsatser i forbindelse med valutakonvertering."
+    }
+  },
+  {
+    "id": "sync-data",
+    "translation": {
+      "en": "Sync data",
+      "sv": "Synka data",
+      "no": "Synkronisere data"
+    }
+  },
+  {
+    "id": "automatically-sync-data",
+    "translation": {
+      "en": "Automatically sync data",
+      "sv": "Synka data automatiskt",
+      "no": "Synkroniser data automatisk"
+    }
+  },
+  {
+    "id": "advanced-settings",
+    "translation": {
+      "en": "Advanced Settings",
+      "sv": "Avancerade inställningar",
+      "no": "Avanserte innstillinger"
+    }
+  },
+  {
+    "id": "checkout-type",
+    "translation": {
+      "en": "Checkout type",
+      "sv": "Typ av kassa",
+      "no": "Type betalingskasse"
+    }
+  },
+  {
+    "id": "delete-aborted-orders",
+    "translation": {
+      "en": "Delete aborted orders",
+      "sv": "Ta bort avbrutna beställningar",
+      "no": "Fjern kansellerte bestillinger"
+    }
+  },
+  {
+    "id": "delete-order-when-payment-is-aborted",
+    "translation": {
+      "en": "Delete order when payment is aborted, to avoid orders with pending payment.",
+      "sv": "Ta bort beställning när betalning avbryts, för att undvika beställningar som inväntar betalning.",
+      "no": "Fjern bestillingen når betalingen er suspendert, for å unngå bestillinger som venter på betaling."
+    }
+  },
+  {
+    "id": "sync-payment-methods-and-other-data",
+    "translation": {
+      "en": "Sync payment methods and other data from Resurs Bank for all API accounts in all store views.",
+      "sv": "Synka betalmetoder och annan data från Resurs Bank för alla API konton i alla butiksvyer.",
+      "no": "Synkroniser betalingsmåter og andre data fra Resurs Bank for alle API-kontoer i alle butikkvisninger."
+    }
+  },
+  {
+    "id": "api-credentials-are-required",
+    "translation": {
+      "en": "Attention! API credentials are required for this extension to function properly.",
+      "sv": "Obs! API-uppgifter krävs för att denna modul skall fungera som förväntat.",
+      "no": "API-legitimasjon kreves for at denne modulen skal fungere som forventet."
+    }
+  },
+  {
+    "id": "per-month-for-months",
+    "translation": {
+      "en": "per month, for %1 months",
+      "sv": "per månad, i %1 månader",
+      "no": "per måned, i %1 måneder"
+    }
+  },
+  {
+    "id": "no-part-payment-information-exists-for-this-product",
+    "translation": {
+      "en": "No part payment information exists for this product.",
+      "sv": "Ingen delbetalningsinformation existerar för denna betalmetod.",
+      "no": "Det finnes ingen delbetalingsinformasjon for denne betalingsmåten."
+    }
+  },
+  {
+    "id": "select-shipping-method",
+    "translation": {
+      "en": "Select shipping method",
+      "sv": "Välj fraktsätt",
+      "no": "Velg fraktmetode"
+    }
+  },
+  {
+    "id": "connection-to-checkout-gateway-failed",
+    "translation": {
+      "en": "Connection to checkout gateway failed.",
+      "sv": "Kontakten med kassatjänsten avbröts.",
+      "no": "Kontakten med kassetjenesten ble avbrutt."
+    }
+  },
+  {
+    "id": "please-try-again-in-a-few-minutes",
+    "translation": {
+      "en": "Please try again in a few minutes.",
+      "sv": "Vänligen försök igen om några minuter.",
+      "no": "Vennligst prøv på nytt om noen minutter."
+    }
+  },
+  {
+    "id": "we-apologize-your-session-has-expired",
+    "translation": {
+      "en": "We apologize, your session has expired and the page will reload after this message has been dismissed. Your order has not yet been placed. Please fill out your information below after reloading to proceed with placing your order.",
+      "sv": "Vi ber om ursäkt, sessionen upphörde och sidan kommer att laddas om efter det här meddelandet har avfärdats. Din beställning är ännu inte genomförd. Vänligen fyll i formuläret nedan efter omladdning för att avsluta beställningen.",
+      "no": "Vi beklager, sesjonen ble avsluttet og siden vil bli lastet inn på nytt etter at denne meldingen er avvist. Bestillingen din er ennå ikke fullført. Fyll ut skjemaet nedenfor etter at du har lastet på nytt for å fullføre bestillingen."
+    }
+  },
+  {
+    "id": "alert-customers-when-shipping-methods-change",
+    "translation": {
+      "en": "Alert customers when shipping methods update",
+      "sv": "Meddela kunder när fraktmetoder uppdateras",
+      "no": "Varsle kundene når fraktmetodene er oppdatert"
+    }
+  },
+  {
+    "id": "please-contact-resurs-bank-for-more-information",
+    "translation": {
+      "en": "Please contact Resurs Bank for more information or choose another payment method to complete your order.",
+      "sv": "Vänligen kontakta Resurs Bank för mer information eller välj en annan betalmetod för att slutföra din order.",
+      "no": "Vennligst kontakt Resurs Bank for mer informasjon eller velg en annen betalingsmåte for å fullføre bestillingen."
+    }
+  },
+  {
+    "id": "field-has-invalid-value",
+    "translation": {
+      "en": "The field %1 has an invalid value.",
+      "sv": "Fältet %1 har ett ogiltigt värde.",
+      "no": "Feltet %1 har en ugyldig verdi."
+    }
+  },
+  {
+    "id": "field-has-too-short-value",
+    "translation": {
+      "en": "The value in the field %1 is too short.",
+      "sv": "Värdet i fältet %1 är för kort.",
+      "no": "Verdien i feltet %1 er for kort."
+    }
+  },
+  {
+    "id": "field-has-too-long-value",
+    "translation": {
+      "en": "The value in the field %1 is too long.",
+      "sv": "Värdet i fältet %1 är för långt.",
+      "no": "Verdien i feltet %1 er for lang\n."
+    }
+  },
+  {
+    "id": "postal-code",
+    "translation": {
+      "en": "postal code",
+      "sv": "postnummer",
+      "no": "postnummer"
+    }
+  },
+  {
+    "id": "address-row-1",
+    "translation": {
+      "en": "address row 1",
+      "sv": "adressrad 1",
+      "no": "adresselinje 1"
+    }
+  },
+  {
+    "id": "postal-area",
+    "translation": {
+      "en": "postal area",
+      "sv": "postort",
+      "no": "postområde"
+    }
+  },
+  {
+    "id": "address-row-2",
+    "translation": {
+      "en": "address row 2",
+      "sv": "adressrad 2",
+      "no": "adresselinje 2"
+    }
+  },
+  {
+    "id": "full-name",
+    "translation": {
+      "en": "full name",
+      "sv": "fullständigt namn",
+      "no": "fullstendig navn"
+    }
+  },
+  {
+    "id": "first-name",
+    "translation": {
+      "en": "first name",
+      "sv": "förnamn",
+      "no": "fornavn"
+    }
+  },
+  {
+    "id": "last-name",
+    "translation": {
+      "en": "last name",
+      "sv": "efternamn",
+      "no": "efternavn"
     }
   }
 ]

@@ -22,7 +22,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
-use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\PaymentCollection;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -68,7 +67,7 @@ class Search
         string $storeId,
         ?string $orderReference = null,
         ?string $governmentId = null
-    ): Collection {
+    ): PaymentCollection {
         $payload = [];
 
         if ($governmentId && trim(string: $governmentId) !== '') {

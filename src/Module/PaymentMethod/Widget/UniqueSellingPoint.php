@@ -44,8 +44,10 @@ class UniqueSellingPoint extends Widget
      * @throws ReflectionException
      * @throws TranslationException
      */
-    public function __construct(public readonly PaymentMethod $paymentMethod, public readonly float $amount)
-    {
+    public function __construct(
+        public readonly PaymentMethod $paymentMethod,
+        public readonly float $amount
+    ) {
         $this->readMore = new ReadMore(
             paymentMethod: $this->paymentMethod,
             amount: $amount
@@ -69,10 +71,14 @@ class UniqueSellingPoint extends Widget
      * @throws TranslationException
      * @throws IllegalValueException
      */
-    private function getBasicTranslation(Type $paymentMethodType): string
+    public function getBasicTranslation(Type $paymentMethodType): string
     {
         $return = Translator::translate(
-            phraseId: $paymentMethodType->value,
+            phraseId: str_replace(
+                '_',
+                '-',
+                strtolower($paymentMethodType->value)
+            ),
             translationFile: __DIR__ . '/Resources/translations.json'
         );
         return $return !== 'N/A' ? $return : '';

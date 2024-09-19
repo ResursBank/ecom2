@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -17,9 +18,9 @@ use Resursbank\Ecom\Lib\Model\Model;
 class TaskRedirectionUrls extends Model
 {
     public function __construct(
-        public string $merchantUrl,
-        public string $customerUrl,
-        public ?string $coApplicantUrl = null
+        #[StringIsUrl] public string $merchantUrl,
+        #[StringIsUrl] public string $customerUrl,
+        #[StringIsUrl] public ?string $coApplicantUrl = null
     ) {
     }
 }

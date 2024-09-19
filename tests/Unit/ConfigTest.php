@@ -37,16 +37,6 @@ use Throwable;
 class ConfigTest extends TestCase
 {
     /**
-     * Helper function to get the root path by resolving composer.json.
-     * This mimics the dynamic behavior of the actual method to locate composer.json.
-     */
-    private function getComposerRoot(): string
-    {
-        // Assuming composer.json is two levels up from the test directory (e.g., in ecom-rootpath)
-        return realpath(path: __DIR__ . '/../..');
-    }
-
-    /**
      * Assert that Config::$instance is properly set up when setup() is called with no parameters
      *
      * @throws ConfigException
@@ -258,10 +248,7 @@ class ConfigTest extends TestCase
     public function testGetPathWithValidDirectory(): void
     {
         $path = Config::getPath(dir: 'valid/directory');
-
-        // Get the dynamically resolved ECom root using composer.json
-        $expectedPath = $this->getComposerRoot() . '/valid/directory';
-
+        $expectedPath = dirname(path: __DIR__, levels: 2) . '/valid/directory';
         $this->assertEquals(expected: $expectedPath, actual: $path);
     }
 
@@ -273,15 +260,14 @@ class ConfigTest extends TestCase
     public function testGetPathWithEmptyDirectory(): void
     {
         $path = Config::getPath(dir: '');
-
-        // Expected path is just the ECom root based on composer.json
-        $expectedPath = $this->getComposerRoot();
-
+        $expectedPath = dirname(path: __DIR__, levels: 2);
         $this->assertEquals(expected: $expectedPath, actual: $path);
     }
 
     /**
      * Test directory traversal attack prevention
+     *
+     * @throws Exception
      */
     public function testGetPathWithDirectoryTraversal(): void
     {
@@ -301,13 +287,18 @@ class ConfigTest extends TestCase
     public function testGetPathWithLeadingSlash(): void
     {
         $path = Config::getPath(dir: '/subdir/with/leading/slash');
-        $expectedPath = $this->getComposerRoot() . '/subdir/with/leading/slash';
+        $expectedPath = dirname(
+            path: __DIR__,
+            levels: 2
+        ) . '/subdir/with/leading/slash';
 
         $this->assertEquals(expected: $expectedPath, actual: $path);
     }
 
     /**
      * Test path that only contains ".." (should trigger traversal prevention)
+     *
+     * @throws Exception
      */
     public function testGetPathWithOnlyTraversal(): void
     {
@@ -321,6 +312,8 @@ class ConfigTest extends TestCase
 
     /**
      * Test path containing multiple ".." segments (should trigger traversal prevention)
+     *
+     * @throws Exception
      */
     public function testGetPathWithMultipleTraversalSegments(): void
     {

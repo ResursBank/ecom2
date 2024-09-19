@@ -25,13 +25,15 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
-use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Application;
+use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
+use Resursbank\Ecom\Lib\Model\PaymentCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
 use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -43,8 +45,6 @@ use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Application;
-use Resursbank\Ecom\Module\Payment\Models\CreatePaymentRequest\Options;
 use Throwable;
 
 /**
@@ -69,13 +69,12 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      * @throws AttributeCombinationException
-     * @todo Shouldn't this return a PaymentCollection?
      */
     public static function search(
         string $storeId,
         ?string $orderReference = null,
         ?string $governmentId = null
-    ): Collection {
+    ): PaymentCollection {
         return (new Search())->call(
             storeId: $storeId,
             orderReference: $orderReference,
@@ -228,13 +227,15 @@ class Repository
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null,
-        ?string $transactionId = null
+        ?string $transactionId = null,
+        ?string $refundNoteId = null
     ): Payment {
         return (new Refund())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
             creator: $creator,
-            transactionId: $transactionId
+            transactionId: $transactionId,
+            refundNoteId: $refundNoteId
         );
     }
 

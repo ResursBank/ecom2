@@ -27,9 +27,9 @@ use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
+use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Module\PriceSignage\Models\Cost;
-use Resursbank\Ecom\Module\PriceSignage\Models\PriceSignage;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
 use Throwable;
 

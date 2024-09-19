@@ -16,6 +16,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -24,11 +26,18 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
 
 /**
@@ -45,6 +54,7 @@ class Cancel
 
     /**
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -52,16 +62,24 @@ class Cancel
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws NotJsonEncodedException
+     * @throws FilesystemException
+     * @throws TranslationException
      */
     public function call(
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null
     ): Payment {
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::CANCEL_REQUESTED,
+                user: User::ADMIN
+            )
+        );
         $payload = [];
 
         if ($orderLines) {
@@ -72,6 +90,42 @@ class Cancel
             $payload['creator'] = $creator;
         }
 
+        $result = $this->getResponse(paymentId: $paymentId, payload: $payload);
+
+        PaymentHistoryRepository::write(
+            entry: new Entry(
+                paymentId: $paymentId,
+                event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
+                user: User::ADMIN,
+                result: Result::SUCCESS,
+                extra: empty($orderLines) ?
+                    null : Price::format(value: $orderLines->getTotal())
+            )
+        );
+
+        return $result;
+    }
+
+    /**
+     * Call API and process response.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws FilesystemException
+     * @throws TranslationException
+     */
+    private function getResponse(string $paymentId, array $payload): Payment
+    {
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/cancel'
@@ -93,6 +147,13 @@ class Cancel
         );
 
         if (!$result instanceof Payment) {
+            PaymentHistoryRepository::write(entry: new Entry(
+                paymentId: $paymentId,
+                event: Event::REQUEST_FAILED,
+                user: User::ADMIN,
+                result: Result::ERROR,
+                extra: Translator::translate(phraseId: 'event-request-failed')
+            ));
             throw new IllegalTypeException(message: 'Expected Payment');
         }
 
