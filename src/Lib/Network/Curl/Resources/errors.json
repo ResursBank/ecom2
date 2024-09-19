@@ -21,6 +21,20 @@
     }
   },
   {
+    "id": "customer-deliveryaddress-postalcode-must-match-------d--1-10---",
+    "translation": {
+      "en": "Postal code is not valid",
+      "sv": "Postnummer är ej korrekt"
+    }
+  },
+  {
+    "id": "customer-deliveryaddress-postalcode",
+    "translation": {
+      "en": "Postal code is not valid",
+      "sv": "Postnummer är ej korrekt"
+    }
+  },
+  {
     "id": "customer-deliveryaddress-postalcode-must-match-test",
     "translation": {
       "en": "Postal code is not valid",
