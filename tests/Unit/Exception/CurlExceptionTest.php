@@ -109,7 +109,8 @@ class CurlExceptionTest extends TestCase
     public function testGetDetailsWithRegexContent(): void
     {
         $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match \"/^[ \\\\d]{1,10}$/\""}}';
+            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.' .
+            'postalCode":"must match \"/^[ \\\\d]{1,10}$/\""}}';
 
         $error = new CurlException(
             message: 'Test error',
@@ -142,7 +143,8 @@ class CurlExceptionTest extends TestCase
     public function testGetDetailsWithUnexistentRegex(): void
     {
         $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match \"/^[ \\\\s]{1,12}$/\""}}';
+            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.' .
+            'postalCode":"must match \"/^[ \\\\s]{1,12}$/\""}}';
 
         // Create a CurlException object with the sample error message.
         $error = new CurlException(
