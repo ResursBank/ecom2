@@ -145,9 +145,7 @@ class CurlException extends Exception
         );
 
         // Find translations with only the property without matching parameters.
-        $simplePropertyError = ErrorTranslator::get(
-            errorMessage: $property
-        );
+        $simplePropertyError = ErrorTranslator::get(errorMessage: $property);
 
         // If the simple property's not missing in the translations, it will not be empty and therefore considered
         // a safe exact match.
