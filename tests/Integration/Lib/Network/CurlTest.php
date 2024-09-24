@@ -23,7 +23,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Response;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
@@ -101,33 +100,6 @@ class CurlTest extends TestCase
         }
 
         return $body->input;
-    }
-
-    /**
-     * Verify that Basic auth properties are set when creating a Basic auth instance
-     *
-     * @throws EmptyValueException
-     * @throws ConfigException
-     */
-    public function testNormalAuthentication(): void
-    {
-        $username = 'user';
-        $password = 'password';
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: new Basic(username: $username, password: $password)
-        );
-
-        $auth = Config::getBasicAuth();
-
-        if ($auth === null) {
-            $this->fail(message: 'Basic auth is not set.');
-        }
-
-        $this::assertSame(expected: $username, actual: $auth->username);
-
-        $this::assertSame(expected: $password, actual: $auth->password);
     }
 
     /**

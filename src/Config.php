@@ -18,7 +18,6 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
@@ -53,7 +52,6 @@ final class Config
     public function __construct(
         public readonly LoggerInterface $logger,
         public readonly CacheInterface $cache,
-        public readonly ?Basic $basicAuth,
         public readonly ?Jwt $jwtAuth,
         public readonly DataHandlerInterface $paymentHistoryDataHandler,
         public readonly LogLevel $logLevel,
@@ -61,7 +59,8 @@ final class Config
         public readonly Language $language,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
-        public readonly Network $network
+        public readonly Network $network,
+        public readonly ?string $storeId = null
     ) {
     }
 
@@ -73,7 +72,6 @@ final class Config
     public static function setup(
         LoggerInterface $logger = new NoneLogger(),
         CacheInterface $cache = new None(),
-        ?Basic $basicAuth = null,
         ?Jwt $jwtAuth = null,
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
         LogLevel $logLevel = LogLevel::INFO,
@@ -81,12 +79,12 @@ final class Config
         Language $language = Language::EN,
         string $currencySymbol = 'kr',
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
-        Network $network = new Network()
+        Network $network = new Network(),
+        ?string $storeId = null
     ): void {
         self::$instance = new Config(
             logger: $logger,
             cache: $cache,
-            basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
             paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
@@ -94,16 +92,9 @@ final class Config
             language: $language,
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat,
-            network: $network
+            network: $network,
+            storeId: $storeId
         );
-    }
-
-    /**
-     * Checks if Basic auth is configured
-     */
-    public static function hasBasicAuth(): bool
-    {
-        return isset(self::$instance->basicAuth);
     }
 
     /**
@@ -167,15 +158,6 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->cache;
-    }
-
-    /**
-     * @throws ConfigException
-     */
-    public static function getBasicAuth(): ?Basic
-    {
-        self::validateInstance();
-        return self::$instance->basicAuth;
     }
 
     /**
@@ -266,6 +248,15 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->currencyFormat;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getStoreId(): ?string
+    {
+        self::validateInstance();
+        return self::$instance->storeId;
     }
 
     /**
