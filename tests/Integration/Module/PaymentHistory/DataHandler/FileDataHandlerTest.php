@@ -15,13 +15,13 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\FileDataHandler;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Module\PaymentHistory\DataHandler\FileDataHandler;
 use Resursbank\EcomTest\Utilities\PaymentHistory;
 
 /**
