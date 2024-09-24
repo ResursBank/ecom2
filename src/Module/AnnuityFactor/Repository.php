@@ -105,7 +105,7 @@ class Repository
      * @throws ValidationException
      * @throws Throwable
      */
-    public static function getMethods(
+    public static function filterMethods(
         string $storeId,
         PaymentMethodCollection $paymentMethods
     ): PaymentMethodCollection {
