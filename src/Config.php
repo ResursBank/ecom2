@@ -20,8 +20,8 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
-use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 use function dirname;
