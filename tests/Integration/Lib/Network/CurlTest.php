@@ -22,6 +22,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\FileLogger;
+use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Response;
 use Resursbank\Ecom\Lib\Network\AuthType;
@@ -146,7 +147,9 @@ class CurlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            userAgent: self::class
+            network: new Network(
+                userAgent: self::class
+            )
         );
 
         $curl = new Curl(
@@ -185,7 +188,9 @@ class CurlTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            userAgent: $expectRemoteVersion
+            network: new Network(
+                userAgent: $expectRemoteVersion
+            )
         );
 
         $curl = new Curl(
@@ -335,7 +340,9 @@ class CurlTest extends TestCase
         //$this->expectExceptionCode(code: 28);
         Config::setup(
             logger: $this->createMock(originalClassName: FileLogger::class),
-            timeout: 2
+            network: new Network(
+                timeout: 2
+            )
         );
 
         $timeoutUrl = 'https://timeout.netcurl.org';
