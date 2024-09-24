@@ -24,6 +24,7 @@ use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
+use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Throwable;
@@ -105,9 +106,11 @@ class ConfigTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             logLevel: LogLevel::DEBUG,
-            userAgent: 'Foo',
-            timeout: 42,
-            language: Language::SV
+            language: Language::SV,
+            network: new Network(
+                timeout: 42,
+                userAgent: 'Foo'
+            )
         );
 
         self::assertInstanceOf(

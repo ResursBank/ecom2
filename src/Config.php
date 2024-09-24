@@ -17,6 +17,7 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
+use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
@@ -56,14 +57,11 @@ final class Config
         public readonly ?Jwt $jwtAuth,
         public readonly DataHandlerInterface $paymentHistoryDataHandler,
         public readonly LogLevel $logLevel,
-        public readonly string $userAgent,
         public readonly bool $isProduction,
-        public readonly string $proxy,
-        public readonly int $proxyType,
-        public readonly int $timeout,
         public readonly Language $language,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly Network $network
     ) {
     }
 
@@ -79,14 +77,11 @@ final class Config
         ?Jwt $jwtAuth = null,
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
         LogLevel $logLevel = LogLevel::INFO,
-        string $userAgent = '',
         bool $isProduction = false,
-        string $proxy = '',
-        int $proxyType = 0,
-        int $timeout = 0,
         Language $language = Language::EN,
         string $currencySymbol = 'kr',
-        CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST
+        CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
+        Network $network = new Network()
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -95,14 +90,11 @@ final class Config
             jwtAuth: $jwtAuth,
             paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
-            userAgent: $userAgent,
             isProduction: $isProduction,
-            proxy: $proxy,
-            proxyType: $proxyType,
-            timeout: $timeout,
             language: $language,
             currencySymbol: $currencySymbol,
-            currencyFormat: $currencyFormat
+            currencyFormat: $currencyFormat,
+            network: $network
         );
     }
 
@@ -210,7 +202,7 @@ final class Config
     public static function getUserAgent(): string
     {
         self::validateInstance();
-        return self::$instance->userAgent;
+        return self::$instance->network->userAgent;
     }
 
     /**
@@ -228,7 +220,7 @@ final class Config
     public static function getProxy(): string
     {
         self::validateInstance();
-        return self::$instance->proxy;
+        return self::$instance->network->proxy;
     }
 
     /**
@@ -237,7 +229,7 @@ final class Config
     public static function getProxyType(): int
     {
         self::validateInstance();
-        return self::$instance->proxyType;
+        return self::$instance->network->proxyType;
     }
 
     /**
@@ -246,7 +238,7 @@ final class Config
     public static function getTimeout(): int
     {
         self::validateInstance();
-        return self::$instance->timeout;
+        return self::$instance->network->timeout;
     }
 
     /**
