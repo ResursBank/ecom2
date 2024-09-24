@@ -388,10 +388,6 @@ class Curl
     private function setAuth(CurlHandle $ch): void
     {
         switch ($this->authType) {
-            case AuthType::BASIC:
-                Auth::setBasicAuth(ch: $ch);
-                break;
-
             case AuthType::JWT:
                 Auth::setJwtAuth(ch: $ch);
                 break;
