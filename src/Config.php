@@ -19,7 +19,6 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
