@@ -63,7 +63,6 @@ final class Config
         public readonly int $proxyType,
         public readonly int $timeout,
         public readonly Language $language,
-        public readonly Location $location,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat
     ) {
@@ -87,7 +86,6 @@ final class Config
         int $proxyType = 0,
         int $timeout = 0,
         Language $language = Language::EN,
-        Location $location = Location::SE,
         string $currencySymbol = 'kr',
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST
     ): void {
@@ -104,7 +102,6 @@ final class Config
             proxyType: $proxyType,
             timeout: $timeout,
             language: $language,
-            location: $location,
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat
         );
@@ -260,15 +257,6 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->language;
-    }
-
-    /**
-     * @throws ConfigException
-     */
-    public static function getLocation(): Location
-    {
-        self::validateInstance();
-        return self::$instance->location;
     }
 
     /**

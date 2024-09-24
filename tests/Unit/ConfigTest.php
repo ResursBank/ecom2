@@ -74,10 +74,6 @@ class ConfigTest extends TestCase
             expected: Language::EN,
             actual: Config::getLanguage()
         );
-        self::assertEquals(
-            expected: Location::SE,
-            actual: Config::getLocation()
-        );
     }
 
     /**
