@@ -54,7 +54,6 @@ class ConfigTest extends TestCase
             expected: None::class,
             actual: Config::getCache()
         );
-        self::assertNull(actual: Config::getBasicAuth());
         self::assertNull(actual: Config::getJwtAuth());
         self::assertEquals(
             expected: LogLevel::INFO,
@@ -100,10 +99,6 @@ class ConfigTest extends TestCase
         Config::setup(
             logger: new StdoutLogger(),
             cache: new None(),
-            basicAuth: new Basic(
-                username: $_ENV['BASIC_AUTH_USERNAME'],
-                password: $_ENV['BASIC_AUTH_PASSWORD']
-            ),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -115,7 +110,8 @@ class ConfigTest extends TestCase
             network: new Network(
                 timeout: 42,
                 userAgent: 'Foo'
-            )
+            ),
+            storeId: $_ENV['']
         );
 
         self::assertInstanceOf(
@@ -125,10 +121,6 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(
             expected: None::class,
             actual: Config::getCache()
-        );
-        self::assertInstanceOf(
-            expected: Basic::class,
-            actual: Config::getBasicAuth()
         );
         self::assertInstanceOf(
             expected: Jwt::class,
@@ -155,29 +147,6 @@ class ConfigTest extends TestCase
         self::assertEquals(
             expected: Language::SV,
             actual: Config::getLanguage()
-        );
-    }
-
-    /**
-     * Verifies that the hasBasicAuth method behaves as expected
-     */
-    public function testHasBasicAuth(): void
-    {
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
-        );
-        self::assertEquals(
-            expected: false,
-            actual: Config::hasBasicAuth()
-        );
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: $this->createMock(originalClassName: Basic::class)
-        );
-        self::assertEquals(
-            expected: true,
-            actual: Config::hasBasicAuth()
         );
     }
 
