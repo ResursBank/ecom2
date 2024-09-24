@@ -110,7 +110,7 @@ class ConfigTest extends TestCase
                 timeout: 42,
                 userAgent: 'Foo'
             ),
-            storeId: $_ENV['']
+            storeId: $_ENV['STORE_ID']
         );
 
         self::assertInstanceOf(
