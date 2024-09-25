@@ -49,7 +49,6 @@ class GetAddressController extends Controller
      * @throws IllegalTypeException
      */
     public function exec(
-        string $storeId,
         GetAddressRequest $data,
         Session $sessionHandler = new Session()
     ): string {
@@ -58,7 +57,6 @@ class GetAddressController extends Controller
 
         // Fetch address.
         $address = Repository::getAddress(
-            storeId: $storeId,
             governmentId: $data->govId,
             customerType: $data->customerType
         );

@@ -78,11 +78,11 @@ class PartPaymentTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->method = Repository::getById(
-            storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
 
@@ -97,8 +97,8 @@ class PartPaymentTest extends TestCase
             paymentMethod: $this->method,
             months: 3,
             amount: 1200,
-            currencyFormat: CurrencyFormat::SYMBOL_LAST,
             currencySymbol: 'kr',
+            currencyFormat: CurrencyFormat::SYMBOL_LAST,
             fetchStartingCostUrl: 'https://example.com'
         );
     }
@@ -112,7 +112,6 @@ class PartPaymentTest extends TestCase
     {
         try {
             $collection = AnnuityFactorRepository::getAnnuityFactors(
-                storeId: $_ENV['STORE_ID'],
                 paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
             );
         } catch (Throwable) {
@@ -202,8 +201,8 @@ class PartPaymentTest extends TestCase
                 paymentMethod: $this->method,
                 months: 3,
                 amount: 1200,
-                currencyFormat: CurrencyFormat::SYMBOL_LAST,
                 currencySymbol: 'kr',
+                currencyFormat: CurrencyFormat::SYMBOL_LAST,
                 fetchStartingCostUrl: 'https://example.com',
                 displayInfoText: false
             );

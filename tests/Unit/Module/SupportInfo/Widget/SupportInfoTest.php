@@ -45,13 +45,14 @@ class SupportInfoTest extends TestCase
                 originalClassName: LoggerInterface::class
             ),
             cache: new None(),
-            language: Language::SV,
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            language: Language::SV,
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->widget = new SupportInfo(pluginVersion: $this->pluginVersion);

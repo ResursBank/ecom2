@@ -40,8 +40,6 @@ class RepositoryTest extends TestCase
 {
     private Cache $cache;
 
-    private string $storeId;
-
     private string $paymentMethodId;
 
     private float $amount = 1000.00;
@@ -53,7 +51,6 @@ class RepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->storeId = $_ENV['STORE_ID'];
         $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
 
         Config::setup(
@@ -68,7 +65,8 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->cache = $this->getCache();
@@ -86,7 +84,6 @@ class RepositoryTest extends TestCase
         ?int $monthFilter = null
     ): Cache {
         return Repository::getCache(
-            storeId: $this->storeId,
             paymentMethodId: $paymentMethodId ?? $this->paymentMethodId,
             amount: $amount ?? $this->amount,
             monthFilter: $monthFilter
@@ -112,7 +109,6 @@ class RepositoryTest extends TestCase
     public function testClearCache(): void
     {
         Repository::getPriceSignage(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId,
             amount: $this->amount
         );
@@ -145,7 +141,6 @@ class RepositoryTest extends TestCase
         $this->assertNull(actual: $this->cache->read());
         $this->assertNotEmpty(
             actual: Repository::getPriceSignage(
-                storeId: $this->storeId,
                 paymentMethodId: $this->paymentMethodId,
                 amount: $this->amount
             )
@@ -174,7 +169,6 @@ class RepositoryTest extends TestCase
         $this->assertEmpty(actual: $this->cache->read());
 
         $data = Repository::getPriceSignage(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId,
             amount: $this->amount
         );
@@ -224,14 +218,12 @@ class RepositoryTest extends TestCase
         $this->assertNull(actual: $cache2->read());
 
         $noCacheResponse1 = Repository::getPriceSignage(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId,
             amount: $this->amount,
             monthFilter: $months1
         );
 
         $noCacheResponse2 = Repository::getPriceSignage(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId,
             amount: $this->amount,
             monthFilter: $months2
@@ -320,7 +312,6 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: CurlException::class);
 
         Repository::getPriceSignage(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId,
             amount: 0.1
         );

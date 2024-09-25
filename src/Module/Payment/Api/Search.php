@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -64,7 +65,6 @@ class Search
      */
     // phpcs:ignore
     public function call(
-        string $storeId,
         ?string $orderReference = null,
         ?string $governmentId = null
     ): PaymentCollection {
@@ -78,7 +78,7 @@ class Search
             $payload['orderReference'] = $orderReference;
         }
 
-        $payload['storeId'] = $storeId;
+        $payload['storeId'] = Config::getStoreId();
 
         $curl = new Curl(
             url: $this->mapi->getUrl(

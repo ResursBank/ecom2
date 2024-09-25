@@ -71,12 +71,10 @@ class Repository
      * @throws AttributeCombinationException
      */
     public static function search(
-        string $storeId,
         ?string $orderReference = null,
         ?string $governmentId = null
     ): PaymentCollection {
         return (new Search())->call(
-            storeId: $storeId,
             orderReference: $orderReference,
             governmentId: $governmentId
         );
@@ -127,7 +125,6 @@ class Repository
      * @noinspection PhpTooManyParametersInspection
      */
     public static function create(
-        string $storeId,
         string $paymentMethodId,
         OrderLineCollection $orderLines,
         ?string $orderReference = null,
@@ -137,7 +134,6 @@ class Repository
         ?Options $options = null
     ): Payment {
         return (new Create())->call(
-            storeId: $storeId,
             paymentMethodId: $paymentMethodId,
             orderLines: $orderLines,
             orderReference: $orderReference,
