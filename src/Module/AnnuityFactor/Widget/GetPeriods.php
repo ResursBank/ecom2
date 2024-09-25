@@ -35,7 +35,7 @@ use Throwable;
 class GetPeriods extends Widget
 {
     /** @var string */
-    public readonly string $content;
+    public readonly string $js;
 
     /**
      * @param string|null $methodElementId Required when using standard widget
@@ -51,7 +51,7 @@ class GetPeriods extends Widget
         public readonly ?string $periodElementId = null,
         public readonly bool $automatic = true
     ) {
-        $this->content = $this->render(file: __DIR__ . '/get-periods.js.phtml');
+        $this->js = $this->render(file: __DIR__ . '/get-periods.js.phtml');
     }
 
     /**
