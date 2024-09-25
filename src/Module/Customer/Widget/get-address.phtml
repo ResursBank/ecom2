@@ -12,10 +12,17 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 
 /** @var Resursbank\Ecom\Module\Customer\Widget\GetAddress $this */
 
+// If no selectable customer types are configured, default to both NATURAL and LEGAL
+$selectableCustomerTypes = $this->selectableCustomerTypes ?? [CustomerType::NATURAL, CustomerType::LEGAL];
+
 ?>
 
 <div id="rb-ga-widget">
     <div id="rb-ga-ct-area">
+        <?php if (count($selectableCustomerTypes) === 1): ?>
+            <!-- If only one customer type is configured, use a hidden input -->
+            <input type="hidden" name="rb-ga-ct" value="<?= $selectableCustomerTypes[0]->value ?>"/>
+        <?php else: ?>
         <label for="rb-ga-ct-natural">
             <input
                 type="radio"
@@ -23,7 +30,7 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
                 name="rb-ga-ct"
                 value="<?= CustomerType::NATURAL->name ?>"
                 <?php if ($this->customerType === CustomerType::NATURAL): ?>
-                checked
+                    checked
                 <?php endif; ?>
             />
             <span>
@@ -37,16 +44,17 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
                 name="rb-ga-ct"
                 value="<?= CustomerType::LEGAL->name ?>"
                 <?php if ($this->customerType === CustomerType::LEGAL): ?>
-                checked
+                    checked
                 <?php endif; ?>
             />
             <span>
                 <?= Translator::translate(phraseId: 'customer-type-legal') ?>
             </span>
         </label>
+        <?php endif; ?>
     </div>
     <div class="rb-ga-ssn-area">
-        <input type="text" id="rb-ga-gov-id" value="<?= $this->govId ?>" />
+        <input type="text" id="rb-ga-gov-id" value="<?= $this->govId ?>"/>
         <button type="button" id="rb-ga-btn">
             <span><?= Translator::translate(phraseId: 'fetch-address') ?></span>
             <span class="rb-ga-fetch-icon">

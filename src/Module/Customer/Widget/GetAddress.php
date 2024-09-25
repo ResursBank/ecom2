@@ -41,7 +41,8 @@ class GetAddress extends Widget
         public readonly string $url = '',
         public string $govId = '',
         public CustomerType $customerType = CustomerType::NATURAL,
-        public readonly bool $automatic = false
+        public readonly bool $automatic = false,
+        public readonly array $selectableCustomerTypes = [CustomerType::NATURAL, CustomerType::LEGAL]
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-address.phtml');
         $this->css = $this->render(file: __DIR__ . '/get-address.css');
