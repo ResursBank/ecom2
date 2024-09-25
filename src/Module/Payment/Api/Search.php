@@ -30,6 +30,7 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use stdClass;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
@@ -66,19 +67,14 @@ class Search
     // phpcs:ignore
     public function call(
         ?string $orderReference = null,
-        ?string $governmentId = null
+        ?string $governmentId = null,
+        ?string $storeId = null
     ): PaymentCollection {
-        $payload = [];
-
-        if ($governmentId && trim(string: $governmentId) !== '') {
-            $payload['governmentId'] = $governmentId;
-        }
-
-        if ($orderReference && trim(string: $orderReference) !== '') {
-            $payload['orderReference'] = $orderReference;
-        }
-
-        $payload['storeId'] = Config::getStoreId();
+        $payload = $this->getPayload(
+            orderReference: $orderReference,
+            governmentId: $governmentId,
+            storeId: $storeId
+        );
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
@@ -111,5 +107,34 @@ class Search
         }
 
         return $result;
+    }
+
+    /**
+     * Prepare and return the payload for the search.
+     *
+     * @throws ConfigException
+     */
+    private function getPayload(
+        ?string $orderReference = null,
+        ?string $governmentId = null,
+        ?string $storeId = null
+    ): array {
+        $payload = [];
+
+        if ($governmentId && trim(string: $governmentId) !== '') {
+            $payload['governmentId'] = $governmentId;
+        }
+
+        if ($orderReference && trim(string: $orderReference) !== '') {
+            $payload['orderReference'] = $orderReference;
+        }
+
+        if (!Strings::isUuid(value: $storeId ?? '')) {
+            $storeId = Config::getStoreId();
+        }
+
+        $payload['storeId'] = $storeId;
+
+        return $payload;
     }
 }

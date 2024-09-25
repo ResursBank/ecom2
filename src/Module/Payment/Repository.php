@@ -72,11 +72,13 @@ class Repository
      */
     public static function search(
         ?string $orderReference = null,
-        ?string $governmentId = null
+        ?string $governmentId = null,
+        ?string $storeId = null
     ): PaymentCollection {
         return (new Search())->call(
             orderReference: $orderReference,
-            governmentId: $governmentId
+            governmentId: $governmentId,
+            storeId: $storeId
         );
     }
 
