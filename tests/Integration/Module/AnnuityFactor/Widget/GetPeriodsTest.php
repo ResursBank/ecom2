@@ -68,21 +68,21 @@ class GetPeriodsTest extends TestCase
         // Confirm class Resursbank_GetPeriods exists.
         $this->assertStringContainsString(
             needle: 'Resursbank_GetPeriods',
-            haystack: $widget->content
+            haystack: $widget->js
         );
 
         // Confirm result = document.getElementById('$this->methodElementId')
         // is rendered.
         $this->assertStringContainsString(
             needle: "result = document.getElementById('" . $methodElementId . "')",
-            haystack: $widget->content
+            haystack: $widget->js
         );
 
         // Confirm result = document.getElementById('$this->periodElementId')
         // is rendered.
         $this->assertStringContainsString(
             needle: "result = document.getElementById('" . $periodElementId . "')",
-            haystack: $widget->content
+            haystack: $widget->js
         );
 
         // Confirm that "document.addEventListener(" followed by
@@ -90,7 +90,7 @@ class GetPeriodsTest extends TestCase
         // automatic is set to false.
         $this->assertDoesNotMatchRegularExpression(
             pattern: '/document\.addEventListener\([^)]*DOMContentLoaded[^)]*\)/',
-            string: $widget->content,
+            string: $widget->js,
             message: "Automatic widget initialization is not present in the widget content."
         );
 
@@ -104,14 +104,14 @@ class GetPeriodsTest extends TestCase
         // isn't rendered.
         $this->assertStringNotContainsString(
             needle: "result = document.getElementById('" . $methodElementId . "')",
-            haystack: $widgetNoElements->content
+            haystack: $widgetNoElements->js
         );
 
         // Confirm result = document.getElementById('$this->periodElementId')
         // isn't rendered.
         $this->assertStringNotContainsString(
             needle: "result = document.getElementById('" . $periodElementId . "')",
-            haystack: $widgetNoElements->content
+            haystack: $widgetNoElements->js
         );
 
         // Confirm that "document.addEventListener(" followed by
@@ -119,7 +119,7 @@ class GetPeriodsTest extends TestCase
         // automatic is set to true.
         $this->assertMatchesRegularExpression(
             pattern: '/document\.addEventListener\([^)]*DOMContentLoaded[^)]*\)/',
-            string: $widgetNoElements->content,
+            string: $widgetNoElements->js,
             message: "Automatic widget initialization is not present in the widget content."
         );
     }
