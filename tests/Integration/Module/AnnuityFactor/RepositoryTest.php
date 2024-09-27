@@ -179,9 +179,9 @@ class RepositoryTest extends TestCase
      * @todo Compares lengths of original methods collection and the filtered
      *      one. The filtered should have a shorter length.
      */
-    public function testGetMethodsReturnsFilteredCollection(): void
+    public function testFilterMethodsReturnsFilteredCollection(): void
     {
-        $filteredMethods = Repository::getMethods(
+        $filteredMethods = Repository::filterMethods(
             storeId: $this->storeId,
             paymentMethods: PaymentMethodRepository::getPaymentMethods(
                 storeId: $this->storeId

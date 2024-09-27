@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentHistory\DataHandler;
+namespace Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler;
 
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;

@@ -149,7 +149,7 @@ class RepositoryTest extends TestCase
     public function testGetAddressOrganization(): void
     {
         $expect = [
-            'fullName' => 'Pilsnerbolaget HB',
+            'fullName' => 'Pilsnerbolaget Hb',
             'addressRow1' => 'Glassgatan 17',
             'postalArea' => 'Helsingborg',
             'postalCode' => '25024',

@@ -14,14 +14,13 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
-use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
+use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\PaymentHistory\DataHandler\DataHandlerInterface;
-use Resursbank\Ecom\Module\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
 use function dirname;
@@ -53,19 +52,15 @@ final class Config
     public function __construct(
         public readonly LoggerInterface $logger,
         public readonly CacheInterface $cache,
-        public readonly ?Basic $basicAuth,
         public readonly ?Jwt $jwtAuth,
         public readonly DataHandlerInterface $paymentHistoryDataHandler,
         public readonly LogLevel $logLevel,
-        public readonly string $userAgent,
         public readonly bool $isProduction,
-        public readonly string $proxy,
-        public readonly int $proxyType,
-        public readonly int $timeout,
         public readonly Language $language,
-        public readonly Location $location,
         public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly Network $network,
+        public readonly ?string $storeId = null
     ) {
     }
 
@@ -77,45 +72,29 @@ final class Config
     public static function setup(
         LoggerInterface $logger = new NoneLogger(),
         CacheInterface $cache = new None(),
-        ?Basic $basicAuth = null,
         ?Jwt $jwtAuth = null,
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
         LogLevel $logLevel = LogLevel::INFO,
-        string $userAgent = '',
         bool $isProduction = false,
-        string $proxy = '',
-        int $proxyType = 0,
-        int $timeout = 0,
         Language $language = Language::EN,
-        Location $location = Location::SE,
         string $currencySymbol = 'kr',
-        CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST
+        CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
+        Network $network = new Network(),
+        ?string $storeId = null
     ): void {
         self::$instance = new Config(
             logger: $logger,
             cache: $cache,
-            basicAuth: $basicAuth,
             jwtAuth: $jwtAuth,
             paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
-            userAgent: $userAgent,
             isProduction: $isProduction,
-            proxy: $proxy,
-            proxyType: $proxyType,
-            timeout: $timeout,
             language: $language,
-            location: $location,
             currencySymbol: $currencySymbol,
-            currencyFormat: $currencyFormat
+            currencyFormat: $currencyFormat,
+            network: $network,
+            storeId: $storeId
         );
-    }
-
-    /**
-     * Checks if Basic auth is configured
-     */
-    public static function hasBasicAuth(): bool
-    {
-        return isset(self::$instance->basicAuth);
     }
 
     /**
@@ -184,15 +163,6 @@ final class Config
     /**
      * @throws ConfigException
      */
-    public static function getBasicAuth(): ?Basic
-    {
-        self::validateInstance();
-        return self::$instance->basicAuth;
-    }
-
-    /**
-     * @throws ConfigException
-     */
     public static function getJwtAuth(): ?Jwt
     {
         self::validateInstance();
@@ -214,7 +184,7 @@ final class Config
     public static function getUserAgent(): string
     {
         self::validateInstance();
-        return self::$instance->userAgent;
+        return self::$instance->network->userAgent;
     }
 
     /**
@@ -232,7 +202,7 @@ final class Config
     public static function getProxy(): string
     {
         self::validateInstance();
-        return self::$instance->proxy;
+        return self::$instance->network->proxy;
     }
 
     /**
@@ -241,7 +211,7 @@ final class Config
     public static function getProxyType(): int
     {
         self::validateInstance();
-        return self::$instance->proxyType;
+        return self::$instance->network->proxyType;
     }
 
     /**
@@ -250,7 +220,7 @@ final class Config
     public static function getTimeout(): int
     {
         self::validateInstance();
-        return self::$instance->timeout;
+        return self::$instance->network->timeout;
     }
 
     /**
@@ -260,15 +230,6 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->language;
-    }
-
-    /**
-     * @throws ConfigException
-     */
-    public static function getLocation(): Location
-    {
-        self::validateInstance();
-        return self::$instance->location;
     }
 
     /**
@@ -287,6 +248,15 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->currencyFormat;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getStoreId(): ?string
+    {
+        self::validateInstance();
+        return self::$instance->storeId;
     }
 
     /**

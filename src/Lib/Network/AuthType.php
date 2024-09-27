@@ -16,7 +16,6 @@ namespace Resursbank\Ecom\Lib\Network;
  */
 enum AuthType
 {
-    case BASIC;
     case JWT;
     case NONE;
 }

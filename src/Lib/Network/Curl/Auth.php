@@ -71,29 +71,6 @@ class Auth
     }
 
     /**
-     * @throws ConfigException
-     */
-    public static function setBasicAuth(CurlHandle $ch): void
-    {
-        $auth = Config::getBasicAuth();
-
-        if ($auth === null) {
-            $exception = new ConfigException(
-                message: 'Basic auth is not configured.'
-            );
-            Config::getLogger()->error(message: $exception->getMessage());
-            Config::getLogger()->error(message: $exception);
-            throw $exception;
-        }
-
-        curl_setopt(
-            handle: $ch,
-            option: CURLOPT_USERPWD,
-            value: "$auth->username:$auth->password"
-        );
-    }
-
-    /**
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

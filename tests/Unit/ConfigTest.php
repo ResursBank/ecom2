@@ -20,12 +20,11 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
-use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Basic;
+use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Throwable;
 
@@ -53,7 +52,6 @@ class ConfigTest extends TestCase
             expected: None::class,
             actual: Config::getCache()
         );
-        self::assertNull(actual: Config::getBasicAuth());
         self::assertNull(actual: Config::getJwtAuth());
         self::assertEquals(
             expected: LogLevel::INFO,
@@ -73,10 +71,6 @@ class ConfigTest extends TestCase
         self::assertEquals(
             expected: Language::EN,
             actual: Config::getLanguage()
-        );
-        self::assertEquals(
-            expected: Location::SE,
-            actual: Config::getLocation()
         );
     }
 
@@ -99,10 +93,6 @@ class ConfigTest extends TestCase
         Config::setup(
             logger: new StdoutLogger(),
             cache: new None(),
-            basicAuth: new Basic(
-                username: $_ENV['BASIC_AUTH_USERNAME'],
-                password: $_ENV['BASIC_AUTH_PASSWORD']
-            ),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -110,9 +100,12 @@ class ConfigTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             logLevel: LogLevel::DEBUG,
-            userAgent: 'Foo',
-            timeout: 42,
-            language: Language::SV
+            language: Language::SV,
+            network: new Network(
+                timeout: 42,
+                userAgent: 'Foo'
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
         self::assertInstanceOf(
@@ -122,10 +115,6 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(
             expected: None::class,
             actual: Config::getCache()
-        );
-        self::assertInstanceOf(
-            expected: Basic::class,
-            actual: Config::getBasicAuth()
         );
         self::assertInstanceOf(
             expected: Jwt::class,
@@ -152,29 +141,6 @@ class ConfigTest extends TestCase
         self::assertEquals(
             expected: Language::SV,
             actual: Config::getLanguage()
-        );
-    }
-
-    /**
-     * Verifies that the hasBasicAuth method behaves as expected
-     */
-    public function testHasBasicAuth(): void
-    {
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
-        );
-        self::assertEquals(
-            expected: false,
-            actual: Config::hasBasicAuth()
-        );
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            basicAuth: $this->createMock(originalClassName: Basic::class)
-        );
-        self::assertEquals(
-            expected: true,
-            actual: Config::hasBasicAuth()
         );
     }
 
