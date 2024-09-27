@@ -15,21 +15,20 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 // If no selectable customer types are configured, default to both NATURAL and LEGAL
 $selectableCustomerTypes = $this->selectableCustomerTypes ?? [CustomerType::NATURAL, CustomerType::LEGAL];
 
+// Determine if we should hide the radio buttons (if only one customer type is available)
+$hideRadioButtons = count($selectableCustomerTypes) === 1;
+
 ?>
 
 <div id="rb-ga-widget">
-    <div id="rb-ga-ct-area">
-        <?php if (count($selectableCustomerTypes) === 1): ?>
-            <!-- If only one customer type is configured, use a hidden input -->
-            <input type="hidden" name="rb-ga-ct" value="<?= $selectableCustomerTypes[0]->value ?>"/>
-        <?php else: ?>
+    <div id="rb-ga-ct-area" <?= $hideRadioButtons ? 'style="display:none;"' : '' ?>>
         <label for="rb-ga-ct-natural">
             <input
                 type="radio"
                 id="rb-ga-ct-natural"
                 name="rb-ga-ct"
                 value="<?= CustomerType::NATURAL->name ?>"
-                <?php if ($this->customerType === CustomerType::NATURAL): ?>
+                <?php if ($this->customerType === CustomerType::NATURAL || ($hideRadioButtons && $selectableCustomerTypes[0] === CustomerType::NATURAL)): ?>
                     checked
                 <?php endif; ?>
             />
@@ -43,15 +42,14 @@ $selectableCustomerTypes = $this->selectableCustomerTypes ?? [CustomerType::NATU
                 id="rb-ga-ct-legal"
                 name="rb-ga-ct"
                 value="<?= CustomerType::LEGAL->name ?>"
-                <?php if ($this->customerType === CustomerType::LEGAL): ?>
-                    checked
-                <?php endif; ?>
+            <?php if ($this->customerType === CustomerType::LEGAL || ($hideRadioButtons && $selectableCustomerTypes[0] === CustomerType::LEGAL)): ?>
+                checked
+            <?php endif; ?>
             />
             <span>
                 <?= Translator::translate(phraseId: 'customer-type-legal') ?>
             </span>
         </label>
-        <?php endif; ?>
     </div>
     <div class="rb-ga-ssn-area">
         <input type="text" id="rb-ga-gov-id" value="<?= $this->govId ?>"/>
