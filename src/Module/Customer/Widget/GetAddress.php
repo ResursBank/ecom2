@@ -49,11 +49,23 @@ class GetAddress extends Widget
         $this->js = $this->render(file: __DIR__ . '/get-address.js.phtml');
     }
 
+    /**
+     * Checks if the provided customer type matches the current customer type.
+     *
+     * @param CustomerType $customerType
+     * @return bool
+     */
     public function isCustomerTypeChecked(CustomerType $customerType): bool
     {
         return $this->customerType === $customerType;
     }
 
+    /**
+     * Determines if the radio buttons can be hidden based on customer type and selectable types.
+     *
+     * @param CustomerType $customerType
+     * @return bool
+     */
     public function canHideRadioButtons(CustomerType $customerType): bool
     {
         return count($this->selectableCustomerTypes) === 1 && in_array(
