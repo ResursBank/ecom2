@@ -2817,5 +2817,25 @@
       "sv": "efternamn",
       "no": "efternavn"
     }
+  },
+  {
+    "id": "selectable-customer-types",
+    "translation": {
+      "en": "Selectable customer types",
+      "sv": "Valbara kundtyper",
+      "no": "Valgbare kundetyper",
+      "da": "Valgfrie kundetyper",
+      "fi": "Valittavat asiakastyypit"
+    }
+  },
+  {
+    "id": "preselected-customer-type",
+    "translation": {
+      "en": "Pre-selected customer type",
+      "sv": "Förvald kundtyp",
+      "no": "Forhåndsvalgt kundetype",
+      "da": "Forvalgt kundetype",
+      "fi": "Esivalittu asiakastyyppi"
+    }
   }
 ]
