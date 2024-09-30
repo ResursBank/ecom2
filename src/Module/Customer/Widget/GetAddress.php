@@ -48,4 +48,18 @@ class GetAddress extends Widget
         $this->css = $this->render(file: __DIR__ . '/get-address.css');
         $this->js = $this->render(file: __DIR__ . '/get-address.js.phtml');
     }
+
+    public function isCustomerTypeChecked(CustomerType $customerType): bool
+    {
+        return $this->customerType === $customerType;
+    }
+
+    public function canHideRadioButtons(CustomerType $customerType): bool
+    {
+        return count($this->selectableCustomerTypes) === 1 && in_array(
+            needle: $customerType,
+            haystack: $this->selectableCustomerTypes,
+            strict: true
+        );
+    }
 }

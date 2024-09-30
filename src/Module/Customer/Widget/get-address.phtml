@@ -11,24 +11,17 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 
 /** @var Resursbank\Ecom\Module\Customer\Widget\GetAddress $this */
-
-// If no selectable customer types are configured, default to both NATURAL and LEGAL
-$selectableCustomerTypes = $this->selectableCustomerTypes ?? [CustomerType::NATURAL, CustomerType::LEGAL];
-
-// Determine if we should hide the radio buttons (if only one customer type is available)
-$hideRadioButtons = count($selectableCustomerTypes) === 1;
-
 ?>
 
 <div id="rb-ga-widget">
-    <div id="rb-ga-ct-area" <?= $hideRadioButtons ? 'style="display:none;"' : '' ?>>
+    <div id="rb-ga-ct-area" <?= $this->canHideRadioButtons(customerType: CustomerType::NATURAL) ? 'style="display:none;"' : '' ?>>
         <label for="rb-ga-ct-natural">
             <input
                 type="radio"
                 id="rb-ga-ct-natural"
                 name="rb-ga-ct"
                 value="<?= CustomerType::NATURAL->name ?>"
-                <?php if ($this->customerType === CustomerType::NATURAL || ($hideRadioButtons && $selectableCustomerTypes[0] === CustomerType::NATURAL)): ?>
+                <?php if ($this->isCustomerTypeChecked(customerType: CustomerType::NATURAL)): ?>
                     checked
                 <?php endif; ?>
             />
@@ -42,9 +35,9 @@ $hideRadioButtons = count($selectableCustomerTypes) === 1;
                 id="rb-ga-ct-legal"
                 name="rb-ga-ct"
                 value="<?= CustomerType::LEGAL->name ?>"
-            <?php if ($this->customerType === CustomerType::LEGAL || ($hideRadioButtons && $selectableCustomerTypes[0] === CustomerType::LEGAL)): ?>
-                checked
-            <?php endif; ?>
+                <?php if ($this->isCustomerTypeChecked(customerType: CustomerType::LEGAL)): ?>
+                    checked
+                <?php endif; ?>
             />
             <span>
                 <?= Translator::translate(phraseId: 'customer-type-legal') ?>
