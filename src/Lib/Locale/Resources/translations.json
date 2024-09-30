@@ -194,6 +194,36 @@
     }
   },
   {
+    "id": "config-customer-type-natural",
+    "translation": {
+      "en": "Private person",
+      "sv": "Privatperson",
+      "no": "Privatperson",
+      "da": "Privatperson",
+      "fi": "Yksityishenkilö"
+    }
+  },
+  {
+    "id": "config-customer-type-legal",
+    "translation": {
+      "en": "Business",
+      "sv": "Företag",
+      "no": "Business",
+      "da": "Business",
+      "fi": "Liiketoiminta"
+    }
+  },
+  {
+    "id": "config-customer-type-both",
+    "translation": {
+      "en": "Both",
+      "sv": "Båda",
+      "no": "Begge",
+      "da": "Begge",
+      "fi": "Molemmat"
+    }
+  },
+  {
     "id": "pay-in-installments-with-resurs-bank",
     "translation": {
       "en": "Pay in installments with Resurs Bank AB",
