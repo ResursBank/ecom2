@@ -32,6 +32,7 @@ class FileLogger implements LoggerInterface
     private const ERR_UNWRITABLE = 'Log file appears to be unwritable';
 
     /**
+     * @param string $path Path to log file storage directory.
      * @throws FilesystemException
      * @throws EmptyValueException
      * @throws FormatException
