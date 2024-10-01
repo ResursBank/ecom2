@@ -142,6 +142,10 @@ class ConfigTest extends TestCase
             expected: Language::SV,
             actual: Config::getLanguage()
         );
+        self::assertEquals(
+            expected: $_ENV['STORE_ID'],
+            actual: Config::getStoreId()
+        );
     }
 
     /**

@@ -63,9 +63,7 @@ class GetPeriods extends Widget
     {
         try {
             $result = [];
-            $methods = PaymentMethodRepository::getPaymentMethods(
-                storeId: $this->storeId
-            );
+            $methods = PaymentMethodRepository::getPaymentMethods();
 
             /** @var PaymentMethod $method */
             foreach ($methods as $method) {
@@ -106,7 +104,6 @@ class GetPeriods extends Widget
     {
         $result = [];
         $annuityFactors = Repository::getAnnuityFactors(
-            storeId: $this->storeId,
             paymentMethodId: $method->getId()
         );
 

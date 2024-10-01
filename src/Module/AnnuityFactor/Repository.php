@@ -13,6 +13,7 @@ namespace Resursbank\Ecom\Module\AnnuityFactor;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
@@ -30,7 +31,6 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Throwable;
 
 /**
@@ -58,20 +58,15 @@ class Repository
      * @throws Throwable
      */
     public static function getAnnuityFactors(
-        string $storeId,
         string $paymentMethodId
     ): AnnuityInformationCollection {
         try {
-            $cache = self::getCache(
-                storeId: $storeId,
-                paymentMethodId: $paymentMethodId
-            );
+            $cache = self::getCache(paymentMethodId: $paymentMethodId);
 
             $result = $cache->read();
 
             if (!$result instanceof AnnuityInformationCollection) {
                 $result = self::getApi(
-                    storeId: $storeId,
                     paymentMethodId: $paymentMethodId
                 )->call();
 
@@ -106,7 +101,6 @@ class Repository
      * @throws Throwable
      */
     public static function filterMethods(
-        string $storeId,
         PaymentMethodCollection $paymentMethods
     ): PaymentMethodCollection {
         /** @var array<PaymentMethod> $arr */
@@ -116,10 +110,7 @@ class Repository
         $result = [];
 
         foreach ($arr as $method) {
-            $factors = self::getAnnuityFactors(
-                storeId: $storeId,
-                paymentMethodId: $method->id
-            );
+            $factors = self::getAnnuityFactors(paymentMethodId: $method->id);
 
             if ($factors->count() === 0) {
                 continue;
@@ -137,13 +128,12 @@ class Repository
     }
 
     /**
-     * @throws IllegalValueException
+     * @throws ConfigException
      */
     public static function getCache(
-        string $storeId,
         string $paymentMethodId
     ): Cache {
-        self::validateStoreId(storeId: $storeId);
+        $storeId = Config::getStoreId();
 
         return new Cache(
             key: 'payment-method-annuity' . sha1(
@@ -156,29 +146,17 @@ class Repository
 
     /**
      * @throws IllegalTypeException
-     * @throws IllegalValueException
+     * @throws ConfigException
      */
     public static function getApi(
-        string $storeId,
         string $paymentMethodId
     ): Get {
-        self::validateStoreId(storeId: $storeId);
-
         return new Get(
             model: AnnuityInformation::class,
-            route: Mapi::STORE_ROUTE . "/$storeId/payment_methods/$paymentMethodId/annuity_factors",
+            route: Mapi::STORE_ROUTE . '/' . Config::getStoreId() .
+                '/payment_methods/' . $paymentMethodId . '/annuity_factors',
             params: [],
             extractProperty: 'content'
         );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private static function validateStoreId(
-        string $storeId
-    ): void {
-        $stringValidation = new StringValidation();
-        $stringValidation->isUuid(value: $storeId);
     }
 }

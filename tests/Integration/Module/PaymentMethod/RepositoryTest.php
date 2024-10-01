@@ -46,8 +46,6 @@ class RepositoryTest extends TestCase
 {
     private Cache $cache;
 
-    private string $storeId;
-
     /**
      * @throws ConfigException
      * @throws EmptyValueException
@@ -55,8 +53,6 @@ class RepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->storeId = $_ENV['STORE_ID'];
-
         Config::setup(
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
@@ -69,10 +65,11 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
-        $this->cache = Repository::getCache(storeId: $this->storeId);
+        $this->cache = Repository::getCache();
         $this->cache->clear();
 
         parent::setUp();
@@ -113,7 +110,7 @@ class RepositoryTest extends TestCase
      */
     public function testClearCache(): void
     {
-        Repository::getPaymentMethods(storeId: $this->storeId);
+        Repository::getPaymentMethods();
 
         $this->assertNotNull(actual: $this->cache->read());
 
@@ -141,9 +138,7 @@ class RepositoryTest extends TestCase
     public function testGetPaymentMethodsReturnsWithoutCache(): void
     {
         $this->assertNull(actual: $this->cache->read());
-        $paymentMethods = Repository::getPaymentMethods(
-            storeId: $this->storeId
-        );
+        $paymentMethods = Repository::getPaymentMethods();
         // Iterates through the existing payment method types and checks for any new additions from Resurs Bank.
         // If new types are detected, this will trigger exceptions in pipelines to alert us about it.
         $this->getPaymentMethodTypes(
@@ -209,7 +204,7 @@ class RepositoryTest extends TestCase
     {
         $this->assertEmpty(actual: $this->cache->read());
 
-        $data = Repository::getPaymentMethods(storeId: $this->storeId);
+        $data = Repository::getPaymentMethods();
 
         $this->assertNotEmpty(actual: $data);
 
@@ -242,36 +237,22 @@ class RepositoryTest extends TestCase
      */
     public function testDataSeparatedByAmount(): void
     {
-        $storeId = $this->storeId;
-
         $amount1 = 11;
         $amount2 = 1000;
 
         // Load data from API to cache.
-        $apiData1 = Repository::getPaymentMethods(
-            storeId: $storeId,
-            amount: $amount1
-        )->toArray();
+        $apiData1 = Repository::getPaymentMethods(amount: $amount1)->toArray();
 
-        $apiData2 = Repository::getPaymentMethods(
-            storeId: $storeId,
-            amount: $amount2
-        )->toArray();
+        $apiData2 = Repository::getPaymentMethods(amount: $amount2)->toArray();
 
         // Retrieve same data from cache.
-        $cacheData1 = Repository::getCache(
-            storeId: $storeId,
-            amount: $amount1
-        )->read();
+        $cacheData1 = Repository::getCache(amount: $amount1)->read();
 
         self::assertNotNull(actual: $cacheData1);
 
         $cacheData1 = $cacheData1->toArray();
 
-        $cacheData2 = Repository::getCache(
-            storeId: $storeId,
-            amount: $amount2
-        )->read();
+        $cacheData2 = Repository::getCache(amount: $amount2)->read();
 
         self::assertNotNull(actual: $cacheData2);
 
@@ -301,19 +282,14 @@ class RepositoryTest extends TestCase
      */
     public function testGetByIdFindResult(): void
     {
-        $paymentMethods = Repository::getPaymentMethods(
-            storeId: $this->storeId
-        )->toArray();
+        $paymentMethods = Repository::getPaymentMethods()->toArray();
 
         /** @var PaymentMethod|null $method */
         $method = $paymentMethods[0] ?? null;
 
         $this->assertNotNull(actual: $method);
 
-        $paymentMethod = Repository::getById(
-            storeId: $this->storeId,
-            paymentMethodId: $method->id
-        );
+        $paymentMethod = Repository::getById(paymentMethodId: $method->id);
 
         $this->assertNotNull(actual: $paymentMethod);
         $this->assertEquals(expected: $method->id, actual: $paymentMethod->id);
@@ -337,18 +313,13 @@ class RepositoryTest extends TestCase
      */
     public function testGetByIdReturnsNull(): void
     {
-        $paymentMethods = Repository::getPaymentMethods(
-            storeId: $this->storeId
-        )->toArray();
+        $paymentMethods = Repository::getPaymentMethods()->toArray();
 
         if (!isset($paymentMethods[0])) {
             $this->fail(message: 'No payment methods found');
         }
 
-        $paymentMethod = Repository::getById(
-            storeId: $this->storeId,
-            paymentMethodId: 'Not-a-Method'
-        );
+        $paymentMethod = Repository::getById(paymentMethodId: 'Not-a-Method');
 
         $this->assertNull(actual: $paymentMethod);
     }
@@ -361,7 +332,6 @@ class RepositoryTest extends TestCase
     public function testGetApplicationDataSpecification(): void
     {
         $response = Repository::getApplicationDataSpecification(
-            storeId: $this->storeId,
             paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
             amount: 200
         );
@@ -388,7 +358,6 @@ class RepositoryTest extends TestCase
     public function testApplicationDataSpecificationGetFieldsByType(): void
     {
         $response = Repository::getApplicationDataSpecification(
-            storeId: $this->storeId,
             paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
             amount: 200
         );
@@ -424,7 +393,6 @@ class RepositoryTest extends TestCase
     public function testApplicationDataSpecificationFilter(): void
     {
         $response = Repository::getApplicationDataSpecification(
-            storeId: $this->storeId,
             paymentMethodId: $_ENV['APPLICATION_DATA_SPEC_PAYMENT_METHOD_ID'],
             amount: 200
         );

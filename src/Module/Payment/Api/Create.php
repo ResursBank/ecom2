@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -72,7 +73,6 @@ class Create
      */
     // phpcs:ignore
     public function call(
-        string $storeId,
         string $paymentMethodId,
         OrderLineCollection $orderLines,
         ?string $orderReference = null,
@@ -82,7 +82,7 @@ class Create
         ?Options $options = null
     ): Payment {
         $params = [
-            'storeId' => $storeId,
+            'storeId' => Config::getStoreId(),
             'paymentMethodId' => $paymentMethodId,
             'order' => [
                 'orderLines' => $orderLines->toArray(),

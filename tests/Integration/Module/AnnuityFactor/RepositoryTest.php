@@ -38,8 +38,6 @@ class RepositoryTest extends TestCase
 {
     private Cache $cache;
 
-    private string $storeId;
-
     private string $paymentMethodId;
 
     /**
@@ -49,7 +47,6 @@ class RepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->storeId = $_ENV['STORE_ID'];
         $this->paymentMethodId = $_ENV['ANNUITY_PAYMENT_METHOD_ID'];
 
         Config::setup(
@@ -64,11 +61,11 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->cache = Repository::getCache(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId
         );
 
@@ -94,10 +91,7 @@ class RepositoryTest extends TestCase
      */
     public function testClearCache(): void
     {
-        Repository::getAnnuityFactors(
-            storeId: $this->storeId,
-            paymentMethodId: $this->paymentMethodId
-        );
+        Repository::getAnnuityFactors(paymentMethodId: $this->paymentMethodId);
 
         $this->assertNotNull(actual: $this->cache->read());
 
@@ -126,7 +120,6 @@ class RepositoryTest extends TestCase
         $this->assertNull(actual: $this->cache->read());
         $this->assertNotEmpty(
             actual: Repository::getAnnuityFactors(
-                storeId: $this->storeId,
                 paymentMethodId: $this->paymentMethodId
             )
         );
@@ -153,7 +146,6 @@ class RepositoryTest extends TestCase
         $this->assertEmpty(actual: $this->cache->read());
 
         $data = Repository::getAnnuityFactors(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethodId
         );
 
@@ -182,10 +174,7 @@ class RepositoryTest extends TestCase
     public function testFilterMethodsReturnsFilteredCollection(): void
     {
         $filteredMethods = Repository::filterMethods(
-            storeId: $this->storeId,
-            paymentMethods: PaymentMethodRepository::getPaymentMethods(
-                storeId: $this->storeId
-            )
+            paymentMethods: PaymentMethodRepository::getPaymentMethods()
         );
 
         $this->assertNotEmpty(actual: $filteredMethods->toArray());

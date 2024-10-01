@@ -67,7 +67,8 @@ class CancelTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
     }
 
@@ -89,7 +90,6 @@ class CancelTest extends TestCase
     {
         /** @noinspection DuplicatedCode */
         return Repository::create(
-            storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(

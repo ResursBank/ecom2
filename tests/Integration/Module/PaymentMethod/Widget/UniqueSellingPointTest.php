@@ -43,7 +43,8 @@ class UniqueSellingPointTest extends TestCase
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            language: Language::SV
+            language: Language::SV,
+            storeId: $_ENV['STORE_ID']
         );
 
         parent::setUp();
@@ -55,9 +56,7 @@ class UniqueSellingPointTest extends TestCase
     private function getMethods(): PaymentMethodCollection
     {
         try {
-            $methods = Repository::getPaymentMethods(
-                storeId: $_ENV['STORE_ID']
-            );
+            $methods = Repository::getPaymentMethods();
         } catch (Throwable $e) {
             self::fail($e->getMessage());
         }
