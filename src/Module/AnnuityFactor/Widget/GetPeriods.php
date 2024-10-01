@@ -49,7 +49,9 @@ class GetPeriods extends Widget
         public readonly string $storeId,
         public readonly ?string $methodElementId = null,
         public readonly ?string $periodElementId = null,
-        public readonly bool $automatic = true
+        public readonly bool $automatic = true,
+        public readonly ?string $selectedPaymentMethod = null,
+        public readonly ?string $selectedPeriod = null
     ) {
         $this->js = $this->render(file: __DIR__ . '/get-periods.js.phtml');
     }
@@ -84,6 +86,38 @@ class GetPeriods extends Widget
         }
 
         return "{}";
+    }
+
+    /**
+     * Fetch payment method IDs and names.
+     */
+    public function getJsonPaymentMethods(): string
+    {
+        try {
+            $result = [];
+            $methods = PaymentMethodRepository::getPaymentMethods(
+                storeId: $this->storeId
+            );
+
+
+
+            foreach ($methods as $method) {
+                $result[$method->getId()] = [
+                    'id' => $method->getId(),
+                    'name' => $method->getName()
+                ];
+            }
+
+            return json_encode(value: $result, flags: JSON_THROW_ON_ERROR);
+        } catch (Throwable $error) {
+            try {
+                Config::getLogger()->error($error);
+            } catch (ConfigException) {
+                // Do nothing.
+            }
+        }
+
+        return '{}';
     }
 
     /**

@@ -69,11 +69,31 @@ class Resursbank_GetPeriods {
                     instance.updatePeriods();
                 }
             );
+
+            instance.addPaymentMethods();
+            instance.updatePeriods();
         } catch (e) {
             instance.errorHandler(e);
         }
 
         return instance;
+    }
+
+    addPaymentMethods() {
+        const paymentMethods = <?= $this->getJsonPaymentMethods() ?>;
+        const paymentMethodElement = this.getPaymentMethodElement();
+        const selectedPaymentMethod = '<?= $this->selectedPaymentMethod ?>';
+
+        for (const [key, value] of Object.entries(paymentMethods)) {
+            const option = document.createElement('option');
+            option.value = value.id;
+            option.text = value.name;
+            paymentMethodElement.add(option);
+
+            if (selectedPaymentMethod === option.value) {
+                paymentMethodElement.value = selectedPaymentMethod;
+            }
+        }
     }
 
     /**
@@ -96,6 +116,7 @@ class Resursbank_GetPeriods {
             // Scan list of periods for selected payment method.
             if (paymentMethodId in this.data) {
                 const periods = this.data[paymentMethodId];
+                const selectedPeriod = '<?= $this->selectedPeriod ?>';
 
                 // Add periods to select element.
                 for (const [key, value] of Object.entries(periods)) {
@@ -103,6 +124,10 @@ class Resursbank_GetPeriods {
                     option.value = key;
                     option.text = value;
                     periodSelect.add(option);
+
+                    if (selectedPeriod === option.value) {
+                        periodSelect.value = selectedPeriod;
+                    }
                 }
             }
         } catch (e) {
