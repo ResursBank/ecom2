@@ -13,6 +13,7 @@ namespace Resursbank\Ecom\Module\PriceSignage;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
@@ -59,14 +60,12 @@ class Repository
      */
     // phpcs:ignore
     public static function getPriceSignage(
-        string $storeId,
         string $paymentMethodId,
         float $amount,
         ?int $monthFilter = null
     ): PriceSignage {
         try {
             $cache = self::getCache(
-                storeId: $storeId,
                 paymentMethodId: $paymentMethodId,
                 amount: $amount,
                 monthFilter: $monthFilter
@@ -75,7 +74,6 @@ class Repository
 
             if (!$result instanceof PriceSignage) {
                 $result = self::getApi(
-                    storeId: $storeId,
                     paymentMethodId: $paymentMethodId,
                     amount: $amount
                 )->call();
@@ -104,15 +102,16 @@ class Repository
 
     /**
      * @throws IllegalValueException
+     * @throws ConfigException
      */
     public static function getCache(
-        string $storeId,
         string $paymentMethodId,
         float $amount,
         ?int $monthFilter = null
     ): Cache {
-        self::validateStoreId(storeId: $storeId);
         self::validatePaymentMethodId(paymentMethodId: $paymentMethodId);
+
+        $storeId = Config::getStoreId();
 
         return new Cache(
             key: 'price-signage-' . sha1(
@@ -131,20 +130,21 @@ class Repository
     }
 
     /**
-     * @throws IllegalValueException|IllegalTypeException
+     * @throws IllegalValueException
+     * @throws IllegalTypeException
+     * @throws ConfigException
      * @todo If $amount is less than paymentMethod minimum purchase limit we get 401 atm.
      */
     public static function getApi(
-        string $storeId,
         string $paymentMethodId,
         float $amount
     ): Get {
-        self::validateStoreId(storeId: $storeId);
         self::validatePaymentMethodId(paymentMethodId: $paymentMethodId);
 
         return new Get(
             model: PriceSignage::class,
-            route: Mapi::STORE_ROUTE . '/' . $storeId . '/payment_methods/' . $paymentMethodId . '/price_signage',
+            route: Mapi::STORE_ROUTE . '/' . Config::getStoreId() .
+                '/payment_methods/' . $paymentMethodId . '/price_signage',
             params: ['amount' => $amount]
         );
     }
@@ -166,16 +166,6 @@ class Repository
             generalTermsLinks: $result->generalTermsLinks,
             costList: new CostCollection(data: $costs)
         );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private static function validateStoreId(
-        string $storeId
-    ): void {
-        $stringValidation = new StringValidation();
-        $stringValidation->isUuid(value: $storeId);
     }
 
     /**

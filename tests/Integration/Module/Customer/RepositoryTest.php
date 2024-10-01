@@ -28,11 +28,9 @@ use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Store\Store;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
-use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use Resursbank\EcomTest\Utilities\MockSessionTrait;
 
 /**
@@ -59,37 +57,11 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->setupSession(test: $this);
-    }
-
-    /**
-     * @throws AuthException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ApiException
-     * @throws CacheException
-     * @throws IllegalValueException
-     */
-    private function getStoreId(): string
-    {
-        $return = $_ENV['STORE_ID'] ?? '';
-
-        /** @var Store $store */
-        foreach (StoreRepository::getStores() as $store) {
-            if ($store->nationalStoreId === (int)$_ENV['NATIONAL_STORE_ID']) {
-                $return = $store->id;
-                break;
-            }
-        }
-
-        return $return;
     }
 
     /**
@@ -109,18 +81,17 @@ class RepositoryTest extends TestCase
     public function testGetAddressOliver(): void
     {
         $expect = [
-            'fullName' => 'Oliver Liamsson Williamsson',
             'addressRow1' => 'Makadamg 1',
             'postalArea' => 'Helsingborg',
             'postalCode' => '25024',
             'countryCode' => 'SE',
             'firstName' => 'Oliver',
             'lastName' => 'Williamsson',
-            'addressRow2' => '',
+            'addressRow2' => null,
+            'fullName' => null
         ];
 
         $address = Repository::getAddress(
-            storeId: $this->getStoreId(),
             governmentId: '195012026430',
             customerType: CustomerType::NATURAL
         );
@@ -160,7 +131,6 @@ class RepositoryTest extends TestCase
         ];
 
         $address = Repository::getAddress(
-            storeId: $this->getStoreId(),
             governmentId: '166997368573',
             customerType: CustomerType::LEGAL
         );
@@ -193,7 +163,6 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: GetAddressException::class);
 
         Repository::getAddress(
-            storeId: $this->getStoreId(),
             governmentId: '166997368573',
             customerType: CustomerType::NATURAL
         );
@@ -220,7 +189,6 @@ class RepositoryTest extends TestCase
         $this->expectException(exception: GetAddressException::class);
 
         Repository::getAddress(
-            storeId: $this->getStoreId(),
             governmentId: '8305417715',
             customerType: CustomerType::NATURAL
         );
@@ -249,7 +217,6 @@ class RepositoryTest extends TestCase
 
         try {
             Repository::getAddress(
-                storeId: $this->getStoreId(),
                 governmentId: '1983051477152',
                 customerType: CustomerType::NATURAL
             );

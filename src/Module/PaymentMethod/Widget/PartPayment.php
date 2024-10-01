@@ -174,7 +174,6 @@ class PartPayment extends Widget
     {
         try {
             $annuityFactors = Repository::getAnnuityFactors(
-                storeId: $this->storeId,
                 paymentMethodId: $this->paymentMethod->id
             );
         } catch (Throwable $e) {
@@ -223,7 +222,6 @@ class PartPayment extends Widget
     private function getAnnuityInformation(): AnnuityInformation
     {
         $annuityFactors = Repository::getAnnuityFactors(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethod->id
         );
 
@@ -259,7 +257,6 @@ class PartPayment extends Widget
     private function getCost(): Cost
     {
         $costs = SignageRepository::getPriceSignage(
-            storeId: $this->storeId,
             paymentMethodId: $this->paymentMethod->id,
             amount: $this->amount,
             monthFilter: $this->months

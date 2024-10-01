@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -57,13 +58,13 @@ class ApplicationDataSpecification
      * @throws NotJsonEncodedException
      */
     public function call(
-        string $storeId,
         string $paymentMethodId,
         int $amount
     ): ApplicationFormSpecResponse {
         $curl = new Curl(
             url: $this->mapi->getUrl(
-                route: Mapi::STORE_ROUTE . '/' . $storeId . '/payment_methods/' . $paymentMethodId .
+                route: Mapi::STORE_ROUTE . '/' . Config::getStoreId() .
+                '/payment_methods/' . $paymentMethodId .
                 '/application_data_specification'
             ),
             requestMethod: RequestMethod::GET,

@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -42,8 +41,6 @@ class GetAddressControllerTest extends TestCase
 
     private Controller $controller;
 
-    private string $storeId;
-
     /**
      * @throws EmptyValueException
      */
@@ -61,14 +58,14 @@ class GetAddressControllerTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            )
+            ),
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->controller = $this->createPartialMock(
             originalClassName: Controller::class,
             methods: ['log']
         );
-        $this->storeId = $_ENV['STORE_ID'];
         $this->setupSession(test: $this);
     }
 
@@ -83,13 +80,11 @@ class GetAddressControllerTest extends TestCase
      */
     private function callController(
         string $govId,
-        CustomerType $customerType,
-        string $storeId
+        CustomerType $customerType
     ): string {
         $this->enableSession();
 
         return $this->controller->exec(
-            storeId: $storeId,
             data: new GetAddressRequest(
                 govId: $govId,
                 customerType: $customerType
@@ -152,8 +147,7 @@ class GetAddressControllerTest extends TestCase
 
         $data = $this->callController(
             govId: $govId,
-            customerType: $customerType,
-            storeId: $this->storeId
+            customerType: $customerType
         );
 
         $this->assertResponseContains(needle: 'addressRow1', haystack: $data);
@@ -189,20 +183,6 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
-     * Assert that an exception is thrown when using an invalid store ID.
-     */
-    public function testExecWithInvalidStoreId(): void
-    {
-        $this->expectException(exception: GetAddressException::class);
-
-        $this->callController(
-            govId: '198305147715',
-            customerType: CustomerType::NATURAL,
-            storeId: '35e0a591-4365-414e-82dc-5fa5eafe95fb'
-        );
-    }
-
-    /**
      * Assert exec() fetches address data for company customer.
      *
      * @throws EmptyValueException
@@ -215,8 +195,7 @@ class GetAddressControllerTest extends TestCase
     {
         $data = $this->callController(
             govId: '166997368573',
-            customerType: CustomerType::LEGAL,
-            storeId: $this->storeId
+            customerType: CustomerType::LEGAL
         );
 
         $this->assertResponseContains(needle: 'addressRow1', haystack: $data);

@@ -47,9 +47,9 @@ class OrderTest extends TestCase
             customer: new Payment\Customer(
                 customerType: CustomerType::NATURAL
             ),
-            paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
             status: Status::ACCEPTED,
             paymentActions: [],
+            paymentMethod: new Payment\PaymentMethod(name: 'Payment method'),
             order: new Payment\Order(
                 orderReference: Strings::getUuid(),
                 actionLog: new Payment\Order\ActionLogCollection(data: []),

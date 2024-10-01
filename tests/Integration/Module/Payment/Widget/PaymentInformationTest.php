@@ -82,7 +82,8 @@ class PaymentInformationTest extends TestCase
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            language: Language::EN
+            language: Language::EN,
+            storeId: $_ENV['STORE_ID']
         );
     }
 
@@ -115,7 +116,8 @@ class PaymentInformationTest extends TestCase
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            language: Language::SV
+            language: Language::SV,
+            storeId: $_ENV['STORE_ID']
         );
 
         $this->orderReference = Strings::generateRandomString(length: 12);
@@ -146,7 +148,6 @@ class PaymentInformationTest extends TestCase
     private function createPayment(string $orderReference, string $governmentId = '198305147715'): Payment
     {
         $payment = Repository::create(
-            storeId: $_ENV['STORE_ID'],
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
                 new OrderLine(

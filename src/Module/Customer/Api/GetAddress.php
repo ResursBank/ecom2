@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Customer\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -60,14 +61,13 @@ class GetAddress
      */
     // phpcs:ignore
     public function call(
-        string $storeId,
         string $governmentId,
         CustomerType $customerType
     ): Address {
         // REMOTE_ADDR is normally present, however - if this is running from console or similar (when REMOTE_ADDR
         // is simply absent) we should add localhost as remote.
         $payload = [
-            'storeId' => $storeId,
+            'storeId' => Config::getStoreId(),
             'customerIp' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
             'governmentId' => $governmentId,
             'customerType' => $customerType->value,

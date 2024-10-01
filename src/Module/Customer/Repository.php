@@ -61,14 +61,12 @@ class Repository
      * @throws ConfigException
      */
     public static function getAddress(
-        string $storeId,
         string $governmentId,
         CustomerType $customerType,
         GetAddress $api = new GetAddress()
     ): Address {
         try {
             return $api->call(
-                storeId: $storeId,
                 governmentId: $governmentId,
                 customerType: $customerType
             );

@@ -13,6 +13,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
@@ -31,7 +32,6 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
 use Throwable;
@@ -61,18 +61,14 @@ class Repository
      * @throws Throwable
      */
     public static function getPaymentMethods(
-        string $storeId,
         ?float $amount = null
     ): PaymentMethodCollection {
         try {
-            $cache = self::getCache(storeId: $storeId, amount: $amount);
+            $cache = self::getCache(amount: $amount);
             $result = $cache->read();
 
             if (!$result instanceof PaymentMethodCollection) {
-                $result = self::getApi(
-                    storeId: $storeId,
-                    amount: $amount
-                )->call();
+                $result = self::getApi(amount: $amount)->call();
 
                 if (!$result instanceof PaymentMethodCollection) {
                     throw new ApiException(message: 'Invalid API response.');
@@ -106,14 +102,12 @@ class Repository
     }
 
     /**
-     * @throws IllegalValueException
-     * @throws EmptyValueException
+     * @throws ConfigException
      */
     public static function getCache(
-        string $storeId,
         ?float $amount = null
     ): Cache {
-        self::validateStoreId(storeId: $storeId);
+        $storeId = Config::getStoreId();
 
         return new Cache(
             key: 'payment-methods-' . sha1(
@@ -126,18 +120,15 @@ class Repository
 
     /**
      * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws EmptyValueException
+     * @throws ConfigException
      */
     public static function getApi(
-        string $storeId,
         ?float $amount = null
     ): Get {
-        self::validateStoreId(storeId: $storeId);
-
         return new Get(
             model: PaymentMethod::class,
-            route: Mapi::STORE_ROUTE . '/' . $storeId . '/payment_methods',
+            route: Mapi::STORE_ROUTE . '/' . Config::getStoreId() .
+                '/payment_methods',
             params: compact('amount'),
             extractProperty: 'content'
         );
@@ -158,14 +149,10 @@ class Repository
      * @throws Throwable
      */
     public static function getById(
-        string $storeId,
         string $paymentMethodId,
         ?float $amount = null
     ): ?PaymentMethod {
-        $paymentMethods = self::getPaymentMethods(
-            storeId: $storeId,
-            amount: $amount
-        );
+        $paymentMethods = self::getPaymentMethods(amount: $amount);
 
         try {
             return $paymentMethods->getById(methodId: $paymentMethodId);
@@ -188,13 +175,11 @@ class Repository
      * @throws ValidationException
      */
     public static function getApplicationDataSpecification(
-        string $storeId,
         string $paymentMethodId,
         int $amount
     ): PaymentMethod\ApplicationFormSpecResponse {
         try {
             return (new ApplicationDataSpecification())->call(
-                storeId: $storeId,
                 paymentMethodId: $paymentMethodId,
                 amount: $amount
             );
@@ -223,17 +208,5 @@ class Repository
             paymentMethod: $paymentMethod,
             amount: $amount
         );
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private static function validateStoreId(
-        string $storeId
-    ): void {
-        $stringValidation = new StringValidation();
-        $stringValidation->notEmpty(value: $storeId);
-        $stringValidation->isUuid(value: $storeId);
     }
 }
