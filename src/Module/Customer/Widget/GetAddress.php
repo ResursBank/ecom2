@@ -36,13 +36,17 @@ class GetAddress extends Widget
     /**
      * @throws FilesystemException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
         public readonly string $url = '',
         public string $govId = '',
         public CustomerType $customerType = CustomerType::NATURAL,
         public readonly bool $automatic = false,
-        public readonly array $selectableCustomerTypes = [CustomerType::NATURAL, CustomerType::LEGAL]
+        public readonly array $selectableCustomerTypes = [
+            CustomerType::NATURAL,
+            CustomerType::LEGAL
+        ]
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-address.phtml');
         $this->css = $this->render(file: __DIR__ . '/get-address.css');
@@ -51,9 +55,6 @@ class GetAddress extends Widget
 
     /**
      * Checks if the provided customer type matches the current customer type.
-     *
-     * @param CustomerType $customerType
-     * @return bool
      */
     public function isCustomerTypeChecked(CustomerType $customerType): bool
     {
@@ -62,9 +63,6 @@ class GetAddress extends Widget
 
     /**
      * Determines if the radio buttons can be hidden based on customer type and selectable types.
-     *
-     * @param CustomerType $customerType
-     * @return bool
      */
     public function canHideRadioButtons(CustomerType $customerType): bool
     {
