@@ -22,7 +22,7 @@ handling incoming requests. These controllers are meant to be used as a base
 for your own controllers. In some cases they can function as is, but in most
 cases you will need to extend them to fit your application.
 
-You most also route incoming requests to these controllers, or to your own
+You must also route incoming requests to these controllers, or to your own
 controllers which extend them, since Ecom cannot know or affect how your
 application routes incoming requests.
 
@@ -32,46 +32,19 @@ simplified and may not fit your application without modification.
 
 ## Code samples
 
-Please note that any code example where multiple sections appear means a single
-page implementation. The sectioning is support code highlighting where
-applicable. Example:
+Any code example supplied by this document expects you to have executed the
+*Config::setup()* method first. Also, most code examples require additional data
+we do not have in advance, such as *store id* or *payment method configuration*.
 
-```php
-<?= $widget->content ?>
-```
-```js
-<script>
-Resursbank_JsClass.generate({
-    errorHandler: function (error) {
-        console.error(error);
-        alert(error);
-     },
-});
-</script>
-```
-```html
-<style>
-```
-```php
-<?= $widget->css ?>
-```
-```html
-</style>
-```
-
-**Note that any code example supplied by this document expects you to have
-executed the *Config::setup()* method first. Also, most code examples require
-additional data we do not have in advance, such as *store id* or *payment
-method configuration*.**
-
-**Since our codebase is subject to change these examples should service as
-implementation guides only and are not meant for direct copy+paste use.**
+Since our codebase is subject to change these examples should serve as 
+**implementation guides** only.
 
 ## JavaScript constructors
 
-The classes we provide in JavaScript all have constructors which accept an
+The classes we provide in JavaScript all have constructors that accepts an
 **overrides** object. This object can contain functions which will override the
 default behavior of the class. This is useful if you want to add custom error
+. This is useful if you want to add custom error
 handling, or if you want to modify the behavior of the class in some other way.
 
 This applies to all JavaScript classes in the library.
@@ -88,7 +61,7 @@ This means that you can submit five **OrderLine** objects to the API when you
 create the payment, and a single **OrderLine** object when you perform your
 capture call.
 
-The API will ensure that there is enough resources (money) available on the
+The API will ensure that there are enough resources (money) available on the
 payment for your API call to succeed, so you cannot capture / credit more than
 the payment is worth.
 
@@ -97,7 +70,7 @@ between the **OrderLine** objects submitted to the API in various API calls,
 they are never mapped together in any way.
 
 When using the **Merchant Portal** to view a payment, you will not see all the
-the individual **OrderLine** objects as separate rows on a payment. The GUI
+individual **OrderLine** objects as separate rows on a payment. The GUI
 will attempt to merge them together to give you a better overview of the
 payment. It's again important to understand that this is only a visual aid,
 the API will always treat each **OrderLine** object as a separate entity.
@@ -125,7 +98,7 @@ When creating a payment there will be an **authorizedAmount** and a
 * **authorizedAmount** - The amount that the customer **has agreed** to pay.
 * **approvedCreditLimit** - The amount that the customer **is allowed** to pay.
 
-These are not to be confused with each other. 
+These should not be confused with each other.
 
 The point of **approvedCreditLimit** is to allow merchants to replace items
 in a payment without the customer needing to re-approve the payment. This is
@@ -142,7 +115,7 @@ of Module's when available.
 
 Widgets are meant to simplify the process of rendering forms, buttons, and
 information which relates to data from the API / integrates library
-functionality. Such as displaying payment information, or fetching customer
+functionality such as displaying payment information or fetching customer
 address information.
 
 When we create an instance of a widget, it will render .phtml files (always in
@@ -173,8 +146,7 @@ actions can be performed manually within the Merchant Portal instead.
 
 The library contains translations for SE/NO/DK/FI/EN. You can pass a language
 to the **Config::setup()** method to set the language for the library. This will
-affect the language of error messages, log messages, and other text output by
-the library.
+affect the language of messages and other text output from the library.
 
 Some modules have individual *Translator* classes to handle content specific
 translations. General translations are handled by the **Locale** library
@@ -186,7 +158,7 @@ Essentially this is how it works:
 2. The json file consists of a structure where each key contains an object with texts in various languages.
 3. The *Translator::translate()* method will resolve the correct text based on configured language and supplied id (key).
 
-Assume we want to translator "Hello World", we would first add a segment to our
+Assume we want to translate "Hello World", we would first add a segment to our
 *translations.json* file:
 
 ```json
@@ -268,7 +240,7 @@ Config::setup(
 
 ## Configuration options
 
-Note that the properties described below can be access by getters on Config, like
+Note that the properties described below can be accessed by getters on Config, like
 `Config::getLogger()`.
 
 ### -#- logger
@@ -374,7 +346,8 @@ changes. Minor / patch versions are backwards compatible always.
 ## Testing
 
 The library is tested using PHPUnit. The tests are located in the **tests**
-and every part of the library which makes sense to test is covered by tests.
+directory and every part of the library which makes sense to test is covered by
+tests.
 
 ## Code styling
 
@@ -579,6 +552,9 @@ below will show an example of pre-population.**
 
 ```php
 <?php
+
+// index.phtml
+
 use \Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
 use \Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use \Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
@@ -601,6 +577,7 @@ $annuityFactors = AnnuityFactorRepository::getAnnuityFactors(
     storeId: 'store-id',
     paymentMethodId: $configuredPaymentMethod,
 );
+
 ?>
 
 <form>
@@ -622,8 +599,7 @@ $annuityFactors = AnnuityFactorRepository::getAnnuityFactors(
         <?php endforeach; ?>
     </select>
 </form>
-```
-```js
+
 <script>
     <?= $widget->content ?>
    
@@ -656,16 +632,14 @@ the **generate** method manually instead.
 // Segment from Module/AnnuityFactor/Widget/get-periods.js.phtml where we
 // automatically set up the widget if $automatic is set to true.
 <?php if ($this->automatic): ?>
-```
-```js
+<script>
 document.addEventListener(
     'DOMContentLoaded',
     function () {
         Resursbank_GetPeriods.generate();
     }
 );
-```
-```php
+</script>
 <?php endif; ?>
 ```
 
@@ -736,7 +710,7 @@ There are two kinds of callbacks:
 2. **Management** - Sent when a payment is *captured*, *refunded*, *cancelled* etc. (such events can relate to the entire, or parts of, the payment).
 
 Ecom cannot set up routing for you, since this is individual to each
-application. However, for the most common use case, we have included a basic
+application. However, for the most common use case, we have included basic
 classes for handling incoming requests and responding to them, to make your
 integration easier. We will cover this with an example after we have described
 the module a bit more.
@@ -746,7 +720,7 @@ the module a bit more.
 *src/Module/Callback/Repository*
 
 Please note that the methods **\Resursbank\Ecom\Module\Callback\Repository::trackError()**,
-**\Resursbank\Ecom\Module\Callback\Repository::tackInit()** and **\Resursbank\Ecom\Module\Callback\Repository::addDebugLogs()**
+**\Resursbank\Ecom\Module\Callback\Repository::trackInit()** and **\Resursbank\Ecom\Module\Callback\Repository::addDebugLogs()**
 are public for testability. You are not expected to use these methods directly
 from your application, as such we will not cover them in this documentation.
 
@@ -802,24 +776,22 @@ administration panel or similar.
 
 ```php
 <?php
+
+// index.phtml
+
 use \Resursbank\Ecom\Module\Callback\Widget\Callbacks;
 
 $widget = new Callbacks(
     authorizationUrl: 'https://your-authorization-callback-url',
     managementUrl: 'https://your-management-callback-url',
 );
+
 ?>
-```
-```html
+
 <style>
-```
-```php
-<?= $widget->css ?>
- ```
-```html
+    <?= $widget->css ?>
 </style>
-```
-```php
+
 <?= $widget->content ?>
 ```
 
@@ -985,6 +957,9 @@ from the previous example.
 
 ```php
 <?php
+
+// index.phtml
+
 use \Resursbank\Ecom\Module\Customer\Widget\GetAddress;
 
 // Note that you also can supply a $governmentId and $customerType to
@@ -997,27 +972,18 @@ use \Resursbank\Ecom\Module\Customer\Widget\GetAddress;
 $widget = new GetAddress(
     url: 'https://whatever.com/get-addres'
 );
+
 ?>
-```
-```html
+
 <style>
-```
-```php
-<?= $widget->css ?>
- ```
-```html
+    <?= $widget->css ?>
 </style>
-```
-```php
+
 <?= $widget->content ?>
-```
-```js
+
 <script>
-```
-```php
     <?= $widget->js ?>
-```
-```js
+
     // If you had set automatic to true, this method would be called automatically.
     // upon document load. Since we set it to false, we need to call it manually.
     let instance = new Resursbank_GetAddress({
@@ -1070,7 +1036,7 @@ or *Magento*).**
 ### -#- \Resursbank\Ecom\Module\Payment\Repository::search()
 
 Let's you search for legacy payments placed with older API:s. Useful if you are 
-migration from an older system to Ecom. If so, you can view this as your **get**
+migrating from an older system to Ecom. If so, you can view this as your **get**
 for old payments. These can then be handled just like any other payment.
 
 **Note that this method will return a list of payments.**
@@ -1159,7 +1125,7 @@ $payment = Repository::create(
        mobilePhone: '0701234567'
    ),
    // [Optional] Options or payment and redirection back to your website.
-   optionas: new Options(
+   options: new Options(
        initiatedOnCustomersDevice: true,
        handleManualInspection: false,
        handleFrozenPayments: true,
@@ -1190,7 +1156,7 @@ $payment = Repository::create(
 There are two other **optional** parameters we've not included in the example
 above:
 
-1. $application - Information relevant for loans mostly.
+1. $application - Information which is mostly relevant for loans.
 2. $metadata - Additional information you want to store with the payment.
 
 The example above will create a *payment session* for you. The URL you would
@@ -1401,6 +1367,10 @@ mostly useful to administrators (merchants) to give them a quick overview of
 the payment attached to an order, without having to access the Merchant Portal.
 
 ```php
+<?php
+
+// index.phtml
+
 use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
@@ -1414,16 +1384,12 @@ $widget = new PaymentInformation(
     currencyFormat: CurrencyFormat::SYMBOL_LAST
 );
 
-// Render the widget content
-echo $widget->content;
-```
-```html
+?>
+
+<?= $widget->content ?>
+
 <style>
-```
-```php
-<?= $widget->css ?>
-```
-```html
+    <?= $widget->css ?>
 </style>
 ```
 
@@ -1569,6 +1535,10 @@ This widget will render a log of payment events. It's useful for administrators
 to get an idea of how a payment has been handled.
 
 ```php
+<?php
+
+// index.phtml
+
 use \Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
@@ -1602,13 +1572,17 @@ $entries = new EntryCollection([
 // In reality, you would use Repository::getList() to fetch the entries. This
 // is just an example to illustrate how the widget works.
 $widget = new Log(entries: $entries);
+
 ?>
 
 
 <?= $widget->content ?>
+
+
 <style>
   <?= $widget->css ?>
 </style>
+
 <script>
   <?= $widget->js ?>
 </script>
@@ -1667,10 +1641,14 @@ It also expects to handle a **ReadMore** widget instance (this widget renders a
 link and associated modal displaying information relating to a payment method).
 The ReadMore widget is optional and can be omitted if you like, but for a more
 complete example we will illustrate below how it should be rendered in
-association with the PartPayment widget. Teh Read More widget itself will be
+association with the PartPayment widget. The Read More widget itself will be
 covered by its own chapter later in this document.
 
 ```php
+<?php
+
+// index.phtml
+
 use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
@@ -1696,16 +1674,19 @@ $readMoreWidget = new ReadMore(
     paymentMethod: $paymentMethod,
     amount: 1000.0,
 );
-```
-```html
+
+?>
+
 <style>
    <?= $widget->css ?>
    <?= $readMoreWidget->css ?>
 </style>
+
 <div id="rb-pp-widget-container"> <!-- NOTE! This will be used in our JS component to reference the HTML of the widget. -->
     <?= $widget->content ?>
    <?= $$readMoreWidget->content ?>
 </div>
+
 <script>
    <?= $widget->js ?>
 </script>
@@ -1882,7 +1863,7 @@ example is based on code from one of our Magento modules.
 
 The example above is incredibly complex and specific to a Magento module we've
 written. However, it illustrates how flexible the widget is, and how you can
-configure it to fit your needs by overriding the original methods on
+configure it to fit your needs by overriding the original methods in
 **Resursbank_PartPayment**
 
 We will now show you a much simpler example. Say that the only thing you wish to
@@ -1994,9 +1975,9 @@ class MyPartPaymentInfoController implements InfoControllerInterface
 }
 ```
 
-You are intended to submit the URL to this controller as *fetchStartingCostUrl*
-when configuring the *PartPayment* widget so that AJAX requests to fetch updated
-data for the widget can be made.
+You should submit the URL to this controller as *fetchStartingCostUrl* when
+configuring the *PartPayment* widget so that AJAX requests to fetch updated data
+for the widget can be made.
 
 ## [Widget] ReadMore
 
@@ -2010,6 +1991,10 @@ with information about a payment method.
 The widget HTML contains some inline JavaScript to toggle modal visibility.
 
 ```php
+<?php
+
+// index.phtml
+
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
@@ -2022,11 +2007,13 @@ $widget = new ReadMore(
    paymentMethod: $paymentMethod,
    amount: 150.25
 );
-```
-```html
+
+?>
+
 <style>
    <?= $widget->css ?>
 </style>
+
 <?= $widget->content ?>
 ```
 
@@ -2053,8 +2040,7 @@ $widget = new PaymentMethods(
         storeId: 'store-id'
     )
 );
-```
-```html
+
 <?= $widget->content ?>
 ```
 
@@ -2068,6 +2054,10 @@ about a payment method to help customers decide which method to chose. Like
 "Pay with your mobile phone" for *Swish* in Sweden.
 
 ```php
+<?php
+
+// index.phtml
+
 use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
@@ -2081,8 +2071,9 @@ $widget = new UniqueSellingPoint(
     paymentMethod: $paymentMethod,
     amount: 5000.00
 );
-```
-```html
+
+?>
+
 <?= $widget->content ?>
 ```
 
@@ -2174,6 +2165,10 @@ elements in advance, then the following example should suffice to get everything
 working for you.
 
 ```php
+<?php
+
+// index.phtml
+
 use Resursbank\Ecom\Module\Store\Widget\GetStores;
 
 // Create an instance of the GetStores widget with spoofed IDs
@@ -2185,8 +2180,9 @@ $widget = new GetStores(
     clientIdInputId: 'client-id-input',
     clientSecretInputId: 'client-secret-input',
 );
-```
-```html
+
+?>
+
 <?= $widget->content ?>
 ```
 
@@ -2202,6 +2198,10 @@ based on what the *environment* configuration option in our config context is
 set to (TEST / PROD).
 
 ```php
+<?php
+
+// index.phtml
+
 use Resursbank\Ecom\Module\Store\Widget\GetStores;
 
 // Create an instance of the GetStores widget with spoofed IDs
@@ -2210,27 +2210,29 @@ $widget = new GetStores(
     storeSelectId: 'store-select',
     environmentSelectId: 'environment-select',
 );
-```
-```html
+
+?>
+
 <?= $widget->content ?>
-```
-```js
-// Image this can return either "test" or "prod" based on a select box.
-function getEnvironment() {
-    return 'test';
-}
 
-const fetcher = new Resursbank_FetchStores({
-     getClientIdElement: function() {
-         return document.getElementById('client_id' + getEnvironment());
-     },
-
-     getClientSecretElement: function() {
-        return document.getElementById('client_secret' + getEnvironment());
-     },
- });
-
- fetcher.setupEventListeners();
+<script>
+   // Image this can return either "test" or "prod" based on a select box.
+   function getEnvironment() {
+       return 'test';
+   }
+   
+   const fetcher = new Resursbank_FetchStores({
+        getClientIdElement: function() {
+            return document.getElementById('client_id' + getEnvironment());
+        },
+   
+        getClientSecretElement: function() {
+           return document.getElementById('client_secret' + getEnvironment());
+        },
+    });
+   
+    fetcher.setupEventListeners();
+</script>
 ```
 
 An example of the controller you would need to create to fetch the store data
@@ -2314,12 +2316,17 @@ information includes the following (list is subject to change):
 * Ecom library version (from composer.json)
 
 ```php
+// index.phtml
+
+<?php
 use Resursbank\Ecom\Module\SupportInfo\Widget\SupportInfo;
 
 $widget = new SupportInfo();
-```
-```html
+
+?>
+
 <?= $widget->html ?>
+
 <style>
   <?= $widget->css ?>
 </style>
