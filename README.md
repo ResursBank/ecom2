@@ -41,7 +41,7 @@ Since our codebase is subject to change these examples should serve as
 
 ## JavaScript constructors
 
-The classes we provide in JavaScript all have constructors that accepts an
+The classes we provide in JavaScript all have constructors that accept an
 **overrides** object. This object can contain functions which will override the
 default behavior of the class. This is useful if you want to add custom error
 . This is useful if you want to add custom error
