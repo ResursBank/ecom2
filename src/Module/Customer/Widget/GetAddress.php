@@ -36,6 +36,7 @@ class GetAddress extends Widget
     /**
      * @throws FilesystemException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
         public readonly string $url = '',

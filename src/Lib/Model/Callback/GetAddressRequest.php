@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Customer\Models;
+namespace Resursbank\Ecom\Lib\Model\Callback;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;

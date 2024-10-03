@@ -21,8 +21,8 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Http\Controller;
+use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
 use Resursbank\Ecom\Lib\Utilities\Session;
-use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
 
 /**
