@@ -44,6 +44,7 @@ class GetPeriods extends Widget
      * JavaScript functions to manage elements. See template.
      * @throws FilesystemException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
         public readonly string $storeId,
@@ -93,12 +94,9 @@ class GetPeriods extends Widget
     {
         try {
             $result = [];
-            $methods = PaymentMethodRepository::getPaymentMethods(
-                storeId: $this->storeId
-            );
+            $methods = PaymentMethodRepository::getPaymentMethods();
 
-
-
+            /** @var PaymentMethod $method */
             foreach ($methods as $method) {
                 $result[$method->getId()] = [
                     'id' => $method->getId(),

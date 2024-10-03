@@ -42,34 +42,10 @@ class GetAddress extends Widget
         public readonly string $url = '',
         public string $govId = '',
         public CustomerType $customerType = CustomerType::NATURAL,
-        public readonly bool $automatic = false,
-        public readonly array $selectableCustomerTypes = [
-            CustomerType::NATURAL,
-            CustomerType::LEGAL
-        ]
+        public readonly bool $automatic = false
     ) {
         $this->content = $this->render(file: __DIR__ . '/get-address.phtml');
         $this->css = $this->render(file: __DIR__ . '/get-address.css');
         $this->js = $this->render(file: __DIR__ . '/get-address.js.phtml');
-    }
-
-    /**
-     * Checks if the provided customer type matches the current customer type.
-     */
-    public function isCustomerTypeChecked(CustomerType $customerType): bool
-    {
-        return $this->customerType === $customerType;
-    }
-
-    /**
-     * Determines if the radio buttons can be hidden based on customer type and selectable types.
-     */
-    public function canHideRadioButtons(CustomerType $customerType): bool
-    {
-        return count($this->selectableCustomerTypes) === 1 && in_array(
-            needle: $customerType,
-            haystack: $this->selectableCustomerTypes,
-            strict: true
-        );
     }
 }
