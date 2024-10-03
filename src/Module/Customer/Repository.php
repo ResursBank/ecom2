@@ -23,11 +23,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Session;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
-use Resursbank\Ecom\Module\Customer\Models\GetAddressRequest;
 use stdClass;
 use Throwable;
 

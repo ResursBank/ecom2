@@ -14,7 +14,9 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 ?>
 
 <div id="rb-ga-widget">
-    <div id="rb-ga-ct-area" <?= $this->canHideRadioButtons(customerType: CustomerType::NATURAL) ? 'style="display:none;"' : '' ?>>
+    <div id="rb-ga-ct-area" <?= $this->canHideRadioButtons(
+            customerType: CustomerType::NATURAL
+    ) ? 'style="display:none;"' : '' ?>>
         <label for="rb-ga-ct-natural">
             <input
                 type="radio"
