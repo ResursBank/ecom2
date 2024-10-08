@@ -66,6 +66,11 @@ class Session
         return $_SESSION[$sessionKey];
     }
 
+    public function delete(string $key): void
+    {
+        unset($_SESSION[$this->getKey(key: $key)]);
+    }
+
     public function getKey(string $key): string
     {
         return self::PREFIX . $key;
