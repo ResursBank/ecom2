@@ -404,4 +404,31 @@ class RepositoryTest extends TestCase
         Config::unsetInstance();
         Repository::getSsnData(sessionHandler: $this->session);
     }
+
+    /**
+     * Assert deleting SSN data from session works.
+     *
+     * @throws ConfigException
+     */
+    public function testClearSsnData(): void
+    {
+        $this->enableSession();
+
+        $data = new GetAddressRequest(
+            govId: '166997368573',
+            customerType: CustomerType::LEGAL
+        );
+
+        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+
+        $this->assertNotNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
+
+        Repository::clearSsnData(sessionHandler: $this->session);
+
+        $this->assertNull(
+            actual: Repository::getSsnData(sessionHandler: $this->session)
+        );
+    }
 }

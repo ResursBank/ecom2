@@ -100,6 +100,20 @@ class Repository
     }
 
     /**
+     * Clear SSN data from PHP session.
+     *
+     * During the authorization process in an integration we may expect the SSN
+     * data to be supplied at some point, and this may fail, in which case we
+     * must clear previously stored data to avoid submitting inaccurate
+     * information to the gateway.
+     */
+    public static function clearSsnData(
+        Session $sessionHandler = new Session()
+    ): void {
+        $sessionHandler->delete(key: self::SESSION_KEY_SSN_DATA);
+    }
+
+    /**
      * Get SSN data from PHP session.
      *
      * NOTE: $sessionHandler to support testing with mocked session handler.
