@@ -94,7 +94,9 @@ class GetPeriods extends Widget
     {
         try {
             $result = [];
-            $methods = PaymentMethodRepository::getPaymentMethods();
+            $methods = Repository::filterMethods(
+                PaymentMethodRepository::getPaymentMethods()
+            );
 
             /** @var PaymentMethod $method */
             foreach ($methods as $method) {
