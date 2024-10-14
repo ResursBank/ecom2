@@ -131,6 +131,15 @@ if ! $phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan/phpstan.neon $di
 fi
 echo ""
 
+echo "==========================================================="
+echo "#                   RUNNING UNIT TESTS                    #"
+echo "==========================================================="
+echo ""
+
+if ! $phpCmd $dir/vendor/bin/phpunit -c $dir/phpunit.xml $dir/tests/Unit/; then
+  ERRORS=1
+fi
+
 if [ "\${ERRORS}" = "1" ]; then
   exec < /dev/tty
   read -p "Continue commit despite remaining errors? (y/n)?" continueCommit
@@ -139,6 +148,7 @@ if [ "\${ERRORS}" = "1" ]; then
     * ) echo "Aborting."; exit 1;;
   esac
 fi
+
 EOT
 
 echo OK
