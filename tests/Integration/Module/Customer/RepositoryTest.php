@@ -87,8 +87,8 @@ class RepositoryTest extends TestCase
             'countryCode' => 'SE',
             'firstName' => 'Oliver',
             'lastName' => 'Williamsson',
-            'addressRow2' => null,
-            'fullName' => null
+            'addressRow2' => '',
+            'fullName' => 'Oliver Liamsson Williamsson'
         ];
 
         $address = Repository::getAddress(

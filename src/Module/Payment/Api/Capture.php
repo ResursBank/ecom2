@@ -42,10 +42,7 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/capture
- *
- * @todo Refactor ECP-359
  */
-// phpcs:ignore
 class Capture
 {
     private Mapi $mapi;
@@ -72,9 +69,7 @@ class Capture
      * @throws ValidationException
      * @throws FilesystemException
      * @throws TranslationException
-     * @todo Remove phpcs:ignore after refactor.
      */
-    // phpcs:ignore
     public function call(
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
@@ -98,7 +93,6 @@ class Capture
         );
 
         $curl = $this->getCurlObject(paymentId: $paymentId, payload: $payload);
-
         $data = $curl->exec()->body;
 
         $content = $data instanceof stdClass ? $data : new stdClass();
@@ -109,16 +103,54 @@ class Capture
         );
 
         if (!$result instanceof Payment) {
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $paymentId,
-                event: Event::REQUEST_FAILED,
-                user: User::ADMIN,
-                result: Result::ERROR,
-                extra: Translator::translate(phraseId: 'event-request-failed')
-            ));
+            $this->logFailure(paymentId: $paymentId);
             throw new IllegalTypeException(message: 'Expected Payment');
         }
 
+        $this->logSuccess(
+            paymentId: $paymentId,
+            result: $result,
+            orderLines: $orderLines
+        );
+        return $result;
+    }
+
+    /**
+     * Logs failure to payment history.
+     *
+     * @throws TranslationException
+     * @throws IllegalValueException
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     * @throws ConfigException
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     * @throws FilesystemException
+     */
+    private function logFailure(string $paymentId): void
+    {
+        PaymentHistoryRepository::write(entry: new Entry(
+            paymentId: $paymentId,
+            event: Event::REQUEST_FAILED,
+            user: User::ADMIN,
+            result: Result::ERROR,
+            extra: Translator::translate(phraseId: 'event-request-failed')
+        ));
+    }
+
+    /**
+     * Logs success to payment history.
+     *
+     * @throws ConfigException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     */
+    private function logSuccess(
+        string $paymentId,
+        Payment $result,
+        ?OrderLineCollection $orderLines = null
+    ): void {
         PaymentHistoryRepository::write(
             entry: new Entry(
                 paymentId: $paymentId,
@@ -130,7 +162,6 @@ class Capture
                     ? null : Price::format(value: $orderLines->getTotal())
             )
         );
-        return $result;
     }
 
     /**
