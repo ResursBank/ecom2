@@ -84,6 +84,7 @@ class Resursbank_GetPeriods {
         const paymentMethodElement = this.getPaymentMethodElement();
         const selectedPaymentMethod = '<?= $this->selectedPaymentMethod ?>';
 
+        paymentMethodElement.length = 0;
         for (const [key, value] of Object.entries(paymentMethods)) {
             const option = document.createElement('option');
             option.value = value.id;
