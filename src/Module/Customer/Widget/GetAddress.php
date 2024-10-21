@@ -70,10 +70,10 @@ class GetAddress extends Widget
      *
      * @throws ConfigException
      */
-    private function shouldRender(): bool
+    public function shouldRender(): bool
     {
         try {
-            $stores = StoreRepository::getStores(size: 1);
+            $stores = StoreRepository::getStores();
 
             if (Config::getStoreId() !== null) {
                 $store = $stores->filterById(id: Config::getStoreId());
