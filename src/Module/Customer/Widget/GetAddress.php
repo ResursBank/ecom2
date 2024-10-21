@@ -73,10 +73,10 @@ class GetAddress extends Widget
     public function shouldRender(): bool
     {
         try {
-            $stores = StoreRepository::getStores();
-
             if (Config::getStoreId() !== null) {
-                $store = $stores->filterById(id: Config::getStoreId());
+                $store = StoreRepository::getStores()->filterById(
+                    id: Config::getStoreId()
+                );
 
                 if ($store !== null && $store->countryCode === Country::SE) {
                     return true;

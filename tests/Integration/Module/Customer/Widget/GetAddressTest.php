@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Module\Customer\Widget;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
@@ -183,6 +184,50 @@ class GetAddressTest extends TestCase
             needle: 'new Resursbank_GetAddress().setupEventListeners();',
             haystack: $data->js,
             message: 'Get address widget should contain "new Resursbank_GetAddress().setupEventListeners();".'
+        );
+    }
+
+    /**
+     * Verify that shouldRender renders true for SE and false for others.
+     *
+     * @return void
+     * @throws EmptyValueException
+     * @throws ConfigException
+     */
+    public function testShouldRender(): void
+    {
+        $widget = new GetAddress();
+        static::assertTrue(
+            condition: $widget->shouldRender()
+        );
+
+        $this->configureFi();
+
+        static::assertFalse(
+            condition: $widget->shouldRender()
+        );
+    }
+
+    /**
+     * Configure with Finnish store ID.
+     *
+     * @return void
+     * @throws EmptyValueException
+     */
+    private function configureFi(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            storeId: $_ENV['STORE_ID_FI']
         );
     }
 }
