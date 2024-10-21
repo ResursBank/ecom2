@@ -49,6 +49,28 @@ class GetAddressTest extends TestCase
     }
 
     /**
+     * Configure with Finnish store ID.
+     *
+     * @throws EmptyValueException
+     */
+    private function configureFi(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            storeId: $_ENV['STORE_ID_FI']
+        );
+    }
+
+    /**
      * Confirm the following:
      *
      * $data->content contains:
@@ -190,7 +212,6 @@ class GetAddressTest extends TestCase
     /**
      * Verify that shouldRender renders true for SE and false for others.
      *
-     * @return void
      * @throws EmptyValueException
      * @throws ConfigException
      */
@@ -205,29 +226,6 @@ class GetAddressTest extends TestCase
 
         static::assertFalse(
             condition: $widget->shouldRender()
-        );
-    }
-
-    /**
-     * Configure with Finnish store ID.
-     *
-     * @return void
-     * @throws EmptyValueException
-     */
-    private function configureFi(): void
-    {
-        Config::setup(
-            logger: $this->createMock(
-                originalClassName: LoggerInterface::class
-            ),
-            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
-                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            ),
-            storeId: $_ENV['STORE_ID_FI']
         );
     }
 }
