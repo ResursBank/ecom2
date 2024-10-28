@@ -294,4 +294,52 @@ class ConfigTest extends TestCase
 
         Config::getPath(dir: 'some/../../directory');
     }
+
+    /**
+     * Test `getLanguage()` returns Swedish (SV) when storeId implies SE country.
+     */
+    public function testGetLanguageWithSpecificStoreId(): void
+    {
+        // Set up Config with a dummy storeId
+        Config::setup(storeId: 'dummyStoreId');
+
+        // Use reflection to set the instance's country directly for the test
+        $reflection = new ReflectionClass(objectOrClass: Config::class);
+        $instance = $reflection->getProperty(name: 'instance');
+        $instance->setAccessible(accessible: true);
+        $configInstance = $instance->getValue();
+
+        // Set the country value directly as SE
+        $configInstance->country = 'SE';
+
+        // Verify that Swedish (SV) is returned for country code SE
+        $language = Config::getLanguage();
+        $this->assertEquals(expected: Language::SV, actual: $language);
+    }
+
+    /**
+     * Test that `getLanguage()` defaults to English (EN) when no storeId or language is set.
+     */
+    public function testGetLanguageWithDefaultLanguageFallback(): void
+    {
+        Config::setup();
+
+        $language = Config::getLanguage();
+        $this->assertEquals(
+            expected: Language::EN,
+            actual: $language,
+            message: 'Expected default English (EN).'
+        );
+    }
+
+    /**
+     * Test `getLanguage()` respects an explicitly provided language.
+     */
+    public function testGetLanguageWithDirectLanguageArgument(): void
+    {
+        Config::setup();
+
+        $language = Config::getLanguage(language: Language::DA);
+        $this->assertEquals(expected: Language::DA, actual: $language);
+    }
 }

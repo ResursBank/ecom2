@@ -21,5 +21,6 @@ enum Country: string
     case NO = 'NO';
     case FI = 'FI';
     case DK = 'DK';
+    case EN = 'EN';
     case UNKNOWN = 'UNKNOWN';
 }

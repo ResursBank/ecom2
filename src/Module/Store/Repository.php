@@ -13,6 +13,7 @@ namespace Resursbank\Ecom\Module\Store;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -28,6 +29,7 @@ use Resursbank\Ecom\Lib\Model\Store\Store;
 use Resursbank\Ecom\Lib\Model\Store\StoreCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Module\Store\Enum\Country;
 use Throwable;
 
 /**
@@ -88,6 +90,26 @@ class Repository
             model: Store::class,
             ttl: 3600
         );
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     */
+    public static function getCountry(): Country
+    {
+        return self::getStores()->filterById(
+            id: Config::getStoreId()
+        )->countryCode ?? Country::EN;
     }
 
     /**

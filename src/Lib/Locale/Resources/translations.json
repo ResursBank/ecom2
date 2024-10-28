@@ -2817,5 +2817,15 @@
       "sv": "efternamn",
       "no": "efternavn"
     }
+  },
+  {
+    "id": "not-set",
+    "translation": {
+      "en": "Not set",
+      "sv": "Ej inställt",
+      "no": "Ikke satt",
+      "da": "Ikke sat",
+      "fi": "Ei asetettu"
+    }
   }
 ]

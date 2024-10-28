@@ -22,6 +22,8 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Module\Store\Repository;
+use Throwable;
 
 use function dirname;
 
@@ -56,7 +58,7 @@ final class Config
         public readonly DataHandlerInterface $paymentHistoryDataHandler,
         public readonly LogLevel $logLevel,
         public readonly bool $isProduction,
-        public readonly Language $language,
+        public readonly ?Language $language,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
@@ -76,7 +78,7 @@ final class Config
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
         LogLevel $logLevel = LogLevel::INFO,
         bool $isProduction = false,
-        Language $language = Language::EN,
+        ?Language $language = null,
         string $currencySymbol = 'kr',
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
@@ -89,7 +91,7 @@ final class Config
             paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
             isProduction: $isProduction,
-            language: $language,
+            language: self::getLanguage(language: $language),
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat,
             network: $network,
@@ -224,12 +226,27 @@ final class Config
     }
 
     /**
-     * @throws ConfigException
+     * Prepare language with priority in client. When empty try getStores country if available and fall back to EN.
      */
-    public static function getLanguage(): Language
+    public static function getLanguage(?Language $language = null): Language
     {
-        self::validateInstance();
-        return self::$instance->language;
+        $return = $language;
+
+        try {
+            // Silently try fetch a language by stores, if store has been set by client and
+            // the country is missing on setup.
+            if ($return === null && isset(self::$instance->storeId)) {
+                $theCountry = Repository::getCountry()->name;
+                $return = match ($theCountry) {
+                    'SE' => Language::SV,
+                    'DK' => Language::DA,
+                    default => Language::tryFrom(value: $theCountry)
+                };
+            }
+        } catch (Throwable) {
+        }
+
+        return $return ?? Language::EN;
     }
 
     /**
