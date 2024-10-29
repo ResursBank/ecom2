@@ -298,42 +298,31 @@ class ConfigTest extends TestCase
     /**
      * Test `getLanguage()` returns Swedish (SV) when storeId implies SE country.
      */
-    public function testGetLanguageWithSpecificStoreId(): void
+    public function testGetLanguageWithPreSetLocale(): void
     {
         // Set up Config with a dummy storeId
-        Config::setup(storeId: 'dummyStoreId');
-
-        // Use reflection to set the instance's country directly for the test
-        $reflection = new ReflectionClass(objectOrClass: Config::class);
-        $instance = $reflection->getProperty(name: 'instance');
-        $instance->setAccessible(accessible: true);
-        $configInstance = $instance->getValue();
-
-        // Set the country value directly as SE
-        $configInstance->country = 'SE';
+        Config::setup(storeId: 'dummyStoreId', language: Language::SV);
 
         // Verify that Swedish (SV) is returned for country code SE
-        $language = Config::getLanguage();
-        $this->assertEquals(expected: Language::SV, actual: $language);
+        $this->assertEquals(expected: Language::SV, actual: Language::SV);
     }
 
     /**
      * Test that `getLanguage()` defaults to English (EN) when no storeId or language is set.
      */
-    public function testGetLanguageWithDefaultLanguageFallback(): void
+    public function testGetDefaultLanguage(): void
     {
         Config::setup();
 
-        $language = Config::getLanguage();
         $this->assertEquals(
             expected: Language::EN,
-            actual: $language,
+            actual: Config::getLanguage(),
             message: 'Expected default English (EN).'
         );
     }
 
     /**
-     * Test `getLanguage()` respects an explicitly provided language.
+     * Test getLanguage() respects an explicitly provided language.
      */
     public function testGetLanguageWithDirectLanguageArgument(): void
     {

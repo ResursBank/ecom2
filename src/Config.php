@@ -226,7 +226,8 @@ final class Config
     }
 
     /**
-     * Prepare language with priority in client. When empty try getStores country if available and fall back to EN.
+     * Handle locales depending on requested input. No input=Trying to fetch locales through store information.
+     * Feature prioritizing client input.
      */
     public static function getLanguage(?Language $language = null): Language
     {
@@ -237,6 +238,7 @@ final class Config
             // the country is missing on setup.
             if ($return === null && isset(self::$instance->storeId)) {
                 $theCountry = Repository::getCountry()->name;
+                // Making sure we set proper locales depending on the country code.
                 $return = match ($theCountry) {
                     'SE' => Language::SV,
                     'DK' => Language::DA,
