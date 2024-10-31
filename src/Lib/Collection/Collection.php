@@ -259,11 +259,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     public function getFirst(): mixed
     {
-        if (!isset($this->data[0])) {
-            return null;
-        }
-
-        return $this->data[0];
+        return $this->offsetGet(offset: 0);
     }
     /**
      * @throws CollectionException
