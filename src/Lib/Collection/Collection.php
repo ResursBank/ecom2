@@ -253,7 +253,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
-     * Get the first item in the collection.
+     * Get the first item in a collection.
      *
      * @return mixed|null Returns the first item or null if the collection is empty.
      */
@@ -265,6 +265,7 @@ class Collection implements ArrayAccess, Iterator, Countable
 
         return $this->data[0];
     }
+
     /**
      * @throws CollectionException
      */
