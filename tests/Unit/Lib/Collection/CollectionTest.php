@@ -247,6 +247,19 @@ final class CollectionTest extends TestCase
     }
 
     /**
+     * @return void
+     * @throws IllegalTypeException
+     */
+    public function testFirst() {
+        $collection = new Collection(data: $this->data);
+        $firstValue = $collection->getFirst();
+        $this->assertSame(
+            expected: $this->data[0],
+            actual: $firstValue
+        );
+    }
+
+    /**
      * Verify that the key method works
      *
      * @throws IllegalTypeException

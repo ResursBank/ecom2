@@ -253,6 +253,19 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Get the first item in the collection.
+     *
+     * @return mixed|null Returns the first item or null if the collection is empty.
+     */
+    public function getFirst(): mixed
+    {
+        if (!isset($this->data[0])) {
+            return null;
+        }
+
+        return $this->data[0];
+    }
+    /**
      * @throws CollectionException
      */
     public function current(): mixed
