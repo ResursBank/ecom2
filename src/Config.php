@@ -242,7 +242,9 @@ final class Config
                 $return = match ($theCountry) {
                     'SE' => Language::SV,
                     'DK' => Language::DA,
-                    default => Language::tryFrom(value: $theCountry)
+                    default => Language::tryFrom(
+                        value: strtolower(string: $theCountry)
+                    )
                 };
             }
         } catch (Throwable) {
