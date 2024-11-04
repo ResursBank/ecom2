@@ -22,9 +22,9 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
-
 use function dirname;
 
 /**
@@ -232,23 +232,19 @@ final class Config
     public static function getLanguage(): Language
     {
         try {
-            // Silently try fetch a language by stores, if store has been set by client and
-            // the country is missing on setup.
-            if (isset(self::$instance->storeId)) {
-                $theCountry = Repository::getCountry()->name;
-                // Making sure we set proper locales depending on the country code.
-                $return = match ($theCountry) {
-                    'SE' => Language::SV,
-                    'DK' => Language::DA,
-                    default => Language::tryFrom(
-                        value: strtolower(string: $theCountry)
-                    )
+            // self::$instance is nullable, null check here.
+            $storeId = self::$instance?->storeId;
+
+            if ($storeId !== null) {
+                return match (Repository::getCountry()) {
+                    Country::SE => Language::SV,
+                    Country::DK => Language::DA,
+                    default => Language::EN
                 };
             }
-        } catch (Throwable) {
-        }
+        } catch (Throwable) {}
 
-        return $return ?? Language::EN;
+        return Language::EN;
     }
 
     /**
@@ -296,8 +292,8 @@ final class Config
 
         // Resolve the final path relative to the ECom root
         return $ecomRoot . ($dir !== '' ? '/' . ltrim(
-            string: $dir,
-            characters: '/'
-        ) : '');
+                    string: $dir,
+                    characters: '/'
+                ) : '');
     }
 }
