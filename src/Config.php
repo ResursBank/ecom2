@@ -234,13 +234,15 @@ final class Config
     {
         self::validateInstance();
 
-        if (self::$instance->language === null) {
-            try {
-                $store = Repository::getConfiguredStore();
-                self::$instance->language = $store?->getLanguage();
-            } catch (Throwable $e) {
-                self::getLogger()->error(message: $e);
-            }
+        if (self::$instance->language !== null) {
+            return self::$instance->language;
+        }
+
+        try {
+            $store = Repository::getConfiguredStore();
+            self::$instance->language = $store?->getLanguage();
+        } catch (Throwable $e) {
+            self::getLogger()->error(message: $e);
         }
 
         return self::$instance->language ?? Language::EN;
