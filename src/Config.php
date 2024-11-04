@@ -25,7 +25,6 @@ use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
-
 use function dirname;
 
 /**
@@ -85,6 +84,12 @@ final class Config
         Network $network = new Network(),
         ?string $storeId = null
     ): void {
+        if ($language === null) {
+            $language = $storeId !== null ?
+                self::getLanguage() :
+                Language::EN;
+        }
+
         self::$instance = new Config(
             logger: $logger,
             cache: $cache,
@@ -294,8 +299,8 @@ final class Config
 
         // Resolve the final path relative to the ECom root
         return $ecomRoot . ($dir !== '' ? '/' . ltrim(
-            string: $dir,
-            characters: '/'
-        ) : '');
+                    string: $dir,
+                    characters: '/'
+                ) : '');
     }
 }
