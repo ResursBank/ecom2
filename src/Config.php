@@ -91,7 +91,7 @@ final class Config
             paymentHistoryDataHandler: $paymentHistoryDataHandler,
             logLevel: $logLevel,
             isProduction: $isProduction,
-            language: self::getLanguage(language: $language),
+            language: $language ?? self::getLanguage(),
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat,
             network: $network,
@@ -229,14 +229,12 @@ final class Config
      * Handle locales depending on requested input. No input=Trying to fetch locales through store information.
      * Feature prioritizing client input.
      */
-    public static function getLanguage(?Language $language = null): Language
+    public static function getLanguage(): Language
     {
-        $return = $language;
-
         try {
             // Silently try fetch a language by stores, if store has been set by client and
             // the country is missing on setup.
-            if ($return === null && isset(self::$instance->storeId)) {
+            if (isset(self::$instance->storeId)) {
                 $theCountry = Repository::getCountry()->name;
                 // Making sure we set proper locales depending on the country code.
                 $return = match ($theCountry) {

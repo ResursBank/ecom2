@@ -324,22 +324,11 @@ class ConfigTest extends TestCase
     /**
      * Test getLanguage() respects an explicitly provided language.
      */
-    public function testGetLanguageWithDirectLanguageArgument(): void
-    {
-        Config::setup();
-
-        $language = Config::getLanguage(language: Language::DA);
-        $this->assertEquals(expected: Language::DA, actual: $language);
-    }
-
-    /**
-     * Test getLanguage() respects an explicitly provided language.
-     */
     public function testNullLanguage(): void
     {
         Config::setup(language: null);
 
-        $language = Config::getLanguage(language: Language::DA);
-        $this->assertEquals(expected: Language::DA, actual: $language);
+        $language = Config::getLanguage();
+        $this->assertEquals(expected: Language::EN, actual: $language);
     }
 }
