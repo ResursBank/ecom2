@@ -75,7 +75,6 @@ class Repository
     }
 
     /**
-     * @return Store|null
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException

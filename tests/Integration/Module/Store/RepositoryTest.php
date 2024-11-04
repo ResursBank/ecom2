@@ -81,7 +81,7 @@ class RepositoryTest extends TestCase
      * @throws ValidationException
      * @throws Throwable
      */
-    public function testGetConfiguredStore()
+    public function testGetConfiguredStore(): void
     {
         // Connect without store id, assert null is returned.
         self::connect();

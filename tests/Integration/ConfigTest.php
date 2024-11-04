@@ -68,7 +68,7 @@ class ConfigTest extends TestCase
      * @throws ConfigException
      * @throws EmptyValueException
      */
-    public function testGetLanguage()
+    public function testGetLanguage(): void
     {
         // Connect without store id, assert EN is returned.
         self::connect();
@@ -87,20 +87,14 @@ class ConfigTest extends TestCase
         // Confirm that configured language is returned (check using two
         // different languages to avoid false positives when using a API account
         // with the same language as one of the two).
-        self::connect(
-            storeId: $_ENV['STORE_ID'],
-            language: Language::FI
-        );
+        self::connect(storeId: $_ENV['STORE_ID'], language: Language::FI);
 
         $this->assertSame(
             expected: Language::FI,
             actual: Config::getLanguage()
         );
 
-        self::connect(
-            storeId: $_ENV['STORE_ID'],
-            language: Language::DA
-        );
+        self::connect(storeId: $_ENV['STORE_ID'], language: Language::DA);
 
         $this->assertSame(
             expected: Language::DA,

@@ -205,7 +205,10 @@ class StoreTest extends TestCase
 
         foreach ($cases as $country => $language) {
             $store = $this->convert(updates: ['countryCode' => $country]);
-            $this->assertSame(expected: $language, actual: $store->getLanguage());
+            $this->assertSame(
+                expected: $language,
+                actual: $store->getLanguage()
+            );
         }
     }
 }

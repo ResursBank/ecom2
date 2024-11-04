@@ -22,9 +22,9 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
+
 use function dirname;
 
 /**
