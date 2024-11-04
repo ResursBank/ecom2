@@ -247,6 +247,18 @@ final class CollectionTest extends TestCase
     }
 
     /**
+     * Test getting the first value from a Collection.
+     *
+     * @throws IllegalTypeException
+     */
+    public function testFirst(): void
+    {
+        $collection = new Collection(data: $this->data);
+        $firstValue = $collection->getFirst();
+        $this->assertSame(expected: $this->data[0], actual: $firstValue);
+    }
+
+    /**
      * Verify that the key method works
      *
      * @throws IllegalTypeException
