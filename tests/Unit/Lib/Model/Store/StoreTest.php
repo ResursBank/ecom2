@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Model\Store\Store;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Store\Enum\Country;
@@ -95,8 +96,8 @@ class StoreTest extends TestCase
      */
     public function testIdAssigned(): void
     {
-        $item = $this->convert();
-        $this->assertSame(expected: self::$data['id'], actual: $item->id);
+        $store = $this->convert();
+        $this->assertSame(expected: self::$data['id'], actual: $store->id);
     }
 
     /**
@@ -135,10 +136,10 @@ class StoreTest extends TestCase
      */
     public function testNationalStoreIdWasAssigned(): void
     {
-        $item = $this->convert();
+        $store = $this->convert();
         $this->assertSame(
             expected: self::$data['nationalStoreId'],
-            actual: $item->nationalStoreId
+            actual: $store->nationalStoreId
         );
     }
 
@@ -152,8 +153,8 @@ class StoreTest extends TestCase
      */
     public function testCountryCodeWasAssigned(): void
     {
-        $item = $this->convert();
-        $this->assertSame(expected: Country::SE, actual: $item->countryCode);
+        $store = $this->convert();
+        $this->assertSame(expected: Country::SE, actual: $store->countryCode);
     }
 
     /**
@@ -180,7 +181,31 @@ class StoreTest extends TestCase
      */
     public function testNameWasAssigned(): void
     {
-        $item = $this->convert();
-        $this->assertSame(expected: self::$data['name'], actual: $item->name);
+        $store = $this->convert();
+        $this->assertSame(expected: self::$data['name'], actual: $store->name);
+    }
+
+    /***
+     * Assert getLanguage() returns the correct language based on country code.
+     *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws TestException
+     */
+    public function testGetLanguage(): void
+    {
+        $cases = [
+            Country::SE->name => Language::SV,
+            Country::FI->name => Language::FI,
+            Country::NO->name => Language::NO,
+            Country::DK->name => Language::DA,
+            Country::UNKNOWN->name => Language::EN
+        ];
+
+        foreach ($cases as $country => $language) {
+            $store = $this->convert(updates: ['countryCode' => $country]);
+            $this->assertSame(expected: $language, actual: $store->getLanguage());
+        }
     }
 }

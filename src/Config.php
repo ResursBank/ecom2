@@ -23,6 +23,8 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 
+use Resursbank\Ecom\Module\Store\Repository;
+use Throwable;
 use function dirname;
 
 /**
@@ -46,6 +48,8 @@ final class Config
     /**
      * NOTE: By default we only log INFO level messages.
      *
+     * @param Language|null $language | Not readonly to allow dynamic assignment
+     * based on configured store after initializing the Config instance.
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
      */
@@ -56,7 +60,7 @@ final class Config
         public readonly DataHandlerInterface $paymentHistoryDataHandler,
         public readonly LogLevel $logLevel,
         public readonly bool $isProduction,
-        public readonly Language $language,
+        public ?Language $language,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
@@ -76,7 +80,7 @@ final class Config
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
         LogLevel $logLevel = LogLevel::INFO,
         bool $isProduction = false,
-        Language $language = Language::EN,
+        ?Language $language = null,
         string $currencySymbol = 'kr',
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
@@ -229,7 +233,17 @@ final class Config
     public static function getLanguage(): Language
     {
         self::validateInstance();
-        return self::$instance->language;
+
+        if (self::$instance->language === null) {
+            try {
+                $store = Repository::getConfiguredStore();
+                self::$instance->language = $store?->getLanguage();
+            } catch (Throwable $e) {
+                self::getLogger()->error(message: $e);
+            }
+        }
+
+        return self::$instance->language ?? Language::EN;
     }
 
     /**

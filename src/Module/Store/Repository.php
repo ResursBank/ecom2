@@ -13,6 +13,7 @@ namespace Resursbank\Ecom\Module\Store;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -71,6 +72,26 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * @return Store|null
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     */
+    public static function getConfiguredStore(): ?Store
+    {
+        return Config::getStoreId() !== null ?
+            self::getStores()->filterById(Config::getStoreId()) : null;
     }
 
     /**

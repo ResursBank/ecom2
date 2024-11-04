@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
+use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Module\Store\Enum\Country;
 
@@ -37,5 +38,16 @@ class Store extends Model
         public readonly ?string $organizationNumber = null
     ) {
         parent::__construct();
+    }
+
+    public function getLanguage(): Language
+    {
+        return match ($this->countryCode) {
+            Country::SE => Language::SV,
+            Country::NO => Language::NO,
+            Country::FI => Language::FI,
+            Country::DK => Language::DA,
+            default => Language::EN,
+        };
     }
 }
