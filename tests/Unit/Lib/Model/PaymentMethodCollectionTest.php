@@ -35,11 +35,14 @@ class PaymentMethodCollectionTest extends TestCase
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     private function generateModel(
         string $id,
         string $name,
-        Type $type
+        Type $type,
+        bool $enabledForLegalCustomer = false
     ): PaymentMethod {
         return new PaymentMethod(
             id: $id,
@@ -50,7 +53,7 @@ class PaymentMethodCollectionTest extends TestCase
             minApplicationLimit: 1,
             maxApplicationLimit: 1000,
             legalLinks: new LegalLinkCollection(data: []),
-            enabledForLegalCustomer: false,
+            enabledForLegalCustomer: $enabledForLegalCustomer,
             enabledForNaturalCustomer: true,
             priceSignagePossible: true,
             sortOrder: 1
@@ -136,5 +139,64 @@ class PaymentMethodCollectionTest extends TestCase
 
         $collection = new PaymentMethodCollection(data: []);
         $collection->getById(Strings::getUuid());
+    }
+
+    /**
+     * Assert that we can detect whether a b2b method i present in a collection.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws Exception
+     */
+    public function testHasB2bMethod(): void
+    {
+        // Confirm that we can detect a B2B method.
+        $collection = new PaymentMethodCollection(data: [
+            $this->generateModel(
+                Strings::getUuid(),
+                Strings::generateRandomString(10),
+                Type::RESURS_PART_PAYMENT,
+                false
+            ),
+            $this->generateModel(
+                Strings::getUuid(),
+                Strings::generateRandomString(10),
+                Type::RESURS_REVOLVING_CREDIT,
+                true
+            ),
+            $this->generateModel(
+                Strings::getUuid(),
+                Strings::generateRandomString(10),
+                Type::RESURS_CARD,
+                false
+            ),
+        ]);
+
+        $this->assertTrue($collection->hasB2bMethod());
+
+        // Confirm that we get false when no B2B method is present.
+        $collection = new PaymentMethodCollection(data: [
+            $this->generateModel(
+                Strings::getUuid(),
+                Strings::generateRandomString(10),
+                Type::RESURS_PART_PAYMENT,
+                false
+            ),
+            $this->generateModel(
+                Strings::getUuid(),
+                Strings::generateRandomString(10),
+                Type::RESURS_REVOLVING_CREDIT,
+                false
+            ),
+            $this->generateModel(
+                Strings::getUuid(),
+                Strings::generateRandomString(10),
+                Type::RESURS_CARD,
+                false
+            ),
+        ]);
+
+        $this->assertFalse($collection->hasB2bMethod());
     }
 }
