@@ -62,4 +62,22 @@ class PaymentMethodCollection extends Collection implements CollectionInterface
                 ' does not exist in collection.'
         );
     }
+
+    /**
+     * Check if collection has any B2B payment methods. We can use this to
+     * determine whether company based purchase are possible or not.
+     */
+    public function hasB2bMethod(): bool
+    {
+        /** @var PaymentMethod $method */
+        foreach ($this->getData() as $method) {
+            if (!$method->enabledForB2b()) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }
