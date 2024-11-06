@@ -20,7 +20,6 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Scope;
@@ -28,6 +27,7 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\Store\Repository;
+use Throwable;
 
 /**
  * Integration tests for Stores repository.
@@ -39,6 +39,18 @@ class RepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
+        self::connect(storeId: $_ENV['STORE_ID']);
+        parent::setUp();
+    }
+
+    /**
+     * Establish API connection.
+     *
+     * @throws EmptyValueException
+     */
+    private function connect(
+        ?string $storeId = null
+    ): void {
         Config::setup(
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
@@ -50,10 +62,34 @@ class RepositoryTest extends TestCase
                 scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $storeId
         );
+    }
 
-        parent::setUp();
+    /**
+     * Assert correct store data is returned by getConfiguredStore().
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws Throwable
+     */
+    public function testGetConfiguredStore(): void
+    {
+        // Connect without store id, assert null is returned.
+        self::connect();
+        $this->assertNull(actual: Repository::getConfiguredStore());
+
+        // Connect with store id from $_ENV, assert store is returned.
+        self::connect(storeId: $_ENV['STORE_ID']);
+        $this->assertNotNull(actual: Repository::getConfiguredStore());
     }
 
     /**
@@ -66,9 +102,9 @@ class RepositoryTest extends TestCase
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testClearCache(): void
@@ -89,9 +125,9 @@ class RepositoryTest extends TestCase
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
      */
     public function testReadReturnsWithoutCache(): void
@@ -107,14 +143,14 @@ class RepositoryTest extends TestCase
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws ValidationException
-     * @throws ConfigException
      */
     public function testReadReturnsCache(): void
     {
