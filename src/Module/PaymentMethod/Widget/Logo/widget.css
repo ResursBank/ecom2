@@ -1,0 +1,12 @@
+/*
+    Targets the logo for payment methods.
+*/
+.rb-logo img {
+    width: 9%;
+    height: 9%;
+}
+
+.rb-logo.card {
+    width: 4%;
+    height: 4%;
+}
