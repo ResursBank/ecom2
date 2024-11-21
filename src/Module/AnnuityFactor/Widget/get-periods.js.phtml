@@ -79,10 +79,24 @@ class Resursbank_GetPeriods {
         return instance;
     }
 
+    isEmpty(object) {
+        for (const prop in object) {
+            if (Object.hasOwn(object, prop)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     addPaymentMethods() {
         const paymentMethods = <?= $this->getJsonPaymentMethods() ?>;
         const paymentMethodElement = this.getPaymentMethodElement();
         const selectedPaymentMethod = '<?= $this->selectedPaymentMethod ?>';
+
+        if (this.isEmpty(paymentMethods)) {
+            this.errorHandler('<?= Translator::translate(phraseId: 'part-payment-get-methods-failed') ?>');
+        }
 
         paymentMethodElement.length = 0;
         for (const [key, value] of Object.entries(paymentMethods)) {

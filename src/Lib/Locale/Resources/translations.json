@@ -2301,6 +2301,14 @@
     }
   },
   {
+    "id": "part-payment-get-methods-failed",
+    "translation": {
+      "en": "Part payment configuration widget failed to obtain payment methods.",
+      "sv": "Konfigurationswidget för delbetalning misslyckades med att hämta betalmetoder.",
+      "no": "Konfigurasjonswidgeten for delbetaling kunne ikke hente betalingsmåter."
+    }
+  },
+  {
     "id": "part-payment-get-periods-missing-period-element",
     "translation": {
       "en": "Failed to obtain period selection box.",
