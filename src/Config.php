@@ -62,7 +62,7 @@ final class Config
         public readonly LogLevel $logLevel,
         public readonly bool $isProduction,
         public ?Language $language,
-        public readonly ?Location $location,
+        public readonly Location $location,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
@@ -88,7 +88,6 @@ final class Config
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null
-
     ): void {
         self::$instance = new Config(
             logger: $logger,
