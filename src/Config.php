@@ -14,6 +14,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
@@ -61,6 +62,7 @@ final class Config
         public readonly LogLevel $logLevel,
         public readonly bool $isProduction,
         public ?Language $language,
+        public readonly ?Location $location,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
@@ -81,10 +83,12 @@ final class Config
         LogLevel $logLevel = LogLevel::INFO,
         bool $isProduction = false,
         ?Language $language = null,
+        Location $location = Location::SE,
         string $currencySymbol = 'kr',
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null
+
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -94,6 +98,7 @@ final class Config
             logLevel: $logLevel,
             isProduction: $isProduction,
             language: $language,
+            location: $location,
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat,
             network: $network,
@@ -273,6 +278,15 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->storeId;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getLocation(): Location
+    {
+        self::validateInstance();
+        return self::$instance->location;
     }
 
     /**
