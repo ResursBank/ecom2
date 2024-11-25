@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Model\PriceSignage\CostCollection;
@@ -82,7 +83,10 @@ class Repository
                     throw new ApiException(message: 'Invalid API response.');
                 }
 
-                if ($monthFilter !== null) {
+                if (
+                    $monthFilter !== null &&
+                    Config::getLocation() !== Location::DK
+                ) {
                     $result = self::filterResultByMonth(
                         result: $result,
                         monthFilter: $monthFilter
