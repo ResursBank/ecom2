@@ -1946,6 +1946,22 @@
     }
   },
   {
+    "id": "callback-url-authorization",
+    "translation": {
+      "en": "Authorization Callback URL",
+      "sv": "URL för auktoriseringscallback",
+      "no": "Autorisasjons-callback-URL"
+    }
+  },
+  {
+    "id": "callback-url-management",
+    "translation": {
+      "en": "Management Callback URL",
+      "sv": "URL för managementcallback",
+      "no": "Management-callback-URL"
+    }
+  },
+  {
     "id": "test-callback-was-sent",
     "translation": {
       "en": "Test callback was sent.",
