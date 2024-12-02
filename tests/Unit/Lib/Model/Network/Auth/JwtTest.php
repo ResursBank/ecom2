@@ -30,7 +30,6 @@ class JwtTest extends TestCase
         new Jwt(
             clientId: '',
             clientSecret: 'secret',
-            scope: Scope::MOCK_MERCHANT_API,
             grantType: GrantType::CREDENTIALS
         );
     }
@@ -45,7 +44,6 @@ class JwtTest extends TestCase
         new Jwt(
             clientId: 'clientId',
             clientSecret: '',
-            scope: Scope::MOCK_MERCHANT_API,
             grantType: GrantType::CREDENTIALS
         );
     }
