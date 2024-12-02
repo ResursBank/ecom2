@@ -77,7 +77,6 @@ class ConfigTest extends TestCase
             expected: Location::SE,
             actual: Config::getLocation()
         );
-
     }
 
     /**
