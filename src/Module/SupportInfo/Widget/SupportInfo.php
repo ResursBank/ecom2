@@ -86,11 +86,11 @@ class SupportInfo extends Widget
     public function validCurlVersion(): bool
     {
         $curlVersion = $this->getCurlVersion();
-        
+
         return version_compare(
-                version1: $curlVersion,
-                version2: self::CURL_VERSION_MIN,
-                operator: '>='
+            version1: $curlVersion,
+            version2: self::CURL_VERSION_MIN,
+            operator: '>='
         );
     }
 
