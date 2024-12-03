@@ -25,6 +25,8 @@ use function defined;
  */
 class SupportInfo extends Widget
 {
+    private const CURL_VERSION_MIN = '7.61.0';
+
     /** @var string */
     public readonly string $html;
 
@@ -76,6 +78,20 @@ class SupportInfo extends Widget
         }
 
         return '';
+    }
+
+    /**
+     * Check if the installed Curl version is compatible with this library.
+     */
+    public function validCurlVersion(): bool
+    {
+        $curlVersion = $this->getCurlVersion();
+        
+        return version_compare(
+                version1: $curlVersion,
+                version2: self::CURL_VERSION_MIN,
+                operator: '>='
+        );
     }
 
     /**
