@@ -12,7 +12,6 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Auth;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Api\GrantType;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 
 /**
