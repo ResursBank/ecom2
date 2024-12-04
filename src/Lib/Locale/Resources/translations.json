@@ -2841,5 +2841,21 @@
       "sv": "efternamn",
       "no": "efternavn"
     }
+  },
+  {
+    "id": "credentials-test",
+    "translation": {
+      "en": "API credentials (test)",
+      "sv": "API-uppgifter (test)",
+      "no": "API-legitimasjon (test)"
+    }
+  },
+  {
+    "id": "credentials-prod",
+    "translation": {
+      "en": "API credentials (production)",
+      "sv": "API-uppgifter (produktion)",
+      "no": "API-legitimasjon (produksjon)"
+    }
   }
 ]
