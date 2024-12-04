@@ -34,8 +34,8 @@ class Jwt extends Model
     public function __construct(
         public readonly string $clientId,
         public readonly string $clientSecret,
-        public readonly Scope $scope,
         public readonly GrantType $grantType,
+        public readonly Scope $scope = Scope::MERCHANT_API,
         private ?Token $token = null,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly Mapi $mapi = new Mapi()

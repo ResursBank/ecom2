@@ -1219,7 +1219,7 @@
     "id": "get-stores-could-not-fetch",
     "translation": {
       "en": "Could not fetch list of available stores with the configured API settings. Please select store after saving your settings and the page has reloaded.",
-      "sv": "Kunde inte hämta lista med butiker för de angivna API inställningarna. Vänligen välj butik efter du sparat dina inställningar och sidan har laddat om.",
+      "sv": "Kunde inte hämta lista med butiker för de angivna API-inställningarna. Vänligen välj butik efter du sparat dina inställningar och sidan har laddat om.",
       "no": "Kunne ikke hente listen over tilgjengelige butikker med de konfigurerte API-innstillingene. Vennligst velg butikk etter å ha lagret innstillingene dine og siden har lastet på nytt."
     }
   },

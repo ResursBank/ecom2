@@ -14,7 +14,6 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Api\GrantType;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
@@ -48,7 +47,6 @@ class SupportInfoTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             language: Language::SV,

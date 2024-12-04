@@ -26,7 +26,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Translator;
@@ -79,7 +78,6 @@ class PaymentInformationTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             language: Language::EN,
@@ -113,7 +111,6 @@ class PaymentInformationTest extends TestCase
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                scope: Scope::from(value: $_ENV['JWT_AUTH_SCOPE']),
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             language: Language::SV,
