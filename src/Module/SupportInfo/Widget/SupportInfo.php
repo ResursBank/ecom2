@@ -14,6 +14,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
@@ -25,7 +26,7 @@ use function defined;
  */
 class SupportInfo extends Widget
 {
-    private const CURL_VERSION_MIN = '7.61.0';
+    const CURL_VERSION_MIN = '7.61.0';
 
     /** @var string */
     public readonly string $html;
@@ -66,6 +67,12 @@ class SupportInfo extends Widget
         return '';
     }
 
+    public function validateSslVersion(): string
+    {
+        // Check for CURLAUTH_BEARER support.
+        return '';
+    }
+
     /**
      * Fetches the current Curl version.
      */
@@ -80,18 +87,37 @@ class SupportInfo extends Widget
         return '';
     }
 
+    public function validateCurl(): array
+    {
+        $results = [];
+        $results[] = $this->validateCurlVersion();
+        $results[] = $this->validateCurlAuthBearerSupport();
+
+        return $results;
+    }
+
+    public function validateCurlAuthBearerSupport(): ?string
+    {
+        if (!defined(constant_name: 'CURLAUTH_BEARER')) {
+            return Translator::translate(
+                phraseId: 'curlauth-bearer-support-missing'
+            );
+        }
+
+        return null;
+    }
+
     /**
      * Check if the installed Curl version is compatible with this library.
+     *
+     * Returns error if current Curl version is too low.
      */
-    public function validCurlVersion(): bool
+    public function validateCurlVersion(): ?string
     {
-        $curlVersion = $this->getCurlVersion();
-
         return version_compare(
-            version1: $curlVersion,
-            version2: self::CURL_VERSION_MIN,
-            operator: '>='
-        );
+            version1: $this->getCurlVersion(),
+            version2: self::CURL_VERSION_MIN
+        ) < 0 ? Translator::translate(phraseId: 'curl-version-too-low') : null;
     }
 
     /**

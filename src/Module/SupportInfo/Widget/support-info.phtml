@@ -12,28 +12,37 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 ?>
 
 <div class="rb-si">
-  <table>
-    <tbody>
-      <tr>
-        <td><?= Translator::translate(phraseId: 'plugin-version') ?></td>
-        <td><?= $this->pluginVersion ?></td>
-      </tr>
-      <tr>
-        <td><?= Translator::translate(phraseId: 'php-version') ?></td>
-        <td><?= $this->getPhpVersion() ?></td>
-      </tr>
-      <tr>
-        <td><?= Translator::translate(phraseId: 'ecom-version') ?></td>
-        <td><?= $this->getEcomVersion() ?></td>
-      </tr>
-      <tr>
-        <td><?= Translator::translate(phraseId: 'ssl-version') ?></td>
-        <td><?= $this->getSslVersion() ?></td>
-      </tr>
-      <tr>
-        <td><?= Translator::translate(phraseId: 'curl-version') ?></td>
-        <td><?= $this->getCurlVersion() ?></td>
-      </tr>
-    </tbody>
-  </table>
+    <table>
+        <tbody>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'plugin-version') ?></td>
+            <td><?= $this->pluginVersion ?></td>
+        </tr>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'php-version') ?></td>
+            <td><?= $this->getPhpVersion() ?></td>
+        </tr>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'ecom-version') ?></td>
+            <td><?= $this->getEcomVersion() ?></td>
+        </tr>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'ssl-version') ?></td>
+            <td><?= $this->getSslVersion() ?></td>
+        </tr>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'curl-version') ?></td>
+            <?php if (!empty($this->validateCurl())): ?>
+            <td class="error">
+            <?php else: ?>
+            <td>
+            <?php endif; ?>
+                <?= $this->getCurlVersion() ?>
+                <?php foreach ($this->validateCurl() as $error): ?>
+                <?= $error ?><br />
+                <?php endforeach; ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

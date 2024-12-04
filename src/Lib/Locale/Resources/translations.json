@@ -1192,6 +1192,22 @@
     }
   },
   {
+    "id": "curl-version-too-low",
+    "translation": {
+      "en": "Curl version is too low",
+      "sv": "Curl-version för låg",
+      "no": "Curl-versjon for lav"
+    }
+  },
+  {
+    "id": "curlauth-bearer-support-missing",
+    "translation": {
+      "en": "Curl missing CURLAUTH_BEARER support",
+      "sv": "Curl saknar CURLAUTH_BEARER-stöd",
+      "no": "Curl mangler CURLAUTH_BEARER-støtte"
+    }
+  },
+  {
     "id": "failed-initializing-store-selector-assistant",
     "translation": {
       "en": "Failed to load store selection assistant. After changing API credentials, please reload the page and select the appropriate store.",
