@@ -128,12 +128,6 @@ class SupportInfo extends Widget
      * Check if there are any errors related to the installed PHP version.
      *
      * @throws ConfigException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
      */
     public function hasPhpVersionErrors(): bool
     {
