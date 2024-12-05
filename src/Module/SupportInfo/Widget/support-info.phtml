@@ -20,7 +20,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
         </tr>
         <tr>
             <td><?= Translator::translate(phraseId: 'php-version') ?></td>
-            <td <?= $this->hasPhpVersionErrors() ? 'class="error"' : '' ?>>
+            <td<?= $this->hasPhpVersionErrors() ? ' class="error"' : '' ?>>
                 <?= $this->getPhpVersion() ?>
                 <?php if ($this->hasPhpVersionErrors()): ?>
                     <span class="si-error">
@@ -39,7 +39,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
         </tr>
         <tr>
             <td><?= Translator::translate(phraseId: 'curl-version') ?></td>
-            <td <?= $this->hasCurlErrors() ? 'class="error"' : '' ?>>
+            <td<?= $this->hasCurlErrors() ? ' class="error"' : '' ?>>
                 <?= $this->getCurlVersion() ?>
                 <?php if ($this->hasCurlErrors()): ?>
                     <span class="si-error">
