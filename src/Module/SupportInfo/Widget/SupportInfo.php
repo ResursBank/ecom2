@@ -9,11 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\SupportInfo\Widget;
 
+use JsonException;
+use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
@@ -26,6 +30,7 @@ use function defined;
  */
 class SupportInfo extends Widget
 {
+    /** @var string */
     const CURL_VERSION_MIN = '7.61.0';
 
     /** @var string */
@@ -35,10 +40,14 @@ class SupportInfo extends Widget
     public readonly string $css;
 
     /**
+     * @param string $minimumPhpVersion Lowest
+     * @param string $maximumPhpVersion
      * @param string $pluginVersion Version of the calling plugin/addon
      * @throws FilesystemException
      */
     public function __construct(
+        public readonly string $minimumPhpVersion,
+        public readonly string $maximumPhpVersion,
         public readonly string $pluginVersion = ''
     ) {
         $this->html = $this->render(file: __DIR__ . '/support-info.phtml');
@@ -67,12 +76,6 @@ class SupportInfo extends Widget
         return '';
     }
 
-    public function validateSslVersion(): string
-    {
-        // Check for CURLAUTH_BEARER support.
-        return '';
-    }
-
     /**
      * Fetches the current Curl version.
      */
@@ -87,16 +90,38 @@ class SupportInfo extends Widget
         return '';
     }
 
+    /**
+     * Validate currently installed Curl version.
+     *
+     * @return array
+     * @throws ConfigException
+     */
     public function validateCurl(): array
     {
         $results = [];
-        $results[] = $this->validateCurlVersion();
-        $results[] = $this->validateCurlAuthBearerSupport();
+        try {
+            $results[] = $this->validateCurlVersion();
+            $results[] = $this->validateCurlAuthBearerSupport();
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
 
         return $results;
     }
 
-    public function validateCurlAuthBearerSupport(): ?string
+    /**
+     * Check for CURLAUTH_BEARER support.
+     *
+     * @return string|null
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    private function validateCurlAuthBearerSupport(): ?string
     {
         if (!defined(constant_name: 'CURLAUTH_BEARER')) {
             return Translator::translate(
@@ -111,8 +136,17 @@ class SupportInfo extends Widget
      * Check if the installed Curl version is compatible with this library.
      *
      * Returns error if current Curl version is too low.
+     *
+     * @return string|null
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
      */
-    public function validateCurlVersion(): ?string
+    private function validateCurlVersion(): ?string
     {
         return version_compare(
             version1: $this->getCurlVersion(),
@@ -121,11 +155,28 @@ class SupportInfo extends Widget
     }
 
     /**
-     *  Attempt to fetch the current version of Ecom from the composer.json file.
+     * Check if there are any errors related to the installed Curl version.
      *
+     * @return bool
      * @throws ConfigException
      */
-    public function getEcomVersion(): string
+    public function hasCurlErrors(): bool
+    {
+        foreach ($this->validateCurl() as $result) {
+            if ($result !== null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Attempt to load composer data.
+     *
+     * @return stdClass
+     * @throws ConfigException
+     */
+    private function getComposerData()
     {
         try {
             $composerJson = file_get_contents(
@@ -151,11 +202,87 @@ class SupportInfo extends Widget
                 );
             }
 
-            return $decoded->version;
+            return $decoded;
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
         }
 
+        return new stdClass();
+    }
+
+    /**
+     * Check if there are any errors related to the installed PHP version.
+     *
+     * @return bool
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    public function hasPhpVersionErrors(): bool
+    {
+        if ($this->validatePhpVersion() !== null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Validate installed PHP version against required versions.
+     *
+     * @return string|null
+     * @throws ConfigException
+     */
+    public function validatePhpVersion(): ?string
+    {
+        try {
+            if (version_compare(
+                    version1: $this->getPhpVersion(),
+                    version2: $this->minimumPhpVersion
+                ) <= 0) {
+                return Translator::translate(phraseId: 'php-version-too-old');
+            }
+
+            if (version_compare(
+                    version1: $this->getPhpVersion(),
+                    version2: $this->maximumPhpVersion
+                ) >= 0) {
+                return Translator::translate(phraseId: 'php-version-too-new');
+            }
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return null;
+    }
+
+    /**
+     * Fetch required PHP version(s) from composer.json.
+     *
+     * @return string
+     * @throws ConfigException
+     */
+    private function getPhpRequirements(): string
+    {
+        foreach ($this->getComposerData()->require as $name => $version) {
+            if ($name === 'php') {
+                return $version;
+            }
+        }
+
         return '';
+    }
+
+    /**
+     *  Attempt to fetch the current version of Ecom from the composer.json file.
+     *
+     * @throws ConfigException
+     */
+    public function getEcomVersion(): string
+    {
+        return $this->getComposerData()->version;
     }
 }

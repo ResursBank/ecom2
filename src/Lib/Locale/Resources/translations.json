@@ -1168,6 +1168,22 @@
     }
   },
   {
+    "id": "php-version-too-old",
+    "translation": {
+      "en": "Installed PHP version is too old",
+      "sv": "Installerad PHP-version är för gammal",
+      "no": "Installert PHP-versjon er for gammel"
+    }
+  },
+  {
+    "id": "php-version-too-new",
+    "translation": {
+      "en": "Installed PHP version is too new",
+      "sv": "Installerad PHP-version är för ny",
+      "no": "Installert PHP-versjon er for ny"
+    }
+  },
+  {
     "id": "ecom-version",
     "translation": {
       "en": "Ecom version",
