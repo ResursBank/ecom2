@@ -179,20 +179,6 @@ class SupportInfo extends Widget
     }
 
     /**
-     * Pads shorter version numbers.
-     *
-     * @param string $version
-     * @return string
-     */
-    private function normalizeVersion(string $version): string
-    {
-        while (count(explode(separator: '.', string: $version)) < 3) {
-            $version .= '.0';
-        }
-        return $version;
-    }
-
-    /**
      *  Attempt to fetch the current version of Ecom from the composer.json file.
      *
      * @throws ConfigException
@@ -200,6 +186,22 @@ class SupportInfo extends Widget
     public function getEcomVersion(): string
     {
         return $this->getComposerData()->version;
+    }
+
+    /**
+     * Pads shorter version numbers.
+     *
+     * @param string $version Version to normalize
+     * @return string Normalized version string
+     * @SuppressWarnings(PHPMD.CountInLoopExpression)
+     */
+    private function normalizeVersion(string $version): string
+    {
+        while (count(explode(separator: '.', string: $version)) < 3) {
+            $version .= '.0';
+        }
+
+        return $version;
     }
 
     /**
