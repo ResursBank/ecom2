@@ -142,20 +142,32 @@ class SupportInfo extends Widget
     public function validatePhpVersion(): ?string
     {
         try {
+            // Normalize PHP versions
+            $normalizedVersion = $this->normalizeVersion(
+                version: $this->getPhpVersion()
+            );
+            $normalizedMinimum = $this->normalizeVersion(
+                version: $this->minimumPhpVersion
+            );
+            $normalizedMaximum = $this->normalizeVersion(
+                version: $this->maximumPhpVersion
+            );
+
             if (
                 version_compare(
-                    version1: $this->getPhpVersion(),
-                    version2: $this->minimumPhpVersion
-                ) <= 0
+                    version1: $normalizedVersion,
+                    version2: $normalizedMinimum,
+                    operator: '<'
+                )
             ) {
                 return Translator::translate(phraseId: 'php-version-too-old');
             }
 
             if (
                 version_compare(
-                    version1: $this->getPhpVersion(),
-                    version2: $this->maximumPhpVersion
-                ) >= 0
+                    version1: $normalizedVersion,
+                    version2: $normalizedMaximum
+                ) > 0
             ) {
                 return Translator::translate(phraseId: 'php-version-too-new');
             }
@@ -164,6 +176,20 @@ class SupportInfo extends Widget
         }
 
         return null;
+    }
+
+    /**
+     * Pads shorter version numbers.
+     *
+     * @param string $version
+     * @return string
+     */
+    private function normalizeVersion(string $version): string
+    {
+        while (count(explode(separator: '.', string: $version)) < 3) {
+            $version .= '.0';
+        }
+        return $version;
     }
 
     /**
@@ -239,7 +265,6 @@ class SupportInfo extends Widget
 
             $decoded = json_decode(
                 json: $composerJson,
-                associative: null,
                 depth: 256,
                 flags: JSON_THROW_ON_ERROR
             );
