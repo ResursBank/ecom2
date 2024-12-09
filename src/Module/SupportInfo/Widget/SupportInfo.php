@@ -244,7 +244,7 @@ class SupportInfo extends Widget
         return version_compare(
             version1: $this->getCurlVersion(),
             version2: self::CURL_VERSION_MIN
-        ) < 0 ? Translator::translate(phraseId: 'curl-version-too-low') : null;
+        ) < 0 ? Translator::translate(phraseId: 'curl-version-too-old') : null;
     }
 
     /**

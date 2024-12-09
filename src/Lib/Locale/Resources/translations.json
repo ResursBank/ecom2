@@ -1208,11 +1208,11 @@
     }
   },
   {
-    "id": "curl-version-too-low",
+    "id": "curl-version-too-old",
     "translation": {
-      "en": "Curl version is too low",
-      "sv": "Curl-version för låg",
-      "no": "Curl-versjon for lav"
+      "en": "Curl version is too old",
+      "sv": "Curl-version för gammal",
+      "no": "Curl-versjon for gammel"
     }
   },
   {
