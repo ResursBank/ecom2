@@ -35,3 +35,12 @@
 .rb-si tbody tr:nth-child(odd) {
     background-color: #009b91;
 }
+
+.rb-si td.error {
+    background-color: #e33;
+    color: #fff;
+}
+
+.rb-si .si-error {
+    float:right;
+}

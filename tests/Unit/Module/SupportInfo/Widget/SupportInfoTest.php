@@ -53,7 +53,11 @@ class SupportInfoTest extends TestCase
             storeId: $_ENV['STORE_ID']
         );
 
-        $this->widget = new SupportInfo(pluginVersion: $this->pluginVersion);
+        $this->widget = new SupportInfo(
+            minimumPhpVersion: '8.1',
+            maximumPhpVersion: '8.3',
+            pluginVersion: $this->pluginVersion
+        );
     }
 
     /**
@@ -127,7 +131,7 @@ class SupportInfoTest extends TestCase
 
         // Confirm table element containing PHP version is present.
         $this->assertStringContainsString(
-            needle: '<td>' . PHP_VERSION . '</td>',
+            needle: "<td>\n                " . PHP_VERSION,
             haystack: $this->widget->html,
             message: 'Support Info widget is missing the PHP version'
         );
@@ -148,7 +152,7 @@ class SupportInfoTest extends TestCase
 
         // Confirm table element containing cURL version is present.
         $this->assertStringContainsString(
-            needle: '<td>' . $this->widget->getCurlVersion() . '</td>',
+            needle: "<td>\n                " . $this->widget->getCurlVersion(),
             haystack: $this->widget->html,
             message: 'Support Info widget is missing the cURL version'
         );

@@ -1168,6 +1168,22 @@
     }
   },
   {
+    "id": "php-version-too-old",
+    "translation": {
+      "en": "Installed PHP version is too old",
+      "sv": "Installerad PHP-version är för gammal",
+      "no": "Installert PHP-versjon er for gammel"
+    }
+  },
+  {
+    "id": "php-version-too-new",
+    "translation": {
+      "en": "Installed PHP version is too new",
+      "sv": "Installerad PHP-version är för ny",
+      "no": "Installert PHP-versjon er for ny"
+    }
+  },
+  {
     "id": "ecom-version",
     "translation": {
       "en": "Ecom version",
@@ -1189,6 +1205,22 @@
       "en": "Curl version",
       "sv": "Curl-version",
       "no": "Curl-versjon"
+    }
+  },
+  {
+    "id": "curl-version-too-old",
+    "translation": {
+      "en": "Curl version is too old",
+      "sv": "Curl-version för gammal",
+      "no": "Curl-versjon for gammel"
+    }
+  },
+  {
+    "id": "curlauth-bearer-support-missing",
+    "translation": {
+      "en": "Curl missing CURLAUTH_BEARER support",
+      "sv": "Curl saknar CURLAUTH_BEARER-stöd",
+      "no": "Curl mangler CURLAUTH_BEARER-støtte"
     }
   },
   {
