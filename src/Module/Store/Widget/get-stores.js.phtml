@@ -68,15 +68,25 @@ class Resursbank_FetchStores {
                 }
             );
 
-            this.getInputElements().forEach((el) => {
+            let fetchBtn = this.getFetchBtnElement();
+
+            if (fetchBtn !== null) {
+                fetchBtn.addEventListener(
+                    'click',
+                    this.fetchStores.bind(this),
+                    false
+                );
+            } else {
+              this.getInputElements().forEach((el) => {
                 if (el instanceof HTMLElement) {
-                    el.addEventListener(
-                        'change',
-                        this.fetchStores.bind(this),
-                        false
-                    );
+                  el.addEventListener(
+                    'change',
+                    this.fetchStores.bind(this),
+                    false
+                  );
                 }
-            });
+              });
+            }
         } catch (e) {
             this.errorHandler(e);
         }
@@ -159,6 +169,25 @@ class Resursbank_FetchStores {
 
         return result;
     }
+
+  /**
+   * Resolve button element to fetch stores.
+   *
+   * @returns {HTMLButtonElement}
+   */
+  getFetchBtnElement() {
+    let result = null;
+
+    <?php if ($this->fetchBtnId !== null): ?>
+    result = document.getElementById('<?= $this->fetchBtnId ?>');
+    <?php endif; ?>
+
+    if (result === null) {
+      throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-fetch-btn') ?>');
+    }
+
+    return result;
+  }
 
     /**
      * Resolve environment selection element.

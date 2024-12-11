@@ -1296,6 +1296,14 @@
     }
   },
   {
+    "id": "get-stores-missing-store-fetch-btn",
+    "translation": {
+      "en": "Failed to obtain button to fetch stores.",
+      "sv": "Kunde inte hitta knapp för att hämta butiker.",
+      "no": "Kunne ikke finne knapp for å hente butikker."
+    }
+  },
+  {
     "id": "get-stores-missing-environment-select",
     "translation": {
       "en": "Failed to obtain environment selection box.",

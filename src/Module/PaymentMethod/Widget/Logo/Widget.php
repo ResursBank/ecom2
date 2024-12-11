@@ -32,14 +32,14 @@ class Widget extends Base
         $this->html = $this->render(__DIR__ . '/html.phtml');
     }
 
-    public function getLogo(): string
+    public function getLogo(bool $inclImgTag = true): string
     {
         $filePath = __DIR__ . '/img/' . $this->file;
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
 
         return match($extension) {
             'svg' => $this->getSvgContent($filePath),
-            'png' => $this->getPngBase64($filePath),
+            'png' => $this->getPngBase64($filePath, $inclImgTag),
             default => '',
         };
     }
@@ -57,10 +57,13 @@ class Widget extends Base
         return file_get_contents($filePath);
     }
 
-    private function getPngBase64(string $filePath): string
+    private function getPngBase64(string $filePath, bool $inclImgTag = true): string
     {
         $imageData = file_get_contents($filePath);
         $base64 = base64_encode($imageData);
-        return '<img src="data:image/png;base64,' . $base64 . '" />';
+        $result = $inclImgTag ? '<img src="' : '';
+        $result .= 'data:image/png;base64,' . $base64;
+
+        return $result . ($inclImgTag ? '" />' : '');
     }
 }
