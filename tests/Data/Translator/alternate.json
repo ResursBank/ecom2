@@ -1,10 +1,10 @@
 [
-	{
-		"id": "test-string",
-		"translation": {
-			"en": "This is a test string",
-			"sv": "Det här är en teststräng",
-			"no": "Dette er en teststreng"
-		}
-	}
+  {
+    "id": "test-string",
+    "translation": {
+      "en": "This is a test string",
+      "sv": "Det här är en teststräng",
+      "no": "Dette er en teststreng"
+    }
+  }
 ]
