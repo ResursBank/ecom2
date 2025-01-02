@@ -1853,6 +1853,8 @@ example is based on code from one of our Magento modules.
    // Becacuse Magento will load elements for the product page on-the-fly
    // using AJAX requests, we cannot be sure when it's actaully loaded all 
    // input elements, so we need to reset our observers when the DOM changes.
+   // Observe that DOMSubtreeModified is deprecated, but we use it here for now.
+   // You could also build this on MutationObservers to maintain compatibility.
    document
      .getElementById('product_addtocart_form')
      .addEventListener('DOMSubtreeModified', function() {
