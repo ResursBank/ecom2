@@ -1,19 +1,23 @@
-function showExtra(data) {
+function showExtra(data)
+{
     document.getElementById('rb-ph-extra-content').innerHTML = data;
     document.getElementById('rb-ph-log-table').style.display = 'none';
     document.getElementById('rb-ph-extra').style.display = 'block';
 }
 
-function showLogTable() {
+function showLogTable()
+{
     document.getElementById('rb-ph-extra').style.display = 'none';
     document.getElementById('rb-ph-log-table').style.display = '';
 }
 
-function showWidget() {
+function showWidget()
+{
     document.getElementById('rb-ph-hidden').style.display = 'block';
 }
 
-function hideWidget() {
+function hideWidget()
+{
     document.getElementById('rb-ph-hidden').style.display = 'none';
 }
 
