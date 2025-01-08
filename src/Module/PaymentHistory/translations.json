@@ -3,301 +3,430 @@
     "id": "event-captured",
     "translation": {
       "en": "Payment fully captured.",
-      "sv": "Betalning helt debiterad."
+      "sv": "Betalning helt debiterad.",
+      "da": "Betaling debiteres fuldt ud.",
+      "no": "Betaling debitert i sin helhet.",
+      "fi": "Maksu kokonaan veloitettu."
     }
   },
   {
     "id": "event-partially-captured",
     "translation": {
       "en": "Payment partially captured.",
-      "sv": "Betalning delvis debiterad."
+      "sv": "Betalning delvis debiterad.",
+      "da": "Betaling delvist debiteret.",
+      "no": "Betaling delvis debitert.",
+      "fi": "Maksu osittain veloitettu."
     }
   },
   {
     "id": "event-refunded",
     "translation": {
       "en": "Payment fully refunded.",
-      "sv": "Betalning helt återbetald."
+      "sv": "Betalning helt återbetald.",
+      "da": "Betaling fuldt refunderet.",
+      "no": "Betaling fullt refundert.",
+      "fi": "Maksu täysin hyvitetty."
     }
   },
   {
     "id": "event-partially-refunded",
     "translation": {
       "en": "Payment partially refunded.",
-      "sv": "Betalning delvis återbetald."
+      "sv": "Betalning delvis återbetald.",
+      "da": "Betaling delvist refunderet.",
+      "no": "Betaling delvis refundert.",
+      "fi": "Maksu osittain hyvitetty."
     }
   },
   {
     "id": "event-canceled",
     "translation": {
       "en": "Payment fully canceled.",
-      "sv": "Betalning helt annullerad."
+      "sv": "Betalning helt annullerad.",
+      "da": "Betaling fuldt annulleret.",
+      "no": "Betaling helt kansellert.",
+      "fi": "Maksu täysin peruutettu."
     }
   },
   {
     "id": "event-partially-cancelled",
     "translation": {
       "en": "Payment partially cancelled.",
-      "sv": "Betalning delvis annullerad."
+      "sv": "Betalning delvis annullerad.",
+      "da": "Betaling delvist annulleret.",
+      "no": "Betaling delvis kansellert.",
+      "fi": "Maksu osittain peruutettu."
     }
   },
   {
     "id": "event-credit-denied",
     "translation": {
       "en": "Customer was denied credit application.",
-      "sv": "Kunden nekades kreditansökan."
+      "sv": "Kunden nekades kreditansökan.",
+      "da": "Kunden fik afslag på kreditansøgning.",
+      "no": "Kunden fikk avslag på kredittsøknad.",
+      "fi": "Asiakkaan luottohakemus hylättiin."
     }
   },
   {
     "id": "event-aborted",
     "translation": {
       "en": "Customer aborted the purchase.",
-      "sv": "Kunden avbröt köpet."
+      "sv": "Kunden avbröt köpet.",
+      "da": "Kunden afbrød købet.",
+      "no": "Kunden avbrøt kjøpet.",
+      "fi": "Asiakas peruutti oston."
     }
   },
   {
     "id": "event-capture-requested",
     "translation": {
       "en": "Sending request to capture payment.",
-      "sv": "Skickar anrop för att debitera betalning."
+      "sv": "Skickar anrop för att debitera betalning.",
+      "da": "Sender anmodning om debitering af betaling.",
+      "no": "Sender forespørsel om å debitere betaling.",
+      "fi": "Veloituspyyntö lähetetään."
     }
   },
   {
     "id": "event-cancel-requested",
     "translation": {
       "en": "Sending request to cancel payment.",
-      "sv": "Skickar anrop för att annullera betalning."
+      "sv": "Skickar anrop för att annullera betalning.",
+      "da": "Sender anmodning om at annullere betalingen.",
+      "no": "Sender forespørsel om å kansellere betalingen.",
+      "fi": "Lähetetään pyyntö maksun perumiseksi."
     }
   },
   {
     "id": "event-refund-requested",
     "translation": {
       "en": "Sending request to refund payment.",
-      "sv": "Skickar anrop för att återbetala."
+      "sv": "Skickar anrop för att återbetala.",
+      "da": "Sender anmodning om at refundere betalingen.",
+      "no": "Sender forespørsel om å refundere betalingen.",
+      "fi": "Lähetetään pyyntö maksun hyvittämiseksi."
     }
   },
   {
     "id": "user-customer",
     "translation": {
       "en": "Customer",
-      "sv": "Kund"
+      "sv": "Kund",
+      "da": "Kunde",
+      "no": "Kunde",
+      "fi": "Asiakas"
     }
   },
   {
     "id": "user-cron",
     "translation": {
       "en": "Cron",
-      "sv": "Cron"
+      "sv": "Cron",
+      "da": "Cron",
+      "no": "Cron",
+      "fi": "Cron"
     }
   },
   {
     "id": "user-admin",
     "translation": {
       "en": "Admin",
-      "sv": "Admin"
+      "sv": "Admin",
+      "da": "Admin",
+      "no": "Admin",
+      "fi": "Admin"
     }
   },
   {
     "id": "user-resursbank",
     "translation": {
       "en": "Resurs Bank",
-      "sv": "Resurs Bank"
+      "sv": "Resurs Bank",
+      "da": "Resurs Bank",
+      "no": "Resurs Bank",
+      "fi": "Resurs Bank"
     }
   },
   {
     "id": "link-title",
     "translation": {
       "en": "Resurs Bank payment history",
-      "sv": "Resurs Bank betalhistorik"
+      "sv": "Resurs Bank betalhistorik",
+      "da": "Resurs Bank betalingshistorik",
+      "no": "Resurs Bank betalingshistorikk",
+      "fi": "Resurs Bank maksuhistoria"
     }
   },
   {
     "id": "go-back",
     "translation": {
       "en": "Go back",
-      "sv": "Gå tillbaka"
+      "sv": "Gå tillbaka",
+      "da": "Gå tilbage",
+      "no": "Gå tilbake",
+      "fi": "Palaa takaisin"
     }
   },
   {
     "id": "event",
     "translation": {
       "en": "Event",
-      "sv": "Händelse"
+      "sv": "Händelse",
+      "da": "Begivenhed",
+      "no": "Hendelse",
+      "fi": "Tapahtuma"
     }
   },
   {
     "id": "previous-status",
     "translation": {
       "en": "Previous order status",
-      "sv": "Dåvarande orderstatus"
+      "sv": "Dåvarande orderstatus",
+      "da": "Tidligere ordrestatus",
+      "no": "Tidligere bestillingsstatus",
+      "fi": "Edellinen tilauksen tila"
     }
   },
   {
     "id": "current-status",
     "translation": {
       "en": "New order status",
-      "sv": "Ny orderstatus"
+      "sv": "Ny orderstatus",
+      "da": "Ny ordrestatus",
+      "no": "Ny bestillingsstatus",
+      "fi": "Uusi tilauksen tila"
     }
   },
   {
     "id": "extra",
     "translation": {
       "en": "Extra",
-      "sv": "Extra"
+      "sv": "Extra",
+      "da": "Ekstra",
+      "no": "Ekstra",
+      "fi": "Lisä"
     }
   },
   {
     "id": "user",
     "translation": {
       "en": "User",
-      "sv": "Användare"
+      "sv": "Användare",
+      "da": "Bruger",
+      "no": "Bruker",
+      "fi": "Käyttäjä"
     }
   },
   {
     "id": "show-extra",
     "translation": {
       "en": "Show",
-      "sv": "Visa"
+      "sv": "Visa",
+      "da": "Vis",
+      "no": "Vis",
+      "fi": "Näytä"
     }
   },
   {
     "id": "widget-title",
     "translation": {
       "en": "Payment #%s [%s]",
-      "sv": "Betalning #%s [%s]"
+      "sv": "Betalning #%s [%s]",
+      "da": "Betaling #%s [%s]",
+      "no": "Betaling #%s [%s]",
+      "fi": "Maksu #%s [%s]"
     }
   },
   {
     "id": "event-request-failed",
     "translation": {
       "en": "The request failed.",
-      "sv": "Anropet misslyckades."
+      "sv": "Anropet misslyckades.",
+      "da": "Anmodningen mislykkedes.",
+      "no": "Forespørselen mislyktes.",
+      "fi": "Pyyntö epäonnistui."
     }
   },
   {
     "id": "result",
     "translation": {
       "en": "Result",
-      "sv": "Resultat"
+      "sv": "Resultat",
+      "da": "Resultat",
+      "no": "Resultat",
+      "fi": "Tulos"
     }
   },
   {
     "id": "test",
     "translation": {
       "en": "Test",
-      "sv": "Test"
+      "sv": "Test",
+      "da": "Test",
+      "no": "Test",
+      "fi": "Testi"
     }
   },
   {
     "id": "production",
     "translation": {
       "en": "Production",
-      "sv": "Produktion"
+      "sv": "Produktion",
+      "da": "Produktion",
+      "no": "Produksjon",
+      "fi": "Tuotanto"
     }
   },
   {
     "id": "time",
     "translation": {
       "en": "Time",
-      "sv": "Tid"
+      "sv": "Tid",
+      "da": "Tid",
+      "no": "Tid",
+      "fi": "Aika"
     }
   },
   {
     "id": "event-callback-authorization",
     "translation": {
       "en": "Authorization callback accepted.",
-      "sv": "Authorization callback accepterad."
+      "sv": "Authorization callback accepterad.",
+      "da": "Godkendelse callback accepteret.",
+      "no": "Autorisasjon callback akseptert.",
+      "fi": "Autorisointi callback hyväksytty."
     }
   },
   {
     "id": "event-callback-management",
     "translation": {
       "en": "Management callback accepted.",
-      "sv": "Management callback accepterad."
+      "sv": "Management callback accepterad.",
+      "da": "Management callback accepteret.",
+      "no": "Management callback akseptert.",
+      "fi": "Hallinta callback hyväksytty."
     }
   },
   {
     "id": "event-callback-completed",
     "translation": {
       "en": "Callback processed.",
-      "sv": "Callback hanterad."
+      "sv": "Callback hanterad.",
+      "da": "Callback behandlet.",
+      "no": "Callback behandlet.",
+      "fi": "Callback käsitelty."
     }
   },
   {
     "id": "event-callback-failed",
     "translation": {
       "en": "Callback failed.",
-      "sv": "Callback misslyckades."
+      "sv": "Callback misslyckades.",
+      "da": "Callback mislykkedes.",
+      "no": "Callback mislyktes.",
+      "fi": "Callback epäonnistui."
     }
   },
   {
     "id": "event-reached-order-success-page",
     "translation": {
       "en": "Reached order success page.",
-      "sv": "Nådde sidan med orderbekräftelse."
+      "sv": "Nådde sidan med orderbekräftelse.",
+      "da": "Nåede ordresucces side.",
+      "no": "Nåddes ordresuksess-siden.",
+      "fi": "Saavutettiin tilauksen onnistumissivu."
     }
   },
   {
     "id": "event-reached-order-failure-page",
     "translation": {
       "en": "Reached order failure page.",
-      "sv": "Nådde sidan för misslyckad beställning."
+      "sv": "Nådde sidan för misslyckad beställning.",
+      "da": "Nåede fejlside for ordre.",
+      "no": "Nåddes bestillingsfeilside.",
+      "fi": "Saavutettiin tilauksen epäonnistumissivu."
     }
   },
   {
     "id": "event-order-canceled",
     "translation": {
       "en": "Order canceled.",
-      "sv": "Beställning makulerad."
+      "sv": "Beställning makulerad.",
+      "da": "Ordre annulleret.",
+      "no": "Bestilling kansellert.",
+      "fi": "Tilaus peruutettu."
     }
   },
   {
     "id": "event-order-canceled-cron",
     "translation": {
       "en": "Order canceled by cron job.",
-      "sv": "Beställning makulerad av cronjobb."
+      "sv": "Beställning makulerad av cronjobb.",
+      "da": "Ordre annulleret af cron job.",
+      "no": "Bestilling kansellert av cron-jobb.",
+      "fi": "Tilaus peruutettu cron-työstä."
     }
   },
   {
     "id": "event-invoice-created",
     "translation": {
       "en": "Invoice created.",
-      "sv": "Faktura skapad."
+      "sv": "Faktura skapad.",
+      "da": "Faktura oprettet.",
+      "no": "Faktura opprettet.",
+      "fi": "Lasku luotu."
     }
   },
   {
     "id": "event-redirected-to-gateway",
     "translation": {
       "en": "Customer redirected to gateway.",
-      "sv": "Kunden skickades till gateway."
+      "sv": "Kunden skickades till gateway.",
+      "da": "Kunden blev omdirigeret til gateway.",
+      "no": "Kunden ble omdirigert til gateway.",
+      "fi": "Asiakas ohjattiin maksuväylään."
     }
   },
   {
     "id": "event-legacy",
     "translation": {
       "en": "Legacy event.",
-      "sv": "Legacyhändelse."
+      "sv": "Legacyhändelse.",
+      "da": "Legacy-hændelse.",
+      "no": "Legacy-hendelse.",
+      "fi": "Perintötapahtuma."
     }
   },
   {
     "id": "status",
     "translation": {
       "en": "Status",
-      "sv": "Status"
+      "sv": "Status",
+      "da": "Status",
+      "no": "Status",
+      "fi": "Tila"
     }
   },
   {
     "id": "state",
     "translation": {
       "en": "State",
-      "sv": "State"
+      "sv": "State",
+      "da": "Tilstand",
+      "no": "Tilstand",
+      "fi": "Tila"
     }
   },
   {
     "id": "unchanged",
     "translation": {
       "en": "Unchanged",
-      "sv": "Oförändrad"
+      "sv": "Oförändrad",
+      "da": "Uændret",
+      "no": "Uendret",
+      "fi": "Muuttumaton"
     }
   },
   {
@@ -305,7 +434,9 @@
     "translation": {
       "en": "Authorization callback received with status %s.",
       "sv": "Authorization callback inkom med status %s.",
-      "no": "Autorisasjons tilbakeringing mottatt med status %s."
+      "no": "Autorisasjons tilbakeringing mottatt med status %s.",
+      "da": "Godkendelse callback modtaget med status %s.",
+      "fi": "Autorisointi callback vastaanotettu tilalla %s."
     }
   }
 ]
