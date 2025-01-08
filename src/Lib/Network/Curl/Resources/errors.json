@@ -3,42 +3,60 @@
     "id": "customer-mobilephone-is-not-valid",
     "translation": {
       "en": "Mobile phone is not valid",
-      "sv": "Mobiltelefon är ej korrekt"
+      "sv": "Mobiltelefon är ej korrekt",
+      "da": "Mobiltelefonen er ikke gyldig",
+      "no": "Mobiltelefonen er ikke gyldig",
+      "fi": "Matkapuhelin ei kelpaa"
     }
   },
   {
     "id": "customer-governmentid-is-not-valid",
     "translation": {
       "en": "Government ID is not valid",
-      "sv": "Personnummer är ej korrekt"
+      "sv": "Personnummer är ej korrekt",
+      "da": "CPR-nummeret er ikke korrekt",
+      "no": "Personnummeret er ikke riktig",
+      "fi": "Sosiaaliturvatunnus ei ole oikea"
     }
   },
   {
     "id": "customer-email-is-not-valid",
     "translation": {
       "en": "Email is not valid",
-      "sv": "Epostadress är ej korrekt"
+      "sv": "Epostadress är ej korrekt",
+      "da": "E-mailadressen er ikke korrekt",
+      "no": "E-postadressen er ikke korrekt",
+      "fi": "Sähköpostiosoite ei ole oikea"
     }
   },
   {
     "id": "customer-deliveryaddress-postalcode-must-match-------d--1-10---",
     "translation": {
       "en": "Postal code is not valid",
-      "sv": "Postnummer är ej korrekt"
+      "sv": "Postnummer är ej korrekt",
+      "da": "Postnummer er ikke korrekt",
+      "no": "Postnummeret er ikke riktig",
+      "fi": "Postinumero ei ole oikea"
     }
   },
   {
     "id": "customer-deliveryaddress-postalcode",
     "translation": {
       "en": "Postal code is not valid",
-      "sv": "Postnummer är ej korrekt"
+      "sv": "Postnummer är ej korrekt",
+      "da": "Postnummer er ikke korrekt",
+      "no": "Postnummeret er ikke riktig",
+      "fi": "Postinumero ei ole oikea"
     }
   },
   {
     "id": "customer-deliveryaddress-postalcode-must-match-test",
     "translation": {
       "en": "Postal code is not valid",
-      "sv": "Postnummer är ej korrekt"
+      "sv": "Postnummer är ej korrekt",
+      "da": "Postnummer er ikke korrekt",
+      "no": "Postnummeret er ikke riktig",
+      "fi": "Postinumero ei ole oikea"
     }
   }
 ]
