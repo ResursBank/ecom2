@@ -46,7 +46,7 @@ abstract class ErrorTranslator
      * non-alphanumeric characters and replace all other non-alphanumerics
      * with dashes.
      */
-    private static function reformatMessage(string $message): string
+    public static function reformatMessage(string $message): string
     {
         // lowercase
         $message = strtolower(string: $message);
