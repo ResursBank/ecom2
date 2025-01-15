@@ -2672,7 +2672,8 @@
     "translation": {
       "en": "Order changed by unknown source. Please confirm that total and contents match payment before further handling of order.",
       "sv": "Ordern ändrades av okänd källa. Vänligen bekräfta att totalsumma och innehåll överensstämmer med betalning innan vidare hantering av ordern görs.",
-      "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas."
+      "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas.",
+      "da": "Bestilling ændret af ukendt kilde. Bekræft venligst, at totalbeløb og indhold stemmer overens med betalingen, før videre håndtering af ordren."
     }
   },
   {
@@ -2680,7 +2681,8 @@
     "translation": {
       "en": "Part pay interest-free for up to %s months with Resurs Bank AB",
       "sv": "Delbetala räntefritt i upp till %s månader med Resurs Bank AB",
-      "no": "Delbetale rentefritt i opptil %s måneder med Resurs Bank AB"
+      "no": "Delbetale rentefritt i opptil %s måneder med Resurs Bank AB",
+      "da": "Delbetal rentefrit i op til %s måneder med Resurs Bank AB"
     }
   },
   {
@@ -2698,7 +2700,8 @@
     "translation": {
       "en": "Failed to obtain government ID input.",
       "sv": "Kunde inte hitta input för personnummer.",
-      "no": "Kunne ikke finne input for personnummer."
+      "no": "Kunne ikke finne input for personnummer.",
+      "da": "Kunne ikke hente input for personnummer."
     }
   },
   {
@@ -2706,7 +2709,8 @@
     "translation": {
       "en": "Failed to obtain input to define private citizen.",
       "sv": "Kunde inte hitta input för att definiera privatperson.",
-      "no": "Kunne ikke finne input for å definere privatperson."
+      "no": "Kunne ikke finne input for å definere privatperson.",
+      "da": "Kunne ikke finde input for at definere privatperson."
     }
   },
   {
@@ -2714,7 +2718,8 @@
     "translation": {
       "en": "Failed to obtain input to define company.",
       "sv": "Kunde inte hitta input för att definiera företag.",
-      "no": "Kunne ikke finne input for å definere selskap."
+      "no": "Kunne ikke finne input for å definere selskap.",
+      "da": "Kunne ikke finde input for at definere virksomhed."
     }
   },
   {
@@ -2722,7 +2727,8 @@
     "translation": {
       "en": "Failed to obtain selected customer type input.",
       "sv": "Kunde inte hitta input för vald kundtyp.",
-      "no": "Kunne ikke finne input for valgt kundetype."
+      "no": "Kunne ikke finne input for valgt kundetype.",
+      "da": "Kunne ikke finde input for valgt kundetype."
     }
   },
   {
@@ -2730,7 +2736,8 @@
     "translation": {
       "en": "Failed to obtain fetch button.",
       "sv": "Kunde inte hitta knapp för att hämta adress.",
-      "no": "Kunne ikke finne knapp for å hente adresse."
+      "no": "Kunne ikke finne knapp for å hente adresse.",
+      "da": "Kunne ikke finde knap til at hente adresse."
     }
   },
   {
@@ -2738,7 +2745,8 @@
     "translation": {
       "en": "No implementation of the updateAddress() method.",
       "sv": "Ingen implementation av metoden updateAddress().",
-      "no": "Ingen implementasjon av metoden updateAddress()."
+      "no": "Ingen implementasjon av metoden updateAddress().",
+      "da": "Ingen implementering af metoden updateAddress()."
     }
   },
   {
@@ -2746,7 +2754,8 @@
     "translation": {
       "en": "Failed to obtain fetch URL.",
       "sv": "Kunde inte hitta URL för att hämta adress.",
-      "no": "Kunne ikke finne URL for å hente adresse."
+      "no": "Kunne ikke finne URL for å hente adresse.",
+      "da": "Kunne ikke finde URL til at hente adresse."
     }
   },
   {
@@ -2754,7 +2763,8 @@
     "translation": {
       "en": "Failed to fetch address data.",
       "sv": "Misslyckades med att hämta adressdata.",
-      "no": "Kunne ikke hente adresseinformasjon."
+      "no": "Kunne ikke hente adresseinformasjon.",
+      "da": "Kunne ikke hente adresse data."
     }
   },
   {
@@ -2762,7 +2772,8 @@
     "translation": {
       "en": "Invalid government ID.",
       "sv": "Ogiltigt personnummer.",
-      "no": "Ugyldig personnummer."
+      "no": "Ugyldig personnummer.",
+      "da": "Ugyldigt personnummer."
     }
   },
   {
@@ -2770,7 +2781,8 @@
     "translation": {
       "en": "Invalid company ID.",
       "sv": "Ogiltigt organisationsnummer.",
-      "no": "Ugyldig organisasjonsnummer."
+      "no": "Ugyldig organisasjonsnummer.",
+      "da": "Ugyldigt virksomhedsnummer."
     }
   },
   {
@@ -2778,7 +2790,8 @@
     "translation": {
       "en": "Failed to obtain widget container element.",
       "sv": "Kunde inte hitta element för widget-container.",
-      "no": "Kunne ikke finne element for widget-container."
+      "no": "Kunne ikke finne element for widget-container.",
+      "da": "Kunne ikke finde widget-container element."
     }
   },
   {
@@ -2786,7 +2799,8 @@
     "translation": {
       "en": "Perform test",
       "sv": "Utför test",
-      "no": "Utfør test"
+      "no": "Utfør test",
+      "da": "Udfør test"
     }
   },
   {
@@ -2794,7 +2808,8 @@
     "translation": {
       "en": "Update",
       "sv": "Uppdatera",
-      "no": "Oppdatere"
+      "no": "Oppdatere",
+      "da": "Opdater"
     }
   },
   {
@@ -2802,7 +2817,8 @@
     "translation": {
       "en": "Callback registration",
       "sv": "Registrera callbacks",
-      "no": "Registrere callbacks"
+      "no": "Registrere callbacks",
+      "da": "Callback-registrering"
     }
   },
   {
@@ -2810,7 +2826,8 @@
     "translation": {
       "en": "Test last triggered at",
       "sv": "Senaste test efterfrågades",
-      "no": "Siste test forespurt"
+      "no": "Siste test forespurt",
+      "da": "Sidste test blev udløst på"
     }
   },
   {
@@ -2818,7 +2835,8 @@
     "translation": {
       "en": "Test last received at",
       "sv": "Senaste test mottogs",
-      "no": "Siste test mottatt"
+      "no": "Siste test mottatt",
+      "da": "Sidste test modtaget på"
     }
   },
   {
@@ -2826,7 +2844,8 @@
     "translation": {
       "en": "Callback Settings",
       "sv": "Callbacks",
-      "no": "Callbacks"
+      "no": "Callbacks",
+      "da": "Callback-indstillinger"
     }
   },
   {
@@ -2834,7 +2853,8 @@
     "translation": {
       "en": "Automatically create invoices",
       "sv": "Skapa fakturor automatiskt",
-      "no": "Opprett fakturaer automatisk"
+      "no": "Opprett fakturaer automatisk",
+      "da": "Opret fakturaer automatisk"
     }
   },
   {
@@ -2842,7 +2862,8 @@
     "translation": {
       "en": "Automatically create invoice for direct payment methods. Swish and Trustly.",
       "sv": "Skapa automatiskt faktura för direktbetalningsbetalmetoder. Swish och Trustly.",
-      "no": "Opprett automatisk faktura for direkte betalingsmetoder."
+      "no": "Opprett automatisk faktura for direkte betalingsmetoder.",
+      "da": "Opret automatisk faktura for direkte betalingsmetoder. Swish og Trustly."
     }
   },
   {
@@ -2850,7 +2871,8 @@
     "translation": {
       "en": "Callbacks are handled by cron, please ensure that cron is active.",
       "sv": "Callbacks hanteras av cron, vänligen säkerställ att cron är aktivt.",
-      "no": "Callbacks håndteres av cron, sørg for at cron er aktiv."
+      "no": "Callbacks håndteres av cron, sørg for at cron er aktiv.",
+      "da": "Callbacks håndteres af cron, sørg for at cron er aktiv."
     }
   },
   {
@@ -2858,7 +2880,8 @@
     "translation": {
       "en": "Round item tax",
       "sv": "Avrunda produktmoms",
-      "no": "Avrund produktmva"
+      "no": "Avrund produktmva",
+      "da": "Afrund vare-moms"
     }
   },
   {
@@ -2866,7 +2889,8 @@
     "translation": {
       "en": "Round item tax percentage to nearest integer. Only use this when your configuration results in floating tax percentage values, for instance when using percentage based shipping fees in combination with currency conversion.",
       "sv": "Avrunda produkters momssats till närmaste heltal. Aktivera detta endast om din konfiguration resulterar i flytande momssats värden, till exempel om du nyttjar procentuella fraktpriser i samband med valutakonvertering.",
-      "no": "Avrund produktets mva-sats til nærmeste hele tall. Aktiver dette bare hvis konfigurasjonen din resulterer i flytende MVA-satsverdier, for eksempel hvis du bruker prosentvise fraktsatser i forbindelse med valutakonvertering."
+      "no": "Avrund produktets mva-sats til nærmeste hele tall. Aktiver dette bare hvis konfigurasjonen din resulterer i flytende MVA-satsverdier, for eksempel hvis du bruker prosentvise fraktsatser i forbindelse med valutakonvertering.",
+      "da": "Afrund momsprocenten for varen til nærmeste heltal. Brug kun denne indstilling, hvis din konfiguration resulterer i flydende momsprocenter, for eksempel ved brug af procentbaserede fragtgebyrer i forbindelse med valutakonvertering."
     }
   },
   {
@@ -2874,7 +2898,8 @@
     "translation": {
       "en": "Sync data",
       "sv": "Synka data",
-      "no": "Synkronisere data"
+      "no": "Synkronisere data",
+      "da": "Synkroniser data"
     }
   },
   {
@@ -2882,7 +2907,8 @@
     "translation": {
       "en": "Automatically sync data",
       "sv": "Synka data automatiskt",
-      "no": "Synkroniser data automatisk"
+      "no": "Synkroniser data automatisk",
+      "da": "Synkroniser data automatisk"
     }
   },
   {
@@ -2890,7 +2916,8 @@
     "translation": {
       "en": "Advanced Settings",
       "sv": "Avancerade inställningar",
-      "no": "Avanserte innstillinger"
+      "no": "Avanserte innstillinger",
+      "da": "Avancerede indstillinger"
     }
   },
   {
@@ -2898,7 +2925,8 @@
     "translation": {
       "en": "Checkout type",
       "sv": "Typ av kassa",
-      "no": "Type betalingskasse"
+      "no": "Type betalingskasse",
+      "da": "Checkout-type"
     }
   },
   {
@@ -2906,7 +2934,8 @@
     "translation": {
       "en": "Delete aborted orders",
       "sv": "Ta bort avbrutna beställningar",
-      "no": "Fjern kansellerte bestillinger"
+      "no": "Fjern kansellerte bestillinger",
+      "da": "Slet afbrudte ordrer"
     }
   },
   {
@@ -2914,7 +2943,8 @@
     "translation": {
       "en": "Delete order when payment is aborted, to avoid orders with pending payment.",
       "sv": "Ta bort beställning när betalning avbryts, för att undvika beställningar som inväntar betalning.",
-      "no": "Fjern bestillingen når betalingen er suspendert, for å unngå bestillinger som venter på betaling."
+      "no": "Fjern bestillingen når betalingen er suspendert, for å unngå bestillinger som venter på betaling.",
+      "da": "Slet ordre, når betaling afbrydes, for at undgå ordrer med ventende betaling."
     }
   },
   {
@@ -2922,7 +2952,8 @@
     "translation": {
       "en": "Sync payment methods and other data from Resurs Bank for all API accounts in all store views.",
       "sv": "Synka betalmetoder och annan data från Resurs Bank för alla API konton i alla butiksvyer.",
-      "no": "Synkroniser betalingsmåter og andre data fra Resurs Bank for alle API-kontoer i alle butikkvisninger."
+      "no": "Synkroniser betalingsmåter og andre data fra Resurs Bank for alle API-kontoer i alle butikkvisninger.",
+      "da": "Synkroniser betalingsmetoder og andre data fra Resurs Bank for alle API-konti i alle butiksversioner."
     }
   },
   {
@@ -2930,7 +2961,8 @@
     "translation": {
       "en": "Attention! API credentials are required for this extension to function properly.",
       "sv": "Obs! API-uppgifter krävs för att denna modul skall fungera som förväntat.",
-      "no": "API-legitimasjon kreves for at denne modulen skal fungere som forventet."
+      "no": "API-legitimasjon kreves for at denne modulen skal fungere som forventet.",
+      "da": "Opdatering! API-legitimationsoplysninger er påkrævet for at denne udvidelse fungerer korrekt."
     }
   },
   {
@@ -2938,7 +2970,8 @@
     "translation": {
       "en": "per month, for %1 months",
       "sv": "per månad, i %1 månader",
-      "no": "per måned, i %1 måneder"
+      "no": "per måned, i %1 måneder",
+      "da": "per måned, i %1 måneder"
     }
   },
   {
@@ -2946,7 +2979,8 @@
     "translation": {
       "en": "No part payment information exists for this product.",
       "sv": "Ingen delbetalningsinformation existerar för denna betalmetod.",
-      "no": "Det finnes ingen delbetalingsinformasjon for denne betalingsmåten."
+      "no": "Det finnes ingen delbetalingsinformasjon for denne betalingsmåten.",
+      "da": "Der findes ingen delbetalingsinformation for dette produkt."
     }
   },
   {
@@ -2954,7 +2988,8 @@
     "translation": {
       "en": "Select shipping method",
       "sv": "Välj fraktsätt",
-      "no": "Velg fraktmetode"
+      "no": "Velg fraktmetode",
+      "da": "Vælg forsendelsesmetode"
     }
   },
   {
@@ -2962,7 +2997,8 @@
     "translation": {
       "en": "Connection to checkout gateway failed.",
       "sv": "Kontakten med kassatjänsten avbröts.",
-      "no": "Kontakten med kassetjenesten ble avbrutt."
+      "no": "Kontakten med kassetjenesten ble avbrutt.",
+      "da": "Forbindelse til betalingsgateway mislykkedes."
     }
   },
   {
@@ -2970,7 +3006,8 @@
     "translation": {
       "en": "Please try again in a few minutes.",
       "sv": "Vänligen försök igen om några minuter.",
-      "no": "Vennligst prøv på nytt om noen minutter."
+      "no": "Vennligst prøv på nytt om noen minutter.",
+      "da": "Prøv venligst igen om et par minutter."
     }
   },
   {
@@ -2978,7 +3015,8 @@
     "translation": {
       "en": "We apologize, your session has expired and the page will reload after this message has been dismissed. Your order has not yet been placed. Please fill out your information below after reloading to proceed with placing your order.",
       "sv": "Vi ber om ursäkt, sessionen upphörde och sidan kommer att laddas om efter det här meddelandet har avfärdats. Din beställning är ännu inte genomförd. Vänligen fyll i formuläret nedan efter omladdning för att avsluta beställningen.",
-      "no": "Vi beklager, sesjonen ble avsluttet og siden vil bli lastet inn på nytt etter at denne meldingen er avvist. Bestillingen din er ennå ikke fullført. Fyll ut skjemaet nedenfor etter at du har lastet på nytt for å fullføre bestillingen."
+      "no": "Vi beklager, sesjonen ble avsluttet og siden vil bli lastet inn på nytt etter at denne meldingen er avvist. Bestillingen din er ennå ikke fullført. Fyll ut skjemaet nedenfor etter at du har lastet på nytt for å fullføre bestillingen.",
+      "da": "Vi undskylder, din session er udløbet, og siden vil blive genindlæst efter denne besked er blevet afvist. Din ordre er endnu ikke afgivet. Udfyld venligst dine oplysninger nedenfor efter genindlæsning for at fortsætte med at afgive din ordre."
     }
   },
   {
@@ -2986,7 +3024,8 @@
     "translation": {
       "en": "Alert customers when shipping methods update",
       "sv": "Meddela kunder när fraktmetoder uppdateras",
-      "no": "Varsle kundene når fraktmetodene er oppdatert"
+      "no": "Varsle kundene når fraktmetodene er oppdatert",
+      "da": "Advarsel kunder når forsendelsesmetoder opdateres"
     }
   },
   {
@@ -2994,7 +3033,8 @@
     "translation": {
       "en": "Please contact Resurs Bank for more information or choose another payment method to complete your order.",
       "sv": "Vänligen kontakta Resurs Bank för mer information eller välj en annan betalmetod för att slutföra din order.",
-      "no": "Vennligst kontakt Resurs Bank for mer informasjon eller velg en annen betalingsmåte for å fullføre bestillingen."
+      "no": "Vennligst kontakt Resurs Bank for mer informasjon eller velg en annen betalingsmåte for å fullføre bestillingen.",
+      "da": "Venligst kontakt Resurs Bank for mere information eller vælg en anden betalingsmetode for at fuldføre din ordre."
     }
   },
   {
@@ -3002,7 +3042,8 @@
     "translation": {
       "en": "The field %1 has an invalid value.",
       "sv": "Fältet %1 har ett ogiltigt värde.",
-      "no": "Feltet %1 har en ugyldig verdi."
+      "no": "Feltet %1 har en ugyldig verdi.",
+      "da": "Feltet %1 har en ugyldig værdi."
     }
   },
   {
@@ -3010,7 +3051,8 @@
     "translation": {
       "en": "The value in the field %1 is too short.",
       "sv": "Värdet i fältet %1 är för kort.",
-      "no": "Verdien i feltet %1 er for kort."
+      "no": "Verdien i feltet %1 er for kort.",
+      "da": "Værdien i feltet %1 er for kort."
     }
   },
   {
@@ -3018,7 +3060,8 @@
     "translation": {
       "en": "The value in the field %1 is too long.",
       "sv": "Värdet i fältet %1 är för långt.",
-      "no": "Verdien i feltet %1 er for lang"
+      "no": "Verdien i feltet %1 er for lang",
+      "da": "Værdien i feltet %1 er for lang."
     }
   },
   {
@@ -3026,7 +3069,8 @@
     "translation": {
       "en": "postal code",
       "sv": "postnummer",
-      "no": "postnummer"
+      "no": "postnummer",
+      "da": "postnummer"
     }
   },
   {
@@ -3034,7 +3078,8 @@
     "translation": {
       "en": "address row 1",
       "sv": "adressrad 1",
-      "no": "adresselinje 1"
+      "no": "adresselinje 1",
+      "da": "adresse række 1"
     }
   },
   {
@@ -3042,7 +3087,8 @@
     "translation": {
       "en": "postal area",
       "sv": "postort",
-      "no": "postområde"
+      "no": "postområde",
+      "da": "postområde"
     }
   },
   {
@@ -3050,7 +3096,8 @@
     "translation": {
       "en": "address row 2",
       "sv": "adressrad 2",
-      "no": "adresselinje 2"
+      "no": "adresselinje 2",
+      "da": "adresse række 2"
     }
   },
   {
@@ -3058,7 +3105,8 @@
     "translation": {
       "en": "full name",
       "sv": "fullständigt namn",
-      "no": "fullstendig navn"
+      "no": "fullstendig navn",
+      "da": "fulde navn"
     }
   },
   {
@@ -3066,7 +3114,8 @@
     "translation": {
       "en": "first name",
       "sv": "förnamn",
-      "no": "fornavn"
+      "no": "fornavn",
+      "da": "første navn"
     }
   },
   {
@@ -3074,7 +3123,8 @@
     "translation": {
       "en": "last name",
       "sv": "efternamn",
-      "no": "efternavn"
+      "no": "efternavn",
+      "da": "efternavn"
     }
   },
   {
