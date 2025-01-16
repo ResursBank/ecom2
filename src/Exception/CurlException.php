@@ -140,11 +140,17 @@ class CurlException extends Exception
     private function getProperProperty(string $property, string $message): string
     {
         // Generate formatted message strings
-        $formattedFullPropertyError = ErrorTranslator::reformatMessage(message: "$property $message");
-        $formattedSimplePropertyError = ErrorTranslator::reformatMessage(message: $property);
+        $formattedFullPropertyError = ErrorTranslator::reformatMessage(
+            message: "$property $message"
+        );
+        $formattedSimplePropertyError = ErrorTranslator::reformatMessage(
+            message: $property
+        );
 
         // Translate the full property + message
-        $fullPropertyError = ErrorTranslator::get(errorMessage: "$property $message");
+        $fullPropertyError = ErrorTranslator::get(
+            errorMessage: "$property $message"
+        );
 
         // Translate the simple property
         $simplePropertyError = ErrorTranslator::get(errorMessage: $property);
