@@ -139,20 +139,33 @@ class CurlException extends Exception
      */
     private function getProperProperty(string $property, string $message): string
     {
-        // Find translations with full property and message.
+        // Generate formatted message strings
+        $formattedFullPropertyError = ErrorTranslator::reformatMessage(
+            message: "$property $message"
+        );
+        $formattedSimplePropertyError = ErrorTranslator::reformatMessage(
+            message: $property
+        );
+
+        // Translate the full property + message
         $fullPropertyError = ErrorTranslator::get(
             errorMessage: "$property $message"
         );
 
-        // Find translations with only the property without matching parameters.
+        // Translate the simple property
         $simplePropertyError = ErrorTranslator::get(errorMessage: $property);
 
-        // If the simple property's not missing in the translations, it will not be empty and therefore considered
-        // a safe exact match.
-        return ($simplePropertyError !== '' &&
-            $fullPropertyError !== $simplePropertyError
-        )
-            ? $simplePropertyError
-            : $fullPropertyError;
+        // Check if the full property error is a valid translation
+        if ($fullPropertyError !== $formattedFullPropertyError) {
+            return $fullPropertyError;
+        }
+
+        // Check if the simple property error is a valid translation
+        if ($simplePropertyError !== $formattedSimplePropertyError) {
+            return $simplePropertyError;
+        }
+
+        // Fallback to concatenated property and message if no valid translations are found
+        return "$property $message";
     }
 }
