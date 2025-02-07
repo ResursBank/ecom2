@@ -46,8 +46,13 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
         </label>
     </div>
     <div class="rb-ga-ssn-area">
-        <input type="text" id="rb-ga-gov-id" value="<?= $this->govId ?>" />
-        <button type="button" id="rb-ga-btn">
+        <input
+            type="text"
+            id="rb-ga-gov-id"
+            class="<?= $this->inputClassList ?>"
+            value="<?= $this->govId ?>"
+        />
+        <button type="button" id="rb-ga-btn" class="<?= $this->btnClassList ?>">
             <span><?= Translator::translate(phraseId: 'fetch-address') ?></span>
             <span class="rb-ga-fetch-icon">
                 <span class="rb-ga-fetch-icon-shard"></span>
@@ -56,5 +61,5 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
             </span>
         </button>
     </div>
-    <div id="rb-ga-error"></div>
+    <div id="rb-ga-error" style="display:none;"></div>
 </div>
