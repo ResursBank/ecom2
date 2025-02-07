@@ -91,7 +91,6 @@ class SupportInfo extends Widget
     /**
      * Validate currently installed Curl version.
      *
-     * @return array
      * @throws ConfigException
      */
     public function validateCurl(): array

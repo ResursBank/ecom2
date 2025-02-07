@@ -1,58 +1,82 @@
 [
-	{
-		"id": "unknown",
-		"translation": {
-			"en": "Application was denied for an unknown reason.",
-			"sv": "Ansökan avslogs av okänd orsak."
-		}
-	},
-	{
-		"id": "technical-error",
-		"translation": {
-			"en": "Application was denied due to a technical error.",
-			"sv": "Ansökan avslogs på grund av ett tekniskt fel."
-		}
-	},
-	{
-		"id": "credit-denied",
-		"translation": {
-			"en": "Unfortunately, your application could not be approved.",
-			"sv": "Tyvärr så kunde inte din ansökan godkännas."
-		}
-	},
-	{
-		"id": "payment-frozen",
-		"translation": {
-			"en": "The payment has been frozen.",
-			"sv": "Betalningen har frysts."
-		}
-	},
-	{
-		"id": "timeout",
-		"translation": {
-			"en": "Application was denied due to a timeout error.",
-			"sv": "Ansökan avslogs på grund av att en tidsgräns nåddes."
-		}
-	},
-	{
-		"id": "aborted-by-customer",
-		"translation": {
-			"en": "Application was aborted by the customer.",
-			"sv": "Ansökan avbröts av kunden."
-		}
-	},
-	{
-		"id": "insufficient-funds",
-		"translation": {
-			"en": "Application was denied due to insufficient funds.",
-			"sv": "Ansökan avslogs på grund av otillräckliga tillgångar"
-		}
-	},
-	{
-		"id": "canceled",
-		"translation": {
-			"en": "Application was canceled.",
-			"sv": "Ansöka avbröts."
-		}
-	}
+  {
+    "id": "unknown",
+    "translation": {
+      "en": "Application was denied for an unknown reason.",
+      "sv": "Ansökan avslogs av okänd orsak.",
+      "da": "Ansøgningen blev afvist af en ukendt årsag.",
+      "no": "Søknaden ble avslått av en ukjent årsak.",
+      "fi": "Hakemus hylättiin tuntemattomasta syystä."
+    }
+  },
+  {
+    "id": "technical-error",
+    "translation": {
+      "en": "Application was denied due to a technical error.",
+      "sv": "Ansökan avslogs på grund av ett tekniskt fel.",
+      "da": "Ansøgningen blev afvist på grund af en teknisk fejl.",
+      "no": "Søknaden ble avslått på grunn av en teknisk feil.",
+      "fi": "Hakemus hylättiin teknisen virheen vuoksi."
+    }
+  },
+  {
+    "id": "credit-denied",
+    "translation": {
+      "en": "Unfortunately, your application could not be approved.",
+      "sv": "Tyvärr så kunde inte din ansökan godkännas.",
+      "da": "Desværre kunne din ansøgning ikke godkendes.",
+      "no": "Dessverre kunne ikke søknaden din godkjennes.",
+      "fi": "Valitettavasti hakemustasi ei voitu hyväksyä."
+    }
+  },
+  {
+    "id": "payment-frozen",
+    "translation": {
+      "en": "The payment has been frozen.",
+      "sv": "Betalningen har frysts.",
+      "da": "Betalingen er blevet fryset.",
+      "no": "Betalingen har blitt frosset.",
+      "fi": "Maksu on jäädytetty."
+    }
+  },
+  {
+    "id": "timeout",
+    "translation": {
+      "en": "Application was denied due to a timeout error.",
+      "sv": "Ansökan avslogs på grund av att en tidsgräns nåddes.",
+      "da": "Ansøgningen blev afvist på grund af en timeout-fejl.",
+      "no": "Søknaden ble avslått på grunn av en timeout-feil.",
+      "fi": "Hakemus hylättiin aikakatkaisuvian vuoksi."
+    }
+  },
+  {
+    "id": "aborted-by-customer",
+    "translation": {
+      "en": "Application was aborted by the customer.",
+      "sv": "Ansökan avbröts av kunden.",
+      "da": "Ansøgningen blev afbrudt af kunden.",
+      "no": "Søknaden ble avbrutt av kunden.",
+      "fi": "Hakemus keskeytettiin asiakkaan toimesta."
+    }
+  },
+  {
+    "id": "insufficient-funds",
+    "translation": {
+      "en": "Application was denied due to insufficient funds.",
+      "sv": "Ansökan avslogs på grund av otillräckliga tillgångar.",
+      "da": "Ansøgningen blev afvist på grund af utilstrækkelige midler.",
+      "no": "Søknaden ble avslått på grunn av utilstrekkelige midler.",
+      "fi": "Hakemus hylättiin riittämättömien varojen vuoksi."
+    }
+  },
+  {
+    "id": "canceled",
+    "translation": {
+      "en": "Application was canceled.",
+      "sv": "Ansökan avbröts.",
+      "da": "Ansøgningen blev annulleret.",
+      "no": "Søknaden ble kansellert.",
+      "fi": "Hakemus peruttiin."
+    }
+  }
 ]

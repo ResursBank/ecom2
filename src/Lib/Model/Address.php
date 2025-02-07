@@ -31,7 +31,7 @@ class Address extends Model
         #[StringMatchesRegex(pattern: '/^[ \d]{1,10}$/')]
         public readonly string $postalCode,
         public readonly ?CountryCode $countryCode = null,
-        #[StringLength(max: 50)] public readonly ?string $fullName = null,
+        #[StringLength(max: 101)] public readonly ?string $fullName = null,
         #[StringLength(max: 50)] public readonly ?string $firstName = null,
         #[StringLength(max: 50)] public readonly ?string $lastName = null,
         #[StringLength(max: 100)] public readonly ?string $addressRow2 = null

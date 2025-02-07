@@ -77,15 +77,15 @@ class Resursbank_FetchStores {
                     false
                 );
             } else {
-              this.getInputElements().forEach((el) => {
-                if (el instanceof HTMLElement) {
-                  el.addEventListener(
-                    'change',
-                    this.fetchStores.bind(this),
-                    false
-                  );
-                }
-              });
+                this.getInputElements().forEach((el) => {
+                    if (el instanceof HTMLElement) {
+                        el.addEventListener(
+                            'change',
+                            this.fetchStores.bind(this),
+                            false
+                        );
+                    }
+                });
             }
         } catch (e) {
             this.errorHandler(e);
@@ -170,24 +170,24 @@ class Resursbank_FetchStores {
         return result;
     }
 
-  /**
-   * Resolve button element to fetch stores.
-   *
-   * @returns {HTMLButtonElement}
-   */
-  getFetchBtnElement() {
-    let result = null;
+    /**
+     * Resolve button element to fetch stores.
+     *
+     * @returns {HTMLButtonElement}
+     */
+    getFetchBtnElement() {
+        let result = null;
 
-    <?php if ($this->fetchBtnId !== null): ?>
-    result = document.getElementById('<?= $this->fetchBtnId ?>');
-    <?php endif; ?>
+        <?php if ($this->fetchBtnId !== null): ?>
+        result = document.getElementById('<?= $this->fetchBtnId ?>');
+        <?php endif; ?>
 
-    if (result === null) {
-      throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-fetch-btn') ?>');
+        if (result === null) {
+            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-fetch-btn') ?>');
+        }
+
+        return result;
     }
-
-    return result;
-  }
 
     /**
      * Resolve environment selection element.
