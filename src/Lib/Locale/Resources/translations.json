@@ -3235,5 +3235,29 @@
       "da": "API-legitimationsoplysninger (produktion)",
       "no": "API-legitimasjon (produksjon)"
     }
+  },
+  {
+    "id": "payment-cannot-be-captured",
+    "translation": {
+      "en": "Payment cannot be captured",
+      "sv": "Betalningen kan inte fångas",
+      "no": "Betalingen kan ikke fanges"
+    }
+  },
+  {
+    "id": "payment-cannot-be-cancelled",
+    "translation": {
+      "en": "Payment cannot be cancelled",
+      "sv": "Betalningen kan inte avbrytas",
+      "no": "Betalingen kan ikke avbrytes"
+    }
+  },
+  {
+    "id": "payment-cannot-be-refunded",
+    "translation": {
+      "en": "Payment cannot be refunded",
+      "sv": "Betalningen kan inte återbetalas",
+      "no": "Betalingen kan ikke refunderes"
+    }
   }
 ]
