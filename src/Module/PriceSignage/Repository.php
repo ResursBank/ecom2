@@ -83,6 +83,8 @@ class Repository
                     throw new ApiException(message: 'Invalid API response.');
                 }
 
+                // NOTE: If we have more than one cost, we filter by month. Otherwise, we assume that the cost is
+                // fixed per month (like in DK), and simply return the result.
                 if (
                     $monthFilter !== null &&
                     $result->costList->count() > 1
