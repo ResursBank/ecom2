@@ -85,7 +85,7 @@ class Repository
 
                 if (
                     $monthFilter !== null &&
-                    Config::getLocation() !== Location::DK
+                    $result->costList->count() > 1
                 ) {
                     $result = self::filterResultByMonth(
                         result: $result,
