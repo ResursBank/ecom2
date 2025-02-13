@@ -229,11 +229,21 @@
   {
     "id": "starting-at",
     "translation": {
-      "en": "Starting at %1 per month (%2)",
-      "sv": "Från %1 per månad (%2)",
-      "no": "Fra %1 per måned (%2)",
-      "fi": "Alkaen %1 kuukaudessa (%2)",
-      "da": "Fra %1 pr. måned (%2)"
+      "en": "Pay %1/month for %2 months (%3% interest rate).",
+      "sv": "Betala %1/månad i %2 månader (%3% ränta).",
+      "no": "Betal %1/måned i %2 måneder (%3% rente).",
+      "da": "Betal %1/måned i %2 måneder (%3% rente).",
+      "fi": "Maksa %1/kuukausi %2 kuukautta (%3% korko)."
+    }
+  },
+  {
+    "id": "part-payment-total-cost",
+    "translation": {
+      "en": "For %1 months, the total cost will be %2.",
+      "sv": "För %1 månader blir det totalt %2.",
+      "no": "For %1 måneder blir det totalt %2.",
+      "da": "For %1 måneder bliver det totalt %2.",
+      "fi": "Yhteensä %2 %1 kuukauden aikana."
     }
   },
   {
