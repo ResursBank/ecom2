@@ -41,6 +41,11 @@
     margin-bottom: 7px;
 }
 
+.rb-pp-total-cost {
+    margin-bottom: 7px;
+    opacity: 0.5;
+}
+
 /* AJAX loader overlay. */
 .rb-pp-overlay {
     background-color: #fff;

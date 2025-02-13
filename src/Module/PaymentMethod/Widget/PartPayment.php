@@ -117,12 +117,36 @@ class PartPayment extends Widget
 
         try {
             return str_replace(
-                search: ['%1', '%2'],
+                search: ['%1', '%2', '%3'],
                 replace: [
-                    $this->getFormattedStartingAtCost(),
-                    $this->getAnnuityInformation()->paymentPlanName,
+                    $this->getFormattedCost(cost: $this->cost->monthlyCost),
+                    $this->cost->durationMonths,
+                    $this->cost->interest,
                 ],
                 subject: Translator::translate(phraseId: 'starting-at')
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
+    }
+
+    /**
+     * Fetches translated and formatted "Total %1" string.
+     *
+     * @return string
+     * @throws ConfigException
+     */
+    public function getTotalCost(): string
+    {
+        try {
+            return str_replace(
+                search: ['%1', '%2'],
+                replace: [
+                    $this->cost->durationMonths,
+                    $this->getFormattedCost(cost: $this->cost->totalCost)
+                ],
+                subject: Translator::translate(phraseId: 'part-payment-total-cost')
             );
         } catch (Throwable $e) {
             Config::getLogger()->error(message: $e);
@@ -280,10 +304,10 @@ class PartPayment extends Widget
     /**
      * Fetches formatted starting at cost with currency symbol.
      */
-    private function getFormattedStartingAtCost(): string
+    private function getFormattedCost(float $cost): string
     {
         return Price::format(
-            value: $this->cost->monthlyCost,
+            value: $cost,
             decimals: $this->decimals
         );
     }
