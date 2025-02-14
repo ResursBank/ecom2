@@ -7,10 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
+namespace Resursbank\Ecom\Module\PriceSignage\Widget;
 
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -23,10 +24,10 @@ class Warning extends Widget
 
     /**
      * @throws FilesystemException
+     * @throws ConfigException
      */
-    public function __construct(
-        public readonly PriceSignage $priceSignage
-    ) {
-        $this->content = $this->render(file: __DIR__ . '/warning.phtml');
+    public function __construct() {
+        $this->content = \Resursbank\Ecom\Config::getLocation() === Location::SE ?
+            $this->render(file: __DIR__ . '/warning.phtml') : '';
     }
 }

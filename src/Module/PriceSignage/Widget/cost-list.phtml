@@ -12,23 +12,28 @@ declare(strict_types=1);
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Utilities\Price;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\CostList;
+use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
 
 ?>
 
-<div class="rb-ps-cl">
+<div class="rb-ps-cl expanded">
 <?php /** @var Cost $cost */ ?>
-<?php foreach ($this->priceSignage->costList as $cost): ?>
-    <div class="rb-ps-cl-section">
-        <div class="rb-ps-cl-row rb-ps-cl-title">
-            <p><?= $cost->durationMonths ?> <?= Translator::translate(phraseId: 'months') ?></</p>>
-            <p><?= Price::format(value: $cost->monthlyCost) ?>>/mån</p>
-        </div>
-        <div class="rb-ps-cl-row rb-ps-cl-info">
-            <p><?= Translator::translate(phraseId: 'interest') ?> <?= $cost->interest ?>%</p>
-            <p><?= Translator::translate(phraseId: 'effective-interest') ?> <?= $cost->effectiveInterest ?>%</p>
-            <p><?= Translator::translate(phraseId: 'total') ?> <?= Price::format(value: $cost->totalCost) ?></p>
-        </div>
+    <!--<div class="rb-ps-cl-expander">
+        <a href="javascript:console.log('asdsadasdasdasdsad');">HERE</a>
+    </div>-->
+    <div class="rb-ps-cl-content">
+        <?php foreach ($this->priceSignage->costList as $cost): ?>
+            <div class="rb-ps-cl-section">
+                <div class="rb-ps-cl-row rb-ps-cl-title">
+                    <p><?= $cost->durationMonths ?> <?= Translator::translate(phraseId: 'months') ?></</p>
+                    <p><?= Price::format(value: $cost->monthlyCost) ?>/mån</p>
+                </div>
+                <div class="rb-ps-cl-row rb-ps-cl-info">
+                    <p><?= Translator::translate(phraseId: 'interest') ?> <?= $cost->interest ?>%</p>
+                    <p><?= Translator::translate(phraseId: 'effective-interest') ?> <?= $cost->effectiveInterest ?>%</p>
+                    <p><?= Translator::translate(phraseId: 'total') ?> <?= Price::format(value: $cost->totalCost) ?></p>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
-<?php endforeach; ?>
 </div>

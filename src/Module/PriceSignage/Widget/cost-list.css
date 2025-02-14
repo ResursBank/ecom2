@@ -4,16 +4,54 @@
  */
 
 .rb-ps-cl {
-    border: 2px solid rgb(52, 58, 64);
+    border: 1px solid #abb6c2;
     border-radius: 5px;
-    color: rgb(52, 58, 64);
-    font-size: 15px;
-    font-weight: 700;
+    color: #343a40;
+    font-size: 14px;
     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
     line-height: 21px;
     overflow-wrap: break-word;
     background-color: white;
     padding: 10px;
+}
+
+/** Expander */
+.rb-ps-cl-expander {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    color: rgb(52, 58, 64);
+}
+
+.rb-ps-cl-expander::before {
+    content: '▼';
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.4s ease;
+}
+
+.rb-ps-cl.expanded .rb-ps-cl-expander::before {
+    transform: rotate(-90deg);
+}
+
+.rb-ps-cl-content {
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    max-height: 0;
+}
+
+.rb-ps-cl.expanded .rb-ps-cl-content {
+    max-height: 1000px; /* Adjust as needed */
+}
+
+/** Content */
+.rb-ps-cl-info {
+    font-size: 12px;
+    color: #5e6974;
 }
 
 .rb-ps-cl-title {
