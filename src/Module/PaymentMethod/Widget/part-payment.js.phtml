@@ -408,13 +408,11 @@ class Resursbank_PartPayment {
             throw new Error(data.error);
         } else if (
             data.hasOwnProperty('startingAt') &&
-            data.hasOwnProperty('startingAtHtml') &&
-            data.hasOwnProperty('readMoreWidget') &&
+            data.hasOwnProperty('readMoreHtml') &&
             data.hasOwnProperty('html') &&
             data.startingAt !== undefined &&
-            data.startingAtHtml !== undefined &&
-            data.readMoreWidget !== undefined &&
-            data.readMoreWidget !== "" &&
+            data.readMoreHtml !== undefined &&
+            data.readMoreHtml !== "" &&
             data.html !== undefined &&
             data.html !== ""
         ) {
@@ -430,7 +428,7 @@ class Resursbank_PartPayment {
             // We must create a new element in order to replace the existing one.
             let newReadMore = document.createElement('div');
             newReadMore.className = 'rb-rm-container';
-            newReadMore.innerHTML = data.readMoreWidget;
+            newReadMore.innerHTML = data.readMoreHtml;
 
             // The container element will exist after the first replacement.
             if (this.el.querySelector('.rb-rm-container')) {
