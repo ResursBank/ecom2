@@ -383,6 +383,18 @@ class Resursbank_PartPayment {
     }
 
     /**
+     * Convert HTML string to element.
+     *
+     * @param html
+     * @returns {ChildNode}
+     */
+    htmlToElement(html) {
+        const template = document.createElement('div');
+        template.innerHTML = html.trim();
+        return template.firstChild;
+    }
+
+    /**
      * Update example element with new content.
      *
      * @param {any} data
@@ -398,12 +410,15 @@ class Resursbank_PartPayment {
             data.hasOwnProperty('startingAt') &&
             data.hasOwnProperty('startingAtHtml') &&
             data.hasOwnProperty('readMoreWidget') &&
+            data.hasOwnProperty('html') &&
             data.startingAt !== undefined &&
             data.startingAtHtml !== undefined &&
             data.readMoreWidget !== undefined &&
-            data.readMoreWidget !== ""
+            data.readMoreWidget !== "" &&
+            data.html !== undefined &&
+            data.html !== ""
         ) {
-            this.el.querySelector('.rb-pp-starting-at').innerHTML = data.startingAtHtml;
+            this.el.querySelector('.rb-pp').replaceWith(this.htmlToElement(data.html));
 
             <?php if ($this->threshold > 0): ?>
             if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {

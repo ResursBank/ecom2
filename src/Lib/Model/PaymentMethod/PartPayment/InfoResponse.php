@@ -19,7 +19,8 @@ class InfoResponse extends Model
     public function __construct(
         public readonly float $startingAt,
         public readonly string $startingAtHtml,
-        public readonly string $readMoreWidget
+        public readonly string $readMoreWidget,
+        public readonly string $html
     ) {
         parent::__construct();
     }
