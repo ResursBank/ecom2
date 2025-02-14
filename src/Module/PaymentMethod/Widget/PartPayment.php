@@ -303,6 +303,8 @@ class PartPayment extends Widget
 
     /**
      * Fetches formatted starting at cost with currency symbol.
+     *
+     * @throws ConfigException
      */
     private function getFormattedCost(float $cost): string
     {

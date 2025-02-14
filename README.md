@@ -2034,10 +2034,10 @@ an administration like panel, available only to merchants. Like the admin panel
 for WordPress or Magento.
 
 ```php
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\Costs;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
-$widget = new PaymentMethods(
+$widget = new Costs(
     paymentMethods: Repository::getPaymentMethods(
         storeId: 'store-id'
     )

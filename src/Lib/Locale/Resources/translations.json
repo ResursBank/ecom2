@@ -369,7 +369,8 @@
       "en": "months",
       "sv": "månader",
       "no": "måneder",
-      "da": "måneder"
+      "da": "måneder",
+      "fi": "kuukautta"
     }
   },
   {
@@ -3244,6 +3245,36 @@
       "sv": "API-uppgifter (produktion)",
       "da": "API-legitimationsoplysninger (produktion)",
       "no": "API-legitimasjon (produksjon)"
+    }
+  },
+  {
+    "id": "interest",
+    "translation": {
+      "en": "Interest",
+      "sv": "Ränta",
+      "da": "Rente",
+      "no": "Rente",
+      "fi": "Korko"
+    }
+  },
+  {
+    "id": "effective-interest",
+    "translation": {
+      "en": "Effective interest",
+      "sv": "Effektiv ränta",
+      "da": "Effektiv rente",
+      "no": "Effektiv rente",
+      "fi": "Tehokas korko"
+    }
+  },
+  {
+    "id": "total",
+    "translation": {
+      "en": "Total",
+      "sv": "Totalt",
+      "da": "Total",
+      "no": "Total",
+      "fi": "Yhteensä"
     }
   }
 ]
