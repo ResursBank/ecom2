@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\PriceSignage\Widget;
 
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -26,7 +25,6 @@ class CostList extends Widget
      * @throws FilesystemException
      */
     public function __construct(
-        public readonly PaymentMethod $method,
         public readonly PriceSignage $priceSignage
     ) {
         $this->content = $this->priceSignage->costList->count() > 0 ?
