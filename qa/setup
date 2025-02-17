@@ -1,28 +1,14 @@
 #!/bin/sh -eu
 
-if [ ! -d .git/hooks ]; then
-  echo "Error: Please run this script from the root of the repository."
-  exit 1;
-fi
-
-# Resolve PHP cmd.
-dockerCmd=""
-phpService=""
-phpCmd=""
-
-read -p "Enter path to website root directory within PHP container (no trailing slash): " dir
-read -p "Running PHP in Docker (y/n)?" localPhp
-case "$localPhp" in
-  y|Y ) read -p "Enter name of docker compose command (eg. docker compose or docker-compose): " dockerCmd; read -p "Enter name of php server (eg. php or phpfpm): " phpService; phpCmd="${dockerCmd} exec -w ${dir} -T ${phpService}";;
-  n|N ) read -p "Enter name of/path to php binary (eg. php): " php;;
-  * ) echo "Invalid response."; exit 1;;
-esac
+# Project directory in guest and CMD to execute PHP commands from host.
+dir="/var/www/html"
+phpCmd="docker compose exec -w ${dir} -T php";
 
 echo ""
 echo "--==( Setting up git pre-commit hook )==--"
 
 # Create git pre-commit hook file.
-HOOK_FILE=".git/hooks/pre-commit"
+HOOK_FILE="/var/www/html/.git/hooks/pre-commit"
 
 if [ -f $HOOK_FILE ]; then
   rm -f $HOOK_FILE
