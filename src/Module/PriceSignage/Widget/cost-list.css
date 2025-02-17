@@ -1,0 +1,84 @@
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+.rb-ps-cl {
+    border: 1px solid #abb6c2;
+    border-radius: 5px;
+    color: #343a40;
+    font-size: 14px;
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    line-height: 21px;
+    overflow-wrap: break-word;
+    background-color: white;
+    padding: 10px;
+}
+
+/** Expander */
+.rb-ps-cl-expander {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    color: rgb(52, 58, 64);
+}
+
+.rb-ps-cl-expander::before {
+    content: '▼';
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.4s ease;
+}
+
+.rb-ps-cl.expanded .rb-ps-cl-expander::before {
+    transform: rotate(-90deg);
+}
+
+.rb-ps-cl-content {
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    max-height: 0;
+}
+
+.rb-ps-cl.expanded .rb-ps-cl-content {
+    max-height: 1000px; /* Adjust as needed */
+}
+
+/** Content */
+.rb-ps-cl-info {
+    font-size: 12px;
+    color: #5e6974;
+}
+
+.rb-ps-cl-title {
+    font-weight: 700;
+}
+
+.rb-ps-cl-row {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.rb-ps-cl-row p {
+    margin: 0;
+}
+
+.rb-ps-cl-row.rb-ps-cl-title p:first-child {
+    text-align: left;
+}
+
+.rb-ps-cl-row.rb-ps-cl-title p:last-child {
+    text-align: right;
+}
+
+.rb-ps-cl-section:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
