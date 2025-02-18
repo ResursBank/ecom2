@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
@@ -18,9 +19,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
+use Resursbank\Ecom\Lib\Model\PriceSignage\Language;
+use Resursbank\Ecom\Lib\Model\PriceSignage\UriLink;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
+use Resursbank\Ecom\Module\PriceSignage\Repository;
 
 /**
  * Read more widget.
@@ -56,13 +59,18 @@ class ReadMore extends Widget
         string $label = 'read-more',
         public readonly bool $hiddenLink = false
     ) {
-        /** @var LegalLink $link */
-        foreach ($this->paymentMethod->legalLinks as $link) {
-            if ($link->type !== Type::PRICE_INFO) {
+        $links = Repository::getPriceSignage(
+            paymentMethodId: $this->paymentMethod->id,
+            amount: $this->amount
+        );
+
+        /** @var UriLink $secciLink */
+        foreach ($links->secciLinks as $secciLink) {
+            if (!$this->isConfigLanguage(secciLanguage: $secciLink->language)) {
                 continue;
             }
 
-            $this->url = $link->url;
+            $this->url = $secciLink->uri;
         }
 
         $this->label = Translator::translate(phraseId: $label);
@@ -87,5 +95,30 @@ class ReadMore extends Widget
 
         require $file;
         return (string) ob_get_clean();
+    }
+
+    /**
+     * Check if provided UriLink Language is the same as the Ecom language.
+     *
+     * @param Language $secciLanguage SECCI language enum.
+     * @return bool True if both languages are the same.
+     * @throws ConfigException
+     */
+    private function isConfigLanguage(
+        Language $secciLanguage
+    ): bool {
+        $comparisonTable = [
+            'Swedish' => 'sv',
+            'Norwegian' => 'no',
+            'Finnish' => 'fi',
+            'Danish' => 'da'
+        ];
+
+        if (array_key_exists(key: $secciLanguage->value, array: $comparisonTable)
+            && $comparisonTable[$secciLanguage->value] === Config::getLanguage()->value) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -22,7 +22,7 @@ class UriLink extends Model
      */
     public function __construct(
         #[StringIsUrl] public readonly string $uri,
-        public readonly string $language
+        public readonly Language $language
     ) {
         parent::__construct();
     }
