@@ -35,10 +35,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
             <div class="rb-pp-info rb-pp-line" style="background-color:#e4fdf7;padding:0.5em">
                 <?= Translator::translate(phraseId: 'buy-now-pay-with') ?>
                 <span class="rb-pp-logo-container"><?= $this->logo ?></span>
-                <p style="float:right; cursor: pointer;text-decoration:underline;"
-                   onclick="document.getElementById('rb-rm-model-<?= $this->readMore->paymentMethod->id ?>').style.display='block';">
-                    <?= $this->readMore->label ?>
-                </p>
+                <?= $this->readMore->content ?>
             </div>
         <?php endif; ?>
 

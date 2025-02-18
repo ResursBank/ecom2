@@ -54,7 +54,7 @@ class ReadMore extends Widget
         public readonly PaymentMethod $paymentMethod,
         public readonly float $amount,
         string $label = 'read-more',
-        public readonly bool $hiddenLink = false
+        public readonly bool $hiddenLink = false,
     ) {
         /** @var LegalLink $link */
         foreach ($this->paymentMethod->legalLinks as $link) {
@@ -71,21 +71,12 @@ class ReadMore extends Widget
     }
 
     /**
+     * For implementations where content and resources needs separation.
+     *
      * @throws FilesystemException
-     * @noinspection PhpUnused
      */
     public static function getCss(): string
     {
-        $file = __DIR__ . '/read-more.css';
-        ob_start();
-
-        if (!file_exists(filename: $file)) {
-            throw new FilesystemException(
-                message: "Template file not found: $file"
-            );
-        }
-
-        require $file;
-        return (string) ob_get_clean();
+        return (new Widget())->render(file: __DIR__ . '/read-more.css');
     }
 }
