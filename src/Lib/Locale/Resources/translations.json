@@ -227,6 +227,16 @@
     }
   },
   {
+    "id": "buy-now-pay-with",
+    "translation": {
+      "en": "Buy now, pay with",
+      "sv": "Köp nu, betala med",
+      "no": "Kjøp nå, betal med",
+      "fi": "Osta nyt, maksa",
+      "da": "Køb nu, betal med"
+    }
+  },
+  {
     "id": "starting-at",
     "translation": {
       "en": "Pay %1/month for %2 months (%3% interest rate).",
@@ -3275,6 +3285,16 @@
       "da": "Total",
       "no": "Total",
       "fi": "Yhteensä"
+    }
+  },
+  {
+    "id": "info",
+    "translation": {
+      "en": "Info",
+      "sv": "Info",
+      "no": "Info",
+      "dk": "Info",
+      "fi": "Info"
     }
   }
 ]
