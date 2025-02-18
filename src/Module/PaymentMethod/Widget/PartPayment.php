@@ -33,6 +33,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
+use Resursbank\Ecom\Module\PriceSignage\Widget\Warning;
 use Throwable;
 
 use function max;
@@ -57,6 +58,12 @@ class PartPayment extends Widget
 
     /** @var string */
     public readonly string $js;
+
+    /** @var Warning */
+    public readonly Warning $warning;
+
+    /** @var ReadMore */
+    public readonly ReadMore $readMore;
 
     /**
      * @param string $fetchStartingCostUrl | URL in implementation used to fetch
@@ -97,6 +104,19 @@ class PartPayment extends Widget
         $this->cost = $this->getCost();
         $this->logo = (string) file_get_contents(
             filename: __DIR__ . '/resurs.svg'
+        );
+        $this->readMore = new ReadMore(
+            paymentMethod: $this->paymentMethod,
+            amount: $this->amount,
+            label: 'info',
+            hiddenLink: true
+        );
+        $this->warning = new Warning(
+            priceSignage: SignageRepository::getPriceSignage(
+                paymentMethodId: $this->paymentMethod->id,
+                amount: $this->amount,
+                monthFilter: $this->months
+            )
         );
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');

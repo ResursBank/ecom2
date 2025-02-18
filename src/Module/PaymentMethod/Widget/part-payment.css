@@ -17,11 +17,11 @@
 
 /* Logo */
 .rb-pp-logo-container {
-    margin-bottom: 10px;
+    margin-bottom:0px;
 }
 
 .rb-pp-logo-container svg {
-    height: 23px;
+    height: 1em;
     width: auto;
 }
 

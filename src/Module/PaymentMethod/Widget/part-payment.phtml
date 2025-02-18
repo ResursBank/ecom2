@@ -29,32 +29,36 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 
     <?php // Content ?>
     <div class="rb-pp-content">
-        <?php // Logo ?>
-        <?php if ($this->logo !== ''): ?>
-        <div class="rb-pp-logo-container"><?= $this->logo ?></div>
-        <?php endif; ?>
-
+        <?= $this->readMore->content ?>
         <?php // Pay in installments. ?>
         <?php if ($this->displayInfoText) : ?>
-            <div class="rb-pp-info rb-pp-line">
-                <?= Translator::translate(phraseId: 'pay-in-installments-with-resurs-bank') ?>
+            <div class="rb-pp-info rb-pp-line" style="background-color:#e4fdf7;padding:0.5em">
+                <?= Translator::translate(phraseId: 'buy-now-pay-with') ?>
+                <span class="rb-pp-logo-container"><?= $this->logo ?></span>
+                <p style="float:right; cursor: pointer;text-decoration:underline;"
+                   onclick="document.getElementById('rb-rm-model-<?= $this->readMore->paymentMethod->id ?>').style.display='block';">
+                    <?= $this->readMore->label ?>
+                </p>
             </div>
         <?php endif; ?>
 
-        <?php // Starting at cost. ?>
-        <?php $message = $this->getStartingAt() ?>
-        <?php if ($message !== ''): ?>
-            <div class="rb-pp-starting-at">
-                <?= $message ?>
-            </div>
-
-            <?php // Total cost. ?>
-            <?php $totalMsg = $this->getTotalCost() ?>
-            <?php if ($totalMsg !== ''): ?>
-                <div class="rb-pp-total-cost">
-                    <?= $totalMsg ?>
+        <?php if ($this->isEligible()): ?>
+            <?php // Starting at cost. ?>
+            <?php $message = $this->getStartingAt() ?>
+            <?php if ($message !== ''): ?>
+                <div class="rb-pp-starting-at">
+                    <?= $message ?>
                 </div>
+
+                <?php // Total cost. ?>
+                <?php $totalMsg = $this->getTotalCost() ?>
+                <?php if ($totalMsg !== ''): ?>
+                    <div class="rb-pp-total-cost">
+                        <?= $totalMsg ?>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
+            <?= $this->warning->content ?>
         <?php endif; ?>
 
         <?php // Error message container. ?>

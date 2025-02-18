@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class ReadMore extends Widget
 {
+    /** @var string */
     public string $url = '';
 
     /** @var string */
@@ -39,6 +40,8 @@ class ReadMore extends Widget
     public readonly string $label;
 
     /**
+     * @param string $label Translation ID to use for widget label.
+     * @param bool $hiddenLink Suppresses rendering of widget link element.
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -49,7 +52,9 @@ class ReadMore extends Widget
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
-        public readonly float $amount
+        public readonly float $amount,
+        string $label = 'read-more',
+        public readonly bool $hiddenLink = false
     ) {
         /** @var LegalLink $link */
         foreach ($this->paymentMethod->legalLinks as $link) {
@@ -60,7 +65,7 @@ class ReadMore extends Widget
             $this->url = $link->url;
         }
 
-        $this->label = Translator::translate(phraseId: 'read-more');
+        $this->label = Translator::translate(phraseId: $label);
         $this->content = $this->render(file: __DIR__ . '/read-more.phtml');
         $this->css = $this->render(file: __DIR__ . '/read-more.css');
     }
