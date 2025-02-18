@@ -122,7 +122,9 @@ class Resursbank_PartPayment {
 
         <?php if (!$this->isEligible()): ?>
         instance.eligibleCost = false;
+        <?php if (!$this->readMore->hiddenLink): ?>
         document.querySelector('.rb-rm-link').style.visibility = 'hidden';
+        <?php endif; ?>
         <?php endif; ?>
 
         return instance;
@@ -473,21 +475,27 @@ class Resursbank_PartPayment {
 
         const loader = document.querySelector('.rb-pp-loader');
         const overlay = document.querySelector('.rb-pp-overlay');
+        <?php if (!$this->readMore->hiddenLink): ?>
         const readMore = document.querySelector('.rb-rm-link');
+        <?php endif; ?>
 
         if (state) {
             loader.style.display = 'block';
             overlay.style.display = 'block';
 
             // Using visibility to avoid affecting height of the container.
+            <?php if (!$this->readMore->hiddenLink): ?>
             readMore.style.visibility = 'hidden';
+            <?php endif; ?>
         } else {
             loader.style.display = 'none';
             overlay.style.display = 'none';
 
             // Using visibility to avoid affecting height of the container.
             if (this.eligibleCost) {
+                <?php if (!$this->readMore->hiddenLink): ?>
                 readMore.style.visibility = 'visible';
+                <?php endif; ?>
             }
         }
     }
