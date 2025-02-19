@@ -57,6 +57,8 @@ class ReadMore extends Widget
         public readonly float $amount,
         string $label = 'read-more'
     ) {
+        $this->url = '';
+
         if ($this->paymentMethod->priceSignagePossible) {
             $links = Repository::getPriceSignage(
                 paymentMethodId: $this->paymentMethod->id,
