@@ -57,18 +57,22 @@ class ReadMore extends Widget
         public readonly float $amount,
         string $label = 'read-more'
     ) {
-        $links = Repository::getPriceSignage(
-            paymentMethodId: $this->paymentMethod->id,
-            amount: $this->amount
-        );
+        $this->url = '';
 
-        /** @var UriLink $secciLink */
-        foreach ($links->secciLinks as $secciLink) {
-            if (!$this->isConfigLanguage(secciLanguage: $secciLink->language)) {
-                continue;
+        if ($this->paymentMethod->priceSignagePossible) {
+            $links = Repository::getPriceSignage(
+                paymentMethodId: $this->paymentMethod->id,
+                amount: $this->amount
+            );
+
+            /** @var UriLink $secciLink */
+            foreach ($links->secciLinks as $secciLink) {
+                if (!$this->isConfigLanguage(secciLanguage: $secciLink->language)) {
+                    continue;
+                }
+
+                $this->url = $secciLink->uri;
             }
-
-            $this->url = $secciLink->uri;
         }
 
         $this->label = Translator::translate(phraseId: $label);
