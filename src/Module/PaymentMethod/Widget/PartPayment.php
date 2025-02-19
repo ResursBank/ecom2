@@ -108,7 +108,7 @@ class PartPayment extends Widget
         $this->readMore = new ReadMore(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,
-            label: 'info'
+            label: 'read-more'
         );
         $this->warning = new Warning(
             priceSignage: SignageRepository::getPriceSignage(
