@@ -19,7 +19,9 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
 <div class="rb-ps-cl expanded" data-payment-method="<?= $this->method->id ?>">
 <?php /** @var Cost $cost */ ?>
     <div class="rb-ps-cl-expander">
-        Click here
+        <div class="rb-ps-cl-expander-icon">
+            &raquo;
+        </div>
     </div>
     <div class="rb-ps-cl-content">
         <?php foreach ($this->priceSignage->costList as $cost): ?>
