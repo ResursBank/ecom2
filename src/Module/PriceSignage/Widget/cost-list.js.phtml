@@ -1,0 +1,146 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var CostListJs $this */
+
+use Resursbank\Ecom\Module\PriceSignage\Widget\CostListJs;
+
+?>
+/**
+ * Keeps track of "Read More" links an initiate them.
+ */
+class Resursbank_CostList {
+    'use strict';
+
+    /**
+     * Container to look for "Read More" links in.
+     *
+     * @type {HTMLElement}
+     */
+    el = null;
+
+    /**
+     * Safely override pre-defined functions and properties using the supplied
+     * overrides parameter. Example:
+     *
+     * { "getUrl": function () { // Custom code to get URL } }
+     *
+     * This allows for complex implementations where things like inputs, error
+     * handlers, loaders etc. are unknown variables.
+     *
+     * @param {HTMLElement} el
+     * @param {{}} overrides
+     */
+    constructor(
+        el,
+        overrides = {}
+    ) {
+        // If container element does not exist, warn in console and exit.
+        if (!el) {
+            console.warn('Failed to find read more links container element.');
+            return;
+        }
+
+        this.el = el;
+
+        for (const [key, value] of Object.entries(overrides)) {
+            if (typeof this[key] === typeof value) {
+                this[key] = value;
+            } else {
+                console.warn('Failed to overwrite ' + key + ', type mismatch.');
+            }
+        }
+    }
+
+    /**
+     * Observe container element for mutations, and setup "Read More" links.
+     * This is useful for dynamic content.
+     */
+    setupObserveContainer() {
+        try {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.addedNodes.length) {
+                        this.setup();
+                    }
+                });
+            });
+
+            observer.observe(this.el, {
+                childList: true,
+                subtree: true
+            });
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
+     * Setup click event for "Read More" link.
+     */
+    setup() {
+        try {
+            // Find all elements with class "rb-ps-cl" in the container.
+            this.el.querySelectorAll('.rb-ps-cl').forEach((el) => {
+                let paymentMethod = el.getAttribute('data-payment-method');
+
+                // Set onclick of rb-rm-link to show the iframe.
+                el.querySelector('.rb-ps-cl-expander').onclick = () => {
+                    this.toggleExpansion(paymentMethod);
+                };
+            });
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
+     * Toggle class "expanded" on element with data-payment-method attribute
+     * matching the payment method UUID.
+     *
+     * @param {String} paymentMethod | UUID
+     */
+    toggleExpansion(paymentMethod) {
+        try {
+            let el = this.el.querySelector('.rb-ps-cl[data-payment-method="' + paymentMethod + '"]');
+
+            if (el) {
+                el.classList.toggle('expanded');
+            }
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
+     * Basic error handler.
+     *
+     * @param {Error} message
+     */
+    errorHandler(message) {
+        console.warn('Error in Resursbank_CostList: ' + message);
+    }
+}
+
+<?php if ($this->auto): ?>
+// Automatically initiate widget JS on DOM load.
+document.addEventListener('DOMContentLoaded', () => {
+    // Create widget instance.
+    let widget = new Resursbank_CostList(
+        document.querySelector('<?= $this->containerElDomPath ?>')
+    );
+
+    // Run initial setup to find and setup "Read More" links already rendered.
+    widget.setup();
+
+    // Setup observer to look for new "Read More" links.
+    widget.setupObserveContainer();
+
+});
+<?php endif; ?>

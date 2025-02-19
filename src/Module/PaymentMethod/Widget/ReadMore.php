@@ -44,7 +44,6 @@ class ReadMore extends Widget
 
     /**
      * @param string $label Translation ID to use for widget label.
-     * @param bool $hiddenLink Suppresses rendering of widget link element.
      * @throws ConfigException
      * @throws FilesystemException
      * @throws IllegalTypeException
@@ -56,8 +55,7 @@ class ReadMore extends Widget
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
         public readonly float $amount,
-        string $label = 'read-more',
-        public readonly bool $hiddenLink = false,
+        string $label = 'read-more'
     ) {
         $links = Repository::getPriceSignage(
             paymentMethodId: $this->paymentMethod->id,

@@ -29,10 +29,9 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
 
     <?php // Content ?>
     <div class="rb-pp-content">
-        <?= $this->readMore->content ?>
         <?php // Pay in installments. ?>
         <?php if ($this->displayInfoText) : ?>
-            <div class="rb-pp-info rb-pp-line" style="background-color:#e4fdf7;padding:0.5em">
+            <div class="rb-pp-info rb-pp-line">
                 <?= Translator::translate(phraseId: 'buy-now-pay-with') ?>
                 <span class="rb-pp-logo-container"><?= $this->logo ?></span>
                 <?= $this->readMore->content ?>
