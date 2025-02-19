@@ -3,7 +3,7 @@
  * See LICENSE for license details.
  */
 
-.rb-rm-link p {
+.rb-rm-link div {
     font-family: 'ResursSans-Regular', Arial, sans-serif;
     cursor: pointer;
     text-decoration: underline;
