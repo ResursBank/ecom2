@@ -10,6 +10,15 @@
     position: relative;
 }
 
+/** Read More Link */
+.rb-pp .rb-rm {
+    margin-left: auto;
+}
+
+.rp-pp .rb-rm-link-label {
+    margin-bottom: 0;
+}
+
 /* Content area. */
 .rb-pp-content {
     z-index: 997;
@@ -17,7 +26,7 @@
 
 /* Logo */
 .rb-pp-logo-container {
-    margin-bottom:0px;
+    margin-left: 5px;
 }
 
 .rb-pp-logo-container svg {
@@ -34,6 +43,9 @@
 /* Info text. */
 .rb-pp-info {
     margin-bottom: 7px;
+    display: flex;
+    background-color: #e4fdf7;
+    padding: 15px;
 }
 
 /* Cost calculation. */
