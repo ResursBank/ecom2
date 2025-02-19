@@ -423,18 +423,6 @@ class Resursbank_PartPayment {
                 return;
             }
             <?php endif; ?>
-
-            // We must create a new element in order to replace the existing one.
-            let newReadMore = document.createElement('div');
-            newReadMore.className = 'rb-rm-container';
-            newReadMore.innerHTML = data.readMoreHtml;
-
-            // The container element will exist after the first replacement.
-            if (this.el.querySelector('.rb-rm-container')) {
-                this.el.querySelector('.rb-rm-container').replaceWith(newReadMore);
-            } else {
-                this.el.querySelector('.rb-rm').replaceWith(newReadMore);
-            }
         } else {
             throw new Error('<?= Translator::translate(phraseId: 'part-payment-widget-missing-starting-at-data') ?>');
         }
