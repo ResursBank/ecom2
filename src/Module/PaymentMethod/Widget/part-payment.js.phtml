@@ -122,7 +122,6 @@ class Resursbank_PartPayment {
 
         <?php if (!$this->isEligible()): ?>
         instance.eligibleCost = false;
-        document.querySelector('.rb-rm-link').style.visibility = 'hidden';
         <?php endif; ?>
 
         return instance;
