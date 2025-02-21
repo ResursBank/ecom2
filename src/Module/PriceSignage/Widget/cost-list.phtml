@@ -33,7 +33,7 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
                 <div class="rb-ps-cl-row rb-ps-cl-info">
                     <p><?= Translator::translate(phraseId: 'interest') ?> <?= $cost->interest ?>%</p>
                     <p><?= Translator::translate(phraseId: 'effective-interest') ?> <?= $cost->effectiveInterest ?>%</p>
-                    <p><?= Translator::translate(phraseId: 'total') ?> AA <?= Price::format(value: $cost->totalCost) ?></p>
+                    <p><?= Translator::translate(phraseId: 'total') ?> <?= Price::format(value: $cost->totalCost) ?></p>
                 </div>
             </div>
         <?php endforeach; ?>
