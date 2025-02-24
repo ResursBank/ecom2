@@ -3087,6 +3087,16 @@
     }
   },
   {
+    "id": "per-month-string",
+    "translation": {
+      "en": "mon",
+      "sv": "mån",
+      "no": "mån",
+      "da": "mån",
+      "fi": "kk"
+    }
+  },
+  {
     "id": "no-part-payment-information-exists-for-this-product",
     "translation": {
       "en": "No part payment information exists for this product.",

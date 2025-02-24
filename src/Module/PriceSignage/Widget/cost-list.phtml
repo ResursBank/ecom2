@@ -28,7 +28,7 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
             <div class="rb-ps-cl-section">
                 <div class="rb-ps-cl-row rb-ps-cl-title">
                     <p><?= $cost->durationMonths ?> <?= Translator::translate(phraseId: 'months') ?></</p>
-                    <p><?= Price::format(value: $cost->monthlyCost) ?>/mån</p>
+                    <p><?= Price::format(value: $cost->monthlyCost) ?>/<?= Translator::translate('per-month-string') ?></p>
                 </div>
                 <div class="rb-ps-cl-row rb-ps-cl-info">
                     <p><?= Translator::translate(phraseId: 'interest') ?> <?= $cost->interest ?>%</p>
