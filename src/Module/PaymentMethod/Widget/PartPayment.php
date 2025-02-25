@@ -153,7 +153,6 @@ class PartPayment extends Widget
     /**
      * Fetches translated and formatted "Total %1" string.
      *
-     * @return string
      * @throws ConfigException
      */
     public function getTotalCost(): string
@@ -176,7 +175,6 @@ class PartPayment extends Widget
     /**
      * Fetches translated and formatted setup fee string.
      *
-     * @return string
      * @throws ConfigException
      */
     public function getSetupFee(): string
@@ -193,7 +191,6 @@ class PartPayment extends Widget
     /**
      * Fetches translated and formatted administration fee string.
      *
-     * @return string
      * @throws ConfigException
      */
     public function getAdministrationFee(): string

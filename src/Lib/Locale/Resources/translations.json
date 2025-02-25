@@ -3107,13 +3107,23 @@
     }
   },
   {
-    "id": "per-month-string",
+    "id": "part-payment-duration",
+    "translation": {
+      "en": "%1 months",
+      "sv": "%1 mån",
+      "no": "Nedbetalingstid %1 måneder",
+      "da": "Løbetid %1 måneder",
+      "fi": "Takaisinmaksuaika %1 kuukautta"
+    }
+  },
+  {
+    "id": "per-month-cost",
     "translation": {
       "en": "mon",
       "sv": "mån",
-      "no": "mån",
-      "da": "mån",
-      "fi": "kk"
+      "no": "ordinært månedsbeløp",
+      "da": "månedlig ydelse",
+      "fi": "normaali kuukausierä"
     }
   },
   {
@@ -3292,9 +3302,9 @@
     "translation": {
       "en": "Interest",
       "sv": "Ränta",
-      "da": "Rente",
-      "no": "Rente",
-      "fi": "Korko"
+      "da": "Variabel debitorrente",
+      "no": "Nominell rente",
+      "fi": "Vuosikorko"
     }
   },
   {
@@ -3302,9 +3312,9 @@
     "translation": {
       "en": "Effective interest",
       "sv": "Effektiv ränta",
-      "da": "Effektiv rente",
+      "da": "ÅOP",
       "no": "Effektiv rente",
-      "fi": "Tehokas korko"
+      "fi": "Todellinen vuosikorko"
     }
   },
   {
@@ -3312,9 +3322,9 @@
     "translation": {
       "en": "Total",
       "sv": "Totalt",
-      "da": "Total",
-      "no": "Total",
-      "fi": "Yhteensä"
+      "da": "Samlet beløb til betaling",
+      "no": "Totalt beløp å betale",
+      "fi": "Maksettava kokonaismäärä"
     }
   },
   {

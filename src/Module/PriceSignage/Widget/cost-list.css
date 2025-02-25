@@ -31,7 +31,7 @@
 
 .rb-ps-cl-expander-icon {
     transform: rotate(0deg);
-    transition: transform 0.4s ease;
+    /*transition: transform 0.4s ease;*/
 }
 
 .rb-ps-cl.expanded .rb-ps-cl-expander-icon {
@@ -40,7 +40,7 @@
 
 .rb-ps-cl-content {
     overflow: hidden;
-    transition: max-height 0.4s ease;
+    /*transition: max-height 0.4s ease;*/
     max-height: 0;
 }
 
