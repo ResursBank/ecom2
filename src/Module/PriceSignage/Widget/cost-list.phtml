@@ -17,7 +17,7 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
 ?>
 
 <div class="rb-ps-cl expanded" data-payment-method="<?= $this->method->id ?>">
-<?php /** @var Cost $cost */ ?>
+    <?php /** @var Cost $cost */ ?>
     <div class="rb-ps-cl-expander">
         <div class="rb-ps-cl-expander-icon">
             &raquo;
@@ -27,8 +27,12 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
         <?php foreach ($this->priceSignage->costList as $cost): ?>
             <div class="rb-ps-cl-section">
                 <div class="rb-ps-cl-row rb-ps-cl-title">
-                    <p><?= $cost->durationMonths ?> <?= Translator::translate(phraseId: 'months') ?></</p>
-                    <p><?= Price::format(value: $cost->monthlyCost) ?>/<?= Translator::translate('per-month-string') ?></p>
+                    <p><?= $this->getDuration(cost: $cost) ?></</p>
+                    <p><?= Price::format(value: $cost->monthlyCost) ?> / <?= Translator::translate('per-month-cost') ?></p>
+                </div>
+                <div class="rb-ps-cl-row rb-ps-cl-info">
+                    <p><?= $this->getSetupFee(cost: $cost) ?></p>
+                    <p><?= $this->getAdministrationFee(cost: $cost) ?></p>
                 </div>
                 <div class="rb-ps-cl-row rb-ps-cl-info">
                     <p><?= Translator::translate(phraseId: 'interest') ?> <?= $cost->interest ?>%</p>
