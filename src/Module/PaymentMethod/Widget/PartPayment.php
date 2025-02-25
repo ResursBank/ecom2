@@ -174,6 +174,40 @@ class PartPayment extends Widget
     }
 
     /**
+     * Fetches translated and formatted setup fee string.
+     *
+     * @return string
+     * @throws ConfigException
+     */
+    public function getSetupFee(): string
+    {
+        try {
+            return Translator::translate(phraseId: 'setup-fee') . ': ' .
+                $this->getFormattedCost(cost: $this->cost->setupFee);
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
+    }
+
+    /**
+     * Fetches translated and formatted administration fee string.
+     *
+     * @return string
+     * @throws ConfigException
+     */
+    public function getAdministrationFee(): string
+    {
+        try {
+            return Translator::translate(phraseId: 'administration-fee') . ': ' .
+                $this->getFormattedCost(cost: $this->cost->administrationFee);
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
+    }
+
+    /**
      * Check whether the current cost is eligible for part payment.
      */
     public function isEligible(): bool

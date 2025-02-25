@@ -257,6 +257,26 @@
     }
   },
   {
+    "id": "setup-fee",
+    "translation": {
+      "en": "Setup fee",
+      "sv": "Uppläggningsavgift",
+      "no": "Etablerings-gebyr",
+      "da": "Oprettelsesgebyr",
+      "fi": "Asennusmaksu"
+    }
+  },
+  {
+    "id": "administration-fee",
+    "translation": {
+      "en": "Administration fee per month",
+      "sv": "Administrationsavgift per månad",
+      "no": "Administrasjonsgebyr / måned",
+      "da": "Administrationsgebyr / måned",
+      "fi": "Käsittelymaksu"
+    }
+  },
+  {
     "id": "invalid-post-data",
     "translation": {
       "en": "Invalid POST data.",

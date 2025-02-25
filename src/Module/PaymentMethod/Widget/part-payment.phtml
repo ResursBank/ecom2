@@ -38,22 +38,36 @@ use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
             </div>
         <?php endif; ?>
 
+        <?php // Starting at cost. ?>
         <?php if ($this->isEligible()): ?>
-            <?php // Starting at cost. ?>
-            <?php $message = $this->getStartingAt() ?>
-            <?php if ($message !== ''): ?>
-                <div class="rb-pp-starting-at">
-                    <?= $message ?>
-                </div>
+        <?php $message = $this->getStartingAt() ?>
+        <?php if ($message !== ''): ?>
+            <div class="rb-pp-starting-at">
+                <?= $message ?>
+            </div>
 
-                <?php // Total cost. ?>
-                <?php $totalMsg = $this->getTotalCost() ?>
-                <?php if ($totalMsg !== ''): ?>
-                    <div class="rb-pp-total-cost">
-                        <?= $totalMsg ?>
-                    </div>
-                <?php endif; ?>
+            <?php // Startup fee ?>
+            <?php if ($this->getSetupFee() !== ''): ?>
+                <div class="rb-pp-cost-row">
+                    <?= $this->getSetupFee() ?>
+                </div>
             <?php endif; ?>
+
+            <?php // Administration fee ?>
+            <?php if ($this->getAdministrationFee() !== ''): ?>
+                <div class="rb-pp-cost-row">
+                    <?= $this->getAdministrationFee() ?>
+                </div>
+            <?php endif; ?>
+
+            <?php // Total cost. ?>
+            <?php $totalMsg = $this->getTotalCost() ?>
+            <?php if ($totalMsg !== ''): ?>
+                <div class="rb-pp-total-cost">
+                    <?= $totalMsg ?>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
             <?= $this->warning->content ?>
         <?php endif; ?>
 

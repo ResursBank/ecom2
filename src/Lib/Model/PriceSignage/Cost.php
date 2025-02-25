@@ -28,6 +28,7 @@ class Cost extends Model
     public function __construct(
         #[FloatValue(min: 0.0)] public readonly float $interest,
         #[IntValue(min: 0)] public readonly int $durationMonths,
+        #[FloatValue(min: 0.0)] public readonly float $setupFee,
         #[FloatValue(min: 0.0)] public readonly float $totalCost,
         #[FloatValue(min: 0.0)] public readonly float $monthlyCost,
         #[FloatValue(min: 0.0)] public readonly float $administrationFee,

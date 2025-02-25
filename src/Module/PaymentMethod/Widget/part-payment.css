@@ -49,6 +49,11 @@
     margin-bottom: 7px;
 }
 
+.rb-pp-cost-row {
+    margin-bottom: 0.2em;
+    opacity: 0.5;
+}
+
 .rb-pp-total-cost {
     margin-bottom: 7px;
     opacity: 0.5;
