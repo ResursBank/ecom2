@@ -9,28 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Network;
 
-use JsonException;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
-use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ApiException;
-use Resursbank\Ecom\Exception\AuthException;
-use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Log\FileLogger;
-use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Response;
-use Resursbank\Ecom\Lib\Network\AuthType;
-use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Utilities\Generic;
 use stdClass;
-use Throwable;
 
 use function is_string;
 
@@ -101,5 +82,4 @@ class CurlTest extends TestCase
 
         return $body->input;
     }
-
 }
