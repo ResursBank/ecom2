@@ -27,7 +27,7 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
         <?php foreach ($this->priceSignage->costList as $cost): ?>
             <div class="rb-ps-cl-section">
                 <div class="rb-ps-cl-row rb-ps-cl-title">
-                    <span><?= $this->getDuration(cost: $cost) ?></</p>
+                    <span><?= $this->getDuration(cost: $cost) ?></span>
                     <span><?= Price::format(value: $cost->monthlyCost) ?> / <?= Translator::translate('per-month-cost') ?></span>
                 </div>
                 <div class="rb-ps-cl-row rb-ps-cl-info">
