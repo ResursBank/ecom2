@@ -227,13 +227,53 @@
     }
   },
   {
+    "id": "buy-now-pay-with",
+    "translation": {
+      "en": "Buy now, pay with",
+      "sv": "Köp nu, betala med",
+      "no": "Kjøp nå, betal med",
+      "fi": "Osta nyt, maksa myöhemmin",
+      "da": "Køb nu, betal med"
+    }
+  },
+  {
     "id": "starting-at",
     "translation": {
-      "en": "Starting at %1 per month (%2)",
-      "sv": "Från %1 per månad (%2)",
-      "no": "Fra %1 per måned (%2)",
-      "fi": "Alkaen %1 kuukaudessa (%2)",
-      "da": "Fra %1 pr. måned (%2)"
+      "en": "Pay %1/month for %2 months (%3% interest rate).",
+      "sv": "Betala %1/månad i %2 månader (%3% ränta).",
+      "no": "Betal %1/måned i %2 måneder (%3% rente).",
+      "da": "Betal %1/måned i %2 måneder (%3% rente).",
+      "fi": "Maksa %1/kuukausi %2 kuukautta (%3% korko)."
+    }
+  },
+  {
+    "id": "part-payment-total-cost",
+    "translation": {
+      "en": "For %1 months, the total cost will be %2.",
+      "sv": "För %1 månader blir det totalt %2.",
+      "no": "For %1 måneder blir det totalt %2.",
+      "da": "For %1 måneder bliver det totalt %2.",
+      "fi": "Yhteensä %2 %1 kuukauden aikana."
+    }
+  },
+  {
+    "id": "setup-fee",
+    "translation": {
+      "en": "Setup fee",
+      "sv": "Uppläggningsavgift",
+      "no": "Etablerings-gebyr",
+      "da": "Oprettelsesgebyr",
+      "fi": "Asennusmaksu"
+    }
+  },
+  {
+    "id": "administration-fee",
+    "translation": {
+      "en": "Administration fee per month",
+      "sv": "Administrationsavgift per månad",
+      "no": "Administrasjonsgebyr / måned",
+      "da": "Administrationsgebyr / måned",
+      "fi": "Käsittelymaksu"
     }
   },
   {
@@ -359,7 +399,8 @@
       "en": "months",
       "sv": "månader",
       "no": "måneder",
-      "da": "måneder"
+      "da": "måneder",
+      "fi": "kuukautta"
     }
   },
   {
@@ -3066,6 +3107,26 @@
     }
   },
   {
+    "id": "part-payment-duration",
+    "translation": {
+      "en": "%1 months",
+      "sv": "%1 mån",
+      "no": "Nedbetalingstid %1 måneder",
+      "da": "Løbetid %1 måneder",
+      "fi": "Takaisinmaksuaika %1 kuukautta"
+    }
+  },
+  {
+    "id": "per-month-cost",
+    "translation": {
+      "en": "mon",
+      "sv": "mån",
+      "no": "ordinært månedsbeløp",
+      "da": "månedlig ydelse",
+      "fi": "normaali kuukausierä"
+    }
+  },
+  {
     "id": "no-part-payment-information-exists-for-this-product",
     "translation": {
       "en": "No part payment information exists for this product.",
@@ -3234,6 +3295,46 @@
       "sv": "API-uppgifter (produktion)",
       "da": "API-legitimationsoplysninger (produktion)",
       "no": "API-legitimasjon (produksjon)"
+    }
+  },
+  {
+    "id": "interest",
+    "translation": {
+      "en": "Interest",
+      "sv": "Ränta",
+      "da": "Variabel debitorrente",
+      "no": "Nominell rente",
+      "fi": "Vuosikorko"
+    }
+  },
+  {
+    "id": "effective-interest",
+    "translation": {
+      "en": "Effective interest",
+      "sv": "Effektiv ränta",
+      "da": "ÅOP",
+      "no": "Effektiv rente",
+      "fi": "Todellinen vuosikorko"
+    }
+  },
+  {
+    "id": "total",
+    "translation": {
+      "en": "Total",
+      "sv": "Totalt",
+      "da": "Samlet beløb til betaling",
+      "no": "Totalt beløp å betale",
+      "fi": "Maksettava kokonaismäärä"
+    }
+  },
+  {
+    "id": "info",
+    "translation": {
+      "en": "Info",
+      "sv": "Info",
+      "no": "Info",
+      "dk": "Info",
+      "fi": "Info"
     }
   }
 ]

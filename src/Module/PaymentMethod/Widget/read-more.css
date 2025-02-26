@@ -3,12 +3,10 @@
  * See LICENSE for license details.
  */
 
-.rb-rm-link p {
-    font-size: 16px;
+.rb-rm-link div {
     font-family: 'ResursSans-Regular', Arial, sans-serif;
-    text-decoration: none;
-    color: #00a8e6;
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .rb-rm-background {

@@ -27,7 +27,7 @@ class Widget extends Base
     ) {
         $this->file = match ($paymentMethod->type) {
             Type::SWISH => 'swish.png',
-            Type::DEBIT_CARD, Type::CREDIT_CARD => 'card.svg',
+            Type::DEBIT_CARD, Type::CREDIT_CARD, Type::CARD => 'card.svg',
             Type::INTERNET => 'trustly.svg',
             default => 'resurs.png',
         };

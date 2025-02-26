@@ -62,7 +62,7 @@ final class Config
         public readonly LogLevel $logLevel,
         public readonly bool $isProduction,
         public ?Language $language,
-        public readonly Location $location,
+        public ?Location $location,
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
@@ -286,6 +286,16 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->location;
+    }
+
+    /**
+     * Allow force late location.
+     * @param Location $location
+     * @return void
+     */
+    public static function setLocation(Location $location): void
+    {
+        self::$instance->location = $location;
     }
 
     /**

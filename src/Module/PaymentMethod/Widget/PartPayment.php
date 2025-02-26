@@ -33,6 +33,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
+use Resursbank\Ecom\Module\PriceSignage\Widget\Warning;
 use Throwable;
 
 use function max;
@@ -57,6 +58,12 @@ class PartPayment extends Widget
 
     /** @var string */
     public readonly string $js;
+
+    /** @var Warning */
+    public readonly Warning $warning;
+
+    /** @var ReadMore */
+    public readonly ReadMore $readMore;
 
     /**
      * @param string $fetchStartingCostUrl | URL in implementation used to fetch
@@ -98,6 +105,18 @@ class PartPayment extends Widget
         $this->logo = (string) file_get_contents(
             filename: __DIR__ . '/resurs.svg'
         );
+        $this->readMore = new ReadMore(
+            paymentMethod: $this->paymentMethod,
+            amount: $this->amount,
+            label: 'read-more'
+        );
+        $this->warning = new Warning(
+            priceSignage: SignageRepository::getPriceSignage(
+                paymentMethodId: $this->paymentMethod->id,
+                amount: $this->amount,
+                monthFilter: $this->months
+            )
+        );
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
         $this->js = $this->render(file: __DIR__ . '/part-payment.js.phtml');
@@ -117,13 +136,68 @@ class PartPayment extends Widget
 
         try {
             return str_replace(
-                search: ['%1', '%2'],
+                search: ['%1', '%2', '%3'],
                 replace: [
-                    $this->getFormattedStartingAtCost(),
-                    $this->getAnnuityInformation()->paymentPlanName,
+                    $this->getFormattedCost(cost: $this->cost->monthlyCost),
+                    $this->cost->durationMonths,
+                    $this->cost->interest,
                 ],
                 subject: Translator::translate(phraseId: 'starting-at')
             );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
+    }
+
+    /**
+     * Fetches translated and formatted "Total %1" string.
+     *
+     * @throws ConfigException
+     */
+    public function getTotalCost(): string
+    {
+        try {
+            return str_replace(
+                search: ['%1', '%2'],
+                replace: [
+                    $this->cost->durationMonths,
+                    $this->getFormattedCost(cost: $this->cost->totalCost)
+                ],
+                subject: Translator::translate(phraseId: 'part-payment-total-cost')
+            );
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
+    }
+
+    /**
+     * Fetches translated and formatted setup fee string.
+     *
+     * @throws ConfigException
+     */
+    public function getSetupFee(): string
+    {
+        try {
+            return Translator::translate(phraseId: 'setup-fee') . ': ' .
+                $this->getFormattedCost(cost: $this->cost->setupFee);
+        } catch (Throwable $e) {
+            Config::getLogger()->error(message: $e);
+            return '';
+        }
+    }
+
+    /**
+     * Fetches translated and formatted administration fee string.
+     *
+     * @throws ConfigException
+     */
+    public function getAdministrationFee(): string
+    {
+        try {
+            return Translator::translate(phraseId: 'administration-fee') . ': ' .
+                $this->getFormattedCost(cost: $this->cost->administrationFee);
         } catch (Throwable $e) {
             Config::getLogger()->error(message: $e);
             return '';
@@ -279,11 +353,13 @@ class PartPayment extends Widget
 
     /**
      * Fetches formatted starting at cost with currency symbol.
+     *
+     * @throws ConfigException
      */
-    private function getFormattedStartingAtCost(): string
+    private function getFormattedCost(float $cost): string
     {
         return Price::format(
-            value: $this->cost->monthlyCost,
+            value: $cost,
             decimals: $this->decimals
         );
     }

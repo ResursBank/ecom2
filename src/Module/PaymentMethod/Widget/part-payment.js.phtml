@@ -122,7 +122,6 @@ class Resursbank_PartPayment {
 
         <?php if (!$this->isEligible()): ?>
         instance.eligibleCost = false;
-        document.querySelector('.rb-rm-link').style.visibility = 'hidden';
         <?php endif; ?>
 
         return instance;
@@ -383,6 +382,18 @@ class Resursbank_PartPayment {
     }
 
     /**
+     * Convert HTML string to element.
+     *
+     * @param html
+     * @returns {ChildNode}
+     */
+    htmlToElement(html) {
+        const template = document.createElement('div');
+        template.innerHTML = html.trim();
+        return template.firstChild;
+    }
+
+    /**
      * Update example element with new content.
      *
      * @param {any} data
@@ -396,14 +407,15 @@ class Resursbank_PartPayment {
             throw new Error(data.error);
         } else if (
             data.hasOwnProperty('startingAt') &&
-            data.hasOwnProperty('startingAtHtml') &&
-            data.hasOwnProperty('readMoreWidget') &&
+            data.hasOwnProperty('readMoreHtml') &&
+            data.hasOwnProperty('html') &&
             data.startingAt !== undefined &&
-            data.startingAtHtml !== undefined &&
-            data.readMoreWidget !== undefined &&
-            data.readMoreWidget !== ""
+            data.readMoreHtml !== undefined &&
+            data.readMoreHtml !== "" &&
+            data.html !== undefined &&
+            data.html !== ""
         ) {
-            this.el.querySelector('.rb-pp-starting-at').innerHTML = data.startingAtHtml;
+            this.el.querySelector('.rb-pp').replaceWith(this.htmlToElement(data.html));
 
             <?php if ($this->threshold > 0): ?>
             if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {
@@ -411,18 +423,6 @@ class Resursbank_PartPayment {
                 return;
             }
             <?php endif; ?>
-
-            // We must create a new element in order to replace the existing one.
-            let newReadMore = document.createElement('div');
-            newReadMore.className = 'rb-rm-container';
-            newReadMore.innerHTML = data.readMoreWidget;
-
-            // The container element will exist after the first replacement.
-            if (this.el.querySelector('.rb-rm-container')) {
-                this.el.querySelector('.rb-rm-container').replaceWith(newReadMore);
-            } else {
-                this.el.querySelector('.rb-rm').replaceWith(newReadMore);
-            }
         } else {
             throw new Error('<?= Translator::translate(phraseId: 'part-payment-widget-missing-starting-at-data') ?>');
         }
@@ -514,23 +514,22 @@ class Resursbank_PartPayment {
         // Strip potential tags.
         let content = value.replace(/<[^>]*>?/gm, '');
 
-        // Check if content contains any commas.
-        if (content.includes(',')) {
-            // Check if content contains any dots.
-            if (content.includes('.')) {
-                // Remove all commas.
-                content = content.replace(/,/g, '');
-            } else {
-                // Remove all commas except for the last one.
-                content = content.replace(/,(?=[^,]*,)/g, '');
-            }
+        // Remove anything except digits, dots and commas.
+        content = content.replace(/[^\d.,]/g, '');
+
+        // Check if there is both a comma and a dot in the content.
+        if (content.includes(',') && content.includes('.')) {
+            // Remove whichever comes first.
+            //
+            // 3.4000,00 -> 34000,00
+            // 3,4000.00 -> 34000.00
+            content = content.replace(/(.*?)(,|\.)(.*)/, '$1$3');
         }
 
         // Replace all remaining commas with dots.
+        //
+        // 3400,00 -> 3400.00
         content = content.replace(/,/g, '.');
-
-        // Remove everything except digits and dots.
-        content = content.replace(/[^0-9.]/g, '');
 
         // Parse the resulting string as a float.
         return parseFloat(content);

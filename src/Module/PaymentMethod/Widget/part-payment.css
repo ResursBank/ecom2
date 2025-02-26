@@ -10,6 +10,11 @@
     position: relative;
 }
 
+/** Read More Link */
+.rb-pp .rb-rm {
+    margin-left: auto;
+}
+
 /* Content area. */
 .rb-pp-content {
     z-index: 997;
@@ -17,11 +22,11 @@
 
 /* Logo */
 .rb-pp-logo-container {
-    margin-bottom: 10px;
+    margin-left: 5px;
 }
 
 .rb-pp-logo-container svg {
-    height: 23px;
+    height: 1em;
     width: auto;
 }
 
@@ -34,11 +39,24 @@
 /* Info text. */
 .rb-pp-info {
     margin-bottom: 7px;
+    display: flex;
+    background-color: #e4fdf7;
+    padding: 15px;
 }
 
 /* Cost calculation. */
 .rb-pp-starting-at {
     margin-bottom: 7px;
+}
+
+.rb-pp-cost-row {
+    margin-bottom: 0.2em;
+    opacity: 0.5;
+}
+
+.rb-pp-total-cost {
+    margin-bottom: 7px;
+    opacity: 0.5;
 }
 
 /* AJAX loader overlay. */

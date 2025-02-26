@@ -32,7 +32,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\Costs;
 
 use function count;
 use function number_format;
@@ -97,7 +97,7 @@ class PaymentMethodsTest extends TestCase
 
         $this->assertTrue(condition: count($this->methods) > 0);
 
-        $data = new PaymentMethods(paymentMethods: $this->methods);
+        $data = new Costs(paymentMethods: $this->methods);
 
         $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'name'),
@@ -192,7 +192,7 @@ class PaymentMethodsTest extends TestCase
             );
         }
 
-        $data = new PaymentMethods(
+        $data = new Costs(
             paymentMethods: new PaymentMethodCollection(data: [])
         );
 

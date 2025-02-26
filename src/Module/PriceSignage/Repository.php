@@ -15,6 +15,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -83,9 +84,11 @@ class Repository
                     throw new ApiException(message: 'Invalid API response.');
                 }
 
+                // NOTE: If we have more than one cost, we filter by month. Otherwise, we assume that the cost is
+                // fixed per month (like in DK), and simply return the result.
                 if (
                     $monthFilter !== null &&
-                    Config::getLocation() !== Location::DK
+                    $result->costList->count() > 1
                 ) {
                     $result = self::filterResultByMonth(
                         result: $result,
@@ -154,7 +157,13 @@ class Repository
     }
 
     /**
+     * @param PriceSignage $result
+     * @param int $monthFilter
+     * @return PriceSignage
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     private static function filterResultByMonth(
         PriceSignage $result,
@@ -164,6 +173,11 @@ class Repository
             array: $result->costList->toArray(),
             callback: static fn ($cost) => $cost instanceof Cost && $cost->durationMonths === $monthFilter
         );
+
+        // If there are more than 1 cost, reduce the array to the first element.
+        if (count($costs) > 1) {
+            $costs = array_slice(array: $costs, offset: 0, length: 1);
+        }
 
         return new PriceSignage(
             secciLinks: $result->secciLinks,
