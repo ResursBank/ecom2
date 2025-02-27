@@ -136,15 +136,12 @@ class PartPaymentTest extends TestCase
      */
     public function testGetStartingAt(): void
     {
-        try {
-            $this->assertMatchesRegularExpression(
-                pattern: '/^Starting at [\d,.]+ .* per month \(.*\)$/',
-                string: $this->widget->getStartingAt(),
-                message: 'Starting at should be formatted correctly.'
-            );
-        } catch (Throwable) {
-            $this->fail('Starting at should not throw an exception.');
-        }
+        $this->assertMatchesRegularExpression(
+            pattern: '/^Pay [\d,.]+ kr\/month for ' . $this->widget->months .
+                ' months \(0% interest rate\)\.$/',
+            string: $this->widget->getStartingAt(),
+            message: 'Starting at should be formatted correctly.'
+        );
 
         // Mock return value of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::isEligible
         // to return false, and check tha the string returned by getStartingAt()
