@@ -64,7 +64,7 @@ class TranslatorTest extends TestCase
         // Test translating into swedish.
         $this->setupConfig(locale: Language::SV);
         $result = Translator::translate(phraseId: 'read-more');
-        $this->assertSame(expected: 'Läs Mer', actual: $result);
+        $this->assertSame(expected: 'Läs mer', actual: $result);
     }
 
     /**
