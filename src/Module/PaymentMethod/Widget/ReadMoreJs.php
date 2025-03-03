@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 
+use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -18,6 +19,10 @@ class ReadMoreJs extends Widget
 {
     public readonly string $content;
 
+    /**
+     * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function __construct(
         public readonly string $containerElDomPath,
         public readonly bool $autoInitJs = true
