@@ -12,25 +12,30 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Language;
 use Resursbank\Ecom\Lib\Model\PriceSignage\UriLink;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
+use Throwable;
 
 /**
  * Read more widget.
  */
 class ReadMore extends Widget
 {
-    /** @var string */
     public string $url = '';
 
     /** @var string */
@@ -44,13 +49,20 @@ class ReadMore extends Widget
 
     /**
      * @param string $label Translation ID to use for widget label.
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
      * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
      * @throws FilesystemException
      * @throws IllegalTypeException
+     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
+     * @throws Throwable
      * @throws TranslationException
-     * @throws IllegalValueException
+     * @throws ValidationException
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
@@ -60,19 +72,7 @@ class ReadMore extends Widget
         $this->url = '';
 
         if ($this->paymentMethod->priceSignagePossible) {
-            $links = Repository::getPriceSignage(
-                paymentMethodId: $this->paymentMethod->id,
-                amount: $this->amount
-            );
-
-            /** @var UriLink $secciLink */
-            foreach ($links->secciLinks as $secciLink) {
-                if (!$this->isConfigLanguage(secciLanguage: $secciLink->language)) {
-                    continue;
-                }
-
-                $this->url = $secciLink->uri;
-            }
+            $this->setUrl();
         }
 
         $this->label = Translator::translate(phraseId: $label);
@@ -88,6 +88,39 @@ class ReadMore extends Widget
     public static function getCss(): string
     {
         return (new Widget())->render(file: __DIR__ . '/read-more.css');
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws Throwable
+     */
+    private function setUrl(): void
+    {
+        $links = Repository::getPriceSignage(
+            paymentMethodId: $this->paymentMethod->id,
+            amount: $this->amount
+        );
+
+        /** @var UriLink $secciLink */
+        foreach ($links->secciLinks as $secciLink) {
+            if (
+                !$this->isConfigLanguage(secciLanguage: $secciLink->language)
+            ) {
+                continue;
+            }
+
+            $this->url = $secciLink->uri;
+        }
     }
 
     /**
@@ -107,11 +140,12 @@ class ReadMore extends Widget
             'Danish' => 'da'
         ];
 
-        if (array_key_exists(key: $secciLanguage->value, array: $comparisonTable)
-            && $comparisonTable[$secciLanguage->value] === Config::getLanguage()->value) {
-            return true;
-        }
-
-        return false;
+        return
+            array_key_exists(
+                key: $secciLanguage->value,
+                array: $comparisonTable
+            )
+            && $comparisonTable[$secciLanguage->value] === Config::getLanguage()->value
+        ;
     }
 }
