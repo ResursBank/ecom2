@@ -245,14 +245,6 @@
             <property name="spacesCountBeforeColon" value="0" />
         </properties>
     </rule>
-    <rule ref="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat">
-        <properties>
-            <property name="enable" value="true" />
-            <property name="withSpaces" value="no" />
-            <property name="shortNullable" value="yes" />
-            <property name="nullPosition" value="first" />
-        </properties>
-    </rule>
     <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint" />
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable" />
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable" />
