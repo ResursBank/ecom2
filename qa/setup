@@ -86,7 +86,7 @@ fi
 echo ""
 
 echo "---==( Executing PHPStan )==---"
-if ! $phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan/phpstan.neon $dir/src; then
+if ! $phpCmd $dir/vendor/bin/phpstan analyse --memory-limit 512M -c $dir/qa/phpstan/phpstan.neon $dir/src; then
   ERRORS=1
 fi
 echo ""
@@ -112,7 +112,7 @@ fi
 echo ""
 
 echo "---==( Executing PHPStan )==---"
-if ! $phpCmd $dir/vendor/bin/phpstan analyse -c $dir/qa/phpstan/phpstan.neon $dir/tests; then
+if ! $phpCmd $dir/vendor/bin/phpstan analyse --memory-limit 512M -c $dir/qa/phpstan/phpstan.neon $dir/tests; then
   ERRORS=1
 fi
 echo ""
