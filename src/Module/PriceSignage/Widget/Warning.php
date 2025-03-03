@@ -24,13 +24,15 @@ class Warning extends Widget
     public readonly string $content;
 
     /**
-     * @param PriceSignage $priceSignage
      * @throws FilesystemException
      */
     public function __construct(
         public readonly PriceSignage $priceSignage
     ) {
-        $this->content = $this->isDisplayed() ? $this->render(file: __DIR__ . '/warning.phtml') : '';
+        $this->content = $this->isDisplayed() ?
+            $this->render(file: __DIR__ . '/warning.phtml') :
+            ''
+        ;
     }
 
     /**
