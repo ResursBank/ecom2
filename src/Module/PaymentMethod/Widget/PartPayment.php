@@ -164,7 +164,9 @@ class PartPayment extends Widget
                     $this->cost->durationMonths,
                     $this->getFormattedCost(cost: $this->cost->totalCost)
                 ],
-                subject: Translator::translate(phraseId: 'part-payment-total-cost')
+                subject: Translator::translate(
+                    phraseId: 'part-payment-total-cost'
+                )
             );
         } catch (Throwable $e) {
             Config::getLogger()->error(message: $e);
@@ -196,7 +198,9 @@ class PartPayment extends Widget
     public function getAdministrationFee(): string
     {
         try {
-            return Translator::translate(phraseId: 'administration-fee') . ': ' .
+            return Translator::translate(
+                phraseId: 'administration-fee'
+            ) . ': ' .
                 $this->getFormattedCost(cost: $this->cost->administrationFee);
         } catch (Throwable $e) {
             Config::getLogger()->error(message: $e);
@@ -358,9 +362,6 @@ class PartPayment extends Widget
      */
     private function getFormattedCost(float $cost): string
     {
-        return Price::format(
-            value: $cost,
-            decimals: $this->decimals
-        );
+        return Price::format(value: $cost, decimals: $this->decimals);
     }
 }
