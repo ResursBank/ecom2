@@ -10,14 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Locale;
 
 use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 use function file_get_contents;
 use function is_string;
@@ -42,17 +38,14 @@ abstract class Translator
     private static string $cacheKey = 'resursbank-ecom-translations';
 
     /**
-     * Loads translations file from disk, decodes the result into a collection
-     * and returns that collection, and caches the resulting collection.
+     * Loads translations file from disk, decodes the result into an array
+     * and returns that array, and caches the resulting array.
      *
      * @throws FilesystemException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws ConfigException
-     * @throws IllegalValueException
      */
-    public static function load(?string $translationFile = null): PhraseCollection
+    public static function load(?string $translationFile = null): array
     {
         $translationFilePath = $translationFile ?? self::$translationsFilePath;
 
@@ -79,7 +72,7 @@ abstract class Translator
         Config::getCache()->write(
             key: self::getCacheKey(translationFile: $translationFile),
             data: json_encode(
-                value: $result->toArray(),
+                value: $result,
                 flags: JSON_THROW_ON_ERROR
             ),
             ttl: 3600
@@ -93,10 +86,7 @@ abstract class Translator
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      * @see Config::$language
      */
@@ -107,14 +97,19 @@ abstract class Translator
         $phrases = self::getData(translationFile: $translationFile);
         $result = null;
 
-        /** @var Phrase $item */
         foreach ($phrases as $item) {
-            if ($item->id !== $phraseId) {
+            if ($item['id'] !== $phraseId) {
                 continue;
             }
 
+            if (array_key_exists(Config::getLanguage()->value, $item['translation'])) {
+                $result = $item['translation'][Config::getLanguage()->value];
+                break;
+            }
+
             /** @var string $result */
-            $result = $item->translation->{Config::getLanguage()->value};
+            $result = $item['translation']['en'];
+            break;
         }
 
         if ($result === null) {
@@ -128,13 +123,10 @@ abstract class Translator
 
     /**
      * @throws FilesystemException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws ConfigException
-     * @throws IllegalValueException
      */
-    public static function getData(?string $translationFile = null): PhraseCollection
+    public static function getData(?string $translationFile = null): array
     {
         $cachedData = Config::getCache()->read(
             key: self::getCacheKey(translationFile: $translationFile)
@@ -146,30 +138,20 @@ abstract class Translator
     }
 
     /**
-     * Decodes JSON data into a collection of phrases.
+     * Decodes JSON data into an array of phrases.
      *
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ReflectionException
-     * @throws IllegalValueException
      */
-    public static function decodeData(string $data): PhraseCollection
+    public static function decodeData(string $data): array
     {
         /** @var array $decode */
         $decode = json_decode(
             json: $data,
-            associative: false,
-            depth: 512,
+            associative: true,
             flags: JSON_THROW_ON_ERROR
         );
 
-        /** @var PhraseCollection $result */
-        $result = DataConverter::arrayToCollection(
-            data: $decode,
-            type: Phrase::class
-        );
-
-        return $result;
+        return $decode;
     }
 
     /**

@@ -63,6 +63,9 @@
     "id": "swish",
     "translation": {
       "en": "N/A",
+      "da": "N/A",
+      "no": "N/A",
+      "fi": "N/A",
       "sv": "Godkänn betalningen i Swishappen på din telefon."
     }
   },
@@ -109,31 +112,51 @@
   {
     "id": "paypal",
     "translation": {
-      "en": "N/A"
+      "en": "N/A",
+      "sv": "N/A",
+      "no": "N/A",
+      "dk": "N/A",
+      "fi": "N/A"
     }
   },
   {
     "id": "masterpass",
     "translation": {
-      "en": "N/A"
+      "en": "N/A",
+      "sv": "N/A",
+      "no": "N/A",
+      "dk": "N/A",
+      "fi": "N/A"
     }
   },
   {
     "id": "other",
     "translation": {
-      "en": "N/A"
+      "en": "N/A",
+      "sv": "N/A",
+      "no": "N/A",
+      "dk": "N/A",
+      "fi": "N/A"
     }
   },
   {
     "id": "resurs-zero",
     "translation": {
-      "en": "N/A"
+      "en": "N/A",
+      "sv": "N/A",
+      "no": "N/A",
+      "dk": "N/A",
+      "fi": "N/A"
     }
   },
   {
     "id": "resurs-invoice-account",
     "translation": {
-      "en": "N/A"
+      "en": "N/A",
+      "sv": "N/A",
+      "no": "N/A",
+      "dk": "N/A",
+      "fi": "N/A"
     }
   }
 ]

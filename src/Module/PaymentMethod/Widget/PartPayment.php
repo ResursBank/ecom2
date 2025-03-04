@@ -28,6 +28,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
@@ -115,7 +116,8 @@ class PartPayment extends Widget
                 paymentMethodId: $this->paymentMethod->id,
                 amount: $this->amount,
                 monthFilter: $this->months
-            )
+            ),
+            paymentMethod: $this->paymentMethod
         );
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
@@ -214,8 +216,9 @@ class PartPayment extends Widget
     public function isEligible(): bool
     {
         return
-            $this->threshold === 0.0 ||
-            $this->cost->monthlyCost >= $this->threshold;
+            ($this->threshold === 0.0 ||
+            $this->cost->monthlyCost >= $this->threshold) &&
+            $this->paymentMethod->type !== Type::RESURS_INVOICE;
     }
 
     /**

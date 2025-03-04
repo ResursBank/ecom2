@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Throwable;
@@ -36,7 +37,8 @@ class CostList extends Widget
         public readonly PaymentMethod $method,
         public readonly int $decimals = 2
     ) {
-        $this->content = $this->priceSignage->costList->count() > 0 ?
+        $this->content = ($this->priceSignage->costList->count() > 0 &&
+            $this->method->type !== Type::RESURS_INVOICE) ?
             $this->render(file: __DIR__ . '/cost-list.phtml') : '';
     }
 
