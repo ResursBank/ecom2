@@ -137,13 +137,13 @@ class TranslatorTest extends TestCase
         $result = null;
 
         /** @var Phrase $item */
-        foreach ($decodedCache->toArray() as $item) {
-            if ($item->id !== $phraseId) {
+        foreach ($decodedCache as $item) {
+            if ($item['id'] !== $phraseId) {
                 continue;
             }
 
             /** @var string $result */
-            $result = $item->translation->{Config::getLanguage()->value};
+            $result = $item['translation'][Config::getLanguage()->value];
         }
 
         $this->assertNull(actual: $oldCache);
