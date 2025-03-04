@@ -97,14 +97,19 @@ abstract class Translator
         $phrases = self::getData(translationFile: $translationFile);
         $result = null;
 
-        /** @var Phrase $item */
         foreach ($phrases as $item) {
             if ($item['id'] !== $phraseId) {
                 continue;
             }
 
+            if (array_key_exists(Config::getLanguage()->value, $item['translation'])) {
+                $result = $item['translation'][Config::getLanguage()->value];
+                break;
+            }
+
             /** @var string $result */
-            $result = $item['translation'][Config::getLanguage()->value];
+            $result = $item['translation']['en'];
+            break;
         }
 
         if ($result === null) {
