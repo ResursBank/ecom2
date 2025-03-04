@@ -29,6 +29,7 @@ use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformationCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Throwable;
@@ -110,8 +111,11 @@ class Repository
         $result = [];
 
         foreach ($arr as $method) {
-            $factors = self::getAnnuityFactors(paymentMethodId: $method->id);
+            if ($method->type === Type::RESURS_INVOICE) {
+                continue;
+            }
 
+            $factors = self::getAnnuityFactors(paymentMethodId: $method->id);
             if ($factors->count() === 0) {
                 continue;
             }
