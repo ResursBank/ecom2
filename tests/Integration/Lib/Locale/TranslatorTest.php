@@ -59,7 +59,7 @@ class TranslatorTest extends TestCase
     public function testTranslationWorks(): void
     {
         $result = Translator::translate(phraseId: 'read-more');
-        $this->assertSame(expected: 'Read more', actual: $result);
+        $this->assertSame(expected: 'Read More', actual: $result);
 
         // Test translating into swedish.
         $this->setupConfig(locale: Language::SV);
@@ -137,13 +137,13 @@ class TranslatorTest extends TestCase
         $result = null;
 
         /** @var Phrase $item */
-        foreach ($decodedCache as $item) {
-            if ($item['id'] !== $phraseId) {
+        foreach ($decodedCache->toArray() as $item) {
+            if ($item->id !== $phraseId) {
                 continue;
             }
 
             /** @var string $result */
-            $result = $item['translation'][Config::getLanguage()->value];
+            $result = $item->translation->{Config::getLanguage()->value};
         }
 
         $this->assertNull(actual: $oldCache);

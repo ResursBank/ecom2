@@ -131,14 +131,8 @@ class SupportInfoTest extends TestCase
 
         // Confirm table element containing PHP version is present.
         $this->assertStringContainsString(
-            needle: 'PHP-version ' . PHP_VERSION,
-            haystack: preg_replace(
-                pattern: '/\s+/',
-                replacement: ' ',
-                subject: strip_tags(
-                    string: $this->widget->html
-                )
-            ),
+            needle: "<td>\n                " . PHP_VERSION,
+            haystack: $this->widget->html,
             message: 'Support Info widget is missing the PHP version'
         );
 
