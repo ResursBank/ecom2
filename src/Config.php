@@ -282,7 +282,7 @@ final class Config
     /**
      * @throws ConfigException
      */
-    public static function getLocation(): Location
+    public static function getLocation(): ?Location
     {
         self::validateInstance();
         return self::$instance->location;
@@ -290,8 +290,6 @@ final class Config
 
     /**
      * Allow force late location.
-     * @param Location $location
-     * @return void
      */
     public static function setLocation(Location $location): void
     {
