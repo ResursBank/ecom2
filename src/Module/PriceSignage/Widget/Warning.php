@@ -12,7 +12,9 @@ namespace Resursbank\Ecom\Module\PriceSignage\Widget;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Locale\Location;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -28,7 +30,8 @@ class Warning extends Widget
      * @throws FilesystemException
      */
     public function __construct(
-        public readonly PriceSignage $priceSignage
+        public readonly PriceSignage $priceSignage,
+        public readonly PaymentMethod $paymentMethod
     ) {
         $this->content = $this->isDisplayed() ? $this->render(file: __DIR__ . '/warning.phtml') : '';
     }
@@ -39,6 +42,7 @@ class Warning extends Widget
     public function isDisplayed(): bool
     {
         return $this->priceSignage->costList->count() > 0 &&
-            Config::getLocation() === Location::SE;
+            Config::getLocation() === Location::SE &&
+            $this->paymentMethod->type !== Type::RESURS_INVOICE;
     }
 }
