@@ -126,7 +126,7 @@ class PutTest extends TestCase
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
-                mobilePhone: '46701234567',
+                mobilePhone: '+46701234567',
                 deviceInfo: new DeviceInfo()
             )
         );
