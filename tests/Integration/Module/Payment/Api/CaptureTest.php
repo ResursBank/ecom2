@@ -74,8 +74,6 @@ class CaptureTest extends TestCase
     /**
      * Make API call to create payment
      *
-     * @param string $orderReference
-     * @return Payment
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
