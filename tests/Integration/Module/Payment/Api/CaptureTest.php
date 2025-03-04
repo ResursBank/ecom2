@@ -18,12 +18,14 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
@@ -72,8 +74,11 @@ class CaptureTest extends TestCase
     /**
      * Make API call to create payment
      *
+     * @param string $orderReference
+     * @return Payment
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -81,7 +86,8 @@ class CaptureTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ConfigException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -124,7 +130,7 @@ class CaptureTest extends TestCase
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
-                mobilePhone: '46701234567',
+                mobilePhone: '+46701234567',
                 deviceInfo: new DeviceInfo()
             )
         );

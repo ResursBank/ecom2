@@ -182,7 +182,7 @@ class PaymentInformationTest extends TestCase
                 contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: $governmentId,
-                mobilePhone: '46701234567',
+                mobilePhone: '+46701234567',
                 deviceInfo: new DeviceInfo()
             )
         );
