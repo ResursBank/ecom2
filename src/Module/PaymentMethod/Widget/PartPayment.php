@@ -279,43 +279,12 @@ class PartPayment extends Widget
         return $longestPeriod;
     }
 
+    /**
+     * @return float Monthly cost or 0 if monthly cost not set.
+     */
     public function getMonthlyCost(): float
     {
         return $this->cost->monthlyCost ?? 0;
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws MissingKeyException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
-     * @throws Throwable
-     */
-    private function getAnnuityInformation(): AnnuityInformation
-    {
-        $annuityFactors = Repository::getAnnuityFactors(
-            paymentMethodId: $this->paymentMethod->id
-        );
-
-        /** @var AnnuityInformation $annuityFactor */
-        foreach ($annuityFactors as $annuityFactor) {
-            if ($annuityFactor->durationMonths === $this->months) {
-                return $annuityFactor;
-            }
-        }
-
-        throw new MissingKeyException(
-            message: 'Could not find matching payment plan'
-        );
     }
 
     /**
