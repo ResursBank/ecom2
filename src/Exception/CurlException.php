@@ -136,6 +136,7 @@ class CurlException extends Exception
      * Get a translation from properties for where we are missing translations with untranslated parameters.
      *
      * @throws ConfigException
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     private function getProperProperty(string $property, string $message): string
     {
