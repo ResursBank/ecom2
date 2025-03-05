@@ -24,6 +24,16 @@ use Resursbank\Ecom\Lib\Model\Network\Response\Error;
  */
 class CurlExceptionTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::setup(
+            logger: $this->createMock(originalClassName: NoneLogger::class),
+            cache: $this->createMock(originalClassName: None::class)
+        );
+    }
+
     /**
      * Test that getError method will return instance of Error when possible,
      * and NULL otherwise.
@@ -98,7 +108,8 @@ class CurlExceptionTest extends TestCase
      */
     public function testGetMobileDetails(): void
     {
-        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed","timestamp":"2025-01-16T06:32:02Z","parameters":{"customer.mobilePhone":"is not valid"}}';
+        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
+            '"timestamp":"2025-01-16T06:32:02Z","parameters":{"customer.mobilePhone":"is not valid"}}';
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -129,7 +140,8 @@ class CurlExceptionTest extends TestCase
             language: Language::FI
         );
 
-        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed","timestamp":"2025-01-16T06:32:02Z","parameters":{"customer.mobilePhone":"is not valid"}}';
+        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
+            '"timestamp":"2025-01-16T06:32:02Z","parameters":{"customer.mobilePhone":"is not valid"}}';
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -212,16 +224,6 @@ class CurlExceptionTest extends TestCase
             needle: 'Postal code is not valid',
             // Actual translated error message.
             haystack: $details[0]
-        );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setup(
-            logger: $this->createMock(originalClassName: NoneLogger::class),
-            cache: $this->createMock(originalClassName: None::class)
         );
     }
 }
