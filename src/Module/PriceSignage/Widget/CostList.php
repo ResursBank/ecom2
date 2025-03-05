@@ -49,7 +49,13 @@ class CostList extends Widget
      */
     public static function getCss(): string
     {
-        return file_get_contents(__DIR__ . '/cost-list.css');
+        $css = file_get_contents(__DIR__ . '/cost-list.css');
+
+        if ($css === false) {
+            return '';
+        }
+
+        return $css;
     }
 
     /**
