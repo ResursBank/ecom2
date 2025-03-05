@@ -136,7 +136,7 @@ class TranslatorTest extends TestCase
         $decodedCache = Translator::decodeData(data: $newCache);
         $result = null;
 
-        /** @var Phrase $item */
+        /** @var array $item */
         foreach ($decodedCache as $item) {
             if ($item['id'] !== $phraseId) {
                 continue;
