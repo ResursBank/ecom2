@@ -28,16 +28,27 @@ use Resursbank\Ecom\Module\PriceSignage\Widget\CostList;
             <div class="rb-ps-cl-section">
                 <div class="rb-ps-cl-row rb-ps-cl-title">
                     <span><?= $this->getDuration(cost: $cost) ?></span>
-                    <span><?= Price::format(value: $cost->monthlyCost) ?> / <?= Translator::translate('per-month-cost') ?></span>
+                    <span><?= Price::format(value: $cost->monthlyCost) ?> /
+                        <?= Translator::translate('per-month-cost') ?>
+                    </span>
                 </div>
                 <div class="rb-ps-cl-row rb-ps-cl-info">
                     <span><?= $this->getSetupFee(cost: $cost) ?></span>
                     <span><?= $this->getAdministrationFee(cost: $cost) ?></span>
                 </div>
                 <div class="rb-ps-cl-row rb-ps-cl-info">
-                    <span><?= Translator::translate(phraseId: 'interest') ?> <?= $cost->interest ?>%</span>
-                    <span><?= Translator::translate(phraseId: 'effective-interest') ?> <?= $cost->effectiveInterest ?>%</span>
-                    <span><?= Translator::translate(phraseId: 'total') ?> <?= Price::format(value: $cost->totalCost) ?></span>
+                    <span>
+                        <?= Translator::translate(phraseId: 'interest') ?>
+                        <?= $cost->interest ?>%
+                    </span>
+                    <span>
+                        <?= Translator::translate(phraseId: 'effective-interest') ?>
+                        <?= $cost->effectiveInterest ?>%
+                    </span>
+                    <span>
+                        <?= Translator::translate(phraseId: 'total') ?>
+                        <?= Price::format(value: $cost->totalCost) ?>
+                    </span>
                 </div>
             </div>
         <?php endforeach; ?>
