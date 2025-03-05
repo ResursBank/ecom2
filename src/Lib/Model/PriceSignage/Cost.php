@@ -27,14 +27,14 @@ class Cost extends Model
      */
     public function __construct(
         public readonly string $name,
-        public readonly ?string $description,
         #[FloatValue(min: 0.0)] public readonly float $interest,
         #[IntValue(min: 0)] public readonly int $durationMonths,
         #[FloatValue(min: 0.0)] public readonly float $setupFee,
         #[FloatValue(min: 0.0)] public readonly float $totalCost,
         #[FloatValue(min: 0.0)] public readonly float $monthlyCost,
         #[FloatValue(min: 0.0)] public readonly float $administrationFee,
-        #[FloatValue(min: 0.0)] public readonly float $effectiveInterest
+        #[FloatValue(min: 0.0)] public readonly float $effectiveInterest,
+        public readonly ?string $description = null
     ) {
         parent::__construct();
     }
