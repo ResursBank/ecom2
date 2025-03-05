@@ -30,10 +30,11 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
+use Resursbank\Ecom\Lib\Model\PriceSignage\Language;
+use Resursbank\Ecom\Lib\Model\PriceSignage\UriLink;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\PriceSignage\Repository as PriceSignageRepository;
 
 /**
  * Integration tests for the ReadMore widget.
@@ -82,16 +83,43 @@ class ReadMoreTest extends TestCase
 
         $this->method = $method;
 
-        /** @var LegalLink $link */
-        foreach ($this->method->legalLinks as $link) {
-            if ($link->type !== Type::PRICE_INFO) {
+        $links = PriceSignageRepository::getPriceSignage(
+            paymentMethodId: $this->method->id,
+            amount: $this->method->maxPurchaseLimit
+        );
+
+        /** @var UriLink $secciLink */
+        foreach ($links->secciLinks as $secciLink) {
+            if (
+                !$this->isConfigLanguage(secciLanguage: $secciLink->language)
+            ) {
                 continue;
             }
 
-            $this->url = $link->url;
+            $this->url = $secciLink->uri;
         }
 
         parent::setUp();
+    }
+
+    private function isConfigLanguage(
+        Language $secciLanguage
+    ): bool {
+        $comparisonTable = [
+            'Swedish' => 'sv',
+            'Norwegian' => 'no',
+            'Finnish' => 'fi',
+            'Danish' => 'da'
+        ];
+
+        return
+            array_key_exists(
+                key: $secciLanguage->value,
+                array: $comparisonTable
+            )
+            && $comparisonTable[$secciLanguage->value]
+                === Config::getLanguage()->value
+            ;
     }
 
     /**
@@ -158,7 +186,7 @@ class ReadMoreTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            needle: '.rb-rm-link p',
+            needle: '.rb-rm-link div',
             haystack: $data->css,
             message: 'Read more widget CSS should contain section for the rb-rm-link class'
         );
