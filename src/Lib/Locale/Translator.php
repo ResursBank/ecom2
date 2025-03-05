@@ -95,22 +95,10 @@ abstract class Translator
         ?string $translationFile = null
     ): string {
         $phrases = self::getData(translationFile: $translationFile);
-        $result = null;
-
-        foreach ($phrases as $item) {
-            if ($item['id'] !== $phraseId) {
-                continue;
-            }
-
-            if (array_key_exists(Config::getLanguage()->value, $item['translation'])) {
-                $result = $item['translation'][Config::getLanguage()->value];
-                break;
-            }
-
-            /** @var string $result */
-            $result = $item['translation']['en'];
-            break;
-        }
+        $result = self::findMatchingPhrase(
+            phrases: $phrases,
+            phraseId: $phraseId
+        );
 
         if ($result === null) {
             throw new TranslationException(
@@ -180,5 +168,35 @@ abstract class Translator
         }
 
         return '';
+    }
+
+    /**
+     * Attempt to find a matching phrase in an array of phrases.
+     *
+     * @return string|null Found translation or null if no translation found.
+     * @throws ConfigException
+     */
+    private static function findMatchingPhrase(
+        array $phrases,
+        string $phraseId
+    ): ?string {
+        foreach ($phrases as $item) {
+            if ($item['id'] !== $phraseId) {
+                continue;
+            }
+
+            if (
+                array_key_exists(
+                    Config::getLanguage()->value,
+                    $item['translation']
+                )
+            ) {
+                return $item['translation'][Config::getLanguage()->value];
+            }
+
+            return $item['translation']['en'];
+        }
+
+        return null;
     }
 }

@@ -116,6 +116,7 @@ class Repository
             }
 
             $factors = self::getAnnuityFactors(paymentMethodId: $method->id);
+
             if ($factors->count() === 0) {
                 continue;
             }

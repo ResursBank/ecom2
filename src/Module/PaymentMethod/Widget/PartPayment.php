@@ -166,7 +166,9 @@ class PartPayment extends Widget
                     $this->cost->durationMonths,
                     $this->getFormattedCost(cost: $this->cost->totalCost)
                 ],
-                subject: Translator::translate(phraseId: 'part-payment-total-cost')
+                subject: Translator::translate(
+                    phraseId: 'part-payment-total-cost'
+                )
             );
         } catch (Throwable $e) {
             Config::getLogger()->error(message: $e);
@@ -198,7 +200,9 @@ class PartPayment extends Widget
     public function getAdministrationFee(): string
     {
         try {
-            return Translator::translate(phraseId: 'administration-fee') . ': ' .
+            return Translator::translate(
+                phraseId: 'administration-fee'
+            ) . ': ' .
                 $this->getFormattedCost(cost: $this->cost->administrationFee);
         } catch (Throwable $e) {
             Config::getLogger()->error(message: $e);
@@ -275,43 +279,12 @@ class PartPayment extends Widget
         return $longestPeriod;
     }
 
+    /**
+     * @return float Monthly cost or 0 if monthly cost not set.
+     */
     public function getMonthlyCost(): float
     {
         return $this->cost->monthlyCost ?? 0;
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws MissingKeyException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
-     * @throws Throwable
-     */
-    private function getAnnuityInformation(): AnnuityInformation
-    {
-        $annuityFactors = Repository::getAnnuityFactors(
-            paymentMethodId: $this->paymentMethod->id
-        );
-
-        /** @var AnnuityInformation $annuityFactor */
-        foreach ($annuityFactors as $annuityFactor) {
-            if ($annuityFactor->durationMonths === $this->months) {
-                return $annuityFactor;
-            }
-        }
-
-        throw new MissingKeyException(
-            message: 'Could not find matching payment plan'
-        );
     }
 
     /**
@@ -361,9 +334,6 @@ class PartPayment extends Widget
      */
     private function getFormattedCost(float $cost): string
     {
-        return Price::format(
-            value: $cost,
-            decimals: $this->decimals
-        );
+        return Price::format(value: $cost, decimals: $this->decimals);
     }
 }

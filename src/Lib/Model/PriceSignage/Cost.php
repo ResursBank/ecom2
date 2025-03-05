@@ -26,6 +26,8 @@ class Cost extends Model
      * @throws AttributeCombinationException
      */
     public function __construct(
+        public readonly string $name,
+        public readonly string $description,
         #[FloatValue(min: 0.0)] public readonly float $interest,
         #[IntValue(min: 0)] public readonly int $durationMonths,
         #[FloatValue(min: 0.0)] public readonly float $setupFee,

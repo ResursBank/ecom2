@@ -15,7 +15,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Language;
-use Resursbank\Ecom\Lib\Locale\Phrase;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 
@@ -64,7 +63,7 @@ class TranslatorTest extends TestCase
         // Test translating into swedish.
         $this->setupConfig(locale: Language::SV);
         $result = Translator::translate(phraseId: 'read-more');
-        $this->assertSame(expected: 'Läs Mer', actual: $result);
+        $this->assertSame(expected: 'Läs mer', actual: $result);
     }
 
     /**
@@ -136,14 +135,14 @@ class TranslatorTest extends TestCase
         $decodedCache = Translator::decodeData(data: $newCache);
         $result = null;
 
-        /** @var Phrase $item */
-        foreach ($decodedCache->toArray() as $item) {
-            if ($item->id !== $phraseId) {
+        /** @var array $item */
+        foreach ($decodedCache as $item) {
+            if ($item['id'] !== $phraseId) {
                 continue;
             }
 
             /** @var string $result */
-            $result = $item->translation->{Config::getLanguage()->value};
+            $result = $item['translation'][Config::getLanguage()->value];
         }
 
         $this->assertNull(actual: $oldCache);

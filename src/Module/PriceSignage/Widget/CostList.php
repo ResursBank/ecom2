@@ -43,6 +43,22 @@ class CostList extends Widget
     }
 
     /**
+     * Not a property because we may want to render it separately. For example, if rendering the widget HTML in one
+     * place, but needing the CSS in a different place. Having this defined as a property on this widget would cause
+     * that to render the widget twice needlessly just to access the CSS.
+     */
+    public static function getCss(): string
+    {
+        $css = file_get_contents(__DIR__ . '/cost-list.css');
+
+        if ($css === false) {
+            return '';
+        }
+
+        return $css;
+    }
+
+    /**
      * Fetches translated and formatted setup fee string.
      *
      * @throws ConfigException
@@ -94,35 +110,12 @@ class CostList extends Widget
     }
 
     /**
-     * Not a property because we may want to render it separately. For example, if rendering the widget HTML in one
-     * place, but needing the CSS in a different place. Having this defined as a property on this widget would cause
-     * that to render the widget twice needlessly just to access the CSS.
-     */
-    public static function getCss(): string
-    {
-        return file_get_contents(__DIR__ . '/cost-list.css');
-    }
-
-    /**
-     * Not a property because we may want to render it separately. For example, if rendering the widget HTML in one
-     * place, but needing the JS in a different place. Having this defined as a property on this widget would cause
-     * that to render the widget twice needlessly just to access the JS.
-     */
-    public static function getJs(): string
-    {
-        return file_get_contents(__DIR__ . '/cost-list.js.phtml');
-    }
-
-    /**
      * Fetches formatted starting at cost with currency symbol.
      *
      * @throws ConfigException
      */
     private function getFormattedCost(float $cost): string
     {
-        return Price::format(
-            value: $cost,
-            decimals: $this->decimals
-        );
+        return Price::format(value: $cost, decimals: $this->decimals);
     }
 }

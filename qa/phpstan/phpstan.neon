@@ -1,8 +1,9 @@
 parameters:
     level: 9
     tipsOfTheDay: false
-    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
+        -
+            identifier: missingType.generics
         -
             message: '#.* does not specify type hint for items of its traversable .*#'
             reportUnmatched: false
