@@ -39,9 +39,13 @@ class Redis extends AbstractCache implements CacheInterface
     {
         $this->validateKey(key: $key);
 
-        $entry = $this->decodeEntry(
-            data: (string) $this->connect()->get(key: $key)
-        );
+        $data = $this->connect()->get(key: $key);
+
+        if (!is_string(value: $data)) {
+            return null;
+        }
+
+        $entry = $this->decodeEntry(data: $data);
 
         return (
             $entry !== null &&
