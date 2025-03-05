@@ -13,6 +13,8 @@ use Resursbank\Ecom\Exception\FilesystemException;
 
 /**
  * Basic widget functionality.
+ *
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 class Widget
 {
