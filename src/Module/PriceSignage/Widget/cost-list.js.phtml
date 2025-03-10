@@ -67,7 +67,8 @@ class Resursbank_CostList {
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.addedNodes.length) {
-                        this.setup();
+                        this.setupReadMore();
+                        this.setupRowExpander();
                     }
                 });
             });
@@ -84,7 +85,7 @@ class Resursbank_CostList {
     /**
      * Setup click event for "Read More" link.
      */
-    setup() {
+    setupReadMore() {
         try {
             // Find all elements with class "rb-ps-cl" in the container.
             this.el.querySelectorAll('.rb-ps-cl').forEach((el) => {
@@ -101,6 +102,28 @@ class Resursbank_CostList {
     }
 
     /**
+     * Set up expanding of individual rows.
+     */
+    setupRowExpander() {
+        try {
+            this.el.querySelectorAll('.rb-ps-cl-section').forEach((el) => {
+                el.onclick = () => {
+                    this.el.querySelectorAll('.rb-ps-cl-section').forEach((el) => {
+                        el.classList.remove('expanded');
+                    });
+                    this.el.querySelectorAll('.rb-ps-cl-row-wrapper').forEach((el) => {
+                        el.classList.remove('expanded');
+                    });
+                    el.classList.add('expanded');
+                    el.querySelector('.rb-ps-cl-row-wrapper').classList.add('expanded');
+                };
+            });
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
      * Toggle class "expanded" on element with data-payment-method attribute
      * matching the payment method UUID.
      *
@@ -108,7 +131,9 @@ class Resursbank_CostList {
      */
     toggleExpansion(paymentMethod) {
         try {
-            let el = this.el.querySelector('.rb-ps-cl[data-payment-method="' + paymentMethod + '"]');
+            let el = this.el.querySelector('.rb-ps-cl[data-payment-method="' +
+                paymentMethod + '"]'
+            );
 
             if (el) {
                 el.classList.toggle('expanded');
@@ -137,7 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     // Run initial setup to find and setup "Read More" links already rendered.
-    widget.setup();
+    widget.setupReadMore();
+
+    widget.setupRowExpander();
 
     // Setup observer to look for new "Read More" links.
     widget.setupObserveContainer();
