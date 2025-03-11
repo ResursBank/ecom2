@@ -97,6 +97,10 @@
     border-radius: 0.5em;
 }
 
+.rb-ps-cl-section:not(.expanded) {
+    cursor: pointer;
+}
+
 .rb-ps-cl-section:not(:first-child) {
     border-top: 1px solid #ccc;
 }
