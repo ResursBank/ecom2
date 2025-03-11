@@ -90,7 +90,8 @@ class Auth
         $result = $auth->getToken();
 
         if ($result === null || $result->isExpired()) {
-            return (new GenerateMapiToken(auth: $auth))->call();
+            $result = (new GenerateMapiToken(auth: $auth))->call();
+            $auth->setToken(token: $result);
         }
 
         return $result;
