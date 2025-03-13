@@ -289,8 +289,10 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert getPriceSignage() throws if the supplied amount is less than
-     * supplied payment method min. purchase amount.
+     * Assert getPriceSignage() throws if the supplied amount is too low.
+     *
+     * Should throw if the supplied amount is less than supplied payment method
+     * minimum. purchase amount.
      *
      * @throws ApiException
      * @throws AuthException
@@ -313,5 +315,56 @@ class RepositoryTest extends TestCase
             paymentMethodId: $this->paymentMethodId,
             amount: 0.1
         );
+    }
+
+    /**
+     * Assert that getCache returns cached data if it should exist.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testGetCache(): void
+    {
+        // Attempt to fetch without cached data
+        $this->cache->clear();
+        $cached = Repository::getCache(
+            paymentMethodId: $this->paymentMethodId,
+            amount: $this->amount
+        )->read();
+
+        if ($cached !== null) {
+            $this->fail(message: 'Returned cache object is not null');
+        } else {
+            $this->addToAssertionCount(count: 1);
+        }
+
+        // Make request
+        Repository::getPriceSignage(
+            paymentMethodId: $this->paymentMethodId,
+            amount: $this->amount
+        );
+
+        // Attempt to fetch now that data should be cached
+        $cached = Repository::getCache(
+            paymentMethodId: $this->paymentMethodId,
+            amount: $this->amount
+        )->read();
+
+        if ($cached === null) {
+            $this->fail(message: 'Returned cache object is not null');
+        } else {
+            $this->addToAssertionCount(count: 1);
+        }
     }
 }
