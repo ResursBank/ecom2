@@ -18,6 +18,7 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
  */
 class Defaults
 {
+    // General settings
     /**
      * Default timeout value (in seconds) for API requests.
      */
@@ -33,6 +34,7 @@ class Defaults
      */
     public const GET_ADDRESS_ENABLED = true;
 
+    // Logging settings
     /**
      * Specifies whether logging is enabled.
      */
@@ -46,8 +48,9 @@ class Defaults
     /**
      * Default value for Xdebug session.
      */
-    public const XDEBUG_SESSION_VALUE = '';
+    public const XDEBUG_SESSION_VALUE = null;
 
+    // Order management
     /**
      * Enables order cancellation in order management.
      */
@@ -68,19 +71,14 @@ class Defaults
      */
     public const ORDER_MANAGEMENT_ENABLE_REFUND = true;
 
+    // Part payment settings
     /**
-     * Default limit for part payments in Nordic countries (SE, NO, DK) vs Finland (FI uses EURO).
+     * Default limit for part payments in Nordic countries (SE, NO, DK).
      */
     public const PART_PAYMENT_LIMIT_NORDIC = 150;
-    public const PART_PAYMENT_LIMIT_EURO = 15;
 
     /**
-     * Retrieve an option value.
+     * Default limit for part payments in Euro-based countries (FI).
      */
-    public static function get(string $key): mixed
-    {
-        return defined(constant_name: "self::$key")
-            ? constant(name: "self::$key")
-            : null;
-    }
+    public const PART_PAYMENT_LIMIT_EURO = 15;
 }
