@@ -43,6 +43,8 @@ class UniqueSellingPoint extends Widget
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,

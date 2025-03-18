@@ -199,6 +199,8 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public static function getUniqueSellingPoint(
         PaymentMethod $paymentMethod,

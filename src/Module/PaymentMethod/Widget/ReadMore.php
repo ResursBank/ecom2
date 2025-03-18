@@ -66,6 +66,7 @@ class ReadMore extends Widget
      * @throws Throwable
      * @throws TranslationException
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
@@ -134,8 +135,6 @@ class ReadMore extends Widget
 
     /**
      * Fetch legacy link.
-     *
-     * @return string
      */
     private function getLegacyLink(): string
     {
