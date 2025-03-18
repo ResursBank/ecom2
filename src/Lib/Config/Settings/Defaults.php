@@ -78,6 +78,11 @@ class Defaults
 
     // Part payment settings
     /**
+     * Default setting for part payment widget is enabled.
+     */
+    public const PART_PAYMENT_ENABLED = true;
+
+    /**
      * Default limit for part payments in Nordic countries (SE, NO, DK).
      */
     public const PART_PAYMENT_LIMIT_NORDIC = 150;
