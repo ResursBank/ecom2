@@ -46,11 +46,13 @@ class UniqueSellingPoint extends Widget
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
-        public readonly float $amount
+        public readonly float $amount,
+        public readonly bool $useLegacyReadMoreLink = false
     ) {
         $this->readMore = new ReadMore(
             paymentMethod: $this->paymentMethod,
-            amount: $amount
+            amount: $amount,
+            useLegacyLink: $this->useLegacyReadMoreLink
         );
         $this->message = $this->getBasicTranslation(
             paymentMethodType: $this->paymentMethod->type

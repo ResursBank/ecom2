@@ -202,11 +202,13 @@ class Repository
      */
     public static function getUniqueSellingPoint(
         PaymentMethod $paymentMethod,
-        float $amount
+        float $amount,
+        bool $useLegacyReadMoreLink = false
     ): UniqueSellingPoint {
         return new UniqueSellingPoint(
             paymentMethod: $paymentMethod,
-            amount: $amount
+            amount: $amount,
+            useLegacyReadMoreLink: $useLegacyReadMoreLink
         );
     }
 }
