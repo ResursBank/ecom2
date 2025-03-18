@@ -52,6 +52,11 @@ class Defaults
 
     // Order management
     /**
+     * Enables order management.
+     */
+    public const ORDER_MANAGEMENT_ENABLE = true;
+
+    /**
      * Enables order cancellation in order management.
      */
     public const ORDER_MANAGEMENT_ENABLE_CANCEL = true;
