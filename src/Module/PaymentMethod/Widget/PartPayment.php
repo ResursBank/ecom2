@@ -89,6 +89,7 @@ class PartPayment extends Widget
      * @throws ValidationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
         public readonly string $storeId,
@@ -100,7 +101,8 @@ class PartPayment extends Widget
         public readonly string $fetchStartingCostUrl,
         public readonly int $decimals = 2,
         public readonly bool $displayInfoText = true,
-        public readonly float $threshold = 0.0
+        public readonly float $threshold = 0.0,
+        public readonly bool $useLegacyReadMoreLink = false
     ) {
         $this->cost = $this->getCost();
         $this->logo = (string) file_get_contents(
@@ -109,6 +111,7 @@ class PartPayment extends Widget
         $this->readMore = new ReadMore(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,
+            useLegacyLink: $this->useLegacyReadMoreLink,
             label: 'read-more'
         );
         $this->warning = new Warning(

@@ -25,8 +25,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Language;
 use Resursbank\Ecom\Lib\Model\PriceSignage\UriLink;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
 use Throwable;
@@ -48,6 +50,7 @@ class ReadMore extends Widget
     public readonly string $label;
 
     /**
+     * @param bool $useLegacyLink Use legacy link instead of SECCI if true.
      * @param string $label Translation ID to use for widget label.
      * @throws ApiException
      * @throws AuthException
@@ -63,10 +66,12 @@ class ReadMore extends Widget
      * @throws Throwable
      * @throws TranslationException
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
         public readonly float $amount,
+        private readonly bool $useLegacyLink = false,
         string $label = 'read-more'
     ) {
         $this->url = '';
@@ -111,6 +116,11 @@ class ReadMore extends Widget
             amount: $this->amount
         );
 
+        if ($this->useLegacyLink) {
+            $this->url = $this->getLegacyLink();
+            return;
+        }
+
         /** @var UriLink $secciLink */
         foreach ($links->secciLinks as $secciLink) {
             if (
@@ -121,6 +131,23 @@ class ReadMore extends Widget
 
             $this->url = $secciLink->uri;
         }
+    }
+
+    /**
+     * Fetch legacy link.
+     */
+    private function getLegacyLink(): string
+    {
+        /** @var LegalLink $link */
+        foreach ($this->paymentMethod->legalLinks as $link) {
+            if ($link->type !== Type::PRICE_INFO) {
+                continue;
+            }
+
+            return $link->url . $this->amount;
+        }
+
+        return '';
     }
 
     /**

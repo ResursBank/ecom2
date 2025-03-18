@@ -3336,5 +3336,25 @@
       "dk": "Info",
       "fi": "Info"
     }
+  },
+  {
+    "id": "legacy-link",
+    "translation": {
+      "en": "Legacy link",
+      "sv": "Äldre länk",
+      "no": "Eldre lenke",
+      "dk": "Gammelt link",
+      "fi": "Vanha linkki"
+    }
+  },
+  {
+    "id": "part-payment-legacy-link",
+    "translation": {
+      "en": "Enable to use legacy link instead of SECCI.",
+      "sv": "Aktivera för att använda den äldre länken istället för SEKKI.",
+      "no": "Aktiver å bruke eldre lenke i stedet for SECCI",
+      "dk": "Aktiver for at bruge ældre link i stedet for SECCI",
+      "fi": "Ota käyttöön vanhan linkin käyttö SECCI:n sijaan."
+    }
   }
 ]
