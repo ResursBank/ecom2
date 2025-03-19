@@ -104,10 +104,12 @@ class DefaultsTest extends TestCase
             'LOG_ENABLED',
             'LOG_LEVEL',
             'XDEBUG_SESSION_VALUE',
+            'ORDER_MANAGEMENT_ENABLE',
             'ORDER_MANAGEMENT_ENABLE_CANCEL',
             'ORDER_MANAGEMENT_ENABLE_CAPTURE',
             'ORDER_MANAGEMENT_ENABLE_MODIFY',
             'ORDER_MANAGEMENT_ENABLE_REFUND',
+            'PART_PAYMENT_ENABLED',
             'PART_PAYMENT_LIMIT_NORDIC',
             'PART_PAYMENT_LIMIT_EURO',
         ];
