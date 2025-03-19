@@ -56,26 +56,6 @@ class Defaults
      */
     public const ORDER_MANAGEMENT_ENABLE = true;
 
-    /**
-     * Enables order cancellation in order management.
-     */
-    public const ORDER_MANAGEMENT_ENABLE_CANCEL = true;
-
-    /**
-     * Enables order capture functionality in order management.
-     */
-    public const ORDER_MANAGEMENT_ENABLE_CAPTURE = true;
-
-    /**
-     * Enables modification of existing orders in order management.
-     */
-    public const ORDER_MANAGEMENT_ENABLE_MODIFY = true;
-
-    /**
-     * Enables order refunds in order management.
-     */
-    public const ORDER_MANAGEMENT_ENABLE_REFUND = true;
-
     // Part payment settings
     /**
      * Default setting for part payment widget is enabled.
@@ -85,7 +65,7 @@ class Defaults
     /**
      * Default limit for part payments in Nordic countries (SE, NO, DK).
      */
-    public const PART_PAYMENT_LIMIT_NORDIC = 150;
+    public const PART_PAYMENT_LIMIT = 150;
 
     /**
      * Default limit for part payments in Euro-based countries (FI).

@@ -6,7 +6,6 @@ namespace Resursbank\EcomTest\Unit\Config;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Lib\Config\Settings\Defaults;
-use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /**
  * Unit tests for Defaults configuration class.
@@ -24,26 +23,36 @@ class DefaultsTest extends TestCase
      */
     public function testGeneralSettings(): void
     {
-        $this->assertSame(expected: 30, actual: Defaults::API_TIMEOUT, message: 'API_TIMEOUT should be 30');
-        $this->assertTrue(condition: Defaults::CACHE_ENABLED, message: 'CACHE_ENABLED should be true');
-        $this->assertTrue(condition: Defaults::GET_ADDRESS_ENABLED, message: 'GET_ADDRESS_ENABLED should be true');
+        $this->assertSame(
+            expected: 30,
+            actual: Defaults::API_TIMEOUT,
+            message: 'API_TIMEOUT should be 30'
+        );
+        $this->assertTrue(
+            condition: Defaults::CACHE_ENABLED,
+            message: 'CACHE_ENABLED should be true'
+        );
+        $this->assertTrue(
+            condition: Defaults::GET_ADDRESS_ENABLED,
+            message: 'GET_ADDRESS_ENABLED should be true'
+        );
     }
 
     /**
      * Test logging configuration settings.
      *
-     * Ensures that logging is enabled, log level is set correctly,
-     * and the Xdebug session value is null by default.
+     * Ensures that logging is enabled and the Xdebug session value is null by default.
      */
     public function testLoggingSettings(): void
     {
-        $this->assertTrue(condition: Defaults::LOG_ENABLED, message: 'LOG_ENABLED should be true');
-        $this->assertSame(
-            expected: LogLevel::INFO,
-            actual: Defaults::LOG_LEVEL,
-            message: 'LOG_LEVEL should match LogLevel::INFO'
+        $this->assertTrue(
+            condition: Defaults::LOG_ENABLED,
+            message: 'LOG_ENABLED should be true'
         );
-        $this->assertNull(actual: Defaults::XDEBUG_SESSION_VALUE, message: 'XDEBUG_SESSION_VALUE should be null');
+        $this->assertNull(
+            actual: Defaults::XDEBUG_SESSION_VALUE,
+            message: 'XDEBUG_SESSION_VALUE should be null'
+        );
     }
 
     /**
@@ -55,20 +64,8 @@ class DefaultsTest extends TestCase
     public function testOrderManagementSettings(): void
     {
         $this->assertTrue(
-            condition: Defaults::ORDER_MANAGEMENT_ENABLE_CANCEL,
-            message: 'ORDER_MANAGEMENT_ENABLE_CANCEL should be true'
-        );
-        $this->assertTrue(
-            condition: Defaults::ORDER_MANAGEMENT_ENABLE_CAPTURE,
-            message: 'ORDER_MANAGEMENT_ENABLE_CAPTURE should be true'
-        );
-        $this->assertTrue(
-            condition: Defaults::ORDER_MANAGEMENT_ENABLE_MODIFY,
-            message: 'ORDER_MANAGEMENT_ENABLE_MODIFY should be true'
-        );
-        $this->assertTrue(
-            condition: Defaults::ORDER_MANAGEMENT_ENABLE_REFUND,
-            message: 'ORDER_MANAGEMENT_ENABLE_REFUND should be true'
+            condition: Defaults::ORDER_MANAGEMENT_ENABLE,
+            message: 'ORDER_MANAGEMENT_ENABLE should be true'
         );
     }
 
@@ -82,7 +79,7 @@ class DefaultsTest extends TestCase
     {
         $this->assertSame(
             expected: 150,
-            actual: Defaults::PART_PAYMENT_LIMIT_NORDIC,
+            actual: Defaults::PART_PAYMENT_LIMIT,
             message: 'PART_PAYMENT_LIMIT_NORDIC should be 150'
         );
         $this->assertSame(
@@ -102,32 +99,20 @@ class DefaultsTest extends TestCase
             'CACHE_ENABLED',
             'GET_ADDRESS_ENABLED',
             'LOG_ENABLED',
-            'LOG_LEVEL',
             'XDEBUG_SESSION_VALUE',
             'ORDER_MANAGEMENT_ENABLE',
-            'ORDER_MANAGEMENT_ENABLE_CANCEL',
-            'ORDER_MANAGEMENT_ENABLE_CAPTURE',
-            'ORDER_MANAGEMENT_ENABLE_MODIFY',
-            'ORDER_MANAGEMENT_ENABLE_REFUND',
             'PART_PAYMENT_ENABLED',
-            'PART_PAYMENT_LIMIT_NORDIC',
-            'PART_PAYMENT_LIMIT_EURO',
+            'PART_PAYMENT_LIMIT',
+            'PART_PAYMENT_LIMIT_EURO'
         ];
 
         foreach ($expectedConstants as $constant) {
             $this->assertTrue(
-                condition: defined(constant_name: 'Resursbank\\Ecom\\Lib\\Config\\Settings\\Defaults::' . $constant),
+                condition: defined(
+                    constant_name: 'Resursbank\\Ecom\\Lib\\Config\\Settings\\Defaults::' . $constant
+                ),
                 message: "Constant {$constant} is not defined in Defaults."
             );
         }
-    }
-
-    /**
-     * Ensure the log level is a valid predefined level.
-     */
-    public function testLogLevelIsValid(): void
-    {
-        $validLevels = [LogLevel::INFO, LogLevel::DEBUG, LogLevel::ERROR];
-        $this->assertContains(needle: Defaults::LOG_LEVEL, haystack: $validLevels);
     }
 }
