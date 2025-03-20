@@ -1,7 +1,7 @@
 {
   "name": "resursbank/ecom",
   "type": "library",
-  "version": "3.2.11",
+  "version": "3.2.12",
   "require-dev": {
     "phpunit/phpunit": "^9",
     "phpmd/phpmd": "^2",
