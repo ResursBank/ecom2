@@ -23,14 +23,15 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 class Warning extends Widget
 {
     /** @var string */
-    public readonly string $content;
+    public string $content;
 
     /**
      * @throws FilesystemException
      */
     public function __construct(
         public readonly PriceSignage $priceSignage,
-        public readonly PaymentMethod $paymentMethod
+        public readonly PaymentMethod $paymentMethod,
+        private readonly bool $visible = true
     ) {
         $this->content = $this->isDisplayed() ?
             $this->render(file: __DIR__ . '/warning.phtml') :
@@ -45,6 +46,7 @@ class Warning extends Widget
     {
         return $this->priceSignage->costList->count() > 0 &&
             Config::getLocation() === Location::SE &&
-            $this->paymentMethod->type !== Type::RESURS_INVOICE;
+            $this->paymentMethod->type !== Type::RESURS_INVOICE &&
+            $this->visible;
     }
 }
