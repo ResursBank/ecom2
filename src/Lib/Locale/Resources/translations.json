@@ -3376,5 +3376,15 @@
       "dk": "",
       "fi": ""
     }
+  },
+  {
+    "id": "order-confirmation-behavior",
+    "translation": {
+      "en": "Order confirmation behavior",
+      "sv": "Orderbekräftelsebeteende",
+      "no": "Ordrebekreftelsesadferd",
+      "dk": "Ordrebekræftelsesadfærd",
+      "fi": ""
+    }
   }
 ]
