@@ -3356,5 +3356,35 @@
       "dk": "Aktiver for at bruge ældre link i stedet for SECCI",
       "fi": "Ota käyttöön vanhan linkin käyttö SECCI:n sijaan."
     }
+  },
+  {
+    "id": "show-cost-example",
+    "translation": {
+      "en": "Show cost example",
+      "sv": "Visa kostnadsexempel",
+      "no": "Vis kostnadseksempel",
+      "dk": "Vis omkostningseksempel",
+      "fi": "Näytä kustannusesimerkkejä"
+    }
+  },
+  {
+    "id": "show-cost-example-description",
+    "translation": {
+      "en": "This is mandatory for the Swedish market. Due to Konsumentverket's regulations traders are required to provide information when marketing consumer credit",
+      "sv": "Detta är obligatoriskt för den svenska marknaden. På grund av Konsumentverkets föreskrifter är handlare skyldig att lämna information vid marknadsföring av konsumentkrediter.",
+      "no": "",
+      "dk": "",
+      "fi": ""
+    }
+  },
+  {
+    "id": "order-confirmation-behavior",
+    "translation": {
+      "en": "Order confirmation behavior",
+      "sv": "Orderbekräftelsebeteende",
+      "no": "Ordrebekreftelsesadferd",
+      "dk": "Ordrebekræftelsesadfærd",
+      "fi": ""
+    }
   }
 ]

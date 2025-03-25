@@ -72,6 +72,7 @@ class PartPayment extends Widget
      * product / cart changes where this widget is used. The endpoint must sit
      * in your implementation, the JS method which uses this method can then
      * be called to fetch the starting cost (see the template of this widget).
+     * @paream bool $showCostExample Hides cost list and pricing example if set to false.
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -102,7 +103,8 @@ class PartPayment extends Widget
         public readonly int $decimals = 2,
         public readonly bool $displayInfoText = true,
         public readonly float $threshold = 0.0,
-        public readonly bool $useLegacyReadMoreLink = false
+        public readonly bool $useLegacyReadMoreLink = false,
+        public readonly bool $showCostExample = true
     ) {
         $this->cost = $this->getCost();
         $this->logo = (string) file_get_contents(
@@ -120,8 +122,10 @@ class PartPayment extends Widget
                 amount: $this->amount,
                 monthFilter: $this->months
             ),
-            paymentMethod: $this->paymentMethod
+            paymentMethod: $this->paymentMethod,
+            visible: $this->showCostExample
         );
+
         $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
         $this->css = $this->render(file: __DIR__ . '/part-payment.css');
         $this->js = $this->render(file: __DIR__ . '/part-payment.js.phtml');
@@ -221,7 +225,8 @@ class PartPayment extends Widget
         return
             ($this->threshold === 0.0 ||
             $this->cost->monthlyCost >= $this->threshold) &&
-            $this->paymentMethod->type !== Type::RESURS_INVOICE;
+            $this->paymentMethod->type !== Type::RESURS_INVOICE &&
+            $this->showCostExample;
     }
 
     /**
