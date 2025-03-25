@@ -1560,7 +1560,7 @@
     "id": "failed-placing-order",
     "translation": {
       "en": "Failed to place order.",
-      "sv": "Kunde inte genomför beställning.",
+      "sv": "Kunde inte genomföra beställning.",
       "no": "Kunne ikke gjennomføre bestilling.",
       "da": "Kunne ikke gennemføre bestilling."
     }
@@ -1569,7 +1569,7 @@
     "id": "failed-placing-order-try-again",
     "translation": {
       "en": "Failed to place order. Please review your information and try again.",
-      "sv": "Kunde inte genomför beställning. Vänligen kontrollera dina uppgifter och försök igen.",
+      "sv": "Kunde inte genomföra beställning. Vänligen kontrollera dina uppgifter och försök igen.",
       "no": "Kunne ikke gjennomføre bestilling. Vennligst gjennomgå informasjonen din og prøv igjen.",
       "da": "Kunne ikke gennemføre bestilling. Vennligst gennemgå dine oplysninger og prøv igen."
     }
