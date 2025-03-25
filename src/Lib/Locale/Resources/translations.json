@@ -3386,5 +3386,15 @@
       "dk": "Ordrebekræftelsesadfærd",
       "fi": ""
     }
+  },
+  {
+    "id": "order-confirmation-behavior-warning",
+    "translation": {
+      "en": "If set to 'When authorized' then the order confirmation email will not be sent until payments have cleared fraud control.",
+      "sv": "Om satt till 'When authorized' så kommer orderbekräftelsemejlet inte att skickas förrän betalningen passerat bedrägerikontroller.",
+      "no": "",
+      "dk": "",
+      "fi": ""
+    }
   }
 ]
