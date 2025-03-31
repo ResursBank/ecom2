@@ -3396,5 +3396,15 @@
       "dk": "",
       "fi": ""
     }
+  },
+  {
+    "id": "requested-action-not-possible",
+    "translation": {
+      "en": "Requested action not possible",
+      "sv": "Begärd åtgärd är inte möjlig",
+      "dk": "Den ønskede handling ikke mulig",
+      "no": "Ønsket handling ikke mulig",
+      "fi": "Pyydetty toimenpide ei ole mahdollinen"
+    }
   }
 ]
