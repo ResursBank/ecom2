@@ -43,7 +43,7 @@ class Log extends Widget
      */
     public function __construct(
         public readonly EntryCollection $entries,
-        public readonly bool $renderBtn = true
+        public readonly bool $renderButton = true
     ) {
         $this->content = $this->render(file: __DIR__ . '/log.phtml');
         $this->css = $this->render(file: __DIR__ . '/log.css');
