@@ -42,7 +42,8 @@ class Log extends Widget
      * @throws FilesystemException
      */
     public function __construct(
-        public readonly EntryCollection $entries
+        public readonly EntryCollection $entries,
+        public readonly bool $renderButton = true
     ) {
         $this->content = $this->render(file: __DIR__ . '/log.phtml');
         $this->css = $this->render(file: __DIR__ . '/log.css');

@@ -16,9 +16,11 @@ use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
 
 ?>
 <div id="rb-ph">
+  <?php if ($this->renderButton): ?>
     <button id="rb-ph-button">
         <?= Translator::translate(phraseId: 'link-title') ?>
     </button>
+  <?php endif; ?>
     <div id="rb-ph-hidden" style="display:none;">
         <div id="rb-ph-background"></div>
         <div id="rb-ph-content-container">

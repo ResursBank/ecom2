@@ -14,6 +14,11 @@ use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Widget\Widget as Base;
 use RuntimeException;
 
+/**
+ * Render logotype by base64 encoding the image file.
+ *
+ * This widget only supports PNG files.
+ */
 class Widget extends Base
 {
     public string $file;
@@ -27,9 +32,9 @@ class Widget extends Base
     ) {
         $this->file = match ($paymentMethod->type) {
             Type::SWISH => 'swish.png',
-            Type::DEBIT_CARD, Type::CREDIT_CARD, Type::CARD => 'card.svg',
-            Type::INTERNET => 'trustly.svg',
-            default => 'resurs.png',
+            Type::DEBIT_CARD, Type::CREDIT_CARD => 'card.png',
+            Type::INTERNET => 'trustly.png',
+            default => 'resurs.png'
         };
 
         $this->html = $this->render(file: __DIR__ . '/html.phtml');
@@ -44,7 +49,6 @@ class Widget extends Base
         $extension = pathinfo(path: $filePath, flags: PATHINFO_EXTENSION);
 
         return match ($extension) {
-            'svg' => $this->getSvgContent(filePath: $filePath),
             'png' => $this->getPngBase64(
                 filePath: $filePath,
                 inclImgTag: $inclImgTag
@@ -59,19 +63,6 @@ class Widget extends Base
     public function getIdentifier(): string
     {
         return pathinfo(path: $this->file, flags: PATHINFO_FILENAME);
-    }
-
-    private function getSvgContent(string $filePath): string
-    {
-        $content = file_get_contents(filename: $filePath);
-
-        if ($content === false) {
-            throw new RuntimeException(
-                message: "Failed to read SVG file at $filePath."
-            );
-        }
-
-        return $content;
     }
 
     /**
