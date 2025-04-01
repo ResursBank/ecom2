@@ -34,6 +34,7 @@ abstract class ErrorTranslator
                 translationFile: __DIR__ . '/Resources/errors.json'
             );
         } catch (Throwable $error) {
+            Config::getLogger()->error(message: 'Failure while translating the phrase "' . $errorMessage . '"');
             Config::getLogger()->error(message: $error);
             return $errorMessage;
         }
