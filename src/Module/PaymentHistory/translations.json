@@ -240,6 +240,16 @@
     }
   },
   {
+    "id": "widget-title-no-payment-id",
+    "translation": {
+      "en": "Payment",
+      "sv": "Betalning",
+      "da": "Betaling",
+      "no": "Betaling",
+      "fi": "Maksu"
+    }
+  },
+  {
     "id": "event-request-failed",
     "translation": {
       "en": "The request failed.",

@@ -67,13 +67,21 @@ class Log extends Widget
      */
     public function getWidgetTitle(): string
     {
+        if (!count($this->entries) > 0) {
+            return Translator::translate(
+                phraseId: 'widget-title-no-payment-id'
+            );
+        }
+
         $entry = $this->entries->current();
 
         return sprintf(
             Translator::translate(phraseId: 'widget-title'),
             $entry instanceof Entry ?
-                    ((string) $entry->reference !== '' ? $entry->reference : $entry->paymentId) :
-                    '',
+                ((string)$entry->reference !== '' ?
+                    $entry->reference :
+                    $entry->paymentId) :
+                '',
             Translator::translate(
                 phraseId: Config::isProduction() ? 'production' : 'test'
             )
