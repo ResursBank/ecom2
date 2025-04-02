@@ -1,5 +1,15 @@
 [
   {
+    "id": "customer-mobilephone",
+    "translation": {
+      "en": "Mobile phone",
+      "sv": "Mobiltelefon",
+      "da": "Mobiltelefonen",
+      "no": "Mobiltelefonen",
+      "fi": "Matkapuhelin"
+    }
+  },
+  {
     "id": "customer-mobilephone-is-not-valid",
     "translation": {
       "en": "Mobile phone is not valid",
