@@ -285,9 +285,22 @@ class Repository
             Config::getLogger()->error(message: 'Order failure page reached.');
         }
 
-        $paymentOlderThan60Seconds = PaymentRepository::get(paymentId: $paymentId)
-            ->isOlderThan(seconds: 60);
+        $payment = PaymentRepository::get(paymentId: $paymentId);
 
-        return $failurePageReached || $successPageReached || $paymentOlderThan60Seconds;
+        // Always wait 10 seconds, to avoid the order success page and the
+        // callback being processed at the same time. This mitigates race
+        // conditions where the order status is written by both processes at
+        // the same time.
+        if (!$payment->isOlderThan(seconds: 10)) {
+            return false;
+        }
+
+        // Customer either reached order success, order failure, or placed the
+        // order more than 60 seconds ago.
+        return (
+            $failurePageReached ||
+            $successPageReached ||
+            $payment->isOlderThan(seconds: 60)
+        );
     }
 }
