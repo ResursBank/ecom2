@@ -258,6 +258,17 @@ class Payment extends Model
     }
 
     /**
+     * Check if payment is older than the specified seconds.
+     *
+     * @param int $seconds
+     * @return bool
+     */
+    public function isOlderThan(int $seconds): bool
+    {
+        return time() > strtotime(datetime: $this->created) + $seconds;
+    }
+
+    /**
      * Checks if rejection reason is the supplied reason.
      */
     private function isRejectedReason(RejectedReasonCategory $reason): bool
