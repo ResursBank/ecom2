@@ -3430,5 +3430,25 @@
       "sv": "Betalningen kan inte återbetalas",
       "no": "Betalingen kan ikke refunderes"
     }
+  },
+  {
+    "id": "handle-frozen-payments",
+    "translation": {
+      "en": "Handle frozen payments",
+      "sv": "Hantera frysta betalningar",
+      "no": "Håndtere fryste betalinger",
+      "dk": "Håndtere fryste betalinger",
+      "fi": "Käsittele jäädytetyt maksut"
+    }
+  },
+  {
+    "id": "handle-manual-inspection",
+    "translation": {
+      "en": "Handle manual inspection",
+      "sv": "Hantera manuell inspektion",
+      "no": "Håndter manuell inspeksjon",
+      "dk": "Håndter manuel inspektion",
+      "fi": "Käsittele manuaalinen tarkastus"
+    }
   }
 ]
