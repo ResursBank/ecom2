@@ -3450,5 +3450,25 @@
       "dk": "Håndter manuel inspektion",
       "fi": "Käsittele manuaalinen tarkastus"
     }
+  },
+  {
+    "id": "handle-frozen-payments-comment",
+    "translation": {
+      "en": "Payments may be frozen due to fraud controls. If you want as many approved payments as possible, you should handle frozen payments. When a payment is frozen the customer is informed that the purchase is ready, but the goods shall not be shipped/handed over to the customer until the payment is captured.",
+      "sv": "",
+      "no": "",
+      "dk": "",
+      "fi": ""
+    }
+  },
+  {
+    "id": "handle-manual-inspection-comment",
+    "translation": {
+      "en": "If handleManualInspection is enabled the flow may be stopped and the customer or salesperson needs talk to Resurs Bank customer service before the credit can be approved. This can be handled in the redirection flow by the customer and the customer will get a reminder when the credit is approved.",
+      "sv": "",
+      "no": "",
+      "dk": "",
+      "fi": ""
+    }
   }
 ]
