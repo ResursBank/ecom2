@@ -3462,5 +3462,15 @@
     "translation": {
       "en": "If handleManualInspection is enabled the flow may be stopped and the customer or salesperson needs talk to Resurs Bank customer service before the credit can be approved. This can be handled in the redirection flow by the customer and the customer will get a reminder when the credit is approved."
     }
+  },
+  {
+    "id": "callback-ttl",
+    "translation": {
+      "en": "Time to live (in minutes)",
+      "sv": "TTL (i minuter)",
+      "no": "TTL (i minutter)",
+      "da": "TTL (i minutter)",
+      "fi": "Elinikä (minuuteissa)"
+    }
   }
 ]
