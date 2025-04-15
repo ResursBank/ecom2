@@ -49,7 +49,7 @@ class AuthorizationTest extends TestCase
             created: '2020-10-12 10:09'
         );
 
-        $this->assertSame(expected: $uuid, actual: $auth->paymentId);
+        $this->assertSame(expected: $uuid, actual: $auth->getPaymentId());
 
         $this->expectException(exception: IllegalValueException::class);
         new Authorization(

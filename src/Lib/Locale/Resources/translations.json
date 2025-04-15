@@ -848,9 +848,18 @@
     "id": "authorization-callback-received",
     "translation": {
       "en": "Authorization callback received with status %s.",
-      "sv": "Authorization callback inkom med status %s.",
+      "sv": "Authorization-callback inkom med status %s.",
       "no": "Autorisasjons tilbakeringing mottatt med status %s.",
       "da": "Authorization callback modtaget med status %s."
+    }
+  },
+  {
+    "id": "credit-application-callback-received",
+    "translation": {
+      "en": "Credit application callback received with status %s.",
+      "sv": "Kreditansökningscallback inkom med status %s.",
+      "no": "kredittsøknad tilbakeringing mottatt med status %s.",
+      "da": "kreditansøgning callback modtaget med status %s."
     }
   },
   {

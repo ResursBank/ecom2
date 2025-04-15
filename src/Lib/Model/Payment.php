@@ -128,7 +128,9 @@ class Payment extends Model
      */
     public function isFrozen(): bool
     {
-        return $this->status === Status::FROZEN;
+        return $this->status === Status::FROZEN ||
+            $this->status === Status::INSPECTION
+        ;
     }
 
     /**
