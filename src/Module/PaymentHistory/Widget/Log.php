@@ -40,6 +40,7 @@ class Log extends Widget
 
     /**
      * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly EntryCollection $entries,
