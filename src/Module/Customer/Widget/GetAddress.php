@@ -50,7 +50,7 @@ class GetAddress extends Widget
         public CustomerType $customerType = CustomerType::NATURAL,
         public readonly bool $automatic = false,
         public readonly string $inputClassList = '',
-        public readonly string $btnClassList = '',
+        public readonly string $btnClassList = ''
     ) {
         if ($this->shouldRender()) {
             $this->content = $this->render(
