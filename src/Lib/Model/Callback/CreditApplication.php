@@ -67,7 +67,9 @@ class CreditApplication extends Model implements CallbackInterface
     public function getNote(): string
     {
         return sprintf(
-            Translator::translate(phraseId: 'credit-application-callback-received'),
+            Translator::translate(
+                phraseId: 'credit-application-callback-received'
+            ),
             $this->status->value
         );
     }
