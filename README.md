@@ -840,7 +840,7 @@ class MyAuthorizationController extends AuthorizationController
     {
         // Resolve order from payment ID.
         $order = MyOrderREpository::getOrderFromPaymentId(
-            paymentId: $callback->paymentId,
+            paymentId: $callback->getPaymentId(),
         );
         
         // Update order status or whatever in your system by comparing

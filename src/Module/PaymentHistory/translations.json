@@ -300,6 +300,16 @@
     }
   },
   {
+    "id": "event-callback-credit-application",
+    "translation": {
+      "en": "Credit application callback accepted.",
+      "sv": "Kreditansökningscallback accepterad.",
+      "da": "kredittsøknad callback accepteret.",
+      "no": "kreditansøgning callback akseptert.",
+      "fi": "luottohakemus callback hyväksytty."
+    }
+  },
+  {
     "id": "event-callback-authorization",
     "translation": {
       "en": "Authorization callback accepted.",

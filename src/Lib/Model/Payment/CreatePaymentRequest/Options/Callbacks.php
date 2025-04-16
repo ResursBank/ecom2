@@ -18,7 +18,8 @@ class Callbacks extends Model
 {
     public function __construct(
         public readonly ?Callback $authorization,
-        public readonly ?Callback $management
+        public readonly ?Callback $management,
+        public readonly ?Callback $creditApplication
     ) {
         parent::__construct();
     }

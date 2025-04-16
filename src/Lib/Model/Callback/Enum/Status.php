@@ -20,4 +20,6 @@ enum Status: string
     case CAPTURED = 'CAPTURED';
     case FROZEN = 'FROZEN';
     case REJECTED = 'REJECTED';
+    case INSPECTION = 'INSPECTION';
+    case CREDIT_APPROVED = 'CREDIT_APPROVED';
 }

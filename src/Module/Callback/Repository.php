@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
+use Resursbank\Ecom\Lib\Model\Callback\CreditApplication;
 use Resursbank\Ecom\Lib\Model\Callback\Management;
 use Resursbank\Ecom\Lib\Model\Callback\TestResponse;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
@@ -140,8 +141,8 @@ class Repository
                 paymentId: $paymentId,
                 event: Event::CALLBACK_FAILED,
                 user: User::ADMIN,
-                extra: PaymentHistoryRepository::getError(error: $error),
-                result: Result::ERROR
+                result: Result::ERROR,
+                extra: PaymentHistoryRepository::getError(error: $error)
             ));
         } catch (Throwable $e) {
             self::logException(exception: $e);
@@ -163,6 +164,9 @@ class Repository
 
             if ($callback instanceof Authorization) {
                 $event = Event::CALLBACK_AUTHORIZATION;
+                $extra = $callback->status->value;
+            } elseif ($callback instanceof CreditApplication) {
+                $event = Event::CALLBACK_CREDIT_APPLICATION;
                 $extra = $callback->status->value;
             } else {
                 $event = Event::CALLBACK_MANAGEMENT;

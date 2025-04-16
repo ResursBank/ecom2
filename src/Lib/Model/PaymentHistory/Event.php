@@ -25,6 +25,7 @@ enum Event: string
     case PARTIALLY_CANCELLED = 'event-partially-cancelled';
     case REQUEST_FAILED = 'event-request-failed';
     case CALLBACK_AUTHORIZATION = 'event-callback-authorization';
+    case CALLBACK_CREDIT_APPLICATION = 'event-callback-credit-application';
     case CALLBACK_MANAGEMENT = 'event-callback-management';
     case CALLBACK_COMPLETED = 'event-callback-completed';
     case CALLBACK_FAILED = 'event-callback-failed';
