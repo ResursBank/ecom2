@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Widget;
 
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Throwable;
 
 /**
  * Basic widget functionality.
@@ -42,16 +45,25 @@ class Widget
     public function render(
         string $file
     ): string {
-        ob_start();
+        try {
+            if (!file_exists(filename: $file)) {
+                throw new FilesystemException(
+                    message: "Template file not found: $file"
+                );
+            }
 
-        if (!file_exists(filename: $file)) {
-            throw new FilesystemException(
-                message: "Template file not found: $file"
-            );
+            ob_start();
+            require $file;
+            return (string)ob_get_clean();
+        } catch (Throwable $error) {
+            try {
+                Config::getLogger()->error(message: $error);
+            } catch (ConfigException) {
+                // Do nothing just to prevent ConfigExceptions breaking
+                // the rendering of the widget.
+            }
+
+            return '';
         }
-
-        require $file;
-
-        return (string) ob_get_clean();
     }
 }

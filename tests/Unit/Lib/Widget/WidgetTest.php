@@ -31,4 +31,11 @@ final class WidgetTest extends TestCase
             actual: Widget::getTagNames(content: '')
         );
     }
+
+    public function testExceptionDuringRendering(): void
+    {
+        $widget = new Widget();
+        $result = $widget->render(file: __DIR__ . 'fsdjiosefhuivnsjk');
+        $this->assertEquals(expected: '', actual: $result);
+    }
 }
