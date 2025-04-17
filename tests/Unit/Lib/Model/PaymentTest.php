@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Model;
 
+use DateInterval;
 use DateTime;
 use Exception;
 use JsonException;
@@ -18,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment;
@@ -48,7 +48,8 @@ class PaymentTest extends TestCase
     private function createDummyPayment(
         Status $status,
         ?RejectedReasonCategory $rejectedReasonCategory = null,
-        ?Payment\Order\PossibleActionCollection $possibleActions = null
+        ?Payment\Order\PossibleActionCollection $possibleActions = null,
+        ?string $created = null
     ): Payment {
         if ($possibleActions === null) {
             $possibleActions = new Payment\Order\PossibleActionCollection(
@@ -56,9 +57,13 @@ class PaymentTest extends TestCase
             );
         }
 
+        if ($created === null) {
+            $created = (new DateTime())->format(format: 'c');
+        }
+
         return new Payment(
             id: Strings::getUuid(),
-            created: (new DateTime())->format(format: 'c'),
+            created: $created,
             storeId: Strings::getUuid(),
             customer: new Payment\Customer(
                 customerType: CustomerType::NATURAL
@@ -159,7 +164,6 @@ class PaymentTest extends TestCase
      * Verify that the isFrozen method works as intended
      *
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
@@ -205,7 +209,6 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @throws IllegalCharsetException
      */
     public function testIsRejectionReasonCreditDenied(): void
     {
@@ -233,7 +236,6 @@ class PaymentTest extends TestCase
      * @throws IllegalTypeException
      * @throws EmptyValueException
      * @throws IllegalValueException
-     * @throws IllegalCharsetException
      */
     public function testIsRejectionReasonAbortedByCustomer(): void
     {
@@ -249,7 +251,6 @@ class PaymentTest extends TestCase
 
     /**
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
@@ -267,7 +268,42 @@ class PaymentTest extends TestCase
 
     /**
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsOlderThan(): void
+    {
+        $olderThanTime = 30;
+        $currentTime = new DateTime();
+        $createTime = clone $currentTime;
+        $createTime->sub(interval: new DateInterval(
+            duration: 'PT' . ($olderThanTime + 1) . 'S'
+        ));
+        $isOlderThan = $this->createDummyPayment(
+            status: Status::ACCEPTED,
+            created: $createTime->format(format: 'c')
+        );
+
+        $this->assertTrue(
+            condition: $isOlderThan->isOlderThan(seconds: $olderThanTime)
+        );
+
+        $createTime = clone $currentTime;
+        $createTime->sub(interval: new DateInterval(
+            duration: 'PT' . ($olderThanTime - 1) . 'S'
+        ));
+        $isNotOlderThan = $this->createDummyPayment(
+            status: Status::ACCEPTED,
+            created: $createTime->format(format: 'c')
+        );
+
+        $this->assertFalse(
+            condition: $isNotOlderThan->isOlderThan(seconds: $olderThanTime)
+        );
+    }
+
+    /**
+     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
@@ -285,7 +321,6 @@ class PaymentTest extends TestCase
 
     /**
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */
@@ -303,7 +338,6 @@ class PaymentTest extends TestCase
 
     /**
      * @throws EmptyValueException
-     * @throws IllegalCharsetException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      */

@@ -261,9 +261,6 @@ class Payment extends Model
 
     /**
      * Check if payment is older than the specified seconds.
-     *
-     * @param int $seconds
-     * @return bool
      */
     public function isOlderThan(int $seconds): bool
     {

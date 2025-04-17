@@ -301,10 +301,10 @@ class Repository
 
         // Customer either reached order success, order failure, or placed the
         // order more than 60 seconds ago.
-        return (
+        return
             $failurePageReached ||
             $successPageReached ||
             $payment->isOlderThan(seconds: 60)
-        );
+        ;
     }
 }

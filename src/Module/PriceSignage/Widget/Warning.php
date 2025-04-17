@@ -22,11 +22,11 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Warning extends Widget
 {
-    /** @var string */
     public string $content;
 
     /**
      * @throws FilesystemException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly PriceSignage $priceSignage,

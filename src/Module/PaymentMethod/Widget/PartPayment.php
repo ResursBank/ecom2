@@ -72,7 +72,7 @@ class PartPayment extends Widget
      * product / cart changes where this widget is used. The endpoint must sit
      * in your implementation, the JS method which uses this method can then
      * be called to fetch the starting cost (see the template of this widget).
-     * @paream bool $showCostExample Hides cost list and pricing example if set to false.
+     * @param bool $showCostExample Hides cost list and pricing example if set to false.
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException

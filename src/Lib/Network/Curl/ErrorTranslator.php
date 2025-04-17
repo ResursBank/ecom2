@@ -15,7 +15,10 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
 
 /**
- * Converter to turn property names like "customer.mobilePhone" into more user-friendly strings like "mobile phone"
+ * Property name translator.
+ *
+ * Converter to turn property names like "customer.mobilePhone" into more
+ * user-friendly strings like "mobile phone".
  */
 abstract class ErrorTranslator
 {
@@ -34,7 +37,10 @@ abstract class ErrorTranslator
                 translationFile: __DIR__ . '/Resources/errors.json'
             );
         } catch (Throwable $error) {
-            Config::getLogger()->error(message: 'Failure while translating the phrase "' . $errorMessage . '"');
+            Config::getLogger()->error(
+                message: 'Failure while translating the phrase "' .
+                $errorMessage . '"'
+            );
             Config::getLogger()->error(message: $error);
             return $errorMessage;
         }
