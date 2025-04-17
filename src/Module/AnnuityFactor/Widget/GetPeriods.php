@@ -52,7 +52,7 @@ class GetPeriods extends Widget
         public readonly ?string $periodElementId = null,
         public readonly bool $automatic = true,
         public readonly ?string $selectedPaymentMethod = null,
-        public readonly ?string $selectedPeriod = null
+        public readonly ?int $selectedPeriod = null
     ) {
         $this->js = $this->render(file: __DIR__ . '/get-periods.js.phtml');
     }
