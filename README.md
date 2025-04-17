@@ -30,6 +30,10 @@ We will supply examples in this document of how you can incorporate these
 controllers into your application. Please keep in mind that these examples are
 simplified and may not fit your application without modification.
 
+In `src/Lib/Http` you will find some base controllers, including `Js` and `Css`
+which are used for rendering dynamic content which can't be included in-line on
+various platforms due to security policies.
+
 ## Code samples
 
 Any code example supplied by this document expects you to have executed the
