@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\AnnuityFactor\Widget;
+namespace Resursbank\Ecom\Module\Widget;
 
 use JsonException;
 use ReflectionException;
@@ -35,7 +35,7 @@ use Throwable;
 class GetPeriods extends Widget
 {
     /** @var string */
-    public readonly string $js;
+    public readonly string $content;
 
     /**
      * @param string|null $methodElementId Required when using standard widget
@@ -47,17 +47,18 @@ class GetPeriods extends Widget
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        public readonly string $storeId,
         public readonly ?string $methodElementId = null,
         public readonly ?string $periodElementId = null,
         public readonly bool $automatic = true,
         public readonly ?string $selectedPaymentMethod = null,
         public readonly ?int $selectedPeriod = null
     ) {
-        $this->js = $this->render(file: __DIR__ . '/get-periods.js.phtml');
+        $this->content = $this->render(file: __DIR__ . '/get-periods.js.phtml');
     }
 
     /**
+     * Fetch annuity factors for each payment method.
+     *
      * Fetch annuity factors for each payment method and add them to the
      * resulting array. Each payment method defines an inner array with the
      * annuity factors for that payment method, keyed by the period.
@@ -89,33 +90,25 @@ class GetPeriods extends Widget
 
     /**
      * Fetch payment method IDs and names.
+     *
+     * @throws JsonException
      */
     public function getJsonPaymentMethods(): string
     {
-        try {
-            $result = [];
-            $methods = Repository::filterMethods(
-                PaymentMethodRepository::getPaymentMethods()
-            );
+        $result = [];
+        $methods = Repository::filterMethods(
+            PaymentMethodRepository::getPaymentMethods()
+        );
 
-            /** @var PaymentMethod $method */
-            foreach ($methods as $method) {
-                $result[$method->getId()] = [
-                    'id' => $method->getId(),
-                    'name' => $method->getName()
-                ];
-            }
-
-            return json_encode(value: $result, flags: JSON_THROW_ON_ERROR);
-        } catch (Throwable $error) {
-            try {
-                Config::getLogger()->error($error);
-            } catch (ConfigException) {
-                // Do nothing.
-            }
+        /** @var PaymentMethod $method */
+        foreach ($methods as $method) {
+            $result[$method->getId()] = [
+                'id' => $method->getId(),
+                'name' => $method->getName()
+            ];
         }
 
-        return '{}';
+        return json_encode(value: $result, flags: JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -134,7 +127,7 @@ class GetPeriods extends Widget
      * @throws Throwable
      * @throws ValidationException
      */
-    private function getAnnuityFactorsForMethod(PaymentMethod $method): array
+    public function getAnnuityFactorsForMethod(PaymentMethod $method): array
     {
         $result = [];
         $annuityFactors = Repository::getAnnuityFactors(
@@ -143,7 +136,8 @@ class GetPeriods extends Widget
 
         /** @var AnnuityInformation $annuityFactor */
         foreach ($annuityFactors as $annuityFactor) {
-            $result[$annuityFactor->durationMonths] = $annuityFactor->paymentPlanName;
+            $result[$annuityFactor->durationMonths] =
+                $annuityFactor->paymentPlanName;
         }
 
         return $result;
