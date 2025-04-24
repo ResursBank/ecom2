@@ -7,15 +7,18 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\AnnuityFactor\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
+use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Widget\GetPeriods;
 use Throwable;
 
 /**
@@ -58,7 +61,6 @@ class GetPeriodsTest extends TestCase
         $periodElementId = 'period-el';
 
         $widget = new GetPeriods(
-            storeId: $_ENV['STORE_ID'],
             methodElementId: $methodElementId,
             periodElementId: $periodElementId,
             automatic: false
@@ -67,21 +69,21 @@ class GetPeriodsTest extends TestCase
         // Confirm class Resursbank_GetPeriods exists.
         $this->assertStringContainsString(
             needle: 'Resursbank_GetPeriods',
-            haystack: $widget->js
+            haystack: $widget->content
         );
 
         // Confirm result = document.getElementById('$this->methodElementId')
         // is rendered.
         $this->assertStringContainsString(
             needle: "result = document.getElementById('" . $methodElementId . "')",
-            haystack: $widget->js
+            haystack: $widget->content
         );
 
         // Confirm result = document.getElementById('$this->periodElementId')
         // is rendered.
         $this->assertStringContainsString(
             needle: "result = document.getElementById('" . $periodElementId . "')",
-            haystack: $widget->js
+            haystack: $widget->content
         );
 
         // Confirm that "document.addEventListener(" followed by
@@ -89,28 +91,25 @@ class GetPeriodsTest extends TestCase
         // automatic is set to false.
         $this->assertDoesNotMatchRegularExpression(
             pattern: '/document\.addEventListener\([^)]*DOMContentLoaded[^)]*\)/',
-            string: $widget->js,
+            string: $widget->content,
             message: "Automatic widget initialization is not present in the widget content."
         );
 
         // Widget without elements.
-        $widgetNoElements = new GetPeriods(
-            storeId: $_ENV['STORE_ID'],
-            automatic: true
-        );
+        $widgetNoElements = new GetPeriods(automatic: true);
 
         // Confirm result = document.getElementById('$this->methodElementId')
         // isn't rendered.
         $this->assertStringNotContainsString(
             needle: "result = document.getElementById('" . $methodElementId . "')",
-            haystack: $widgetNoElements->js
+            haystack: $widgetNoElements->content
         );
 
         // Confirm result = document.getElementById('$this->periodElementId')
         // isn't rendered.
         $this->assertStringNotContainsString(
             needle: "result = document.getElementById('" . $periodElementId . "')",
-            haystack: $widgetNoElements->js
+            haystack: $widgetNoElements->content
         );
 
         // Confirm that "document.addEventListener(" followed by
@@ -118,7 +117,7 @@ class GetPeriodsTest extends TestCase
         // automatic is set to true.
         $this->assertMatchesRegularExpression(
             pattern: '/document\.addEventListener\([^)]*DOMContentLoaded[^)]*\)/',
-            string: $widgetNoElements->js,
+            string: $widgetNoElements->content,
             message: "Automatic widget initialization is not present in the widget content."
         );
     }
@@ -138,7 +137,7 @@ class GetPeriodsTest extends TestCase
      */
     public function testGetJsonData(): void
     {
-        $widget = new GetPeriods(storeId: $_ENV['STORE_ID'], automatic: false);
+        $widget = new GetPeriods(automatic: false);
 
         $jsonData = $widget->getJsonData();
 
@@ -148,7 +147,6 @@ class GetPeriodsTest extends TestCase
             $data = json_decode(
                 json: $jsonData,
                 associative: true,
-                depth: 512,
                 flags: JSON_THROW_ON_ERROR
             );
 
@@ -178,6 +176,88 @@ class GetPeriodsTest extends TestCase
             $this->fail(
                 message: 'Failed to parse JSON periods data: ' . $error->getMessage()
             );
+        }
+    }
+
+    /**
+     * Verify the output of getJsonPaymentMethods.
+     *
+     * @throws JsonException
+     */
+    public function testGetJsonPaymentMethods(): void
+    {
+        $widget = new GetPeriods();
+
+        $jsonPaymentMethods = $widget->getJsonPaymentMethods();
+
+        $this->assertNotEmpty(actual: $jsonPaymentMethods);
+        $this->assertIsString(actual: $jsonPaymentMethods);
+
+        try {
+            $decoded = json_decode(
+                json: $jsonPaymentMethods,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR
+            );
+            $this->addToAssertionCount(count: 1);
+        } catch (Throwable $error) {
+            $this->fail(
+                message: 'Unable to parse JSON data: ' .
+                $error->getMessage()
+            );
+        }
+
+        $this->assertIsArray(actual: $decoded);
+
+        foreach ($decoded as $methodId => $method) {
+            $this->assertIsString(actual: $methodId);
+            $this->assertTrue(
+                condition: Strings::isUuid(value: $methodId)
+            );
+            $this->assertIsArray(actual: $method);
+            $this->assertArrayHasKey(key: 'id', array: $method);
+            $this->assertArrayHasKey(key: 'name', array: $method);
+            $this->assertEquals(expected: $methodId, actual: $method['id']);
+            $this->assertNotEmpty(actual: $method['name']);
+        }
+    }
+
+    /**
+     * Verify the output of getAnnuityFactorsForMethod.
+     */
+    public function testGetAnnuityFactorsForMethod(): void
+    {
+        $widget = new GetPeriods();
+
+        try {
+            $paymentMethod = Repository::getById(
+                paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
+            );
+        } catch (Throwable $error) {
+            $this->fail(
+                message: 'Unable to fetch payment method: ' .
+                $error->getMessage()
+            );
+        }
+
+        $this->assertNotNull(actual: $paymentMethod);
+
+        try {
+            $annuityFactors = $widget->getAnnuityFactorsForMethod(
+                method: $paymentMethod
+            );
+        } catch (Throwable $error) {
+            $this->fail(
+                message: 'Unable to fetch annuity factors for method: ' .
+                $error->getMessage()
+            );
+        }
+
+        $this->assertNotEmpty(actual: $annuityFactors);
+
+        foreach ($annuityFactors as $period => $annuityFactor) {
+            $this->assertIsInt(actual: $period);
+            $this->assertIsString(actual: $annuityFactor);
         }
     }
 }
