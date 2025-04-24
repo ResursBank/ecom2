@@ -531,8 +531,8 @@ $paymentMethods = Repository::getMethods(
 
 ## [Widget] GetPeriods
 
-*src/Module/AnnuityFactor/Widget/GetPeriods*
-*src/Module/AnnuityFactor/Widget/get-periods.js.phtml* (JavaScript template)
+*src/Module/Widget/GetPeriods*
+*src/Module/Widget/get-periods.js.phtml* (JavaScript template)
 
 Configuration assistant. Simplifies interaction with config fields to select
 **payment method** and associated **duration**. For example, "Invoice", "12"
@@ -549,7 +549,7 @@ the same **.phtml** file.
 
 **Note: You are expected to pre-populate these fields yourself. This is because
 we cannot make assumptions regarding how your hypothetical configuration system
-works. You are expected to give give fields initial selection values. Our example
+works. You are expected to give fields initial selection values. Our example
 below will show an example of pre-population.**
 
 **Note: that *period* means the number of *months* defined by an annuity factor.**
@@ -559,7 +559,7 @@ below will show an example of pre-population.**
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods;
+use \Resursbank\Ecom\Module\Widget\GetPeriods;
 use \Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use \Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
@@ -664,7 +664,7 @@ will override the default functions in the widget. Ergo, you can modify whatever
 functionality you want while leaving the rest as is.
 
 It should also be noted that **generate** is a helper method to create an instance
-of the JavaScript class **Resursbank_GetPeriods**, setup relevant event listners
+of the JavaScript class **Resursbank_GetPeriods**, setup relevant event listeners
 and populate form data all in one.
 
 If you wanted even greater control, you could call **new Resursbank_GetPeriods()**
@@ -679,14 +679,14 @@ new Resursbank_GetPeriods({
 });
 ```
 
-Note that doing this means you will need to setup event listeners etc. yourself.
+Note that doing this means you will need to set up event listeners etc. yourself.
 
 We will now take a closer look at the widget JavaScript class and explain briefly
 how it works.
 
 **Resursbank_GetPeriods.data** will contain a JSON object with all available
 payment methods, and their associated period values. This data is obtained from
-**\Resursbank\Ecom\Module\AnnuityFactor\Widget\GetPeriods::getJsonData()**
+**\Resursbank\Ecom\Module\Widget\GetPeriods::getJsonData()**
 
 
 **Resursbank_GetPeriods.generate** will create an instance of the
