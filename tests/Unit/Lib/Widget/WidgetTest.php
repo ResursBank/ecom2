@@ -38,4 +38,14 @@ final class WidgetTest extends TestCase
         $result = $widget->render(file: __DIR__ . 'fsdjiosefhuivnsjk');
         $this->assertEquals(expected: '', actual: $result);
     }
+
+    /**
+     * Verify that an empty string is returned of file doesn't exist.
+     */
+    public function testRenderStatic(): void
+    {
+        $widget = new Widget();
+        $result = $widget->renderStatic(file: __DIR__ . 'fsdjiosefhuivnsjk');
+        $this->assertEquals(expected: '', actual: $result);
+    }
 }
