@@ -254,8 +254,14 @@ class Payment extends Model
         }
 
         return
-            $this->order->authorizedAmount === 0.0 &&
-            $this->order->canceledAmount === $this->order->totalOrderAmount
+            (
+                $this->order->authorizedAmount === 0.0 &&
+                $this->order->canceledAmount === $this->order->totalOrderAmount
+            ) ||
+            (
+                $this->status === Status::REJECTED &&
+                $this->rejectedReason->category === RejectedReasonCategory::CANCELED
+            )
         ;
     }
 
