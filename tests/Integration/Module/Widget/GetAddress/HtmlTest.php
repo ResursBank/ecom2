@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Customer\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\GetAddress;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -18,12 +18,12 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Module\Customer\Widget\GetAddress;
+use Resursbank\Ecom\Module\Widget\GetAddress\Html;
 
 /**
- * Integration tests for the GetAddress widget.
+ * Integration tests for the GetAddress HTML widget.
  */
-class GetAddressTest extends TestCase
+class HtmlTest extends TestCase
 {
     /**
      * @throws EmptyValueException
@@ -77,15 +77,10 @@ class GetAddressTest extends TestCase
      * - Input with id rb-ga-ct-legal does not have "checked" attribute
      * - Input with id rb-ga-gov-id has empty value
      * - Element with id rb-ga-error has no innerHtml
-     *
-     * $data->js does not contain:
-     *
-     * - "new Resursbank_GetAddress().setupEventListeners();" to ensure
-     * $this->>automatic is respected.
      */
     public function testRenderMin(): void
     {
-        $data = new GetAddress();
+        $data = new Html();
 
         static::assertStringContainsString(
             needle: 'id="rb-ga-widget"',
@@ -121,13 +116,6 @@ class GetAddressTest extends TestCase
             string: $data->content,
             message: 'Get address widget should contain an element with id "rb-ga-error" and no innerHtml.'
         );
-
-        // Confirm automatic is respected.
-        static::assertDoesNotMatchRegularExpression(
-            pattern: '/new Resursbank_GetAddress\(\).setupEventListeners\(\);/',
-            string: $data->js,
-            message: 'Get address widget should not contain "new Resursbank_GetAddress().setupEventListeners();".'
-        );
     }
 
     /**
@@ -140,20 +128,14 @@ class GetAddressTest extends TestCase
      * - Input with id "rb-ga-ct-natural" does not have "checked" attribute
      * - Input with id "rb-ga-gov-id" has value "1234567890"
      * - Element with id "rb-ga-error" has empty innerHtml
-     *
-     * $data->js containers:
-     *
-     * - contains "return 'https://example.com'" to confirm URL is used.
-     * - contains "new Resursbank_GetAddress().setupEventListeners();" to ensure
-     * $this->>automatic is respected.
      */
     public function testRenderMax(): void
     {
-        $data = new GetAddress(
-            url: 'https://example.com',
+        $data = new Html(
             govId: '1234567890',
             customerType: CustomerType::LEGAL,
-            automatic: true
+            inputClassList: 'foo bar',
+            btnClassList: 'bar foo'
         );
 
         static::assertStringContainsString(
@@ -191,18 +173,14 @@ class GetAddressTest extends TestCase
             message: 'Get address widget should contain an element with id "rb-ga-error" and no innerHtml.'
         );
 
-        // Confirm URL is used.
         static::assertStringContainsString(
-            needle: 'return \'https://example.com\'',
-            haystack: $data->js,
-            message: 'Get address widget should contain URL "https://example.com".'
+            needle: 'class="foo bar"',
+            haystack: $data->content
         );
 
-        // Confirm automatic is respected.
         static::assertStringContainsString(
-            needle: 'new Resursbank_GetAddress().setupEventListeners();',
-            haystack: $data->js,
-            message: 'Get address widget should contain "new Resursbank_GetAddress().setupEventListeners();".'
+            needle: '<button type="button" id="rb-ga-btn" class="bar foo">',
+            haystack: $data->content
         );
     }
 
@@ -214,7 +192,7 @@ class GetAddressTest extends TestCase
      */
     public function testShouldRender(): void
     {
-        $widget = new GetAddress();
+        $widget = new Html();
         static::assertTrue(
             condition: $widget->shouldRender()
         );

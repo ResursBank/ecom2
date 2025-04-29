@@ -48,6 +48,10 @@ class Widget
      */
     public function renderStatic(string $file): string
     {
+        if (!$this->shouldRender()) {
+            return '';
+        }
+
         if (!file_exists($file)) {
             try {
                 Config::getLogger()->error(
@@ -78,6 +82,10 @@ class Widget
     public function render(
         string $file
     ): string {
+        if (!$this->shouldRender()) {
+            return '';
+        }
+
         try {
             if (!file_exists(filename: $file)) {
                 throw new FilesystemException(
@@ -98,6 +106,16 @@ class Widget
 
             return '';
         }
+    }
+
+    /**
+     * Check if widget should be rendered.
+     *
+     * This method exists to be overridden by child class implementations.
+     */
+    public function shouldRender(): bool
+    {
+        return true;
     }
 
     /**

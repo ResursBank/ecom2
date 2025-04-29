@@ -948,10 +948,12 @@ class MyGetAddressController extends GetAddressController
 
 ## [Widget] GetAddress
 
-* *src/Module/Customer/Widget/GetAddress* (widget PHP class)
-* *src/Module/Customer/Widget/get-address.js.phtml* (JavaScript template)
-* *src/Module/Customer/Widget/get-address.css* (stylesheet)
-* *src/Module/Customer/Widget/get-address.phtml* (HTML template)
+* *src/Module/Widget/GetAddress/Html* (widget HTML PHP class)
+* *src/Module/Widget/GetAddress/Js* (widget JS PHP class)
+* * *src/Module/Widget/GetAddress/Css* (widget CSS PHP class)
+* *src/Module/Widget/GetAddress/get-address.js.phtml* (JavaScript template)
+* *src/Module/Widget/GetAddress/get-address.css* (stylesheet)
+* *src/Module/Widget/GetAddress/get-address.phtml* (HTML template)
 
 This will render a form where the customer can select their type ("NATURAL" or 
 "LEGAL") and enter their government ID (SSN or organization number). The
@@ -966,7 +968,9 @@ from the previous example.
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\Customer\Widget\GetAddress;
+use \Resursbank\Ecom\Module\Widget\GetAddress\Html;
+use \Resursbank\Ecom\Module\Widget\GetAddress\Js;
+use \Resursbank\Ecom\Module\Widget\GetAddress\Css;
 
 // Note that you also can supply a $governmentId and $customerType to
 // pre-populate the form should you wish to. Also, you can set $automatic to
@@ -975,20 +979,22 @@ use \Resursbank\Ecom\Module\Customer\Widget\GetAddress;
 // customer loader while the request is being processed. For the purpose of this
 // example, we will leave it as false, just to give you an idea of how you could
 // modify the widget to fit your needs.
-$widget = new GetAddress(
+$html = new Html();
+$js = new Js(
     url: 'https://whatever.com/get-addres'
 );
+$css = new Css();
 
 ?>
 
 <style>
-    <?= $widget->css ?>
+    <?= $css->content ?>
 </style>
 
-<?= $widget->content ?>
+<?= html->content ?>
 
 <script>
-    <?= $widget->js ?>
+    <?= $js->content ?>
 
     // If you had set automatic to true, this method would be called automatically.
     // upon document load. Since we set it to false, we need to call it manually.
