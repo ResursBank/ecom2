@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Callback\Widget;
+namespace Resursbank\EcomTest\Unit\Module\Widget\CallbackList;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -23,12 +23,12 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\Callback\Widget\Callback;
+use Resursbank\Ecom\Module\Widget\CallbackList\Html;
 
 /**
  * Tests for the Callback widget.
  */
-class CallbackTest extends TestCase
+class HtmlTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -54,7 +54,7 @@ class CallbackTest extends TestCase
         $authorizationUrl = 'https://example.com/authorization';
         $managementUrl = 'https://example.com/management';
 
-        $widget = new Callback(
+        $widget = new Html(
             authorizationUrl: $authorizationUrl,
             managementUrl: $managementUrl
         );
@@ -87,7 +87,7 @@ class CallbackTest extends TestCase
         );
         $managementUrl = 'https://example.com/management';
 
-        $widget = new Callback(
+        $widget = new Html(
             authorizationUrl: null,
             managementUrl: $managementUrl
         );

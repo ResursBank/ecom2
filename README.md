@@ -768,11 +768,11 @@ instance of **\Resursbank\Ecom\Lib\Model\Callback\Authorization**.
 Contains a method to resolve request data from an incoming request as an
 instance of **\Resursbank\Ecom\Lib\Model\Callback\Management**.
 
-## [Widget] Callback
+## [Widget] CallbackList
 
-* *src/Module/Callback/Widget/Callback* (widget PHP class)
-* *src/Module/Callback/Widget/callback.phtml* (HTML template)
-* *src/Module/Callback/Widget/callback.css* (stylesheet)
+* *src/Module/Widget/CallbackList* (widget PHP class)
+* *src/Module/Widget/CallbackList/callback.phtml* (HTML template)
+* *src/Module/Widget/CallbackList/callback.css* (stylesheet)
 
 This widget simply displays the expected URLs for **Authorization** and
 **Management** callbacks. This is useful if you want to display the URLs in an
@@ -783,17 +783,19 @@ administration panel or similar.
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\Callback\Widget\Callbacks;
+use \Resursbank\Ecom\Module\Widget\CallbackList\Html;
+use \Resursbank\Ecom\Module\Widget\CallbackList\Css;
 
-$widget = new Callbacks(
+$widget = new Html(
     authorizationUrl: 'https://your-authorization-callback-url',
     managementUrl: 'https://your-management-callback-url',
 );
+$css = new Css();
 
 ?>
 
 <style>
-    <?= $widget->css ?>
+    <?= $css->content ?>
 </style>
 
 <?= $widget->content ?>
