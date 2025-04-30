@@ -1,32 +1,34 @@
 <?php
 
 /**
- * Copyright © Resurs Bank AB. All rights reserved.
- * See LICENSE for license details.
- */
+* Copyright © Resurs Bank AB. All rights reserved.
+* See LICENSE for license details.
+*/
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Widget\Logo;
+namespace Resursbank\Ecom\Module\Widget\Logo;
 
+use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
-use Resursbank\Ecom\Lib\Widget\Widget as Base;
+use Resursbank\Ecom\Lib\Widget\Widget;
 use RuntimeException;
 
 /**
- * Render logotype by base64 encoding the image file.
- *
- * This widget only supports PNG files.
- */
-class Widget extends Base
+* Render logotype by base64 encoding the image file.
+*
+* This widget only supports PNG files.
+*/
+class Html extends Widget
 {
     public string $file;
 
     public string $html;
 
-    public string $css;
-
+    /**
+     * @throws FilesystemException
+     */
     public function __construct(
         PaymentMethod $paymentMethod
     ) {
@@ -37,7 +39,7 @@ class Widget extends Base
             default => 'resurs.png'
         };
 
-        $this->html = $this->render(file: __DIR__ . '/html.phtml');
+        $this->html = $this->render(file: __DIR__ . '/logo.phtml');
     }
 
     /**
@@ -68,7 +70,7 @@ class Widget extends Base
     /**
      * @suppressWarnings(BooleanArgumentFlag)
      */
-    private function getPngBase64(string $filePath, bool $inclImgTag = true): string
+    public function getPngBase64(string $filePath, bool $inclImgTag = true): string
     {
         $imageData = file_get_contents(filename: $filePath);
 
