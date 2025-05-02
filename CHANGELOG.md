@@ -1,3 +1,8 @@
+# 3.3.1
+
+* Update Payment::isCancelled condition.
+* Change 'fånga' to 'debitera' in the translation file.
+
 # 3.3.0
 
 * Fixes for PrestaShop integration.

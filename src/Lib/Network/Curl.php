@@ -316,6 +316,7 @@ class Curl
             CURLOPT_HEADER => false,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
             CURLOPT_USERAGENT => Header::getUserAgent(),
             CURLOPT_HTTPHEADER => Header::getHeadersData(
                 headers: Header::generateHeaders(
