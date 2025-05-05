@@ -2359,11 +2359,21 @@ them in each individual platform module.
 It does this by outputting the images as base64 encoded strings directly in an
 `img` element's `src` attribute.
 
-```
+```php
 <?php
+// index.phtml
 
 use Resursbank\Ecom\Module\Widget\Logo\Html;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
+$paymentMethod = Repository::getPaymentMethods(
+    storeId: 'store-id'
+)->current();
+
+$logo = new Html(paymentMethod: $paymentMethod);
+?>
+
+<?= $logo->getLogo(inclImgTag: true) ?>
 
 
 ```
