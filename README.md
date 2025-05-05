@@ -2348,3 +2348,22 @@ $widget = new SupportInfo();
 
 **Note that the optional *pluginVersion* argument is only relevant to our local
 development team to identify platform specific modules.**
+
+# [Widget] Logo
+
+* `src/Module/Widget/Logo`
+
+This widget is for rendering logos and thumbnails without needing to include
+them in each individual platform module.
+
+It does this by outputting the images as base64 encoded strings directly in an
+`img` element's `src` attribute.
+
+```
+<?php
+
+use Resursbank\Ecom\Module\Widget\Logo\Html;
+
+
+
+```
