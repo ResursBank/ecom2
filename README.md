@@ -559,11 +559,11 @@ below will show an example of pre-population.**
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\Widget\GetPeriods;
+use \Resursbank\Ecom\Module\Widget\Js;
 use \Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use \Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
-$widget = new GetPeriods(
+$widget = new Js(
     storeId: 'store-id',
     methodElementId: 'payment-method-select-box',
     periodElementId: 'period-select-box',
