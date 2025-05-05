@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Payment\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentInformation;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -42,8 +42,7 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
 use Resursbank\EcomTest\Unit\Lib\Model\PaymentTest;
 use Resursbank\EcomTest\Utilities\MockSigner;
 use Throwable;
@@ -51,11 +50,11 @@ use Throwable;
 /**
  * Tests for the payment information widget.
  */
-class PaymentInformationTest extends TestCase
+class HtmlTest extends TestCase
 {
     private Payment $payment;
 
-    private PaymentInformation $widget;
+    private Html $widget;
 
     /** @noinspection PhpPrivateFieldCanBeLocalVariableInspection */
     private string $orderReference;
@@ -121,11 +120,7 @@ class PaymentInformationTest extends TestCase
         $this->payment = $this->createPayment(
             orderReference: $this->orderReference
         );
-        $this->widget = new PaymentInformation(
-            paymentId: $this->payment->id,
-            currencySymbol: 'kr',
-            currencyFormat: CurrencyFormat::SYMBOL_LAST
-        );
+        $this->widget = new Html(paymentId: $this->payment->id);
     }
 
     /**
@@ -339,34 +334,6 @@ class PaymentInformationTest extends TestCase
     }
 
     /**
-     * Assert getCss() method works, and that the css property is assigned when
-     * the widget is instantiated.
-     */
-    public function testCss(): void
-    {
-        // Assert that the css property on the widget instance is not empty.
-        $this->assertNotEmpty($this->widget->css);
-
-        // Assert that the static getCss() method returns a string.
-        $this->assertIsString(PaymentInformation::getCss());
-
-        // Assert that the static getCss() method returns the same value as the
-        // css property on the widget instance.
-        $this->assertEquals(
-            expected: $this->widget->css,
-            actual: PaymentInformation::getCss(),
-            message: 'getCss() does not return the same value as the css property.'
-        );
-
-        // Assert that the css property contains CSS rules.
-        $this->assertMatchesRegularExpression(
-            pattern: "/\w+:\w+;/",
-            string: $this->widget->css,
-            message: 'CSS property does not contain CSS rules.'
-        );
-    }
-
-    /**
      * Verify that realtime credit denial works. For tests related to the rejectedReasons model, see PaymentTest.
      *
      * @throws Throwable
@@ -387,11 +354,7 @@ class PaymentInformationTest extends TestCase
             $this->assertStringContainsString('REJECTED', $e->getMessage());
         }
 
-        $widget = new PaymentInformation(
-            paymentId: $this->paymentCache->id,
-            currencySymbol: 'kr',
-            currencyFormat: CurrencyFormat::SYMBOL_LAST
-        );
+        $widget = new Html(paymentId: $this->paymentCache->id);
 
         $this->assertMatchesRegularExpression(
             pattern: '/<td(.*?)>Status<\/td><td>REJECTED \(Credit denied\)<\/td>/s',

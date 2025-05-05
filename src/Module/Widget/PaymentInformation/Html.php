@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Widget;
+namespace Resursbank\Ecom\Module\Widget\PaymentInformation;
 
 use JsonException;
 use ReflectionException;
@@ -27,13 +27,12 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Throwable;
 
 /**
  * Renders Payment Information widget for use in admin panel order view
  */
-class PaymentInformation extends Widget
+class Html extends Widget
 {
     /**
      * This is over-written by other implementations extending this class.
@@ -45,9 +44,6 @@ class PaymentInformation extends Widget
 
     /** @var string */
     public readonly string $content;
-
-    /** @var string */
-    public readonly string $css;
 
     /** @var string */
     public readonly string $logo;
@@ -68,32 +64,10 @@ class PaymentInformation extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly string $paymentId,
-        public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat
+        public readonly string $paymentId
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
         $this->renderWidget();
-    }
-
-    /**
-     * Get CSS statically on demand.
-     *
-     * @throws EmptyValueException
-     */
-    public static function getCss(): string
-    {
-        $css = file_get_contents(
-            filename: __DIR__ . '/payment-information.css'
-        );
-
-        if (!$css) {
-            throw new EmptyValueException(
-                message: 'Failed to load stylesheet.'
-            );
-        }
-
-        return $css;
     }
 
     public function hasAddress(): bool
@@ -197,16 +171,11 @@ class PaymentInformation extends Widget
      */
     public function getFormattedAmount(float $amount): string
     {
-        return Price::format(
-            value: $amount,
-            decimals: 2,
-            decimalSeparator: ',',
-            thousandsSeparator: ' '
-        );
+        return Price::format(value: $amount);
     }
 
     /**
-     * Get TD element with inline CSS.
+     * Get TD element.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -300,19 +269,5 @@ class PaymentInformation extends Widget
         $this->content = $this->render(
             file: __DIR__ . '/payment-information.phtml'
         );
-
-        // Render CSS.
-        $css = file_get_contents(
-            filename: __DIR__ . '/payment-information.css'
-        );
-
-        if (!$css) {
-            throw new EmptyValueException(
-                message: 'Failed to load stylesheet.'
-            );
-        }
-
-        /* @phpstan-ignore-next-line */
-        $this->css = self::getCss();
     }
 }
