@@ -67,7 +67,23 @@ class Html extends Widget
         public readonly string $paymentId
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
-        $this->renderWidget();
+
+        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+
+        if (!$logo) {
+            throw new EmptyValueException(
+                message: 'Failed to load logo image data'
+            );
+        }
+
+        /* @phpstan-ignore-next-line */
+        $this->logo = $logo ?? '';
+
+        /* @phpstan-ignore-next-line */
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
+        );
     }
 
     public function hasAddress(): bool
@@ -243,31 +259,5 @@ class Html extends Widget
         $data[] = $country . ($country !== '' ? ' - ' : '') . $this->getPostalCode();
 
         return implode(separator: '<br />', array: $data);
-    }
-
-    /**
-     * Render widget components (kept in separate method, so it can be executed
-     * from subclasses because the constructor defines the resource to be used).
-     *
-     * @throws EmptyValueException
-     * @throws FilesystemException
-     */
-    protected function renderWidget(): void
-    {
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
-
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
-            );
-        }
-
-        /* @phpstan-ignore-next-line */
-        $this->logo = $logo ?? '';
-
-        /* @phpstan-ignore-next-line */
-        $this->content = $this->render(
-            file: __DIR__ . '/payment-information.phtml'
-        );
     }
 }
