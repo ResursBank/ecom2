@@ -26,7 +26,8 @@ class Css extends Widget
     public function __construct()
     {
         $this->content = $this->renderStatic(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'get-address.css'
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'css.css'
         );
     }
 

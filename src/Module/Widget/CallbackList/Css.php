@@ -21,6 +21,9 @@ class Css extends Widget
 
     public function __construct()
     {
-        $this->content = $this->renderStatic(file: __DIR__ . '/callback.css');
+        $this->content = $this->renderStatic(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'css.css'
+        );
     }
 }
