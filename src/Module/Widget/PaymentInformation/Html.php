@@ -68,18 +68,10 @@ class Html extends Widget
     ) {
         $this->payment = Repository::get(paymentId: $this->paymentId);
 
-        $logo = file_get_contents(filename: __DIR__ . '/resurs.svg');
+        $this->logo = $this->renderStatic(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'resurs.svg'
+        );
 
-        if (!$logo) {
-            throw new EmptyValueException(
-                message: 'Failed to load logo image data'
-            );
-        }
-
-        /* @phpstan-ignore-next-line */
-        $this->logo = $logo ?? '';
-
-        /* @phpstan-ignore-next-line */
         $this->content = $this->render(
             file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
