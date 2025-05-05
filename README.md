@@ -559,7 +559,7 @@ below will show an example of pre-population.**
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\Widget\Js;
+use \Resursbank\Ecom\Module\Widget\GetPeriods\Js;
 use \Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use \Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
