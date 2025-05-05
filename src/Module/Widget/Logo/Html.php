@@ -39,7 +39,10 @@ class Html extends Widget
             default => 'resurs.png'
         };
 
-        $this->html = $this->render(file: __DIR__ . '/logo.phtml');
+        $this->html = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'logo.phtml'
+        );
     }
 
     /**

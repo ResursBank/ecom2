@@ -89,7 +89,8 @@ class Widget
         try {
             if (!file_exists(filename: $file)) {
                 throw new FilesystemException(
-                    message: "Template file not found: $file"
+                    message: self::class . '::' . __METHOD__ .
+                    ': File: ' . $file . ' does not exist.'
                 );
             }
 

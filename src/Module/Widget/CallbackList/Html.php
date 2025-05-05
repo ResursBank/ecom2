@@ -24,7 +24,10 @@ class Html extends Widget
         private readonly ?string $authorizationUrl = null,
         private readonly ?string $managementUrl = null
     ) {
-        $this->content = $this->render(file: __DIR__ . '/callback.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
+        );
     }
 
     public function getAuthorizationUrl(): ?string
