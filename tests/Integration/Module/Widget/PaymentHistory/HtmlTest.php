@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\PaymentHistory\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentHistory;
 
 use Exception;
 use JsonException;
@@ -24,18 +24,18 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
-use Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Html;
 use Resursbank\EcomTest\Utilities\PaymentHistory;
 
 /**
  * Tests widget rendering.
  */
-class LogTest extends PaymentHistory
+class HtmlTest extends PaymentHistory
 {
     /**
      * Log instance used in various tests.
      */
-    private Log $log;
+    private Html $log;
 
     /**
      * @throws AttributeCombinationException
@@ -49,7 +49,7 @@ class LogTest extends PaymentHistory
     {
         Config::setup();
 
-        $this->log = new Log(entries: $this->getEntries());
+        $this->log = new Html(entries: $this->getEntries());
 
         parent::setUp();
     }
@@ -59,10 +59,7 @@ class LogTest extends PaymentHistory
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      */
     public function testRenderLogWidget(): void
@@ -153,7 +150,7 @@ class LogTest extends PaymentHistory
 
         $this->assertStringContainsString(
             needle: '<tr class="success-entry">',
-            haystack: (new Log(entries: $entries))->content,
+            haystack: (new Html(entries: $entries))->content,
             message: 'SUCCESS entry not found in HTML content.'
         );
     }
@@ -176,7 +173,7 @@ class LogTest extends PaymentHistory
 
         $this->assertStringContainsString(
             needle: '<tr class="error-entry">',
-            haystack: (new Log(entries: $entries))->content,
+            haystack: (new Html(entries: $entries))->content,
             message: 'ERROR entry not found in HTML content.'
         );
     }
@@ -187,7 +184,6 @@ class LogTest extends PaymentHistory
      * @throws AttributeCombinationException
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
@@ -234,7 +230,7 @@ class LogTest extends PaymentHistory
     {
         $extra = Random::getString(length: 40);
         $entry = $this->getEntry(extra: $extra);
-        $log = new Log(entries: new EntryCollection(data: [$entry]));
+        $log = new Html(entries: new EntryCollection(data: [$entry]));
 
         $this->assertMatchesRegularExpression(
             pattern: '/<td>\s*' . $extra . '\s*<\/td>/m',
@@ -270,7 +266,7 @@ class LogTest extends PaymentHistory
     {
         $extra = Random::getString(length: 100);
         $entry = $this->getEntry(extra: $extra);
-        $log = new Log(entries: new EntryCollection(data: [$entry]));
+        $log = new Html(entries: new EntryCollection(data: [$entry]));
 
         $this->assertDoesNotMatchRegularExpression(
             pattern: '/<td>\s*' . $extra . '\s*<\/td>/m',
@@ -332,18 +328,18 @@ class LogTest extends PaymentHistory
     public function testGetWidgetTitle(): void
     {
         $entry = $this->getEntry();
-        $log = new Log(entries: new EntryCollection(data: [$entry]));
+        $log = new Html(entries: new EntryCollection(data: [$entry]));
 
         $this->assertStringContainsString(
             needle: 'Payment #' . $entry->reference . ' [' .
-                Translator::translate(
-                    phraseId: Config::isProduction() ? 'production' : 'test'
-                ) . ']',
+            Translator::translate(
+                phraseId: Config::isProduction() ? 'production' : 'test'
+            ) . ']',
             haystack: $log->content
         );
 
         $entry = $this->getEntry(reference: '');
-        $log = new Log(entries: new EntryCollection(data: [$entry]));
+        $log = new Html(entries: new EntryCollection(data: [$entry]));
 
         $this->assertStringContainsString(
             needle: 'Payment #' . $entry->paymentId . ' [' .
@@ -369,6 +365,40 @@ class LogTest extends PaymentHistory
         $this->assertSame(
             expected: "A\\&#039;simple-test<br />",
             actual: $this->log->getExtraData(entry: $entry)
+        );
+    }
+
+    /**
+     * Test the renderButton constructor property.
+     *
+     * @throws AttributeCombinationException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public function testRenderButton(): void
+    {
+        $entry = $this->getEntry();
+        $log = new Html(
+            entries: new EntryCollection(data: [$entry]),
+            renderButton: false
+        );
+
+        $this->assertStringNotContainsString(
+            needle: '<button id="rb-ph-button">',
+            haystack: $log->content
+        );
+
+        $log = new Html(
+            entries: new EntryCollection(data: [$entry]),
+            renderButton: true
+        );
+
+        $this->assertStringContainsString(
+            needle: '<button id="rb-ph-button">',
+            haystack: $log->content
         );
     }
 }
