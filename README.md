@@ -1538,10 +1538,8 @@ $error = Repository::getError(
 
 ## [Widget] Log
 
-* *src/Module/PaymentHistory/Widget/Log* (widget PHP class)
-* *src/Module/PaymentHistory/Widget/log.phtml* (HTML template)
-* *src/Module/PaymentHistory/Widget/log.css* (stylesheet)
-* *src/Module/PaymentHistory/Widget/log.js* (JavaScript)
+* *src/Module/Widget/PaymentHistory* (Widget PHP classes)
+* *src/Module/Widget/PaymentHistory/templates/log.phtml* (Widget templates)
 
 This widget will render a log of payment events. It's useful for administrators
 to get an idea of how a payment has been handled.
@@ -1551,7 +1549,9 @@ to get an idea of how a payment has been handled.
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Html;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Js;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Css;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
@@ -1583,7 +1583,9 @@ $entries = new EntryCollection([
 
 // In reality, you would use Repository::getList() to fetch the entries. This
 // is just an example to illustrate how the widget works.
-$widget = new Log(entries: $entries);
+$widget = new Html(entries: $entries);
+$css = new Css();
+$js = new Js()
 
 ?>
 
@@ -1592,11 +1594,11 @@ $widget = new Log(entries: $entries);
 
 
 <style>
-  <?= $widget->css ?>
+  <?= $css->content ?>
 </style>
 
 <script>
-  <?= $widget->js ?>
+  <?= $js->content ?>
 </script>
 ```
 

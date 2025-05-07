@@ -1,3 +1,8 @@
+/**
+ * Show extra information about log entry.
+ *
+ * @param data
+ */
 function showExtra(data)
 {
     document.getElementById('rb-ph-extra-content').innerHTML = data;
@@ -5,17 +10,26 @@ function showExtra(data)
     document.getElementById('rb-ph-extra').style.display = 'block';
 }
 
+/**
+ * Make log table visible
+ */
 function showLogTable()
 {
     document.getElementById('rb-ph-extra').style.display = 'none';
     document.getElementById('rb-ph-log-table').style.display = '';
 }
 
+/**
+ * Make widget visible.
+ */
 function showWidget()
 {
     document.getElementById('rb-ph-hidden').style.display = 'block';
 }
 
+/**
+ * Hide widget.
+ */
 function hideWidget()
 {
     document.getElementById('rb-ph-hidden').style.display = 'none';

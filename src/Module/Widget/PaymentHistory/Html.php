@@ -7,17 +7,14 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentHistory\Widget;
+namespace Resursbank\Ecom\Module\Widget\PaymentHistory;
 
 use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\EntryCollection;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
@@ -27,18 +24,17 @@ use Resursbank\Ecom\Module\PaymentHistory\Translator;
 /**
  * Payment history log widget.
  */
-class Log extends Widget
+class Html extends Widget
 {
     /** @var string */
     public readonly string $content;
 
-    /** @var string */
-    public readonly string $css;
-
-    /** @var string */
-    public readonly string $js;
-
     /**
+     * @param EntryCollection $entries Log entries to display. The reason for
+     *                                 using an entry collection instead of
+     *                                 just a payment ID is because allows
+     *                                 greater flexibility as the collection can
+     *                                 be filtered before rendering the widget.
      * @throws FilesystemException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -46,9 +42,10 @@ class Log extends Widget
         public readonly EntryCollection $entries,
         public readonly bool $renderButton = true
     ) {
-        $this->content = $this->render(file: __DIR__ . '/log.phtml');
-        $this->css = $this->render(file: __DIR__ . '/log.css');
-        $this->js = $this->render(file: __DIR__ . '/log.js');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
+        );
     }
 
     /**
@@ -60,11 +57,8 @@ class Log extends Widget
      * @throws CollectionException
      * @throws FilesystemException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws ConfigException
      * @throws TranslationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      */
     public function getWidgetTitle(): string
     {
@@ -134,10 +128,7 @@ class Log extends Widget
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      */
     public function getUser(Entry $entry): string
