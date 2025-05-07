@@ -559,11 +559,11 @@ below will show an example of pre-population.**
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\Widget\GetPeriods;
+use \Resursbank\Ecom\Module\Widget\Js;
 use \Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use \Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
-$widget = new GetPeriods(
+$widget = new Js(
     storeId: 'store-id',
     methodElementId: 'payment-method-select-box',
     periodElementId: 'period-select-box',
@@ -2348,3 +2348,32 @@ $widget = new SupportInfo();
 
 **Note that the optional *pluginVersion* argument is only relevant to our local
 development team to identify platform specific modules.**
+
+# [Widget] Logo
+
+* `src/Module/Widget/Logo`
+
+This widget is for rendering logos and thumbnails without needing to include
+them in each individual platform module.
+
+It does this by outputting the images as base64 encoded strings directly in an
+`img` element's `src` attribute.
+
+```php
+<?php
+// index.phtml
+
+use Resursbank\Ecom\Module\Widget\Logo\Html;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
+
+$paymentMethod = Repository::getPaymentMethods(
+    storeId: 'store-id'
+)->current();
+
+$logo = new Html(paymentMethod: $paymentMethod);
+?>
+
+<?= $logo->getLogo(inclImgTag: true) ?>
+
+
+```

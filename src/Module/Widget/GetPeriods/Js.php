@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Widget;
+namespace Resursbank\Ecom\Module\Widget\GetPeriods;
 
 use JsonException;
 use ReflectionException;
@@ -31,8 +31,10 @@ use Throwable;
 
 /**
  * Render JavaScript code to sync list of periods with selected payment method.
+ *
+ * @SuppressWarnings(PHPMD.ShortClassName)
  */
-class GetPeriods extends Widget
+class Js extends Widget
 {
     /** @var string */
     public readonly string $content;
@@ -53,7 +55,10 @@ class GetPeriods extends Widget
         public readonly ?string $selectedPaymentMethod = null,
         public readonly ?int $selectedPeriod = null
     ) {
-        $this->content = $this->render(file: __DIR__ . '/get-periods.js.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'js.phtml'
+        );
     }
 
     /**

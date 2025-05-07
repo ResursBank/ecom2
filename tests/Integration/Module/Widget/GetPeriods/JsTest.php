@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\GetPeriods;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -18,13 +18,13 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\Widget\GetPeriods;
+use Resursbank\Ecom\Module\Widget\GetPeriods\Js;
 use Throwable;
 
 /**
  * Integration test for the Get Periods widget.
  */
-class GetPeriodsTest extends TestCase
+class JsTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -60,7 +60,7 @@ class GetPeriodsTest extends TestCase
         $methodElementId = 'method-el';
         $periodElementId = 'period-el';
 
-        $widget = new GetPeriods(
+        $widget = new Js(
             methodElementId: $methodElementId,
             periodElementId: $periodElementId,
             automatic: false
@@ -96,7 +96,7 @@ class GetPeriodsTest extends TestCase
         );
 
         // Widget without elements.
-        $widgetNoElements = new GetPeriods(automatic: true);
+        $widgetNoElements = new Js(automatic: true);
 
         // Confirm result = document.getElementById('$this->methodElementId')
         // isn't rendered.
@@ -137,7 +137,7 @@ class GetPeriodsTest extends TestCase
      */
     public function testGetJsonData(): void
     {
-        $widget = new GetPeriods(automatic: false);
+        $widget = new Js(automatic: false);
 
         $jsonData = $widget->getJsonData();
 
@@ -186,7 +186,7 @@ class GetPeriodsTest extends TestCase
      */
     public function testGetJsonPaymentMethods(): void
     {
-        $widget = new GetPeriods();
+        $widget = new Js();
 
         $jsonPaymentMethods = $widget->getJsonPaymentMethods();
 
@@ -227,7 +227,7 @@ class GetPeriodsTest extends TestCase
      */
     public function testGetAnnuityFactorsForMethod(): void
     {
-        $widget = new GetPeriods();
+        $widget = new Js();
 
         try {
             $paymentMethod = Repository::getById(
