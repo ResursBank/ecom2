@@ -115,7 +115,7 @@ as maximum value, we make no use of *approvedCreditLimit*.**
 ## Widget rendering
 
 Widgets are special classes, always contained within a **Widget** subdirectory
-of Module's when available.
+of Modules when available.
 
 Widgets are meant to simplify the process of rendering forms, buttons, and
 information which relates to data from the API / integrates library
@@ -1383,25 +1383,25 @@ the payment attached to an order, without having to access the Merchant Portal.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
+use Resursbank\Ecom\Module\Widget\PaymentInformation\Css;
 
 // Spoof a UUID for paymentId
 $paymentId = '123e4567-e89b-12d3-a456-426614174000';
 
 // Create an instance of the PaymentInformation widget
-$widget = new PaymentInformation(
-    paymentId: $paymentId,
-    currencySymbol: 'kr',
-    currencyFormat: CurrencyFormat::SYMBOL_LAST
+$widget = new Html(
+    paymentId: $paymentId
 );
+$cssWidget = new Css();
 
 ?>
+
 
 <?= $widget->content ?>
 
 <style>
-    <?= $widget->css ?>
+    <?= $cssWidget->content ?>
 </style>
 ```
 
