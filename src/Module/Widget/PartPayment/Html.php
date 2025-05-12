@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
+namespace Resursbank\Ecom\Module\Widget\PartPayment;
 
 use JsonException;
 use ReflectionException;
@@ -24,27 +24,32 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Resursbank\Ecom\Module\PriceSignage\Widget\Warning;
+use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Throwable;
 
 use function max;
 use function sprintf;
 
 /**
- * Renders Part payment widget HTML and CSS
+ * Renders Part payment widget HTML
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
-class PartPayment extends Widget
+class Html extends Widget
 {
+    use Common;
+
     /** @var Cost */
     public readonly Cost $cost;
 
@@ -54,17 +59,14 @@ class PartPayment extends Widget
     /** @var string */
     public readonly string $content;
 
-    /** @var string */
-    public readonly string $css;
-
-    /** @var string */
-    public readonly string $js;
-
     /** @var Warning */
     public readonly Warning $warning;
 
     /** @var ReadMore */
     public readonly ReadMore $readMore;
+
+    /** @var bool */
+    public readonly bool $shouldDisplayCostExample;
 
     /**
      * @param string $fetchStartingCostUrl | URL in implementation used to fetch
@@ -93,20 +95,28 @@ class PartPayment extends Widget
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        public readonly string $storeId,
         public readonly PaymentMethod $paymentMethod,
         public readonly int $months,
         public readonly float $amount,
-        public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat,
-        public readonly string $fetchStartingCostUrl,
-        public readonly int $decimals = 2,
+        #[StringIsUrl] public readonly string $fetchStartingCostUrl,
         public readonly bool $displayInfoText = true,
         public readonly float $threshold = 0.0,
         public readonly bool $useLegacyReadMoreLink = false,
         public readonly bool $showCostExample = true
     ) {
-        $this->cost = $this->getCost();
+        $this->cost = $this->getCost(
+            paymentMethod: $this->paymentMethod,
+            amount: $this->amount,
+            months: $this->months
+        );
+
+        $this->shouldDisplayCostExample = $this->shouldDisplayCostExample(
+            threshold: $this->threshold,
+            cost: $this->cost,
+            paymentMethod: $this->paymentMethod,
+            showCostExample: $this->showCostExample
+        );
+
         $this->logo = (string) file_get_contents(
             filename: __DIR__ . '/resurs.svg'
         );
@@ -126,9 +136,10 @@ class PartPayment extends Widget
             visible: $this->showCostExample
         );
 
-        $this->content = $this->render(file: __DIR__ . '/part-payment.phtml');
-        $this->css = $this->render(file: __DIR__ . '/part-payment.css');
-        $this->js = $this->render(file: __DIR__ . '/part-payment.js.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
+        );
     }
 
     /**
@@ -139,7 +150,14 @@ class PartPayment extends Widget
      */
     public function getStartingAt(): string
     {
-        if (!$this->isEligible()) {
+        if (
+            !$this->shouldDisplayCostExample(
+                threshold: $this->threshold,
+                cost: $this->cost,
+                paymentMethod: $this->paymentMethod,
+                showCostExample: $this->showCostExample
+            )
+        ) {
             return $this->getNotEligibleMessage();
         }
 
@@ -218,18 +236,6 @@ class PartPayment extends Widget
     }
 
     /**
-     * Check whether the current cost is eligible for part payment.
-     */
-    public function isEligible(): bool
-    {
-        return
-            ($this->threshold === 0.0 ||
-            $this->cost->monthlyCost >= $this->threshold) &&
-            $this->paymentMethod->type !== Type::RESURS_INVOICE &&
-            $this->showCostExample;
-    }
-
-    /**
      * @throws ConfigException
      */
     public function getNotEligibleMessage(): string
@@ -296,52 +302,12 @@ class PartPayment extends Widget
     }
 
     /**
-     * Fetch a Cost object from the Price signage API
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
-     * @throws Throwable
-     */
-    private function getCost(): Cost
-    {
-        $costs = SignageRepository::getPriceSignage(
-            paymentMethodId: $this->paymentMethod->id,
-            amount: $this->amount,
-            monthFilter: $this->months
-        );
-
-        if (empty($costs->costList->toArray())) {
-            throw new EmptyValueException(
-                message: 'Returned CostCollection appears to be empty'
-            );
-        }
-
-        if (sizeof($costs->costList) > 1) {
-            throw new IllegalValueException(
-                message: 'Returned CostCollection contains more than one Cost'
-            );
-        }
-
-        return array_values(array: $costs->costList->toArray())[0];
-    }
-
-    /**
      * Fetches formatted starting at cost with currency symbol.
      *
      * @throws ConfigException
      */
-    private function getFormattedCost(float $cost): string
+    public function getFormattedCost(float $cost): string
     {
-        return Price::format(value: $cost, decimals: $this->decimals);
+        return Price::format(value: $cost);
     }
 }
