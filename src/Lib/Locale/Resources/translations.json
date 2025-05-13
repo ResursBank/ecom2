@@ -3425,6 +3425,14 @@
     }
   },
   {
+    "id": "payment-not-ready-to-be-captured",
+    "translation": {
+      "en": "Payment is not ready to be captured at Resurs Bank",
+      "sv": "Betalningen är inte redo att debiteras hos Resurs Bank",
+      "no": "Betalingen er ikke klar for å fanges"
+    }
+  },
+  {
     "id": "payment-cannot-be-cancelled",
     "translation": {
       "en": "Payment cannot be cancelled",
