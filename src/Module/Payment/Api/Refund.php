@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -36,6 +37,7 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
@@ -85,6 +87,8 @@ class Refund
             )
         );
 
+        $previouslyRefunded = $this->getRefundedAmount(paymentId: $paymentId);
+
         $payload = $this->getPayload(
             orderLines: $orderLines,
             creator: $creator,
@@ -97,6 +101,9 @@ class Refund
 
         try {
             $result = $this->processResponse(data: $data);
+            $refunded = $this->getRefundedAmount(paymentId: $paymentId)
+                - $previouslyRefunded;
+
             PaymentHistoryRepository::write(
                 entry: new Entry(
                     paymentId: $paymentId,
@@ -104,21 +111,56 @@ class Refund
                         Event::PARTIALLY_REFUNDED,
                     user: User::ADMIN,
                     result: Result::SUCCESS,
-                    extra: empty($orderLines) ?
-                        null : Price::format(value: $orderLines->getTotal())
+                    extra: Price::format(value: $refunded)
                 )
             );
             return $result;
         } catch (Throwable $error) {
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $paymentId,
-                event: Event::REQUEST_FAILED,
-                user: User::ADMIN,
-                result: Result::ERROR,
-                extra: Translator::translate(phraseId: 'event-request-failed')
-            ));
+            $this->logError(paymentId: $paymentId);
             throw $error;
         }
+    }
+
+    /**
+     * Log error.
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    private function logError(
+        string $paymentId
+    ): void {
+        PaymentHistoryRepository::write(entry: new Entry(
+            paymentId: $paymentId,
+            event: Event::REQUEST_FAILED,
+            user: User::ADMIN,
+            result: Result::ERROR,
+            extra: Translator::translate(phraseId: 'event-request-failed')
+        ));
+    }
+
+    /**
+     * Get refunded amount.
+     *
+     * @throws ConfigException
+     */
+    private function getRefundedAmount(string $paymentId): float
+    {
+        try {
+            $payment = Repository::get(paymentId: $paymentId);
+
+            if ($payment->order instanceof Payment\Order) {
+                return $payment->order->canceledAmount;
+            }
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return 0.0;
     }
 
     /**

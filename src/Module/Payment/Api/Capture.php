@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -36,9 +37,11 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
+use Throwable;
 
 /**
  * POST /payments/{payment_id}/capture
@@ -85,6 +88,8 @@ class Capture
             )
         );
 
+        $previouslyCaptured = $this->getCapturedAmount(paymentId: $paymentId);
+
         $payload = $this->getPayload(
             orderLines: $orderLines,
             creator: $creator,
@@ -107,12 +112,35 @@ class Capture
             throw new IllegalTypeException(message: 'Expected Payment');
         }
 
+        $capturedAmount = $this->getCapturedAmount(paymentId: $paymentId)
+            - $previouslyCaptured;
+
         $this->logSuccess(
             paymentId: $paymentId,
             result: $result,
-            orderLines: $orderLines
+            capturedAmount: $capturedAmount
         );
         return $result;
+    }
+
+    /**
+     * Get captured amount.
+     *
+     * @throws ConfigException
+     */
+    private function getCapturedAmount(string $paymentId): float
+    {
+        try {
+            $payment = Repository::get(paymentId: $paymentId);
+
+            if ($payment->order instanceof Payment\Order) {
+                return $payment->order->capturedAmount;
+            }
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return 0.0;
     }
 
     /**
@@ -149,7 +177,7 @@ class Capture
     private function logSuccess(
         string $paymentId,
         Payment $result,
-        ?OrderLineCollection $orderLines = null
+        float $capturedAmount
     ): void {
         PaymentHistoryRepository::write(
             entry: new Entry(
@@ -158,8 +186,7 @@ class Capture
                     : Event::PARTIALLY_CAPTURED,
                 user: User::ADMIN,
                 result: Result::SUCCESS,
-                extra: empty($orderLines)
-                    ? null : Price::format(value: $orderLines->getTotal())
+                extra: Price::format(value: $capturedAmount)
             )
         );
     }

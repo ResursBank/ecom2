@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Payment\Api;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -36,9 +37,11 @@ use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 use stdClass;
+use Throwable;
 
 /**
  * POST /payments/{payment_id}/cancel
@@ -82,6 +85,8 @@ class Cancel
         );
         $payload = [];
 
+        $previouslyCancelled = $this->getCanceledAmount(paymentId: $paymentId);
+
         if ($orderLines) {
             $payload['orderLines'] = $orderLines->toArray();
         }
@@ -92,18 +97,40 @@ class Cancel
 
         $result = $this->getResponse(paymentId: $paymentId, payload: $payload);
 
+        $cancelled = $this->getCanceledAmount(paymentId: $paymentId)
+            - $previouslyCancelled;
+
         PaymentHistoryRepository::write(
             entry: new Entry(
                 paymentId: $paymentId,
                 event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
                 user: User::ADMIN,
                 result: Result::SUCCESS,
-                extra: empty($orderLines) ?
-                    null : Price::format(value: $orderLines->getTotal())
+                extra: Price::format(value: $cancelled)
             )
         );
 
         return $result;
+    }
+
+    /**
+     * Get canceled amount.
+     *
+     * @throws ConfigException
+     */
+    private function getCanceledAmount(string $paymentId): float
+    {
+        try {
+            $payment = Repository::get(paymentId: $paymentId);
+
+            if ($payment->order instanceof Payment\Order) {
+                return $payment->order->canceledAmount;
+            }
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return 0.0;
     }
 
     /**
