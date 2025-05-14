@@ -26,6 +26,9 @@ use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Throwable;
 
+/**
+ * Common traits for the PartPayment widget classes.
+ */
 trait Common
 {
     /**

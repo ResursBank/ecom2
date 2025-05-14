@@ -150,14 +150,7 @@ class Html extends Widget
      */
     public function getStartingAt(): string
     {
-        if (
-            !$this->shouldDisplayCostExample(
-                threshold: $this->threshold,
-                cost: $this->cost,
-                paymentMethod: $this->paymentMethod,
-                showCostExample: $this->showCostExample
-            )
-        ) {
+        if (!$this->shouldDisplayCostExample) {
             return $this->getNotEligibleMessage();
         }
 

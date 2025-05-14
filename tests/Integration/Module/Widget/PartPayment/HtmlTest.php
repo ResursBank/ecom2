@@ -32,6 +32,8 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
@@ -159,6 +161,96 @@ class HtmlTest extends TestCase
             expected: $widget->getNotEligibleMessage(),
             actual: $widget->getStartingAt(),
             message: 'Starting at should be the same as not eligible message.'
+        );
+    }
+
+    /**
+     * Verify that the warning is present.
+     */
+    public function testWarning(): void
+    {
+        $this->assertStringContainsString(
+            needle: $this->widget->warning->content,
+            haystack: $this->widget->content
+        );
+    }
+
+    /**
+     * Verify that the Read More link is present in the widget HTML.
+     */
+    public function testReadMoreLinkPresent(): void
+    {
+        $this->assertStringContainsString(
+            needle: $this->widget->readMore->url,
+            haystack: $this->widget->content
+        );
+    }
+
+    /**
+     * Verify that the legacy link parameter works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function testUseLegacyReadMoreLink(): void
+    {
+        $legacyLink = '';
+        $amount = 100;
+
+        if ($this->paymentMethod === null) {
+            $this->fail('Payment method failed to load');
+        }
+
+        /** @var LegalLink $link */
+        foreach ($this->paymentMethod->legalLinks as $link) {
+            if ($link->type !== Type::PRICE_INFO) {
+                continue;
+            }
+
+            $legacyLink = $link->url . $amount;
+            break;
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: $amount,
+            fetchStartingCostUrl: 'https://example.com'
+        );
+
+        $this->assertNotEquals(
+            expected: $legacyLink,
+            actual: $widget->readMore->url
+        );
+
+        if ($this->paymentMethod === null) {
+            $this->fail('Payment method failed to load');
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: $amount,
+            fetchStartingCostUrl: 'https://example.com',
+            useLegacyReadMoreLink: true
+        );
+
+        $this->assertEquals(
+            expected: $legacyLink,
+            actual: $widget->readMore->url
         );
     }
 

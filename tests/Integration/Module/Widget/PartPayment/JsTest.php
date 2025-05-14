@@ -35,11 +35,14 @@ use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Js;
 use Throwable;
 
+/**
+ * Integration test for the Part payment JS widget.
+ */
 class JsTest extends TestCase
 {
-    private ?PaymentMethod $method;
-
     private Js $widget;
+
+    private ?PaymentMethod $paymentMethod;
 
     /**
      * @throws ApiException
@@ -76,21 +79,22 @@ class JsTest extends TestCase
             storeId: $_ENV['STORE_ID']
         );
 
-        $this->method = Repository::getById(
+        $this->paymentMethod = Repository::getById(
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
 
-        if ($this->method === null) {
+        if ($this->paymentMethod === null) {
             throw new EmptyValueException(
                 message: 'Payment method failed to load'
             );
         }
 
         $this->widget = new Js(
-            paymentMethod: $this->method,
+            paymentMethod: $this->paymentMethod,
             months: 3,
             amount: 1200,
-            fetchStartingCostUrl: 'https://example.com'
+            fetchStartingCostUrl: 'https://example.com',
+            showCostExample: true
         );
     }
 
@@ -104,6 +108,73 @@ class JsTest extends TestCase
             pattern: '/class Resursbank_PartPayment/',
             string: $this->widget->content,
             message: 'Widget JS should define class Resursbank_PartPayment.'
+        );
+
+        $this->assertStringContainsString(
+            needle: 'https://example.com',
+            haystack: $this->widget->content
+        );
+
+        $this->assertStringContainsString(
+            needle: 'eligibleCost = true',
+            haystack: $this->widget->content
+        );
+
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $this->widget = new Js(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: 1200,
+            fetchStartingCostUrl: 'https://example.com',
+            showCostExample: false
+        );
+
+        $this->assertStringContainsString(
+            needle: 'eligibleCost = false',
+            haystack: $this->widget->content
+        );
+
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $this->widget = new Js(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: 1200,
+            fetchStartingCostUrl: 'https://example.com',
+            threshold: 0
+        );
+
+        $this->assertStringNotContainsString(
+            needle: 'if (parseFloat(data.startingAt)',
+            haystack: $this->widget->content
+        );
+
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $this->widget = new Js(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: 1200,
+            fetchStartingCostUrl: 'https://example.com',
+            threshold: 100
+        );
+
+        $this->assertStringContainsString(
+            needle: 'if (parseFloat(data.startingAt)',
+            haystack: $this->widget->content
         );
     }
 }
