@@ -118,14 +118,11 @@ class Cancel
      *
      * @throws ConfigException
      */
-    private function getCanceledAmount(string $paymentId): float
+    public function getCanceledAmount(string $paymentId): float
     {
         try {
             $payment = Repository::get(paymentId: $paymentId);
-
-            if ($payment->order instanceof Payment\Order) {
-                return $payment->order->canceledAmount;
-            }
+            return (float) $payment->order?->canceledAmount;
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
         }

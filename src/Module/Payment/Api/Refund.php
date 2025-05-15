@@ -122,6 +122,23 @@ class Refund
     }
 
     /**
+     * Get refunded amount.
+     *
+     * @throws ConfigException
+     */
+    public function getRefundedAmount(string $paymentId): float
+    {
+        try {
+            $payment = Repository::get(paymentId: $paymentId);
+            return (float) $payment->order?->refundedAmount;
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return 0.0;
+    }
+
+    /**
      * Log error.
      *
      * @throws AttributeCombinationException
@@ -141,26 +158,6 @@ class Refund
             result: Result::ERROR,
             extra: Translator::translate(phraseId: 'event-request-failed')
         ));
-    }
-
-    /**
-     * Get refunded amount.
-     *
-     * @throws ConfigException
-     */
-    private function getRefundedAmount(string $paymentId): float
-    {
-        try {
-            $payment = Repository::get(paymentId: $paymentId);
-
-            if ($payment->order instanceof Payment\Order) {
-                return $payment->order->canceledAmount;
-            }
-        } catch (Throwable $error) {
-            Config::getLogger()->error(message: $error);
-        }
-
-        return 0.0;
     }
 
     /**

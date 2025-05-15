@@ -128,14 +128,11 @@ class Capture
      *
      * @throws ConfigException
      */
-    private function getCapturedAmount(string $paymentId): float
+    public function getCapturedAmount(string $paymentId): float
     {
         try {
             $payment = Repository::get(paymentId: $paymentId);
-
-            if ($payment->order instanceof Payment\Order) {
-                return $payment->order->capturedAmount;
-            }
+            return (float) $payment->order?->capturedAmount;
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
         }
