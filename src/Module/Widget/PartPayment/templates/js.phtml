@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-/** @var PartPayment $this */
+/** @var Js $this */
 
 use Resursbank\Ecom\Lib\Locale\Translator;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
+use Resursbank\Ecom\Module\Widget\PartPayment\Js;
 
 ?>
 /**
@@ -100,7 +100,7 @@ class Resursbank_PartPayment {
      *
      * @type {boolean}
      */
-    eligibleCost = true;
+    eligibleCost = <?= var_export($this->shouldDisplayCostExample, true) ?>;
 
     /**
      * Create new instance of self and setup element listeners.
@@ -119,10 +119,6 @@ class Resursbank_PartPayment {
         const instance = new Resursbank_PartPayment(el, overrides);
 
         instance.reloadElementObservers();
-
-        <?php if (!$this->isEligible()): ?>
-        instance.eligibleCost = false;
-        <?php endif; ?>
 
         return instance;
     }
@@ -419,8 +415,7 @@ class Resursbank_PartPayment {
 
             <?php if ($this->threshold > 0): ?>
             if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {
-                this.eligibleCost = false;
-                return;
+                this.eligibleCost = parseFloat(data.startingAt) < <?= $this->threshold ?>;
             }
             <?php endif; ?>
         } else {

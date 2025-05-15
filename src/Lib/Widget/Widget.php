@@ -105,6 +105,7 @@ class Widget
                 // the rendering of the widget.
             }
 
+            ob_clean();
             return '';
         }
     }

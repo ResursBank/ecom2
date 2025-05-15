@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\PaymentMethod\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\PartPayment;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -32,20 +32,23 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
+use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
+use Resursbank\Ecom\Module\PriceSignage\Repository as PriceSignageRepository;
+use Resursbank\Ecom\Module\Widget\PartPayment\Html;
 use Throwable;
 
 /**
  * Integration test for the Part payment widget
  */
-class PartPaymentTest extends TestCase
+class HtmlTest extends TestCase
 {
-    private ?PaymentMethod $method;
+    private ?PaymentMethod $paymentMethod;
 
-    private PartPayment $widget;
+    private Html $widget;
 
     /**
      * @throws ApiException
@@ -82,23 +85,20 @@ class PartPaymentTest extends TestCase
             storeId: $_ENV['STORE_ID']
         );
 
-        $this->method = Repository::getById(
+        $this->paymentMethod = Repository::getById(
             paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
         );
 
-        if ($this->method === null) {
+        if ($this->paymentMethod === null) {
             throw new EmptyValueException(
                 message: 'Payment method failed to load'
             );
         }
 
-        $this->widget = new PartPayment(
-            storeId: $_ENV['STORE_ID'],
-            paymentMethod: $this->method,
+        $this->widget = new Html(
+            paymentMethod: $this->paymentMethod,
             months: 3,
             amount: 1200,
-            currencySymbol: 'kr',
-            currencyFormat: CurrencyFormat::SYMBOL_LAST,
             fetchStartingCostUrl: 'https://example.com'
         );
     }
@@ -143,21 +143,114 @@ class PartPaymentTest extends TestCase
             message: 'Starting at should be formatted correctly.'
         );
 
-        // Mock return value of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::isEligible
-        // to return false, and check tha the string returned by getStartingAt()
-        // is the same as the one returned by getNotEligibleMessage().
-        $this->widget = $this->createPartialMock(
-            PartPayment::class,
-            ['isEligible']
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            amount: 5,
+            fetchStartingCostUrl: 'https://example.com',
+            threshold: 5000
         );
 
-        $this->widget->method('isEligible')
-            ->willReturn(false);
+        $this->assertEquals(
+            expected: $widget->getNotEligibleMessage(),
+            actual: $widget->getStartingAt(),
+            message: 'Starting at should be the same as not eligible message.'
+        );
+    }
+
+    /**
+     * Verify that the warning is present.
+     */
+    public function testWarning(): void
+    {
+        $this->assertStringContainsString(
+            needle: $this->widget->warning->content,
+            haystack: $this->widget->content
+        );
+    }
+
+    /**
+     * Verify that the Read More link is present in the widget HTML.
+     */
+    public function testReadMoreLinkPresent(): void
+    {
+        $this->assertStringContainsString(
+            needle: $this->widget->readMore->url,
+            haystack: $this->widget->content
+        );
+    }
+
+    /**
+     * Verify that the legacy link parameter works.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function testUseLegacyReadMoreLink(): void
+    {
+        $legacyLink = '';
+        $amount = 100;
+
+        if ($this->paymentMethod === null) {
+            $this->fail('Payment method failed to load');
+        }
+
+        /** @var LegalLink $link */
+        foreach ($this->paymentMethod->legalLinks as $link) {
+            if ($link->type !== Type::PRICE_INFO) {
+                continue;
+            }
+
+            $legacyLink = $link->url . $amount;
+            break;
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: $amount,
+            fetchStartingCostUrl: 'https://example.com'
+        );
+
+        $this->assertNotEquals(
+            expected: $legacyLink,
+            actual: $widget->readMore->url
+        );
+
+        if ($this->paymentMethod === null) {
+            $this->fail('Payment method failed to load');
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: $amount,
+            fetchStartingCostUrl: 'https://example.com',
+            useLegacyReadMoreLink: true
+        );
 
         $this->assertEquals(
-            expected: $this->widget->getNotEligibleMessage(),
-            actual: $this->widget->getStartingAt(),
-            message: 'Starting at should be the same as not eligible message.'
+            expected: $legacyLink,
+            actual: $widget->readMore->url
         );
     }
 
@@ -188,18 +281,15 @@ class PartPaymentTest extends TestCase
             message: 'Widget should contain a div with class rb-pp-info.'
         );
 
-        if ($this->method === null) {
+        if ($this->paymentMethod === null) {
             $this->fail('Payment method failed to load');
         }
 
         try {
-            $noInfoText = $this->widget = new PartPayment(
-                storeId: $_ENV['STORE_ID'],
-                paymentMethod: $this->method,
+            $noInfoText = $this->widget = new Html(
+                paymentMethod: $this->paymentMethod,
                 months: 3,
                 amount: 1200,
-                currencySymbol: 'kr',
-                currencyFormat: CurrencyFormat::SYMBOL_LAST,
                 fetchStartingCostUrl: 'https://example.com',
                 displayInfoText: false
             );
@@ -224,7 +314,7 @@ class PartPaymentTest extends TestCase
 
         // Confirm starting at cost is rendered.
         $this->assertMatchesRegularExpression(
-            pattern: '/Starting at [\d,.]+ .* per month/',
+            pattern: '/Pay [\d,.]+ .*\/month for 3 months/',
             string: $this->widget->content,
             message: 'Widget should contain starting at cost.'
         );
@@ -255,74 +345,6 @@ class PartPaymentTest extends TestCase
             pattern: '/<div[^>]+class=["\'][^"\']*rb-pp-spinner/',
             string: $this->widget->content,
             message: 'Widget should contain a div with class rb-pp-spinner.'
-        );
-    }
-
-    /**
-     * Confirm widget CSS content is rendered as expected.
-     */
-    public function testWidgetCss(): void
-    {
-        // Confirm CSS content is rendered.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp/',
-            string: $this->widget->css,
-            message: 'Widget should contain CSS content.'
-        );
-
-        // Confirm CSS content contains rb-pp-info.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp-info/',
-            string: $this->widget->css,
-            message: 'Widget CSS should contain rb-pp-info.'
-        );
-
-        // Confirm CSS content contains rb-pp-starting-at.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp-starting-at/',
-            string: $this->widget->css,
-            message: 'Widget CSS should contain rb-pp-starting-at.'
-        );
-
-        // Confirm CSS content contains rb-pp-error.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp-error/',
-            string: $this->widget->css,
-            message: 'Widget CSS should contain rb-pp-error.'
-        );
-
-        // Confirm CSS content contains rb-pp-overlay.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp-overlay/',
-            string: $this->widget->css,
-            message: 'Widget CSS should contain rb-pp-overlay.'
-        );
-
-        // Confirm CSS content contains rb-pp-loader.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp-loader/',
-            string: $this->widget->css,
-            message: 'Widget CSS should contain rb-pp-loader.'
-        );
-
-        // Confirm CSS content contains rb-pp-spinner.
-        $this->assertMatchesRegularExpression(
-            pattern: '/\.rb-pp-spinner/',
-            string: $this->widget->css,
-            message: 'Widget CSS should contain rb-pp-spinner.'
-        );
-    }
-
-    /**
-     * Confirm widget JavaScript content is rendered as expected.
-     */
-    public function testWidgetJs(): void
-    {
-        // Confirm class Resursbank_PartPayment is defined.
-        $this->assertMatchesRegularExpression(
-            pattern: '/class Resursbank_PartPayment/',
-            string: $this->widget->js,
-            message: 'Widget JS should define class Resursbank_PartPayment.'
         );
     }
 
@@ -388,8 +410,8 @@ class PartPaymentTest extends TestCase
         // Mock return of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::getLongestPeriodWithZeroInterest
         // to return 0, and check that the message is empty.
         $this->widget = $this->createPartialMock(
-            PartPayment::class,
-            ['getLongestPeriodWithZeroInterest']
+            originalClassName: Html::class,
+            methods: ['getLongestPeriodWithZeroInterest']
         );
 
         $this->widget->method('getLongestPeriodWithZeroInterest')
@@ -399,5 +421,198 @@ class PartPaymentTest extends TestCase
             $this->widget->getNotEligibleMessage(),
             'Not eligible message should be empty when longest interest free duration is 0.'
         );
+    }
+
+    /**
+     * Test getCost output.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     */
+    public function testGetCost(): void
+    {
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $result = $this->widget->getCost(
+            paymentMethod: $this->paymentMethod,
+            amount: $this->widget->amount,
+            months: $this->widget->months
+        );
+
+        $fetched = PriceSignageRepository::getPriceSignage(
+            paymentMethodId: $this->paymentMethod->id,
+            amount: $this->widget->amount,
+            monthFilter: $this->widget->months
+        );
+        $filtered = array_values(array: $fetched->costList->toArray())[0];
+
+        $this->assertEqualsCanonicalizing(expected: $filtered, actual: $result);
+    }
+
+    /**
+     * Test the getTotalCost method output.
+     *
+     * @throws ConfigException
+     */
+    public function testGetTotalCost(): void
+    {
+        $this->assertMatchesRegularExpression(
+            pattern: '/For \d+ months, the total cost will be [\d]+./',
+            string: $this->widget->getTotalCost()
+        );
+    }
+
+    /**
+     * Test the getSetupFee method output.
+     *
+     * @throws ConfigException
+     */
+    public function testGetSetupFee(): void
+    {
+        $this->assertMatchesRegularExpression(
+            pattern: '/Setup fee: \d+/',
+            string: $this->widget->getSetupFee()
+        );
+    }
+
+    /**
+     * Test the getAdministrationFee method output.
+     *
+     * @throws ConfigException
+     */
+    public function testGetAdministrationFee(): void
+    {
+        $this->assertMatchesRegularExpression(
+            pattern: '/Administration fee per month: \d+/',
+            string: $this->widget->getAdministrationFee()
+        );
+    }
+
+    /**
+     * Test the output of the shouldDisplayCostExample.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function testShouldDisplayCostExample(): void
+    {
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            amount: 100,
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+
+        $this->assertMatchesRegularExpression(
+            pattern: '/Pay \d+,\d+ kr\/month for \d+ months/',
+            string: $widget->content
+        );
+
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            amount: 100,
+            fetchStartingCostUrl: 'http://example.com/',
+            showCostExample: false
+        );
+
+        $this->assertDoesNotMatchRegularExpression(
+            pattern: '/Pay \d+,\d+ kr\/month for \d+ months/',
+            string: $widget->content
+        );
+
+        $paymentMethod = Repository::getById(
+            paymentMethodId: $_ENV['INVOICE_PAYMENT_METHOD_ID']
+        );
+
+        if ($paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $widget = new Html(
+            paymentMethod: $paymentMethod,
+            months: 12,
+            amount: 100,
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+
+        $this->assertDoesNotMatchRegularExpression(
+            pattern: '/Pay \d+,\d+ kr\/month for \d+ months/',
+            string: $widget->content
+        );
+
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(
+                message: 'Payment method failed to load'
+            );
+        }
+
+        $widget = new Html(
+            paymentMethod: $this->paymentMethod,
+            months: 3,
+            amount: 100,
+            fetchStartingCostUrl: 'http://example.com/',
+            threshold: 1000
+        );
+
+        $this->assertDoesNotMatchRegularExpression(
+            pattern: '/Pay \d+,\d+ kr\/month for \d+ months/',
+            string: $widget->content
+        );
+    }
+
+    /**
+     * Test getFormattedCost method.
+     *
+     * @throws ConfigException
+     */
+    public function testGetFormattedCost(): void
+    {
+        $cost = $this->widget->cost;
+        $formattedCost = $this->widget->getFormattedCost($cost->totalCost);
+        $priceFormatted = Price::format(value: $cost->totalCost);
+
+        $this->assertEquals(expected: $priceFormatted, actual: $formattedCost);
     }
 }

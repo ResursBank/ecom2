@@ -1641,10 +1641,12 @@ You can also supply an optional *$amount* parameter filter payment methods.
 
 ## [Widget] PartPayment
 
-* *src/Module/PaymentMethod/Widget/PartPayment* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/part-payment.phtml* (HTML template)
-* *src/Module/PaymentMethod/Widget/part-payment.css* (stylesheet)
-* *src/Module/PaymentMethod/Widget/part-payment.js.phtml* (JavaScript template)
+* *src/Module/PaymentMethod/Widget/PartPayment/Html.php* (widget HTML PHP class)
+* *src/Module/PaymentMethod/Widget/PartPayment/Css.php* (widget CSS PHP class)
+* *src/Module/PaymentMethod/Widget/PartPayment/Js.php* (widget Javascript PHP class)
+* *src/Module/PaymentMethod/Widget/PartPayment/templates/html.phtml* (HTML template)
+* *src/Module/PaymentMethod/Widget/PartPayment/templates/css.css* (stylesheet)
+* *src/Module/PaymentMethod/Widget/PartPayment/templates/js.phtml* (JavaScript template)
 
 This renders a widget with part payment data, meant to be rendered in association
 with a product (like a product page) or payment method (like checkout). This data
@@ -1663,18 +1665,19 @@ covered by its own chapter later in this document.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\Widget\PartPayment\Html;
+use Resursbank\Ecom\Module\Widget\PartPayment\Js;
+use Resursbank\Ecom\Module\Widget\PartPayment\Css;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id'
 )->current();
 
 // Create an instance of the PartPayment widget.
-$widget = new PartPayment(
+$widget = new Html(
     storeId: 'store-id',
     paymentMethod: $paymentMethod,
     months: 12,
@@ -1683,6 +1686,13 @@ $widget = new PartPayment(
     currencyFormat: CurrencyFormat::AFTER,
     fetchStartingCostUrl: 'https://example.com/fetch-starting-cost' // This corresponds to a custom endpoint in your application where an AJAX request can fetch an updated version of the widget upon need.
 );
+$js = new Js(
+    paymentMethod: $paymentMethod,
+    months: 12,
+    amount: 1000.0,
+    fetchStartingCostUrl: 'https://example.com/fetch-starting-cost'
+);
+$css = new Css();
 
 $readMoreWidget = new ReadMore(
     paymentMethod: $paymentMethod,
@@ -1692,7 +1702,7 @@ $readMoreWidget = new ReadMore(
 ?>
 
 <style>
-   <?= $widget->css ?>
+   <?= $css->content ?>
    <?= $readMoreWidget->css ?>
 </style>
 
@@ -1702,7 +1712,7 @@ $readMoreWidget = new ReadMore(
 </div>
 
 <script>
-   <?= $widget->js ?>
+   <?= $js->content ?>
 </script>
 ```
 
@@ -1920,14 +1930,12 @@ We will also briefly show an example of a controller where the AJAX request
 performed by the JavaScript component can fetch new data for the widget.
 
 ```php
-use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Throwable;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\Widget\PartPayment\Html;
 
 class MyPartPaymentInfoController implements InfoControllerInterface
 {
@@ -1964,7 +1972,7 @@ class MyPartPaymentInfoController implements InfoControllerInterface
             )->current();
    
             // Create an instance of the PartPayment widget.
-            $widget = new PartPayment(
+            $widget = new Html(
                storeId: 'store-id',
                paymentMethod: $paymentMethod,
                months: 12,
