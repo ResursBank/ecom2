@@ -2006,13 +2006,15 @@ for the widget can be made.
 ## [Widget] ReadMore
 
 * *src/Module/PaymentMethod/Widget/ReadMore* (widget PHP class)
+* *src/Module/Widget/ReadMore/Js* (widget JS PHP class)
 * *src/Module/PaymentMethod/Widget/read-more.phtml* (HTML template)
 * *src/Module/PaymentMethod/Widget/read-more.css* (stylesheet)
 
 This widget will render a link which, when clicked, will display a modal window
 with information about a payment method.
 
-The widget HTML contains some inline JavaScript to toggle modal visibility.
+The widget includes Javascript which is used to toggle the visibility
+of the information iframe.
 
 ```php
 <?php
@@ -2021,6 +2023,7 @@ The widget HTML contains some inline JavaScript to toggle modal visibility.
 
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\Widget\ReadMore\Js;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
 $paymentMethod = Repository::getPaymentMethods(
@@ -2031,14 +2034,25 @@ $widget = new ReadMore(
    paymentMethod: $paymentMethod,
    amount: 150.25
 );
+$js = new Js(
+    containerElDomPath: '#container',
+    autoInitJs: true
+);
 
 ?>
 
+<script>
+    <?= $js->content ?>  
+</script>
+
 <style>
-   <?= $widget->css ?>
+    <?= $widget->css ?>
 </style>
 
-<?= $widget->content ?>
+<div id="container">
+    <?= $widget->content ?>
+</div>
+
 ```
 
 ## [Widget] PaymentMethods

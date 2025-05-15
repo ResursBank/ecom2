@@ -7,15 +7,17 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
+namespace Resursbank\Ecom\Module\Widget\ReadMore;
 
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
  * Renders the Javascript for the ReadMore widget.
+ *
+ * @SuppressWarnings(PHPMD.ShortClassName)
  */
-class ReadMoreJs extends Widget
+class Js extends Widget
 {
     public readonly string $content;
 
@@ -27,6 +29,9 @@ class ReadMoreJs extends Widget
         public readonly string $containerElDomPath,
         public readonly bool $autoInitJs = true
     ) {
-        $this->content = $this->render(file: __DIR__ . '/read-more.js.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'js.phtml'
+        );
     }
 }
