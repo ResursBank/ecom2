@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -83,6 +84,7 @@ class CancelTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -127,7 +129,8 @@ class CancelTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -152,7 +155,7 @@ class CancelTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Cancel payment
         $response = Repository::cancel(paymentId: $payment->id);
@@ -202,19 +205,19 @@ class CancelTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Cancel one order line
         $orderLine = new OrderLine(
+            quantity: 2.00,
+            quantityUnit: 'st',
+            vatRate: 25.00,
+            totalAmountIncludingVat: 301.5,
             description: 'Android',
             reference: 'T-800',
-            quantityUnit: 'st',
-            quantity: 2.00,
-            vatRate: 25.00,
+            type: OrderLineType::PHYSICAL_GOODS,
             unitAmountIncludingVat: 150.75,
-            totalAmountIncludingVat: 301.5,
-            totalVatAmount: 60.3,
-            type: OrderLineType::PHYSICAL_GOODS
+            totalVatAmount: 60.3
         );
         $response = Repository::cancel(
             paymentId: $payment->id,
@@ -281,7 +284,7 @@ class CancelTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Cancel order
         $creator = 'Foobar';
