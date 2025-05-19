@@ -29,6 +29,8 @@ use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
+use Resursbank\Ecom\Module\Payment\Enum\Status;
+use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
  * Handles mock signing in integration of MAPI payments.
@@ -61,13 +63,28 @@ class MockSigner
             );
         }
 
-        $curl = new Curl(
-            url: $payment->taskRedirectionUrls->customerUrl,
-            requestMethod: RequestMethod::GET,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-        $curl->exec();
+        $customerUrl = $payment->taskRedirectionUrls->customerUrl;
+        $count = 0;
+
+        while ($payment->status === Status::TASK_REDIRECTION_REQUIRED) {
+            $curl = new Curl(
+                url: $customerUrl,
+                requestMethod: RequestMethod::GET,
+                authType: AuthType::NONE,
+                responseContentType: ContentType::RAW
+            );
+            $curl->exec();
+            $count++;
+
+            if ($count >= 10) {
+                throw new ApiException(
+                    message: 'MockSigner hit iteration limit!'
+                );
+            }
+
+            sleep(seconds: 1);
+            $payment = Repository::get(paymentId: $payment->id);
+        }
     }
 
     /**
