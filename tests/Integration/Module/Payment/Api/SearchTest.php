@@ -123,7 +123,8 @@ class SearchTest extends TestCase
                 governmentId: self::GOVERNMENT_ID,
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -146,7 +147,7 @@ class SearchTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         $paymentCollection = Repository::search(
             orderReference: $orderReference
@@ -175,7 +176,7 @@ class SearchTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         $paymentCollection = Repository::search(
             orderReference: $orderReference,
