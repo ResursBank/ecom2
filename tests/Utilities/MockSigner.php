@@ -71,14 +71,13 @@ class MockSigner
     }
 
     /**
-     * Fetches Metadata object for automatic auth/sign.
+     * Get Metadata entries as an array.
      *
      * @throws AttributeCombinationException
-     * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
      */
-    public static function getMetadata(): Payment\Metadata
+    public static function getMetaDataArray(): array
     {
         $keys = [
             'MOCK_SIGNING',
@@ -99,9 +98,22 @@ class MockSigner
             $data[] = new Payment\Metadata\Entry(key: $key, value: 'SUCCESS');
         }
 
+        return $data;
+    }
+
+    /**
+     * Fetches Metadata object for automatic auth/sign.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public static function getMetadata(): Payment\Metadata
+    {
         return new Payment\Metadata(
             custom: new Payment\Metadata\EntryCollection(
-                data: $data
+                data: self::getMetaDataArray()
             )
         );
     }
