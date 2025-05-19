@@ -62,7 +62,7 @@ class MockSigner
         }
 
         $curl = new Curl(
-            url: $payment->taskRedirectionUrls?->customerUrl,
+            url: $payment->taskRedirectionUrls->customerUrl,
             requestMethod: RequestMethod::GET,
             authType: AuthType::NONE,
             responseContentType: ContentType::RAW
