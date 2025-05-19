@@ -77,7 +77,7 @@ class MockSigner
      * @throws JsonException
      * @throws ReflectionException
      */
-    public static function getMetaDataArray(): array
+    public static function getMetadataArray(): array
     {
         $keys = [
             'MOCK_SIGNING',
