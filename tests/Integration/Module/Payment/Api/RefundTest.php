@@ -125,7 +125,8 @@ class RefundTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -151,7 +152,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture payment
         Repository::capture(paymentId: $payment->id);
@@ -193,7 +194,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -201,15 +202,15 @@ class RefundTest extends TestCase
         // Refund single order line
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(
+                quantity: 2.00,
+                quantityUnit: 'st',
+                vatRate: 25.00,
+                totalAmountIncludingVat: 301.5,
                 description: 'Android',
                 reference: 'T-800',
-                quantityUnit: 'st',
-                quantity: 2.00,
-                vatRate: 25.00,
+                type: OrderLineType::PHYSICAL_GOODS,
                 unitAmountIncludingVat: 150.75,
-                totalAmountIncludingVat: 301.5,
-                totalVatAmount: 60.3,
-                type: OrderLineType::PHYSICAL_GOODS
+                totalVatAmount: 60.3
             ),
         ]);
         $refundResponse = Repository::refund(
@@ -256,7 +257,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -310,7 +311,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
