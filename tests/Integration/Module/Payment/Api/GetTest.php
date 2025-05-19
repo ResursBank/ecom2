@@ -121,7 +121,8 @@ class GetTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -145,7 +146,7 @@ class GetTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Call getPayment
         $fetched = Repository::get(paymentId: $payment->id);
