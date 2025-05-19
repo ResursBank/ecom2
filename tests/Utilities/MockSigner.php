@@ -21,6 +21,7 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
@@ -53,6 +54,13 @@ class MockSigner
     public static function callCustomerUrl(
         Payment $payment
     ): void {
+        if ($payment->taskRedirectionUrls === null) {
+            throw new MissingValueException(
+                message: 'Missing task redirection urls, unable to retrieve ' .
+                'customer URL.'
+            );
+        }
+
         $curl = new Curl(
             url: $payment->taskRedirectionUrls?->customerUrl,
             requestMethod: RequestMethod::GET,
@@ -74,15 +82,15 @@ class MockSigner
     {
         $keys = [
             'MOCK_SIGNING',
-            'MOCK_CO_SIGNING' .
+            //'MOCK_CO_SIGNING' .
             'MOCK_AUTH',
-            'MOCK_CO_AUTH',
+            //'MOCK_CO_AUTH',
             'MOCK_CONSENT',
             'MOCK_FORM',
             'MOCK_PRE_SIGN',
             'MOCK_IDENTITY_CHECK',
             'MOCK_CUSTOMER_LANDING',
-            'MOCK_EXTERNAL_INVOICE_REFERENCE'
+            //'MOCK_EXTERNAL_INVOICE_REFERENCE'
         ];
 
         $data = [];
