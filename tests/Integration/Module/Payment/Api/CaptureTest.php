@@ -126,7 +126,8 @@ class CaptureTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -150,7 +151,7 @@ class CaptureTest extends TestCase
         $originalId = $payment->id;
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture payment
         $response = Repository::capture(paymentId: $originalId);
@@ -175,7 +176,8 @@ class CaptureTest extends TestCase
         // Create payment with multiple order lines
         $payment = $this->createPayment(orderReference: $orderReference);
 
-        MockSigner::approve(payment: $payment);
+        // Sign
+        MockSigner::callCustomerUrl(payment: $payment);
 
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(
@@ -227,7 +229,7 @@ class CaptureTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture and specify transaction id
         $transactionId = Strings::generateRandomString(length: 12);
@@ -270,7 +272,7 @@ class CaptureTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture and specify transaction id
         $invoiceId = Strings::generateRandomString(length: 12);
