@@ -2070,8 +2070,9 @@ $widget = new Costs(
 
 ## [Widget] UniqueSellingPoint
 
-* *src/Module/PaymentMethod/Widget/UniqueSellingPoint* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/unique-selling-point.phtml* (HTML template)
+* *src/Module/Widget/UniqueSellingPoint/Html* (widget PHP class)
+* *src/Module/Widget/UniqueSellingPoint/templates/html.phtml* (HTML template)
+* *src/Module/Widget/UniqueSellingPoint/Resources/translations.json*
 
 Renders a USP message for a payment method. This is essentially information
 about a payment method to help customers decide which method to chose. Like
@@ -2082,16 +2083,15 @@ about a payment method to help customers decide which method to chose. Like
 
 // index.phtml
 
-use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Widget\UniqueSellingPoint\Html;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id',
     amount: 5000.00
 )->current();
 
-$widget = new UniqueSellingPoint(
+$widget = new Html(
     paymentMethod: $paymentMethod,
     amount: 5000.00
 );

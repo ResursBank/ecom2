@@ -33,7 +33,7 @@ use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
+use Resursbank\Ecom\Module\Widget\UniqueSellingPoint\Html;
 use Throwable;
 
 /**
@@ -206,8 +206,8 @@ class Repository
         PaymentMethod $paymentMethod,
         float $amount,
         bool $useLegacyReadMoreLink = false
-    ): UniqueSellingPoint {
-        return new UniqueSellingPoint(
+    ): Html {
+        return new Html(
             paymentMethod: $paymentMethod,
             amount: $amount,
             useLegacyReadMoreLink: $useLegacyReadMoreLink
