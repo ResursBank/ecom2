@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentInformation;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -52,17 +53,7 @@ use Throwable;
  */
 class HtmlTest extends TestCase
 {
-    private Payment $payment;
-
-    private Html $widget;
-
-    /** @noinspection PhpPrivateFieldCanBeLocalVariableInspection */
     private string $orderReference;
-
-    /**
-     * Temporarily stored payment to test failures.
-     */
-    private Payment $paymentCache;
 
     /**
      * @throws EmptyValueException
@@ -86,17 +77,8 @@ class HtmlTest extends TestCase
 
     /**
      * @throws ValidationException
-     * @throws CurlException
-     * @throws AttributeCombinationException
-     * @throws IllegalValueException
-     * @throws IllegalTypeException
-     * @throws AuthException
      * @throws EmptyValueException
-     * @throws JsonException
-     * @throws ConfigException
-     * @throws ApiException
-     * @throws ReflectionException
-     * @throws FilesystemException
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -117,10 +99,6 @@ class HtmlTest extends TestCase
         );
 
         $this->orderReference = Strings::generateRandomString(length: 12);
-        $this->payment = $this->createPayment(
-            orderReference: $this->orderReference
-        );
-        $this->widget = new Html(paymentId: $this->payment->id);
     }
 
     /**
@@ -137,8 +115,10 @@ class HtmlTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      */
-    private function createPayment(string $orderReference, string $governmentId = '198305147715'): Payment
-    {
+    private function createPayment(
+        string $orderReference,
+        string $governmentId = '198305147715'
+    ): Payment {
         $payment = Repository::create(
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: new OrderLineCollection(data: [
@@ -179,12 +159,11 @@ class HtmlTest extends TestCase
                 governmentId: $governmentId,
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
 
-        $this->paymentCache = $payment;
-
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         return Repository::get(paymentId: $payment->id);
     }
@@ -194,15 +173,17 @@ class HtmlTest extends TestCase
      */
     public function testRenderWidget(): void
     {
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
         $this->assertEquals(
-            expected: $this->payment->id,
-            actual: $this->widget->payment->id,
+            expected: $payment->id,
+            actual: $widget->payment->id,
             message: 'Widget payment id does not match original payment id'
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$this->payment->id}<\/td>/s",
-            string: $this->widget->content,
+            pattern: "/<td>{$payment->id}<\/td>/s",
+            string: $widget->content,
             message: 'Widget does not contain payment id cell.'
         );
     }
@@ -220,23 +201,27 @@ class HtmlTest extends TestCase
      */
     public function testGetTdElement(): void
     {
-        $tdEl = $this->widget->getTdElement(content: $this->payment->id);
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
+        $tdEl = $widget->getTdElement(content: $payment->id);
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$this->payment->id}<\/td>/s",
+            pattern: "/<td>{$payment->id}<\/td>/s",
             string: $tdEl,
-            message: 'getTdElement() does not return a td element with the given content.'
+            message: 'getTdElement() does not return a td element with the ' .
+            'given content.'
         );
 
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
             pattern: "/<td>{$content}<\/td>/s",
-            string: $this->widget->getTdElement(content: $content),
-            message: 'getTdElement() does not return a td element with the given content.'
+            string: $widget->getTdElement(content: $content),
+            message: 'getTdElement() does not return a td element with the ' .
+            'given content.'
         );
 
         // Verify that if $isHeader is true, renders header element.
-        $headerEl = $this->widget->getTdElement(
+        $headerEl = $widget->getTdElement(
             content: 'captured-amount',
             isHeader: true
         );
@@ -247,12 +232,13 @@ class HtmlTest extends TestCase
                 phraseId: 'captured-amount'
             ) . ".*<\/td>/s",
             string: $headerEl,
-            message: 'getTdElement() does not return a td element with the given content.'
+            message: 'getTdElement() does not return a td element with the ' .
+            'given content.'
         );
     }
 
     /**
-     * Verify that getTrElement() returns a tr element with the given title and content.
+     * Verify that getTrElement() returns a correct tr element.
      *
      * @throws ConfigException
      * @throws FilesystemException
@@ -264,8 +250,10 @@ class HtmlTest extends TestCase
      */
     public function testGetTrElement(): void
     {
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
         $content = 'some value';
-        $trEl = $this->widget->getTrElement(
+        $trEl = $widget->getTrElement(
             title: 'captured-amount',
             content: $content
         );
@@ -287,7 +275,8 @@ class HtmlTest extends TestCase
         $this->assertMatchesRegularExpression(
             pattern: "/<td[^>]+>.*{$content}.*<\/td>/s",
             string: $trEl,
-            message: 'getTrElement() does not return a td element with the given content.'
+            message: 'getTrElement() does not return a td element with the ' .
+            'given content.'
         );
     }
 
@@ -296,18 +285,21 @@ class HtmlTest extends TestCase
      */
     public function testGetAddressContent(): void
     {
-        $addressContent = $this->widget->getAddressContent();
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
+        $addressContent = $widget->getAddressContent();
         $this->assertMatchesRegularExpression(
             pattern: "/<br \/>/",
             string: $addressContent,
-            message: 'getAddressContent() does not return a string with <br /> separator.'
+            message: 'getAddressContent() does not return a string with ' .
+            '<br /> separator.'
         );
 
         $data = [
-            $this->widget->getAddressRow1(),
-            $this->widget->getCity(),
-            $this->widget->getPostalCode(),
-            $this->widget->getCountryCode(),
+            $widget->getAddressRow1(),
+            $widget->getCity(),
+            $widget->getPostalCode(),
+            $widget->getCountryCode(),
         ];
 
         // Assert all values in $data are present in $addressContent.
@@ -315,7 +307,8 @@ class HtmlTest extends TestCase
             $this->assertMatchesRegularExpression(
                 pattern: "/{$value}/",
                 string: $addressContent,
-                message: 'getAddressContent() does not return a string with all address data.'
+                message: 'getAddressContent() does not return a string with ' .
+                'all address data.'
             );
         }
     }
@@ -326,15 +319,17 @@ class HtmlTest extends TestCase
      */
     public function testLogoRendering(): void
     {
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
         $this->assertMatchesRegularExpression(
             pattern: "/<svg[^>]+xmlns=.*>.*<\/svg>/s",
-            string: $this->widget->content,
+            string: $widget->content,
             message: 'SVG element is not rendered.'
         );
     }
 
     /**
-     * Verify that realtime credit denial works. For tests related to the rejectedReasons model, see PaymentTest.
+     * Verify that realtime credit denial works.
      *
      * @throws Throwable
      * @see PaymentTest
@@ -342,19 +337,15 @@ class HtmlTest extends TestCase
     public function testCreditDenied(): void
     {
         $this->setUpEnglish();
-        $orderReference = Strings::generateRandomString(length: 12);
+        $payment = $this->createPayment(
+            orderReference: $this->orderReference,
+            governmentId: '197211072793'
+        );
 
-        try {
-            $this->createPayment(
-                orderReference: $orderReference,
-                governmentId: '195012026430'
-            );
-            $this->fail(message: 'Payment should have been rejected.');
-        } catch (Throwable $e) {
-            $this->assertStringContainsString('REJECTED', $e->getMessage());
-        }
+        // Sleep for a few seconds to make sure status has been updated.
+        sleep(seconds: 3);
 
-        $widget = new Html(paymentId: $this->paymentCache->id);
+        $widget = new Html(paymentId: $payment->id);
 
         $this->assertMatchesRegularExpression(
             pattern: '/<td(.*?)>Status<\/td><td>REJECTED \(Credit denied\)<\/td>/s',
