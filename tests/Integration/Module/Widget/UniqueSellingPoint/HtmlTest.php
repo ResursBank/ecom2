@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\PaymentMethod\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\UniqueSellingPoint;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -20,13 +20,13 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
+use Resursbank\Ecom\Module\Widget\UniqueSellingPoint\Html;
 use Throwable;
 
 /**
  * Integration tests for the ReadMore widget.
  */
-class UniqueSellingPointTest extends TestCase
+class HtmlTest extends TestCase
 {
     /**
      * @throws EmptyValueException
@@ -70,16 +70,16 @@ class UniqueSellingPointTest extends TestCase
     private function getUsp(PaymentMethod $method): string
     {
         try {
-            $usp = new UniqueSellingPoint(paymentMethod: $method, amount: 100);
+            $usp = new Html(paymentMethod: $method, amount: 100);
 
-            return $usp->getBasicTranslation($method->type);
+            return $usp->getText();
         } catch (Throwable $e) {
             self::fail($e->getMessage());
         }
     }
 
     /**
-     * The following payment method type should not have any USP messages.
+     * The following payment method types should not have any USP messages.
      *
      * - PAYPAL
      * - MASTERPASS
@@ -103,29 +103,88 @@ class UniqueSellingPointTest extends TestCase
     }
 
     /**
-     * Assert that the getBasicTranslation method returns a string. Indicating
+     * Assert that the getText method always returns a string.
+     *
+     * Assert that the getText method returns a string. Indicating
      * that we can translate a payment method type to a USP message using its
      * custom translation file.
      *
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    public function testGetBasicTranslation(): void
+    public function testGetText(): void
     {
         $methods = $this->getMethods();
 
-        // Generate instance of UniqueSellingPoint for each payment methods.
-        // Confirm that the getBasicTranslation method returns a string.
+        // Generate instance of UniqueSellingPoint for each payment method.
+        // Confirm that the getText method returns a string.
 
         /** @var PaymentMethod $method */
         foreach ($methods as $method) {
             $usp = $this->getUsp(method: $method);
 
-            // Assert that USP is none-empty string (unless expected).
+            // Assert that USP is non-empty string (unless expected).
             if (!$this->expectEmptyUsp(method: $method)) {
                 $this->assertNotEmpty($usp);
             } else {
                 $this->assertEmpty($usp);
             }
+        }
+    }
+
+    /**
+     * Verify that the main content
+     */
+    public function testHtmlStructure(): void
+    {
+        $methods = $this->getMethods();
+
+        /** @var PaymentMethod $method */
+        foreach ($methods as $method) {
+            try {
+                $widget = new Html(paymentMethod: $method, amount: 100);
+            } catch (Throwable $error) {
+                self::fail(
+                    message: 'Failed to load widget: ' . $error->getMessage()
+                );
+            }
+
+            // Verify HTML up to the ReadMore sub-widget.
+            $this->assertMatchesRegularExpression(
+                pattern: '/^\s*<div class="rb-usp">\s+<p>\s+<span class=' .
+                '"rb-usp-header">.*\/span>\s+<\/p>\s*<!-- Read More link -->' .
+                '\s*/',
+                string: $widget->content
+            );
+
+            // Verify there's a closing </div> at the end of the HTML.
+            $this->assertMatchesRegularExpression(
+                pattern: '/<\/div>\s*$/',
+                string: $widget->content
+            );
+        }
+    }
+
+    /**
+     * Assert that the ReadMore widget contents are included in the content.
+     */
+    public function testUspContainsReadMore(): void
+    {
+        $methods = $this->getMethods();
+
+        /** @var PaymentMethod $method */
+        foreach ($methods as $method) {
+            try {
+                $widget = new Html(paymentMethod: $method, amount: 100);
+            } catch (Throwable $error) {
+                self::fail(
+                    message: 'Failed to load widget: ' . $error->getMessage()
+                );
+            }
+
+            $this->assertStringContainsString(
+                needle: $widget->readMore->content,
+                haystack: $widget->content
+            );
         }
     }
 }

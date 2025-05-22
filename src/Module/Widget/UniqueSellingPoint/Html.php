@@ -7,33 +7,37 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
+namespace Resursbank\Ecom\Module\Widget\UniqueSellingPoint;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
+use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Throwable;
 
 /**
  * Unique Selling Point fetcher
  */
-class UniqueSellingPoint extends Widget
+class Html extends Widget
 {
     /** @var ReadMore */
     public readonly ReadMore $readMore;
 
     /** @var string */
     public readonly string $content;
-
-    /** @var string */
-    public readonly string $message;
 
     /**
      * @throws ConfigException
@@ -43,6 +47,13 @@ class UniqueSellingPoint extends Widget
      * @throws JsonException
      * @throws ReflectionException
      * @throws TranslationException
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws CurlException
+     * @throws ValidationException
+     * @throws EmptyValueException
+     * @throws Throwable
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @SuppressWarnings(PHPMD.LongVariable)
      */
@@ -56,35 +67,33 @@ class UniqueSellingPoint extends Widget
             amount: $amount,
             useLegacyLink: $this->useLegacyReadMoreLink
         );
-        $this->message = $this->getBasicTranslation(
-            paymentMethodType: $this->paymentMethod->type
-        );
         $this->content = $this->render(
-            file: __DIR__ . '/unique-selling-point.phtml'
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }
 
     /**
      * Fetches the localized USP translation for a payment method type.
      *
+     * This uses a module-specific translation file as the API does not contain
+     * the necessary USP data.
+     *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
-     * @throws IllegalValueException
      */
-    public function getBasicTranslation(Type $paymentMethodType): string
+    public function getText(): string
     {
-        $return = Translator::translate(
+        return Translator::translate(
             phraseId: str_replace(
-                '_',
-                '-',
-                strtolower($paymentMethodType->value)
+                search: '_',
+                replace: '-',
+                subject: strtolower($this->paymentMethod->type->value)
             ),
-            translationFile: __DIR__ . '/Resources/translations.json'
+            translationFile: __DIR__ . DIRECTORY_SEPARATOR . 'Resources' .
+            DIRECTORY_SEPARATOR . 'translations.json'
         );
-        return $return !== 'N/A' ? $return : '';
     }
 }
