@@ -110,6 +110,16 @@
     }
   },
   {
+    "id": "event-is-ready-for-authorization",
+    "translation": {
+      "en": "Order ready for authorization callback.",
+      "sv": "Beställning redo för auktoriserings-callback.",
+      "da": "",
+      "no": "",
+      "fi": ""
+    }
+  },
+  {
     "id": "user-customer",
     "translation": {
       "en": "Customer",

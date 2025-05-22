@@ -36,4 +36,8 @@ enum Event: string
     case INVOICE_CREATED = 'event-invoice-created';
     case REDIRECTED_TO_GATEWAY = 'event-redirected-to-gateway';
     case LEGACY = 'event-legacy';
+    /* This status allows us to block the first incoming authorization
+       callback to limit the risk of race conditions between the callback
+       and the code that triggers on the fail/success view */
+    case IS_READY_FOR_AUTHORIZATION = 'event-is-ready-for-authorization';
 }
