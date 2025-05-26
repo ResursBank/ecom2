@@ -86,7 +86,7 @@ class Js extends Widget
 
         $this->content = $this->render(
             file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
-            DIRECTORY_SEPARATOR . 'js.phtml'
+            DIRECTORY_SEPARATOR . 'js.js.phtml'
         );
     }
 }

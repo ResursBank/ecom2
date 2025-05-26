@@ -532,7 +532,7 @@ $paymentMethods = Repository::getMethods(
 ## [Widget] GetPeriods
 
 *src/Module/Widget/GetPeriods*
-*src/Module/Widget/get-periods.js.phtml* (JavaScript template)
+*src/Module/Widget/GetPeriods/templates/js.js.phtml* (JavaScript template)
 
 Configuration assistant. Simplifies interaction with config fields to select
 **payment method** and associated **duration**. For example, "Invoice", "12"
@@ -622,7 +622,7 @@ We generate an instance of the PHP widget and supply it with a path to the
 **payment method** and **period** select-boxes which we know will be present in
 our form.
 
-The widget will render the **get-periods.js.phtml** template, in context to
+The widget will render the **js.js.phtml** template, in context to
 itself (this means that the PHP code within the template has access to everything
 in the widget instance which is **public**) and store the rendered JavaScript
 code in the **content** property which we later echo out in the script tag
@@ -633,7 +633,7 @@ not automatically setup itself when the document is loaded, requiring us to call
 the **generate** method manually instead.
 
 ```php
-// Segment from Module/AnnuityFactor/Widget/get-periods.js.phtml where we
+// Segment from Module/Widgets/GetPeriods/templates/js.js.phtml where we
 // automatically set up the widget if $automatic is set to true.
 <?php if ($this->automatic): ?>
 <script>
@@ -951,9 +951,9 @@ class MyGetAddressController extends GetAddressController
 * *src/Module/Widget/GetAddress/Html* (widget HTML PHP class)
 * *src/Module/Widget/GetAddress/Js* (widget JS PHP class)
 * * *src/Module/Widget/GetAddress/Css* (widget CSS PHP class)
-* *src/Module/Widget/GetAddress/get-address.js.phtml* (JavaScript template)
-* *src/Module/Widget/GetAddress/get-address.css* (stylesheet)
-* *src/Module/Widget/GetAddress/get-address.phtml* (HTML template)
+* *src/Module/Widget/GetAddress/templates/js.js.phtml* (JavaScript template)
+* *src/Module/Widget/GetAddress/templates/css.css* (stylesheet)
+* *src/Module/Widget/GetAddress/templates/html.phtml* (HTML template)
 
 This will render a form where the customer can select their type ("NATURAL" or 
 "LEGAL") and enter their government ID (SSN or organization number). The
@@ -974,7 +974,7 @@ use \Resursbank\Ecom\Module\Widget\GetAddress\Css;
 
 // Note that you also can supply a $governmentId and $customerType to
 // pre-populate the form should you wish to. Also, you can set $automatic to
-// true if you do not want to modify the JavaScript code (get-address.js.phtml).
+// true if you do not want to modify the JavaScript code (js.js.phtml).
 // For example, you may wish to display errors in a certain way, or display a
 // customer loader while the request is being processed. For the purpose of this
 // example, we will leave it as false, just to give you an idea of how you could
@@ -1646,7 +1646,7 @@ You can also supply an optional *$amount* parameter filter payment methods.
 * *src/Module/PaymentMethod/Widget/PartPayment/Js.php* (widget Javascript PHP class)
 * *src/Module/PaymentMethod/Widget/PartPayment/templates/html.phtml* (HTML template)
 * *src/Module/PaymentMethod/Widget/PartPayment/templates/css.css* (stylesheet)
-* *src/Module/PaymentMethod/Widget/PartPayment/templates/js.phtml* (JavaScript template)
+* *src/Module/PaymentMethod/Widget/PartPayment/templates/js.js.phtml* (JavaScript template)
 
 This renders a widget with part payment data, meant to be rendered in association
 with a product (like a product page) or payment method (like checkout). This data
