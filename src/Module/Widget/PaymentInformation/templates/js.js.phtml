@@ -1,0 +1,498 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var Js $this */
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Module\Widget\PaymentInformation\Js;
+
+?>
+
+/**
+ * Reload widget on demand as observable elements change.
+ */
+class Resursbank_PaymentInformation {
+  'use strict';
+
+  /**
+   * Safely override pre-defined functions and properties using the supplied
+   * overrides parameter. Example:
+   *
+   * { "getUrl": function () { // Custom code to get URL } }
+   *
+   * This allows for complex implementations where things like inputs, error
+   * handlers, loaders etc. are unknown variables.
+   *
+   * @param {HTMLElement} el
+   * @param {{}} overrides
+   */
+  constructor(
+    el,
+    overrides = {}
+  ) {
+    // If element does not exist, warn in console and exit.
+    if (!el) {
+      console.warn('Failed to find widget container element.');
+      return;
+    }
+
+    this.el = el;
+
+    for (const [key, value] of Object.entries(overrides)) {
+      if (typeof this[key] === typeof value) {
+        this[key] = value;
+      } else {
+        console.warn('Failed to overwrite ' + key + ', type mismatch.');
+      }
+    }
+  }
+
+  /**
+   * HTML element containing widget instance.
+   *
+   * @type {HTMLElement}
+   */
+  el = null;
+
+  /**
+   * Whether an AJAX request is active.
+   *
+   * @type {boolean}
+   */
+  fetching = false;
+
+  /**
+   * Queue of amounts to fetch.
+   *
+   * This queue contains a single value. We specify this as an array for
+   * consistency where we use it.
+   *
+   * @type {{}}
+   */
+  queue = [];
+
+  /**
+   * Event listener to reload widget.
+   *
+   * We store this in a property to be able to remove it when we reload
+   * element observers. Otherwise, we would end up with multiple listeners
+   * for the same event.
+   *
+   * @type {*}
+   */
+  updater = this.reloadWidget.bind(this);
+
+  /**
+   * In case there is an amount attached to the widget, we use this to avoid
+   * subsequent calls for the same amount as we previously rendered the widget
+   * for. For example, the part payment widget will reload whenever the price
+   * configuration for the associated item changes. However, some options may
+   * cause the price element on the website to re-render, but this does not
+   * mean that the actual price has changed. Likewise for the payment
+   * information widget we use on order views.
+   *
+   * @type {number}
+   */
+  lastAmount = <?= $this->amount ?>;
+
+  /**
+   * Create new instance of self and setup element listeners.
+   *
+   * Element listeners are set up to trigger the reloadWidget method,
+   * these are defined in the getObservableElements method.
+   *
+   * We use different event listeners depending on the type of element we are:
+   *
+   * - Form: We listen for the change event.
+   * - Others: We listen for the DOMSubtreeModified event.
+   *
+   * @returns {Resursbank_PaymentInformation}
+   */
+  static createInstance(el, overrides = {}) {
+    const instance = new Resursbank_PaymentInformation(el, overrides);
+
+    instance.reloadElementObservers();
+
+    return instance;
+  }
+
+  /**
+   * Reload element observers.
+   *
+   * This is useful when implementation is made in a reactive context. For
+   * example when fields are added dynamically to the form.
+   */
+  reloadElementObservers() {
+    try {
+      this.getObservableElements().forEach(element => {
+        // Remove existing listeners
+        element.removeEventListener('change', this.updater);
+
+        // Add new listeners
+        if (['FORM', 'INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName)) {
+          element.addEventListener('change', this.updater);
+        } else {
+          const observer = new MutationObserver(() => {
+            this.updater();
+          });
+
+          observer.observe(element, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true
+          });
+
+          element._mutationObserver = observer;
+        }
+      });
+    } catch (e) {
+      this.errorHandler(e);
+    }
+  }
+
+  /**
+   * Perform AJAX request to fetch new widget HTML.
+   *
+   * If an amount is associated with the widget (like a product price or order
+   * total) and affect the widget content, the following applies:
+   *
+   * This method will queue requested amounts, to avoid unnecessary requests.
+   * How this works is best illustrated by an example scenario:
+   *
+   * 1. User configures amount (changes product options etc. to affect price).
+   * 2. We replace this.queue with an array, containing the new amount.
+   * 3. We run a while loop to fetch the next amount specified in the queue,
+   * clearing the queue as we go. Each iteration performs an AJAX request,
+   * which we wait for to finish.
+   * 4. User rapidly re-configures the amount, changing it several times
+   * before the first fetch is complete. We only care about the latest amount,
+   * so we replace the queue with the new amount.
+   * 5. We avoid executing the while loop concurrently by using the flag
+   * this.fetching
+   *
+   * The same could be achieved by simply storing the latest amount as a
+   * number without the array. The array just makes the code a little cleaner.
+   */
+  async reloadWidget() {
+    try {
+      let params = {
+        amount: this.getAmount()
+      };
+
+      // Rules to avoid the AJAX request if there is an amount associated with
+      // this widget.
+      if (params.amount !== null) {
+        // Avoid fetching for negative or zero amounts.
+        if (params.amount <= 0) {
+          return;
+        }
+
+        // Avoid fetching if the amount is the same as the last amount.
+        //
+        // Note that we check if the new amount differs from the last amount
+        // by a small margin, to avoid fetching the same amount multiple
+        // times due to floating point precision issues.
+        if (
+          this.lastAmount !== null &&
+          Math.abs(this.lastAmount - params.amount) <= 0.0001
+        ) {
+          return;
+        }
+      }
+
+      // Please see the method documentation for an explanation of how the
+      // queue works.
+      //
+      // Note that even if we are currently fetching we want to replace the
+      // existing queue.
+      this.queue = [params];
+
+      // Avoid fetching if we are already fetching.
+      if (this.fetching) {
+        return;
+      }
+
+      // Toggle fetching loader.
+      this.toggleLoader();
+
+      // Reset error element.
+      this.el.querySelector('.rb-pi-error').style.display = 'none';
+
+      while (this.queue.length > 0) {
+        let params = this.queue.shift();
+        this.lastAmount = params.amount;
+        this.fetching = true;
+
+        await fetch('<?= $this->reloadUrl ?>', {
+          method: 'POST',
+          headers: {
+            'Content-Type': this.getRequestContentType()
+          },
+          body: this.getRequestBody(params)
+        })
+          .then(this.handleFetchResponse.bind(this))
+          .then(this.handleFetchData.bind(this))
+          .then(this.toggleLoader.bind(this))
+          .then(this.onComplete.bind(this))
+          .catch(this.errorHandler.bind(this));
+      }
+    } catch (e) {
+      this.errorHandler(e);
+    }
+
+    this.fetching = false;
+  }
+
+  /**
+   * Resolve content type for AJAX request.
+   *
+   * Note: this is a function to allow for overrides.
+   *
+   * @returns {string}
+   */
+  getRequestContentType() {
+    return 'application/json';
+  }
+
+  /**
+   * Resolve body for AJAX request.
+   *
+   * Note: this is a function to allow for overrides.
+   *
+   * @returns {string}
+   */
+  getRequestBody(params) {
+    // Merge custom request data. Override existing keys.
+    return JSON.stringify(
+      Object.assign(params, this.getCustomRequestData())
+    );
+  }
+
+  /**
+   * Resolve HTML element on page containing price information for this widget
+   * instance. This is the element we may parse to get the amount we use in
+   * our fetch call.
+   *
+   * @returns {null|HTMLElement}
+   */
+  getAmountElement() {
+    const elDom = '<?= $this->amountElement ?>';
+
+    if (elDom !== '') {
+      return document.querySelector(elDom);
+    }
+
+    return null;
+  }
+
+  /**
+   * Resolve observable element to update widget HTML. When an observable
+   * element is changed, we will trigger a reload of the widget.
+   *
+   * @returns {[HTMLElement]}
+   */
+  getObservableElements() {
+    let result = [];
+
+    <?php foreach ($this->observableElements as $element): ?>
+    let el = document.querySelector('<?= $element ?>');
+    if (el) {
+      result.push(el);
+    }
+    <?php endforeach; ?>
+
+    return result;
+  }
+
+  /**
+   * Resolve currently configured amount.
+   *
+   * Please note that this is a standard implementation, intended to function
+   * on various platforms and custom implementations of this widget. Since we
+   * cannot know of any other data source than the elements containing the
+   * price data, we will resolve the amount from the element and parse it as
+   * best we can.
+   *
+   * @returns {null|number}
+   */
+  getAmount() {
+    const el = this.getAmountElement();
+
+    // Confirm el is a valid element.
+    if (!el || !el.innerHTML) {
+      return null;
+    }
+
+    return Resursbank_PaymentInformation.parseFromContentToFloat(el.innerHTML);
+  }
+
+  /**
+   * Resolve JSON data from request response.
+   *
+   * @param {Response} response
+   * @returns {Promise<any>|undefined}
+   */
+  handleFetchResponse(response) {
+    if (!response.ok) {
+      throw new Error(
+        '<?= Translator::translate(phraseId: 'general-server-error') ?>'
+      );
+    } else {
+      return response.json();
+    }
+  }
+
+  /**
+   * Convert HTML string to element.
+   *
+   * @param html
+   * @returns {ChildNode}
+   */
+  htmlToElement(html) {
+    const template = document.createElement('div');
+    template.innerHTML = html.trim();
+    return template.firstChild;
+  }
+
+  /**
+   * Update example element with new content.
+   *
+   * @param {any} data
+   */
+  handleFetchData(data) {
+    if (typeof data === 'undefined') {
+      return;
+    }
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    if (!data.hasOwnProperty('html') || !data.html) {
+      throw new Error('<?= Translator::translate(phraseId: 'invalid-server-response') ?>');
+    }
+
+    this.el.replaceWith(this.htmlToElement(data.html));
+
+    // Re-initialize the widget element for future interaction. Otherwise, the
+    // old reference to the DOM element now replaced would be used, and thus
+    // we would only be able to update the element once.
+    this.el = document.querySelector('<?= $this->widgetElement ?>');
+  }
+
+  /**
+   * Basic error handler.
+   *
+   * @param {Error} message
+   */
+  errorHandler(message) {
+    // Clear queue to avoid subsequent requests.
+    this.queue = [];
+
+    // Resolve error container.
+    const errorEl = this.el.querySelector('.rb-pi-error');
+
+    // Insert error message into error element.
+    errorEl.innerHTML = message.message;
+
+    // Display error message.
+    errorEl.style.display = 'block';
+
+    // Hide loader.
+    this.toggleLoader();
+  }
+
+  /**
+   * Show / hide loading animation on top of widget content.
+   */
+  toggleLoader() {
+    const state = this.queue.length > 0;
+
+    this.onToggleLoader(state);
+
+    const loader = document.querySelector('.rb-pi-loader');
+    const overlay = document.querySelector('.rb-pi-overlay');
+
+    if (state) {
+      loader.style.display = 'block';
+      overlay.style.display = 'block';
+    } else {
+      loader.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+  }
+
+  /**
+   * Events performed when AJAX request has completed.
+   */
+  onComplete() {
+    // Placeholder.
+  }
+
+  /**
+   * Events performed when toggling.
+   *
+   * @param {boolean} state
+   */
+  onToggleLoader(state) {
+    // Placeholder.
+  }
+
+  /**
+   * Resolve custom request data.
+   *
+   * @returns {{}}
+   */
+  getCustomRequestData() {
+    return {};
+  }
+
+  /**
+   * Parse content to float.
+   *
+   * @param value
+   * @returns {number}
+   */
+  static parseFromContentToFloat(value) {
+    // Strip potential tags.
+    let content = value.replace(/<[^>]*>?/gm, '');
+
+    // Remove anything except digits, dots and commas.
+    content = content.replace(/[^\d.,]/g, '');
+
+    // Check if there is both a comma and a dot in the content.
+    if (content.includes(',') && content.includes('.')) {
+      // Remove whichever comes first.
+      //
+      // 3.4000,00 -> 34000,00
+      // 3,4000.00 -> 34000.00
+      content = content.replace(/(.*?)(,|\.)(.*)/, '$1$3');
+    }
+
+    // Replace all remaining commas with dots.
+    //
+    // 3400,00 -> 3400.00
+    content = content.replace(/,/g, '.');
+
+    // Parse the resulting string as a float.
+    return parseFloat(content);
+  }
+}
+
+<?php if ($this->automatic): ?>
+document.addEventListener(
+  'DOMContentLoaded',
+  function () {
+    Resursbank_PaymentInformation.createInstance(
+      document.querySelector('<?= $this->widgetElement ?>')
+    );
+  }
+);
+<?php endif; ?>
