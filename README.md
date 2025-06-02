@@ -2182,6 +2182,50 @@ use \Resursbank\Ecom\Module\Store\Repository;
 $stores = Repository::getStores();
 ```
 
+## [Widget] PriceSignage
+
+The Price Signage widget displays price signage information for use during the
+checkout process. The purpose of this is to ensure compliance with Swedish laws
+regarding detailed information about the actual costs of consumer credit
+purchases.
+
+```php
+use Resursbank\Ecom\Module\PriceSignage\Repository
+    as PriceSignageRepository;
+use Resursbank\Ecom\Module\PaymentMethod\Repository
+    as PaymentMethodRepository;
+use Resursbank\Ecom\Module\Widget\CostList\Html;
+use Resursbank\Ecom\Module\Widget\CostList\Js;
+use Resursbank\Ecom\Module\Widget\CostList\Css;
+
+
+$widget = new Html(
+    priceSignage: PriceSignageRepository::getPriceSignage(
+        paymentMethodId: 'payment-method-id',
+        amount 'purchase-amount'
+    ),
+    method: PaymentMethodRepository::getById(
+        paymentMethodId: 'payment-method-id'
+    ) 
+);
+$jsWidget = new Js(
+    containerElDomPath: '#priceSignageWidget'
+);
+$cssWidget = new Css();
+?>
+
+<script>
+<?= $jsWidget->content ?>
+</script>
+<style>
+<?= $cssWidget->content ?>
+</style>
+<div id="priceSignageWidget">
+<?= $widget->content ?>
+</div>
+
+```
+
 ## [Widget] GetStores
 
 This is a widget which renders a JavaScript component to automatically fetch a
