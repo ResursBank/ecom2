@@ -136,7 +136,9 @@ class Resursbank_PartPayment {
                 element.removeEventListener('change', this.updater);
 
                 // Add new listeners
-                if (['FORM', 'INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName)) {
+                if (['BUTTON'].includes(element.tagName)) {
+                  element.addEventListener('click', this.updater);
+                } else if (['FORM', 'INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName)) {
                     element.addEventListener('change', this.updater);
                 } else {
                     const observer = new MutationObserver(() => {
