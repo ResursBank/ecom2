@@ -1641,12 +1641,12 @@ You can also supply an optional *$amount* parameter filter payment methods.
 
 ## [Widget] PartPayment
 
-* *src/Module/PaymentMethod/Widget/PartPayment/Html.php* (widget HTML PHP class)
-* *src/Module/PaymentMethod/Widget/PartPayment/Css.php* (widget CSS PHP class)
-* *src/Module/PaymentMethod/Widget/PartPayment/Js.php* (widget Javascript PHP class)
-* *src/Module/PaymentMethod/Widget/PartPayment/templates/html.phtml* (HTML template)
-* *src/Module/PaymentMethod/Widget/PartPayment/templates/css.css* (stylesheet)
-* *src/Module/PaymentMethod/Widget/PartPayment/templates/js.js.phtml* (JavaScript template)
+* *src/Module/Widget/PartPayment/Html.php* (widget HTML PHP class)
+* *src/Module/Widget/PartPayment/Css.php* (widget CSS PHP class)
+* *src/Module/Widget/PartPayment/Js.php* (widget Javascript PHP class)
+* *src/Module/Widget/PartPayment/templates/html.phtml* (HTML template)
+* *src/Module/Widget/PartPayment/templates/css.css* (stylesheet)
+* *src/Module/Widget/PartPayment/templates/js.js.phtml* (JavaScript template)
 
 This renders a widget with part payment data, meant to be rendered in association
 with a product (like a product page) or payment method (like checkout). This data
