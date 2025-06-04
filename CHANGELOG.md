@@ -1,3 +1,14 @@
+# 3.3.2
+
+* ECP-1037 Add IS\_READY\_FOR\_AUTHORIZATION Payment History event.
+* ECP-1026 Modify handling of after shop payment history logging to add sums even when there are no order lines provided. 
+* ECP-1013 Resolver changed to IPv4 only due to issues with MAPI (INC0087967).
+
+# 3.3.1
+
+* Update Payment::isCancelled condition.
+* Change 'fånga' to 'debitera' in the translation file.
+
 # 3.3.0
 
 * Fixes for PrestaShop integration.

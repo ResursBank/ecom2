@@ -16,6 +16,23 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
 ?>
 
 <div class="rb-pi">
+  <?php // AJAX loading animation. ?>
+  <div class="rb-pi-loader" style="display: none;">
+    <div class="rb-pi-spinner">
+      <svg class="rb-pi-circular" viewBox="25 25 50 50">
+        <circle class="rb-pi-path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+      </svg>
+    </div>
+  </div>
+
+  <?php // Loader content overlay. ?>
+  <div class="rb-pi-overlay" style="display: none;"></div>
+
+  <?php // Error container. ?>
+  <div class="rb-pi-error" style="display: none;"></div>
+
+  <?php // Content ?>
+  <div class="rb-pi-content">
     <table>
         <tr>
             <th><?= Translator::translate(phraseId: 'payment') ?></th>
@@ -52,4 +69,5 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
         <?= $this->getTrElement(title: 'telephone', content: $this->getTelephone()) ?>
         <?= $this->getTrElement(title: 'email', content: $this->getEmail()) ?>
     </table>
+  </div>
 </div>

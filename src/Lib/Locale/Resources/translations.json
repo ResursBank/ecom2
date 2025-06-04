@@ -3425,6 +3425,14 @@
     }
   },
   {
+    "id": "payment-not-ready-to-be-captured",
+    "translation": {
+      "en": "Payment is not ready to be captured at Resurs Bank",
+      "sv": "Betalningen är inte redo att debiteras hos Resurs Bank",
+      "no": "Betalingen er ikke klar for å fanges"
+    }
+  },
+  {
     "id": "payment-cannot-be-cancelled",
     "translation": {
       "en": "Payment cannot be cancelled",
@@ -3480,6 +3488,47 @@
       "no": "TTL (i minutter)",
       "da": "TTL (i minutter)",
       "fi": "Elinikä (minuuteissa)"
+    }
+  },
+  {
+    "id": "general-server-error",
+    "translation": {
+      "en": "Something went wrong while reloading the widget. Please reload the page and try again.",
+      "sv": "Något gick fel när widgeten skulle laddas om. Vänligen ladda om sidan och försök igen.",
+      "no": "Noe gikk galt under omlasting av widgeten. Vennligst last inn siden på nytt og prøv igjen.",
+      "da": "Noget gik galt under genindlæsning af widgeten. Genindlæs venligst siden og prøv igen.",
+      "fi": "Jokin meni pieleen ladattaessa widgettiä uudelleen. Lataa sivu uudelleen ja yritä uudelleen."
+    }
+  },
+  {
+    "id": "invalid-server-response",
+    "translation": {
+      "en": "The server response was invalid. Please reload the page and try again.",
+      "sv": "Serverns svar var ogiltigt. Vänligen ladda om sidan och försök igen.",
+      "no": "Serverresponsen var ugyldig. Vennligst last inn siden på nytt og prøv igjen.",
+      "da": "Serverens svar var ugyldigt. Genindlæs venligst siden og prøv igen.",
+      "fi": "Palvelimen vastaus oli virheellinen. Lataa sivu uudelleen ja yritä uudelleen."
+    }
+  },
+  {
+    "id": "missing-amount-element",
+    "translation": {
+      "en": "Missing amount element.",
+      "sv": "Saknar element för belopp.",
+      "no": "Mangler element for beløp.",
+      "da": "Mangler beløbselement.",
+      "fi": "Puuttuva määräelementti."
+    }
+  },
+
+  {
+    "id": "missing-observable-elements",
+    "translation": {
+      "en": "Missing observable elements.",
+      "sv": "Saknar observerbara element.",
+      "no": "Mangler observerbare elementer.",
+      "da": "Mangler observerbare elementer.",
+      "fi": "Puuttuvat havaittavat elementit."
     }
   }
 ]

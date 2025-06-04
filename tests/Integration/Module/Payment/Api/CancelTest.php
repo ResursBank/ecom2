@@ -25,6 +25,7 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
@@ -41,6 +42,7 @@ use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
@@ -303,5 +305,65 @@ class CancelTest extends TestCase
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertEquals(expected: $creator, actual: $actionLog->creator);
+    }
+
+    /**
+     * Verify getCanceledAmount behavior.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws NotJsonEncodedException
+     * @throws Exception
+     */
+    public function testGetCanceledAmount(): void
+    {
+        // Create payment
+        $orderReference = Strings::generateRandomString(length: 12);
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::callCustomerUrl(payment: $payment);
+
+        // Cancel one order line
+        $orderLine = new OrderLine(
+            quantity: 2.00,
+            quantityUnit: 'st',
+            vatRate: 25.00,
+            totalAmountIncludingVat: 301.5,
+            description: 'Android',
+            reference: 'T-800',
+            type: OrderLineType::PHYSICAL_GOODS,
+            unitAmountIncludingVat: 150.75,
+            totalVatAmount: 60.3
+        );
+        $response = Repository::cancel(
+            paymentId: $payment->id,
+            orderLines: new OrderLineCollection(data: [$orderLine])
+        );
+
+        $cancel = new Cancel();
+        $canceledAmount = $cancel->getCanceledAmount(paymentId: $response->id);
+
+        $this->assertEquals(
+            expected: $response->order?->canceledAmount,
+            actual: $canceledAmount
+        );
+
+        // Verify that an invalid payment still gives 0.0 as a response.
+        $this->assertEquals(
+            expected: 0.0,
+            actual: $cancel->getCanceledAmount(
+                paymentId: Strings::generateRandomString(length: 12)
+            )
+        );
     }
 }
