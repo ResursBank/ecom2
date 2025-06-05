@@ -7,10 +7,11 @@
 
 declare(strict_types=1);
 
-/** @var Costs $this */
+/** @var Html $this */
 
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\Costs;
+use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 
 $paymentMethods = $this->paymentMethods;
 ?>
@@ -82,10 +83,26 @@ if (count($paymentMethods) !== 0) : ?>
     <table>
       <thead>
       <tr>
-        <th><?= htmlspecialchars(string: $this->nameLabel) ?></th>
-        <th><?= htmlspecialchars(string: $this->minTotalLabel) ?></th>
-        <th><?= htmlspecialchars(string: $this->maxTotalLabel) ?></th>
-        <th><?= htmlspecialchars(string: $this->sortOrderLabel) ?></th>
+        <th>
+            <?= htmlspecialchars(
+                    string: Translator::translate(phraseId: 'name')
+            ) ?>
+        </th>
+        <th>
+            <?= htmlspecialchars(
+                    string: Translator::translate(phraseId: 'min-total')
+            ) ?>
+        </th>
+        <th>
+            <?= htmlspecialchars(
+                    string: Translator::translate(phraseId: 'max-total')
+            ) ?>
+        </th>
+        <th>
+            <?= htmlspecialchars(
+                    string: Translator::translate(phraseId: 'sort-order')
+            ) ?>
+        </th>
       </tr>
       </thead>
       <tbody>
@@ -113,6 +130,6 @@ foreach ($paymentMethods as $method) : ?>
   </div>
 <?php else : ?>
   <p class="rb-payment-methods-warning">
-      <?= $this->missingWarning ?>
+      <?= Translator::translate(phraseId: 'no-payment-methods') ?>
   </p>
 <?php endif; ?>

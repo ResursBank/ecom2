@@ -2057,8 +2057,8 @@ $js = new Js(
 
 ## [Widget] PaymentMethods
 
-* *src/Module/PaymentMethod/Widget/PaymentMethods* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/payment-methods.phtml* (HTML template)
+* *src/Module/Widget/PaymentMethod/Html.php* (widget PHP class)
+* *src/Module/Widget/PaymentMethod/templates/html.phtml* (HTML template)
 
 This widget will render a list of available payment methods. It's useful to
 check which payment methods *should* be available in checkout (**note that
@@ -2070,10 +2070,10 @@ an administration like panel, available only to merchants. Like the admin panel
 for WordPress or Magento.
 
 ```php
-use Resursbank\Ecom\Module\PaymentMethod\Widget\Costs;
+use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
-$widget = new Costs(
+$widget = new Html(
     paymentMethods: Repository::getPaymentMethods(
         storeId: 'store-id'
     )

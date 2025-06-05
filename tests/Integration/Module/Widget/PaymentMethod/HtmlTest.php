@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\PaymentMethod\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentMethod;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +32,8 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PaymentMethods;
+use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
+use Throwable;
 
 use function count;
 use function number_format;
@@ -40,7 +41,7 @@ use function number_format;
 /**
  * Integration tests for the PaymentMethods widget.
  */
-class PaymentMethodsTest extends TestCase
+class HtmlTest extends TestCase
 {
     private PaymentMethodCollection $methods;
 
@@ -56,6 +57,7 @@ class PaymentMethodsTest extends TestCase
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws Throwable
      */
     protected function setUp(): void
     {
@@ -82,9 +84,7 @@ class PaymentMethodsTest extends TestCase
     /**
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      */
     public function testRenderPaymentMethods(): void
@@ -97,7 +97,7 @@ class PaymentMethodsTest extends TestCase
 
         $this->assertTrue(condition: count($this->methods) > 0);
 
-        $data = new PaymentMethods(paymentMethods: $this->methods);
+        $data = new Html(paymentMethods: $this->methods);
 
         $this->assertStringContainsString(
             needle: Translator::translate(phraseId: 'name'),
@@ -180,7 +180,6 @@ class PaymentMethodsTest extends TestCase
      * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      * @throws ConfigException
      */
@@ -192,7 +191,7 @@ class PaymentMethodsTest extends TestCase
             );
         }
 
-        $data = new PaymentMethods(
+        $data = new Html(
             paymentMethods: new PaymentMethodCollection(data: [])
         );
 
