@@ -460,9 +460,9 @@ class Resursbank_PartPayment {
 
         this.onToggleLoader(state);
 
-        const loader = document.querySelector('.rb-pp-loader');
-        const overlay = document.querySelector('.rb-pp-overlay');
-        const readMore = document.querySelector('.rb-rm-link');
+        const loader = this.el.querySelector('.rb-pp-loader');
+        const overlay = this.el.querySelector('.rb-pp-overlay');
+        const readMore = this.el.querySelector('.rb-rm-link');
 
         if (state) {
             loader.style.display = 'block';
