@@ -1667,10 +1667,11 @@ covered by its own chapter later in this document.
 
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\Widget\PartPayment\Css;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;
 use Resursbank\Ecom\Module\Widget\PartPayment\Js;
-use Resursbank\Ecom\Module\Widget\PartPayment\Css;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
+use Resursbank\Ecom\Module\Widget\ReadMore\Css as ReadMoreCss;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id'
@@ -1694,21 +1695,22 @@ $js = new Js(
 );
 $css = new Css();
 
-$readMoreWidget = new ReadMore(
+$readMoreWidget = new ReadMoreHtml(
     paymentMethod: $paymentMethod,
     amount: 1000.0,
 );
+$readMoreCss = new ReadMoreCss();
 
 ?>
 
 <style>
    <?= $css->content ?>
-   <?= $readMoreWidget->css ?>
+   <?= $readMoreCss->content ?>
 </style>
 
 <div id="rb-pp-widget-container"> <!-- NOTE! This will be used in our JS component to reference the HTML of the widget. -->
     <?= $widget->content ?>
-   <?= $$readMoreWidget->content ?>
+    <?= $readMoreWidget->content ?>
 </div>
 
 <script>
@@ -1934,8 +1936,8 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
 
 class MyPartPaymentInfoController implements InfoControllerInterface
 {
@@ -1982,7 +1984,7 @@ class MyPartPaymentInfoController implements InfoControllerInterface
                fetchStartingCostUrl: 'https://example.com/fetch-starting-cost' // This corresponds to a custom endpoint in your application where an AJAX request can fetch an updated version of the widget upon need.
             );
             
-            $readMoreWidget = new ReadMore(
+            $readMoreWidget = new ReadMoreHtml(
                 paymentMethod: $paymentMethod,
                 amount: $amount
             );
@@ -2005,10 +2007,12 @@ for the widget can be made.
 
 ## [Widget] ReadMore
 
-* *src/Module/PaymentMethod/Widget/ReadMore* (widget PHP class)
-* *src/Module/Widget/ReadMore/Js* (widget JS PHP class)
-* *src/Module/PaymentMethod/Widget/read-more.phtml* (HTML template)
-* *src/Module/PaymentMethod/Widget/read-more.css* (stylesheet)
+* *src/Module/Widget/ReadMore/Html.php* (Widget PHP class)
+* *src/Module/Widget/ReadMore/Js.php* (Widget JS PHP class)
+* *src/Module/Widget/ReadMore/Css.php* (Widget CSS PHP class)
+* *src/Module/Widget/ReadMore/templates/html.phtml* (HTML template)
+* *src/Module/Widget/ReadMore/templates/css.css* (Stylesheet)
+* *src/Module/Widget/ReadMore/templates/js.js.phtml* (Javascript)
 
 This widget will render a link which, when clicked, will display a modal window
 with information about a payment method.
@@ -2021,16 +2025,16 @@ of the information iframe.
 
 // index.phtml
 
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
-use Resursbank\Ecom\Module\Widget\ReadMore\Js;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Widget\ReadMore\Js;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html;
+use Resursbank\Ecom\Module\Widget\ReadMore\Css;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id'
 )->current();
 
-$widget = new ReadMore(
+$widget = new Html(
    paymentMethod: $paymentMethod,
    amount: 150.25
 );
@@ -2038,6 +2042,7 @@ $js = new Js(
     containerElDomPath: '#container',
     autoInitJs: true
 );
+$css = new Css();
 
 ?>
 
@@ -2046,7 +2051,7 @@ $js = new Js(
 </script>
 
 <style>
-    <?= $widget->css ?>
+    <?= $css->content ?>
 </style>
 
 <div id="container">

@@ -32,10 +32,10 @@ use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Resursbank\Ecom\Module\PriceSignage\Widget\Warning;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
 use Throwable;
 
 use function max;
@@ -62,8 +62,8 @@ class Html extends Widget
     /** @var Warning */
     public readonly Warning $warning;
 
-    /** @var ReadMore */
-    public readonly ReadMore $readMore;
+    /** @var ReadMoreHtml */
+    public readonly ReadMoreHtml $readMore;
 
     /** @var bool */
     public readonly bool $shouldDisplayCostExample;
@@ -120,11 +120,10 @@ class Html extends Widget
         $this->logo = (string) file_get_contents(
             filename: __DIR__ . '/resurs.svg'
         );
-        $this->readMore = new ReadMore(
+        $this->readMore = new ReadMoreHtml(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,
-            useLegacyLink: $this->useLegacyReadMoreLink,
-            label: 'read-more'
+            useLegacyLink: $this->useLegacyReadMoreLink
         );
         $this->warning = new Warning(
             priceSignage: SignageRepository::getPriceSignage(
