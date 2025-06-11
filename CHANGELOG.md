@@ -1,3 +1,8 @@
+# 3.3.3
+
+* ECP-1040 Added widget to reload payment information widget on demand. Written generically in order to replace parts of the part payment widget JS.
+* ECP-1044 PPW button click event listener. 
+
 # 3.3.2
 
 * ECP-1037 Add IS\_READY\_FOR\_AUTHORIZATION Payment History event.
