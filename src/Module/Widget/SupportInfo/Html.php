@@ -7,17 +7,15 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\SupportInfo\Widget;
+namespace Resursbank\Ecom\Module\Widget\SupportInfo;
 
 use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
@@ -28,15 +26,13 @@ use function defined;
 /**
  * Support info widget which displays basic information about the state of the library.
  */
-class SupportInfo extends Widget
+class Html extends Widget
 {
+    // This is a constant for increased readability.
     private const CURL_VERSION_MIN = '7.61.0';
 
     /** @var string */
-    public readonly string $html;
-
-    /** @var string */
-    public readonly string $css;
+    public readonly string $content;
 
     /**
      * @param string $minimumPhpVersion Lowest
@@ -48,10 +44,20 @@ class SupportInfo extends Widget
         public readonly string $maximumPhpVersion,
         public readonly string $pluginVersion = ''
     ) {
-        $this->html = $this->render(file: __DIR__ . '/support-info.phtml');
-        $this->css = (string) file_get_contents(
-            filename: __DIR__ . '/support-info.css'
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
         );
+    }
+
+    /**
+     *  Attempt to fetch the current version of Ecom from composer.json.
+     *
+     * @throws ConfigException
+     */
+    public function getEcomVersion(): string
+    {
+        return $this->getComposerData()->version;
     }
 
     /**
@@ -89,25 +95,6 @@ class SupportInfo extends Widget
     }
 
     /**
-     * Validate currently installed Curl version.
-     *
-     * @throws ConfigException
-     */
-    public function validateCurl(): array
-    {
-        $results = [];
-
-        try {
-            $results[] = $this->validateCurlVersion();
-            $results[] = $this->validateCurlAuthBearerSupport();
-        } catch (Throwable $error) {
-            Config::getLogger()->error(message: $error);
-        }
-
-        return $results;
-    }
-
-    /**
      * Check if there are any errors related to the installed Curl version.
      *
      * @throws ConfigException
@@ -131,6 +118,25 @@ class SupportInfo extends Widget
     public function hasPhpVersionErrors(): bool
     {
         return $this->validatePhpVersion() !== null;
+    }
+
+    /**
+     * Validate currently installed Curl version.
+     *
+     * @throws ConfigException
+     */
+    public function validateCurl(): array
+    {
+        $results = [];
+
+        try {
+            $results[] = $this->validateCurlVersion();
+            $results[] = $this->validateCurlAuthBearerSupport();
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
+        }
+
+        return $results;
     }
 
     /**
@@ -178,40 +184,11 @@ class SupportInfo extends Widget
     }
 
     /**
-     *  Attempt to fetch the current version of Ecom from the composer.json file.
-     *
-     * @throws ConfigException
-     */
-    public function getEcomVersion(): string
-    {
-        return $this->getComposerData()->version;
-    }
-
-    /**
-     * Pads shorter version numbers.
-     *
-     * @param string $version Version to normalize
-     * @return string Normalized version string
-     * @SuppressWarnings(PHPMD.CountInLoopExpression)
-     */
-    private function normalizeVersion(string $version): string
-    {
-        while (count(explode(separator: '.', string: $version)) < 3) {
-            $version .= '.0';
-        }
-
-        return $version;
-    }
-
-    /**
      * Check for CURLAUTH_BEARER support.
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      */
     private function validateCurlAuthBearerSupport(): ?string
@@ -232,10 +209,7 @@ class SupportInfo extends Widget
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      */
     private function validateCurlVersion(): ?string
@@ -244,6 +218,26 @@ class SupportInfo extends Widget
             version1: $this->getCurlVersion(),
             version2: self::CURL_VERSION_MIN
         ) < 0 ? Translator::translate(phraseId: 'curl-version-too-old') : null;
+    }
+
+    /**
+     * Pads shorter version numbers.
+     *
+     * This method is used to make comparisons of version numbers work. If we
+     * attempt to compare version numbers that haven't been padded with extra
+     * zeroes there can be some unexpected inaccuracies in the results.
+     *
+     * @param string $version Version to normalize
+     * @return string Normalized version string
+     * @SuppressWarnings(PHPMD.CountInLoopExpression)
+     */
+    private function normalizeVersion(string $version): string
+    {
+        while (count(explode(separator: '.', string: $version)) < 3) {
+            $version .= '.0';
+        }
+
+        return $version;
     }
 
     /**

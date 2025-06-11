@@ -2375,15 +2375,16 @@ the *Resursbank_FetchStores.onToggle* method.**
 
 # [Module] SupportInfo
 
-*src/Module/SupportInfo*
+*src/Module/Widget/SupportInfo*
 
 Gather information for our support staff in case of problems.
 
 ## [Widget] SupportInfo
 
-* *src/Module/SupportInfo/Widget/SupportInfo* (widget PHP class)
-* *src/Module/SupportInfo/Widget/support-info.phtml* (HTML template)
-* *src/Module/SupportInfo/Widget/support-info.css* (stylesheet)
+* *src/Module/Widget/SupportInfo/Html.php* (widget PHP class)
+* *src/Module/Widget/SupportInfo/Css.php* (widget CSS class)
+* *src/Module/Widget/SupportInfo/templates/html.phtml* (HTML template)
+* *src/Module/Widget/SupportInfo/templates/css.css* (stylesheet)
 
 **Warning! This widget renders sensitive system information. It should only be
 rendered in a secure context, such as inside an administration panel!**
@@ -2401,16 +2402,18 @@ information includes the following (list is subject to change):
 // index.phtml
 
 <?php
-use Resursbank\Ecom\Module\SupportInfo\Widget\SupportInfo;
+use Resursbank\Ecom\Module\Widget\SupportInfo\Html;
+use Resursbank\Ecom\Module\Widget\SupportInfo\Css;
 
-$widget = new SupportInfo();
+$widget = new Html();
+$cssWidget = new Css()
 
 ?>
 
-<?= $widget->html ?>
+<?= $widget->content ?>
 
 <style>
-  <?= $widget->css ?>
+  <?= $cssWidget->content ?>
 </style>
 ```
 
