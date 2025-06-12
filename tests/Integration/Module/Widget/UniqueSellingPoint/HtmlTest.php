@@ -149,6 +149,10 @@ class HtmlTest extends TestCase
             }
 
             // Verify HTML up to the ReadMore sub-widget.
+            if (!$method->isInternal()) {
+                continue;
+            }
+
             $this->assertMatchesRegularExpression(
                 pattern: '/^\s*<div class="rb-usp">\s+<p>\s+<span class=' .
                 '"rb-usp-header">.*\/span>\s+<\/p>\s*<!-- Read More link -->' .

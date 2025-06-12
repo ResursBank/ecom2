@@ -110,7 +110,10 @@ class PaymentMethod extends Model implements PaymentMethodInterface
 
     public function isInternal(): bool
     {
-        return str_starts_with(haystack: $this->type->value, needle: 'RESURS_');
+        return str_starts_with(
+            haystack: $this->type->value,
+            needle: 'RESURS_'
+        ) && $this->type->value !== 'RESURS_ZERO';
     }
 
     public function getTypeValue(): string

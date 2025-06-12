@@ -25,7 +25,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
 use Throwable;
 
 /**
@@ -33,8 +33,8 @@ use Throwable;
  */
 class Html extends Widget
 {
-    /** @var ReadMore */
-    public readonly ReadMore $readMore;
+    /** @var ReadMoreHtml */
+    public readonly ReadMoreHtml $readMore;
 
     /** @var string */
     public readonly string $content;
@@ -62,7 +62,7 @@ class Html extends Widget
         public readonly float $amount,
         public readonly bool $useLegacyReadMoreLink = false
     ) {
-        $this->readMore = new ReadMore(
+        $this->readMore = new ReadMoreHtml(
             paymentMethod: $this->paymentMethod,
             amount: $amount,
             useLegacyLink: $this->useLegacyReadMoreLink

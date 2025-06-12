@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var \Resursbank\Ecom\Module\Widget\ReadMore\Html $this */
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html;
+
+?>
+
+<div class="rb-rm" data-payment-method="<?= $this->paymentMethod->id ?>">
+    <div class="rb-logo"></div>
+    <div class="rb-rm-link">
+        <div class="rb-rm-link-label">
+            <?= Translator::translate(phraseId: 'read-more') ?>
+        </div>
+    </div>
+    <div id="rb-rm-model-<?= $this->paymentMethod->id ?>" style="display:none;">
+        <div class="rb-rm-background"></div>
+        <div class="rb-rm-iframe-container">
+            <div class="rb-rm-close">&#x2715;</div>
+            <iframe class="rb-rm-iframe" src="<?= $this->url ?>" loading="lazy">
+            </iframe>
+        </div>
+    </div>
+</div>

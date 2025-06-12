@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PaymentMethod\Widget;
+namespace Resursbank\Ecom\Module\Widget\ReadMore;
 
 use JsonException;
 use ReflectionException;
@@ -23,10 +23,8 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
-use Resursbank\Ecom\Lib\Model\PriceSignage\Language;
 use Resursbank\Ecom\Lib\Model\PriceSignage\UriLink;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
@@ -36,22 +34,15 @@ use Throwable;
 /**
  * Read more widget.
  */
-class ReadMore extends Widget
+class Html extends Widget
 {
     public string $url = '';
 
     /** @var string */
     public readonly string $content;
 
-    /** @var string */
-    public readonly string $css;
-
-    /** @var string */
-    public readonly string $label;
-
     /**
      * @param bool $useLegacyLink Use legacy link instead of SECCI if true.
-     * @param string $label Translation ID to use for widget label.
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -71,72 +62,70 @@ class ReadMore extends Widget
     public function __construct(
         public readonly PaymentMethod $paymentMethod,
         public readonly float $amount,
-        private readonly bool $useLegacyLink = false,
-        string $label = 'read-more'
+        private readonly bool $useLegacyLink = false
     ) {
-        $this->url = '';
-
-        if ($this->paymentMethod->priceSignagePossible) {
-            $this->setUrl();
+        if (!$this->paymentMethod->isInternal()) {
+            $this->content = '';
+            return;
         }
 
-        $this->label = Translator::translate(phraseId: $label);
-        $this->content = $this->render(file: __DIR__ . '/read-more.phtml');
-        $this->css = $this->render(file: __DIR__ . '/read-more.css');
+        $this->url = $this->useLegacyLink ?
+            $this->getLegacyUrl() : $this->getSecciUrl();
+
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
+        );
     }
 
     /**
-     * For implementations where content and resources needs separation.
+     * Fetch SECCI URL.
      *
-     * @throws FilesystemException
-     */
-    public static function getCss(): string
-    {
-        return (new Widget())->render(file: __DIR__ . '/read-more.css');
-    }
-
-    /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
      * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws CurlException
-     * @throws ValidationException
-     * @throws EmptyValueException
      * @throws Throwable
+     * @throws ValidationException
      */
-    private function setUrl(): void
+    public function getSecciUrl(): string
     {
         $links = Repository::getPriceSignage(
             paymentMethodId: $this->paymentMethod->id,
             amount: $this->amount
         );
 
-        if ($this->useLegacyLink) {
-            $this->url = $this->getLegacyLink();
-            return;
-        }
-
         /** @var UriLink $secciLink */
         foreach ($links->secciLinks as $secciLink) {
             if (
-                !$this->isConfigLanguage(secciLanguage: $secciLink->language)
+                $secciLink->language ===
+                Config::getLanguage()->toPriceSignageLanguage()
             ) {
-                continue;
+                return $secciLink->uri;
             }
-
-            $this->url = $secciLink->uri;
         }
+
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldRender(): bool
+    {
+        return $this->url !== '';
     }
 
     /**
      * Fetch legacy link.
      */
-    private function getLegacyLink(): string
+    public function getLegacyUrl(): string
     {
         /** @var LegalLink $link */
         foreach ($this->paymentMethod->legalLinks as $link) {
@@ -148,31 +137,5 @@ class ReadMore extends Widget
         }
 
         return '';
-    }
-
-    /**
-     * Check if provided UriLink Language is the same as the Ecom language.
-     *
-     * @param Language $secciLanguage SECCI language enum.
-     * @return bool True if both languages are the same.
-     * @throws ConfigException
-     */
-    private function isConfigLanguage(
-        Language $secciLanguage
-    ): bool {
-        $comparisonTable = [
-            'Swedish' => 'sv',
-            'Norwegian' => 'no',
-            'Finnish' => 'fi',
-            'Danish' => 'da'
-        ];
-
-        return
-            array_key_exists(
-                key: $secciLanguage->value,
-                array: $comparisonTable
-            )
-            && $comparisonTable[$secciLanguage->value] === Config::getLanguage()->value
-        ;
     }
 }
