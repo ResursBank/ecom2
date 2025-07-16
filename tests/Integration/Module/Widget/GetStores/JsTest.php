@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Module\Customer\Widget;
+namespace Resursbank\EcomTest\Integration\Module\Widget\GetStores;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -16,12 +16,12 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\Store\Widget\GetStores;
+use Resursbank\Ecom\Module\Widget\GetStores\Js;
 
 /**
  * Tests for the GetStores widget.
  */
-class GetStoresTest extends TestCase
+class JsTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -29,7 +29,7 @@ class GetStoresTest extends TestCase
             logger: $this->createMock(
                 originalClassName: LoggerInterface::class
             ),
-            cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
+            cache: new Filesystem(path: '/tmp/ecom-test/get_stores/' . time()),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -53,12 +53,12 @@ class GetStoresTest extends TestCase
         $storeSelectId = 'store_select';
         $spinnerClass = 'spinner_class';
 
-        $widget = new GetStores(
+        $widget = new Js(
             automatic: true,
+            storeSelectId: $storeSelectId,
             environmentSelectId: $environmentSelectId,
             clientIdInputId: $clientIdInputId,
             clientSecretInputId: $clientSecretInputId,
-            storeSelectId: $storeSelectId,
             spinnerClass: $spinnerClass
         );
 
@@ -98,7 +98,7 @@ class GetStoresTest extends TestCase
      */
     public function testRenderMinimal(): void
     {
-        $widget = new GetStores();
+        $widget = new Js();
 
         // Assert we do not attempt to resolve any elements.
         $this->assertStringNotContainsString(

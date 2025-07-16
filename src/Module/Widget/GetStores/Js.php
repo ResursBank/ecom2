@@ -7,15 +7,17 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Store\Widget;
+namespace Resursbank\Ecom\Module\Widget\GetStores;
 
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
  * Generate JavaScript code to fetch list of stores and update select element.
+ *
+ * @SuppressWarnings(PHPMD.ShortClassName)
  */
-class GetStores extends Widget
+class Js extends Widget
 {
     /** @var string */
     public readonly string $content;
@@ -39,6 +41,9 @@ class GetStores extends Widget
         public readonly ?string $spinnerClass = null,
         public readonly ?string $fetchBtnId = null
     ) {
-        $this->content = $this->render(file: __DIR__ . '/get-stores.js.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'js.js.phtml'
+        );
     }
 }
