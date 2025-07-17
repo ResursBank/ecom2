@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\PriceSignage\Widget;
+namespace Resursbank\Ecom\Module\Widget\ConsumerCreditWarning;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
@@ -20,7 +20,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 /**
  * Display warning message widget.
  */
-class Warning extends Widget
+class Html extends Widget
 {
     public string $content;
 
@@ -33,16 +33,16 @@ class Warning extends Widget
         public readonly PaymentMethod $paymentMethod,
         private readonly bool $visible = true
     ) {
-        $this->content = $this->isDisplayed() ?
-            $this->render(file: __DIR__ . '/warning.phtml') :
-            ''
-        ;
+        $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'warning.phtml'
+        );
     }
 
     /**
      * Only display the warning if the cost list is not empty and the location is SE.
      */
-    public function isDisplayed(): bool
+    public function shouldRender(): bool
     {
         return $this->priceSignage->costList->count() > 0 &&
             Config::getLocation() === Location::SE &&
