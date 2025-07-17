@@ -33,9 +33,9 @@ class Html extends Widget
         public readonly PaymentMethod $paymentMethod,
         private readonly bool $visible = true
     ) {
-        $this->render(
+        $this->content = $this->render(
             file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
-            DIRECTORY_SEPARATOR . 'warning.phtml'
+            DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }
 
