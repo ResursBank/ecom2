@@ -2256,10 +2256,10 @@ working for you.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\Store\Widget\GetStores;
+use Resursbank\Ecom\Module\Widget\GetStores\Js;
 
 // Create an instance of the GetStores widget with spoofed IDs
-$widget = new GetStores(
+$widget = new Js(
     url: 'https://example.com/fetch-stores',
     automatic: true,
     storeSelectId: 'store-select',
@@ -2289,10 +2289,10 @@ set to (TEST / PROD).
 
 // index.phtml
 
-use Resursbank\Ecom\Module\Store\Widget\GetStores;
+use Resursbank\Ecom\Module\Widget\GetStores\Js;
 
 // Create an instance of the GetStores widget with spoofed IDs
-$widget = new GetStores(
+$widget = new Js(
     url: 'https://example.com/fetch-stores',
     storeSelectId: 'store-select',
     environmentSelectId: 'environment-select',
