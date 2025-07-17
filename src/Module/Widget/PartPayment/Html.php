@@ -33,7 +33,7 @@ use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
-use Resursbank\Ecom\Module\PriceSignage\Widget\Warning;
+use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html as ConsumerCreditWarning;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
 use Throwable;
@@ -59,8 +59,8 @@ class Html extends Widget
     /** @var string */
     public readonly string $content;
 
-    /** @var Warning */
-    public readonly Warning $warning;
+    /** @var ConsumerCreditWarning */
+    public readonly ConsumerCreditWarning $warning;
 
     /** @var ReadMoreHtml */
     public readonly ReadMoreHtml $readMore;
@@ -125,7 +125,7 @@ class Html extends Widget
             amount: $this->amount,
             useLegacyLink: $this->useLegacyReadMoreLink
         );
-        $this->warning = new Warning(
+        $this->warning = new ConsumerCreditWarning(
             priceSignage: SignageRepository::getPriceSignage(
                 paymentMethodId: $this->paymentMethod->id,
                 amount: $this->amount,

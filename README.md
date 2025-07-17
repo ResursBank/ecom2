@@ -2231,6 +2231,34 @@ $cssWidget = new Css();
 
 ```
 
+## [Widget] ConsumerCreditWarning
+
+This widget's purpose is to provide a warning about the potential dangers of
+consumer credits which complies with the Swedish Consumer Agency's regulations
+as defined in [KOVFS 2025:1](https://publikationer.konsumentverket.se/produkter-och-tjanster/finansiella-tjanster/kovfs-20251-konsumentverkets-foreskrifter-om-naringsidkares-upplysningsskyldighet-vid-marknadsforing-av-konsumentkrediter).
+
+```php
+use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html;
+use Resursbank\Ecom\Module\PriceSignage\Repository
+    as PriceSignageRepository;
+use Resursbank\Ecom\Module\PaymentMethod\Repository
+    as PaymentMethodRepository;
+
+;
+$widget = new Html(
+    priceSignage: PriceSignageRepository::getPriceSignage(
+        paymentMethodId: 'payment-method-id',
+        amount: 'purchase-amount'
+    ),
+    paymentMethod: PaymentMethodRepository::getById(
+        paymentMethodId: 'payment-method-id'
+    )
+);
+?>
+
+<?= $widget->content ?>
+```
+
 ## [Widget] GetStores
 
 This is a widget which renders a JavaScript component to automatically fetch a
