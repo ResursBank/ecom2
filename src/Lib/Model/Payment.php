@@ -260,7 +260,7 @@ class Payment extends Model
             ) ||
             (
                 $this->status === Status::REJECTED &&
-                $this->rejectedReason->category === RejectedReasonCategory::CANCELED
+                $this->rejectedReason?->category === RejectedReasonCategory::CANCELED
             )
         ;
     }
