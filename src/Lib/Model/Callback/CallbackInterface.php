@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
+use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
+
 /**
  * Callback model contract.
  */
@@ -28,4 +30,9 @@ interface CallbackInterface
      * Resolve note (such as an order comment entry).
      */
     public function getNote(): string;
+
+    /**
+     * Resolve callback status.
+     */
+    public function getStatus(): ?Status;
 }
