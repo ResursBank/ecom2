@@ -139,7 +139,10 @@ class AuthorizationControllerTest extends TestCase
 
         $data = $controller->getRequestData();
 
-        $this->assertSame(expected: Status::AUTHORIZED, actual: $data->status);
+        $this->assertSame(
+            expected: Status::AUTHORIZED,
+            actual: $data->getStatus()
+        );
         $this->assertSame(expected: $paymentId, actual: $data->getPaymentId());
     }
 }

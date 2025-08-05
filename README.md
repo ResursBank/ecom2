@@ -851,7 +851,7 @@ class MyAuthorizationController extends AuthorizationController
         
         // Update order status or whatever in your system by comparing
         // $data->status, which is the status of the Payment at Resurs Bank.
-        switch ($callback->status) {
+        switch ($callback->getStatus()) {
             case Status::AUTHORIZED:
                 $order->setStatus('authorized-but-not-paid');
                 break;

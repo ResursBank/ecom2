@@ -164,10 +164,10 @@ class Repository
 
             if ($callback instanceof Authorization) {
                 $event = Event::CALLBACK_AUTHORIZATION;
-                $extra = $callback->status->value;
+                $extra = $callback->getStatus()->value;
             } elseif ($callback instanceof CreditApplication) {
                 $event = Event::CALLBACK_CREDIT_APPLICATION;
-                $extra = $callback->status->value;
+                $extra = $callback->getStatus()->value;
             } else {
                 $event = Event::CALLBACK_MANAGEMENT;
             }
@@ -210,7 +210,7 @@ class Repository
             message: sprintf(
                 'Processing authorization callback for %s, status %s',
                 $callback->getPaymentId(),
-                $callback->status->value
+                $callback->getStatus()->value
             )
         );
     }
