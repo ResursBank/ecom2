@@ -1,3 +1,8 @@
+# 3.3.4
+
+* ECP-1058 Change default network timeout from 0 to 30 seconds.
+* ECP-1054 Corrected composer.json PHP requirement.
+
 # 3.3.3
 
 * ECP-1040 Added widget to reload payment information widget on demand. Written generically in order to replace parts of the part payment widget JS.
