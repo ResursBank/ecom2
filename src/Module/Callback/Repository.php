@@ -25,6 +25,7 @@ use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
+use Resursbank\Ecom\Lib\Model\Callback\Enum\Result as CallbackResult;
 use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
 use Resursbank\Ecom\Lib\Model\Callback\CreditApplication;
@@ -103,14 +104,18 @@ class Repository
         $code = 202;
 
         try {
-            $process($callback);
+            $result = $process($callback);
 
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $paymentId,
-                event: Event::CALLBACK_COMPLETED,
-                user: User::RESURSBANK,
-                result: Result::SUCCESS
-            ));
+            // We don't want to try to write to the payment history if the
+            // order has been deleted.
+            if ($result !== CallbackResult::DELETED) {
+                PaymentHistoryRepository::write(entry: new Entry(
+                    paymentId: $paymentId,
+                    event: Event::CALLBACK_COMPLETED,
+                    user: User::RESURSBANK,
+                    result: Result::SUCCESS
+                ));
+            }
         } catch (Throwable $e) {
             self::logException(exception: $e);
             $code = 408;
