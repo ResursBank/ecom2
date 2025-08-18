@@ -33,7 +33,12 @@
 /* Error message. */
 .rb-pp-error {
     color: #d00;
-    padding-bottom: 10px;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    margin-top: 1em;
+    text-align:center;
+    border: 0.2em solid #d00;
+    border-radius: 0.5em;
 }
 
 /* Info text. */
