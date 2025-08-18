@@ -1,3 +1,8 @@
+# 3.3.5
+
+* ECP-1029 Improve error message display for PPW
+* ECP-1060 Make payment history logging after callback processing conditional
+
 # 3.3.4
 
 * ECP-1058 Change default network timeout from 0 to 30 seconds.
