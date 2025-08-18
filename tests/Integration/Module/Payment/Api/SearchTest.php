@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -80,6 +81,7 @@ class SearchTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -123,7 +125,8 @@ class SearchTest extends TestCase
                 governmentId: self::GOVERNMENT_ID,
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -146,7 +149,7 @@ class SearchTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         $paymentCollection = Repository::search(
             orderReference: $orderReference
@@ -175,7 +178,7 @@ class SearchTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         $paymentCollection = Repository::search(
             orderReference: $orderReference,

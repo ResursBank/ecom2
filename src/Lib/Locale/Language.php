@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Locale;
 
+use Resursbank\Ecom\Lib\Model\PriceSignage\Language
+    as PriceSignageLanguage;
+
 /**
  * @codingStandardsIgnoreStart
  */
@@ -32,4 +35,21 @@ enum Language: string
 
     /** dk_DA */
     case DA = 'da';
+
+    /**
+     * Translate our
+     *
+     * @return PriceSignageLanguage|null
+     */
+    public function toPriceSignageLanguage(): ?PriceSignageLanguage
+    {
+        $mapping = [
+            self::SV->value => PriceSignageLanguage::SWEDISH,
+            self::FI->value => PriceSignageLanguage::FINNISH,
+            self::NO->value => PriceSignageLanguage::NORWEGIAN,
+            self::DA->value => PriceSignageLanguage::DANISH,
+        ];
+
+        return $mapping[$this->value] ?? null;
+    }
 }

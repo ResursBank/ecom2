@@ -17,12 +17,14 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
@@ -39,6 +41,7 @@ use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Repository;
 use Resursbank\EcomTest\Utilities\MockSigner;
 
@@ -81,6 +84,7 @@ class RefundTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -125,7 +129,8 @@ class RefundTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -151,7 +156,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture payment
         Repository::capture(paymentId: $payment->id);
@@ -193,7 +198,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -201,15 +206,15 @@ class RefundTest extends TestCase
         // Refund single order line
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(
+                quantity: 2.00,
+                quantityUnit: 'st',
+                vatRate: 25.00,
+                totalAmountIncludingVat: 301.5,
                 description: 'Android',
                 reference: 'T-800',
-                quantityUnit: 'st',
-                quantity: 2.00,
-                vatRate: 25.00,
+                type: OrderLineType::PHYSICAL_GOODS,
                 unitAmountIncludingVat: 150.75,
-                totalAmountIncludingVat: 301.5,
-                totalVatAmount: 60.3,
-                type: OrderLineType::PHYSICAL_GOODS
+                totalVatAmount: 60.3
             ),
         ]);
         $refundResponse = Repository::refund(
@@ -256,7 +261,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -310,7 +315,7 @@ class RefundTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture
         Repository::capture(paymentId: $payment->id);
@@ -337,5 +342,68 @@ class RefundTest extends TestCase
         $this->assertInstanceOf(expected: ActionLog::class, actual: $actionLog);
 
         $this->assertEquals(expected: $creator, actual: $actionLog->creator);
+    }
+
+    /**
+     * Verify getRefundedAmount behavior.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
+     * @throws Exception
+     */
+    public function testGetRefundedAmount(): void
+    {
+        // Create payment
+        $orderReference = Strings::generateRandomString(length: 12);
+        $payment = $this->createPayment(orderReference: $orderReference);
+
+        // Sign
+        MockSigner::callCustomerUrl(payment: $payment);
+
+        // Capture
+        Repository::capture(paymentId: $payment->id);
+
+        // Refund single order line
+        $orderLines = new OrderLineCollection(data: [
+            new OrderLine(
+                quantity: 2.00,
+                quantityUnit: 'st',
+                vatRate: 25.00,
+                totalAmountIncludingVat: 301.5,
+                description: 'Android',
+                reference: 'T-800',
+                type: OrderLineType::PHYSICAL_GOODS,
+                unitAmountIncludingVat: 150.75,
+                totalVatAmount: 60.3
+            ),
+        ]);
+        $response = Repository::refund(
+            paymentId: $payment->id,
+            orderLines: $orderLines
+        );
+
+        $refund = new Refund();
+        $this->assertEquals(
+            expected: $response->order?->refundedAmount,
+            actual: $refund->getRefundedAmount(paymentId: $response->id)
+        );
+
+        // Verify that an invalid payment still gives 0.0 as a response.
+        $this->assertEquals(
+            expected: 0.0,
+            actual: $refund->getRefundedAmount(
+                paymentId: Strings::generateRandomString(length: 12)
+            )
+        );
     }
 }

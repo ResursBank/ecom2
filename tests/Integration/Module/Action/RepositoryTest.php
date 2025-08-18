@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -77,6 +78,7 @@ class RepositoryTest extends TestCase
      * @throws ValidationException
      * @throws IllegalTypeException
      * @throws IllegalValueException
+     * @throws AttributeCombinationException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -135,7 +137,8 @@ class RepositoryTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -171,7 +174,7 @@ class RepositoryTest extends TestCase
         $this->assertNotEmpty(actual: $payment->order->actionLog);
 
         // Sign payment.
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Capture payment.
         $capture = Repository::capture(paymentId: $payment->id);

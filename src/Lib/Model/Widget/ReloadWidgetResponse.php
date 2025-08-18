@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Model\Model;
 class ReloadWidgetResponse extends Model
 {
     public function __construct(
-        public readonly string $html,
+        public readonly string $html
     ) {
         parent::__construct();
     }

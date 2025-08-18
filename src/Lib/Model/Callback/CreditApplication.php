@@ -93,4 +93,12 @@ class CreditApplication extends Model implements CallbackInterface
         $this->stringValidation->notEmpty(value: $this->created);
         $this->stringValidation->isTimestampDate(value: $this->created);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
 }

@@ -40,15 +40,57 @@ class Widget
     }
 
     /**
+     * Render a static template (e.g. Javascript or CSS)
+     *
+     * @param string $file File to load
+     * @return string Loaded file or empty string (if loading failed)
+     * phpcs:disable Generic.Metrics.CyclomaticComplexity
+     */
+    public function renderStatic(string $file): string
+    {
+        if (!$this->shouldRender()) {
+            return '';
+        }
+
+        if (!file_exists($file)) {
+            try {
+                Config::getLogger()->error(
+                    message: self::class . '::' . __METHOD__ .
+                    ': File ' . $file . ' does not exist.'
+                );
+            } catch (ConfigException) {
+                // Do nothing just to prevent ConfigExceptions breaking
+                // the rendering of the widget.
+            }
+
+            return '';
+        }
+
+        $content = file_get_contents($file);
+
+        if ($content === false) {
+            $this->handleFileReadFailure(filename: $file);
+            return '';
+        }
+
+        return $content;
+    }
+
+    /**
      * @throws FilesystemException
      */
     public function render(
         string $file
     ): string {
+        if (!$this->shouldRender()) {
+            return '';
+        }
+
         try {
             if (!file_exists(filename: $file)) {
                 throw new FilesystemException(
-                    message: "Template file not found: $file"
+                    message: self::class . '::' . __METHOD__ .
+                    ': File: ' . $file . ' does not exist.'
                 );
             }
 
@@ -63,7 +105,35 @@ class Widget
                 // the rendering of the widget.
             }
 
+            ob_clean();
             return '';
+        }
+    }
+
+    /**
+     * Check if widget should be rendered.
+     *
+     * This method exists to be overridden by child class implementations.
+     */
+    public function shouldRender(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Log file read error.
+     *
+     * @param string $filename Name of file that couldn't be read.
+     */
+    private function handleFileReadFailure(string $filename): void
+    {
+        try {
+            Config::getLogger()->error(
+                message: 'File ' . $filename . ' could not be read.'
+            );
+        } catch (ConfigException) {
+            // Do nothing just to prevent ConfigExceptions breaking
+            // the rendering of the widget.
         }
     }
 }
