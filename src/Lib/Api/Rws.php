@@ -16,10 +16,8 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 class Rws
 {
-    /**
-     * Test endpoint.
-     */
     public const URL_TEST = 'https://api.i.eks.aws.cld.resurs.com/api/resurs_widget_service/';
+    public const PAYMENT_METHODS_ROUTE = 'payment-methods';
 
     public function __construct(
         private readonly StringValidation $stringValidation = new StringValidation()

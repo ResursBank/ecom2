@@ -19,7 +19,7 @@ class PaymentMethodTypeMap extends Model
 {
     public function __construct(
         #[StringIsUuid] public readonly string $paymentMethodId,
-        public readonly PaymentMethodType $type,
+        public readonly PaymentMethodType $type
     ) {
         parent::__construct();
     }
