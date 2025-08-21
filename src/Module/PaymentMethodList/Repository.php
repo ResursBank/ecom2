@@ -38,16 +38,13 @@ use stdClass;
 use Throwable;
 
 /**
- * Interaction with Payment Method entities and related functionality.
+ * Interaction with RWS API to collect payment method type details.
  */
 class Repository
 {
     use ExceptionLog;
 
     /**
-     * NOTE: Parameters must be validated since they are utilized for our cache
-     * keys.
-     *
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
@@ -126,6 +123,11 @@ class Repository
             ],
             /** @phpstan-ignore-next-line */
             customModelConverter: static function (stdClass $data): Collection|Model {
+                // This custimzed model converter is required because the
+                // RWS API will return data strucutred inside an anonymous
+                // array, which is not compatible with the generic converter
+                // we've used for other API implementations.
+
                 self::validateApiResponse(data: $data);
 
                 // Extract the types from the first element of the data array.
@@ -147,7 +149,7 @@ class Repository
 
     /**
      * Validates response from the API. Abstracted from main function due to
-     * high cognoitive complexity.
+     * high cognitive complexity.
      *
      * @throws ValidationException
      */

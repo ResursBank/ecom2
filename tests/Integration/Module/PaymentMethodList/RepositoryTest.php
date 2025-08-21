@@ -35,7 +35,7 @@ use Resursbank\Ecom\Module\PaymentMethodList\Repository;
 use Throwable;
 
 /**
- * Integration tests for PaymentMethods repository.
+ * Integration tests for PaymentMethodsList (RWS) repository.
  */
 class RepositoryTest extends TestCase
 {
@@ -62,7 +62,7 @@ class RepositoryTest extends TestCase
                 originalClassName: LoggerInterface::class
             ),
             cache: new Filesystem(
-                path: '/tmp/ecom-test/paymentMethods/' . time()
+                path: '/tmp/ecom-test/paymentMethodList/' . time()
             ),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
@@ -104,6 +104,8 @@ class RepositoryTest extends TestCase
     /**
      * Assert we can get a full collection of payment methods, submit this to
      * RWS and get a response back with the same payment methods.
+     *
+     * This method also confrims that reading from cache works as it should.
      *
      * @throws ApiException
      * @throws AuthException
@@ -156,5 +158,20 @@ class RepositoryTest extends TestCase
                 $paymentMethod->id
             );
         }
+
+        // Read from cache directly to ensure we can read the same data
+        // without going through the API.
+        $cachedTypes = Repository::getCache(
+            paymentMethods: $paymentMethods
+        )->read();
+
+        // Rewind original collection to avoid failed comparison due to array
+        // pointer position.
+        $paymentMethodTypes->rewind();
+
+        $this->assertEquals(
+            expected: $paymentMethodTypes,
+            actual: $cachedTypes
+        );
     }
 }

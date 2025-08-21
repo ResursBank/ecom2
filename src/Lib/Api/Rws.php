@@ -9,10 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Api;
 
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * API credentials configuration object.
+ * API for Resurs Widget Service (RWS).
  */
 class Rws
 {
@@ -24,6 +25,9 @@ class Rws
     ) {
     }
 
+    /**
+     * @throws EmptyValueException
+     */
     public function getUrl(
         string $route
     ): string {

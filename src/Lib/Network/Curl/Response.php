@@ -47,6 +47,7 @@ class Response
             flags: JSON_THROW_ON_ERROR
         );
 
+        // RWS API will return anonymous arrays.
         if (is_array(value: $content)) {
             return (object) ['data' => $content];
         }
