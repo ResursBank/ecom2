@@ -27,7 +27,6 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMap;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
@@ -41,11 +40,19 @@ class RepositoryTest extends TestCase
 {
     private Cache $cache;
 
-    private ?PaymentMethodCollection $paymentMethods = null;
-
     /**
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
      * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
      */
     protected function setUp(): void
     {
@@ -64,13 +71,8 @@ class RepositoryTest extends TestCase
             storeId: $_ENV['RWS_STORE_ID']
         );
 
-        // Get payment methods.
-        if ($this->paymentMethods === null) {
-            $this->paymentMethods = PaymentMethodRepository::getPaymentMethods();
-        }
-
         $this->cache = Repository::getCache(
-            paymentMethods: $this->paymentMethods
+            paymentMethods: PaymentMethodRepository::getPaymentMethods()
         );
         $this->cache->clear();
 
@@ -93,11 +95,11 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
-     * @SuppressWarnings(PHPMD.CognitiveComplexity))
      */
     public function testGetPaymentMethodTypes(): void
     {
-        $paymentMethods = $this->paymentMethods;
+        // Get payment methods.
+        $paymentMethods = PaymentMethodRepository::getPaymentMethods();
 
         $this->assertGreaterThan(
             expected: 0,
