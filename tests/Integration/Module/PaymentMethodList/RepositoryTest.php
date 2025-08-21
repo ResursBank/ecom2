@@ -28,6 +28,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMap;
+use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMapCollection;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 use Resursbank\Ecom\Module\PaymentMethodList\Repository;
@@ -80,6 +81,27 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Checks that list of collected payment methods types from RWS contains an
+     * entry matching the supplied payment method ID from MAPI.
+     *
+     * This has been separated to reduce cognitive complexity.
+     */
+    private function hasTypeMapEntry(
+        string $id,
+        PaymentMethodTypeMapCollection $types
+    ): bool {
+        /** @var PaymentMethodTypeMap $type */
+        foreach ($types as $type) {
+            if ($type->paymentMethodId === $id) {
+                $this->addToAssertionCount(1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Assert we can get a full collection of payment methods, submit this to
      * RWS and get a response back with the same payment methods.
      *
@@ -120,24 +142,18 @@ class RepositoryTest extends TestCase
 
         /** @var PaymentMethod $paymentMethod */
         foreach ($paymentMethods as $paymentMethod) {
-            $found = false;
-
-            /** @var PaymentMethodTypeMap $paymentMethodType */
-            foreach ($paymentMethodTypes as $paymentMethodType) {
-                if ($paymentMethodType->paymentMethodId === $paymentMethod->id) {
-                    $this->addToAssertionCount(1);
-                    $found = true;
-                    break;
-                }
-            }
-
-            if ($found) {
+            if (
+                $this->hasTypeMapEntry(
+                    id: $paymentMethod->id,
+                    types: $paymentMethodTypes
+                )
+            ) {
                 continue;
             }
 
             $this->fail(
                 message: 'No type found for payment method: ' .
-                    $paymentMethod->id
+                $paymentMethod->id
             );
         }
     }

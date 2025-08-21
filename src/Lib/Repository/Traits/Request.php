@@ -115,32 +115,49 @@ class Request
 
     /**
      * Uses reflection API to validate the custom model converter has the
-     * correct return type.
+     * correct return type and arguments.
      *
      * @throws ReflectionException
      */
-    private function validateCustomModelConverter(Closure $callable): void
+    public function validateCustomModelConverter(Closure $callable): void
     {
         $reflection = new ReflectionFunction(function: $callable);
 
-        // Get return type.
-        $returnType = explode(
-            separator: '|',
-            string: (string) $reflection->getReturnType()
-        );
+        $this->validateReturnType(reflection: $reflection);
+        $this->validateArguments(reflection: $reflection);
+    }
 
-        // Must contain exactly two classes.
-        if (count($returnType) !== 2) {
+    /**
+     * Validates the return type of the custom model converter.
+     *
+     * @throws InvalidArgumentException
+     */
+    private function validateReturnType(ReflectionFunction $reflection): void
+    {
+        // Get return type.
+        $returnType = $reflection->getReturnType();
+
+        if ($returnType === null) {
             throw new InvalidArgumentException(
-                message: 'customModelConverter must return Collection or Model'
+                message: 'customModelConverter signature must allow for exactly two return types: Collection and Model.'
             );
         }
 
-        // Must contain FQN of either Collection or Model.
+        $returnTypeString = (string) $returnType;
+        $returnTypes = explode(separator: '|', string: $returnTypeString);
+
+        // Must contain exactly two classes.
+        if (count($returnTypes) !== 2) {
+            throw new InvalidArgumentException(
+                message: 'customModelConverter signature must allow for exactly two return types: Collection and Model.'
+            );
+        }
+
+        // Must be able to return Collection.
         if (
             !in_array(
                 needle: Collection::class,
-                haystack: $returnType,
+                haystack: $returnTypes,
                 strict: true
             )
         ) {
@@ -149,12 +166,47 @@ class Request
             );
         }
 
-        // Remove Collection from return type.
+        // Must be able to return Model.
         if (
-            !in_array(needle: Model::class, haystack: $returnType, strict: true)
+            !in_array(
+                needle: Model::class,
+                haystack: $returnTypes,
+                strict: true
+            )
         ) {
             throw new InvalidArgumentException(
                 message: 'customModelConverter must be able to return Model.'
+            );
+        }
+    }
+
+    /**
+     * Validates the arguments of the custom model converter.
+     *
+     * @throws InvalidArgumentException
+     */
+    private function validateArguments(ReflectionFunction $reflection): void
+    {
+        $parameters = $reflection->getParameters();
+
+        // Confirm exactly one argument is expected by the function.
+        if (count($parameters) !== 1) {
+            throw new InvalidArgumentException(
+                message: 'customModelConverter must accept exactly one argument.'
+            );
+        }
+
+        // Confirm that the argument is named data and is of the type stdClass.
+        $parameter = $parameters[0];
+
+        if (
+            $parameter->getName() !== 'data' ||
+            !$parameter->getType() ||
+            /* @phpstan-ignore-next-line */
+            $parameter->getType()->getName() !== 'stdClass'
+        ) {
+            throw new InvalidArgumentException(
+                message: 'customModelConverter must accept a single argument named "data" of type stdClass.'
             );
         }
     }
