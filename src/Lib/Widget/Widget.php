@@ -52,7 +52,7 @@ class Widget
             return '';
         }
 
-        if (!file_exists($file)) {
+        if (!file_exists(filename: $file)) {
             try {
                 Config::getLogger()->error(
                     message: self::class . '::' . __METHOD__ .
@@ -66,7 +66,7 @@ class Widget
             return '';
         }
 
-        $content = file_get_contents($file);
+        $content = file_get_contents(filename: $file);
 
         if ($content === false) {
             $this->handleFileReadFailure(filename: $file);

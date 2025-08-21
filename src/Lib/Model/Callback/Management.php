@@ -76,6 +76,14 @@ class Management extends Model implements CallbackInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getStatus(): ?Status
+    {
+        return null;
+    }
+
+    /**
      * @throws EmptyValueException
      * @throws IllegalValueException
      */
@@ -101,13 +109,5 @@ class Management extends Model implements CallbackInterface
     {
         $this->stringValidation->notEmpty(value: $this->created);
         $this->stringValidation->isTimestampDate(value: $this->created);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getStatus(): ?Status
-    {
-        return null;
     }
 }

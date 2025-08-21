@@ -9,23 +9,23 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Repository\Api\Mapi;
+namespace Resursbank\Ecom\Lib\Repository\Api\Rws;
 
+use Closure;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Api\Rws;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
-use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Repository\Traits\Request;
 
 /**
- * Generic functionality to perform a GET call against the Merchant API and
- * convert the response to model instance(s).
+ * Generic functionality to perform a POST call against the RWS and convert the
+ * response to model instance(s).
  */
-class Get extends Request
+class Post extends Request
 {
     use ExceptionLog;
     use ModelConverter;
@@ -40,16 +40,17 @@ class Get extends Request
         string $model,
         string $route,
         array $params = [],
-        string $extractProperty = ''
+        string $extractProperty = '',
+        ?Closure $customModelConverter = null
     ) {
         parent::__construct(
             model: $model,
             route: $route,
-            requestMethod: RequestMethod::GET,
-            api: new Mapi(),
+            requestMethod: RequestMethod::POST,
+            api: new Rws(),
             params: $params,
             extractProperty: $extractProperty,
-            contentType: ContentType::URL
+            customModelConverter: $customModelConverter
         );
     }
 }

@@ -25,6 +25,7 @@
         <env name="GOVERNMENT_ID_HAPPY_NATURAL" value="REPLACEME" force="true" />
         <env name="ANNUITY_PAYMENT_METHOD_ID" value="REPLACEME" force="true" />
         <env name="INVOICE_PAYMENT_METHOD_ID" value="REPLACEME" force="true" />
+        <env name="RWS_STORE_ID" value="REPLACEME" force="true"/>
         <ini name="memory_limit" value="1024M" />
     </php>
 </phpunit>
