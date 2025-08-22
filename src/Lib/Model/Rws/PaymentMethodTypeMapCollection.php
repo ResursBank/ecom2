@@ -24,4 +24,16 @@ class PaymentMethodTypeMapCollection extends Collection
     {
         parent::__construct(data: $data, type: PaymentMethodTypeMap::class);
     }
+
+    public function getTypeById(string $methodId): ?PaymentMethodType
+    {
+        /** @var PaymentMethodTypeMap $item */
+        foreach ($this->getData() as $item) {
+            if ($item->paymentMethodId === $methodId) {
+                return $item->type;
+            }
+        }
+
+        return null;
+    }
 }
