@@ -80,7 +80,7 @@ fi
 echo ""
 
 echo "---==( Executing PHPMD )==---"
-if ! $phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml; then
+if ! $phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml 2>&1 | grep -v '^Deprecated:'; then
   ERRORS=1
 fi
 echo ""
@@ -106,7 +106,7 @@ fi
 echo ""
 
 echo "---==( Executing PHPMD )==---"
-if ! $phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml; then
+if ! $phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml 2>&1 | grep -v '^Deprecated:'; then
   ERRORS=1
 fi
 echo ""

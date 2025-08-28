@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
@@ -82,6 +83,7 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
+     * @throws AttributeCombinationException
      */
     private function createPayment(string $orderReference): Payment
     {
@@ -126,7 +128,8 @@ class RepositoryTest extends TestCase
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
                 deviceInfo: new DeviceInfo()
-            )
+            ),
+            metadata: MockSigner::getMetadata()
         );
     }
 
@@ -241,6 +244,7 @@ class RepositoryTest extends TestCase
                 ),
             ]
         );
+
         $metadata = new Metadata(
             custom: new Metadata\EntryCollection(
                 data: [
@@ -251,7 +255,7 @@ class RepositoryTest extends TestCase
                     new Metadata\Entry(
                         key: 'fnord',
                         value: 'baz'
-                    ),
+                    )
                 ]
             )
         );
@@ -308,7 +312,7 @@ class RepositoryTest extends TestCase
     {
         $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
-        MockSigner::approve(payment: $payment);
+        MockSigner::callCustomerUrl(payment: $payment);
 
         // Fetch order
         $payment = Repository::get(paymentId: $payment->id);

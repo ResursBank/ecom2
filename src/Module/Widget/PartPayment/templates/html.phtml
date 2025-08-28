@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var Html $this */
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Module\Widget\PartPayment\Html;
+
+?>
+
+<div class="rb-pp">
+    <?php // AJAX loading animation. ?>
+    <div class="rb-pp-loader" style="display: none;">
+        <div class="rb-pp-spinner">
+            <svg class="rb-pp-circular" viewBox="25 25 50 50">
+                <circle class="rb-pp-path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+            </svg>
+        </div>
+    </div>
+
+    <?php // Loader content overlay. ?>
+    <div class="rb-pp-overlay" style="display: none;"></div>
+
+    <?php // Content ?>
+    <div class="rb-pp-content">
+        <?php // Pay in installments. ?>
+        <?php if ($this->displayInfoText) : ?>
+            <div class="rb-pp-info rb-pp-line">
+                <?= Translator::translate(phraseId: 'buy-now-pay-with') ?>
+                <span class="rb-pp-logo-container"><?= $this->logo ?></span>
+                <?= $this->readMore->content ?>
+            </div>
+        <?php endif; ?>
+
+        <?php // Starting at cost. ?>
+        <?php if ($this->shouldDisplayCostExample): ?>
+            <?php $message = $this->getStartingAt() ?>
+            <?php if ($message !== ''): ?>
+                <div class="rb-pp-starting-at">
+                    <?= $message ?>
+                </div>
+
+                <?php // Startup fee ?>
+                <?php if ($this->getSetupFee() !== ''): ?>
+                    <div class="rb-pp-cost-row">
+                        <?= $this->getSetupFee() ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php // Administration fee ?>
+                <?php if ($this->getAdministrationFee() !== ''): ?>
+                    <div class="rb-pp-cost-row">
+                        <?= $this->getAdministrationFee() ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php // Total cost. ?>
+                <?php $totalMsg = $this->getTotalCost() ?>
+                <?php if ($totalMsg !== ''): ?>
+                    <div class="rb-pp-total-cost">
+                        <?= $totalMsg ?>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?= $this->warning->content ?>
+        <?php endif; ?>
+
+        <?php // Error message container. ?>
+        <div class="rb-pp-error" style="display:none;"></div>
+    </div>
+</div>

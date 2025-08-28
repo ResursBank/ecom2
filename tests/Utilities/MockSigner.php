@@ -13,7 +13,6 @@ namespace Resursbank\EcomTest\Utilities;
 
 use JsonException;
 use ReflectionException;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -22,10 +21,10 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\MissingValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Payment;
-use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
@@ -33,44 +32,16 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Module\Payment\Enum\Status;
 use Resursbank\Ecom\Module\Payment\Repository;
 
-use function sleep;
-use function sprintf;
-
 /**
  * Handles mock signing in integration of MAPI payments.
  */
 class MockSigner
 {
     /**
-     * Fetch CURLINFO_EFFECTIVE_URL
-     */
-    protected static function getEffectiveUrl(Curl $curl): string
-    {
-        return (string) curl_getinfo(
-            handle: $curl->ch,
-            option: CURLINFO_EFFECTIVE_URL
-        );
-    }
-
-    /**
-     * Log error and sleep for 500 ms.
+     * Call customerUrl to trigger tasks.
      *
-     * @throws ConfigException
-     */
-    protected static function handleCurlException(int $attempts): void
-    {
-        Config::getLogger()->error(
-            message: 'CurlException caught on attempt number ' . $attempts .
-            ', retrying again in 500 ms.'
-        );
-        usleep(microseconds: 500000);
-    }
-
-    /**
-     * Call customer URL to resolve the signing URL (customer URl will lead to
-     * a series are redirects, eventually landing on the signing page, thus
-     * providing us with the actual URL to perform signing).
-     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -78,183 +49,89 @@ class MockSigner
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     */
-    protected static function callCustomerUrl(
-        string $url,
-        int $attemptCount
-    ): string {
-        $result = '';
-
-        $curl = new Curl(
-            url: $url,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::URL,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-
-        try {
-            $curl->exec();
-
-            $result = self::getEffectiveUrl(curl: $curl);
-        } catch (CurlException) {
-            self::handleCurlException(attempts: $attemptCount);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Replace 'authenticate' in signing URL with 'doAuth' to mock signing.
-     */
-    protected static function translateSigningUrl(
-        string $url,
-        string $governmentId
-    ): string {
-        return str_replace(
-            search: 'authenticate',
-            replace: 'doAuth',
-            subject: $url
-        ) . '&govId=' . $governmentId;
-    }
-
-    /**
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws ApiException
-     * @throws IllegalValueException
-     * @throws AttributeCombinationException
-     */
-    // phpcs:ignore
-    private static function getSigningUrl(
-        Payment $payment,
-        TaskStatusDetails $taskStatusDetails
-    ): string {
-        $attempts = 0;
-        $signingUrl = '';
-
-        if ($payment->customer->governmentId === null) {
-            throw new EmptyValueException(message: 'No government ID found');
-        }
-
-        while (!str_contains(haystack: $signingUrl, needle: 'authenticate')) {
-            if ($attempts >= 10) {
-                throw new ApiException(
-                    message: sprintf(
-                        'Timeout waiting for signing URL (got %s).',
-                        $signingUrl
-                    )
-                );
-            }
-
-            if (
-                $taskStatusDetails->customer?->customerUrl !== null
-            ) {
-                $signingUrl = self::callCustomerUrl(
-                    url: $taskStatusDetails->customer->customerUrl,
-                    attemptCount: $attempts
-                );
-            }
-
-            sleep(seconds: 1);
-            $taskStatusDetails = Repository::getTaskStatusDetails(
-                paymentId: $payment->id
-            );
-            $attempts++;
-        }
-
-        return self::translateSigningUrl(
-            url: $signingUrl,
-            governmentId: $payment->customer->governmentId
-        );
-    }
-
-    /**
-     * Continuously poll payment status until it matches the expected status.
-     * Waits a maximum of 10 seconds before throwing an exception.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
      * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
-    private static function waitForStatusUpdate(
+    public static function callCustomerUrl(
         Payment $payment
     ): void {
-        $elapsed = 0;
+        if ($payment->taskRedirectionUrls === null) {
+            throw new MissingValueException(
+                message: 'Missing task redirection urls, unable to retrieve ' .
+                'customer URL.'
+            );
+        }
 
-        while ($payment->status !== Status::ACCEPTED) {
-            if ($elapsed >= 10) {
+        $customerUrl = $payment->taskRedirectionUrls->customerUrl;
+        $count = 0;
+
+        while ($payment->status === Status::TASK_REDIRECTION_REQUIRED) {
+            $curl = new Curl(
+                url: $customerUrl,
+                requestMethod: RequestMethod::GET,
+                authType: AuthType::NONE,
+                responseContentType: ContentType::RAW
+            );
+            $curl->exec();
+            $count++;
+
+            if ($count >= 10) {
                 throw new ApiException(
-                    message: sprintf(
-                        'Timeout waiting for payment status %s. Current status is %s',
-                        Status::ACCEPTED->value,
-                        $payment->status->value
-                    )
+                    message: 'MockSigner hit iteration limit!'
                 );
             }
 
-            // Wait before requesting new status.
             sleep(seconds: 1);
-            $elapsed++;
-
             $payment = Repository::get(paymentId: $payment->id);
         }
     }
 
     /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
+     * Get Metadata entries as an array.
+     *
+     * @throws AttributeCombinationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
      */
-    public static function approve(Payment $payment): void
+    public static function getMetadataArray(): array
     {
-        // Wait before sending approval, in case the API has not finished prior events.
-        sleep(seconds: 1);
+        $keys = [
+            'MOCK_SIGNING',
+            //'MOCK_CO_SIGNING' .
+            'MOCK_AUTH',
+            //'MOCK_CO_AUTH',
+            'MOCK_CONSENT',
+            'MOCK_FORM',
+            'MOCK_PRE_SIGN',
+            'MOCK_IDENTITY_CHECK',
+            'MOCK_CUSTOMER_LANDING',
+            //'MOCK_EXTERNAL_INVOICE_REFERENCE'
+        ];
 
-        $url = self::getSigningUrl(
-            taskStatusDetails: Repository::getTaskStatusDetails(
-                paymentId: $payment->id
-            ),
-            payment: $payment
+        $data = [];
+
+        foreach ($keys as $key) {
+            $data[] = new Payment\Metadata\Entry(key: $key, value: 'SUCCESS');
+        }
+
+        return $data;
+    }
+
+    /**
+     * Fetches Metadata object for automatic auth/sign.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public static function getMetadata(): Payment\Metadata
+    {
+        return new Payment\Metadata(
+            custom: new Payment\Metadata\EntryCollection(
+                data: self::getMetaDataArray()
+            )
         );
-
-        $curl = new Curl(
-            url: $url,
-            requestMethod: RequestMethod::GET,
-            contentType: ContentType::EMPTY,
-            authType: AuthType::NONE,
-            responseContentType: ContentType::RAW
-        );
-
-        $curl->exec();
-
-        self::waitForStatusUpdate(payment: $payment);
     }
 }

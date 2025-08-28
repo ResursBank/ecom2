@@ -10,12 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
 use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -62,12 +60,9 @@ class Authorization extends Model implements CallbackInterface
      * Get note explaining what happened.
      *
      * @throws JsonException
-     * @throws ReflectionException
      * @throws ConfigException
      * @throws FilesystemException
      * @throws TranslationException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      */
     public function getNote(): string
     {
@@ -75,6 +70,14 @@ class Authorization extends Model implements CallbackInterface
             Translator::translate(phraseId: 'authorization-callback-received'),
             $this->status->value
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatus(): ?Status
+    {
+        return $this->status;
     }
 
     /**

@@ -75,6 +75,14 @@ class CreditApplication extends Model implements CallbackInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    /**
      * @throws EmptyValueException
      * @throws IllegalValueException
      */

@@ -52,7 +52,7 @@ class Widget
             return '';
         }
 
-        if (!file_exists($file)) {
+        if (!file_exists(filename: $file)) {
             try {
                 Config::getLogger()->error(
                     message: self::class . '::' . __METHOD__ .
@@ -66,7 +66,7 @@ class Widget
             return '';
         }
 
-        $content = file_get_contents($file);
+        $content = file_get_contents(filename: $file);
 
         if ($content === false) {
             $this->handleFileReadFailure(filename: $file);
@@ -89,7 +89,8 @@ class Widget
         try {
             if (!file_exists(filename: $file)) {
                 throw new FilesystemException(
-                    message: "Template file not found: $file"
+                    message: self::class . '::' . __METHOD__ .
+                    ': File: ' . $file . ' does not exist.'
                 );
             }
 
@@ -104,6 +105,7 @@ class Widget
                 // the rendering of the widget.
             }
 
+            ob_clean();
             return '';
         }
     }

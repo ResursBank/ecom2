@@ -41,7 +41,8 @@ class Js extends Widget
         $stringValidation->isUrl(value: $url);
 
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'get-address.js.phtml'
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'js.js.phtml'
         );
     }
 

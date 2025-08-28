@@ -10,15 +10,14 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
 use JsonException;
-use ReflectionException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Action;
+use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -65,11 +64,8 @@ class Management extends Model implements CallbackInterface
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
      * @throws TranslationException
      * @throws JsonException
-     * @throws ReflectionException
-     * @throws IllegalValueException
      */
     public function getNote(): string
     {
@@ -77,6 +73,14 @@ class Management extends Model implements CallbackInterface
             Translator::translate(phraseId: 'management-callback-received'),
             $this->action->value
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatus(): ?Status
+    {
+        return null;
     }
 
     /**

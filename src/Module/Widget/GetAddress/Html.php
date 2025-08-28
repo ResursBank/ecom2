@@ -37,7 +37,8 @@ class Html extends Widget
         public readonly string $btnClassList = ''
     ) {
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'get-address.phtml'
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }
 

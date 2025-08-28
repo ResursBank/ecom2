@@ -23,8 +23,7 @@ use RuntimeException;
 class Html extends Widget
 {
     public string $file;
-
-    public string $html;
+    public string $content;
 
     /**
      * @throws FilesystemException
@@ -39,7 +38,10 @@ class Html extends Widget
             default => 'resurs.png'
         };
 
-        $this->html = $this->render(file: __DIR__ . '/logo.phtml');
+        $this->content = $this->render(
+            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'html.phtml'
+        );
     }
 
     /**

@@ -115,7 +115,7 @@ as maximum value, we make no use of *approvedCreditLimit*.**
 ## Widget rendering
 
 Widgets are special classes, always contained within a **Widget** subdirectory
-of Module's when available.
+of Modules when available.
 
 Widgets are meant to simplify the process of rendering forms, buttons, and
 information which relates to data from the API / integrates library
@@ -532,7 +532,7 @@ $paymentMethods = Repository::getMethods(
 ## [Widget] GetPeriods
 
 *src/Module/Widget/GetPeriods*
-*src/Module/Widget/get-periods.js.phtml* (JavaScript template)
+*src/Module/Widget/GetPeriods/templates/js.js.phtml* (JavaScript template)
 
 Configuration assistant. Simplifies interaction with config fields to select
 **payment method** and associated **duration**. For example, "Invoice", "12"
@@ -559,11 +559,11 @@ below will show an example of pre-population.**
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\Widget\GetPeriods;
+use \Resursbank\Ecom\Module\Widget\GetPeriods\Js;
 use \Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use \Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 
-$widget = new GetPeriods(
+$widget = new Js(
     storeId: 'store-id',
     methodElementId: 'payment-method-select-box',
     periodElementId: 'period-select-box',
@@ -622,7 +622,7 @@ We generate an instance of the PHP widget and supply it with a path to the
 **payment method** and **period** select-boxes which we know will be present in
 our form.
 
-The widget will render the **get-periods.js.phtml** template, in context to
+The widget will render the **js.js.phtml** template, in context to
 itself (this means that the PHP code within the template has access to everything
 in the widget instance which is **public**) and store the rendered JavaScript
 code in the **content** property which we later echo out in the script tag
@@ -633,7 +633,7 @@ not automatically setup itself when the document is loaded, requiring us to call
 the **generate** method manually instead.
 
 ```php
-// Segment from Module/AnnuityFactor/Widget/get-periods.js.phtml where we
+// Segment from Module/Widgets/GetPeriods/templates/js.js.phtml where we
 // automatically set up the widget if $automatic is set to true.
 <?php if ($this->automatic): ?>
 <script>
@@ -851,7 +851,7 @@ class MyAuthorizationController extends AuthorizationController
         
         // Update order status or whatever in your system by comparing
         // $data->status, which is the status of the Payment at Resurs Bank.
-        switch ($callback->status) {
+        switch ($callback->getStatus()) {
             case Status::AUTHORIZED:
                 $order->setStatus('authorized-but-not-paid');
                 break;
@@ -951,9 +951,9 @@ class MyGetAddressController extends GetAddressController
 * *src/Module/Widget/GetAddress/Html* (widget HTML PHP class)
 * *src/Module/Widget/GetAddress/Js* (widget JS PHP class)
 * * *src/Module/Widget/GetAddress/Css* (widget CSS PHP class)
-* *src/Module/Widget/GetAddress/get-address.js.phtml* (JavaScript template)
-* *src/Module/Widget/GetAddress/get-address.css* (stylesheet)
-* *src/Module/Widget/GetAddress/get-address.phtml* (HTML template)
+* *src/Module/Widget/GetAddress/templates/js.js.phtml* (JavaScript template)
+* *src/Module/Widget/GetAddress/templates/css.css* (stylesheet)
+* *src/Module/Widget/GetAddress/templates/html.phtml* (HTML template)
 
 This will render a form where the customer can select their type ("NATURAL" or 
 "LEGAL") and enter their government ID (SSN or organization number). The
@@ -974,7 +974,7 @@ use \Resursbank\Ecom\Module\Widget\GetAddress\Css;
 
 // Note that you also can supply a $governmentId and $customerType to
 // pre-populate the form should you wish to. Also, you can set $automatic to
-// true if you do not want to modify the JavaScript code (get-address.js.phtml).
+// true if you do not want to modify the JavaScript code (js.js.phtml).
 // For example, you may wish to display errors in a certain way, or display a
 // customer loader while the request is being processed. For the purpose of this
 // example, we will leave it as false, just to give you an idea of how you could
@@ -1383,25 +1383,25 @@ the payment attached to an order, without having to access the Merchant Portal.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\Payment\Widget\PaymentInformation;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
+use Resursbank\Ecom\Module\Widget\PaymentInformation\Css;
 
 // Spoof a UUID for paymentId
 $paymentId = '123e4567-e89b-12d3-a456-426614174000';
 
 // Create an instance of the PaymentInformation widget
-$widget = new PaymentInformation(
-    paymentId: $paymentId,
-    currencySymbol: 'kr',
-    currencyFormat: CurrencyFormat::SYMBOL_LAST
+$widget = new Html(
+    paymentId: $paymentId
 );
+$cssWidget = new Css();
 
 ?>
+
 
 <?= $widget->content ?>
 
 <style>
-    <?= $widget->css ?>
+    <?= $cssWidget->content ?>
 </style>
 ```
 
@@ -1538,10 +1538,8 @@ $error = Repository::getError(
 
 ## [Widget] Log
 
-* *src/Module/PaymentHistory/Widget/Log* (widget PHP class)
-* *src/Module/PaymentHistory/Widget/log.phtml* (HTML template)
-* *src/Module/PaymentHistory/Widget/log.css* (stylesheet)
-* *src/Module/PaymentHistory/Widget/log.js* (JavaScript)
+* *src/Module/Widget/PaymentHistory* (Widget PHP classes)
+* *src/Module/Widget/PaymentHistory/templates/log.phtml* (Widget templates)
 
 This widget will render a log of payment events. It's useful for administrators
 to get an idea of how a payment has been handled.
@@ -1551,7 +1549,9 @@ to get an idea of how a payment has been handled.
 
 // index.phtml
 
-use \Resursbank\Ecom\Module\PaymentHistory\Widget\Log;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Html;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Js;
+use Resursbank\Ecom\Module\Widget\PaymentHistory\Css;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
@@ -1583,7 +1583,9 @@ $entries = new EntryCollection([
 
 // In reality, you would use Repository::getList() to fetch the entries. This
 // is just an example to illustrate how the widget works.
-$widget = new Log(entries: $entries);
+$widget = new Html(entries: $entries);
+$css = new Css();
+$js = new Js()
 
 ?>
 
@@ -1592,11 +1594,11 @@ $widget = new Log(entries: $entries);
 
 
 <style>
-  <?= $widget->css ?>
+  <?= $css->content ?>
 </style>
 
 <script>
-  <?= $widget->js ?>
+  <?= $js->content ?>
 </script>
 ```
 
@@ -1639,10 +1641,12 @@ You can also supply an optional *$amount* parameter filter payment methods.
 
 ## [Widget] PartPayment
 
-* *src/Module/PaymentMethod/Widget/PartPayment* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/part-payment.phtml* (HTML template)
-* *src/Module/PaymentMethod/Widget/part-payment.css* (stylesheet)
-* *src/Module/PaymentMethod/Widget/part-payment.js.phtml* (JavaScript template)
+* *src/Module/Widget/PartPayment/Html.php* (widget HTML PHP class)
+* *src/Module/Widget/PartPayment/Css.php* (widget CSS PHP class)
+* *src/Module/Widget/PartPayment/Js.php* (widget Javascript PHP class)
+* *src/Module/Widget/PartPayment/templates/html.phtml* (HTML template)
+* *src/Module/Widget/PartPayment/templates/css.css* (stylesheet)
+* *src/Module/Widget/PartPayment/templates/js.js.phtml* (JavaScript template)
 
 This renders a widget with part payment data, meant to be rendered in association
 with a product (like a product page) or payment method (like checkout). This data
@@ -1661,18 +1665,20 @@ covered by its own chapter later in this document.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Widget\PartPayment\Css;
+use Resursbank\Ecom\Module\Widget\PartPayment\Html;
+use Resursbank\Ecom\Module\Widget\PartPayment\Js;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
+use Resursbank\Ecom\Module\Widget\ReadMore\Css as ReadMoreCss;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id'
 )->current();
 
 // Create an instance of the PartPayment widget.
-$widget = new PartPayment(
+$widget = new Html(
     storeId: 'store-id',
     paymentMethod: $paymentMethod,
     months: 12,
@@ -1681,26 +1687,34 @@ $widget = new PartPayment(
     currencyFormat: CurrencyFormat::AFTER,
     fetchStartingCostUrl: 'https://example.com/fetch-starting-cost' // This corresponds to a custom endpoint in your application where an AJAX request can fetch an updated version of the widget upon need.
 );
+$js = new Js(
+    paymentMethod: $paymentMethod,
+    months: 12,
+    amount: 1000.0,
+    fetchStartingCostUrl: 'https://example.com/fetch-starting-cost'
+);
+$css = new Css();
 
-$readMoreWidget = new ReadMore(
+$readMoreWidget = new ReadMoreHtml(
     paymentMethod: $paymentMethod,
     amount: 1000.0,
 );
+$readMoreCss = new ReadMoreCss();
 
 ?>
 
 <style>
-   <?= $widget->css ?>
-   <?= $readMoreWidget->css ?>
+   <?= $css->content ?>
+   <?= $readMoreCss->content ?>
 </style>
 
 <div id="rb-pp-widget-container"> <!-- NOTE! This will be used in our JS component to reference the HTML of the widget. -->
     <?= $widget->content ?>
-   <?= $$readMoreWidget->content ?>
+    <?= $readMoreWidget->content ?>
 </div>
 
 <script>
-   <?= $widget->js ?>
+   <?= $js->content ?>
 </script>
 ```
 
@@ -1918,14 +1932,12 @@ We will also briefly show an example of a controller where the AJAX request
 performed by the JavaScript component can fetch new data for the widget.
 
 ```php
-use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
+use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
-use Throwable;
+use Resursbank\Ecom\Module\Widget\PartPayment\Html;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
 
 class MyPartPaymentInfoController implements InfoControllerInterface
 {
@@ -1962,7 +1974,7 @@ class MyPartPaymentInfoController implements InfoControllerInterface
             )->current();
    
             // Create an instance of the PartPayment widget.
-            $widget = new PartPayment(
+            $widget = new Html(
                storeId: 'store-id',
                paymentMethod: $paymentMethod,
                months: 12,
@@ -1972,7 +1984,7 @@ class MyPartPaymentInfoController implements InfoControllerInterface
                fetchStartingCostUrl: 'https://example.com/fetch-starting-cost' // This corresponds to a custom endpoint in your application where an AJAX request can fetch an updated version of the widget upon need.
             );
             
-            $readMoreWidget = new ReadMore(
+            $readMoreWidget = new ReadMoreHtml(
                 paymentMethod: $paymentMethod,
                 amount: $amount
             );
@@ -1995,46 +2007,63 @@ for the widget can be made.
 
 ## [Widget] ReadMore
 
-* *src/Module/PaymentMethod/Widget/ReadMore* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/read-more.phtml* (HTML template)
-* *src/Module/PaymentMethod/Widget/read-more.css* (stylesheet)
+* *src/Module/Widget/ReadMore/Html.php* (Widget PHP class)
+* *src/Module/Widget/ReadMore/Js.php* (Widget JS PHP class)
+* *src/Module/Widget/ReadMore/Css.php* (Widget CSS PHP class)
+* *src/Module/Widget/ReadMore/templates/html.phtml* (HTML template)
+* *src/Module/Widget/ReadMore/templates/css.css* (Stylesheet)
+* *src/Module/Widget/ReadMore/templates/js.js.phtml* (Javascript)
 
 This widget will render a link which, when clicked, will display a modal window
 with information about a payment method.
 
-The widget HTML contains some inline JavaScript to toggle modal visibility.
+The widget includes Javascript which is used to toggle the visibility
+of the information iframe.
 
 ```php
 <?php
 
 // index.phtml
 
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Widget\ReadMore\Js;
+use Resursbank\Ecom\Module\Widget\ReadMore\Html;
+use Resursbank\Ecom\Module\Widget\ReadMore\Css;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id'
 )->current();
 
-$widget = new ReadMore(
+$widget = new Html(
    paymentMethod: $paymentMethod,
    amount: 150.25
 );
+$js = new Js(
+    containerElDomPath: '#container',
+    autoInitJs: true
+);
+$css = new Css();
 
 ?>
 
+<script>
+    <?= $js->content ?>  
+</script>
+
 <style>
-   <?= $widget->css ?>
+    <?= $css->content ?>
 </style>
 
-<?= $widget->content ?>
+<div id="container">
+    <?= $widget->content ?>
+</div>
+
 ```
 
 ## [Widget] PaymentMethods
 
-* *src/Module/PaymentMethod/Widget/PaymentMethods* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/payment-methods.phtml* (HTML template)
+* *src/Module/Widget/PaymentMethod/Html.php* (widget PHP class)
+* *src/Module/Widget/PaymentMethod/templates/html.phtml* (HTML template)
 
 This widget will render a list of available payment methods. It's useful to
 check which payment methods *should* be available in checkout (**note that
@@ -2046,10 +2075,10 @@ an administration like panel, available only to merchants. Like the admin panel
 for WordPress or Magento.
 
 ```php
-use Resursbank\Ecom\Module\PaymentMethod\Widget\Costs;
+use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 
-$widget = new Costs(
+$widget = new Html(
     paymentMethods: Repository::getPaymentMethods(
         storeId: 'store-id'
     )
@@ -2060,8 +2089,9 @@ $widget = new Costs(
 
 ## [Widget] UniqueSellingPoint
 
-* *src/Module/PaymentMethod/Widget/UniqueSellingPoint* (widget PHP class)
-* *src/Module/PaymentMethod/Widget/unique-selling-point.phtml* (HTML template)
+* *src/Module/Widget/UniqueSellingPoint/Html* (widget PHP class)
+* *src/Module/Widget/UniqueSellingPoint/templates/html.phtml* (HTML template)
+* *src/Module/Widget/UniqueSellingPoint/Resources/translations.json*
 
 Renders a USP message for a payment method. This is essentially information
 about a payment method to help customers decide which method to chose. Like
@@ -2072,16 +2102,15 @@ about a payment method to help customers decide which method to chose. Like
 
 // index.phtml
 
-use Resursbank\Ecom\Module\PaymentMethod\Widget\UniqueSellingPoint;
-use Resursbank\Ecom\Module\PaymentMethod\Widget\ReadMore;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\Ecom\Module\Widget\UniqueSellingPoint\Html;
 
 $paymentMethod = Repository::getPaymentMethods(
     storeId: 'store-id',
     amount: 5000.00
 )->current();
 
-$widget = new UniqueSellingPoint(
+$widget = new Html(
     paymentMethod: $paymentMethod,
     amount: 5000.00
 );
@@ -2158,6 +2187,78 @@ use \Resursbank\Ecom\Module\Store\Repository;
 $stores = Repository::getStores();
 ```
 
+## [Widget] PriceSignage
+
+The Price Signage widget displays price signage information for use during the
+checkout process. The purpose of this is to ensure compliance with Swedish laws
+regarding detailed information about the actual costs of consumer credit
+purchases.
+
+```php
+use Resursbank\Ecom\Module\PriceSignage\Repository
+    as PriceSignageRepository;
+use Resursbank\Ecom\Module\PaymentMethod\Repository
+    as PaymentMethodRepository;
+use Resursbank\Ecom\Module\Widget\CostList\Html;
+use Resursbank\Ecom\Module\Widget\CostList\Js;
+use Resursbank\Ecom\Module\Widget\CostList\Css;
+
+
+$widget = new Html(
+    priceSignage: PriceSignageRepository::getPriceSignage(
+        paymentMethodId: 'payment-method-id',
+        amount 'purchase-amount'
+    ),
+    method: PaymentMethodRepository::getById(
+        paymentMethodId: 'payment-method-id'
+    ) 
+);
+$jsWidget = new Js(
+    containerElDomPath: '#priceSignageWidget'
+);
+$cssWidget = new Css();
+?>
+
+<script>
+<?= $jsWidget->content ?>
+</script>
+<style>
+<?= $cssWidget->content ?>
+</style>
+<div id="priceSignageWidget">
+<?= $widget->content ?>
+</div>
+
+```
+
+## [Widget] ConsumerCreditWarning
+
+This widget's purpose is to provide a warning about the potential dangers of
+consumer credits which complies with the Swedish Consumer Agency's regulations
+as defined in [KOVFS 2025:1](https://publikationer.konsumentverket.se/produkter-och-tjanster/finansiella-tjanster/kovfs-20251-konsumentverkets-foreskrifter-om-naringsidkares-upplysningsskyldighet-vid-marknadsforing-av-konsumentkrediter).
+
+```php
+use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html;
+use Resursbank\Ecom\Module\PriceSignage\Repository
+    as PriceSignageRepository;
+use Resursbank\Ecom\Module\PaymentMethod\Repository
+    as PaymentMethodRepository;
+
+;
+$widget = new Html(
+    priceSignage: PriceSignageRepository::getPriceSignage(
+        paymentMethodId: 'payment-method-id',
+        amount: 'purchase-amount'
+    ),
+    paymentMethod: PaymentMethodRepository::getById(
+        paymentMethodId: 'payment-method-id'
+    )
+);
+?>
+
+<?= $widget->content ?>
+```
+
 ## [Widget] GetStores
 
 This is a widget which renders a JavaScript component to automatically fetch a
@@ -2183,10 +2284,10 @@ working for you.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\Store\Widget\GetStores;
+use Resursbank\Ecom\Module\Widget\GetStores\Js;
 
 // Create an instance of the GetStores widget with spoofed IDs
-$widget = new GetStores(
+$widget = new Js(
     url: 'https://example.com/fetch-stores',
     automatic: true,
     storeSelectId: 'store-select',
@@ -2216,10 +2317,10 @@ set to (TEST / PROD).
 
 // index.phtml
 
-use Resursbank\Ecom\Module\Store\Widget\GetStores;
+use Resursbank\Ecom\Module\Widget\GetStores\Js;
 
 // Create an instance of the GetStores widget with spoofed IDs
-$widget = new GetStores(
+$widget = new Js(
     url: 'https://example.com/fetch-stores',
     storeSelectId: 'store-select',
     environmentSelectId: 'environment-select',
@@ -2307,15 +2408,16 @@ the *Resursbank_FetchStores.onToggle* method.**
 
 # [Module] SupportInfo
 
-*src/Module/SupportInfo*
+*src/Module/Widget/SupportInfo*
 
 Gather information for our support staff in case of problems.
 
 ## [Widget] SupportInfo
 
-* *src/Module/SupportInfo/Widget/SupportInfo* (widget PHP class)
-* *src/Module/SupportInfo/Widget/support-info.phtml* (HTML template)
-* *src/Module/SupportInfo/Widget/support-info.css* (stylesheet)
+* *src/Module/Widget/SupportInfo/Html.php* (widget PHP class)
+* *src/Module/Widget/SupportInfo/Css.php* (widget CSS class)
+* *src/Module/Widget/SupportInfo/templates/html.phtml* (HTML template)
+* *src/Module/Widget/SupportInfo/templates/css.css* (stylesheet)
 
 **Warning! This widget renders sensitive system information. It should only be
 rendered in a secure context, such as inside an administration panel!**
@@ -2333,18 +2435,49 @@ information includes the following (list is subject to change):
 // index.phtml
 
 <?php
-use Resursbank\Ecom\Module\SupportInfo\Widget\SupportInfo;
+use Resursbank\Ecom\Module\Widget\SupportInfo\Html;
+use Resursbank\Ecom\Module\Widget\SupportInfo\Css;
 
-$widget = new SupportInfo();
+$widget = new Html();
+$cssWidget = new Css()
 
 ?>
 
-<?= $widget->html ?>
+<?= $widget->content ?>
 
 <style>
-  <?= $widget->css ?>
+  <?= $cssWidget->content ?>
 </style>
 ```
 
 **Note that the optional *pluginVersion* argument is only relevant to our local
 development team to identify platform specific modules.**
+
+# [Widget] Logo
+
+* `src/Module/Widget/Logo`
+
+This widget is for rendering logos and thumbnails without needing to include
+them in each individual platform module.
+
+It does this by outputting the images as base64 encoded strings directly in an
+`img` element's `src` attribute.
+
+```php
+<?php
+// index.phtml
+
+use Resursbank\Ecom\Module\Widget\Logo\Html;
+use Resursbank\Ecom\Module\PaymentMethod\Repository;
+
+$paymentMethod = Repository::getPaymentMethods(
+    storeId: 'store-id'
+)->current();
+
+$logo = new Html(paymentMethod: $paymentMethod);
+?>
+
+<?= $logo->getLogo(inclImgTag: true) ?>
+
+
+```

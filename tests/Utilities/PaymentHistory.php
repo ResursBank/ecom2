@@ -78,13 +78,13 @@ class PaymentHistory extends TestCase
             paymentId: $paymentId,
             event: $event,
             user: $this->getRandomUser(),
+            time: time(),
             result: $result,
             extra: $extra,
             previousOrderStatus: $this->getRandomStatus(),
             currentOrderStatus: $this->getRandomStatus(),
-            time: time(),
-            userReference: $userReference,
-            reference: $reference
+            reference: $reference,
+            userReference: $userReference
         );
     }
     // @codingStandardsIgnoreEnd
