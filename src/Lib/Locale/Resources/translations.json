@@ -3396,5 +3396,25 @@
       "dk": "",
       "fi": ""
     }
+  },
+  {
+    "id": "payment-is-already-captured",
+    "translation": {
+      "en": "Payment has already been captured at Resurs Bank",
+      "sv": "Betalningen har redan debiterats hos Resurs Bank",
+      "no": "Betalingen er allerede fanget hos Resurs Bank",
+      "da": "Betalingen er allerede hævet hos Resurs Bank",
+      "fi": "Maksu on jo veloitettu Resurs Bankissa"
+    }
+  },
+  {
+    "id": "payment-not-ready-to-be-captured",
+    "translation": {
+      "en": "Payment is not ready to be captured at Resurs Bank",
+      "sv": "Betalningen är inte redo att debiteras hos Resurs Bank",
+      "no": "Betalingen er ikke klar for å fanges hos Resurs Bank",
+      "da": "Betalingen er ikke klar til at blive hævet hos Resurs Bank",
+      "fi": "Maksu ei ole vielä valmis veloitettavaksi Resurs Bankissa"
+    }
   }
 ]
