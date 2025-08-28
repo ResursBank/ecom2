@@ -27,7 +27,7 @@ class Network extends Model
     public function __construct(
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
-        public readonly int $timeout = 0,
+        public readonly int $timeout = 30,
         public readonly string $userAgent = ''
     ) {
         parent::__construct();

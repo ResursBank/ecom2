@@ -1,3 +1,18 @@
+# 3.3.5
+
+* ECP-1029 Improve error message display for PPW
+* ECP-1060 Make payment history logging after callback processing conditional
+
+# 3.3.4
+
+* ECP-1058 Change default network timeout from 0 to 30 seconds.
+* ECP-1054 Corrected composer.json PHP requirement.
+
+# 3.3.3
+
+* ECP-1040 Added widget to reload payment information widget on demand. Written generically in order to replace parts of the part payment widget JS.
+* ECP-1044 PPW button click event listener. 
+
 # 3.3.2
 
 * ECP-1037 Add IS\_READY\_FOR\_AUTHORIZATION Payment History event.
