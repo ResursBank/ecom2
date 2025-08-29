@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Widget\Loader;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
- * Renders Loader HTML for use in admin panel order view
+ * Renders Loader HTML.
  */
 class Html extends Widget
 {
