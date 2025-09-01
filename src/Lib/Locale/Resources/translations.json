@@ -3408,6 +3408,16 @@
     }
   },
   {
+    "id": "unable-to-capture-frozen-order",
+    "translation": {
+      "en": "Unable to capture frozen order",
+      "sv": "Kan inte debitera en frusen order",
+      "no": "Kan ikke belaste en frossen ordre",
+      "da": "Kan ikke debitere en frossen ordre",
+      "fi": "Jäädytettyä tilausta ei voi veloittaa"
+    }
+  },
+  {
     "id": "payment-not-ready-to-be-captured",
     "translation": {
       "en": "Payment is not ready to be captured at Resurs Bank",
