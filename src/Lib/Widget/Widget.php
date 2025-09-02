@@ -97,11 +97,10 @@ class Widget
      */
     public function renderStaticWithCache(string $file): string
     {
-        $result = '';
-        $cache = $this->getCachedContent();
+        $result = $this->getCachedContent();
 
-        if (!is_string(value: $cache)) {
-            $result = $this->renderStatic(file: $file);
+        if (!is_string(value: $result)) {
+            $result = $this->renderStaticWithoutCache(file: $file);
             $this->setCachedContent(data: $result);
         }
 
@@ -161,11 +160,10 @@ class Widget
      */
     public function renderWithCache(string $file): string
     {
-        $result = '';
-        $cache = $this->getCachedContent();
+        $result = $this->getCachedContent();
 
-        if (!is_string(value: $cache)) {
-            $result = $this->render(file: $file);
+        if (!is_string(value: $result)) {
+            $result = $this->renderWithoutCache(file: $file);
             $this->setCachedContent(data: $result);
         }
 
