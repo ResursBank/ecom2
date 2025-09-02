@@ -26,8 +26,6 @@ use Resursbank\Ecom\Module\PaymentHistory\Translator;
  */
 class Html extends Widget
 {
-    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-part-payment-html';
-
     /** @var string */
     public readonly string $content;
 
