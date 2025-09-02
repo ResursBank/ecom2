@@ -67,7 +67,7 @@ final class Config
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
         public readonly ?string $storeId = null,
-        public readonly ?bool $cacheDynamicData = null
+        public readonly bool $cacheDynamicData = false
     ) {
     }
 
@@ -89,7 +89,7 @@ final class Config
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null,
-        ?bool $cacheDynamicData = null
+        bool $cacheDynamicData = false
     ): void {
         self::$instance = new Config(
             logger: $logger,

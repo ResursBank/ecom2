@@ -21,6 +21,8 @@ use Throwable;
  */
 class Widget
 {
+    public const CACHE_KEY_PREFIX = '';
+
     /**
      * Get list of unique tag names in rendered content.
      *
@@ -44,9 +46,21 @@ class Widget
      *
      * @param string $file File to load
      * @return string Loaded file or empty string (if loading failed)
-     * phpcs:disable Generic.Metrics.CyclomaticComplexity
+     * @throws ConfigException
      */
     public function renderStatic(string $file): string
+    {
+        if ($this->canCacheData()) {
+            return $this->renderStaticWithCache(file: $file);
+        }
+
+        return $this->renderStaticWithoutCache(file: $file);
+    }
+
+    /**
+     * phpcs:disable Generic.Metrics.CyclomaticComplexity
+     */
+    public function renderStaticWithoutCache(string $file): string
     {
         if (!$this->shouldRender()) {
             return '';
@@ -77,9 +91,40 @@ class Widget
     }
 
     /**
+     * @param string $file File to load
+     * @return string Loaded file or empty string (if loading failed))
+     * @throws ConfigException
+     */
+    public function renderStaticWithCache(string $file): string
+    {
+        $result = '';
+        $cache = $this->getCachedContent();
+
+        if (!is_string(value: $cache)) {
+            $result = $this->renderStatic(file: $file);
+            $this->setCachedContent(data: $result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @throws ConfigException
      * @throws FilesystemException
      */
-    public function render(
+    public function render(string $file): string
+    {
+        if ($this->canCacheData()) {
+            return $this->renderWithCache(file: $file);
+        }
+
+        return $this->renderWithoutCache(file: $file);
+    }
+
+    /**
+     * @throws FilesystemException
+     */
+    public function renderWithoutCache(
         string $file
     ): string {
         if (!$this->shouldRender()) {
@@ -111,6 +156,48 @@ class Widget
     }
 
     /**
+     * @throws ConfigException
+     * @throws FilesystemException
+     */
+    public function renderWithCache(string $file): string
+    {
+        $result = '';
+        $cache = $this->getCachedContent();
+
+        if (!is_string(value: $cache)) {
+            $result = $this->render(file: $file);
+            $this->setCachedContent(data: $result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check if widget data can be cached.
+     *
+     * This method exists as it does so that if necessary individual widgets
+     * can override it if for example they should never cache their data.
+     *
+     * @throws ConfigException
+     */
+    public function canCacheData(): bool
+    {
+        return Config::getCacheDynamicData() && $this::CACHE_KEY_PREFIX !== '';
+    }
+
+    /**
+     * Retrieve cache key for widget.
+     *
+     * This method relies on the CACHE_KEY_PREFIX constant which should be set
+     * in each child widget.
+     */
+    public function getCacheKey(): string
+    {
+        return $this::CACHE_KEY_PREFIX . '-' . Config::getStoreId() . '_' .
+            sha1(string: serialize(value: $this));
+    }
+
+    /**
      * Check if widget should be rendered.
      *
      * This method exists to be overridden by child class implementations.
@@ -118,6 +205,28 @@ class Widget
     public function shouldRender(): bool
     {
         return true;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    protected function getCachedContent(): ?string
+    {
+        return Config::getCache()->read(
+            key: $this->getCacheKey() . '-content'
+        );
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    protected function setCachedContent(string $data): void
+    {
+        Config::getCache()->write(
+            key: $this->getCacheKey() . '-content',
+            data: $data,
+            ttl: 3600
+        );
     }
 
     /**

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\Logo;
 
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
@@ -22,11 +23,15 @@ use RuntimeException;
 */
 class Html extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-logo-html';
+
     public string $file;
+
     public string $content;
 
     /**
      * @throws FilesystemException
+     * @throws ConfigException
      */
     public function __construct(
         PaymentMethod $paymentMethod

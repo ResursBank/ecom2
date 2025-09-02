@@ -26,6 +26,8 @@ use Resursbank\Ecom\Module\PaymentHistory\Translator;
  */
 class Html extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-part-payment-html';
+
     /** @var string */
     public readonly string $content;
 
@@ -36,6 +38,7 @@ class Html extends Widget
      *                                 greater flexibility as the collection can
      *                                 be filtered before rendering the widget.
      * @throws FilesystemException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(

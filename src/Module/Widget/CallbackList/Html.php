@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\CallbackList;
 
+use JsonException;
+use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -20,6 +24,10 @@ class Html extends Widget
     /** @var string */
     public readonly string $content;
 
+    /**
+     * @throws ConfigException
+     * @throws FilesystemException
+     */
     public function __construct(
         private readonly ?string $authorizationUrl = null,
         private readonly ?string $managementUrl = null
@@ -30,12 +38,24 @@ class Html extends Widget
         );
     }
 
+    /**
+     * @throws ConfigException
+     * @throws TranslationException
+     * @throws FilesystemException
+     * @throws JsonException
+     */
     public function getAuthorizationUrl(): ?string
     {
         return $this->authorizationUrl ??
             Translator::translate(phraseId: 'failed-to-resolve-callback-url');
     }
 
+    /**
+     * @throws ConfigException
+     * @throws TranslationException
+     * @throws JsonException
+     * @throws FilesystemException
+     */
     public function getManagementUrl(): ?string
     {
         return $this->managementUrl ??

@@ -26,11 +26,14 @@ use Throwable;
  */
 class Js extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-get-address-js';
+
     public readonly string $content;
 
     /**
      * @throws FilesystemException
      * @throws IllegalValueException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(

@@ -26,11 +26,14 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Html extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-cost-list-html';
+
     /** @var string */
     public readonly string $content;
 
     /**
      * @throws FilesystemException
+     * @throws ConfigException
      */
     public function __construct(
         public readonly PriceSignage $priceSignage,

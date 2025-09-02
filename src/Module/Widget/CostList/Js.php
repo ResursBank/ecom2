@@ -19,6 +19,8 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Js extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-cost-list-js';
+
     /** @var string */
     public readonly string $content;
 

@@ -33,6 +33,9 @@ use Throwable;
  */
 class Html extends Widget
 {
+    public const CACHE_KEY_PREFIX =
+        'resursbank-ecom-widget-unique-selling-point-html';
+
     /** @var ReadMoreHtml */
     public readonly ReadMoreHtml $readMore;
 

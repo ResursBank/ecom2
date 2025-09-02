@@ -21,8 +21,13 @@ use Throwable;
  */
 class Css extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-get-address-css';
+
     public readonly string $content;
 
+    /**
+     * @throws ConfigException
+     */
     public function __construct()
     {
         $this->content = $this->renderStatic(

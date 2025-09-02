@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Widget;
 
 use PHPUnit\Framework\TestCase;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -47,5 +49,19 @@ final class WidgetTest extends TestCase
         $widget = new Widget();
         $result = $widget->renderStatic(file: __DIR__ . 'fsdjiosefhuivnsjk');
         $this->assertEquals(expected: '', actual: $result);
+    }
+
+    /**
+     * Verify that the dynamic data cache flag properly affects canCacheData().
+     *
+     * @throws ConfigException
+     */
+    public function testCanCacheData(): void
+    {
+        Config::setup();
+        $unCachedWidget = new Widget();
+        $this->assertFalse(
+            condition: $unCachedWidget->canCacheData()
+        );
     }
 }

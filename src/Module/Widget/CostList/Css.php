@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\CostList;
 
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -16,9 +17,14 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Css extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-cost-list-css';
+
     /** @var string */
     public readonly string $content;
 
+    /**
+     * @throws ConfigException
+     */
     public function __construct()
     {
         $this->content = $this->renderStatic(

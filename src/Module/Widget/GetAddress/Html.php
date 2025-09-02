@@ -23,12 +23,15 @@ use Throwable;
  */
 class Html extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-get-address-html';
+
     public readonly string $content;
 
     /**
      * @param string $inputClassList CSS classes for input
      * @param string $btnClassList CSS classes for button
      * @throws FilesystemException
+     * @throws ConfigException
      */
     public function __construct(
         public string $govId = '',

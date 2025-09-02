@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\GetStores;
 
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -19,6 +20,8 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Js extends Widget
 {
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-get-stores-js';
+
     /** @var string */
     public readonly string $content;
 
@@ -30,6 +33,7 @@ class Js extends Widget
      * @param string|null $clientSecretInputId ID of client secret element.
      * @param string|null $spinnerClass Class applied on store select element when fetching.
      * @throws FilesystemException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
