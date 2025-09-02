@@ -20,7 +20,8 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Js extends Widget
 {
-    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-get-stores-js';
+    public const string CACHE_KEY_PREFIX =
+        'resursbank-ecom-widget-get-stores-js';
 
     /** @var string */
     public readonly string $content;

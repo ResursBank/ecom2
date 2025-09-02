@@ -17,7 +17,8 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Css extends Widget
 {
-    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-read-more-css';
+    public const string CACHE_KEY_PREFIX =
+        'resursbank-ecom-widget-read-more-css';
 
     /** @var string */
     public readonly string $content;

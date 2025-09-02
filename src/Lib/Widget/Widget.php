@@ -21,7 +21,7 @@ use Throwable;
  */
 class Widget
 {
-    public const CACHE_KEY_PREFIX = '';
+    public const string CACHE_KEY_PREFIX = '';
 
     /**
      * Get list of unique tag names in rendered content.
