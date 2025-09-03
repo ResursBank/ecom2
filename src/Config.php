@@ -67,7 +67,7 @@ final class Config
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
         public readonly ?string $storeId = null,
-        public readonly bool $cacheDynamicData = false
+        public readonly bool $cacheWidgets = false
     ) {
     }
 
@@ -89,7 +89,7 @@ final class Config
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null,
-        bool $cacheDynamicData = false
+        bool $cacheWidgets = false
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -104,7 +104,7 @@ final class Config
             currencyFormat: $currencyFormat,
             network: $network,
             storeId: $storeId,
-            cacheDynamicData: $cacheDynamicData
+            cacheWidgets: $cacheWidgets
         );
     }
 
@@ -285,10 +285,10 @@ final class Config
     /**
      * @throws ConfigException
      */
-    public static function getCacheDynamicData(): ?bool
+    public static function getCacheWidgets(): ?bool
     {
         self::validateInstance();
-        return self::$instance->cacheDynamicData;
+        return self::$instance->cacheWidgets;
     }
 
     /**
