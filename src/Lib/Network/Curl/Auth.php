@@ -32,6 +32,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken as GenerateMapiToken;
  */
 class Auth
 {
+
     /**
      * @throws AuthException
      * @throws CurlException

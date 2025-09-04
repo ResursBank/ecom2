@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Describes JWT token.
@@ -22,44 +24,30 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 class Token extends Model
 {
-    /** @var int */
-    public readonly int $expires_in;
-
     /**
-     * @throws EmptyValueException
+     * @param int $expires_in Time to expiration, provided by API response.
+     * @param int|null $expires_at Actual expiration time, calculated.
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     * @throws ReflectionException
      * @todo $tokenType should be an enum. See ECP-227
      */
     public function __construct(
-        public readonly string $access_token,
-        public readonly string $token_type,
-        int $expires_in,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringNotEmpty] public readonly string $access_token,
+        #[StringNotEmpty] public readonly string $token_type,
+        public readonly int $expires_in = 0,
+        public ?int $expires_at = null
     ) {
-        $this->validateAccessToken();
-        $this->validateTokenType();
+        parent::__construct();
 
-        $this->expires_in = $expires_in + time();
+        if ($this->expires_at === null) {
+            $this->expires_at = $this->expires_in + time();
+        }
     }
 
     public function isExpired(): bool
     {
-        return $this->expires_in < time();
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    private function validateAccessToken(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->access_token);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    private function validateTokenType(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->token_type);
+        return $this->expires_at <= time();
     }
 
     public function __toString(): string

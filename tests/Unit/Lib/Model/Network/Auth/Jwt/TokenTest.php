@@ -43,7 +43,7 @@ class TokenTest extends TestCase
      *
      * @throws EmptyValueException
      */
-    public function testExpiresInAppendsTimestamp(): void
+    public function testExpiresAtAppendsTimestamp(): void
     {
         $token = new Token(
             access_token: 'foo',
@@ -53,7 +53,7 @@ class TokenTest extends TestCase
 
         self::assertSame(
             expected: time(),
-            actual: $token->expires_in
+            actual: $token->expires_at
         );
     }
 }

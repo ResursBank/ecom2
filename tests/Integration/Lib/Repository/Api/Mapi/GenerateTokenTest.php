@@ -68,7 +68,7 @@ class GenerateTokenTest extends TestCase
 
         self::assertGreaterThan(
             expected: $currentTime,
-            actual: $token->expires_in
+            actual: $token->expires_at
         );
     }
 
