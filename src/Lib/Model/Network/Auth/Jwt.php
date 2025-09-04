@@ -11,8 +11,10 @@ namespace Resursbank\Ecom\Lib\Model\Network\Auth;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Mapi;
@@ -20,7 +22,6 @@ use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
 use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
@@ -53,20 +54,22 @@ class Jwt extends Model
     }
 
     /**
-     * @param Token|null $token
-     * @return void
      * @throws ConfigException
      */
     public function setToken(?Token $token): void
     {
         $this->token = $token;
-        if ($this->cacheToken && $this->token !== null) {
-            $this->setCachedToken();
+
+        if (!$this->cacheToken || $this->token === null) {
+            return;
         }
+
+        $this->setCachedToken();
     }
 
     /**
      * Token getter.
+     *
      * @throws ConfigException
      */
     public function getToken(): ?Token
@@ -74,13 +77,13 @@ class Jwt extends Model
         if ($this->cacheToken && $this->token === null) {
             $this->token = $this->getCachedToken();
         }
+
         return $this->token;
     }
 
     /**
      * Attempt to find and load token from cache.
      *
-     * @return Token|null
      * @throws ConfigException
      */
     private function getCachedToken(): ?Token
@@ -88,6 +91,7 @@ class Jwt extends Model
         $data = Config::getCache()->read(key: $this->getCacheKey());
 
         $result = null;
+
         try {
             if ($data !== null) {
                 /** @var Token $result */
@@ -118,6 +122,12 @@ class Jwt extends Model
     private function setCachedToken(): void
     {
         try {
+            if ($this->token === null) {
+                throw new EmptyValueException(
+                    message: 'Unable to save null token to cache.'
+                );
+            }
+
             Config::getCache()->write(
                 key: $this->getCacheKey(),
                 data: json_encode(

@@ -40,9 +40,11 @@ class Token extends Model
     ) {
         parent::__construct();
 
-        if ($this->expires_at === null) {
-            $this->expires_at = $this->expires_in + time();
+        if ($this->expires_at !== null) {
+            return;
         }
+
+        $this->expires_at = $this->expires_in + time();
     }
 
     public function isExpired(): bool
