@@ -65,7 +65,7 @@ class ConfigTest extends TestCase
             actual: Config::getProxyType()
         );
         self::assertEquals(
-            expected: 0,
+            expected: 30,
             actual: Config::getTimeout()
         );
         self::assertEquals(

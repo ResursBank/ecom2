@@ -45,6 +45,7 @@ class Js extends Widget
      * @param string|null $periodElementId Required when using standard widget
      * JavaScript functions to manage elements. See template.
      * @throws FilesystemException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @SuppressWarnings(PHPMD.LongVariable)
      */

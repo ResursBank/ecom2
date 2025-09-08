@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\PaymentInformation;
 
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -29,6 +30,7 @@ class Js extends Widget
      * @param array $observableElements List of DOM paths to trigger reload on.
      * @param bool $automatic Whether to initiate JS automatically.
      * @throws FilesystemException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(

@@ -38,6 +38,9 @@ class Js extends Widget
 {
     use Common;
 
+    public const string CACHE_KEY_PREFIX =
+        'resursbank-ecom-widget-part-payment-js';
+
     /** @var string */
     public readonly string $content;
 

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Widget\ConsumerCreditWarning;
 
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
@@ -22,10 +23,14 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Html extends Widget
 {
+    public const string CACHE_KEY_PREFIX =
+        'resursbank-ecom-widget-consumer-credit-warning-html';
+
     public string $content;
 
     /**
      * @throws FilesystemException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
@@ -40,7 +45,10 @@ class Html extends Widget
     }
 
     /**
-     * Only display the warning if the cost list is not empty and the location is SE.
+     * @inheritDoc
+     *
+     * Only display the warning if the cost list is not empty and the location
+     * is Sweden.
      */
     public function shouldRender(): bool
     {

@@ -36,6 +36,7 @@ class Html extends Widget
      *                                 greater flexibility as the collection can
      *                                 be filtered before rendering the widget.
      * @throws FilesystemException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
