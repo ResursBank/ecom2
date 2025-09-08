@@ -122,6 +122,11 @@ class RepositoryTest extends TestCase
      */
     public function testGetPaymentMethodTypes(): void
     {
+        $this->markTestSkipped(
+            message: 'Appears to be broken, 500 error when attempting to ' .
+            'access endpoint.'
+        );
+
         // Get payment methods.
         $paymentMethods = PaymentMethodRepository::getPaymentMethods();
 

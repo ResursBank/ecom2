@@ -14,6 +14,7 @@ use JsonException;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
+use ReflectionProperty;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArrayOfStrings;
 use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
@@ -205,9 +206,21 @@ class Model
      *
      * @throws JsonException
      * @throws AttributeCombinationException
+     * @throws ReflectionException
      */
     private function validateProperty(ReflectionParameter $parameter): void
     {
+        $property = new ReflectionProperty(
+            class: $this::class,
+            property: $parameter->getName()
+        );
+
+        if ($property->isPrivate()) {
+            // We can't look at private properties so if we encounter one we
+            // skip attempting to validate it.
+            return;
+        }
+
         if ($this->{$parameter->name} === null && $parameter->allowsNull()) {
             return;
         }
