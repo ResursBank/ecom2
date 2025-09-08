@@ -151,7 +151,6 @@ class Jwt extends Model
                 separator: '-',
                 array: [
                     $this->clientId,
-                    $this->clientSecret,
                     $this->grantType->value,
                     $this->scope->value,
                 ]
