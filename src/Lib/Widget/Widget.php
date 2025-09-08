@@ -180,7 +180,7 @@ class Widget
      */
     public function canCacheData(): bool
     {
-        return Config::getCacheDynamicData() && $this::CACHE_KEY_PREFIX !== '';
+        return Config::getCacheWidgets() && $this::CACHE_KEY_PREFIX !== '';
     }
 
     /**
