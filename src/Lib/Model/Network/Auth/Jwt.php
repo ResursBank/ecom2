@@ -18,7 +18,6 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Api\Mapi;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -35,6 +34,8 @@ class Jwt extends Model
     use ModelConverter;
     use DataResolver;
 
+    public const string SCOPE = 'merchant-api';
+
     /**
      * @throws JsonException
      * @throws ReflectionException
@@ -45,7 +46,6 @@ class Jwt extends Model
         #[StringNotEmpty] public readonly string $clientId,
         #[StringNotEmpty] public readonly string $clientSecret,
         public readonly GrantType $grantType,
-        public readonly Scope $scope = Scope::MERCHANT_API,
         public readonly bool $cacheToken = false,
         private ?Token $token = null,
         private readonly Mapi $mapi = new Mapi()
@@ -152,7 +152,7 @@ class Jwt extends Model
                 array: [
                     $this->clientId,
                     $this->grantType->value,
-                    $this->scope->value,
+                    self::SCOPE,
                 ]
             ))
         );
