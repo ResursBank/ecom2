@@ -75,7 +75,7 @@ class GenerateToken
                 'client_id' => $this->auth->clientId,
                 'client_secret' => $this->auth->clientSecret,
                 'grant_type' => $this->auth->grantType,
-                'scope' => $this->auth->scope,
+                'scope' => $this->auth::SCOPE,
             ],
             authType: AuthType::NONE
         );
