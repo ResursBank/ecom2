@@ -50,7 +50,7 @@ class Html extends Widget
 {
     use Common;
 
-    public const string CACHE_KEY_PREFIX =
+    public const CACHE_KEY_PREFIX =
         'resursbank-ecom-widget-part-payment-html';
 
     /** @var Cost */
