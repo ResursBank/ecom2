@@ -19,7 +19,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Js extends Widget
 {
-    public const string CACHE_KEY_PREFIX =
+    public const CACHE_KEY_PREFIX =
         'resursbank-ecom-widget-part-payment-js';
 
     public readonly string $content;

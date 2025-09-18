@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Css extends Widget
 {
-    public const string CACHE_KEY_PREFIX =
+    public const CACHE_KEY_PREFIX =
         'resursbank-ecom-widget-cost-list-css';
 
     /** @var string */
