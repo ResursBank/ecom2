@@ -23,7 +23,7 @@ use RuntimeException;
 */
 class Html extends Widget
 {
-    public const string CACHE_KEY_PREFIX = 'resursbank-ecom-widget-logo-html';
+    public const CACHE_KEY_PREFIX = 'resursbank-ecom-widget-logo-html';
 
     public string $file;
 

@@ -1,3 +1,15 @@
+# 3.3.6
+
+* ECP-1061 Initial RWS implementation.
+* ECP-1063 Use nullsafe operator to prevent QA warning.
+* ECP-1066 Removed deprecated widget code.
+* ECP-1062 related translations missing for WOO-1471.
+* ECP-1072 Loader widget, to display a generic loader overlay and animation on top of any GUI component.
+* ECP-1070 Add content caching to all widgets but SupportInfo, CallbackList and PaymentInformation.
+* ECP-1069 Add cacheDynamicData config option.
+* ECP-1071 Rename cacheDynamicData to cacheWidgets.
+* ECP-1075 Add caching of JWT token.
+
 # 3.3.5
 
 * ECP-1029 Improve error message display for PPW
