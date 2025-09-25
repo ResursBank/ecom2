@@ -1,3 +1,9 @@
+# 3.3.7
+
+* ECP-1081 Remove typed class constants. 
+* ECP-1082 Remove misplaced Style.php.
+* PD-444 Fix PPW Javascript parsing of large numbers.
+
 # 3.3.6
 
 * ECP-1061 Initial RWS implementation.
