@@ -9,8 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\CostList;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Locale\Language;
@@ -23,6 +26,11 @@ use Resursbank\Ecom\Module\Widget\CostList\Css;
  */
 class CssTest extends TestCase
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
     protected function setUp(): void
     {
         Config::setup(

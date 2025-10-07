@@ -9,9 +9,17 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Widget;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Cache\CacheInterface;
+use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -19,6 +27,30 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 final class WidgetTest extends TestCase
 {
+    /**
+     * @throws AttributeCombinationException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            language: Language::EN,
+            storeId: $_ENV['STORE_ID']
+        );
+
+        parent::setUp();
+    }
+
     public function testGetTagNames(): void
     {
         $this->assertSame(

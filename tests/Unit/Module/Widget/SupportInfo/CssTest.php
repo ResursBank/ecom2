@@ -31,6 +31,20 @@ class CssTest extends TestCase
      */
     public function testRenderCss(): void
     {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: new None(),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            language: Language::SV,
+            storeId: $_ENV['STORE_ID']
+        );
+
         $widget = new Css();
         $this->assertNotEmpty(
             actual: $widget->content,
