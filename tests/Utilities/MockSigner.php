@@ -76,7 +76,7 @@ class MockSigner
             $curl->exec();
             $count++;
 
-            if ($count >= 10) {
+            if ($count >= 15) {
                 throw new ApiException(
                     message: 'MockSigner hit iteration limit!'
                 );
