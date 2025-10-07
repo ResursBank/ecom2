@@ -44,7 +44,7 @@ class Html extends Widget
         public readonly bool $renderButton = true
     ) {
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }

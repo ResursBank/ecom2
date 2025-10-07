@@ -50,6 +50,7 @@ final class Config
      * NOTE: By default we only log INFO level messages.
      *
      * @param Language|null $language | Not readonly to allow dynamic assignment
+     * @param string|null $templateOverrideDirectory Directory to search for widget template overrides.
      * based on configured store after initializing the Config instance.
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
@@ -67,7 +68,8 @@ final class Config
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
         public readonly ?string $storeId = null,
-        public readonly bool $cacheWidgets = false
+        public readonly bool $cacheWidgets = false,
+        public readonly ?string $templateOverrideDirectory = null
     ) {
     }
 
@@ -89,7 +91,8 @@ final class Config
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null,
-        bool $cacheWidgets = false
+        bool $cacheWidgets = false,
+        ?string $templateOverrideDirectory = null
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -104,7 +107,8 @@ final class Config
             currencyFormat: $currencyFormat,
             network: $network,
             storeId: $storeId,
-            cacheWidgets: $cacheWidgets
+            cacheWidgets: $cacheWidgets,
+            templateOverrideDirectory: $templateOverrideDirectory
         );
     }
 
@@ -306,6 +310,25 @@ final class Config
     public static function setLocation(Location $location): void
     {
         self::$instance->location = $location;
+    }
+
+    /**
+     * Get configured template override directory.
+     *
+     * @throws ConfigException
+     */
+    public static function getTemplateOverrideDirectory(): ?string
+    {
+        self::validateInstance();
+
+        if (self::$instance->templateOverrideDirectory !== null) {
+            return rtrim(
+                string: self::$instance->templateOverrideDirectory,
+                characters: '/'
+            );
+        }
+
+        return null;
     }
 
     /**
