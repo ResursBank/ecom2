@@ -42,7 +42,7 @@ class Js extends Widget
         public readonly bool $automatic = true
     ) {
         $this->content = $this->render(
-            file: __DIR__ . '/templates/js.js.phtml'
+            file: $this->getWidgetName() . '/templates/js.js.phtml'
         );
     }
 }

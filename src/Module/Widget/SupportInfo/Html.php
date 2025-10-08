@@ -38,6 +38,7 @@ class Html extends Widget
      * @param string $minimumPhpVersion Lowest
      * @param string $pluginVersion Version of the calling plugin/addon
      * @throws FilesystemException
+     * @throws ConfigException
      */
     public function __construct(
         public readonly string $minimumPhpVersion,
@@ -45,7 +46,7 @@ class Html extends Widget
         public readonly string $pluginVersion = ''
     ) {
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }

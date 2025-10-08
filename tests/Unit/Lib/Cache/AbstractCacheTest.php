@@ -126,7 +126,7 @@ class AbstractCacheTest extends TestCase
 
         $raw = $this->cache->encodeEntry(data: $data, ttl: $ttl);
 
-        $this->assertJson(actual: $raw);
+        $this->assertJson(actualJson: $raw);
 
         $entry = json_decode(
             json: $raw,
@@ -152,7 +152,7 @@ class AbstractCacheTest extends TestCase
 
         $raw = $this->cache->encodeEntry(data: $data, ttl: $ttl);
 
-        $this->assertJson(actual: $raw);
+        $this->assertJson(actualJson: $raw);
 
         $entry = $this->cache->decodeEntry(data: $raw);
 

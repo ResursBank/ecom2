@@ -34,12 +34,13 @@ class Jwt extends Model
     use ModelConverter;
     use DataResolver;
 
-    public const string SCOPE = 'merchant-api';
+    public const SCOPE = 'merchant-api';
 
     /**
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @todo Add charset validation of id and secret.
      */
     public function __construct(

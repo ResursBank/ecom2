@@ -69,11 +69,11 @@ class Html extends Widget
         $this->payment = Repository::get(paymentId: $this->paymentId);
 
         $this->logo = $this->renderStatic(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'resurs.svg'
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'resurs.svg'
         );
 
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }
