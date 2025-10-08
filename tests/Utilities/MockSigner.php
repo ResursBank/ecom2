@@ -76,13 +76,13 @@ class MockSigner
             $curl->exec();
             $count++;
 
-            if ($count >= 15) {
+            if ($count >= 60) {
                 throw new ApiException(
                     message: 'MockSigner hit iteration limit!'
                 );
             }
 
-            sleep(seconds: 30);
+            sleep(seconds: 5);
             $payment = Repository::get(paymentId: $payment->id);
         }
     }
