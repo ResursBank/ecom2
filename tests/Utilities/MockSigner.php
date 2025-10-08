@@ -82,7 +82,7 @@ class MockSigner
                 );
             }
 
-            sleep(seconds: 1);
+            sleep(seconds: 2);
             $payment = Repository::get(paymentId: $payment->id);
         }
     }
