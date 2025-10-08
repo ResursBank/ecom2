@@ -159,8 +159,14 @@ class RefundTest extends TestCase
         // Sign
         try {
             MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
         }
 
         // Capture payment
@@ -205,8 +211,14 @@ class RefundTest extends TestCase
         // Sign
         try {
             MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
         }
 
         // Capture
@@ -272,8 +284,14 @@ class RefundTest extends TestCase
         // Sign
         try {
             MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
         }
 
         // Capture
@@ -330,8 +348,14 @@ class RefundTest extends TestCase
         // Sign
         try {
             MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
         }
 
         // Capture
@@ -387,8 +411,14 @@ class RefundTest extends TestCase
         // Sign
         try {
             MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
         }
 
         // Capture

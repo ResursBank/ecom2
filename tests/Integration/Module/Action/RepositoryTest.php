@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Model\Address;
@@ -144,6 +145,36 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TimeoutException
+     * @throws ValidationException
+     * @throws NotJsonEncodedException
+     */
+    private function callMockSigner(Payment $payment): bool
+    {
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                return false;
+            }
+
+            throw $error;
+        }
+
+        return true;
+    }
+
+    /**
      * Create a new payment, sign it, capture it. Extract the ActionLog entries
      * from the capture response. Find the entry which matches the CAPTURE
      * action. Execute an API request to fetch the ActionLog object matching
@@ -175,9 +206,7 @@ class RepositoryTest extends TestCase
         $this->assertNotEmpty(actual: $payment->order->actionLog);
 
         // Sign payment.
-        try {
-            MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException) {
+        if (!$this->callMockSigner(payment: $payment)) {
             $this->markTestSkipped(message: 'MockSigner failed with timeout.');
         }
 
