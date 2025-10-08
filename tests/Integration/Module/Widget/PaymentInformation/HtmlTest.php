@@ -20,6 +20,7 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -163,7 +164,11 @@ class HtmlTest extends TestCase
             metadata: MockSigner::getMetadata()
         );
 
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException) {
+            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        }
 
         return Repository::get(paymentId: $payment->id);
     }

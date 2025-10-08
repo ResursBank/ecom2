@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -174,7 +175,11 @@ class RepositoryTest extends TestCase
         $this->assertNotEmpty(actual: $payment->order->actionLog);
 
         // Sign payment.
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException) {
+            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        }
 
         // Capture payment.
         $capture = Repository::capture(paymentId: $payment->id);

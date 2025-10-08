@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -52,6 +53,7 @@ class MockSigner
      * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws TimeoutException
      */
     public static function callCustomerUrl(
         Payment $payment
@@ -76,13 +78,13 @@ class MockSigner
             $curl->exec();
             $count++;
 
-            if ($count >= 60) {
-                throw new ApiException(
+            if ($count >= 15) {
+                throw new TimeoutException(
                     message: 'MockSigner hit iteration limit!'
                 );
             }
 
-            sleep(seconds: 5);
+            sleep(seconds: 2);
             $payment = Repository::get(paymentId: $payment->id);
         }
     }

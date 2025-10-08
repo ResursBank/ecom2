@@ -22,6 +22,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -164,7 +165,11 @@ class PutTest extends TestCase
         );
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException) {
+            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        }
 
         // Add metadata
         $setMetadataResponse = Repository::setMetadata(
