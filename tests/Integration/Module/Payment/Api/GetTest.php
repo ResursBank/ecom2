@@ -20,6 +20,7 @@ use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -146,7 +147,17 @@ class GetTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
+        }
 
         // Call getPayment
         $fetched = Repository::get(paymentId: $payment->id);

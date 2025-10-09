@@ -35,7 +35,7 @@ class Js extends Widget
         public readonly bool $autoInitJs = true
     ) {
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'js.js.phtml'
         );
     }

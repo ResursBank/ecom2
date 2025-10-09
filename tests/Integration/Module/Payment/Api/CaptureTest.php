@@ -22,6 +22,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -155,7 +156,17 @@ class CaptureTest extends TestCase
         $originalId = $payment->id;
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
+        }
 
         // Capture payment
         $response = Repository::capture(paymentId: $originalId);
@@ -181,7 +192,17 @@ class CaptureTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
+        }
 
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(
@@ -233,7 +254,17 @@ class CaptureTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
+        }
 
         // Capture and specify transaction id
         $transactionId = Strings::generateRandomString(length: 12);
@@ -276,7 +307,17 @@ class CaptureTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
+        }
 
         // Capture and specify transaction id
         $invoiceId = Strings::generateRandomString(length: 12);
@@ -332,7 +373,17 @@ class CaptureTest extends TestCase
         $payment = $this->createPayment(orderReference: $orderReference);
 
         // Sign
-        MockSigner::callCustomerUrl(payment: $payment);
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                $this->markTestSkipped(
+                    message: 'MockSigner failed with timeout.'
+                );
+            }
+
+            throw $error;
+        }
 
         $orderLines = new OrderLineCollection(data: [
             new OrderLine(

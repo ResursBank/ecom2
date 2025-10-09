@@ -30,7 +30,7 @@ class Js extends Widget
     public function __construct()
     {
         $this->content = $this->renderStatic(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'js.js'
         );
     }

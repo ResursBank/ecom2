@@ -9,7 +9,16 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\CostList;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Cache\CacheInterface;
+use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\Widget\CostList\Css;
 
 /**
@@ -17,6 +26,30 @@ use Resursbank\Ecom\Module\Widget\CostList\Css;
  */
 class CssTest extends TestCase
 {
+    /**
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
+    protected function setUp(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                originalClassName: LoggerInterface::class
+            ),
+            cache: $this->createMock(originalClassName: CacheInterface::class),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            language: Language::EN,
+            storeId: $_ENV['STORE_ID']
+        );
+
+        parent::setUp();
+    }
+
     /**
      * Verify that rendered content isn't empty.
      */
