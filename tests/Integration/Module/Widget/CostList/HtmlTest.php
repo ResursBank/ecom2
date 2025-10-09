@@ -47,9 +47,6 @@ use Throwable;
  */
 class HtmlTest extends TestCase
 {
-    /**
-     * @throws EmptyValueException
-     */
     protected function setUp(): void
     {
         Config::setup(
@@ -65,6 +62,8 @@ class HtmlTest extends TestCase
             language: Language::EN,
             storeId: $_ENV['STORE_ID']
         );
+
+        parent::setUp();
     }
 
     /**
