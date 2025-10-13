@@ -3559,5 +3559,19 @@
       "da": "Betalingen er ikke klar til at blive hævet hos Resurs Bank",
       "fi": "Maksu ei ole vielä valmis veloitettavaksi Resurs Bankissa"
     }
+  },
+  {
+    "id": "template-override-location",
+    "translation": {
+      "en": "Widget template override location",
+      "sv": "Sökväg till ersättningsmallar för widgets"
+    }
+  },
+  {
+    "id": "template-override-location-warning",
+    "translation": {
+      "en": "This setting can be used for specifying an absolute path to a directory where overrides for widget templates can be places. Use this feature with caution.",
+      "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte."
+    }
   }
 ]
