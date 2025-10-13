@@ -55,6 +55,12 @@ use Resursbank\Ecom\Module\Widget\SupportInfo\Html;
                 <?php endif; ?>
             </td>
         </tr>
+        <?php if ($this->getTemplateOverrideLocation() !== ''): ?>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'template-override-location') ?></td>
+            <td><?= $this->getTemplateOverrideLocation() ?></td>
+        </tr>
+        <?php endif; ?>
         </tbody>
     </table>
 </div>
