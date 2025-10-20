@@ -53,10 +53,6 @@ class ConfigTest extends TestCase
             actual: Config::getCache()
         );
         self::assertNull(actual: Config::getJwtAuth());
-        self::assertEquals(
-            expected: LogLevel::INFO,
-            actual: Config::getLogLevel()
-        );
         self::assertEmpty(actual: Config::getUserAgent());
         self::assertFalse(condition: Config::isProduction());
         self::assertEmpty(actual: Config::getProxy());
@@ -102,7 +98,6 @@ class ConfigTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            logLevel: LogLevel::DEBUG,
             language: Language::SV,
             network: new Network(
                 timeout: 42,
@@ -122,10 +117,6 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(
             expected: Jwt::class,
             actual: Config::getJwtAuth()
-        );
-        self::assertEquals(
-            expected: LogLevel::DEBUG,
-            actual: Config::getLogLevel()
         );
         self::assertEquals(
             expected: 'Foo',

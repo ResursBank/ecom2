@@ -13,6 +13,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\UserSettings;
 
 /**
  * Defines network settings.
@@ -27,9 +28,17 @@ class Network extends Model
     public function __construct(
         public readonly string $proxy = '',
         public readonly int $proxyType = 0,
-        public readonly int $timeout = 30,
+        public int $timeout = UserSettings::DEFAULT_API_TIMEOUT,
         public readonly string $userAgent = ''
     ) {
         parent::__construct();
+    }
+
+    public function setTimeout(int $timeout): void
+    {
+        // No sense in setting 0 or negative value.
+        if ($timeout > 0) {
+            $this->timeout = $timeout;
+        }
     }
 }

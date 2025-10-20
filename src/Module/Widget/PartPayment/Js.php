@@ -25,6 +25,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Widget\Widget;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Throwable;
 
@@ -67,13 +68,14 @@ class Js extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly PaymentMethod $paymentMethod,
-        public readonly int $months,
+        public ?PaymentMethod $paymentMethod = null,
+        public ?int $months = null,
         public readonly float $amount,
         #[StringIsUrl] public readonly string $fetchStartingCostUrl,
-        public readonly float $threshold = 0.0,
         public readonly bool $showCostExample = true
     ) {
+        $this->populateFromSettings();
+
         $this->cost = $this->getCost(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,

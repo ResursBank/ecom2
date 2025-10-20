@@ -16,6 +16,7 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -24,6 +25,7 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Throwable;
 
 /**
@@ -31,6 +33,28 @@ use Throwable;
  */
 trait Common
 {
+    public ?float $threshold = null;
+
+    /**
+     * Populate properties with data from user settings if not directly supplied.
+     *
+     * @throws UserSettingsException
+     */
+    public function populateFromSettings(): void
+    {
+        $settings = UserSettingsRepository::getSettings();
+
+        if ($this->paymentMethod === null) {
+            $this->paymentMethod = $settings->partPaymentMethod;
+        }
+
+        if ($this->months === null) {
+            $this->months = $settings->partPaymentPeriod;
+        }
+
+        $this->threshold = $settings->partPaymentThreshold;
+    }
+
     /**
      * Fetch a Cost object from the Price signage API
      *

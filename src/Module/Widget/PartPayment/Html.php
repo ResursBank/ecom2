@@ -33,6 +33,7 @@ use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html as ConsumerCreditWarning;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
@@ -98,15 +99,16 @@ class Html extends Widget
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        public readonly PaymentMethod $paymentMethod,
-        public readonly int $months,
+        public ?PaymentMethod $paymentMethod = null,
+        public ?int $months = null,
         public readonly float $amount,
         #[StringIsUrl] public readonly string $fetchStartingCostUrl,
         public readonly bool $displayInfoText = true,
-        public readonly float $threshold = 0.0,
         public readonly bool $useLegacyReadMoreLink = false,
         public readonly bool $showCostExample = true
     ) {
+        $this->populateFromSettings();
+
         $this->cost = $this->getCost(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,

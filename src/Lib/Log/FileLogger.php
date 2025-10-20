@@ -13,6 +13,7 @@ use DateTime;
 use Error;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Throwable;
@@ -90,28 +91,32 @@ class FileLogger implements LoggerInterface
 
     /**
      * Write log entry to file on disk.
-     *
-     * @throws FilesystemException
-     * @throws ConfigException
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
-        $this->validateLogFile();
+        try {
+            $this->validateLogFile();
 
-        if ($message instanceof Throwable) {
-            $this->logError(error: $message);
-        } elseif (LogLevel::loggable(level: $level)) {
-            $date = (new DateTime())->format(format: 'c');
+            if ($message instanceof Throwable) {
+                $this->logError(error: $message);
+            } elseif (LogLevel::loggable(level: $level)) {
+                $date = (new DateTime())->format(format: 'c');
 
-            if (
-                !file_put_contents(
-                    filename: $this->getFilename(),
-                    data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
-                    flags: FILE_APPEND | LOCK_EX
-                )
-            ) {
-                throw new FilesystemException(message: self::WRITE_ERROR);
+                if (
+                    !file_put_contents(
+                        filename: $this->getFilename(),
+                        data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
+                        flags: FILE_APPEND | LOCK_EX
+                    )
+                ) {
+                    throw new FilesystemException(message: self::WRITE_ERROR);
+                }
             }
+        } catch (FilesystemException|ConfigException|UserSettingsException) {
+            // There are times when logging will naturally be impossible.
+            // Since logs aren't critical, we shouldn't throw in case we fail
+            // to log something as that may crash the entire website.
+            return;
         }
     }
 

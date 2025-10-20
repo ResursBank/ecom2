@@ -3559,5 +3559,15 @@
       "da": "Betalingen er ikke klar til at blive hævet hos Resurs Bank",
       "fi": "Maksu ei ole vielä valmis veloitettavaksi Resurs Bankissa"
     }
+  },
+  {
+    "id": "never",
+    "translation": {
+        "en": "Never",
+        "sv": "Aldrig",
+        "no": "Aldri",
+        "da": "Aldrig",
+        "fi": "Ei koskaan"
+    }
   }
 ]

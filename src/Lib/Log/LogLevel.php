@@ -10,7 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Log;
 
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\UserSettingsException;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 
 /**
  * Defines log levels used by loggers.
@@ -26,8 +27,7 @@ enum LogLevel: int
     /**
      * Checks if supplied log level should be logged according to current configured logLevel.
      *
-     * @param LogLevel $level
-     * @throws ConfigException
+     * @throws UserSettingsException
      * @todo Check if ConfigException validation needs a test.
      */
     public static function loggable(self $level): bool
@@ -37,6 +37,24 @@ enum LogLevel: int
             return true;
         }
 
-        return Config::getLogLevel()->value <= $level->value;
+        $settings = Repository::getSettings();
+
+        return $settings->logLevel->value <= $level->value;
+    }
+
+    /**
+     * This can be used by integrations to render a select field with log levels.
+     *
+     * @return string[] Associative array of log level values and their names.
+     */
+    public static function getAssoc(): array
+    {
+        $result = [];
+
+        foreach (self::cases() as $case) {
+            $result[$case->value] = $case->name;
+        }
+
+        return $result;
     }
 }

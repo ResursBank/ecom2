@@ -27,6 +27,7 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Throwable;
 
 /**
@@ -53,9 +54,20 @@ class Js extends Widget
         public readonly ?string $methodElementId = null,
         public readonly ?string $periodElementId = null,
         public readonly bool $automatic = true,
-        public readonly ?string $selectedPaymentMethod = null,
-        public readonly ?int $selectedPeriod = null
+        public ?string $selectedPaymentMethod = null,
+        public ?int $selectedPeriod = null
     ) {
+        $settings = UserSettingsRepository::getSettings();
+
+        if ($this->selectedPaymentMethod === null) {
+            $this->selectedPaymentMethod =
+                $settings->partPaymentMethod->id;
+        }
+
+        if ($this->selectedPeriod === null) {
+            $this->selectedPeriod = $settings->partPaymentPeriod->value;
+        }
+
         $this->content = $this->render(
             file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'js.js.phtml'

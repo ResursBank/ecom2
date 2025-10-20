@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 use Throwable;
 
 /**
@@ -49,16 +50,24 @@ class Html extends Widget
     /**
      * Check if widget should be rendered.
      *
-     * The widget should only render for stores in Sweden.
+     * The widget should only render if:
+     *
+     * 1. Get Address is enabled in settings.
+     * 2. Store country is Sweden.
      *
      * @throws ConfigException
+     * @todo Update tests, move this to a trait since it's duplicated in JS & CSS classes.
      */
     public function shouldRender(): bool
     {
         try {
+            $settings = Repository::getSettings();
             $store = StoreRepository::getConfiguredStore();
 
-            if ($store !== null && $store->countryCode === Country::SE) {
+            if ($settings->enableGetAddress &&
+                $store !== null &&
+                $store->countryCode === Country::SE
+            ) {
                 return true;
             }
         } catch (Throwable $error) {

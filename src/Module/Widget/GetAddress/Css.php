@@ -14,6 +14,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 use Throwable;
 
 /**
@@ -43,13 +44,18 @@ class Css extends Widget
      * The widget should only render for stores in Sweden.
      *
      * @throws ConfigException
+     * @todo Move to trait, see Html class duplicate for more info.
      */
     public function shouldRender(): bool
     {
         try {
+            $settings = Repository::getSettings();
             $store = StoreRepository::getConfiguredStore();
 
-            if ($store !== null && $store->countryCode === Country::SE) {
+            if ($settings->enableGetAddress &&
+                $store !== null &&
+                $store->countryCode === Country::SE
+            ) {
                 return true;
             }
         } catch (Throwable $error) {

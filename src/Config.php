@@ -15,13 +15,19 @@ use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Location;
+use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
-use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Lib\Model\UserSettings;
+use Resursbank\Ecom\Lib\UserSettings\Field;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
+use Resursbank\Ecom\Lib\Model\UserSettings\Metadata;
+use Resursbank\Ecom\Lib\UserSettings\NullReader;
+use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
@@ -55,19 +61,20 @@ final class Config
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
-        public readonly LoggerInterface $logger,
-        public readonly CacheInterface $cache,
-        public readonly ?Jwt $jwtAuth,
-        public readonly DataHandlerInterface $paymentHistoryDataHandler,
-        public readonly LogLevel $logLevel,
-        public readonly bool $isProduction,
-        public ?Language $language,
-        public ?Location $location,
-        public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat,
-        public readonly Network $network,
-        public readonly ?string $storeId = null,
-        public readonly bool $cacheWidgets = false
+        private LoggerInterface $logger,
+        private CacheInterface $cache,
+        private ?Jwt $jwtAuth,
+        private readonly DataHandlerInterface $paymentHistoryDataHandler,
+        private readonly bool $isProduction,
+        private ?Language $language,
+        private ?Location $location,
+        private readonly string $currencySymbol,
+        private readonly CurrencyFormat $currencyFormat,
+        private readonly Network $network,
+        private ?string $storeId,
+        private readonly bool $cacheWidgets,
+        private readonly ReaderInterface $settingsReader,
+        private readonly Metadata $settingsMetadata
     ) {
     }
 
@@ -75,13 +82,13 @@ final class Config
      * @noinspection PhpTooManyParametersInspection
      * @todo Consider making userAgent an object instead.
      * @todo Consider moving proxy, proxyType and timeout to a separate object.
+     * @throws ConfigException
      */
     public static function setup(
         LoggerInterface $logger = new NoneLogger(),
         CacheInterface $cache = new None(),
         ?Jwt $jwtAuth = null,
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
-        LogLevel $logLevel = LogLevel::INFO,
         bool $isProduction = false,
         ?Language $language = null,
         Location $location = Location::SE,
@@ -89,14 +96,15 @@ final class Config
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null,
-        bool $cacheWidgets = false
+        bool $cacheWidgets = false,
+        ReaderInterface $settingsReader = new NullReader(),
+        Metadata $settingsMetadata = new Metadata(),
     ): void {
         self::$instance = new Config(
             logger: $logger,
             cache: $cache,
             jwtAuth: $jwtAuth,
             paymentHistoryDataHandler: $paymentHistoryDataHandler,
-            logLevel: $logLevel,
             isProduction: $isProduction,
             language: $language,
             location: $location,
@@ -104,8 +112,72 @@ final class Config
             currencyFormat: $currencyFormat,
             network: $network,
             storeId: $storeId,
-            cacheWidgets: $cacheWidgets
+            cacheWidgets: $cacheWidgets,
+            settingsReader: $settingsReader,
+            settingsMetadata: $settingsMetadata,
         );
+
+        self::configure();
+    }
+
+    /**
+     * Populate Ecom instance with data read from integration user settings.
+     *
+     * Basically, read settings like client id / secret / env etc. from the
+     * database (or wherever) the integration stores them, and configure our
+     * Ecom instance using them.
+     *
+     * @todo It needs considering if the getter methods should access the config directly. In some cases this makes sense, but keeping it centralized here means we do not need to access the config layer as often, and some operations like creating the file logger won't need to happen over and over. Separating it to the getters is cleaner, the operations are usually not expensive (especially if cache is enabled, and the ecom instance it also cached). Food for thought, keeping it all here at least during prototype development.
+     *
+     * @throws ConfigException
+     */
+    public static function configure(): void
+    {
+        try {
+            // Update network settings with timeout from user settings.
+            self::$instance->network->setTimeout(
+                timeout: UserSettingsRepository::getValue(field: Field::API_TIMEOUT)
+            );
+
+            // Override cache integration with None if cache is disabled in
+            // user settings.
+            if (!UserSettingsRepository::isEnabled(field: Field::CACHE_ENABLED)) {
+                self::$instance->cache = new None();
+            }
+
+            // Automatically update Ecom instance with data which require
+            // user settings to be configured.
+            if (UserSettingsRepository::hasUserCredentials()) {
+                // Setup default JWT auth using config settings.
+                if (self::$instance->jwtAuth === null) {
+                    self::setJwtAuth(auth: new Jwt(
+                        clientId: UserSettingsRepository::getClientId(),
+                        clientSecret: UserSettingsRepository::getClientSecret(),
+                    ));
+                }
+
+                // Fetch store id from config, of fallback to default, and apply
+                // to Ecom instance.
+                if (self::$instance->storeId === null) {
+                    self::$instance->storeId = UserSettingsRepository::getValue(field: Field::STORE_ID);
+                }
+            }
+
+            // If no logger is defined, abut logs are enabled and we've a log
+            // dir specified in settings then configure a FileLogger instance.
+            if (
+                self::$instance->logger instanceof NoneLogger &&
+                UserSettingsRepository::isEnabled(field: Field::LOG_ENABLED)
+            ) {
+                $logDir = UserSettingsRepository::getValue(field: Field::LOG_DIR);
+
+                if ($logDir !== null && $logDir !== '') {
+                    self::$instance->logger = new FileLogger(path: $logDir);
+                }
+            }
+        } catch (Throwable $e) {
+            self::getLogger()->error(message: $e);
+        }
     }
 
     /**
@@ -181,12 +253,11 @@ final class Config
     }
 
     /**
-     * @throws ConfigException
+     * Update JWT auth instance.
      */
-    public static function getLogLevel(): LogLevel
+    public static function setJwtAuth(Jwt $auth): void
     {
-        self::validateInstance();
-        return self::$instance->logLevel;
+        self::$instance->jwtAuth = $auth;
     }
 
     /**
@@ -329,5 +400,23 @@ final class Config
             string: $dir,
             characters: '/'
         ) : '');
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getSettingsReader(): ReaderInterface
+    {
+        self::validateInstance();
+        return self::$instance->settingsReader;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getSettingsMetadata(): Metadata
+    {
+        self::validateInstance();
+        return self::$instance->settingsMetadata;
     }
 }

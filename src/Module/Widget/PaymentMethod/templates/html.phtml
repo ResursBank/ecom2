@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 /** @var Html $this */
 
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 
 $paymentMethods = $this->paymentMethods;
@@ -132,4 +134,13 @@ foreach ($paymentMethods as $method) : ?>
   <p class="rb-payment-methods-warning">
       <?= Translator::translate(phraseId: 'no-payment-methods') ?>
   </p>
+  <?php if (!Repository::hasUserCredentials()) : ?>
+    <p class="rb-payment-methods-warning">
+        <?= Translator::translate(phraseId: 'configure-credentials') ?>
+    </p>
+  <?php elseif (Config::getStoreId() === '') : ?>
+    <p class="rb-payment-methods-warning">
+        <?= Translator::translate(phraseId: 'configure-store') ?>
+    </p>
+  <?php endif; ?>
 <?php endif; ?>
