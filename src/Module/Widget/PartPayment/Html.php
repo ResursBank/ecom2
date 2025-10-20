@@ -131,17 +131,12 @@ class Html extends Widget
             useLegacyLink: $this->useLegacyReadMoreLink
         );
         $this->warning = new ConsumerCreditWarning(
-            priceSignage: SignageRepository::getPriceSignage(
-                paymentMethodId: $this->paymentMethod->id,
-                amount: $this->amount,
-                monthFilter: $this->months
-            ),
             paymentMethod: $this->paymentMethod,
             visible: $this->showCostExample
         );
 
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }

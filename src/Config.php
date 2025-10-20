@@ -22,7 +22,6 @@ use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
-use Resursbank\Ecom\Lib\Model\UserSettings;
 use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Lib\Model\UserSettings\Metadata;
@@ -56,6 +55,7 @@ final class Config
      * NOTE: By default we only log INFO level messages.
      *
      * @param Language|null $language | Not readonly to allow dynamic assignment
+     * @param string|null $templateOverrideDirectory Directory to search for widget template overrides.
      * based on configured store after initializing the Config instance.
      * @todo Create a null cache driver, so there always is one, returns null always
      * @todo Create a null database driver, so there always is one, returns null always
@@ -74,7 +74,8 @@ final class Config
         private ?string $storeId,
         private readonly bool $cacheWidgets,
         private readonly ReaderInterface $settingsReader,
-        private readonly Metadata $settingsMetadata
+        private readonly Metadata $settingsMetadata,
+        public readonly ?string $templateOverrideDirectory = null
     ) {
     }
 
@@ -99,6 +100,7 @@ final class Config
         bool $cacheWidgets = false,
         ReaderInterface $settingsReader = new NullReader(),
         Metadata $settingsMetadata = new Metadata(),
+        ?string $templateOverrideDirectory = null
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -115,6 +117,7 @@ final class Config
             cacheWidgets: $cacheWidgets,
             settingsReader: $settingsReader,
             settingsMetadata: $settingsMetadata,
+            templateOverrideDirectory: $templateOverrideDirectory
         );
 
         self::configure();
@@ -377,6 +380,25 @@ final class Config
     public static function setLocation(Location $location): void
     {
         self::$instance->location = $location;
+    }
+
+    /**
+     * Get configured template override directory.
+     *
+     * @throws ConfigException
+     */
+    public static function getTemplateOverrideDirectory(): ?string
+    {
+        self::validateInstance();
+
+        if (self::$instance->templateOverrideDirectory !== null) {
+            return rtrim(
+                string: self::$instance->templateOverrideDirectory,
+                characters: '/'
+            );
+        }
+
+        return null;
     }
 
     /**

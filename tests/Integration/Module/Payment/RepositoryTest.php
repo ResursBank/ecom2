@@ -19,10 +19,12 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -131,6 +133,36 @@ class RepositoryTest extends TestCase
             ),
             metadata: MockSigner::getMetadata()
         );
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TimeoutException
+     * @throws ValidationException
+     * @throws NotJsonEncodedException
+     */
+    private function callMockSigner(Payment $payment): bool
+    {
+        try {
+            MockSigner::callCustomerUrl(payment: $payment);
+        } catch (TimeoutException $error) {
+            if ($_ENV['IS_PIPELINE']) {
+                return false;
+            }
+
+            throw $error;
+        }
+
+        return true;
     }
 
     /**
@@ -312,7 +344,10 @@ class RepositoryTest extends TestCase
     {
         $orderReference = Strings::generateRandomString(length: 12);
         $payment = $this->createPayment(orderReference: $orderReference);
-        MockSigner::callCustomerUrl(payment: $payment);
+
+        if (!$this->callMockSigner(payment: $payment)) {
+            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
+        }
 
         // Fetch order
         $payment = Repository::get(paymentId: $payment->id);

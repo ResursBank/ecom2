@@ -229,14 +229,12 @@ will also be enough for, almost, all widgets to function properly.
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Api\Environment;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Api\GrantType;
 
 Config::setup(
     jwtAuth: new Jwt(
         clientId: 'your-client-id',
         clientSecret: 'your-client-secret',
-        scope: Scope::MOCK_MERCHANT_API,
         grantType: GrantType::CREDENTIALS,
     )
 );
@@ -2356,7 +2354,6 @@ for the widget is shown below.
 ```php
 use Resursbank\Ecom\Module\Store\Http\GetStoresController;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Lib\Api\Scope;
 use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Api\GrantType;
 
@@ -2367,19 +2364,13 @@ class MyGetStoresController extends GetStoresController
         $result = [];
 
         // Resolve credentials from AJAX request.
-        $request = $this->getRequestData();
-        
-        $scope = $request->environment === Environment::PROD ?
-            Scope::MERCHANT_API :
-            Scope::MOCK_MERCHANT_API;
-            
+        $request = $this->getRequestData();    
             
         // Re-configure Ecom setup with credentials in AJAX request.
         Config::setup
             jwtAuth: new Jwt(
                 clientId: $request->clientId,
                 clientSecret: $request->clientSecret,
-                scope: $scope,
                 grantType: GrantType::CREDENTIALS
             ),
             scope: $scope

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\SupportInfo;
 
+use function defined;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -19,9 +20,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
-use Throwable;
 
-use function defined;
+use Throwable;
 
 /**
  * Support info widget which displays basic information about the state of the library.
@@ -38,6 +38,7 @@ class Html extends Widget
      * @param string $minimumPhpVersion Lowest
      * @param string $pluginVersion Version of the calling plugin/addon
      * @throws FilesystemException
+     * @throws ConfigException
      */
     public function __construct(
         public readonly string $minimumPhpVersion,
@@ -45,7 +46,7 @@ class Html extends Widget
         public readonly string $pluginVersion = ''
     ) {
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }
@@ -181,6 +182,19 @@ class Html extends Widget
         }
 
         return null;
+    }
+
+    /**
+     * Get template override location.
+     *
+     * @return string Path, if configured and not empty.
+     * @throws ConfigException
+     */
+    public function getTemplateOverrideLocation(): string
+    {
+        return Config::getTemplateOverrideDirectory() !== null ?
+            trim(string: Config::getTemplateOverrideDirectory()) :
+            '';
     }
 
     /**

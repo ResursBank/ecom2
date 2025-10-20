@@ -14,7 +14,6 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
@@ -34,12 +33,11 @@ class Html extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly PriceSignage $priceSignage,
         public readonly PaymentMethod $paymentMethod,
         private readonly bool $visible = true
     ) {
         $this->content = $this->render(
-            file: __DIR__ . DIRECTORY_SEPARATOR . 'templates' .
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
     }
@@ -52,7 +50,7 @@ class Html extends Widget
      */
     public function shouldRender(): bool
     {
-        return $this->priceSignage->costList->count() > 0 &&
+        return  $this->paymentMethod->priceSignagePossible &&
             Config::getLocation() === Location::SE &&
             $this->paymentMethod->type !== Type::RESURS_INVOICE &&
             $this->visible;

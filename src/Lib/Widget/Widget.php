@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Widget;
 
+use Exception;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
@@ -44,7 +45,7 @@ class Widget
     /**
      * Render a static template (e.g. Javascript or CSS)
      *
-     * @param string $file File to load
+     * @param string $file Relative path to file.
      * @return string Loaded file or empty string (if loading failed)
      * @throws ConfigException
      */
@@ -66,33 +67,34 @@ class Widget
             return '';
         }
 
-        if (!file_exists(filename: $file)) {
-            try {
-                Config::getLogger()->error(
-                    message: self::class . '::' . __METHOD__ .
-                    ': File ' . $file . ' does not exist.'
-                );
-            } catch (ConfigException) {
-                // Do nothing just to prevent ConfigExceptions breaking
-                // the rendering of the widget.
+        try {
+            $fullFilename = $this->getFullFilename(file: $file);
+
+            if (!file_exists(filename: $fullFilename)) {
+                $this->logErrorSilently(error: self::class . '::' . __METHOD__ .
+                    ': File ' . $fullFilename . ' does not exist.');
+
+                return '';
             }
 
-            return '';
+            $content = file_get_contents(filename: $fullFilename);
+
+            if ($content === false) {
+                $this->handleFileReadFailure(filename: $fullFilename);
+                return '';
+            }
+
+            return $content;
+        } catch (Throwable $error) {
+            $this->logErrorSilently(error: $error);
         }
 
-        $content = file_get_contents(filename: $file);
-
-        if ($content === false) {
-            $this->handleFileReadFailure(filename: $file);
-            return '';
-        }
-
-        return $content;
+        return '';
     }
 
     /**
      * @param string $file File to load
-     * @return string Loaded file or empty string (if loading failed))
+     * @return string Loaded file or empty string (if loading failed)
      * @throws ConfigException
      */
     public function renderStaticWithCache(string $file): string
@@ -108,6 +110,7 @@ class Widget
     }
 
     /**
+     * @param string $file Relative path to file.
      * @throws ConfigException
      * @throws FilesystemException
      */
@@ -122,6 +125,8 @@ class Widget
 
     /**
      * @throws FilesystemException
+     * @throws ConfigException
+     * @throws Exception
      */
     public function renderWithoutCache(
         string $file
@@ -131,27 +136,29 @@ class Widget
         }
 
         try {
-            if (!file_exists(filename: $file)) {
-                throw new FilesystemException(
-                    message: self::class . '::' . __METHOD__ .
-                    ': File: ' . $file . ' does not exist.'
-                );
-            }
+            $fullFilename = $this->getFullFilename(file: $file);
 
-            ob_start();
-            require $file;
-            return (string)ob_get_clean();
-        } catch (Throwable $error) {
             try {
-                Config::getLogger()->error(message: $error);
-            } catch (ConfigException) {
-                // Do nothing just to prevent ConfigExceptions breaking
-                // the rendering of the widget.
-            }
+                if (!file_exists(filename: $fullFilename)) {
+                    throw new FilesystemException(
+                        message: self::class . '::' . __METHOD__ .
+                        ': File: ' . $fullFilename . ' does not exist.'
+                    );
+                }
 
-            ob_clean();
-            return '';
+                ob_start();
+                require $fullFilename;
+                return (string)ob_get_clean();
+            } catch (Throwable $error) {
+                $this->logErrorSilently(error: $error);
+                ob_clean();
+                return '';
+            }
+        } catch (Throwable $error) {
+            $this->logErrorSilently(error: $error);
         }
+
+        return '';
     }
 
     /**
@@ -188,6 +195,8 @@ class Widget
      *
      * This method relies on the CACHE_KEY_PREFIX constant which should be set
      * in each child widget.
+     *
+     * @throws ConfigException
      */
     public function getCacheKey(): string
     {
@@ -225,6 +234,76 @@ class Widget
             data: $data,
             ttl: 3600
         );
+    }
+
+    /**
+     * Get the current widget's name.
+     */
+    protected function getWidgetName(): string
+    {
+        $class = get_class(object: $this);
+        $matches = [];
+        preg_match(
+            pattern: '/([^\\\]*)\\\[^\\\]*$/',
+            subject: $class,
+            matches: $matches
+        );
+
+        return array_key_exists(key: 1, array: $matches) ? $matches[1] : '';
+    }
+
+    /**
+     * Log error and suppress errors thrown when logging.
+     */
+    private function logErrorSilently(Throwable|string $error): void
+    {
+        try {
+            Config::getLogger()->error(message: $error);
+        } catch (ConfigException) {
+            // Do nothing just to prevent ConfigExceptions breaking
+            // the rendering of the widget.
+        }
+    }
+
+    /**
+     * Get full absolute path to specified file. Also check for override.
+     */
+    private function getFullFilename(string $file): string
+    {
+        try {
+            $fullFilename = Config::getPath() . DIRECTORY_SEPARATOR . 'src' .
+                DIRECTORY_SEPARATOR . 'Module' . DIRECTORY_SEPARATOR .
+                'Widget' . DIRECTORY_SEPARATOR . $file;
+
+            if ($this->overrideTemplateExists(file: $file)) {
+                $fullFilename = Config::getTemplateOverrideDirectory() .
+                    DIRECTORY_SEPARATOR . $file;
+            }
+
+            return $fullFilename;
+        } catch (Throwable $error) {
+            $this->logErrorSilently(error: $error);
+        }
+
+        return '';
+    }
+
+    /**
+     * Check if an override template exists.
+     *
+     * @param string $file Relative path to template.
+     * @throws ConfigException
+     */
+    private function overrideTemplateExists(string $file): bool
+    {
+        if (Config::getTemplateOverrideDirectory() === null) {
+            return false;
+        }
+
+        $templateOverride = Config::getTemplateOverrideDirectory() .
+            DIRECTORY_SEPARATOR . $file;
+
+        return file_exists(filename: $templateOverride);
     }
 
     /**
