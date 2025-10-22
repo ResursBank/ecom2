@@ -13,6 +13,100 @@ use Resursbank\Ecom\Module\Widget\TestPurchase\Js;
 
 ?>
 
+/**
+ *
+ */
 class Resursbank_TestPurchase {
+    'use strict';
 
+    constructor(
+        overrides = {}
+    ) {
+        for (const [key, value] of Object.entries(overrides)) {
+            if (typeof this[key] === typeof value) {
+                this[key] = value;
+            } else {
+                console.warn('Failed to overwrite ' + key + ', type mismatch.');
+            }
+        }
+    }
+
+    /**
+     * Set up event listener for the trigger button.
+     */
+    setupEventListeners() {
+        let el = document.querySelector('#rb-tp-trigger');
+        el.addEventListener('click', this.runTest.bind(this), false);
+    }
+
+    handleTestResult(response) {
+        return response.json();
+    }
+
+    /**
+     * Update result table.
+     *
+     * @param data
+     */
+    handleTestResultData(data) {
+        document.querySelector('#rb-tp-result-messages').innerHTML = '';
+        document.querySelector('#rb-tp-result-with-capture-create').innerHTML
+            = (data.withRefund.createPayment ? 'OK' : 'FAILED');
+        document.querySelector('#rb-tp-result-with-capture-capture').innerHTML
+            = (data.withRefund.capture ? 'OK' : 'FAILED');
+        document.querySelector('#rb-tp-result-with-capture-refund').innerHTML
+            = (data.withRefund.refund ? 'OK' : 'FAILED');
+        document.querySelector('#rb-tp-result-with-cancel-create').innerHTML
+            = (data.withCancel.createPayment ? 'OK' : 'FAILED');
+        document.querySelector('#rb-tp-result-with-cancel-cancel').innerHTML
+            = (data.withCancel.cancel ? 'OK' : 'FAILED');
+        document.querySelector('#rb-tp-result').style.display = 'block';
+
+        if (data.messages !== undefined && data.messages.length !== 0) {
+            data.messages.forEach((x) => {
+                let message = document.createElement('p');
+                message.innerHTML = x;
+                document.querySelector('#rb-tp-result-messages')
+                    .appendChild(message);
+            });
+
+            document.querySelector('#rb-tp-result-messages').style.display
+                = 'block';
+        }
+
+        console.log(data);
+    }
+
+    /**
+     * Trigger the test and handle the results.
+     */
+    runTest() {
+        const url = this.getUrl();
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: '{}'
+        })
+            .then(this.handleTestResult.bind(this))
+            .then(this.handleTestResultData.bind(this));
+    }
+
+    /**
+     * Resolve URL for AJAX request.
+     *
+     * @returns {string}
+     */
+    getUrl() {
+        return '';
+    }
 }
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+        let widget = new Resursbank_TestPurchase();
+        //widget.setupEventListeners();
+    }
+);

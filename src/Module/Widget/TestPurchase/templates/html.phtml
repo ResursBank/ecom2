@@ -9,13 +9,42 @@ declare(strict_types=1);
 
 /** @var Html $this */
 
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Module\Widget\TestPurchase\Html;
 
 ?>
 
 <div id="rb-tp">
-    <button name="rb-tp-trigger" id="rb-tp-trigger">Trigger purchase test</button>
+    <a id="rb-tp-trigger">
+        <?= Translator::translate(phraseId: 'trigger-purchase-test') ?>
+    </a>
     <div id="rb-tp-result">
-
+        <table>
+            <tr>
+                <th><?= Translator::translate(phraseId: 'test') ?></th>
+                <th><?= Translator::translate(phraseId: 'result') ?></th>
+            </tr>
+            <tr>
+                <td><?= Translator::translate(phraseId: 'create-test-payment') ?> #1</td>
+                <td id="rb-tp-result-with-capture-create"></td>
+            </tr>
+            <tr>
+                <td><?= Translator::translate(phraseId: 'capture-test-payment') ?> #1</td>
+                <td id="rb-tp-result-with-capture-capture"></td>
+            </tr>
+            <tr>
+                <td><?= Translator::translate(phraseId: 'refund-test-payment') ?> #1</td>
+                <td id="rb-tp-result-with-capture-refund"></td>
+            </tr>
+            <tr>
+                <td><?= Translator::translate(phraseId: 'create-test-payment') ?> #2</td>
+                <td id="rb-tp-result-with-cancel-create"></td>
+            </tr>
+            <tr>
+                <td><?= Translator::translate(phraseId: 'cancel-test-payment') ?> #2</td>
+                <td id="rb-tp-result-with-cancel-cancel"></td>
+            </tr>
+        </table>
+        <div id="rb-tp-result-messages"></div>
     </div>
 </div>

@@ -42,10 +42,10 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
+use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\EcomTest\Utilities\MockSigner;
 
 /**
  * Tests for MAPI Payment Capture class.

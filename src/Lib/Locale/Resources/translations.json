@@ -3573,5 +3573,54 @@
       "en": "This setting can be used for specifying an absolute path to a directory where overrides for widget templates can be places. Use this feature with caution.",
       "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte."
     }
+  },
+  {
+    "id": "create-test-payment",
+    "translation": {
+      "en": "Create test payment",
+      "sv": "Skapa testbetalning"
+    }
+  },
+  {
+    "id": "capture-test-payment",
+    "translation": {
+      "en": "Capture test payment",
+      "sv": "Debitera testbetalning"
+    }
+  },
+  {
+    "id": "refund-test-payment",
+    "translation": {
+      "en": "Refund test payment",
+      "sv": "Återbetala testbetalning"
+    }
+  },
+  {
+    "id": "cancel-test-payment",
+    "translation": {
+      "en": "Cancel test payment",
+      "sv": "Makulera testbetalning"
+    }
+  },
+  {
+    "id": "result",
+    "translation": {
+      "en": "Result",
+      "sv": "Resultat"
+    }
+  },
+  {
+    "id": "trigger-purchase-test",
+    "translation": {
+      "en": "Trigger purchase test",
+      "sv": "Genomför betalningstest"
+    }
+  },
+  {
+    "id": "test-purchase",
+    "translation": {
+      "en": "Test purchase",
+      "sv": "Testbetalning"
+    }
   }
 ]

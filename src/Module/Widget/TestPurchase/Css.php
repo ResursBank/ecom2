@@ -13,4 +13,13 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 
 class Css extends Widget
 {
+    public string $content;
+
+    public function __construct()
+    {
+        $this->content = $this->renderStatic(
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'css.css'
+        );
+    }
 }
