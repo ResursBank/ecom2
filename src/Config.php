@@ -11,6 +11,7 @@ namespace Resursbank\Ecom;
 
 use Exception;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
@@ -65,10 +66,10 @@ final class Config
         private CacheInterface $cache,
         private ?Jwt $jwtAuth,
         private readonly DataHandlerInterface $paymentHistoryDataHandler,
-        private readonly bool $isProduction,
+        private bool $isProduction,
         private ?Language $language,
         private ?Location $location,
-        private readonly string $currencySymbol,
+        private string $currencySymbol,
         private readonly CurrencyFormat $currencyFormat,
         private readonly Network $network,
         private ?string $storeId,
@@ -93,7 +94,7 @@ final class Config
         bool $isProduction = false,
         ?Language $language = null,
         Location $location = Location::SE,
-        string $currencySymbol = 'kr',
+        string $currencySymbol = '',
         CurrencyFormat $currencyFormat = CurrencyFormat::SYMBOL_LAST,
         Network $network = new Network(),
         ?string $storeId = null,
@@ -137,6 +138,11 @@ final class Config
     public static function configure(): void
     {
         try {
+            // Update environment based on user settings.
+            self::$instance->isProduction = UserSettingsRepository::getValue(
+                field: Field::ENVIRONMENT
+            ) === Environment::PROD;
+
             // Update network settings with timeout from user settings.
             self::$instance->network->setTimeout(
                 timeout: UserSettingsRepository::getValue(field: Field::API_TIMEOUT)
@@ -177,6 +183,26 @@ final class Config
                 if ($logDir !== null && $logDir !== '') {
                     self::$instance->logger = new FileLogger(path: $logDir);
                 }
+            }
+
+            $store = Repository::getConfiguredStore();
+
+            if ($store !== null) {
+                // If this fails, there will be a ValueError, and that's fine.
+                // The only way this fails is if the store country code is not
+                // SE, FI, DK or NO which are the only supported values by the
+                // API at the moment.
+                self::$instance->location = Location::from(value: $store->countryCode->value);
+            }
+
+            // Automatically resolve currency symbol based on location.
+            if (self::$instance->currencySymbol === '') {
+                self::$instance->currencySymbol = match (self::$instance->location) {
+                    Location::SE, Location::NO => 'kr',
+                    Location::FI => '€',
+                    Location::DK => 'kr.',
+                    default => '',
+                };
             }
         } catch (Throwable $e) {
             self::getLogger()->error(message: $e);
@@ -281,6 +307,11 @@ final class Config
         return self::$instance->isProduction;
     }
 
+    public static function setIsProduction(bool $isProduction): void
+    {
+        self::$instance->isProduction = $isProduction;
+    }
+
     /**
      * @throws ConfigException
      */
@@ -372,14 +403,6 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->location;
-    }
-
-    /**
-     * Allow force late location.
-     */
-    public static function setLocation(Location $location): void
-    {
-        self::$instance->location = $location;
     }
 
     /**

@@ -68,10 +68,10 @@ class Js extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public ?PaymentMethod $paymentMethod = null,
-        public ?int $months = null,
         public readonly float $amount,
         #[StringIsUrl] public readonly string $fetchStartingCostUrl,
+        public ?PaymentMethod $paymentMethod = null,
+        public ?int $months = null,
         public readonly bool $showCostExample = true
     ) {
         $this->populateFromSettings();

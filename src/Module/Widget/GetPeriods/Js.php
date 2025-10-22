@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -45,8 +46,12 @@ class Js extends Widget
      * JavaScript functions to manage elements. See template.
      * @param string|null $periodElementId Required when using standard widget
      * JavaScript functions to manage elements. See template.
-     * @throws FilesystemException
+     * @param bool $automatic
+     * @param string|null $selectedPaymentMethod
+     * @param int|null $selectedPeriod
      * @throws ConfigException
+     * @throws FilesystemException
+     * @throws UserSettingsException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @SuppressWarnings(PHPMD.LongVariable)
      */
@@ -61,11 +66,11 @@ class Js extends Widget
 
         if ($this->selectedPaymentMethod === null) {
             $this->selectedPaymentMethod =
-                $settings->partPaymentMethod->id;
+                $settings->partPaymentMethod?->id;
         }
 
         if ($this->selectedPeriod === null) {
-            $this->selectedPeriod = $settings->partPaymentPeriod->value;
+            $this->selectedPeriod = $settings->partPaymentPeriod;
         }
 
         $this->content = $this->render(

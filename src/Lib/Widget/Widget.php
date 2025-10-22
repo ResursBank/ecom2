@@ -123,11 +123,6 @@ class Widget
         return $this->renderWithoutCache(file: $file);
     }
 
-    /**
-     * @throws FilesystemException
-     * @throws ConfigException
-     * @throws Exception
-     */
     public function renderWithoutCache(
         string $file
     ): string {
@@ -208,6 +203,9 @@ class Widget
      * Check if widget should be rendered.
      *
      * This method exists to be overridden by child class implementations.
+     *
+     * NOTE: Implementations of this function should never be allowed to throw!
+     * Allowing that will cause needless complexity in our integrations.
      */
     public function shouldRender(): bool
     {

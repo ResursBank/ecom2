@@ -29,6 +29,7 @@ use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
+use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
@@ -37,6 +38,7 @@ use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html as ConsumerCreditWarning;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
+use Resursbank\Woocommerce\Util\Log;
 use Throwable;
 
 use function max;
@@ -99,10 +101,10 @@ class Html extends Widget
      * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function __construct(
-        public ?PaymentMethod $paymentMethod = null,
-        public ?int $months = null,
         public readonly float $amount,
         #[StringIsUrl] public readonly string $fetchStartingCostUrl,
+        public ?PaymentMethod $paymentMethod = null,
+        public ?int $months = null,
         public readonly bool $displayInfoText = true,
         public readonly bool $useLegacyReadMoreLink = false,
         public readonly bool $showCostExample = true

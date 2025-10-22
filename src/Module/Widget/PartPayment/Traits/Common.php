@@ -24,8 +24,10 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
+use Resursbank\Woocommerce\Util\Log;
 use Throwable;
 
 /**
@@ -111,5 +113,27 @@ trait Common
                 $cost->monthlyCost >= $threshold) &&
             $paymentMethod->type !== Type::RESURS_INVOICE &&
             $showCostExample;
+    }
+
+    /**
+     * In order to render, this widget requires a payment method to have been
+     * either supplied directly, or configured (note that the constructor will
+     * attempt to populate from settings if not supplied). Additionally, part
+     * payment must be enabled in user settings.
+     *
+     * @return bool
+     */
+    public function shouldRender(): bool
+    {
+        try {
+            return (
+                $this->paymentMethod !== null &&
+                UserSettingsRepository::isEnabled(field: Field::PART_PAYMENT_ENABLED)
+            );
+        } catch (Throwable $error) {
+            Log::error(error: $error);
+        }
+
+        return false;
     }
 }

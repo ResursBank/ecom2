@@ -50,9 +50,14 @@ class Html extends Widget
      */
     public function shouldRender(): bool
     {
-        return  $this->paymentMethod->priceSignagePossible &&
-            Config::getLocation() === Location::SE &&
-            $this->paymentMethod->type !== Type::RESURS_INVOICE &&
-            $this->visible;
+        try {
+            return  $this->paymentMethod->priceSignagePossible &&
+                Config::getLocation() === Location::SE &&
+                $this->paymentMethod->type !== Type::RESURS_INVOICE &&
+                $this->visible;
+        } catch (ConfigException) {
+            // If we cannot get the location, do not render the widget.
+            return false;
+        }
     }
 }
