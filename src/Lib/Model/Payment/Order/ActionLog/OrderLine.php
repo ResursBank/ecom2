@@ -41,8 +41,8 @@ class OrderLine extends Model
             scale: 2
         )] public readonly float $vatRate,
         #[FloatValue(scale: 2)] public readonly float $totalAmountIncludingVat,
-        #[StringLength(max: 100)] public readonly ?string $description = null,
-        #[StringLength(max: 50)] public readonly ?string $reference = null,
+        #[StringLength(max: 255)] public readonly ?string $description = null,
+        #[StringLength(max: 255)] public readonly ?string $reference = null,
         public readonly ?OrderLineType $type = null,
         #[FloatValue(
             scale: 2
