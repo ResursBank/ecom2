@@ -47,7 +47,6 @@ class TestPurchaseController extends Controller
     /**
      * Performs the test purchase sequence and returns the result as an array.
      *
-     * @return array
      * @throws ConfigException
      */
     public function performTest(): array
@@ -73,8 +72,6 @@ class TestPurchaseController extends Controller
     /**
      * Attempt to create, capture and refund a payment.
      *
-     * @param array $result
-     * @return array
      * @throws ConfigException
      */
     private function performTestSequenceWithRefund(array $result): array
@@ -83,11 +80,13 @@ class TestPurchaseController extends Controller
             // Create payment
             $reference = Strings::generateRandomString(length: 12);
             $payment = $this->createPayment(reference: $reference);
-            if ($payment->order->orderReference !== $reference) {
+
+            if ($payment->order?->orderReference !== $reference) {
                 throw new TestException(
                     message: 'Reference mismatch when creating payment'
                 );
             }
+
             $result['withRefund']['createPayment'] = true;
             MockSigner::callCustomerUrl(payment: $payment);
 
@@ -95,26 +94,30 @@ class TestPurchaseController extends Controller
             $captureResult = PaymentRepository::capture(
                 paymentId: $payment->id
             );
-            if ($captureResult->order->totalOrderAmount !==
-                $captureResult->order->capturedAmount
+
+            if (
+                $captureResult->order?->totalOrderAmount !==
+                $captureResult->order?->capturedAmount
             ) {
                 throw new TestException(
                     message: 'Captured amount does not match total order amount.'
                 );
             }
+
             $result['withRefund']['capture'] = true;
 
             // Refund payment
-            $refundResult = PaymentRepository::refund(
-                paymentId: $payment->id,
-            );
-            if ($refundResult->order->totalOrderAmount !==
-                $refundResult->order->refundedAmount
+            $refundResult = PaymentRepository::refund(paymentId: $payment->id);
+
+            if (
+                $refundResult->order?->totalOrderAmount !==
+                $refundResult->order?->refundedAmount
             ) {
                 throw new TestException(
                     message: 'Refunded amount does not match total order amount.'
                 );
             }
+
             $result['withRefund']['refund'] = true;
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
@@ -127,8 +130,6 @@ class TestPurchaseController extends Controller
     /**
      * Attempt to create and cancel a payment.
      *
-     * @param array $result
-     * @return array
      * @throws ConfigException
      */
     private function performTestSequenceWithCancel(array $result): array
@@ -137,25 +138,28 @@ class TestPurchaseController extends Controller
             // Create second payment
             $reference = Strings::generateRandomString(length: 12);
             $payment = $this->createPayment(reference: $reference);
-            if ($payment->order->orderReference !== $reference) {
+
+            if ($payment->order?->orderReference !== $reference) {
                 throw new TestException(
                     message: 'Reference mismatch when creating payment'
                 );
             }
+
             $result['withCancel']['createPayment'] = true;
             MockSigner::callCustomerUrl(payment: $payment);
 
             // Cancel second payment
-            $cancelResult = PaymentRepository::cancel(
-                paymentId: $payment->id
-            );
-            if ($cancelResult->order->totalOrderAmount !==
-                $cancelResult->order->canceledAmount
+            $cancelResult = PaymentRepository::cancel(paymentId: $payment->id);
+
+            if (
+                $cancelResult->order?->totalOrderAmount !==
+                $cancelResult->order?->canceledAmount
             ) {
                 throw new TestException(
                     message: 'Canceled amount does not match total order amount.'
                 );
             }
+
             $result['withCancel']['cancel'] = true;
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
@@ -168,7 +172,6 @@ class TestPurchaseController extends Controller
     /**
      * Fetch a payment method ID for use during test.
      *
-     * @return string
      * @throws ConfigException
      * @throws Throwable
      * @throws JsonException
@@ -195,7 +198,6 @@ class TestPurchaseController extends Controller
     /**
      * Get order line collection.
      *
-     * @return OrderLineCollection
      * @throws IllegalTypeException
      * @throws JsonException
      * @throws ReflectionException
@@ -218,7 +220,6 @@ class TestPurchaseController extends Controller
     /**
      * Get Customer object.
      *
-     * @return Customer
      * @throws IllegalValueException
      */
     private function getCustomer(): Customer
@@ -242,8 +243,6 @@ class TestPurchaseController extends Controller
     /**
      * Create a new payment.
      *
-     * @param string $reference
-     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
