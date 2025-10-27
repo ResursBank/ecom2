@@ -21,6 +21,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function strlen;
 
@@ -119,7 +120,7 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'description' => $this->getRandomString(length: 101),
+            'description' => $this->getRandomString(length: 256),
         ]);
     }
 
@@ -135,8 +136,10 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'reference' => 'Lorem ipsum dolor sit amet, consectetur ' .
-                'adipiscing.',
+            'reference' => Strings::generateRandomString(
+                length: 256,
+                characters: '0123456789abcdefghijklmnopqrstuvwxyz'
+            ),
         ]);
     }
 
