@@ -14,7 +14,7 @@ use Resursbank\Ecom\Module\Widget\TestPurchase\Js;
 ?>
 
 /**
- *
+ * 
  */
 class Resursbank_TestPurchase {
     'use strict';
@@ -81,7 +81,7 @@ class Resursbank_TestPurchase {
      * Trigger the test and handle the results.
      */
     runTest() {
-        const url = this.getUrl();
+        const url = '<?= $this->controllerUrl ?>';
         fetch(url, {
             method: 'POST',
             headers: {
@@ -92,21 +92,11 @@ class Resursbank_TestPurchase {
             .then(this.handleTestResult.bind(this))
             .then(this.handleTestResultData.bind(this));
     }
-
-    /**
-     * Resolve URL for AJAX request.
-     *
-     * @returns {string}
-     */
-    getUrl() {
-        return '';
-    }
 }
 
 document.addEventListener(
     'DOMContentLoaded',
     function () {
         let widget = new Resursbank_TestPurchase();
-        //widget.setupEventListeners();
     }
 );

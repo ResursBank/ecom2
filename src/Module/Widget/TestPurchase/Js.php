@@ -26,8 +26,9 @@ class Js extends Widget
      * @throws ConfigException
      * @throws FilesystemException
      */
-    public function __construct()
-    {
+    public function __construct(
+        public readonly string $controllerUrl
+    ) {
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'js.js.phtml'
