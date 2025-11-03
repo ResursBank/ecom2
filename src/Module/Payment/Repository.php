@@ -19,6 +19,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -149,6 +151,12 @@ class Repository
     /**
      * Capture payment
      *
+     * @param string $paymentId
+     * @param OrderLineCollection|null $orderLines
+     * @param string|null $creator
+     * @param string|null $transactionId
+     * @param string|null $invoiceId
+     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -161,6 +169,8 @@ class Repository
      * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws FilesystemException
+     * @throws TranslationException
      */
     public static function capture(
         string $paymentId,

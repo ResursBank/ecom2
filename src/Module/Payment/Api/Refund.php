@@ -114,6 +114,7 @@ class Refund
                     extra: Price::format(value: $refunded)
                 )
             );
+
             return $result;
         } catch (Throwable $error) {
             $this->logError(paymentId: $paymentId);

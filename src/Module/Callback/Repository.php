@@ -17,13 +17,15 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\HttpException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CallbackInterface;
@@ -37,7 +39,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Repository as PaymentRepository;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as EcomPaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Throwable;
 
@@ -90,13 +92,30 @@ class Repository
     }
 
     /**
+     * @param CallbackInterface $callback
+     * @param null|callable $process
+     * @return int
+     * @throws AttributeCombinationException
      * @throws ConfigException
+     * @throws HttpException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws FilesystemException
+     * @throws TranslationException
      */
     public static function process(
         CallbackInterface $callback,
-        callable $process
+        ?callable $process = null
     ): int {
         $paymentId = $callback->getCheckoutId() ?? $callback->getPaymentId();
+
+        // If callback is not ready to be processed, throw error.
+        if (!self::isReady(callback: $callback)) {
+            throw new HttpException(
+                message: Translator::translate(phraseId: 'called-error-order-not-ready'),
+                code: 503
+            );
+        }
 
         self::trackInit(paymentId: $paymentId, callback: $callback);
         self::addDebugLogs(callback: $callback);
@@ -104,17 +123,19 @@ class Repository
         $code = 202;
 
         try {
-            $result = $process($callback);
+            if ($process !== null) {
+                $result = $process($callback);
 
-            // We don't want to try to write to the payment history if the
-            // order has been deleted.
-            if ($result !== CallbackResult::DELETED) {
-                PaymentHistoryRepository::write(entry: new Entry(
-                    paymentId: $paymentId,
-                    event: Event::CALLBACK_COMPLETED,
-                    user: User::RESURSBANK,
-                    result: Result::SUCCESS
-                ));
+                // We don't want to try to write to the payment history if the
+                // order has been deleted.
+                if ($result !== CallbackResult::DELETED) {
+                    PaymentHistoryRepository::write(entry: new Entry(
+                        paymentId: $paymentId,
+                        event: Event::CALLBACK_COMPLETED,
+                        user: User::RESURSBANK,
+                        result: Result::SUCCESS
+                    ));
+                }
             }
         } catch (Throwable $e) {
             self::logException(exception: $e);
@@ -225,13 +246,18 @@ class Repository
      * met:
      *
      * 1. The order success page has been reached.
-     * 1. The order failure page has been reached.
-     * 2. The payment is older than 60 seconds.
+     * 2. The order failure page has been reached.
      *
-     * Our Authorization callback, for example, will manipulate order status.
-     * When a customer leaves the gateway, returning to the order success page
-     * at the merchant website, the Authorization callback will fire at the
-     * same time.
+     * There are two other conditions based on the type of callback:
+     *
+     * a. If the callback is a Credit Application callback, it is always ready.
+     * b. If we have already received the first Authorization callback, and a
+     *   subsequent Authorization callback is being processed, it is ready.
+     *   See a detailed explanation below.
+     *
+     * Our Authorization callback will manipulate order status. When a customer
+     * leaves the gateway, returning to the order success page at the merchant
+     * website, the Authorization callback will fire at the same time.
      *
      * Both the customer landing on the success page, and the Authorization
      * callback being received will manipulate the order status, syncing it
@@ -256,60 +282,72 @@ class Repository
      * The customer may of course fail to reach the success page, for example if
      * the customer closes the browser window before the page has loaded.
      *
-     * This is why we also consider the payment age, if the payment is older
-     * than 60 seconds, we can assume that the customer has left the gateway
-     * and that we can sync the order status safely.
+     * This is why we reject the initial Authorization callback, unless success
+     * / failure page rendering events have been logged. If they have been, then
+     * there is no possibility of a race condition occurring. If they haven't
+     * been, odds are that the first Authorization callback has been sent too
+     * quickly, and since the order is likely being handled by the processes
+     * spawned by the success / failure page, we should wait for that to finish.
+     * This should never take more than a couple of seconds at worst, so
+     * accepting the second attempted Authorization callback should be fine.
      *
-     * @throws ApiException
+     * @param CallbackInterface $callback
+     * @return bool
      * @throws AttributeCombinationException
-     * @throws AuthException
      * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws ValidationException
-     * @throws NotJsonEncodedException
      */
     public static function isReady(
-        string $paymentId
+        CallbackInterface $callback
     ): bool {
         $successPageReached = PaymentHistoryRepository::hasExecuted(
-            paymentId: $paymentId,
+            paymentId: $callback->getPaymentId(),
             event: Event::REACHED_ORDER_SUCCESS_PAGE
         );
 
-        if ($successPageReached) {
-            Config::getLogger()->error(message: 'Order success page reached.');
-        }
-
         $failurePageReached = PaymentHistoryRepository::hasExecuted(
-            paymentId: $paymentId,
+            paymentId: $callback->getPaymentId(),
             event: Event::REACHED_ORDER_FAILURE_PAGE
         );
 
-        if ($failurePageReached) {
-            Config::getLogger()->error(message: 'Order failure page reached.');
-        }
-
-        $payment = PaymentRepository::get(paymentId: $paymentId);
-
-        // Always wait 10 seconds, to avoid the order success page and the
-        // callback being processed at the same time. This mitigates race
-        // conditions where the order status is written by both processes at
-        // the same time.
-        if (!$payment->isOlderThan(seconds: 10)) {
-            return false;
-        }
-
-        // Customer either reached order success, order failure, or placed the
-        // order more than 60 seconds ago.
-        return
-            $failurePageReached ||
+        return (
             $successPageReached ||
-            $payment->isOlderThan(seconds: 60)
-        ;
+            $failurePageReached ||
+            $callback instanceof CreditApplication ||
+            self::hasReceivedFirstAuthorization(callback: $callback)
+       );
+    }
+
+    /**
+     * Check if we have received the first authorization callback.
+     *
+     * If we have not, then use the payment history to log that we have now
+     * received it if the current callback is an authorization callback.
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws JsonException
+     * @throws ReflectionException
+     */
+    public static function hasReceivedFirstAuthorization(
+        CallbackInterface $callback
+    ): bool {
+        $hasExecuted = EcomPaymentHistoryRepository::hasExecuted(
+            paymentId: $callback->getPaymentId(),
+            event: Event::IS_READY_FOR_AUTHORIZATION
+        );
+
+        if (!$hasExecuted && $callback instanceof Authorization) {
+            EcomPaymentHistoryRepository::write(
+                entry: new Entry(
+                    paymentId: $callback->getPaymentId(),
+                    event: Event::IS_READY_FOR_AUTHORIZATION,
+                    user: User::RESURSBANK
+                )
+            );
+        }
+
+        return $hasExecuted;
     }
 }

@@ -18,6 +18,14 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
  */
 interface DataHandlerInterface
 {
+    // List of events that require synchronous order status update in our
+    // platform integrations.
+    public const ORDER_STATUS_SYNC_EVENTS = [
+        Event::REACHED_ORDER_SUCCESS_PAGE,
+        Event::CALLBACK_AUTHORIZATION,
+        Event::CALLBACK_CREDIT_APPLICATION
+    ];
+
     /**
      * Resolve list of all log entries associated with supplied payment id.
      */
