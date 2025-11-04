@@ -274,6 +274,26 @@ class Payment extends Model
     }
 
     /**
+     * A payment at Resurs Bank can be modified if we can cancel it, or if it is
+     * already cancelled but has an approved credit limit greater than zero.
+     *
+     * Note that since you can cancel frozen payments, but we do not want to
+     * allow merchants to modify the contents of frozen payments, we also check
+     * that the payment is not frozen.
+     */
+    public function canModify(): bool
+    {
+        return (
+            !$this->isFrozen() &&
+            $this->canCancel() ||
+            (
+                $this->isCancelled() &&
+                $this->application->approvedCreditLimit > 0.0
+            )
+        );
+    }
+
+    /**
      * Checks if rejection reason is the supplied reason.
      */
     private function isRejectedReason(RejectedReasonCategory $reason): bool
