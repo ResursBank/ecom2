@@ -1,0 +1,47 @@
+#rb-tp-result {
+    display:none;
+    margin-top:1.5em;
+}
+
+#rb-tp-result table {
+    color:white;
+    border: 0.1em solid #006464;
+}
+
+#rb-tp-result table tr:nth-child(even){
+    background-color: #006464;
+}
+#rb-tp-result table tr:nth-child(odd){
+    background-color: #009b91;
+}
+#rb-tp-result table tr:last-child{
+    border-bottom: 0.1em solid #009b91;
+}
+#rb-tp-result table tr td {
+    padding: 1.5em 1em !important;
+}
+
+#rb-tp-result table tr th {
+    background-color: #dddddd;
+    color: rgb(46, 46, 46);
+    border: 1px solid rgb(192, 192, 192);
+}
+
+#rb-tp-result #rb-tp-result-messages {
+    display: none;
+    background-color:white;
+    font-weight:bold;
+    color:red;
+}
+
+#rb-tp-trigger {
+    padding: 1em;
+    background-color: #006464;
+
+    color:white;
+    border-radius:1em;
+    text-decoration: none;
+}
+#rb-tp-trigger:hover {
+    background-color: #009b91;
+}

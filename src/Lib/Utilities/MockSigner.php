@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Utilities;
+namespace Resursbank\Ecom\Lib\Utilities;
 
 use JsonException;
 use ReflectionException;
