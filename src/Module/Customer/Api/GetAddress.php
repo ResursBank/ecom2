@@ -13,12 +13,14 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\GetAddressException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Address;
@@ -29,8 +31,8 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Throwable;
+use TypeError;
 
 /**
  * GET /payments/{orderReference}, similar to soap/RCO-REST getPayment,but for MAPI.
@@ -46,6 +48,7 @@ class GetAddress
     }
 
     /**
+     * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -55,7 +58,8 @@ class GetAddress
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.Superglobals)
      * @todo Refactor, see ECP-356. Remove phpcs:ignore when done.
      */
@@ -107,7 +111,7 @@ class GetAddress
         );
 
         if (!$result instanceof Address) {
-            throw new InvalidTypeException(
+            throw new TypeError(
                 message: 'Expected PaymentCollection.'
             );
         }

@@ -22,7 +22,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
-use Resursbank\Ecom\Lib\Utilities\Session;
 use Resursbank\Ecom\Module\Customer\Repository;
 
 /**
@@ -37,23 +36,25 @@ class GetAddressController extends Controller
     /**
      * NOTE: $sessionHandler to support testing with mocked session handler.
      *
-     * @throws ConfigException
-     * @throws JsonException
-     * @throws ReflectionException
      * @throws ApiException
      * @throws AuthException
+     * @throws ConfigException
      * @throws CurlException
-     * @throws GetAddressException
-     * @throws ValidationException
      * @throws EmptyValueException
+     * @throws GetAddressException
+     * @throws HttpException
      * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function exec(
-        GetAddressRequest $data,
-        Session $sessionHandler = new Session()
+        ?GetAddressRequest $data = null
     ): string {
+        $data = $data ?? $this->getRequestData();
+
         // Store supplied government id in session.
-        Repository::setSsnData(data: $data, sessionHandler: $sessionHandler);
+        Repository::setSsnData(data: $data);
 
         // Fetch address.
         $address = Repository::getAddress(

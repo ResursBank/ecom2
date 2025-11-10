@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Utilities;
+namespace Resursbank\EcomTest\Unit\Lib\Session;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\SessionException;
 use Resursbank\Ecom\Exception\SessionValueException;
-use Resursbank\Ecom\Lib\Utilities\Session;
+use Resursbank\Ecom\Lib\Session\Session;
 use Resursbank\EcomTest\Utilities\MockSessionTrait;
 
 /**

@@ -26,7 +26,6 @@ use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Lib\Utilities\Session;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
 use stdClass;
 use Throwable;
@@ -42,11 +41,6 @@ class Repository
      * Session key (without prefix) for government id.
      */
     public const SESSION_KEY_SSN_DATA = 'ssn_data';
-
-    /**
-     * Session key (without prefix) for customer type.
-     */
-    public const SESSION_KEY_CUSTOMER_TYPE = 'customer_type';
 
     /**
      * @throws AuthException
@@ -85,11 +79,10 @@ class Repository
      * @throws ConfigException
      */
     public static function setSsnData(
-        GetAddressRequest $data,
-        Session $sessionHandler = new Session()
+        GetAddressRequest $data
     ): void {
         try {
-            $sessionHandler->set(
+            Config::getSessionHandler()->set(
                 key: self::SESSION_KEY_SSN_DATA,
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
             );
@@ -106,11 +99,11 @@ class Repository
      * data to be supplied at some point, and this may fail, in which case we
      * must clear previously stored data to avoid submitting inaccurate
      * information to the gateway.
+     *
+     * @throws ConfigException
      */
-    public static function clearSsnData(
-        Session $sessionHandler = new Session()
-    ): void {
-        $sessionHandler->delete(key: self::SESSION_KEY_SSN_DATA);
+    public static function clearSsnData(): void {
+        Config::getSessionHandler()->delete(key: self::SESSION_KEY_SSN_DATA);
     }
 
     /**
@@ -120,13 +113,11 @@ class Repository
      *
      * @throws ConfigException
      */
-    public static function getSsnData(
-        Session $sessionHandler = new Session()
-    ): ?GetAddressRequest {
+    public static function getSsnData(): ?GetAddressRequest {
         $result = null;
 
         try {
-            $data = $sessionHandler->get(key: self::SESSION_KEY_SSN_DATA);
+            $data = Config::getSessionHandler()->get(key: self::SESSION_KEY_SSN_DATA);
 
             if ($data !== '') {
                 $data = json_decode(
