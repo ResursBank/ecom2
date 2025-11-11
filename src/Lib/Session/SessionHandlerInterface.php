@@ -35,6 +35,16 @@ interface SessionHandlerInterface
     public function delete(string $key): void;
 
     /**
+     * Check if session is available.
+     */
+    public function isAvailable(): bool;
+
+    /**
+     * Initialize session.
+     */
+    public function init(): void;
+
+    /**
      * Get the full session key with prefix.
      */
     public static function getKey(string $key): string;

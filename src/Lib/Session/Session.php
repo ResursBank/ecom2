@@ -31,9 +31,7 @@ class Session implements SessionHandlerInterface
      */
     public function set(string $key, string $val): void
     {
-        if (!$this->isAvailable()) {
-            throw new SessionException(message: 'Session not available.');
-        }
+        $this->start();
 
         $_SESSION[self::getKey(key: $key)] = $val;
     }
@@ -45,9 +43,7 @@ class Session implements SessionHandlerInterface
     {
         $key = self::getKey(key: $key);
 
-        if (!$this->isAvailable()) {
-            throw new SessionException(message: 'Session not available.');
-        }
+        $this->start();
 
         if (!isset($_SESSION[$key])) {
             throw new SessionValueException(
@@ -66,8 +62,13 @@ class Session implements SessionHandlerInterface
         return $_SESSION[$key];
     }
 
+    /**
+     * @throws SessionException
+     */
     public function delete(string $key): void
     {
+        $this->start();
+
         unset($_SESSION[self::getKey(key: $key)]);
     }
 
@@ -79,5 +80,28 @@ class Session implements SessionHandlerInterface
     public function isAvailable(): bool
     {
         return session_status() === PHP_SESSION_ACTIVE;
+    }
+
+    public function init(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    /**
+     * Start session driver, and ensure session is available.
+     *
+     * @throws SessionException
+     */
+    public function start(): void
+    {
+        if (!$this->isAvailable()) {
+            $this->init();
+        }
+
+        if (!$this->isAvailable()) {
+            throw new SessionException(message: 'Session not available.');
+        }
     }
 }

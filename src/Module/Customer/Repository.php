@@ -83,6 +83,7 @@ class Repository
         GetAddressRequest $data
     ): void {
         try {
+            $test = 'asd';
             Config::getSessionHandler()->set(
                 key: self::SESSION_KEY_SSN_DATA,
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
@@ -141,7 +142,7 @@ class Repository
                     );
                 }
             }
-        } catch (Throwable) {
+        } catch (Throwable $error) {
             // Failing is harmless, client can supply info on gateway.
             $result = null;
             Config::getLogger()->debug(message:
