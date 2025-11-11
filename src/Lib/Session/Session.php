@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Utilities;
+namespace Resursbank\Ecom\Lib\Session;
 
 use Resursbank\Ecom\Exception\SessionException;
 use Resursbank\Ecom\Exception\SessionValueException;
@@ -19,7 +19,7 @@ use function is_string;
  *
  * @SuppressWarnings(PHPMD.Superglobals)
  */
-class Session
+class Session implements SessionHandlerInterface
 {
     /**
      * Session key prefix.
@@ -35,7 +35,7 @@ class Session
             throw new SessionException(message: 'Session not available.');
         }
 
-        $_SESSION[$this->getKey(key: $key)] = $val;
+        $_SESSION[self::getKey(key: $key)] = $val;
     }
 
     /**
@@ -43,35 +43,35 @@ class Session
      */
     public function get(string $key): string
     {
-        $sessionKey = $this->getKey(key: $key);
+        $key = self::getKey(key: $key);
 
         if (!$this->isAvailable()) {
             throw new SessionException(message: 'Session not available.');
         }
 
-        if (!isset($_SESSION[$sessionKey])) {
+        if (!isset($_SESSION[$key])) {
             throw new SessionValueException(
-                message: "$sessionKey not defined in session.",
+                message: "$key not defined in session.",
                 code: 404
             );
         }
 
-        if (!is_string(value: $_SESSION[$sessionKey])) {
+        if (!is_string(value: $_SESSION[$key])) {
             throw new SessionValueException(
-                message: "$sessionKey is not a string.",
+                message: "$key is not a string.",
                 code: 415
             );
         }
 
-        return $_SESSION[$sessionKey];
+        return $_SESSION[$key];
     }
 
     public function delete(string $key): void
     {
-        unset($_SESSION[$this->getKey(key: $key)]);
+        unset($_SESSION[self::getKey(key: $key)]);
     }
 
-    public function getKey(string $key): string
+    public static function getKey(string $key): string
     {
         return self::PREFIX . $key;
     }

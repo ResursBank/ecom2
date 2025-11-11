@@ -23,6 +23,8 @@ use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Lib\Session\SessionHandlerInterface;
+use Resursbank\Ecom\Lib\Session\Session;
 use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Lib\Model\UserSettings\Metadata;
@@ -76,7 +78,8 @@ final class Config
         private readonly bool $cacheWidgets,
         private readonly ReaderInterface $settingsReader,
         private readonly Metadata $settingsMetadata,
-        public readonly ?string $templateOverrideDirectory = null
+        public readonly ?string $templateOverrideDirectory,
+        public readonly SessionHandlerInterface $sessionHandler
     ) {
     }
 
@@ -101,7 +104,8 @@ final class Config
         bool $cacheWidgets = false,
         ReaderInterface $settingsReader = new NullReader(),
         Metadata $settingsMetadata = new Metadata(),
-        ?string $templateOverrideDirectory = null
+        ?string $templateOverrideDirectory = null,
+        SessionHandlerInterface $sessionHandler = new Session()
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -118,7 +122,8 @@ final class Config
             cacheWidgets: $cacheWidgets,
             settingsReader: $settingsReader,
             settingsMetadata: $settingsMetadata,
-            templateOverrideDirectory: $templateOverrideDirectory
+            templateOverrideDirectory: $templateOverrideDirectory,
+            sessionHandler: $sessionHandler
         );
 
         self::configure();
@@ -463,5 +468,14 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->settingsMetadata;
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getSessionHandler(): SessionHandlerInterface
+    {
+        self::validateInstance();
+        return self::$instance->sessionHandler;
     }
 }

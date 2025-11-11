@@ -32,8 +32,8 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use stdClass;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
+use TypeError;
 use function is_array;
 
 /**
@@ -101,7 +101,7 @@ class Search
         );
 
         if (!$result instanceof PaymentCollection) {
-            throw new InvalidTypeException(
+            throw new TypeError(
                 message: 'Expected PaymentCollection.'
             );
         }

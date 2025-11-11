@@ -13,7 +13,7 @@ namespace Resursbank\EcomTest\Utilities;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Lib\Utilities\Session;
+use Resursbank\Ecom\Lib\Session\Session;
 
 /**
  * Methods to spawn a mocked session handler.
