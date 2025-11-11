@@ -84,7 +84,7 @@ class Repository
     ): void {
         try {
             Config::getSessionHandler()->set(
-                key: Session::getKey(key: self::SESSION_KEY_SSN_DATA),
+                key: self::SESSION_KEY_SSN_DATA,
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
             );
         } catch (Throwable $e) {
@@ -104,9 +104,7 @@ class Repository
      * @throws ConfigException
      */
     public static function clearSsnData(): void {
-        Config::getSessionHandler()->delete(
-            key: Session::getKey(key: self::SESSION_KEY_SSN_DATA)
-        );
+        Config::getSessionHandler()->delete(key: self::SESSION_KEY_SSN_DATA);
     }
 
     /**
@@ -120,9 +118,7 @@ class Repository
         $result = null;
 
         try {
-            $data = Config::getSessionHandler()->get(
-                key: Session::getKey(key: self::SESSION_KEY_SSN_DATA)
-            );
+            $data = Config::getSessionHandler()->get(key: self::SESSION_KEY_SSN_DATA);
 
             if ($data !== '') {
                 $data = json_decode(

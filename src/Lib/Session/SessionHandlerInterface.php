@@ -33,4 +33,9 @@ interface SessionHandlerInterface
      * Delete value from session storage.
      */
     public function delete(string $key): void;
+
+    /**
+     * Get the full session key with prefix.
+     */
+    public static function getKey(string $key): string;
 }
