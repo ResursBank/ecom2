@@ -83,7 +83,6 @@ class Repository
         GetAddressRequest $data
     ): void {
         try {
-            $test = 'asd';
             Config::getSessionHandler()->set(
                 key: self::SESSION_KEY_SSN_DATA,
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
