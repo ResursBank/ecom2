@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Session;
 
-use Resursbank\Ecom\Exception\SessionException;
-
 /**
  * Contract for session handler.
  */
@@ -22,14 +20,17 @@ interface SessionHandlerInterface
     public const PREFIX = 'resursbank_';
 
     /**
-     * @throws SessionException
+     * Set / update value to session storage.
      */
     public function set(string $key, string $val): void;
 
     /**
-     * @throws SessionException
+     * Get value from session storage.
      */
     public function get(string $key): string;
 
+    /**
+     * Delete value from session storage.
+     */
     public function delete(string $key): void;
 }

@@ -17,6 +17,15 @@ use function is_string;
 /**
  * Functionality to store and retrieve data from PHP session.
  *
+ * NOTE: Keys in the setter, getter and deleter methods do not automatically
+ * call the getKey() method to add the prefix. This is to ensure keys are
+ * appropriately prefixed even when the user specifies their own session handler
+ * class. Since we have no way of guaranteeing they will use the getKey() method
+ * in their implementation. Instead, we need to ensure that everywhere we use
+ * these functions within the library, we explicitly call getKey() when passing
+ * the key, and the same should of course be done in any calls to these methods
+ * from outside the library.
+ *
  * @SuppressWarnings(PHPMD.Superglobals)
  */
 class Session implements SessionHandlerInterface

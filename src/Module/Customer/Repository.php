@@ -25,6 +25,7 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
 use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Session\Session;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
 use stdClass;
@@ -83,7 +84,7 @@ class Repository
     ): void {
         try {
             Config::getSessionHandler()->set(
-                key: self::SESSION_KEY_SSN_DATA,
+                key: Session::getKey(key: self::SESSION_KEY_SSN_DATA),
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
             );
         } catch (Throwable $e) {
@@ -103,7 +104,9 @@ class Repository
      * @throws ConfigException
      */
     public static function clearSsnData(): void {
-        Config::getSessionHandler()->delete(key: self::SESSION_KEY_SSN_DATA);
+        Config::getSessionHandler()->delete(
+            key: Session::getKey(key: self::SESSION_KEY_SSN_DATA)
+        );
     }
 
     /**
@@ -117,7 +120,9 @@ class Repository
         $result = null;
 
         try {
-            $data = Config::getSessionHandler()->get(key: self::SESSION_KEY_SSN_DATA);
+            $data = Config::getSessionHandler()->get(
+                key: Session::getKey(key: self::SESSION_KEY_SSN_DATA)
+            );
 
             if ($data !== '') {
                 $data = json_decode(
