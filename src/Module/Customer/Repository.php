@@ -141,7 +141,7 @@ class Repository
                     );
                 }
             }
-        } catch (Throwable) {
+        } catch (Throwable $error) {
             // Failing is harmless, client can supply info on gateway.
             $result = null;
             Config::getLogger()->debug(message:

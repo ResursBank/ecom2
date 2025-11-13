@@ -9,10 +9,14 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model;
 
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
+use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -119,6 +123,51 @@ class PaymentMethod extends Model implements PaymentMethodInterface
     public function getTypeValue(): string
     {
         return $this->type->value;
+    }
+
+    /**
+     * This function lets us check if a payment method should be available based
+     * on the data provided to it.
+     *
+     * @throws ConfigException
+     */
+    public function isAvailable(
+        float $amount,
+        CustomerType $customerType,
+        ?Location $location,
+    ): bool {
+        // Amount must be within limits, if provided.
+        if (
+            $amount < $this->minPurchaseLimit ||
+            $amount > $this->maxPurchaseLimit
+        ) {
+            return false;
+        }
+
+        // Check customer type restrictions.
+        if (
+            $customerType === CustomerType::LEGAL &&
+            !$this->enabledForLegalCustomer
+        ) {
+            return false;
+        }
+
+        if (
+            $customerType === CustomerType::NATURAL &&
+            !$this->enabledForNaturalCustomer
+        ) {
+            return false;
+        }
+
+        // Check location restrictions. External methods are global.
+        if (
+            $this->isInternal() &&
+            Config::getLocation() != $location
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
