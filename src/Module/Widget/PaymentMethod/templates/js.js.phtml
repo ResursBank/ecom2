@@ -1,0 +1,73 @@
+<?php
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+use Resursbank\Ecom\Config;
+
+/** @var Resursbank\Ecom\Module\Widget\PaymentMethod\Js $this */
+?>
+
+/**
+ * @typedef {Object} PaymentMethodData
+ * @property {number} minPurchaseLimit
+ * @property {number} maxPurchaseLimit
+ * @property {boolean} enabledForLegalCustomer
+ * @property {boolean} enabledForNaturalCustomer
+ * @property {boolean} isInternal
+ */
+
+class Resursbank_PaymentMethod {
+    /** @type {Object.<string, PaymentMethodData>} */
+    static data = <?php echo json_encode(value: $this->getData()); ?>;
+
+    /** @type {string} Location of merchant. */
+    static merchantLocation = '<?php echo Config::getLocation()->value; ?>';
+
+    <?php
+    /**
+     * This method is meant to mimic the backend logic from
+     * PaymentMethod::isAvailable. Do not change one without the other!
+     */
+    ?>
+    /**
+     * Check if a payment method is available based on supplied criteria.
+     *
+     * @param {string} id
+     * @param {float} amount
+     * @param {string} customerType | "NATURAL" | "LEGAL"
+     * @param {string} location | e.g. "SE", "NO"
+     * @returns {boolean}
+     */
+    static isAvailable(id, amount, customerType, location) {
+        const method = this.data[id];
+
+        if (!method) {
+            return false;
+        }
+
+        // Amount must be within limits.
+        if (amount < method.minPurchaseLimit || amount > method.maxPurchaseLimit) {
+            return false;
+        }
+
+        // Check customer type restrictions.
+        if (customerType === 'LEGAL' && !method.enabledForLegalCustomer) {
+            return false;
+        }
+
+        if (customerType === 'NATURAL' && !method.enabledForNaturalCustomer) {
+            return false;
+        }
+
+        // Check location restrictions. External methods are global.
+        if (method.isInternal && location !== this.merchantLocation) {
+            return false;
+        }
+
+        return true;
+    }
+}

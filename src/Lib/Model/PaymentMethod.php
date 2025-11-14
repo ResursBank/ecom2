@@ -129,6 +129,9 @@ class PaymentMethod extends Model implements PaymentMethodInterface
      * This function lets us check if a payment method should be available based
      * on the data provided to it.
      *
+     * NOTE: There is a frontend counterpart to this method in the PaymentMethod
+     * JS widget. They should be kept in sync!
+     *
      * @throws ConfigException
      */
     public function isAvailable(
