@@ -153,16 +153,14 @@ class Generic
      */
     public function getVersionByComposer(string $location, int $maxDepth = 3): string
     {
-        $return = '';
-
-        if (!empty($this->getComposerConfig(location: $location, maxDepth: $maxDepth))) {
-            $return = $this->getComposerTag(
-                location: $this->composerLocation,
-                tag: 'version'
-            );
+        if (empty($this->getComposerConfig(location: $location, maxDepth: $maxDepth))) {
+            return '';
         }
 
-        return $return;
+        return $this->getComposerTag(
+            location: $this->composerLocation,
+            tag: 'version'
+        );
     }
 
     /**
