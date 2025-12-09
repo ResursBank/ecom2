@@ -16,9 +16,12 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\Widget\SupportInfo\Html;
@@ -164,6 +167,68 @@ class HtmlTest extends TestCase
             string: $this->widget->content,
             message: 'Support Info widget is missing the cURL version'
         );
+    }
+
+    /**
+     * Test the methods that detect if the log directory is writeable.
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws EmptyValueException
+     * @throws FormatException
+     */
+    public function testLogDirectoryIsWriteable(): void
+    {
+        $location = '/tmp/resurs-log-test-' . microtime();
+        mkdir(directory: $location);
+        $logger = new FileLogger(path: $location);
+
+        // Run setup.
+        Config::setup(
+            logger: $logger,
+            cache: new None(),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            language: Language::SV,
+            storeId: $_ENV['STORE_ID']
+        );
+
+        $widget = new Html(
+            minimumPhpVersion: '8.1',
+            maximumPhpVersion: '8.3',
+            pluginVersion: $this->pluginVersion
+        );
+
+        // Confirm that directory is writeable
+        $this->assertFalse(
+            condition: $widget->hasLogDirectoryError()
+        );
+
+        // Confirm logging works
+        $logger->error(message: 'FOOBAR');
+        $fileData = file_get_contents($logger->getFilename());
+        $this->assertStringContainsString(
+            needle: 'FOOBAR',
+            haystack: (string)$fileData
+        );
+
+        // Make directory readonly
+        chmod(filename: $location, permissions: 0222);
+
+        // Confirm that directory is not writeable
+        $this->assertFalse(
+            condition: $widget->hasLogDirectoryError()
+        );
+
+        // Confirm that logging no longer works
+        $this->expectException(exception: FilesystemException::class);
+        $logger->error(message: 'BAZ');
     }
 
     /**
