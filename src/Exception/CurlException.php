@@ -120,6 +120,7 @@ class CurlException extends Exception
             isset($body->validationErrors) &&
             is_array(value: $body->validationErrors)
         ) {
+            /* @phpstan-ignore-next-line */
             foreach ($body->validationErrors as $error) {
                 // Expecting: { fieldName: "...", message: "..." }
                 if (!isset($error->fieldName, $error->message)) {
