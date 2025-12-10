@@ -174,7 +174,7 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'description' => $this->getRandomString(length: 101),
+            'description' => $this->getRandomString(length: 256),
         ]);
     }
 
@@ -191,7 +191,7 @@ class OrderLineTest extends TestCase
     {
         $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: [
-            'reference' => $this->getRandomString(length: 51),
+            'reference' => $this->getRandomString(length: 256),
         ]);
     }
 

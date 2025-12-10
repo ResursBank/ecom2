@@ -1,3 +1,7 @@
+# 3.3.10
+
+* PD-3847 Update max length for reference and description on OrderLine objects.
+
 # 3.3.9
 
 * PD-3829 Add info about template overrides to SupportInfo widget.
