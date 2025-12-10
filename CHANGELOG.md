@@ -1,3 +1,17 @@
+# 3.3.10
+
+* PD-3847 Update max length for reference and description on OrderLine objects.
+
+# 3.3.9
+
+* PD-3829 Add info about template overrides to SupportInfo widget.
+
+# 3.3.8
+
+* PD-3824 Add support for widget template overrides. Make regular template paths relative (e.g. 'SupportInfo/templates/html.phtml') rather than absolute.
+* PD-3826 Change exception thrown on MockSigner timeout, catch exception and skip in tests in pipeline.
+* PD-279 Remove reliance on PriceSignage data in ConsumerCreditWarning widget.
+
 # 3.3.7
 
 * ECP-1081 Remove typed class constants. 

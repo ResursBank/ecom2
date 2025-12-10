@@ -117,14 +117,13 @@ class CurlException extends Exception
 
         if (
             $body instanceof stdClass &&
-            isset($body->parameters) &&
-            $body->parameters instanceof stdClass
+            isset($body->validationErrors)
         ) {
-            /* @phpstan-ignore-next-line */
-            foreach ($body->parameters as $property => $message) {
+            // New validationErrors format is an object: { "field": "message" }
+            foreach ((array)$body->validationErrors as $property => $message) {
                 $result[] = $this->getProperProperty(
-                    property: $property,
-                    message: $message
+                    property: (string)$property,
+                    message: (string)$message
                 );
             }
         }
