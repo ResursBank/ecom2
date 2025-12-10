@@ -17,6 +17,7 @@ use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
 use Throwable;
@@ -195,6 +196,45 @@ class Html extends Widget
         return Config::getTemplateOverrideDirectory() !== null ?
             trim(string: Config::getTemplateOverrideDirectory()) :
             '';
+    }
+
+    /**
+     * Check if log directory is writeable.
+     *
+     * Only detects log directory error if the configured logger is of the
+     * type FileLogger.
+     *
+     * @return string Error if error detected.
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws JsonException
+     * @throws TranslationException
+     */
+    public function getLogDirectoryError(): string
+    {
+        $logger = Config::getLogger();
+
+        if ($logger instanceof FileLogger) {
+            if (!is_writable(filename: $logger->getPath())) {
+                return str_replace(
+                    search: '%s',
+                    replace: $logger->getPath(),
+                    subject: Translator::translate(
+                        phraseId: 'log-directory-not-writeable'
+                    )
+                );
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns true if there is a problem with the log directory.
+     */
+    public function hasLogDirectoryError(): bool
+    {
+        return $this->getLogDirectoryError() !== '';
     }
 
     /**

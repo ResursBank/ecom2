@@ -89,10 +89,27 @@ class FileLogger implements LoggerInterface
     }
 
     /**
+     * Fetch configured path.
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Returns absolute path to log file.
+     */
+    public function getFilename(): string
+    {
+        return $this->path . DIRECTORY_SEPARATOR . self::LOG_FILENAME;
+    }
+
+    /**
      * Write log entry to file on disk.
      *
      * @throws FilesystemException
      * @throws ConfigException
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
@@ -103,8 +120,10 @@ class FileLogger implements LoggerInterface
         } elseif (LogLevel::loggable(level: $level)) {
             $date = (new DateTime())->format(format: 'c');
 
+            // Unfortunately we need to suppress errors here as they will
+            // otherwise propagate outside the if statement.
             if (
-                !file_put_contents(
+                !@file_put_contents(
                     filename: $this->getFilename(),
                     data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
                     flags: FILE_APPEND | LOCK_EX
@@ -127,14 +146,6 @@ class FileLogger implements LoggerInterface
             level: LogLevel::ERROR,
             message: $error->getMessage() . ', ' . $error->getTraceAsString()
         );
-    }
-
-    /**
-     * Returns absolute path to log file.
-     */
-    private function getFilename(): string
-    {
-        return $this->path . DIRECTORY_SEPARATOR . self::LOG_FILENAME;
     }
 
     /**

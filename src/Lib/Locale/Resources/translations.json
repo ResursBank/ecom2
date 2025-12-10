@@ -3622,5 +3622,19 @@
       "en": "Test purchase",
       "sv": "Testbetalning"
     }
+  },
+  {
+    "id": "log-directory-writeable",
+    "translation": {
+      "en": "",
+      "sv": ""
+    }
+  },
+  {
+    "id": "log-directory-not-writeable",
+    "translation": {
+      "en": "Log directory %s not writeable",
+      "sv": "Katalogen för loggning (%s) är ej skrivbar."
+    }
   }
 ]
