@@ -89,8 +89,8 @@
 }
 
 #rb-ph-log tbody {
-    color: white;
-    border: 1px solid #006464;
+    color: black;
+    border: 1px solid #e7dcd6;
     display: block;
     max-height: calc(100vh - 50px);
     overflow-y: auto;
@@ -108,15 +108,15 @@
 }
 
 #rb-ph-log tbody tr:last-child {
-    border-bottom: 1px solid #009b91;
+    border-bottom: 1px solid #f1eae8;
 }
 
 #rb-ph-log tbody tr:nth-child(even) {
-    background-color: #006464;
+    background-color: #e7dcd6;
 }
 
 #rb-ph-log tbody tr:nth-child(odd) {
-    background-color: #009b91;
+    background-color: #f1eae8;
 }
 
 .rb-ph-show-extra-btn {
@@ -149,15 +149,15 @@
     -moz-border-radius: 10%;
     -webkit-border-radius: 10%;
     border-radius: 10%;
-    background-color: #009b96;
-    color: #ffffff !important;
+    background-color: #f1eae8;
+    color: black !important;
 }
 
 #rb-ph-button {
     display: inline-block;
     padding: 10px 15px;
-    background-color: #009b96;
-    color: #ffffff !important;
+    background-color: #f1eae8;
+    color: black !important;
     text-decoration: none;
     border-radius: 5px;
     border-width:0;
