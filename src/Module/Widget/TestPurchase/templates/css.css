@@ -4,18 +4,18 @@
 }
 
 #rb-tp-result table {
-    color:white;
-    border: 0.1em solid #006464;
+    color:black;
+    border: 0.1em solid #e7dcd6;
 }
 
 #rb-tp-result table tr:nth-child(even){
-    background-color: #006464;
+    background-color: #e7dcd6;
 }
 #rb-tp-result table tr:nth-child(odd){
-    background-color: #009b91;
+    background-color: #f1eae8;
 }
 #rb-tp-result table tr:last-child{
-    border-bottom: 0.1em solid #009b91;
+    border-bottom: 0.1em solid #f1eae8;
 }
 #rb-tp-result table tr td {
     padding: 1.5em 1em !important;
@@ -36,12 +36,12 @@
 
 #rb-tp-trigger {
     padding: 1em;
-    background-color: #006464;
+    background-color: #e7dcd6;
 
-    color:white;
+    color:black;
     border-radius:1em;
     text-decoration: none;
 }
 #rb-tp-trigger:hover {
-    background-color: #009b91;
+    background-color: #f1eae8;
 }

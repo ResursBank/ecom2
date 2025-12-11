@@ -10,7 +10,7 @@
 }
 
 .rb-pi table {
-    color: #fff;
+    color: black;
     border-collapse:collapse;
 }
 
@@ -42,11 +42,11 @@
 }
 
 .rb-pi table tr:nth-child(even) {
-    background-color: #006464;
+    background-color: #e7dcd6;
 }
 
 .rb-pi table tr:nth-child(odd) {
-    background-color: #009b96;
+    background-color: #f1eae8;
 }
 
 /* AJAX loader overlay. */
