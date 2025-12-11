@@ -189,10 +189,14 @@ class TestPurchaseController extends Controller
     {
         $paymentMethods = PaymentMethodRepository::getPaymentMethods();
 
-        /** @var PaymentMethod $paymentMethod */
-        $paymentMethod = $paymentMethods[0];
+        for ($i = 0; $i < count($paymentMethods); $i++) {
+            /** @var PaymentMethod $paymentMethods[$i]*/
+            if ($paymentMethods[$i]->priceSignagePossible === true) {
+                return $paymentMethods[$i]->getId();
+            }
+        }
 
-        return $paymentMethod->getId();
+        return '';
     }
 
     /**
