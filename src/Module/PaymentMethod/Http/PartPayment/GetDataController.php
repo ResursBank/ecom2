@@ -14,8 +14,6 @@ use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
 use Resursbank\Ecom\Module\UserSettings\Repository;
-use Resursbank\Ecom\Module\UserSettings\Repository;
-use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html as PartPaymentWidget;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMore;
 use Throwable;
