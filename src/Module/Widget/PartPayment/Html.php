@@ -24,21 +24,16 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
-use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
-use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
-use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html as ConsumerCreditWarning;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
-use Resursbank\Woocommerce\Util\Log;
 use Throwable;
 
 use function max;
@@ -75,7 +70,6 @@ class Html extends Widget
     public readonly bool $shouldDisplayCostExample;
 
     /**
-     * @param string $fetchStartingCostUrl | URL in implementation used to fetch
      * starting cost for the part payment widget as the configuration of the
      * product / cart changes where this widget is used. The endpoint must sit
      * in your implementation, the JS method which uses this method can then
@@ -102,7 +96,6 @@ class Html extends Widget
      */
     public function __construct(
         public readonly float $amount,
-        #[StringIsUrl] public readonly string $fetchStartingCostUrl,
         public ?PaymentMethod $paymentMethod = null,
         public ?int $months = null,
         public readonly bool $displayInfoText = true,

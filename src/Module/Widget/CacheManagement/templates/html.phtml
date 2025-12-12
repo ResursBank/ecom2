@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+
+/** @var Resursbank\Ecom\Module\Widget\CacheManagement\Html $this */
+
+?>
+
+<div id="resursbank-cache-management-container" class="rb-cache-management-container">
+    <div style="display: inline-block;">
+        <button type="button" id="resursbank-cache-clear-button" class="rb-cache-clear-btn">
+            <span class="rb-cache-clear-btn-text">
+                <?= Translator::translate(phraseId: 'clear-cache') ?>
+            </span>
+            <span class="rb-cache-clear-spinner" style="display: none;"></span>
+        </button>
+    </div>
+</div>
+

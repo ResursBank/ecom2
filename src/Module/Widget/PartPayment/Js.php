@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
+use Resursbank\Ecom\Lib\UserSettings\Url;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\UserSettings\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
@@ -42,14 +43,10 @@ class Js extends Widget
     public const CACHE_KEY_PREFIX =
         'resursbank-ecom-widget-part-payment-js';
 
-    /** @var string */
     public readonly string $content;
-
-    /** @var Cost */
     public readonly Cost $cost;
-
-    /** @var bool */
     public readonly bool $shouldDisplayCostExample;
+    public readonly string $fetchStartingCostUrl;
 
     /**
      * @throws JsonException
@@ -69,12 +66,13 @@ class Js extends Widget
      */
     public function __construct(
         public readonly float $amount,
-        #[StringIsUrl] public readonly string $fetchStartingCostUrl,
         public ?PaymentMethod $paymentMethod = null,
         public ?int $months = null,
         public readonly bool $showCostExample = true
     ) {
         $this->populateFromSettings();
+
+        $this->fetchStartingCostUrl = Repository::getUrl(url: Url::PART_PAYMENT_AJAX_URL);
 
         $this->cost = $this->getCost(
             paymentMethod: $this->paymentMethod,

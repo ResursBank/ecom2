@@ -1326,10 +1326,10 @@
   {
     "id": "content-render-failed",
     "translation": {
-      "en": "Failed to render content.",
-      "sv": "Kunde inte rendera innehållet.",
-      "no": "Kunne ikke vise innholdet.",
-      "da": "Kunne ikke vise indhold."
+      "en": "Failed to render content. Please see EComPHP log for details.",
+      "sv": "Kunde inte rendera innehållet. Vänligen se EComPHP-loggen för detaljer.",
+      "no": "Kunne ikke vise innholdet. Vennligst se EComPHP-loggen for detaljer.",
+      "da": "Kunne ikke vise indhold. Se venligst EComPHP-loggen for detaljer."
     }
   },
   {
@@ -3437,7 +3437,7 @@
     "translation": {
       "en": "Payment cannot be cancelled",
       "sv": "Betalningen kan inte avbrytas",
-      "no": "Betalingen kan ikke avbrytes"
+      "no": "Betalingen kan ikke avbestilles"
     }
   },
   {
@@ -3582,6 +3582,176 @@
     "translation": {
       "en": "This setting can be used for specifying an absolute path to a directory where overrides for widget templates can be places. Use this feature with caution.",
       "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte."
+    }
+  },
+  {
+    "id": "callback-test-missing-url",
+    "translation": {
+      "en": "Missing callback test trigger URL.",
+      "sv": "Saknar URL för att trigga callback-test.",
+      "no": "Mangler URL for å utløse callback-test.",
+      "da": "Mangler URL til at udløse callback-test.",
+      "fi": "Puuttuva URL callback-testin laukaisemiseen."
+    }
+  },
+  {
+    "id": "callback-test-missing-button",
+    "translation": {
+      "en": "Missing button element to trigger test callbacks.",
+      "sv": "Saknar knappelement för att trigga test-callbacks.",
+      "no": "Mangler knappelement for å utløse test-callbacks.",
+      "da": "Mangler knapeelement til at udløse test-callbacks.",
+      "fi": "Puuttuva painikeelementti testicallbackien laukaisemiseen."
+    }
+  },
+  {
+    "id": "callback-test-server-error",
+    "translation": {
+      "en": "Error on server side while performing callback test.",
+      "sv": "Fel på serversidan vid utförande av callback-test.",
+      "no": "Feil på serversiden under utførelse av callback-test.",
+      "da": "Fejl på serversiden under udførelse af callback-test.",
+      "fi": "Virhe palvelinpuolella callback-testiä suoritettaessa."
+    }
+  },
+  {
+    "id": "callback-test-error",
+    "translation": {
+      "en": "Error while performing callback test.",
+      "sv": "Fel vid utförande av callback-test.",
+      "no": "Feil under utførelse av callback-test.",
+      "da": "Fejl under udførelse af callback-test.",
+      "fi": "Virhe callback-testiä suoritettaessa."
+    }
+  },
+  {
+    "id": "callback-test-missing-received-at-url",
+    "translation": {
+      "en": "Missing URL to fetch callback test received at timestamp.",
+      "sv": "Saknar URL för att hämta callback-test mottaget-tidsstämpel.",
+      "no": "Mangler URL for å hente callback-test mottatt tidsstempel.",
+      "da": "Mangler URL til at hente callback-test modtaget tidsstempel.",
+      "fi": "Puuttuva URL callback-testin vastaanotettu aikaleiman hakemiseen."
+    }
+  },
+  {
+    "id": "callback-test-failed-to-fetch-received-at",
+    "translation": {
+      "en": "Failed to fetch callback test received at timestamp.",
+      "sv": "Misslyckades med att hämta callback-test mottaget-tidsstämpel.",
+      "no": "Klarte ikke å hente callback-test mottatt tidsstempel.",
+      "da": "Kunne ikke hente callback-test modtaget tidsstempel.",
+      "fi": "Callback-testin vastaanotettu aikaleiman hakeminen epäonnistui."
+    }
+  },
+  {
+    "id": "cache-clear-missing-url",
+    "translation": {
+      "en": "Missing URL for cache clearing.",
+      "sv": "Saknar URL för att rensa cache.",
+      "no": "Mangler URL for å tømme mellomlager.",
+      "da": "Mangler URL til at rydde cache.",
+      "fi": "Puuttuu URL-osoite välimuistin tyhjentämiseen."
+    }
+  },
+  {
+    "id": "cache-clear-missing-button",
+    "translation": {
+      "en": "Cache clear button element not found.",
+      "sv": "Knapp för att rensa cache hittades inte.",
+      "no": "Knapp for å tømme mellomlager ble ikke funnet.",
+      "da": "Knap til at rydde cache blev ikke fundet.",
+      "fi": "Välimuistin tyhjennysnappia ei löytynyt."
+    }
+  },
+  {
+    "id": "cache-clear-server-error",
+    "translation": {
+      "en": "Server error while clearing cache.",
+      "sv": "Serverfel vid rensning av cache.",
+      "no": "Serverfeil ved tømming av mellomlager.",
+      "da": "Serverfejl ved rydning af cache.",
+      "fi": "Palvelinvirhe välimuistin tyhjennyksen aikana."
+    }
+  },
+  {
+    "id": "cache-clear-error",
+    "translation": {
+      "en": "An error occurred while clearing cache.",
+      "sv": "Ett fel uppstod vid rensning av cache.",
+      "no": "En feil oppstod ved tømming av mellomlager.",
+      "da": "Der opstod en fejl ved rydning af cache.",
+      "fi": "Välimuistin tyhjennyksen aikana tapahtui virhe."
+    }
+  },
+  {
+    "id": "payment-create-failed",
+    "translation": {
+      "en": "Failed to create payment at Resurs Bank.",
+      "sv": "Misslyckades med att skapa betalning hos Resurs Bank.",
+      "no": "Klarte ikke å opprette betaling hos Resurs Bank.",
+      "da": "Kunne ikke oprette betaling hos Resurs Bank.",
+      "fi": "Maksun luominen Resurs Bankissa epäonnistui"
+    }
+  },
+  {
+    "id": "payment-action-not-allowed",
+    "translation": {
+      "en": "Action failed. Cannot perform action for this payment.",
+      "sv": "Åtgärden misslyckades. Kan inte utföra åtgärd för denna betalning.",
+      "no": "Handlingen mislyktes. Kan ikke utføre handling for denne betalingen.",
+      "da": "Handlingen mislykkedes. Kan ikke udføre handling for denne betaling.",
+      "fi": "Toiminto epäonnistui. Tämän maksun toimenpidettä ei voi suorittaa."
+    }
+  },
+  {
+    "id": "payment-action-failed",
+    "translation": {
+      "en": "Payment action failed. Please review the payment at Resurs Bank manually.",
+      "sv": "Betalningsåtgärd misslyckades. Vänligen granska betalningen hos Resurs Bank manuellt.",
+      "no": "Betalingshandlingen mislyktes. Vennligst gjennomgå betalingen hos Resurs Bank manuelt.",
+      "da": "Betalingshandlingen mislykkedes. Gennemgå venligst betalingen hos Resurs Bank manuelt.",
+      "fi": "Maksutoimenpide epäonnistui. Tarkista maksu Resurs Bankissa manuaalisesti."
+    }
+  },
+  {
+    "id": "payment-action-cancel-failed",
+    "translation": {
+      "en": "Failed to cancel the payment at Resurs Bank. Please review the payment manually in Merchant Portal.",
+      "sv": "Misslyckades med att avbryta betalningen hos Resurs Bank. Vänligen granska betalningen manuellt i Merchant Portal.",
+      "no": "Klarte ikke å avbryte betalingen hos Resurs Bank. Vennligst gjennomgå betalingen manuelt i Merchant Portal.",
+      "da": "Kunne ikke annullere betalingen hos Resurs Bank. Gennemgå venligst betalingen manuelt i Merchant Portal.",
+      "fi": "Maksun peruuttaminen Resurs Bankissa epäonnistui. Tarkista maksu manuaalisesti Merchant Portalissa."
+    }
+  },
+  {
+    "id": "payment-action-edit-failed",
+    "translation": {
+      "en": "Failed to update the payment at Resurs Bank. Please review the payment manually in Merchant Portal.",
+      "sv": "Misslyckades med att uppdatera betalningen hos Resurs Bank. Vänligen granska betalningen manuellt i Merchant Portal.",
+      "no": "Klarte ikke å oppdatere betalingen hos Resurs Bank . Vennligst gjennomgå betalingen manuelt i Merchant Portal.",
+      "da": "Kunne ikke opdatere betalingen hos Resurs Bank. Gennemgå venligst betalingen manuelt i Merchant Portal.",
+      "fi": "Maksun päivittäminen Resurs Bankissa epäonnistui. Tarkista maksu manuaalisesti Merchant Portalissa."
+    }
+  },
+  {
+    "id": "payment-action-refund-failed",
+    "translation": {
+      "en": "Failed to refund the payment at Resurs Bank. Please review the payment manually in Merchant Portal.",
+      "sv": "Misslyckades med att återbetala betalningen hos Resurs Bank. Vänligen granska betalningen manuellt i Merchant Portal.",
+      "no": "Klarte ikke å refundere betalingen hos Resurs Bank. Vennligst gjennomgå betalingen manuelt i Merchant Portal.",
+      "da": "Kunne ikke refundere betalingen hos Resurs Bank. Gennemgå venligst betalingen manuelt i Merchant Portal.",
+      "fi": "Maksun palauttaminen Resurs Bankissa epäonnistui. Tarkista maksu manuaalisesti Merchant Portalissa."
+    }
+  },
+  {
+    "id": "payment-action-capture-failed",
+    "translation": {
+      "en": "Failed to capture the payment at Resurs Bank. Please review the payment manually in Merchant Portal.",
+      "sv": "Misslyckades med att debitera betalningen hos Resurs Bank. Vänligen granska betalningen manuellt i Merchant Portal.",
+      "no": "Klarte ikke å fange betalingen hos Resurs Bank. Vennligst gjennomgå betalingen manuelt i Merchant Portal.",
+      "da": "Kunne ikke hæve betalingen hos Resurs Bank. Gennemgå venligst betalingen manuelt i Merchant Portal.",
+      "fi": "Maksun veloittaminen Resurs Bankissa epäonnistui. Tarkista maksu manuaalisesti Merchant Portalissa."
     }
   }
 ]

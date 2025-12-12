@@ -17,10 +17,14 @@ use ReflectionParameter;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\UserSettingsException;
+use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
 use Resursbank\Ecom\Lib\Api\Environment;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
+use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\UserSettings\Url;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use Throwable;
@@ -53,15 +57,10 @@ class Repository
     {
         try {
             // Read from cache, based on metadata to keep unique by store etc.
-            $metadata = Config::getSettingsMetadata();
-            $cacheKey = 'user-settings-' . sha1(string: serialize(value: $metadata));
-            $cache = new Cache(
-                key: $cacheKey,
-                model: UserSettings::class,
-                ttl: 3600
-            );
+            $cache = self::getCache();
 
             $settings = $cache->read();
+
             if ($settings instanceof UserSettings) {
                 return $settings;
             }
@@ -74,6 +73,9 @@ class Repository
                 $value = self::getValue(field: $field);
 
                 $args[$field->value] = match ($field) {
+                    // Special case: Store ID must always be string|null in
+                    // UserSettings. Since getValue can return other types
+                    // (e.g. int), we need to cast it here to be sure.
                     Field::STORE_ID => $value === null ? null : (string)$value,
                     default => $value,
                 };
@@ -127,13 +129,6 @@ class Repository
             $value = self::getDefault(field: $field);
         }
 
-        // If this is the store ID field, use the getStoreId function to either
-        // return the configured store ID, or the first available store ID from
-        // the API (if credentials have been configured).
-        if ($field === Field::STORE_ID) {
-            return self::getStoreId(configured: $value);
-        }
-
         // If this is the part payment threshold field, use the
         // getPartPaymentThreshold function to either return the configured
         // threshold, or the default threshold based on the API account country.
@@ -145,12 +140,6 @@ class Repository
         // instead of type-casting it.
         if ($value === null && $param->allowsNull()) {
             return null;
-        }
-
-        // If the field is the part payment method, resolve the payment method
-        // from the API based on the configured ID.
-        if ($field === Field::PART_PAYMENT_METHOD) {
-            return self::getPartPaymentMethod(id: (string) $value);
         }
 
         // Type-cast resolved value. When we read directly from a database, for
@@ -165,10 +154,6 @@ class Repository
             enum_exists(enum: $typeName) &&
             is_subclass_of(object_or_class: $typeName, class: BackedEnum::class)
         ) {
-
-            if ($field === Field::ENVIRONMENT) {
-                $a = 'asd';
-            }
             // $value can default to an enum case, and if so attempting the
             // ::from call will cause a needless error. If the value is not a
             // backed type (string | int), just return it directly. Ecom's
@@ -207,55 +192,6 @@ class Repository
             ),
         };
     }
-
-    /**
-     * Resolve default value for UserSettings model property.
-     *
-     * We either use a custom method on the reader instance, named after the
-     * property in the UserSettings model (e.g. getDefaultLogLevel for
-     * Field::LOG_LEVEL), or we use the default value defined in the
-     * constructor of UserSettings if any.
-     *
-     * @throws ConfigException
-     */
-    public static function getDefault(Field $field): mixed
-    {
-        try {
-            $methodName = 'getDefault' . str_replace(
-                search: ' ',
-                replace: '',
-                subject: ucwords(string: str_replace(search: '_', replace: ' ', subject: $field->value))
-            );
-
-            $reader = Config::getSettingsReader();
-
-            if (method_exists(object_or_class: $reader, method: $methodName)) {
-                return $reader->$methodName();
-            }
-
-            return self::getDefaultFromParam(field: $field);
-        } catch (Throwable $e) {
-            // @todo Logging missing, cause using logging currently required UserSettings
-        }
-
-        return null;
-    }
-
-    public static function getDefaultFromParam(Field $field): mixed
-    {
-        try {
-            $param = self::getUserSettingsParam(search: $field->value);
-
-            if ($param->isDefaultValueAvailable()) {
-                return $param->getDefaultValue();
-            }
-        } catch (Throwable $e) {
-            // @todo Logging missing, cause using logging currently required UserSettings
-        }
-
-        return null;
-    }
-
 
     /**
      * Resolve configured Client ID based on environment.
@@ -323,34 +259,93 @@ class Repository
     }
 
     /**
-     * Shortcut to convert timestamp in database to human readable date.
+     * Clear user settings cache.
+     */
+    public static function clearCache(): void
+    {
+        self::getCache()->clear();
+    }
+
+    /**
+     * Resolve default value for UserSettings model property.
+     *
+     * We either use a custom method on the reader instance, named after the
+     * property in the UserSettings model (e.g. getDefaultLogLevel for
+     * Field::LOG_LEVEL), or we use the default value defined in the
+     * constructor of UserSettings if any.
      *
      * @throws ConfigException
-     * @throws JsonException
-     * @throws FilesystemException
-     * @throws TranslationException
      */
-    public static function getDate(Field $filed): string
+    public static function getDefault(Field $field): mixed
     {
-        $value = self::getValue(field: $filed);
+        try {
+            $methodName = 'getDefault' . str_replace(
+                search: ' ',
+                replace: '',
+                subject: ucwords(string: str_replace(search: '_', replace: ' ', subject: $field->value))
+            );
 
+            $reader = Config::getSettingsReader();
+
+            if (method_exists(object_or_class: $reader, method: $methodName)) {
+                return $reader->$methodName();
+            }
+
+            return self::getDefaultFromParam(field: $field);
+        } catch (Throwable $e) {
+            // @todo Logging missing, cause using logging currently required UserSettings
+        }
+
+        return null;
+    }
+
+    public static function getDefaultFromParam(Field $field): mixed
+    {
+        try {
+            $param = self::getUserSettingsParam(search: $field->value);
+
+            if ($param->isDefaultValueAvailable()) {
+                return $param->getDefaultValue();
+            }
+        } catch (Throwable $e) {
+            // @todo Logging missing, cause using logging currently required UserSettings
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve URL from integration and validates it.
+     *
+     * @throws ConfigException
+     * @throws IllegalUrlException
+     * @throws UserSettingsException
+     */
+    public static function getUrl(Url $url): string
+    {
+        // Get URL from reader.
+        $reader = Config::getSettingsReader();
+        $value = $reader->getUrl(url: $url);
+
+        // If there is no URL, raise an error.
         if ($value === null) {
-            return Translator::translate(phraseId: 'never');
+            throw new UserSettingsException(message: "No URL configured for '{$url->name}'");
         }
 
-        if (is_int(value: $value)) {
-            return date(format: 'Y-m-d H:i:s', timestamp: $value);
-        }
+        // Validate value.
+        (new StringIsUrl())->validate(name: $url->name, value: $value);
 
-        throw new InvalidArgumentException(message: "Field '$filed->value' is not an integer.");
+        return $value;
     }
 
     /**
      * Get payment method from the API based on the configured ID in settings.
      */
-    public static function getPartPaymentMethod(string $id) : ?PaymentMethod
+    public static function getPartPaymentMethod() : ?PaymentMethod
     {
         try {
+            $id = self::getValue(field: Field::PART_PAYMENT_METHOD_ID);
+
             if (!self::hasUserCredentials()) {
                 return null;
             }
@@ -364,10 +359,8 @@ class Repository
     /**
      * Return the configured value if any, otherwise resolve default value if
      * there is a valid API account configured.
-     *
-     * @throws ConfigException
      */
-    public static function getPartPaymentThreshold(?string $configured): ?float
+    protected static function getPartPaymentThreshold(?string $configured): ?float
     {
         if (is_numeric(value: $configured)) {
             return (float) $configured;
@@ -392,14 +385,20 @@ class Repository
     /**
      * Resolve store id from user settings, fall back to first available if a
      * valid API account configured.
+     *
+     * @throws UserSettingsException
      */
-    public static function getStoreId(?string $configured): ?string
+    public static function getStoreId(): ?string
     {
-        if (is_string(value: $configured) && $configured !== '') {
-            return $configured;
-        }
-
         try {
+            $id = self::getSettings()->storeId;
+
+            // Return configured store id if any, otherwise attempt to fall back
+            // to first available store value.
+            if ($id !== null) {
+                return $id;
+            }
+
             // Cannot resolve store without credentials.
             if (Config::getJwtAuth() === null || !self::hasUserCredentials()) {
                 return null;
@@ -409,9 +408,7 @@ class Repository
             // the API (if any).
             return StoreRepository::getStores()->getFirst()?->id ?? null;
         } catch (Throwable) {
-            // Avoid logging here, cause that can cause a circular call because
-            // exception logging checks logging settings through this class.
-            return null;
+            throw new UserSettingsException(message: 'Failed to retrieve store id.');
         }
     }
 
@@ -419,7 +416,7 @@ class Repository
      * Resolve the ReflectionParameter for a given field name in the
      * UserSettings constructor.
      */
-    public static function getUserSettingsParam(string $search): ReflectionParameter
+    protected static function getUserSettingsParam(string $search): ReflectionParameter
     {
         if (self::$userSettingsParams === null) {
             $reflection = new ReflectionClass(objectOrClass: UserSettings::class);
@@ -439,5 +436,27 @@ class Repository
         }
 
         throw new InvalidArgumentException(message: "Field '$search' not found in UserSettings constructor");
+    }
+
+    /**
+     * Get cache key for user settings.
+     */
+    protected static function getCacheKey(): string
+    {
+        $metadata = Config::getSettingsMetadata();
+
+        return 'user-settings-' . sha1(string: serialize(value: $metadata));
+    }
+
+    /**
+     * Get cache instance for user settings.
+     */
+    protected static function getCache(): Cache
+    {
+        return new Cache(
+            key: self::getCacheKey(),
+            model: UserSettings::class,
+            ttl: 3600
+        );
     }
 }

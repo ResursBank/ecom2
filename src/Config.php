@@ -173,7 +173,7 @@ final class Config
                 // Fetch store id from config, of fallback to default, and apply
                 // to Ecom instance.
                 if (self::$instance->storeId === null) {
-                    self::$instance->storeId = UserSettingsRepository::getValue(field: Field::STORE_ID);
+                    self::$instance->storeId = UserSettingsRepository::getStoreId();
                 }
             }
 

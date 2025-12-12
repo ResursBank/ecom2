@@ -13,6 +13,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Api\Environment;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Log\LogLevel;
@@ -26,6 +27,16 @@ class UserSettings extends Model
     public const DEFAULT_API_TIMEOUT = 30;
 
     /**
+     * This model contains simple settings defined by the user (integration).
+     *
+     * This model can never contain data which in order to resolve would in turn
+     * require user settings. For example, this model supplies the configured id
+     * of the part payment method, not the method model instance itself. Doing
+     * so would require an API call to resolve the payment method, which would
+     * require API credentials, which would require a UserSettings instance,
+     * which would attempt to resolve the payment method again, leading to
+     * infinite recursion.
+     *
      * @param bool $enabled - Whether Resurs Bank integration is enabled
      * @param string|null $clientIdProd - MAPI Client ID (production)
      * @param string|null $clientSecretProd - MAPI Client Secret (production)
@@ -36,7 +47,7 @@ class UserSettings extends Model
      * @param int $apiTimeout - Timeout for API requests in seconds | Default: 30
      * @param bool $logEnabled - Enable or disable logging
      * @param LogLevel $logLevel - Log level | Default: INFO
-     * @param PaymentMethod|null $partPaymentMethod - Payment method to use for installment calculations
+     * @param string|null $partPaymentMethodId - ID of part payment method.
      * @param float|null $partPaymentThreshold - Lowest amount for part payment widget to render
      * @param int|null $partPaymentPeriod - Part payment period in months (int)
      * @param bool $partPaymentLegacyLinks - Whether to use legacy links in part payment widget
@@ -73,7 +84,7 @@ class UserSettings extends Model
         public readonly int $apiTimeout = self::DEFAULT_API_TIMEOUT,
         public readonly bool $logEnabled = true,
         public readonly LogLevel $logLevel = LogLevel::INFO,
-        public readonly ?PaymentMethod $partPaymentMethod = null,
+        public readonly ?string $partPaymentMethodId = null,
         public readonly ?float $partPaymentThreshold = null,
         public readonly ?int $partPaymentPeriod = null,
         public readonly bool $partPaymentLegacyLinks = false,
@@ -92,7 +103,7 @@ class UserSettings extends Model
         public readonly ?string $xdebugSessionValue = null,
         public readonly ?int $testTriggeredAt = null,
         public readonly ?int $testReceivedAt = null,
-        public readonly ?int $swishMaxLimit = null,
+        public readonly ?int $swishMaxLimit = null
     ) {
         parent::__construct();
     }

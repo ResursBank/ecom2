@@ -120,6 +120,19 @@ class Controller
     }
 
     /**
+     * Resolve single parameter from request data, or null if not set.
+     *
+     * @throws ConfigException
+     * @throws HttpException
+     */
+    public function getRequestParameter(string $parameter): mixed
+    {
+        $data = $this->getInputDataAsStdClass();
+
+        return $data->{$parameter} ?? null;
+    }
+
+    /**
      * Get raw input data as stdClass object.
      *
      * @throws HttpException

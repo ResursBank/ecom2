@@ -11,7 +11,10 @@ namespace Resursbank\Ecom\Exception;
 
 use Exception;
 use JsonException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\Logger;
 use Resursbank\Ecom\Lib\Model\Network\Response\Error;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorTranslator;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
@@ -40,6 +43,26 @@ class CurlException extends Exception
             code: $code,
             previous: $previous
         );
+    }
+
+    /**
+     * Get enhanced message that includes both the original message and details
+     * from getDetails().
+     */
+    public function getDetailedMessage(string $msg): string
+    {
+        try {
+            $details = $this->getDetails();
+
+            if (!empty($details)) {
+                $msg .= implode(separator: ' | ', array: $details);
+            }
+        } catch (Throwable $error) {
+            // Attempt logging without throwing further exceptions.
+            Logger::error(message: $error);
+        }
+
+        return $msg;
     }
 
     /**

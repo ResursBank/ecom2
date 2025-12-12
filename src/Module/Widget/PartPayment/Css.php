@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Module\Widget\PartPayment;
 
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Lib\Log\Logger;
 use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
-use Resursbank\Woocommerce\Util\Log;
 use Throwable;
 
 /**
@@ -56,7 +56,7 @@ class Css extends Widget
                 field: Field::PART_PAYMENT_ENABLED
             );
         } catch (Throwable $error) {
-            Log::error(error: $error);
+            Logger::error(message: $error);
         }
 
         return false;

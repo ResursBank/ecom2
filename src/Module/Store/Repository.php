@@ -90,7 +90,7 @@ class Repository
     public static function getConfiguredStore(): ?Store
     {
         return Config::getStoreId() !== null ?
-            self::getStores()->filterById(Config::getStoreId()) : null;
+            self::getStores()->filterById(id: Config::getStoreId()) : null;
     }
 
     /**

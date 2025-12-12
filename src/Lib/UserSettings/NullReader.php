@@ -15,4 +15,13 @@ class NullReader implements ReaderInterface
     {
         return null;
     }
+
+    public function update(Field $field, mixed $value): void
+    {
+    }
+
+    public function getUrl(Url $url): ?string
+    {
+        return null;
+    }
 }
