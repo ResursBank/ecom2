@@ -45,8 +45,7 @@ class GetDataController extends Controller
             }
 
             $widget = new PartPaymentWidget(
-                amount: $amount,
-                fetchStartingCostUrl: $settings->partPaymentAjaxUrl
+                amount: $amount
             );
 
             $readMoreWidget = new ReadMore(
