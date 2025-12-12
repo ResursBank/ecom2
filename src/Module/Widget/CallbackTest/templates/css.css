@@ -3,7 +3,7 @@
  * See LICENSE for license details.
  */
 
-/* Callback Test Button Widget */
+/* Callback Test Widget */
 .rb-test-callback-container {
     display: flex;
     flex-direction: column;
@@ -49,12 +49,12 @@
   border-left: 3px solid var(--rb-green1, #3AA497);
 }
 
-/* Green sidebar when test has been received */
+/* Green "sidebar" when test has been received */
 .rb-test-callback-last-received.rb-test-callback-received {
   border-left-color: var(--rb-green1, #3AA497);
 }
 
-/* Red sidebar when no test has been received */
+/* Red "sidebar" when no test has been received */
 .rb-test-callback-last-received.rb-test-callback-not-received {
   border-left-color: #dc3232;
 }

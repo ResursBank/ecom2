@@ -194,6 +194,7 @@ class Resursbank_CallbackTest {
      * Override this method to handle success in your implementation.
      *
      * @param {any} data
+     * @todo Consider a timeout here to allow time for Resurs Bank to send us the callback. It should be pretty instant, but on some setups maybe it might take a second or two?
      */
     onSuccess(data) {
         this.refreshReceivedAt();
@@ -301,11 +302,9 @@ class Resursbank_CallbackTest {
     }
 }
 
-<?php if ($this->automatic): ?>
 document.addEventListener(
     'DOMContentLoaded',
     function () {
         new Resursbank_CallbackTest().setupEventListeners();
     }
 );
-<?php endif; ?>

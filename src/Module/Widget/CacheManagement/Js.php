@@ -24,6 +24,8 @@ use Resursbank\Ecom\Module\UserSettings\Repository;
  */
 class Js extends Widget
 {
+    use RenderTrait;
+
     public const CACHE_KEY_PREFIX =
         'resursbank-ecom-widget-cache-management-js';
 
@@ -48,13 +50,5 @@ class Js extends Widget
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'js.js.phtml'
         );
-    }
-
-    /**
-     * Check if widget should be rendered.
-     */
-    public function shouldRender(): bool
-    {
-        return $this->url !== '';
     }
 }

@@ -13,12 +13,14 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
- * Callback test button widget CSS.
+ * Callback test widget CSS.
  */
 class Css extends Widget
 {
+    use RenderTrait;
+
     public const CACHE_KEY_PREFIX =
-        'resursbank-ecom-widget-callback-test-button-css';
+        'resursbank-ecom-widget-callback-test-css';
 
     public readonly string $content;
 
@@ -32,13 +34,4 @@ class Css extends Widget
             DIRECTORY_SEPARATOR . 'css.css'
         );
     }
-
-    /**
-     * Check if widget should be rendered.
-     */
-    public function shouldRender(): bool
-    {
-        return true;
-    }
 }
-

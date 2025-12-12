@@ -17,6 +17,8 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  */
 class Css extends Widget
 {
+    use RenderTrait;
+
     public const CACHE_KEY_PREFIX =
         'resursbank-ecom-widget-cache-management-css';
 
@@ -31,13 +33,5 @@ class Css extends Widget
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'css.css'
         );
-    }
-
-    /**
-     * Check if widget should be rendered.
-     */
-    public function shouldRender(): bool
-    {
-        return true;
     }
 }

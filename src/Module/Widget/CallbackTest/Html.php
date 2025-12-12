@@ -17,10 +17,12 @@ use Resursbank\Ecom\Module\UserSettings\Repository;
 use Throwable;
 
 /**
- * Callback test button widget HTML.
+ * Callback test widget HTML.
  */
 class Html extends Widget
 {
+    use RenderTrait;
+
     public readonly string $content;
 
     /**
@@ -47,13 +49,5 @@ class Html extends Widget
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
-    }
-
-    /**
-     * Check if widget should be rendered.
-     */
-    public function shouldRender(): bool
-    {
-        return true;
     }
 }
