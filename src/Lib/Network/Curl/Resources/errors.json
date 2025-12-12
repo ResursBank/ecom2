@@ -40,7 +40,7 @@
     }
   },
   {
-    "id": "customer-deliveryaddress-postalcode-must-match-------d--1-10---",
+    "id": "customer-deliveryaddress-postalcode-must-match-------s--1-12--",
     "translation": {
       "en": "Postal code is not valid",
       "sv": "Postnummer är ej korrekt",

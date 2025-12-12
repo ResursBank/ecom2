@@ -12,7 +12,6 @@ namespace Resursbank\EcomTest\Unit\Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
@@ -78,12 +77,22 @@ class CurlExceptionTest extends TestCase
      * Test the getDetails method.
      *
      * @throws JsonException
-     * @throws ConfigException
      */
     public function testGetDetails(): void
     {
-        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.postalCode":"must match test"}}';
+        $body = json_encode(value: [
+            'traceId' => 'abcdef123456789',
+            'code' => '400',
+            'message' => 'Validation error',
+            'timestamp' => '2025-12-12T11:29:09Z',
+            'validationErrors' => [
+                [
+                    'fieldName' => 'customer.deliveryAddress.postalCode',
+                    'message' => 'must match test',
+                ],
+            ],
+        ], flags: JSON_THROW_ON_ERROR);
+
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -96,7 +105,7 @@ class CurlExceptionTest extends TestCase
         // reformatted error message from translations.
         $this->assertStringContainsString(
             needle: 'Postal code is not valid',
-            haystack: $details[0]
+            haystack: $details
         );
     }
 
@@ -104,12 +113,22 @@ class CurlExceptionTest extends TestCase
      * Test the getDetails method.
      *
      * @throws JsonException
-     * @throws ConfigException
      */
     public function testGetMobileDetails(): void
     {
-        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
-            '"timestamp":"2025-01-16T06:32:02Z","validationErrors":{"customer.mobilePhone":"is not valid"}}';
+        $body = json_encode(value: [
+            'traceId' => 'abcdef123456789',
+            'code' => '400',
+            'message' => 'Validation error',
+            'timestamp' => '2025-12-12T11:29:09Z',
+            'validationErrors' => [
+                [
+                    'fieldName' => 'customer.mobilePhone',
+                    'message' => 'is not valid',
+                ],
+            ],
+        ], flags: JSON_THROW_ON_ERROR);
+
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -122,7 +141,7 @@ class CurlExceptionTest extends TestCase
         // reformatted error message from translations.
         $this->assertStringContainsString(
             needle: 'Mobile phone is not valid',
-            haystack: $details[0]
+            haystack: $details
         );
     }
 
@@ -130,7 +149,6 @@ class CurlExceptionTest extends TestCase
      * Test the getDetails method, but for Finnish language. Nothing in the prior tests should be
      *
      * @throws JsonException
-     * @throws ConfigException
      */
     public function testGetMobileDetailsFi(): void
     {
@@ -140,8 +158,19 @@ class CurlExceptionTest extends TestCase
             language: Language::FI
         );
 
-        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
-            '"timestamp":"2025-01-16T06:32:02Z","validationErrors":{"customer.mobilePhone":"is not valid"}}';
+        $body = json_encode(value: [
+            'traceId' => 'abcdef123456789',
+            'code' => '400',
+            'message' => 'Validation error',
+            'timestamp' => '2025-12-12T11:29:09Z',
+            'validationErrors' => [
+                [
+                    'fieldName' => 'customer.mobilePhone',
+                    'message' => 'is not valid',
+                ],
+            ],
+        ], flags: JSON_THROW_ON_ERROR);
+
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -154,7 +183,7 @@ class CurlExceptionTest extends TestCase
         // reformatted error message from translations.
         $this->assertStringContainsString(
             needle: 'Matkapuhelin ei kelpaa',
-            haystack: $details[0]
+            haystack: $details
         );
     }
 
@@ -162,13 +191,21 @@ class CurlExceptionTest extends TestCase
      * Test the getDetails method and regex-match problems.
      *
      * @throws JsonException
-     * @throws ConfigException
      */
     public function testGetDetailsWithRegexContent(): void
     {
-        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.' .
-            'postalCode":"must match \"/^[ \\\\d]{1,10}$/\""}}';
+        $body = json_encode(value: [
+            'traceId' => 'abcdef123456789',
+            'code' => '400',
+            'message' => 'Validation error',
+            'timestamp' => '2025-12-12T11:29:09Z',
+            'validationErrors' => [
+                [
+                    'fieldName' => 'customer.deliveryAddress.postalCode',
+                    'message' => 'must match "/^[ \s]{1,12}$/',
+                ],
+            ],
+        ], flags: JSON_THROW_ON_ERROR);
 
         $error = new CurlException(
             message: 'Test error',
@@ -182,7 +219,7 @@ class CurlExceptionTest extends TestCase
         // reformatted error message from translations.
         $this->assertStringContainsString(
             needle: 'Postal code is not valid',
-            haystack: $details[0]
+            haystack: $details
         );
     }
 
@@ -196,13 +233,21 @@ class CurlExceptionTest extends TestCase
      * translation ("customer.deliveryAddress.postalCode").
      *
      * @throws JsonException
-     * @throws ConfigException
      */
     public function testGetDetailsWithUnexistentRegex(): void
     {
-        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.' .
-            'postalCode":"must match \"/^[ \\\\s]{1,12}$/\""}}';
+        $body = json_encode(value: [
+            'traceId' => 'abcdef123456789',
+            'code' => '400',
+            'message' => 'Validation error',
+            'timestamp' => '2025-12-12T11:29:09Z',
+            'validationErrors' => [
+                [
+                    'fieldName' => 'customer.deliveryAddress.postalCode',
+                    'message' => 'must match "/^[ \s]{1,12}$/',
+                ],
+            ],
+        ], flags: JSON_THROW_ON_ERROR);
 
         // Create a CurlException object with the sample error message.
         $error = new CurlException(
@@ -223,7 +268,7 @@ class CurlExceptionTest extends TestCase
         // Expected error message in English translation.
             needle: 'Postal code is not valid',
             // Actual translated error message.
-            haystack: $details[0]
+            haystack: $details
         );
     }
 }
