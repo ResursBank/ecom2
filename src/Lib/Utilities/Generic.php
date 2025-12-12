@@ -14,7 +14,6 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-
 use function dirname;
 use function is_object;
 use function is_string;
@@ -26,33 +25,12 @@ use function is_string;
  * @version 1.0.0
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @todo Refactor entire class. See ECP-351. Remember to remove phpcs:ignore below when done.
+ * @todo Refactor entire class. See ECP-351 (PD-2618). Remember to remove phpcs:ignore below when done.
  * @todo There is a unit test that depends on the version annotation here. These annotations are however prohibited.
  */
 // phpcs:ignore
 class Generic
 {
-    /**
-     * Internal errorhandler.
-     *
-     * @var callable|null
-     */
-    private $internalErrorHandler;
-
-    private int $internalExceptionCode;
-
-    /**
-     * Error message on internal handled errors, if any.
-     */
-    private string $internalExceptionMessage = '';
-
-    /**
-     * If open_basedir-warnings has been triggered once, we store that here.
-     *
-     * @todo We should use our FS classes instead to check for readability.
-     */
-    private bool $openBaseDirExceptionTriggered = false;
-
     private object $composerData;
 
     private string $composerLocation;
@@ -77,7 +55,7 @@ class Generic
     {
         $return = '';
 
-        // @todo Object should be defined as stdClass or mor specific object.
+        // @todo Object should be defined as stdClass or more specific object.
 
         if (empty($this->composerData)) {
             $this->getComposerConfig(location: $location);
@@ -87,9 +65,7 @@ class Generic
             isset($this->composerData->{$tag}) &&
             is_string(value: $this->composerData->{$tag})
         ) {
-            $return = (string) $this->composerData->{$tag};
-        } elseif ($this->isOpenBaseDirException()) {
-            $return = $this->getOpenBaseDirExceptionString();
+            $return = (string)$this->composerData->{$tag};
         }
 
         return $return;
@@ -106,22 +82,13 @@ class Generic
     // phpcs:ignore
     public function getComposerConfig(string $location, int $maxDepth = 3): string
     {
-        $this->setTemporaryInternalErrorHandler();
-
         if ($maxDepth > 3 || $maxDepth < 1) {
             $maxDepth = 3;
         }
 
-        // Pre-check if file exists, to also make sure that open_basedir is not a problem.
-        $locationCheck = file_exists(filename: $location);
-        $this->isOpenBaseDirException();
-
-        if (!$this->openBaseDirExceptionTriggered && !$locationCheck) {
+        // Pre-check if file exists.
+        if (!file_exists(filename: $location)) {
             throw new FilesystemException(message: 'Invalid path', code: 1013);
-        }
-
-        if ($this->isOpenBaseDirException()) {
-            return $this->getOpenBaseDirExceptionString();
         }
 
         $startAt = dirname(path: $location);
@@ -186,24 +153,14 @@ class Generic
      */
     public function getVersionByComposer(string $location, int $maxDepth = 3): string
     {
-        $return = '';
-
-        if (
-            !empty($this->getComposerConfig(
-                location: $location,
-                maxDepth: $maxDepth
-            ))
-            && !$this->isOpenBaseDirException()
-        ) {
-            $return = $this->getComposerTag(
-                location: $this->composerLocation,
-                tag: 'version'
-            );
-        } elseif ($this->isOpenBaseDirException()) {
-            $return = $this->getOpenBaseDirExceptionString();
+        if (empty($this->getComposerConfig(location: $location, maxDepth: $maxDepth))) {
+            return '';
         }
 
-        return $return;
+        return $this->getComposerTag(
+            location: $this->composerLocation,
+            tag: 'version'
+        );
     }
 
     /**
@@ -253,87 +210,19 @@ class Generic
                 if (isset($composerNameEntry[1])) {
                     $return = $composerNameEntry[1];
                 }
-
                 break;
 
             case 'vendor':
                 if (isset($composerNameEntry[0])) {
                     $return = $composerNameEntry[0];
                 }
-
                 break;
 
             default:
+                break;
         }
 
         return $return;
-    }
-
-    /**
-     * Temporarily sets an error handler in an attempt to catch notice-level errors related to open_basedir
-     */
-    private function setTemporaryInternalErrorHandler(): void
-    {
-        if ($this->internalErrorHandler !== null) {
-            restore_error_handler();
-        }
-
-        $this->internalErrorHandler = set_error_handler(
-            callback: function ($errNo, $errStr) {
-                if (empty($this->internalExceptionMessage)) {
-                    $this->internalExceptionCode = $errNo;
-                    $this->internalExceptionMessage = $errStr;
-                }
-
-                restore_error_handler();
-                return $errNo === 2 && str_contains(
-                    haystack: $errStr,
-                    needle: 'open_basedir'
-                );
-            },
-            error_levels: E_WARNING
-        );
-    }
-
-    /**
-     * Checks internal warnings for open_basedir exceptions during runs.
-     */
-    private function isOpenBaseDirException(): bool
-    {
-        // If triggered once, skip checks.
-        if ($this->openBaseDirExceptionTriggered) {
-            return $this->openBaseDirExceptionTriggered;
-        }
-
-        $return = $this->hasInternalException() &&
-            $this->internalExceptionCode === 2 &&
-            str_contains(
-                haystack: $this->internalExceptionMessage,
-                needle: 'open_basedir'
-            );
-
-        if ($return) {
-            $this->openBaseDirExceptionTriggered = true;
-        }
-
-        return $return;
-    }
-
-    /**
-     * Check for internal exception.
-     */
-    private function hasInternalException(): bool
-    {
-        return !empty($this->internalExceptionMessage);
-    }
-
-    /**
-     * Exception string that is used in several places that will mark up if the running methods have
-     * had problems with open_basedir security.
-     */
-    private function getOpenBaseDirExceptionString(): string
-    {
-        return 'open_basedir security active';
     }
 
     /**
@@ -341,13 +230,7 @@ class Generic
      */
     private function hasComposerFile(string $location): bool
     {
-        $return = false;
-
-        if (file_exists(filename: sprintf('%s/composer.json', $location))) {
-            $return = true;
-        }
-
-        return $return;
+        return file_exists(filename: sprintf('%s/composer.json', $location));
     }
 
     /**

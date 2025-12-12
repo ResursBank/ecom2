@@ -83,7 +83,7 @@ class CurlExceptionTest extends TestCase
     public function testGetDetails(): void
     {
         $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.postalCode":"must match test"}}';
+            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.postalCode":"must match test"}}';
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -109,7 +109,7 @@ class CurlExceptionTest extends TestCase
     public function testGetMobileDetails(): void
     {
         $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
-            '"timestamp":"2025-01-16T06:32:02Z","parameters":{"customer.mobilePhone":"is not valid"}}';
+            '"timestamp":"2025-01-16T06:32:02Z","validationErrors":{"customer.mobilePhone":"is not valid"}}';
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -141,7 +141,7 @@ class CurlExceptionTest extends TestCase
         );
 
         $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
-            '"timestamp":"2025-01-16T06:32:02Z","parameters":{"customer.mobilePhone":"is not valid"}}';
+            '"timestamp":"2025-01-16T06:32:02Z","validationErrors":{"customer.mobilePhone":"is not valid"}}';
         $error = new CurlException(
             message: 'Test error',
             code: 400,
@@ -167,7 +167,7 @@ class CurlExceptionTest extends TestCase
     public function testGetDetailsWithRegexContent(): void
     {
         $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.' .
+            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.' .
             'postalCode":"must match \"/^[ \\\\d]{1,10}$/\""}}';
 
         $error = new CurlException(
@@ -201,7 +201,7 @@ class CurlExceptionTest extends TestCase
     public function testGetDetailsWithUnexistentRegex(): void
     {
         $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","parameters":{"customer.deliveryAddress.' .
+            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.' .
             'postalCode":"must match \"/^[ \\\\s]{1,12}$/\""}}';
 
         // Create a CurlException object with the sample error message.
