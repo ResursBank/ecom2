@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Network\Curl\ErrorTranslator;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 use Throwable;
+
 use function is_string;
 
 /**
@@ -40,9 +41,6 @@ class CurlException extends Exception
         );
     }
 
-    /**
-     * @return string
-     */
     public function getDetails(): string
     {
         if (!is_string(value: $this->body) || $this->body === '') {
@@ -67,6 +65,7 @@ class CurlException extends Exception
                     }
 
                     $translated = $this->extractParameters(error: $error);
+
                     if ($translated !== '') {
                         return $translated;
                     }
@@ -77,28 +76,6 @@ class CurlException extends Exception
         }
 
         return $this->getMessage();
-    }
-
-    /**
-     * Translate a single validation error using ErrorTranslator.
-     *
-     * @param array<string, mixed> $error
-     * @return string
-     * @throws ConfigException
-     */
-    private function extractParameters(array $error): string
-    {
-        $fieldName = trim(string: $error['fieldName'] ?? '');
-        $message   = trim(string: $error['message'] ?? '');
-
-        if ($fieldName === '' || $message === '') {
-            return '';
-        }
-
-        // This is where translation belongs. As before.
-        return ErrorTranslator::get(
-            errorMessage: $fieldName . ' ' . $message
-        );
     }
 
     /**
@@ -139,5 +116,24 @@ class CurlException extends Exception
         }
 
         return $result;
+    }
+
+    /**
+     * Translate a single validation error using ErrorTranslator.
+     *
+     * @param array<string, mixed> $error
+     * @throws ConfigException
+     */
+    private function extractParameters(array $error): string
+    {
+        $fieldName = trim(string: $error['fieldName'] ?? '');
+        $message = trim(string: $error['message'] ?? '');
+
+        if ($fieldName === '' || $message === '') {
+            return '';
+        }
+
+        // This is where translation belongs. As before.
+        return ErrorTranslator::get(errorMessage: $fieldName . ' ' . $message);
     }
 }
