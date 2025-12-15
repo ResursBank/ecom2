@@ -33,4 +33,3 @@ trait RenderTrait
         return $triggerUrl !== '' && $receivedAtUrl !== '';
     }
 }
-
