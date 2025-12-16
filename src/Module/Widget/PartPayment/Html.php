@@ -139,6 +139,15 @@ class Html extends Widget
     }
 
     /**
+     * @inheritDoc
+     */
+    public function shouldRender(): bool
+    {
+        return $this->amount >= $this->paymentMethod->getMinLimit() &&
+            $this->amount <= $this->paymentMethod->getMaxLimit();
+    }
+
+    /**
      * Fetches translated and formatted "Starting at %1 per month..." string
      * inside span element.
      *
