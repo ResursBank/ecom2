@@ -14,6 +14,7 @@ use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+
 use function dirname;
 use function is_object;
 use function is_string;
@@ -153,7 +154,12 @@ class Generic
      */
     public function getVersionByComposer(string $location, int $maxDepth = 3): string
     {
-        if (empty($this->getComposerConfig(location: $location, maxDepth: $maxDepth))) {
+        if (
+            empty($this->getComposerConfig(
+                location: $location,
+                maxDepth: $maxDepth
+            ))
+        ) {
             return '';
         }
 
@@ -210,12 +216,14 @@ class Generic
                 if (isset($composerNameEntry[1])) {
                     $return = $composerNameEntry[1];
                 }
+
                 break;
 
             case 'vendor':
                 if (isset($composerNameEntry[0])) {
                     $return = $composerNameEntry[0];
                 }
+
                 break;
 
             default:
