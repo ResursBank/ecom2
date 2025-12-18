@@ -30,13 +30,12 @@ use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository as PaymentRepository;
-use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
+use Resursbank\Ecom\Module\Widget\TestPurchase\Html;
 use Throwable;
 
 /**
@@ -170,36 +169,6 @@ class TestPurchaseController extends Controller
     }
 
     /**
-     * Fetch a payment method ID for use during test.
-     *
-     * @throws ConfigException
-     * @throws Throwable
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ApiException
-     * @throws AuthException
-     * @throws CacheException
-     * @throws CurlException
-     * @throws ValidationException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     */
-    private function getPaymentMethodId(): string
-    {
-        $paymentMethods = PaymentMethodRepository::getPaymentMethods();
-
-        for ($i = 0; $i < count($paymentMethods); $i++) {
-            /** @var PaymentMethod $paymentMethods[$i]*/
-            if ($paymentMethods[$i]->priceSignagePossible === true) {
-                return $paymentMethods[$i]->getId();
-            }
-        }
-
-        return '';
-    }
-
-    /**
      * Get order line collection.
      *
      * @throws IllegalTypeException
@@ -265,7 +234,7 @@ class TestPurchaseController extends Controller
     private function createPayment(string $reference): Payment
     {
         return PaymentRepository::create(
-            paymentMethodId: $this->getPaymentMethodId(),
+            paymentMethodId: Html::getPaymentMethodId(),
             orderLines: $this->getOrderLines(),
             orderReference: $reference,
             customer: $this->getCustomer(),
