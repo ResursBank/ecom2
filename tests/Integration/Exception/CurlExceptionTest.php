@@ -134,9 +134,18 @@ class CurlExceptionTest extends TestCase
             $detailedMessage = $e->getDetailedMessage(msg: 'Test message.');
 
             $this->assertIsString(actual: $detailedMessage);
-            $this->assertNotSame(expected: $e->getMessage(), actual: $detailedMessage);
-            $this->assertNotSame(expected: 'Test message.', actual: $detailedMessage);
-            $this->assertStringStartsWith(prefix: 'Test message.', string: $detailedMessage);
+            $this->assertNotSame(
+                expected: $e->getMessage(),
+                actual: $detailedMessage
+            );
+            $this->assertNotSame(
+                expected: 'Test message.',
+                actual: $detailedMessage
+            );
+            $this->assertStringStartsWith(
+                prefix: 'Test message.',
+                string: $detailedMessage
+            );
         }
 
         // Test that an invalid phone number fails. This is a value which will
@@ -149,13 +158,26 @@ class CurlExceptionTest extends TestCase
             );
 
             // CurlException was expected.
-            $this->fail(message: 'Expected CurlException was not thrown for invalid phone number.');
+            $this->fail(
+                message: 'Expected CurlException was not thrown for invalid phone number.'
+            );
         } catch (CurlException $e) {
-            $detailedMessage = $e->getDetailedMessage(msg: 'Test message (phone).');
+            $detailedMessage = $e->getDetailedMessage(
+                msg: 'Test message (phone).'
+            );
             $this->assertIsString(actual: $detailedMessage);
-            $this->assertNotSame(expected: $e->getMessage(), actual: $detailedMessage);
-            $this->assertNotSame(expected: 'Test message (phone).', actual: $detailedMessage);
-            $this->assertStringStartsWith(prefix: 'Test message (phone).', string: $detailedMessage);
+            $this->assertNotSame(
+                expected: $e->getMessage(),
+                actual: $detailedMessage
+            );
+            $this->assertNotSame(
+                expected: 'Test message (phone).',
+                actual: $detailedMessage
+            );
+            $this->assertStringStartsWith(
+                prefix: 'Test message (phone).',
+                string: $detailedMessage
+            );
         }
     }
 }

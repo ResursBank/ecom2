@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Exception;
@@ -50,7 +55,10 @@ class CurlExceptionTest extends TestCase
         );
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertStringStartsWith(prefix: $msg, string: $result);
-        $this->assertGreaterThan(expected: strlen(string: $msg), actual: strlen(string: $result));
+        $this->assertGreaterThan(
+            expected: strlen(string: $msg),
+            actual: strlen(string: $result)
+        );
     }
 
     public function testGetDetailedMessageWithMobileField(): void
@@ -69,7 +77,10 @@ class CurlExceptionTest extends TestCase
         );
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertStringStartsWith(prefix: $msg, string: $result);
-        $this->assertGreaterThan(expected: strlen(string: $msg), actual: strlen(string: $result));
+        $this->assertGreaterThan(
+            expected: strlen(string: $msg),
+            actual: strlen(string: $result)
+        );
     }
 
     public function testGetDetailedMessageWithUnsupportedField(): void
@@ -90,4 +101,3 @@ class CurlExceptionTest extends TestCase
         $this->assertSame(expected: $msg, actual: $result);
     }
 }
-

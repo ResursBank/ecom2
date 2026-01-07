@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Module\Widget\SupportInfo;
 
-use function defined;
 use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -20,8 +19,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use stdClass;
-
 use Throwable;
+
+use function defined;
 
 /**
  * Support info widget which displays basic information about the state of the library.

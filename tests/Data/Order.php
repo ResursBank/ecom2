@@ -1,11 +1,11 @@
 <?php
 
-/** @noinspection PhpMultipleClassDeclarationsInspection */
-
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
  */
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 

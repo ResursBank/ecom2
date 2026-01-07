@@ -105,7 +105,7 @@ class RepositoryTest extends TestCase
      * Assert we can get a full collection of payment methods, submit this to
      * RWS and get a response back with the same payment methods.
      *
-     * This method also confrims that reading from cache works as it should.
+     * This method also confirms that reading from cache works as it should.
      *
      * @throws ApiException
      * @throws AuthException
@@ -119,6 +119,7 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
+     * @phpstan-ignore-next-line
      */
     public function testGetPaymentMethodTypes(): void
     {

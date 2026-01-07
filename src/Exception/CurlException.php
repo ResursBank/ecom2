@@ -60,20 +60,25 @@ class CurlException extends Exception
     {
         try {
             $body = json_decode(
-                json: $this->body,
+                json: (string) $this->body,
                 associative: true,
                 depth: 256,
                 flags: JSON_THROW_ON_ERROR
             );
 
-            $invalidField = $body['validationErrors'][0]['fieldName'] ?? null;
+            $invalidField = (
+                is_array(value: $body) &&
+                isset($body['validationErrors'][0]['fieldName'])
+            ) ? (string) $body['validationErrors'][0]['fieldName'] : '';
 
             if (str_contains(haystack: $invalidField, needle: 'governmentId')) {
-                return $msg . ' ' . Translator::translate(phraseId: 'invalid-government-id');
+                return $msg . ' ' .
+                    Translator::translate(phraseId: 'invalid-government-id');
             }
 
             if (str_contains(haystack: $invalidField, needle: 'mobile')) {
-                return $msg . ' ' . Translator::translate(phraseId: 'invalid-phone-number');
+                return $msg . ' ' .
+                    Translator::translate(phraseId: 'invalid-phone-number');
             }
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
