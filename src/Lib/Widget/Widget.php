@@ -51,6 +51,10 @@ class Widget
      */
     public function renderStatic(string $file): string
     {
+        if (!$this->shouldRender()) {
+            return '';
+        }
+
         if ($this->canCacheData()) {
             return $this->renderStaticWithCache(file: $file);
         }
@@ -63,10 +67,6 @@ class Widget
      */
     public function renderStaticWithoutCache(string $file): string
     {
-        if (!$this->shouldRender()) {
-            return '';
-        }
-
         try {
             $fullFilename = $this->getFullFilename(file: $file);
 
@@ -116,6 +116,10 @@ class Widget
      */
     public function render(string $file): string
     {
+        if (!$this->shouldRender()) {
+            return '';
+        }
+
         if ($this->canCacheData()) {
             return $this->renderWithCache(file: $file);
         }
@@ -131,10 +135,6 @@ class Widget
     public function renderWithoutCache(
         string $file
     ): string {
-        if (!$this->shouldRender()) {
-            return '';
-        }
-
         try {
             $fullFilename = $this->getFullFilename(file: $file);
 
