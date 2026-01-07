@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Module\Widget\TestPurchase\Js;
 
 /**
@@ -37,7 +38,7 @@ class JsTest extends TestCase
     public function testRender(): void
     {
         $url = 'https://example.com/foo';
-        $widget = new Js(controllerUrl: $url);
+        $widget = new Js(controllerUrl: $url, countryCode: CountryCode::SE);
 
         $this->assertStringContainsString(
             needle: "const url = '" . $url . "';",

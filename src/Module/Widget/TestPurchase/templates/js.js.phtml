@@ -85,7 +85,7 @@ class Resursbank_TestPurchase {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: '{}'
+            body: '{"countryCode": "<?= $this->countryCode->value ?>"}'
         })
             .then(this.handleTestResult.bind(this))
             .then(this.handleTestResultData.bind(this));
