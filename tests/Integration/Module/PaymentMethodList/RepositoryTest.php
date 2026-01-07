@@ -119,7 +119,6 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
-     * @phpstan-ignore-next-line
      */
     public function testGetPaymentMethodTypes(): void
     {
