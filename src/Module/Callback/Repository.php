@@ -20,9 +20,11 @@ use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Locale\Translator;
@@ -38,9 +40,11 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
+use Resursbank\Ecom\Lib\UserSettings\Url;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as EcomPaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Throwable;
 
 /**
@@ -53,7 +57,9 @@ class Repository
     /**
      * Trigger test callback.
      *
+     * @return TestResponse
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
@@ -63,21 +69,17 @@ class Repository
      * @throws JsonException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @noinspection PhpUnused
+     * @throws UserSettingsException
+     * @throws NotJsonEncodedException
      */
-    public static function triggerTest(
-        string $url,
-        StringValidation $stringValidation = new StringValidation()
-    ): TestResponse {
+    public static function triggerTest(): TestResponse
+    {
         Config::getLogger()->debug(message: 'Triggering test callback.');
-
-        $stringValidation->isUrl(value: $url);
 
         $request = new Post(
             model: TestResponse::class,
             route: Mapi::CALLBACK_ROUTE . '/test',
-            params: ['url' => $url]
+            params: ['url' => UserSettingsRepository::getUrl(url: Url::CALLBACK_TEST_URL)]
         );
 
         $response = $request->call();

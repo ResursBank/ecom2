@@ -32,4 +32,25 @@ enum Type: string
     case OTHER = 'OTHER';
     case RESURS_ZERO = 'RESURS_ZERO';
     case RESURS_INVOICE_ACCOUNT = 'RESURS_INVOICE_ACCOUNT';
+
+    /**
+     * Get the icon filename for this payment method type.
+     */
+    public function getIconFilename(): string
+    {
+        return match ($this) {
+            self::DEBIT_CARD, self::CREDIT_CARD, self::CARD => 'card.svg',
+            self::SWISH => 'swish.png',
+            self::INTERNET => 'trustly.svg',
+            default => 'resurs.png'
+        };
+    }
+
+    /**
+     * Get the relative path to the icon file from the ecom library root.
+     */
+    public function getIconRelativePath(): string
+    {
+        return 'src/Module/Widget/Logo/img/' . $this->getIconFilename();
+    }
 }

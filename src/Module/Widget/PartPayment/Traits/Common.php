@@ -21,13 +21,14 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
+use Resursbank\Ecom\Lib\Log\Logger;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Module\PriceSignage\Repository as SignageRepository;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
-use Resursbank\Woocommerce\Util\Log;
 use Throwable;
 
 /**
@@ -47,7 +48,7 @@ trait Common
         $settings = UserSettingsRepository::getSettings();
 
         if ($this->paymentMethod === null) {
-            $this->paymentMethod = $settings->partPaymentMethod;
+            $this->paymentMethod = Repository::getPartPaymentMethod();
         }
 
         if ($this->months === null) {
@@ -131,7 +132,7 @@ trait Common
                 UserSettingsRepository::isEnabled(field: Field::PART_PAYMENT_ENABLED)
             );
         } catch (Throwable $error) {
-            Log::error(error: $error);
+            Logger::error(message: $error);
         }
 
         return false;

@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+
+/** @var Resursbank\Ecom\Module\Widget\CallbackTest\Html $this */
+
+?>
+
+<div id="resursbank-test-callback-container" class="rb-test-callback-container">
+    <div style="display: inline-block;">
+        <button type="button" id="resursbank-test-callback-button" class="rb-test-callback-btn">
+            <span class="rb-test-callback-btn-text">
+                <?= Translator::translate(phraseId: 'test-callbacks') ?>
+            </span>
+            <span class="rb-test-callback-spinner" style="display: none;"></span>
+        </button>
+    </div>
+
+    <div class="rb-test-callback-last-received <?= $this->testReceivedAt !== null ? 'rb-test-callback-received' : 'rb-test-callback-not-received' ?>">
+        <?= Translator::translate(phraseId: 'test-last-received-at') ?>:
+        <span id="resursbank-test-callback-received-at" class="rb-test-callback-timestamp">
+            <?php if ($this->testReceivedAt !== null): ?>
+                <?= date('Y-m-d H:i:s', $this->testReceivedAt) ?>
+            <?php else: ?>
+                <?= Translator::translate(phraseId: 'never') ?>
+            <?php endif; ?>
+        </span>
+    </div>
+</div>

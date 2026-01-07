@@ -1,6 +1,5 @@
 .rb-cb {
   max-width: 100%;
-  overflow-x: scroll;
 }
 
 .rb-cb-header {
@@ -8,7 +7,7 @@
 }
 
 .rb-cb-url {
-  margin-bottom: 10px;
-  padding-bottom:10px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
   border-bottom: 1px dashed #c0c0c0;
 }

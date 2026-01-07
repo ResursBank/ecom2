@@ -1,0 +1,71 @@
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+/* Cache Management Button Widget */
+.rb-cache-management-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 400px;
+}
+
+#resursbank-cache-clear-button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 20px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 0.33rem;
+  font-weight: 500;
+  font-size: var(--wp--preset--font-size--small, 14px);
+  background-color: #046bd2;
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s ease;
+  min-height: 52px;
+}
+
+#resursbank-cache-clear-button:hover {
+  background-color: #045cb4;
+}
+
+#resursbank-cache-clear-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Spinner animation */
+.rb-cache-clear-spinner {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  border-radius: 50%;
+  border-top: 3px solid #FFF;
+  border-right: 3px solid transparent;
+  box-sizing: border-box;
+  animation: rb-cache-rotation 1s linear infinite;
+}
+
+@keyframes rb-cache-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hide text when loading */
+#resursbank-cache-clear-button.loading .rb-cache-clear-btn-text {
+  display: none;
+}
+
+#resursbank-cache-clear-button.loading .rb-cache-clear-spinner {
+  display: inline-block !important;
+  margin-left: 0;
+}
+
