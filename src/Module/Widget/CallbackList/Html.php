@@ -30,7 +30,8 @@ class Html extends Widget
      */
     public function __construct(
         private readonly ?string $authorizationUrl = null,
-        private readonly ?string $managementUrl = null
+        private readonly ?string $managementUrl = null,
+        private readonly ?string $creditApplicationUrl = null
     ) {
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
@@ -59,6 +60,12 @@ class Html extends Widget
     public function getManagementUrl(): ?string
     {
         return $this->managementUrl ??
+            Translator::translate(phraseId: 'failed-to-resolve-callback-url');
+    }
+
+    public function getCreditApplicationUrl(): ?string
+    {
+        return $this->creditApplicationUrl ??
             Translator::translate(phraseId: 'failed-to-resolve-callback-url');
     }
 }
