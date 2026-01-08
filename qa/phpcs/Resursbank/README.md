@@ -20,5 +20,6 @@ Ensures that all PHP files have the correct copyright notice immediately after t
 
 **Rules:**
 - Must have exactly one blank line after `<?php`
-- Copyright notice must be a doc comment block
-- Copyright text must match exactly
+- Copyright notice must have the correct information on each line.
+- Copyright must be a docblock.
+- Must have exactly one blank line after the copyright notice.

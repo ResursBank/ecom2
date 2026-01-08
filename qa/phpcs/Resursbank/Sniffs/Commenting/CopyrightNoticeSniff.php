@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
 declare(strict_types=1);
 
 namespace Resursbank\Sniffs\Commenting;
@@ -37,84 +42,83 @@ class CopyrightNoticeSniff implements Sniff
         }
 
         $filename = $phpcsFile->getFilename();
-        $content = file_get_contents($filename);
+        $content = file_get_contents(filename: $filename);
 
         if ($content === false) {
             return $phpcsFile->numTokens + 1;
         }
 
-        $lines = explode("\n", $content);
+        $lines = explode(separator: "\n", string: $content);
 
         // Check that we have enough lines
         if (count($lines) < 7) {
             $phpcsFile->addError(
-                'Copyright notice is missing after opening PHP tag',
-                $stackPtr,
-                'Missing'
+                error: 'Copyright notice is missing after opening PHP tag',
+                stackPtr: $stackPtr,
+                code: 'Missing'
             );
             return $phpcsFile->numTokens + 1;
         }
 
         // Line 0: <?php
-        if (trim($lines[0]) !== '<?php') {
-            // This shouldn't happen if we're at T_OPEN_TAG, but let's check anyway
+        if (trim(string: $lines[0]) !== '<?php') {
             return $phpcsFile->numTokens + 1;
         }
 
         // Line 1: blank line
-        if (trim($lines[1]) !== '') {
+        if (trim(string: $lines[1]) !== '') {
             $phpcsFile->addError(
-                'There must be exactly one blank line after the opening PHP tag',
-                $stackPtr,
-                'BlankLineAfterOpenTag'
+                error: 'There must be exactly one blank line after the opening PHP tag',
+                stackPtr: $stackPtr,
+                code: 'BlankLineAfterOpenTag'
             );
         }
 
         // Line 2: /**
-        if (trim($lines[2]) !== '/**') {
+        if (trim(string: $lines[2]) !== '/**') {
             $phpcsFile->addError(
-                'Copyright notice must start with "/**" on line 3',
-                $stackPtr,
-                'MissingCommentStart'
+                error: 'Copyright notice must start with "/**" on line 3',
+                stackPtr: $stackPtr,
+                code: 'MissingCommentStart'
             );
         }
 
         // Line 3: * Copyright © Resurs Bank AB. All rights reserved.
-        $line3 = trim($lines[3]);
+        $line3 = trim(string: $lines[3]);
         // Check with the copyright symbol
         if ($line3 !== '* Copyright © Resurs Bank AB. All rights reserved.') {
             $phpcsFile->addError(
-                'Line 4 must be " * Copyright © Resurs Bank AB. All rights reserved."',
-                $stackPtr,
-                'IncorrectCopyrightLine'
+                error: 'Line 4 must be " * Copyright © Resurs Bank AB. All rights reserved."',
+                stackPtr: $stackPtr,
+                code: 'IncorrectCopyrightLine'
             );
         }
 
         // Line 4: * See LICENSE for license details.
-        $line4 = trim($lines[4]);
+        $line4 = trim(string: $lines[4]);
         if ($line4 !== '* See LICENSE for license details.') {
             $phpcsFile->addError(
-                'Line 5 must be " * See LICENSE for license details."',
-                $stackPtr,
-                'IncorrectLicenseLine'
+                error: 'Line 5 must be " * See LICENSE for license details."',
+                stackPtr: $stackPtr,
+                code: 'IncorrectLicenseLine'
             );
         }
 
         // Line 5: */
-        if (trim($lines[5]) !== '*/') {
+        if (trim(string: $lines[5]) !== '*/') {
             $phpcsFile->addError(
-                'Copyright notice must end with "*/" on line 6',
-                $stackPtr,
-                'MissingCommentEnd'
+                error: 'Copyright notice must end with "*/" on line 6',
+                stackPtr: $stackPtr,
+                code: 'MissingCommentEnd'
             );
         }
 
         // Line 6: blank line
-        if (isset($lines[6]) && trim($lines[6]) !== '') {
+        if (isset($lines[6]) && trim(string: $lines[6]) !== '') {
             $phpcsFile->addError(
-                'There must be exactly one blank line after the copyright notice',
-                $stackPtr,
-                'BlankLineAfterCopyright'
+                error: 'There must be exactly one blank line after the copyright notice',
+                stackPtr: $stackPtr,
+                code: 'BlankLineAfterCopyright'
             );
         }
 
