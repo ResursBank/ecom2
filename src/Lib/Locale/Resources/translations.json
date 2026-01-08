@@ -3573,5 +3573,35 @@
       "en": "This setting can be used for specifying an absolute path to a directory where overrides for widget templates can be places. Use this feature with caution.",
       "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte."
     }
+  },
+  {
+    "id": "invalid-government-id",
+    "translation": {
+      "en": "Invalid government ID.",
+        "sv": "Ogiltigt personnummer.",
+        "no": "Ugyldig personnummer.",
+        "da": "Ugyldigt personnummer.",
+        "fi": "Virheellinen henkilötunnus."
+    }
+  },
+  {
+    "id": "invalid-phone-number",
+    "translation": {
+      "en": "Invalid phone number.",
+      "sv": "Ogiltigt telefonnummer.",
+      "no": "Ugyldig telefonnummer.",
+      "da": "Ugyldigt telefonnummer.",
+      "fi": "Virheellinen puhelinnumero."
+    }
+  },
+  {
+    "id": "invalid-email-address",
+    "translation": {
+      "en": "Invalid email address.",
+      "sv": "Ogiltig e-postadress.",
+      "no": "Ugyldig e-postadresse.",
+      "da": "Ugyldig e-mailadresse.",
+      "fi": "Virheellinen sähköpostiosoite."
+    }
   }
 ]
