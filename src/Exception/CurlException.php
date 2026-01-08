@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Exception;
 
 use Exception;
+use JsonException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
@@ -59,36 +60,52 @@ class CurlException extends Exception
     public function getDetailedMessage(string $msg): string
     {
         try {
-            $body = json_decode(
-                json: (string) $this->body,
-                associative: true,
-                depth: 256,
-                flags: JSON_THROW_ON_ERROR
-            );
+            $invalidField = $this->getInvalidFieldName();
 
-            $invalidField = (
-                is_array(value: $body) &&
-                isset($body['validationErrors'][0]['fieldName'])
-            ) ? (string) $body['validationErrors'][0]['fieldName'] : '';
-
-            if (str_contains(haystack: $invalidField, needle: 'governmentId')) {
-                return $msg . ' ' .
-                    Translator::translate(phraseId: 'invalid-government-id');
+            if ($invalidField === '') {
+                return $msg;
             }
 
-            if (str_contains(haystack: $invalidField, needle: 'mobile')) {
-                return $msg . ' ' .
-                    Translator::translate(phraseId: 'invalid-phone-number');
-            }
+            // Map field name patterns to their corresponding error phrase IDs.
+            $fieldToPhraseMap = [
+                'governmentId' => 'invalid-government-id',
+                'mobile' => 'invalid-phone-number',
+                'email' => 'invalid-email-address',
+            ];
 
-            if (str_contains(haystack: $invalidField, needle: 'email')) {
-                return $msg . ' ' .
-                    Translator::translate(phraseId: 'invalid-email-address');
+            foreach ($fieldToPhraseMap as $fieldPattern => $phraseId) {
+                if (
+                    str_contains(haystack: $invalidField, needle: $fieldPattern)
+                ) {
+                    return $msg . ' ' . Translator::translate(
+                        phraseId: $phraseId
+                    );
+                }
             }
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
         }
 
         return $msg;
+    }
+
+    /**
+     * Extract the invalid field name from the response body validation errors.
+     *
+     * @throws JsonException
+     */
+    public function getInvalidFieldName(): string
+    {
+        $body = json_decode(
+            json: (string) $this->body,
+            associative: true,
+            depth: 256,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        return (
+            is_array(value: $body) &&
+            isset($body['validationErrors'][0]['fieldName'])
+        ) ? (string) $body['validationErrors'][0]['fieldName'] : '';
     }
 }

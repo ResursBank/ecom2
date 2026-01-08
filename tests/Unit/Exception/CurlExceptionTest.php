@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Exception;
 
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -99,5 +100,70 @@ class CurlExceptionTest extends TestCase
         );
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertSame(expected: $msg, actual: $result);
+    }
+
+    public function testGetInvalidFieldNameThrowsJsonExceptionOnInvalidJson(): void
+    {
+        $this->expectException(exception: JsonException::class);
+
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: 'not a valid json',
+            httpCode: 400
+        );
+
+        $exception->getInvalidFieldName();
+    }
+
+    public function testGetInvalidFieldNameReturnsEmptyStringOnEmptyArray(): void
+    {
+        $body = json_encode(value: []);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: '', actual: $result);
+    }
+
+    public function testGetInvalidFieldNameReturnsEmptyStringOnUnexpectedStructure(): void
+    {
+        $body = json_encode(value: [
+            'test' => [
+                'testing' => 5
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: '', actual: $result);
+    }
+
+    public function testGetInvalidFieldNameReturnsFieldNameOnCorrectStructure(): void
+    {
+        $expectedFieldName = 'customer.governmentId.whatever';
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => $expectedFieldName]
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: $expectedFieldName, actual: $result);
     }
 }
