@@ -60,7 +60,8 @@ class CurlExceptionTest extends TestCase
     protected function createPayment(
         string $orderReference,
         string $mobilePhone = '0701234567',
-        string $governmentId = '198305147715'
+        string $governmentId = '198305147715',
+        string $email = 'test@hosted.resurs.com'
     ): Payment {
         /** @noinspection DuplicatedCode */
         return Repository::create(
@@ -99,7 +100,7 @@ class CurlExceptionTest extends TestCase
                 ),
                 customerType: CustomerType::NATURAL,
                 contactPerson: 'Vincent',
-                email: 'test@hosted.resurs.com',
+                email: $email,
                 governmentId: $governmentId,
                 mobilePhone: $mobilePhone,
                 deviceInfo: new DeviceInfo()
@@ -176,6 +177,38 @@ class CurlExceptionTest extends TestCase
             );
             $this->assertStringStartsWith(
                 prefix: 'Test message (phone).',
+                string: $detailedMessage
+            );
+        }
+
+        // Test that an invalid email address fails. This is a value which will
+        // pass our own validation in ECom because of formatting, but will be
+        // rejected by the Resurs Bank API which performs stricter checks.
+        try {
+            $this->createPayment(
+                orderReference: Strings::generateRandomString(length: 12),
+                email: 'asd@difjgod903845gn.asdasd'
+            );
+
+            // CurlException was expected.
+            $this->fail(
+                message: 'Expected CurlException was not thrown for invalid email.'
+            );
+        } catch (CurlException $e) {
+            $detailedMessage = $e->getDetailedMessage(
+                msg: 'Test message (email).'
+            );
+            $this->assertIsString(actual: $detailedMessage);
+            $this->assertNotSame(
+                expected: $e->getMessage(),
+                actual: $detailedMessage
+            );
+            $this->assertNotSame(
+                expected: 'Test message (email).',
+                actual: $detailedMessage
+            );
+            $this->assertStringStartsWith(
+                prefix: 'Test message (email).',
                 string: $detailedMessage
             );
         }

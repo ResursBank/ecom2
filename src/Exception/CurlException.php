@@ -80,6 +80,11 @@ class CurlException extends Exception
                 return $msg . ' ' .
                     Translator::translate(phraseId: 'invalid-phone-number');
             }
+
+            if (str_contains(haystack: $invalidField, needle: 'email')) {
+                return $msg . ' ' .
+                    Translator::translate(phraseId: 'invalid-email-address');
+            }
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
         }
