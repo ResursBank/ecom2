@@ -110,8 +110,7 @@ class CurlExceptionTest extends TestCase
     }
 
     /**
-     * Assert that getDetailedMessage() appends additional information to the
-     * exception message when available.
+     * Assert getDetailedMessage appends validation info.
      *
      * @throws Exception
      */

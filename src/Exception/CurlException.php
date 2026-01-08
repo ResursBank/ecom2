@@ -38,6 +38,8 @@ class CurlException extends Exception
     }
 
     /**
+     * Append validation error details from the API to the supplied message.
+     *
      * During the payment creation process we may raise a CurlException as a
      * result of the input data to the API being rejected, for example if the
      * phone number or email supplied by the customer passes inspections made by
