@@ -43,13 +43,15 @@ use Throwable;
  */
 class TestPurchaseController extends Controller
 {
+    private CountryCode $countryCode;
     /**
      * Performs the test purchase sequence and returns the result as an array.
      *
      * @throws ConfigException
      */
-    public function performTest(): array
+    public function performTest(CountryCode $countryCode): array
     {
+        $this->countryCode = $countryCode;
         $result = [
             'withRefund' => [
                 'createPayment' => false,
@@ -197,6 +199,24 @@ class TestPurchaseController extends Controller
      */
     private function getCustomer(): Customer
     {
+        return match ($this->countryCode) {
+            CountryCode::SE => $this->getSwedishCustomer(),
+            CountryCode::DK => $this->getDanishCustomer(),
+            CountryCode::NO => $this->getNorwegianCustomer(),
+            CountryCode::FI => $this->getFinnishCustomer(),
+            default => throw new IllegalValueException(
+                message: 'Illegal country code.'
+            )
+        };
+    }
+
+    /**
+     * Get Swedish customer.
+     *
+     * @throws IllegalValueException
+     */
+    private function getSwedishCustomer(): Customer
+    {
         return new Customer(
             deliveryAddress: new Address(
                 addressRow1: 'Glassgatan 15',
@@ -205,10 +225,79 @@ class TestPurchaseController extends Controller
                 countryCode: CountryCode::SE
             ),
             customerType: CustomerType::NATURAL,
-            contactPerson: 'Vincent',
+            contactPerson: 'Vincent Alexandersson',
             email: 'test@hosted.resurs.com',
             governmentId: '198305147715',
             mobilePhone: '0701234567',
+            deviceInfo: new Customer\DeviceInfo()
+        );
+    }
+
+    /**
+     * Get Danish customer.
+     *
+     * @throws IllegalValueException
+     */
+    private function getDanishCustomer(): Customer
+    {
+        return new Customer(
+            deliveryAddress: new Address(
+                addressRow1: 'Strøget 15',
+                postalArea: 'Hornbæk',
+                postalCode: '3100',
+                countryCode: CountryCode::DK
+            ),
+            customerType: CustomerType::NATURAL,
+            contactPerson: 'Gorm Anker Bøgh',
+            email: 'test@hosted.resurs.com',
+            governmentId: '140285-3877',
+            mobilePhone: '4525557585',
+            deviceInfo: new Customer\DeviceInfo()
+        );
+    }
+
+    /**
+     * Get Norwegian customer.
+     *
+     * @throws IllegalValueException
+     */
+    private function getNorwegianCustomer(): Customer
+    {
+        return new Customer(
+            deliveryAddress: new Address(
+                addressRow1: 'Strøget 15',
+                postalArea: 'Stavanger',
+                postalCode: '3100',
+                countryCode: CountryCode::NO
+            ),
+            customerType: CustomerType::NATURAL,
+            contactPerson: 'Gorm Anker Bøgh',
+            email: 'test@hosted.resurs.com',
+            governmentId: '180872-48794',
+            mobilePhone: '49999999',
+            deviceInfo: new Customer\DeviceInfo()
+        );
+    }
+
+    /**
+     * Get Finnish customer.
+     *
+     * @throws IllegalValueException
+     */
+    private function getFinnishCustomer(): Customer
+    {
+        return new Customer(
+            deliveryAddress: new Address(
+                addressRow1: 'Kansakoulukatu 90',
+                postalArea: 'Helsinki',
+                postalCode: '00100',
+                countryCode: CountryCode::FI
+            ),
+            customerType: CustomerType::NATURAL,
+            contactPerson: 'Olavi Korhonen Nieminen',
+            email: 'test@hosted.resurs.com',
+            governmentId: '230580-7335',
+            mobilePhone: '3585005555127',
             deviceInfo: new Customer\DeviceInfo()
         );
     }

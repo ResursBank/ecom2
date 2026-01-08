@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Widget\TestPurchase;
 
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Lib\Order\CountryCode;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -27,7 +28,8 @@ class Js extends Widget
      * @throws FilesystemException
      */
     public function __construct(
-        public readonly string $controllerUrl
+        public readonly string $controllerUrl,
+        public readonly CountryCode $countryCode
     ) {
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
