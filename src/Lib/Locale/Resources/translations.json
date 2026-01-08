@@ -3636,5 +3636,35 @@
       "en": "Log directory %s not writeable",
       "sv": "Katalogen för loggning (%s) är ej skrivbar."
     }
+  },
+  {
+    "id": "invalid-government-id",
+    "translation": {
+      "en": "Invalid government ID.",
+      "sv": "Ogiltigt personnummer.",
+      "no": "Ugyldig personnummer.",
+      "da": "Ugyldigt personnummer.",
+      "fi": "Virheellinen henkilötunnus."
+    }
+  },
+  {
+    "id": "invalid-phone-number",
+    "translation": {
+      "en": "Invalid phone number.",
+      "sv": "Ogiltigt telefonnummer.",
+      "no": "Ugyldig telefonnummer.",
+      "da": "Ugyldigt telefonnummer.",
+      "fi": "Virheellinen puhelinnumero."
+    }
+  },
+  {
+    "id": "invalid-email-address",
+    "translation": {
+      "en": "Invalid email address.",
+      "sv": "Ogiltig e-postadress.",
+      "no": "Ugyldig e-postadresse.",
+      "da": "Ugyldig e-mailadresse.",
+      "fi": "Virheellinen sähköpostiosoite."
+    }
   }
 ]
