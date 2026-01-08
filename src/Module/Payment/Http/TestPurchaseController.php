@@ -290,7 +290,7 @@ class TestPurchaseController extends Controller
             deliveryAddress: new Address(
                 addressRow1: 'Kansakoulukatu 90',
                 postalArea: 'Helsinki',
-                postalCode: '0100',
+                postalCode: '00100',
                 countryCode: CountryCode::FI
             ),
             customerType: CustomerType::NATURAL,
