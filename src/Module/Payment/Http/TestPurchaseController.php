@@ -222,10 +222,11 @@ class TestPurchaseController extends Controller
                 addressRow1: 'Glassgatan 15',
                 postalArea: 'Göteborg',
                 postalCode: '41655',
-                countryCode: CountryCode::SE
+                countryCode: CountryCode::SE,
+                firstName: 'Vincent',
+                lastName: 'Alexandersson'
             ),
             customerType: CustomerType::NATURAL,
-            contactPerson: 'Vincent Alexandersson',
             email: 'test@hosted.resurs.com',
             governmentId: '198305147715',
             mobilePhone: '0701234567',
@@ -245,10 +246,11 @@ class TestPurchaseController extends Controller
                 addressRow1: 'Strøget 15',
                 postalArea: 'Hornbæk',
                 postalCode: '3100',
-                countryCode: CountryCode::DK
+                countryCode: CountryCode::DK,
+                firstName: 'Gorm',
+                lastName: 'Anker Bøgh'
             ),
             customerType: CustomerType::NATURAL,
-            contactPerson: 'Gorm Anker Bøgh',
             email: 'test@hosted.resurs.com',
             governmentId: '140285-3877',
             mobilePhone: '4525557585',
@@ -268,10 +270,11 @@ class TestPurchaseController extends Controller
                 addressRow1: 'Strøget 15',
                 postalArea: 'Stavanger',
                 postalCode: '3100',
-                countryCode: CountryCode::NO
+                countryCode: CountryCode::NO,
+                firstName: 'Gorm',
+                lastName: 'Anker Bøgh'
             ),
             customerType: CustomerType::NATURAL,
-            contactPerson: 'Gorm Anker Bøgh',
             email: 'test@hosted.resurs.com',
             governmentId: '180872-48794',
             mobilePhone: '49999999',
@@ -291,10 +294,11 @@ class TestPurchaseController extends Controller
                 addressRow1: 'Kansakoulukatu 90',
                 postalArea: 'Helsinki',
                 postalCode: '00100',
-                countryCode: CountryCode::FI
+                countryCode: CountryCode::FI,
+                firstName: 'Olavi',
+                lastName: 'Korhonen Nieminen'
             ),
             customerType: CustomerType::NATURAL,
-            contactPerson: 'Olavi Korhonen Nieminen',
             email: 'test@hosted.resurs.com',
             governmentId: '230580-7335',
             mobilePhone: '3585005555127',
