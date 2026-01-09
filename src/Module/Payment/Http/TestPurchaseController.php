@@ -301,7 +301,7 @@ class TestPurchaseController extends Controller
             customerType: CustomerType::NATURAL,
             email: 'test@hosted.resurs.com',
             governmentId: '230580-7335',
-            mobilePhone: '3585005555127',
+            mobilePhone: '+3585005555127',
             deviceInfo: new Customer\DeviceInfo()
         );
     }
