@@ -1,3 +1,7 @@
+# 3.3.13
+
+* PD-3930 Updated CurlException for easier integration.
+
 # 3.3.12
 
 * PD-3901 Fixed CurlException parser to improve API data validation relay during checkout.
