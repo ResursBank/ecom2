@@ -1094,7 +1094,8 @@
       "en": "There was an error while creating the payment at Resurs Bank.",
       "sv": "Ett fel inträffade medan betalningen skapades hos Resurs Bank.",
       "no": "Det oppstod en feil under opprettelse av betalingen hos Resurs Bank.",
-      "da": "Der opstod en fejl under oprettelsen af betalingen hos Resurs Bank."
+      "da": "Der opstod en fejl under oprettelsen af betalingen hos Resurs Bank.",
+      "fi": "Tapahtui virhe luotaessa maksua Resurs Bankissa."
     }
   },
   {
