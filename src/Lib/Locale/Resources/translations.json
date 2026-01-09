@@ -3349,11 +3349,11 @@
   {
     "id": "legacy-link",
     "translation": {
-      "en": "Legacy link",
-      "sv": "Äldre länk",
-      "no": "Eldre lenke",
-      "dk": "Gammelt link",
-      "fi": "Vanha linkki"
+      "en": "Select legal Read More link",
+      "sv": "Välj juridisk läs mer-länk",
+      "no": "Velg juridisk les mer-lenke",
+      "dk": "Vælg juridisk læs mere-link",
+      "fi": "Valitse oikeudellinen lue lisää-linkki"
     }
   },
   {
