@@ -7,10 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Module\Widget\TestPurchase;
+namespace Resursbank\EcomTest\Integration\Module\Widget\TestPurchase;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Lib\Api\GrantType;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\Widget\TestPurchase\Html;
 
 /**
@@ -23,7 +25,14 @@ class HtmlTest extends TestCase
      */
     protected function setUp(): void
     {
-        Config::setup();
+        Config::setup(
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            storeId: $_ENV['STORE_ID']
+        );
     }
 
     /**
