@@ -48,17 +48,8 @@ class Html extends Widget
     }
 
     /**
-     * @inheritDoc
-     */
-    public function shouldRender(): bool
-    {
-        return self::getPaymentMethodId() !== '';
-    }
-
-    /**
      * Get payment method ID to use for test purchase.
      *
-     * @return string
      * @throws ConfigException
      * @throws JsonException
      * @throws ReflectionException
@@ -71,20 +62,33 @@ class Html extends Widget
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws Throwable
+     * @SuppressWarnings(PHPMD.CountInLoopExpression)
      */
     public static function getPaymentMethodId(): string
     {
         $paymentMethods = Repository::getPaymentMethods();
 
         for ($i = 0; $i < count($paymentMethods); $i++) {
-            /** @var PaymentMethod $paymentMethods[$i] */
-            if ($paymentMethods[$i]->type === Type::RESURS_PART_PAYMENT ||
-                $paymentMethods[$i]->type === Type::RESURS_CARD ||
-                $paymentMethods[$i]->type === Type::RESURS_INVOICE) {
+            if (
+                $paymentMethods[$i] instanceof PaymentMethod &&
+                (
+                    $paymentMethods[$i]->type === Type::RESURS_PART_PAYMENT ||
+                    $paymentMethods[$i]->type === Type::RESURS_CARD ||
+                    $paymentMethods[$i]->type === Type::RESURS_INVOICE
+                )
+            ) {
                 return $paymentMethods[$i]->getId();
             }
         }
 
         return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldRender(): bool
+    {
+        return self::getPaymentMethodId() !== '';
     }
 }

@@ -44,6 +44,7 @@ use Throwable;
 class TestPurchaseController extends Controller
 {
     private CountryCode $countryCode;
+
     /**
      * Performs the test purchase sequence and returns the result as an array.
      *
