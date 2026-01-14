@@ -30,7 +30,7 @@ class Html extends Widget
      */
     public function __construct(
         private readonly ?string $authorizationUrl = null,
-        private readonly ?string $managementUrl = null
+        public readonly ?string $managementUrl = null
     ) {
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
@@ -47,18 +47,6 @@ class Html extends Widget
     public function getAuthorizationUrl(): ?string
     {
         return $this->authorizationUrl ??
-            Translator::translate(phraseId: 'failed-to-resolve-callback-url');
-    }
-
-    /**
-     * @throws ConfigException
-     * @throws TranslationException
-     * @throws JsonException
-     * @throws FilesystemException
-     */
-    public function getManagementUrl(): ?string
-    {
-        return $this->managementUrl ??
             Translator::translate(phraseId: 'failed-to-resolve-callback-url');
     }
 }

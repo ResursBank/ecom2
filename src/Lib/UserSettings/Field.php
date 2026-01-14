@@ -30,7 +30,7 @@ enum Field: string
     case API_TIMEOUT = 'apiTimeout';
     case LOG_ENABLED = 'logEnabled';
     case LOG_LEVEL = 'logLevel';
-    case PART_PAYMENT_METHOD = 'partPaymentMethod';
+    case PART_PAYMENT_METHOD_ID = 'partPaymentMethodId';
     case PART_PAYMENT_THRESHOLD = 'partPaymentThreshold';
     case PART_PAYMENT_PERIOD = 'partPaymentPeriod';
     case PART_PAYMENT_LEGACY_LINKS = 'partPaymentLegacyLinks';

@@ -1,0 +1,310 @@
+<?php
+/**
+ * Copyright © Resurs Bank AB. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+use Resursbank\Ecom\Lib\Locale\Translator;
+
+/** @var Resursbank\Ecom\Module\Widget\CallbackTest\Js $this */
+?>
+
+class Resursbank_CallbackTest {
+    'use strict';
+
+    /**
+     * Safely override pre-defined functions and properties using the supplied
+     * overrides parameter. Example:
+     *
+     * { "getUrl": function () { // Custom code to get AJAX request URL } }
+     *
+     * This allows for complex implementations where things like button element,
+     * success/error handlers, etc. are unknown variables.
+     *
+     * @param {{}} overrides
+     */
+    constructor(
+        overrides = {}
+    ) {
+        for (const [key, value] of Object.entries(overrides)) {
+            if (typeof this[key] === typeof value) {
+                this[key] = value;
+            } else {
+                console.warn('Failed to overwrite ' + key + ', type mismatch.');
+            }
+        }
+    }
+
+    /**
+     * Whether an AJAX request is active.
+     *
+     * @type {boolean}
+     */
+    fetching = false;
+
+    /**
+     * Setup event listeners for button click.
+     *
+     * @returns {void}
+     */
+    setupEventListeners() {
+        var that = this;
+
+        try {
+            this.getButtonElement().addEventListener('click', function (e) {
+                e.preventDefault();
+                that.testCallback();
+            });
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
+    /**
+     * Perform AJAX request to test callback.
+     */
+    testCallback() {
+        try {
+            if (this.fetching) {
+                return;
+            }
+
+            this.toggleFetch(true);
+
+            const url = this.getUrl();
+
+            if (url === '') {
+                throw new Error('<?= Translator::translate(phraseId: 'callback-test-missing-url') ?>');
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(this.handleFetchResponse.bind(this))
+                .then(this.handleFetchData.bind(this))
+                .then(() => {
+                    this.toggleFetch(false)
+                })
+                .then(this.onComplete.bind(this))
+                .catch(this.errorHandler.bind(this));
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
+     * Resolve URL for AJAX request.
+     *
+     * @returns {string}
+     */
+    getUrl() {
+        return '<?= $this->url ?>';
+    }
+
+    /**
+     * Get button element.
+     *
+     * @returns {HTMLButtonElement}
+     */
+    getButtonElement() {
+        let result = document.getElementById('resursbank-test-callback-button');
+
+        if (!(result instanceof HTMLButtonElement)) {
+            throw new Error('<?= Translator::translate(phraseId: 'callback-test-missing-button') ?>');
+        }
+
+        return result;
+    }
+
+    /**
+     * Disable / enable AJAX request. We will also reflect the state to the
+     * button element and show a spinner icon indicating an AJAX request is ongoing.
+     *
+     * @param {boolean} state
+     */
+    toggleFetch(state) {
+        this.onToggle(state);
+        this.fetching = Boolean(state);
+
+        const button = this.getButtonElement();
+
+        if (this.fetching) {
+            button.setAttribute('disabled', '');
+            button.classList.add('loading');
+        } else {
+            button.removeAttribute('disabled');
+            button.classList.remove('loading');
+        }
+    }
+
+    /**
+     * Resolve JSON data from request response.
+     *
+     * @param {Response} response
+     * @returns {Promise<any>|undefined}
+     */
+    handleFetchResponse(response) {
+        if (!response.ok) {
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'callback-test-server-error') ?>'
+            );
+        } else {
+            return response.json();
+        }
+    };
+
+    /**
+     * Handle response from AJAX request (throw error or show success).
+     *
+     * @param {any} data
+     */
+    handleFetchData(data) {
+        if (typeof data === 'undefined') {
+            return;
+        }
+
+        if (data.error) {
+            throw new Error(data.error);
+        } else {
+            this.onSuccess(data);
+        }
+    }
+
+    /**
+     * Basic error handler.
+     *
+     * @param {Error} error
+     */
+    errorHandler(error) {
+        console.warn("Resurs Bank, Callback Test Button Widget", error);
+        this.onError(error.message || '<?= Translator::translate(phraseId: 'callback-test-error') ?>');
+
+        if (this.fetching) {
+            this.toggleFetch(false);
+        }
+    }
+
+    /**
+     * Events performed when test succeeds.
+     * Override this method to handle success in your implementation.
+     *
+     * @param {any} data
+     * @todo Consider a timeout here to allow time for Resurs Bank to send us the callback. It should be pretty instant, but on some setups maybe it might take a second or two?
+     */
+    onSuccess(data) {
+        this.refreshReceivedAt();
+    }
+
+    /**
+     * Events performed when test fails.
+     * Override this method to handle errors in your implementation.
+     *
+     * @param {string} message
+     */
+    onError(message) {
+        alert(message);
+    }
+
+    /**
+     * Events performed when AJAX request has completed.
+     * Override this method to add custom completion logic.
+     */
+    onComplete() {
+        // Placeholder.
+    }
+
+    /**
+     * Events performed when toggling.
+     * Override this method to add custom toggle logic.
+     *
+     * @param {boolean} state
+     */
+    onToggle(state) {
+        // Placeholder.
+    }
+
+    /**
+     * Fetch and update the test received at timestamp.
+     */
+    refreshReceivedAt() {
+        const url = this.getReceivedAtUrl();
+
+        if (url === '') {
+            console.warn('<?= Translator::translate(phraseId: 'callback-test-missing-received-at-url') ?>');
+            return;
+        }
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.time) {
+                    this.updateReceivedAtDisplay(data.time);
+                }
+            })
+            .catch(error => {
+                console.warn('<?= Translator::translate(phraseId: 'callback-test-failed-to-fetch-received-at') ?>', error);
+            });
+    }
+
+    /**
+     * Get the URL to fetch the received at timestamp.
+     *
+     * @returns {string}
+     */
+    getReceivedAtUrl() {
+        return '<?= $this->receivedAtUrl ?? '' ?>';
+    }
+
+    /**
+     * Update the received at timestamp display.
+     *
+     * @param {number} timestamp
+     */
+    updateReceivedAtDisplay(timestamp) {
+        const element = document.getElementById('resursbank-test-callback-received-at');
+
+        if (element) {
+            const date = new Date(timestamp * 1000);
+
+            // Format as YYYY-MM-DD HH:MM:SS to match PHP date format
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            element.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+            // Update the parent div class to show green sidebar
+            const parentDiv = element.closest('.rb-test-callback-last-received');
+            if (parentDiv) {
+                parentDiv.classList.remove('rb-test-callback-not-received');
+                parentDiv.classList.add('rb-test-callback-received');
+
+                // Flash the background green then fade to transparent
+                parentDiv.classList.add('rb-test-callback-flash');
+                setTimeout(() => {
+                    parentDiv.classList.remove('rb-test-callback-flash');
+                }, 1000);
+            }
+        }
+    }
+}
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+        new Resursbank_CallbackTest().setupEventListeners();
+    }
+);

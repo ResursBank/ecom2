@@ -66,7 +66,7 @@ class Js extends Widget
 
         if ($this->selectedPaymentMethod === null) {
             $this->selectedPaymentMethod =
-                $settings->partPaymentMethod?->id;
+                $settings->partPaymentMethodId;
         }
 
         if ($this->selectedPeriod === null) {
