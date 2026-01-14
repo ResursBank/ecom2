@@ -221,16 +221,26 @@ class Repository
     /**
      * Refund payment
      *
+     * @param string $paymentId
+     * @param OrderLineCollection|null $orderLines
+     * @param string|null $creator
+     * @param string|null $transactionId
+     * @param string|null $refundNoteId
+     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function refund(
