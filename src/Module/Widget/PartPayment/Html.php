@@ -116,7 +116,8 @@ class Html extends Widget
             threshold: $this->threshold,
             cost: $this->cost,
             paymentMethod: $this->paymentMethod,
-            showCostExample: $this->showCostExample
+            showCostExample: $this->showCostExample,
+            amount: $this->amount
         );
 
         $this->logo = (string) file_get_contents(
