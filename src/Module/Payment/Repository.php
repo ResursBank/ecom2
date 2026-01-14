@@ -33,6 +33,8 @@ use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Application;
 use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata\Entry;
+use Resursbank\Ecom\Lib\Model\Payment\Metadata\EntryCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Model\PaymentCollection;
@@ -279,35 +281,37 @@ class Repository
     public static function getIntegrationInfoMetadata(
         string $platform,
         string $platformVersion,
-        string $pluginVersion
+        string $pluginVersion,
+        array $additionalData = []
     ): Metadata {
-        $generic = new Generic();
         return new Metadata(
-            custom: new Metadata\EntryCollection(data: [
-                new Metadata\Entry(
-                    key: 'resurs_platform',
-                    value: $platform
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_version',
-                    value: $platformVersion
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_plugin_version',
-                    value: $pluginVersion
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_php_version',
-                    value: PHP_VERSION
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_ecom2_version',
-                    value: $generic->getVersionByComposer(
-                        location: __DIR__,
-                        maxDepth: 4
+            custom: new EntryCollection(
+                data: array_merge($additionalData, [
+                    new Entry(
+                        key: 'resurs_platform',
+                        value: $platform
+                    ),
+                    new Entry(
+                        key: 'resurs_platform_version',
+                        value: $platformVersion
+                    ),
+                    new Entry(
+                        key: 'resurs_platform_plugin_version',
+                        value: $pluginVersion
+                    ),
+                    new Entry(
+                        key: 'resurs_platform_php_version',
+                        value: PHP_VERSION
+                    ),
+                    new Entry(
+                        key: 'resurs_platform_ecom2_version',
+                        value: (new Generic())->getVersionByComposer(
+                            location: __DIR__,
+                            maxDepth: 4
+                        )
                     )
-                )
-            ])
+                ])
+            )
         );
     }
 
