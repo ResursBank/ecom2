@@ -51,7 +51,7 @@ class Html extends Widget
     public function shouldRender(): bool
     {
         try {
-            return  $this->paymentMethod->priceSignagePossible &&
+            return $this->paymentMethod->priceSignagePossible &&
                 Config::getLocation() === Location::SE &&
                 $this->paymentMethod->type !== Type::RESURS_INVOICE &&
                 $this->visible;

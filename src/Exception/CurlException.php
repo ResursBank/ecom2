@@ -11,14 +11,11 @@ namespace Resursbank\Ecom\Exception;
 
 use Exception;
 use JsonException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Network\Response\Error;
-use Resursbank\Ecom\Lib\Network\Curl\ErrorTranslator;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use stdClass;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\Enum\InvalidFieldName;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
-
-use function is_string;
+use ValueError;
 
 /**
  * Exceptions thrown from CURL requests.
@@ -43,129 +40,77 @@ class CurlException extends Exception
     }
 
     /**
+     * Append validation error details from the API to the supplied message.
+     *
+     * During the payment creation process we may raise a CurlException as a
+     * result of the input data to the API being rejected, for example if the
+     * phone number or email supplied by the customer passes inspections made by
+     * the platform, but is rejected by the Resurs Bank API due to format or
+     * validation rules.
+     *
+     * This method attempts to extract those validation error details from
+     * the response body and append them to the exception message for better
+     * clarity.
+     *
+     * If this fails, the $msg is returned unmodified. $msg is intended to be
+     * something like: "Failed to create payment at Resurs Bank.". We will then
+     * append the details to that.
+     *
+     * This is technically not exclusive to the payment creation process, but
+     * currently that's the only place we expect to see these kinds of errors.
+     *
      * @throws ConfigException
-     * @throws JsonException
      */
-    public function getDetails(): array
+    public function getDetailedMessage(string $msg): string
     {
-        if (
-            $this->httpCode !== 400 ||
-            empty($this->body) ||
-            !is_string(value: $this->body)
-        ) {
-            return [];
+        try {
+            $invalidField = $this->getInvalidFieldName();
+
+            // Map field variants to their corresponding error phrase IDs.
+            $phraseId = match ($invalidField) {
+                InvalidFieldName::GOVERNMENT_ID => 'invalid-government-id',
+                InvalidFieldName::PHONE => 'invalid-phone-number',
+                InvalidFieldName::EMAIL => 'invalid-email-address',
+                default => null,
+            };
+
+            if ($phraseId !== null) {
+                return $msg . ' ' . Translator::translate(phraseId: $phraseId);
+            }
+        } catch (Throwable $error) {
+            Config::getLogger()->error(message: $error);
         }
 
+        return $msg;
+    }
+
+    /**
+     * Extract the invalid field name from the response body validation errors.
+     *
+     * @throws JsonException
+     */
+    public function getInvalidFieldName(): InvalidFieldName
+    {
         $body = json_decode(
-            json: $this->body,
-            associative: false,
+            json: (string) $this->body,
+            associative: true,
             depth: 256,
             flags: JSON_THROW_ON_ERROR
         );
 
-        return $this->extractParameters(body: $body);
-    }
+        $fieldName = (
+            is_array(value: $body) &&
+            isset($body['validationErrors'][0]['fieldName'])
+        ) ? (string) $body['validationErrors'][0]['fieldName'] : '';
 
-    /**
-     * Attempts to convert body property value to an instance of Error model.
-     * This will be available in some cases, as such Exceptions are expected and
-     * not treated as actual errors.
-     */
-    public function getError(): ?Error
-    {
-        $result = null;
-
-        if (!is_string(value: $this->body) || $this->body === '') {
-            return null;
+        if ($fieldName === '') {
+            return InvalidFieldName::UNKNOWN;
         }
 
         try {
-            $body = json_decode(
-                json: $this->body,
-                associative: false,
-                depth: 256,
-                flags: JSON_THROW_ON_ERROR
-            );
-
-            if (!$body instanceof stdClass) {
-                throw new IllegalValueException(message: 'Not an object.');
-            }
-
-            $error = DataConverter::stdClassToType(
-                object: $body,
-                type: Error::class
-            );
-
-            if ($error instanceof Error) {
-                $result = $error;
-            }
-        } catch (Throwable) {
-            // Do nothing. Body is not necessarily an Error model.
+            return InvalidFieldName::from(value: $fieldName);
+        } catch (ValueError) {
+            return InvalidFieldName::UNKNOWN;
         }
-
-        return $result;
-    }
-
-    /**
-     * Extract parameters from body.
-     *
-     * @throws ConfigException
-     */
-    private function extractParameters(mixed $body): array
-    {
-        $result = [];
-
-        if (
-            $body instanceof stdClass &&
-            isset($body->validationErrors)
-        ) {
-            // New validationErrors format is an object: { "field": "message" }
-            foreach ((array)$body->validationErrors as $property => $message) {
-                $result[] = $this->getProperProperty(
-                    property: (string)$property,
-                    message: (string)$message
-                );
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get a translation from properties for where we are missing translations with untranslated parameters.
-     *
-     * @throws ConfigException
-     * @SuppressWarnings(PHPMD.LongVariable)
-     */
-    private function getProperProperty(string $property, string $message): string
-    {
-        // Generate formatted message strings
-        $formattedFullPropertyError = ErrorTranslator::reformatMessage(
-            message: "$property $message"
-        );
-        $formattedSimplePropertyError = ErrorTranslator::reformatMessage(
-            message: $property
-        );
-
-        // Translate the full property + message
-        $fullPropertyError = ErrorTranslator::get(
-            errorMessage: "$property $message"
-        );
-
-        // Translate the simple property
-        $simplePropertyError = ErrorTranslator::get(errorMessage: $property);
-
-        // Check if the full property error is a valid translation
-        if ($fullPropertyError !== $formattedFullPropertyError) {
-            return $fullPropertyError;
-        }
-
-        // Check if the simple property error is a valid translation
-        if ($simplePropertyError !== $formattedSimplePropertyError) {
-            return $simplePropertyError;
-        }
-
-        // Fallback to concatenated property and message if no valid translations are found
-        return "$property $message";
     }
 }

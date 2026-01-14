@@ -1,3 +1,15 @@
+# 3.3.13
+
+* PD-3930 Updated CurlException for easier integration.
+
+# 3.3.12
+
+* PD-3901 Fixed CurlException parser to improve API data validation relay during checkout.
+
+# 3.3.11
+
+* PD-3886 Fixed problems with composer.json parser.
+
 # 3.3.10
 
 * PD-3847 Update max length for reference and description on OrderLine objects.

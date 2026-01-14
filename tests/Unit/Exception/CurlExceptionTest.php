@@ -12,218 +12,215 @@ namespace Resursbank\EcomTest\Unit\Exception;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Lib\Cache\None;
-use Resursbank\Ecom\Lib\Locale\Language;
-use Resursbank\Ecom\Lib\Log\NoneLogger;
-use Resursbank\Ecom\Lib\Model\Network\Response\Error;
+use Resursbank\Ecom\Exception\Enum\InvalidFieldName;
 
 /**
- * Verifies that the CurlException class works as intended.
+ * Test CurlException functionality.
  */
 class CurlExceptionTest extends TestCase
 {
     protected function setUp(): void
     {
+        // Required by CurlException::getDetailedMessage().
+        Config::setup();
+
         parent::setUp();
+    }
 
-        Config::setup(
-            logger: $this->createMock(originalClassName: NoneLogger::class),
-            cache: $this->createMock(originalClassName: None::class)
+    public function testGetDetailedMessageWithNoJsonBody(): void
+    {
+        $msg = 'Original message.';
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: 'not a json',
+            httpCode: 400
+        );
+        $result = $exception->getDetailedMessage(msg: $msg);
+        $this->assertSame(expected: $msg, actual: $result);
+    }
+
+    public function testGetDetailedMessageWithGovernmentIdField(): void
+    {
+        $msg = 'Original message.';
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.governmentId']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+        $result = $exception->getDetailedMessage(msg: $msg);
+        $this->assertStringStartsWith(prefix: $msg, string: $result);
+        $this->assertGreaterThan(
+            expected: strlen(string: $msg),
+            actual: strlen(string: $result)
         );
     }
 
-    /**
-     * Test that getError method will return instance of Error when possible,
-     * and NULL otherwise.
-     */
-    public function testGetError(): void
+    public function testGetDetailedMessageWithMobileField(): void
     {
-        $boolBody = new CurlException(
-            message: 'Nothing',
-            code: 450,
-            body: false
+        $msg = 'Original message.';
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.mobilePhone']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
         );
-
-        $notJsonBody = new CurlException(
-            message: 'Nothing',
-            code: 450,
-            body: 'not-valid-json'
-        );
-
-        $invalidJsonBody = new CurlException(
-            message: 'Nothing',
-            code: 450,
-            body: '{"traceId": "a2345s45sdf4sdf3wdf", "message": "some error message", "cookie": "Please"}'
-        );
-
-        $validJsonBody = new CurlException(
-            message: 'Nothing',
-            code: 450,
-            body: '{"traceId": "a2345s45sdf4sdf3wdf", "message": ' .
-            '"some error message", "code": "SOME_CODE", "timestamp": "2023-12-10 18:55:12"}'
-        );
-
-        $this->assertNull(actual: $boolBody->getError());
-        $this->assertNull(actual: $notJsonBody->getError());
-        $this->assertNull(actual: $invalidJsonBody->getError());
-        $this->assertInstanceOf(
-            expected: Error::class,
-            actual: $validJsonBody->getError()
+        $result = $exception->getDetailedMessage(msg: $msg);
+        $this->assertStringStartsWith(prefix: $msg, string: $result);
+        $this->assertGreaterThan(
+            expected: strlen(string: $msg),
+            actual: strlen(string: $result)
         );
     }
 
-    /**
-     * Test the getDetails method.
-     *
-     * @throws JsonException
-     * @throws ConfigException
-     */
-    public function testGetDetails(): void
+    public function testGetDetailedMessageWithUnsupportedField(): void
     {
-        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.postalCode":"must match test"}}';
-        $error = new CurlException(
-            message: 'Test error',
-            code: 400,
+        $msg = 'Original message.';
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.unsupportedField']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+        $result = $exception->getDetailedMessage(msg: $msg);
+        $this->assertSame(expected: $msg, actual: $result);
+    }
+
+    public function testGetInvalidFieldNameThrowsJsonExceptionOnInvalidJson(): void
+    {
+        $this->expectException(exception: JsonException::class);
+
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: 'not a valid json',
+            httpCode: 400
+        );
+
+        $exception->getInvalidFieldName();
+    }
+
+    public function testGetInvalidFieldNameReturnsUnknownOnEmptyArray(): void
+    {
+        $body = json_encode(value: []);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
             body: $body,
             httpCode: 400
         );
 
-        $details = $error->getDetails();
-
-        // reformatted error message from translations.
-        $this->assertStringContainsString(
-            needle: 'Postal code is not valid',
-            haystack: $details[0]
-        );
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::UNKNOWN, actual: $result);
     }
 
-    /**
-     * Test the getDetails method.
-     *
-     * @throws JsonException
-     * @throws ConfigException
-     */
-    public function testGetMobileDetails(): void
+    public function testGetInvalidFieldNameReturnsUnknownOnUnexpectedStructure(): void
     {
-        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
-            '"timestamp":"2025-01-16T06:32:02Z","validationErrors":{"customer.mobilePhone":"is not valid"}}';
-        $error = new CurlException(
-            message: 'Test error',
-            code: 400,
+        $body = json_encode(value: [
+            'test' => [
+                'testing' => 5
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
             body: $body,
             httpCode: 400
         );
 
-        $details = $error->getDetails();
-
-        // reformatted error message from translations.
-        $this->assertStringContainsString(
-            needle: 'Mobile phone is not valid',
-            haystack: $details[0]
-        );
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::UNKNOWN, actual: $result);
     }
 
-    /**
-     * Test the getDetails method, but for Finnish language. Nothing in the prior tests should be
-     *
-     * @throws JsonException
-     * @throws ConfigException
-     */
-    public function testGetMobileDetailsFi(): void
+    public function testGetInvalidFieldNameReturnsGovernmentIdOnCorrectStructure(): void
     {
-        Config::setup(
-            logger: $this->createMock(originalClassName: NoneLogger::class),
-            cache: $this->createMock(originalClassName: None::class),
-            language: Language::FI
-        );
-
-        $body = '{"traceId":"9a7df5fb2df0f44c667e14a1b64487ba","code":"BAD_REQUEST","message":"Validation failed",' .
-            '"timestamp":"2025-01-16T06:32:02Z","validationErrors":{"customer.mobilePhone":"is not valid"}}';
-        $error = new CurlException(
-            message: 'Test error',
-            code: 400,
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.governmentId']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
             body: $body,
             httpCode: 400
         );
 
-        $details = $error->getDetails();
-
-        // reformatted error message from translations.
-        $this->assertStringContainsString(
-            needle: 'Matkapuhelin ei kelpaa',
-            haystack: $details[0]
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(
+            expected: InvalidFieldName::GOVERNMENT_ID,
+            actual: $result
         );
     }
 
-    /**
-     * Test the getDetails method and regex-match problems.
-     *
-     * @throws JsonException
-     * @throws ConfigException
-     */
-    public function testGetDetailsWithRegexContent(): void
+    public function testGetInvalidFieldNameReturnsPhoneOnCorrectStructure(): void
     {
-        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.' .
-            'postalCode":"must match \"/^[ \\\\d]{1,10}$/\""}}';
-
-        $error = new CurlException(
-            message: 'Test error',
-            code: 400,
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.mobilePhone']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
             body: $body,
             httpCode: 400
         );
 
-        $details = $error->getDetails();
-
-        // reformatted error message from translations.
-        $this->assertStringContainsString(
-            needle: 'Postal code is not valid',
-            haystack: $details[0]
-        );
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::PHONE, actual: $result);
     }
 
-    /**
-     * Test the getDetails method and regex-match problems.
-     *
-     * This test validates that when a validation error occurs, such as an invalid postal code,
-     * the system is able to extract the correct error message from translations.
-     * It first attempts to find a specific translation for the regex validation message.
-     * If no exact match is found (due to the regex), it should fall back to a simpler property-based
-     * translation ("customer.deliveryAddress.postalCode").
-     *
-     * @throws JsonException
-     * @throws ConfigException
-     */
-    public function testGetDetailsWithUnexistentRegex(): void
+    public function testGetInvalidFieldNameReturnsEmailOnCorrectStructure(): void
     {
-        $body = '{"traceId":"abcdef123456789","code":"BAD_REQUEST","message":"Validation failed","timestamp":' .
-            '"2023-06-12T11:14:24Z","validationErrors":{"customer.deliveryAddress.' .
-            'postalCode":"must match \"/^[ \\\\s]{1,12}$/\""}}';
-
-        // Create a CurlException object with the sample error message.
-        $error = new CurlException(
-            message: 'Test error',
-            code: 400,
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.email']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
             body: $body,
             httpCode: 400
         );
 
-        // Fetch the details from the exception which includes translated error messages.
-        $details = $error->getDetails();
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::EMAIL, actual: $result);
+    }
 
-        // Assert that the correct fallback translation is returned.
-        // Even though the regex message is complex, we expect it to fallback to a simple message
-        // for the 'customer.deliveryAddress.postalCode' parameter where the regex match is different from what
-        // we expect.
-        $this->assertStringContainsString(
-        // Expected error message in English translation.
-            needle: 'Postal code is not valid',
-            // Actual translated error message.
-            haystack: $details[0]
+    public function testGetInvalidFieldNameReturnsUnknownOnUnrecognizedField(): void
+    {
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.someUnknownField']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
         );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::UNKNOWN, actual: $result);
     }
 }
