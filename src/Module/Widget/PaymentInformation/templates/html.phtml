@@ -15,7 +15,7 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
 
 ?>
 
-<div class="rb-pi">
+<div class="rb-pi" id="rb-pi-container">
   <?php // AJAX loading animation. ?>
   <div class="rb-pi-loader" style="display: none;">
     <div class="rb-pi-spinner">
@@ -38,7 +38,12 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
             <th><?= Translator::translate(phraseId: 'payment') ?></th>
             <th><?= $this->logo ?></th>
         </tr>
-        <?= $this->getTrElement(title: $this::PAYMENT_ID_LABEL, content: $this->paymentId) ?>
+        <?= $this->getTrElement(
+            title: $this::PAYMENT_ID_LABEL,
+            content: $this->paymentId,
+            class: 'rb-pi-payment-id',
+            value: $this->paymentId
+        ) ?>
         <?= $this->getTrElement(
             title: 'authorized-amount',
             content: $this->getFormattedAmount($this->getAuthorizedAmount())

@@ -222,9 +222,13 @@ class Html extends Widget
      */
     public function getTrElement(
         string $title,
-        string $content
+        string $content,
+        string $class = '',
+        string $value = ''
     ): string {
-        return '<tr>' .
+        return '<tr' .
+            ($class !== '' ? ' class="' . $class . '"' : '') .
+            ($value !== '' ? ' data-value="' . $value . '"' : '') . '>' .
             $this->getTdElement(content: $title, isHeader: true) .
             $this->getTdElement(content: $content) . '</tr>';
     }

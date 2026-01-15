@@ -11,7 +11,11 @@ namespace Resursbank\Ecom\Module\Widget\PaymentInformation;
 
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Lib\Log\Logger;
+use Resursbank\Ecom\Lib\UserSettings\Url;
 use Resursbank\Ecom\Lib\Widget\Widget;
+use Resursbank\Ecom\Module\UserSettings\Repository;
+use Throwable;
 
 /**
  * JavaScript to reload the payment information widget on demand.
@@ -24,8 +28,6 @@ class Js extends Widget
     public readonly string $content;
 
     /**
-     * @param float $amount Current order amount when entering view.
-     * @param string $reloadUrl URL to fetch new widget HTML from.
      * @param string $amountElement DOM path to amount element.
      * @param array $observableElements List of DOM paths to trigger reload on.
      * @param bool $automatic Whether to initiate JS automatically.
@@ -34,9 +36,6 @@ class Js extends Widget
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly float $amount,
-        public readonly string $reloadUrl,
-        public readonly string $widgetElement,
         public readonly string $amountElement,
         public readonly array $observableElements,
         public readonly bool $automatic = true
@@ -44,5 +43,16 @@ class Js extends Widget
         $this->content = $this->render(
             file: $this->getWidgetName() . '/templates/js.js.phtml'
         );
+    }
+
+    public function getUrl(): string
+    {
+        try {
+            return Repository::getUrl(url: Url::RELOAD_PAYMENT_INFORMATION_URL);
+        } catch (Throwable $error) {
+            Logger::error(message: $error);
+        }
+
+        return '';
     }
 }
