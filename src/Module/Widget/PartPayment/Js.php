@@ -84,7 +84,8 @@ class Js extends Widget
             threshold: $this->threshold,
             cost: $this->cost,
             paymentMethod: $this->paymentMethod,
-            showCostExample: $this->showCostExample
+            showCostExample: $this->showCostExample,
+            amount: $this->amount
         );
 
         $this->content = $this->render(
