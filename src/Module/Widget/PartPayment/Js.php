@@ -22,6 +22,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\UserSettings\Url;
@@ -68,7 +69,13 @@ class Js extends Widget
         public readonly float $amount,
         public ?PaymentMethod $paymentMethod = null,
         public ?int $months = null,
-        public readonly bool $showCostExample = true
+        public readonly bool $showCostExample = true,
+        public readonly ?string $WidgetInstanceId = null,
+        public readonly array $observableElements = [],
+        #[StringNotEmpty] public readonly ?string $qtyElDomPath = null,
+        #[StringNotEmpty] public readonly ?string $amountElDomPath = null,
+        #[StringNotEmpty] public readonly ?string $containerElDomPath = null,
+        public readonly bool $automatic = true
     ) {
         $this->populateFromSettings();
 
