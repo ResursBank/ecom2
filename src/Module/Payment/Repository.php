@@ -27,6 +27,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Log\Logger;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Application;
@@ -49,6 +50,7 @@ use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
+use Resursbank\Woocommerce\Util\Translator;
 use Throwable;
 
 /**
@@ -433,6 +435,34 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * Get message explaining why a payment has failed.
+     *
+     * @param string $paymentId
+     * @return string
+     */
+    public static function getFailureReason(
+        string $paymentId
+    ): string {
+        try {
+            $payment = self::get(paymentId: $paymentId);
+
+            if ($payment->isRejectionReasonCreditDenied()) {
+                return Translator::translate(phraseId: 'credit-denied-try-again');
+            }
+
+            $taskStatusDetails = self::getTaskStatusDetails(paymentId: $paymentId);
+
+            if (!$taskStatusDetails->completed) {
+                return Translator::translate(phraseId: 'payment-cancelled-try-again');
+            }
+        } catch (Throwable $error) {
+            Logger::error(message: $error);
+        }
+
+        return Translator::translate(phraseId: 'payment-failed-try-again');
     }
 
     /**
