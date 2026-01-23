@@ -10,6 +10,7 @@ declare(strict_types=1);
 /** @var Js $this */
 
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Module\Widget\PaymentInformation\Js;
 
 ?>
@@ -138,7 +139,9 @@ class Resursbank_PaymentInformation {
 
         // Validate that payment ID was found
         if (!instance.paymentId || instance.paymentId === '') {
+            <?php if (LogLevel::isDebugMode()): ?>
             console.warn('No payment ID found in DOM for Resursbank Payment Information widget. Instance creation skipped.');
+            <?php endif; ?>
             return null;
         }
 
@@ -264,9 +267,6 @@ class Resursbank_PaymentInformation {
             while (this.queue.length > 0) {
                 this.lastAmount = this.queue.shift();
                 this.fetching = true;
-
-                console.log('Oi man 4');
-                console.log(this.url);
 
                 await fetch(this.url, {
                     method: 'POST',

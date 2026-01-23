@@ -43,6 +43,24 @@ enum LogLevel: int
     }
 
     /**
+     * Check if loglevel is set to DEBUG.
+     *
+     * @return bool
+     * @throws UserSettingsException
+     */
+    public static function isDebugMode(): bool
+    {
+        if (!Config::hasInstance()) {
+            // If there's no Config instance there's no logLevel restriction to apply.
+            return true;
+        }
+
+        $settings = Repository::getSettings();
+
+        return $settings->logLevel === self::DEBUG;
+    }
+
+    /**
      * This can be used by integrations to render a select field with log levels.
      *
      * @return string[] Associative array of log level values and their names.

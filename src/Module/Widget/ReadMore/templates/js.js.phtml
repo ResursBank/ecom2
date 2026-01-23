@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 /** @var Js $this */
 
+use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Module\Widget\ReadMore\Js;
 
 ?>
@@ -43,7 +44,7 @@ class Resursbank_ReadMore {
     ) {
         // If container element does not exist, warn in console and exit.
         if (!el) {
-            console.warn('Failed to find read more links container element.');
+            this.errorHandler(new Error('Failed to find read more links container element.'));
             return;
         }
 
@@ -151,7 +152,9 @@ class Resursbank_ReadMore {
      * @param {Error} message
      */
     errorHandler(message) {
+        <?php if (LogLevel::isDebugMode()): ?>
         console.warn('Error in Resursbank_ReadMore: ' + message);
+        <?php endif; ?>
     }
 }
 

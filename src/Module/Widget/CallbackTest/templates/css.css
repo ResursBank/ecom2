@@ -12,21 +12,13 @@
 }
 
 #resursbank-test-callback-button {
-  position: relative;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 14px 20px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 0.33rem;
-  font-weight: 500;
-  font-size: var(--wp--preset--font-size--small, 14px);
-  background-color: #046bd2;
-  color: #fff;
   border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: #2175ca;
+  color: #fff;
   transition: background-color 0.3s ease;
-  min-height: 52px;
   margin-bottom: 10px;
 }
 
@@ -81,14 +73,16 @@
 
 /* Spinner animation */
 .rb-test-callback-spinner {
+  position: absolute;
   width: 20px;
   height: 20px;
-  margin-left: 10px;
+  margin-top: -17px;
+  margin-left: -10px;
   border-radius: 50%;
   border-top: 3px solid #FFF;
   border-right: 3px solid transparent;
   box-sizing: border-box;
-  animation: rb-callback-rotation 1s linear infinite;
+  animation: rb-cache-rotation 1s linear infinite;
 }
 
 @keyframes rb-callback-rotation {
@@ -100,12 +94,6 @@
   }
 }
 
-/* Hide text when loading */
-#resursbank-test-callback-button.loading .rb-test-callback-btn-text {
-  display: none;
-}
-
 #resursbank-test-callback-button.loading .rb-test-callback-spinner {
   display: inline-block !important;
-  margin-left: 0;
 }
