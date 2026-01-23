@@ -47,8 +47,7 @@ class Js extends Widget
         public readonly ?string $clientSecretInputId = null,
         public readonly ?string $spinnerClass = null,
         public readonly ?string $fetchBtnId = null,
-        public readonly bool $createBtn = false,
-        public readonly bool $silent = false
+        public readonly bool $createBtn = false
     ) {
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
