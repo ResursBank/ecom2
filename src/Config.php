@@ -22,6 +22,8 @@ use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Lib\Session\Session;
+use Resursbank\Ecom\Lib\Session\SessionHandlerInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
@@ -67,6 +69,7 @@ final class Config
         public readonly string $currencySymbol,
         public readonly CurrencyFormat $currencyFormat,
         public readonly Network $network,
+        public readonly SessionHandlerInterface $sessionHandler,
         public readonly ?string $storeId = null,
         public readonly bool $cacheWidgets = false,
         public readonly ?string $templateOverrideDirectory = null
@@ -92,7 +95,8 @@ final class Config
         Network $network = new Network(),
         ?string $storeId = null,
         bool $cacheWidgets = false,
-        ?string $templateOverrideDirectory = null
+        ?string $templateOverrideDirectory = null,
+        SessionHandlerInterface $sessionHandler = new Session()
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -108,7 +112,8 @@ final class Config
             network: $network,
             storeId: $storeId,
             cacheWidgets: $cacheWidgets,
-            templateOverrideDirectory: $templateOverrideDirectory
+            templateOverrideDirectory: $templateOverrideDirectory,
+            sessionHandler: $sessionHandler
         );
     }
 
