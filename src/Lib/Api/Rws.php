@@ -17,7 +17,8 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
  */
 class Rws
 {
-    public const URL_TEST = 'https://api.i.eks.aws.cld.resurs.com/api/resurs_widget_service/';
+    public const URL_TEST = 'https://apigw.integration.resurs.com/api/mock_payment_widget_service/';
+    public const ROUTE_SESSION = 'session';
     public const PAYMENT_METHODS_ROUTE = 'payment-methods';
 
     public function __construct(
