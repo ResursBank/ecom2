@@ -24,22 +24,17 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Rws;
-use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
-use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodType;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMap;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMapCollection;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Rws\SessionToken;
 use Resursbank\Ecom\Lib\Repository\Api\Rws\Post;
-use Resursbank\Ecom\Lib\Repository\Cache;
-use stdClass;
+use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Throwable;
 
 class Repository
 {
     use ExceptionLog;
+
+    const SESSION_TOKEN_CACHE_KEY = 'rb-rws-session-token';
 
     /**
      * @throws ApiException
@@ -55,92 +50,69 @@ class Repository
      * @throws ValidationException
      * @throws Throwable
      */
-    public static function getSession(): PaymentMethodTypeMapCollection {
+    public static function getSessionToken(): SessionToken
+    {
         try {
-            $cache = self::getCache(paymentMethods: $paymentMethods);
-            $result = $cache->read();
+            $token = Config::getSessionHandler()->get(key: self::SESSION_TOKEN_CACHE_KEY);
 
-            if (!$result instanceof PaymentMethodTypeMapCollection) {
-                $result = self::getApi(paymentMethods: $paymentMethods)->call();
+            if ($token !== '') {
+                $token = DataConverter::stdClassToType(
+                    object: json_decode(json: $token, associative: false),
+                    type: SessionToken::class
+                );
 
-                if (!$result instanceof PaymentMethodTypeMapCollection) {
-                    throw new ApiException(message: 'Invalid API response.');
+                if ($token instanceof SessionToken && !$token->isExpired()) {
+                    return $token;
                 }
-
-                $cache->write(data: $result);
             }
+
+            $token = (new Post(
+                model: SessionToken::class,
+                route: Rws::ROUTE_SESSION,
+                params: [
+                    'storeId' => Config::getStoreId()
+                ],
+                // /** @phpstan-ignore-next-line */
+                /*customModelConverter: static function (stdClass $data): Collection|Model {
+                    // This custimzed model converter is required because the
+                    // RWS API will return data strucutred inside an anonymous
+                    // array, which is not compatible with the generic converter
+                    // we've used for other API implementations.
+
+                    self::validateApiResponse(data: $data);
+
+                    // Extract the types from the first element of the data array.
+                    $data = (array) $data->data[0]->types;
+
+                    $typeMap = [];
+
+                    foreach ($data as $paymentMethodId => $typeString) {
+                        $typeMap[] = new PaymentMethodTypeMap(
+                            paymentMethodId: $paymentMethodId,
+                            type: PaymentMethodType::from(value: $typeString)
+                        );
+                    }
+
+                    return new PaymentMethodTypeMapCollection(data: $typeMap);
+                }*/
+            ))->call();
+
+            if (!$token instanceof SessionToken) {
+                throw new ApiException('Failed to resolve session token.');
+            }
+
+            Config::getSessionHandler()->set(
+                key: self::SESSION_TOKEN_CACHE_KEY,
+                val: json_encode(value: $token, flags: JSON_THROW_ON_ERROR)
+            );
+
+            return $token;
         } catch (Throwable $e) {
             self::logException(exception: $e);
-
             throw $e;
         }
-
-        return $result;
     }
 
-    public static function getCache(
-        PaymentMethodCollection $paymentMethods
-    ): Cache {
-        $id = '';
-
-        /** @var PaymentMethod $paymentMethod */
-        foreach ($paymentMethods as $paymentMethod) {
-            $id .= $paymentMethod->id;
-        }
-
-        return new Cache(
-            key: 'payment-method-types-' . sha1(
-                string: serialize(value: $id)
-            ),
-            model: PaymentMethodTypeMap::class,
-            ttl: 3600
-        );
-    }
-
-    /**
-     * @throws ConfigException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     */
-    public static function getApi(
-        PaymentMethodCollection $paymentMethods
-    ): Post {
-        return new Post(
-            model: PaymentMethodTypeMap::class,
-            route: Rws::PAYMENT_METHODS_ROUTE . '/types',
-            params: [
-                'storeId' => Config::getStoreId(),
-                'paymentMethodId' => array_map(
-                    /** @phpstan-ignore-next-line */
-                    callback: static fn (PaymentMethod $method) => $method->id,
-                    array: iterator_to_array(iterator: $paymentMethods)
-                )
-            ],
-            /** @phpstan-ignore-next-line */
-            customModelConverter: static function (stdClass $data): Collection|Model {
-                // This custimzed model converter is required because the
-                // RWS API will return data strucutred inside an anonymous
-                // array, which is not compatible with the generic converter
-                // we've used for other API implementations.
-
-                self::validateApiResponse(data: $data);
-
-                // Extract the types from the first element of the data array.
-                $data = (array) $data->data[0]->types;
-
-                $typeMap = [];
-
-                foreach ($data as $paymentMethodId => $typeString) {
-                    $typeMap[] = new PaymentMethodTypeMap(
-                        paymentMethodId: $paymentMethodId,
-                        type: PaymentMethodType::from(value: $typeString)
-                    );
-                }
-
-                return new PaymentMethodTypeMapCollection(data: $typeMap);
-            }
-        );
-    }
 
     /**
      * Validates response from the API. Abstracted from main function due to
@@ -148,7 +120,7 @@ class Repository
      *
      * @throws ValidationException
      */
-    private static function validateApiResponse(stdClass $data): void
+   /* private static function validateApiResponse(stdClass $data): void
     {
         if (
             !isset($data->data) ||
@@ -162,5 +134,5 @@ class Repository
                 message: 'Expected data to be an array of payment method type maps.'
             );
         }
-    }
+    }*/
 }

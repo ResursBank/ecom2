@@ -358,4 +358,13 @@ final class Config
             characters: '/'
         ) : '');
     }
+
+    /**
+     * @throws ConfigException
+     */
+    public static function getSessionHandler(): SessionHandlerInterface
+    {
+        self::validateInstance();
+        return self::$instance->sessionHandler;
+    }
 }
