@@ -26,6 +26,11 @@ class Session implements SessionHandlerInterface
      */
     public const PREFIX = 'resursbank_';
 
+    public static function getKey(string $key): string
+    {
+        return self::PREFIX . $key;
+    }
+
     /**
      * @throws SessionException
      */
@@ -70,11 +75,6 @@ class Session implements SessionHandlerInterface
         unset($_SESSION[self::getKey(key: $key)]);
     }
 
-    public static function getKey(string $key): string
-    {
-        return self::PREFIX . $key;
-    }
-
     public function isAvailable(): bool
     {
         return session_status() === PHP_SESSION_ACTIVE;
@@ -82,9 +82,11 @@ class Session implements SessionHandlerInterface
 
     public function init(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        if (session_status() !== PHP_SESSION_NONE) {
+            return;
         }
+
+        session_start();
     }
 
     /**

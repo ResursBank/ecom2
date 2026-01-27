@@ -34,7 +34,9 @@ class RepositoryTest extends TestCase
         );
 
         Config::getSessionHandler()->init();
-        Config::getSessionHandler()->delete(key: Repository::SESSION_TOKEN_CACHE_KEY);
+        Config::getSessionHandler()->delete(
+            key: Repository::SESSION_TOKEN_CACHE_KEY
+        );
 
         parent::setUp();
     }
@@ -47,7 +49,9 @@ class RepositoryTest extends TestCase
     public function testGetSessionToken(): void
     {
         // Confirm no pre-existing token data in session.
-        $data = Config::getSessionHandler()->get(key: Repository::SESSION_TOKEN_CACHE_KEY);
+        $data = Config::getSessionHandler()->get(
+            key: Repository::SESSION_TOKEN_CACHE_KEY
+        );
         $this->assertEquals(expected: null, actual: $data);
 
         // Resolve new session token from API.
@@ -57,7 +61,9 @@ class RepositoryTest extends TestCase
         // Confirm token is kept in session, resolve and examine data directly from
         // session to ensure no middleware interference can cause false positives.
         $data = json_decode(
-            json: Config::getSessionHandler()->get(key: Repository::SESSION_TOKEN_CACHE_KEY),
+            json: Config::getSessionHandler()->get(
+                key: Repository::SESSION_TOKEN_CACHE_KEY
+            ),
             flags: JSON_THROW_ON_ERROR,
             associative: true
         );
@@ -68,10 +74,16 @@ class RepositoryTest extends TestCase
         $this->assertNotEmpty(actual: $data['token']);
         $this->assertNotEmpty(actual: $data['expiresAt']);
         $this->assertEquals(expected: $token->token, actual: $data['token']);
-        $this->assertEquals(expected: $token->expiresAt, actual: $data['expiresAt']);
+        $this->assertEquals(
+            expected: $token->expiresAt,
+            actual: $data['expiresAt']
+        );
 
         // Confirm that, fetching session token using the Repository, will
         // resolve the same key again.
-        $this->assertEquals(expected: $token, actual: Repository::getSessionToken());
+        $this->assertEquals(
+            expected: $token,
+            actual: Repository::getSessionToken()
+        );
     }
 }

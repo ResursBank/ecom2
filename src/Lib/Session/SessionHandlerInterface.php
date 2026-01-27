@@ -23,6 +23,11 @@ interface SessionHandlerInterface
     public const PREFIX = 'resursbank_';
 
     /**
+     * Get the full session key with prefix.
+     */
+    public static function getKey(string $key): string;
+
+    /**
      * Set / update value to session storage.
      *
      * @throws SessionException
@@ -53,9 +58,4 @@ interface SessionHandlerInterface
      * Initialize session.
      */
     public function init(): void;
-
-    /**
-     * Get the full session key with prefix.
-     */
-    public static function getKey(string $key): string;
 }

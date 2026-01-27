@@ -19,7 +19,6 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\SessionValueException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -55,7 +54,9 @@ class Repository
     public static function getSessionToken(): SessionToken
     {
         try {
-            $token = Config::getSessionHandler()->get(key: self::SESSION_TOKEN_CACHE_KEY);
+            $token = Config::getSessionHandler()->get(
+                key: self::SESSION_TOKEN_CACHE_KEY
+            );
 
             if ($token !== null) {
                 $token = DataConverter::stdClassToType(
@@ -77,31 +78,33 @@ class Repository
                 extractProperty: 'data'
                 ///** @phpstan-ignore-next-line */
                 /*customModelConverter: static function (stdClass $data): Collection|Model {
-                    // This custimzed model converter is required because the
-                    // RWS API will return data strucutred inside an anonymous
-                    // array, which is not compatible with the generic converter
-                    // we've used for other API implementations.
+                // This custimzed model converter is required because the
+                // RWS API will return data strucutred inside an anonymous
+                // array, which is not compatible with the generic converter
+                // we've used for other API implementations.
 
-                    self::validateApiResponse(data: $data);
+                self::validateApiResponse(data: $data);
 
-                    // Extract the types from the first element of the data array.
-                    $data = (array) $data->data[0]->types;
+                // Extract the types from the first element of the data array.
+                $data = (array) $data->data[0]->types;
 
-                    $typeMap = [];
+                $typeMap = [];
 
-                    foreach ($data as $paymentMethodId => $typeString) {
-                        $typeMap[] = new PaymentMethodTypeMap(
-                            paymentMethodId: $paymentMethodId,
-                            type: PaymentMethodType::from(value: $typeString)
-                        );
-                    }
+                foreach ($data as $paymentMethodId => $typeString) {
+                $typeMap[] = new PaymentMethodTypeMap(
+                paymentMethodId: $paymentMethodId,
+                type: PaymentMethodType::from(value: $typeString)
+                );
+                }
 
-                    return new PaymentMethodTypeMapCollection(data: $typeMap);
+                return new PaymentMethodTypeMapCollection(data: $typeMap);
                 }*/
             ))->call();
 
             if (!$token instanceof SessionToken) {
-                throw new ApiException(message: 'Failed to resolve session token.');
+                throw new ApiException(
+                    message: 'Failed to resolve session token.'
+                );
             }
 
             Config::getSessionHandler()->set(
@@ -116,14 +119,13 @@ class Repository
         }
     }
 
-
     /**
      * Validates response from the API. Abstracted from main function due to
      * high cognitive complexity.
      *
      * @throws ValidationException
      */
-   private static function validateApiResponse(stdClass $data): void
+    private static function validateApiResponse(stdClass $data): void
     {
         if (
             !isset($data->data) ||
