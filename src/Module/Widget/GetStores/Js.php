@@ -33,6 +33,8 @@ class Js extends Widget
      * @param string|null $clientIdInputId ID of client id input element.
      * @param string|null $clientSecretInputId ID of client secret element.
      * @param string|null $spinnerClass Class applied on store select element when fetching.
+     * @param string|null $fetchBtnId ID of button to trigger fetch.
+     * @param bool $createBtn Whether to create a fetch button since some platforms has no generic way to create one.
      * @throws FilesystemException
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -44,7 +46,8 @@ class Js extends Widget
         public readonly ?string $clientIdInputId = null,
         public readonly ?string $clientSecretInputId = null,
         public readonly ?string $spinnerClass = null,
-        public readonly ?string $fetchBtnId = null
+        public readonly ?string $fetchBtnId = null,
+        public readonly bool $createBtn = false
     ) {
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .

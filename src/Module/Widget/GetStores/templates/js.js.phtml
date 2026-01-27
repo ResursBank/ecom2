@@ -8,6 +8,9 @@
 declare(strict_types=1);
 
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\LogLevel;
+use Resursbank\Ecom\Lib\UserSettings\Url;
+use Resursbank\Ecom\Module\UserSettings\Repository;
 use Resursbank\Ecom\Module\Widget\GetStores\Js;
 
 /** @var Js $this */
@@ -34,6 +37,11 @@ class Resursbank_FetchStores {
     constructor(
         overrides = {}
     ) {
+        if (!this.getSelectStoreElement()) {
+            this.errorHandler(new Error('Failed to initialize store selection widget. No store selection element found.'));
+            return;
+        }
+
         for (const [key, value] of Object.entries(overrides)) {
             if (typeof this[key] === typeof value) {
                 this[key] = value;
@@ -41,6 +49,10 @@ class Resursbank_FetchStores {
                 console.warn('Failed to overwrite ' + key + ', type mismatch.');
             }
         }
+
+        <?php if ($this->createBtn): ?>
+        this.createBtn();
+        <?php endif; ?>
     }
 
     /**
@@ -142,6 +154,24 @@ class Resursbank_FetchStores {
     }
 
     /**
+     * Some integrations have no way of adding a button to fetch stores, so
+     * this is a method to create the button needed to trigger the fetch call
+     * and place it next to the specified store select element.
+     */
+    createBtn() {
+        let button = document.createElement('button');
+        button.type = 'button';
+        button.id = 'resursbank-fetch-stores-btn';
+        button.innerText = '<?= Translator::translate(phraseId: 'fetch-stores') ?>';
+        button.addEventListener(
+            'click',
+            this.fetchStores.bind(this),
+            false
+        );
+        this.getSelectStoreElement().parentElement.appendChild(button);
+    }
+
+    /**
      * Resolve URL for AJAX request.
      *
      * Note that this is only a placeholder, intended to be overridden by the
@@ -150,13 +180,13 @@ class Resursbank_FetchStores {
      * @returns {string}
      */
     getUrl() {
-        return '';
+        return '<?= Repository::getUrl(url: Url::FETCH_STORES) ?>';
     }
 
     /**
      * Resolve store select element.
      *
-     * @returns {HTMLSelectElement}
+     * @returns {HTMLSelectElement|null}
      */
     getSelectStoreElement() {
         let result = null;
@@ -166,7 +196,7 @@ class Resursbank_FetchStores {
         <?php endif; ?>
 
         if (result === null) {
-            throw new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-select') ?>');
+            this.errorHandler(new Error('<?= Translator::translate(phraseId: 'get-stores-missing-store-select') ?>'));
         }
 
         return result;
@@ -182,6 +212,10 @@ class Resursbank_FetchStores {
 
         <?php if ($this->fetchBtnId !== null): ?>
         result = document.getElementById('<?= $this->fetchBtnId ?>');
+        <?php endif; ?>
+
+        <?php if ($this->createBtn): ?>
+        result = document.getElementById('resursbank-fetch-stores-btn');
         <?php endif; ?>
 
         if (result === null) {
@@ -353,7 +387,9 @@ class Resursbank_FetchStores {
      * @param {Error} message
      */
     errorHandler(message) {
-        alert(message);
+        <?php if (LogLevel::isDebugMode()): ?>
+        console.warn(message);
+        <?php endif; ?>
 
         if (this.fetching) {
             this.toggleFetch(false);

@@ -278,9 +278,13 @@ class Resursbank_PartPayment {
      * @returns {HTMLElement}
      */
     getAmountElement() {
+        <?php if ($this->amountElDomPath === null): ?>
         throw new Error(
             '<?= Translator::translate(phraseId: 'part-payment-widget-missing-amount-element') ?>'
         );
+        <?php else: ?>
+        return document.querySelector('<?= $this->amountElDomPath ?>');
+        <?php endif; ?>
     }
 
     /**
@@ -299,9 +303,24 @@ class Resursbank_PartPayment {
      * @returns {[HTMLElement]}
      */
     getObservableElements() {
-        throw new Error(
-            '<?= Translator::translate(phraseId: 'part-payment-widget-missing-observable-elements') ?>'
-        );
+        <?php if (count($this->observableElements) === 0): ?>
+            throw new Error(
+                '<?= Translator::translate(phraseId: 'part-payment-widget-missing-observable-elements') ?>'
+            );
+        <?php else: ?>
+            const elements = [];
+
+            <?php foreach ($this->observableElements as $domPath): ?>
+            {
+                const el = document.querySelector('<?= $domPath ?>');
+                if (el) {
+                    elements.push(el);
+                }
+            }
+            <?php endforeach; ?>
+
+            return elements;
+        <?php endif; ?>
     }
 
     /**
@@ -314,9 +333,13 @@ class Resursbank_PartPayment {
      * @returns {HTMLInputElement}
      */
     getQtyElement() {
+        <?php if ($this->qtyElDomPath === null): ?>
         throw new Error(
             '<?= Translator::translate(phraseId: 'part-payment-widget-missing-qty-element') ?>'
         );
+        <?php else: ?>
+        return document.querySelector('<?= $this->qtyElDomPath ?>');
+        <?php endif; ?>
     }
 
     /**
@@ -538,3 +561,20 @@ class Resursbank_PartPayment {
         return parseFloat(content);
     }
 }
+
+
+<?php if ($this->automatic): ?>
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+        <?php  if ($this->containerElDomPath === null): ?>
+        console.warn('Resurs Bank: missing part payment widget container element. Please specify in widget configuration.');
+        <?php else: ?>
+        Resursbank_PartPayment.createInstance(
+            document.querySelector('<?= $this->containerElDomPath ?>'),
+            {}
+        );
+        <?php endif; ?>
+    }
+);
+<?php endif; ?>

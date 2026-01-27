@@ -20,4 +20,5 @@ enum Url: string
     case CALLBACK_TEST_RECEIVED_AT_URL = 'callbackTestReceivedAtUrl';
     case CACHE_CLEAR_URL = 'cacheClearUrl';
     case RELOAD_PAYMENT_INFORMATION_URL = 'reloadPaymentInformationUrl';
+    case FETCH_STORES = 'fetchStoresUrl';
 }

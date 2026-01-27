@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Locale\Translator;use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /** @var Resursbank\Ecom\Module\Widget\CallbackTest\Js $this */
 ?>
@@ -58,7 +58,9 @@ class Resursbank_CallbackTest {
                 that.testCallback();
             });
         } catch (e) {
+            <?php if (LogLevel::isDebugMode()): ?>
             console.warn(e);
+            <?php endif; ?>
         }
     }
 
@@ -182,6 +184,7 @@ class Resursbank_CallbackTest {
      */
     errorHandler(error) {
         console.warn("Resurs Bank, Callback Test Button Widget", error);
+
         this.onError(error.message || '<?= Translator::translate(phraseId: 'callback-test-error') ?>');
 
         if (this.fetching) {
