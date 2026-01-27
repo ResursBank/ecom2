@@ -81,7 +81,7 @@ trait ModelConverter
     ): void {
         if (!class_exists(class: $model)) {
             throw new InvalidArgumentException(
-                message: 'Model class does not exist.'
+                message: "Model class '$model' does not exist."
             );
         }
 

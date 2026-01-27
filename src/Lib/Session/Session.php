@@ -38,18 +38,16 @@ class Session implements SessionHandlerInterface
 
     /**
      * @throws SessionException
+     * @throws SessionValueException
      */
-    public function get(string $key): string
+    public function get(string $key): ?string
     {
         $key = self::getKey(key: $key);
 
         $this->start();
 
         if (!isset($_SESSION[$key])) {
-            throw new SessionValueException(
-                message: "$key not defined in session.",
-                code: 404
-            );
+            return null;
         }
 
         if (!is_string(value: $_SESSION[$key])) {

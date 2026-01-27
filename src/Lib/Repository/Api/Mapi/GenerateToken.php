@@ -26,7 +26,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\SessionToken;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
@@ -64,7 +64,7 @@ class GenerateToken
      * @throws AttributeCombinationException
      * @throws NotJsonEncodedException
      */
-    public function call(): SessionToken
+    public function call(): Token
     {
         $curl = new Curl(
             url: $this->mapi->getUrl(
@@ -84,10 +84,10 @@ class GenerateToken
             data: $this->resolveResponseData(
                 data: $curl->exec()->body
             ),
-            model: SessionToken::class
+            model: Token::class
         );
 
-        if (!$result instanceof SessionToken) {
+        if (!$result instanceof Token) {
             throw new ApiException(
                 message: 'Could not convert response to Token model.'
             );

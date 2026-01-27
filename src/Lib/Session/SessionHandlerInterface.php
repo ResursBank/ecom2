@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Session;
 
+use Resursbank\Ecom\Exception\SessionException;
+use Resursbank\Ecom\Exception\SessionValueException;
+
 /**
  * Contract for session handler.
  */
@@ -21,16 +24,23 @@ interface SessionHandlerInterface
 
     /**
      * Set / update value to session storage.
+     *
+     * @throws SessionException
      */
     public function set(string $key, string $val): void;
 
     /**
      * Get value from session storage.
+     *
+     * @throws SessionException
+     * @throws SessionValueException
      */
-    public function get(string $key): string;
+    public function get(string $key): ?string;
 
     /**
      * Delete value from session storage.
+     *
+     * @throws SessionException
      */
     public function delete(string $key): void;
 

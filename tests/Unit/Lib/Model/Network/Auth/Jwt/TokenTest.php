@@ -11,7 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Auth\Jwt;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\SessionToken;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 
 /**
  * Tests for JWT token.
@@ -25,7 +25,7 @@ class TokenTest extends TestCase
     {
         $this->expectException(exception: EmptyValueException::class);
 
-        new SessionToken(access_token: '', token_type: 'Bearer', expires_in: 0);
+        new Token(access_token: '', token_type: 'Bearer', expires_in: 0);
     }
 
     /**
@@ -35,17 +35,15 @@ class TokenTest extends TestCase
     {
         $this->expectException(exception: EmptyValueException::class);
 
-        new SessionToken(access_token: 'foo', token_type: '', expires_in: 0);
+        new Token(access_token: 'foo', token_type: '', expires_in: 0);
     }
 
     /**
      * Assert current timestamp is automatically appended to validUntil prop.
-     *
-     * @throws EmptyValueException
      */
     public function testExpiresAtAppendsTimestamp(): void
     {
-        $token = new SessionToken(
+        $token = new Token(
             access_token: 'foo',
             token_type: 'Bearer',
             expires_in: 0

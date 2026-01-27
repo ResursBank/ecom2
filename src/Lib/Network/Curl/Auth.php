@@ -24,7 +24,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\SessionToken;
+use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt\Token;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken as GenerateMapiToken;
 
 /**
@@ -86,7 +86,7 @@ class Auth
      */
     private static function getJwtToken(
         Jwt $auth
-    ): SessionToken {
+    ): Token {
         $result = $auth->getToken();
 
         if ($result === null || $result->isExpired()) {

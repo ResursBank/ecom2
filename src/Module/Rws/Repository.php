@@ -19,6 +19,7 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\SessionValueException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -28,6 +29,7 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Rws\SessionToken;
 use Resursbank\Ecom\Lib\Repository\Api\Rws\Post;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
+use stdClass;
 use Throwable;
 
 class Repository
@@ -55,7 +57,7 @@ class Repository
         try {
             $token = Config::getSessionHandler()->get(key: self::SESSION_TOKEN_CACHE_KEY);
 
-            if ($token !== '') {
+            if ($token !== null) {
                 $token = DataConverter::stdClassToType(
                     object: json_decode(json: $token, associative: false),
                     type: SessionToken::class
@@ -72,7 +74,8 @@ class Repository
                 params: [
                     'storeId' => Config::getStoreId()
                 ],
-                // /** @phpstan-ignore-next-line */
+                extractProperty: 'data'
+                ///** @phpstan-ignore-next-line */
                 /*customModelConverter: static function (stdClass $data): Collection|Model {
                     // This custimzed model converter is required because the
                     // RWS API will return data strucutred inside an anonymous
@@ -98,7 +101,7 @@ class Repository
             ))->call();
 
             if (!$token instanceof SessionToken) {
-                throw new ApiException('Failed to resolve session token.');
+                throw new ApiException(message: 'Failed to resolve session token.');
             }
 
             Config::getSessionHandler()->set(
@@ -120,19 +123,17 @@ class Repository
      *
      * @throws ValidationException
      */
-   /* private static function validateApiResponse(stdClass $data): void
+   private static function validateApiResponse(stdClass $data): void
     {
         if (
             !isset($data->data) ||
             !is_array(value: $data->data) ||
             !isset($data->data[0]) ||
-            !$data->data[0] instanceof stdClass ||
-            !isset($data->data[0]->types) ||
-            !$data->data[0]->types instanceof stdClass
+            !$data->data[0] instanceof stdClass
         ) {
             throw new ValidationException(
-                message: 'Expected data to be an array of payment method type maps.'
+                message: 'Expected data to contain data object.'
             );
         }
-    }*/
+    }
 }
