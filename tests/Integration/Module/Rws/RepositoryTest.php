@@ -15,6 +15,9 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\Rws\Repository;
 
+// We must start the session before PHPUnit runs, otherwise sessions won't work
+// and we cannot test the session storage functionality.
+/** @phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols */
 session_start();
 
 /**
@@ -61,7 +64,7 @@ class RepositoryTest extends TestCase
         // Confirm token is kept in session, resolve and examine data directly from
         // session to ensure no middleware interference can cause false positives.
         $data = json_decode(
-            json: Config::getSessionHandler()->get(
+            json: (string) Config::getSessionHandler()->get(
                 key: Repository::SESSION_TOKEN_CACHE_KEY
             ),
             flags: JSON_THROW_ON_ERROR,

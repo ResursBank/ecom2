@@ -22,7 +22,6 @@ class SessionTokenTest extends TestCase
      */
     public function testIsExpiredReturnsTrueWhenExpired(): void
     {
-        $a = 'asd';
         $token = new SessionToken(
             token: 'test-token',
             expiresAt: date('Y-m-d H:i:s', strtotime('-1 hour'))
