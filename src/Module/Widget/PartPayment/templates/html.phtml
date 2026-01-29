@@ -40,6 +40,7 @@ use Resursbank\Ecom\Module\Widget\PartPayment\Html;
 
         <?php // Starting at cost. ?>
         <?php if ($this->shouldDisplayCostExample): ?>
+            <div class="rb-pp-cost-example">
             <?php $message = $this->getStartingAt() ?>
             <?php if ($message !== ''): ?>
                 <div class="rb-pp-starting-at">
@@ -69,6 +70,7 @@ use Resursbank\Ecom\Module\Widget\PartPayment\Html;
                 <?php endif; ?>
             <?php endif; ?>
             <?= $this->warning->content ?>
+            </div>
         <?php endif; ?>
 
         <?php // Error message container. ?>

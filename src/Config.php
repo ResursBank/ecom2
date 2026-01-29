@@ -18,6 +18,7 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
@@ -64,22 +65,23 @@ final class Config
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
-        private LoggerInterface $logger,
-        private CacheInterface $cache,
-        private ?Jwt $jwtAuth,
-        private readonly DataHandlerInterface $paymentHistoryDataHandler,
-        private bool $isProduction,
-        private ?Language $language,
-        private ?Location $location,
-        private string $currencySymbol,
-        private readonly CurrencyFormat $currencyFormat,
-        private readonly Network $network,
-        private ?string $storeId,
-        private readonly bool $cacheWidgets,
-        private readonly ReaderInterface $settingsReader,
-        private readonly Metadata $settingsMetadata,
+        public readonly LoggerInterface $logger,
+        public readonly CacheInterface $cache,
+        public readonly ?Jwt $jwtAuth,
+        public readonly DataHandlerInterface $paymentHistoryDataHandler,
+        public readonly bool $isProduction,
+        public ?Language $language,
+        public ?Location $location,
+        public readonly string $currencySymbol,
+        public readonly CurrencyFormat $currencyFormat,
+        public readonly Network $network,
+        public readonly ?string $storeId,
+        public readonly bool $cacheWidgets,
+        public readonly ReaderInterface $settingsReader,
+        public readonly Metadata $settingsMetadata,
         public readonly ?string $templateOverrideDirectory,
-        public readonly SessionHandlerInterface $sessionHandler
+        public readonly SessionHandlerInterface $sessionHandler,
+        public readonly ?LogLevel $logLevel = null
     ) {
     }
 

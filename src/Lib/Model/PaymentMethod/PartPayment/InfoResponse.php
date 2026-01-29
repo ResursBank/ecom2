@@ -16,10 +16,15 @@ use Resursbank\Ecom\Lib\Model\Model;
  */
 class InfoResponse extends Model
 {
+    /**
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.LongVariable)
+     */
     public function __construct(
         public readonly float $startingAt,
         public readonly string $html,
-        public readonly string $readMoreHtml
+        public readonly string $readMoreHtml,
+        public readonly bool $shouldDisplayCostExample = true
     ) {
         parent::__construct();
     }

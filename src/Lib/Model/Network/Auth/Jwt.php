@@ -41,7 +41,6 @@ class Jwt extends Model
      * @throws ReflectionException
      * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo Add charset validation of id and secret.
      */
     public function __construct(
         #[StringNotEmpty] public readonly string $clientId,

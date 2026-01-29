@@ -12,8 +12,8 @@
 #rb-ga-widget {
     --rb-font: Arial;
     --rb-fontSize: 16px;
-    --rb-green1: #3AA497;
-    --rb-green2: #236161;
+    --rb-green1: #f1eae8;
+    --rb-green2: #e7dcd6;
     display: flex;
     flex-direction: column;
     gap: 1em;

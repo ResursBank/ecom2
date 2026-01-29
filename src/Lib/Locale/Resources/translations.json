@@ -3350,11 +3350,11 @@
   {
     "id": "legacy-link",
     "translation": {
-      "en": "Legacy link",
-      "sv": "Äldre länk",
-      "no": "Eldre lenke",
-      "dk": "Gammelt link",
-      "fi": "Vanha linkki"
+      "en": "Select legal Read More link",
+      "sv": "Välj juridisk läs mer-länk",
+      "no": "Velg juridisk les mer-lenke",
+      "dk": "Vælg juridisk læs mere-link",
+      "fi": "Valitse oikeudellinen lue lisää-linkki"
     }
   },
   {
@@ -3586,13 +3586,76 @@
     }
   },
   {
+    "id": "create-test-payment",
+    "translation": {
+      "en": "Create test payment",
+      "sv": "Skapa testbetalning"
+    }
+  },
+  {
+    "id": "capture-test-payment",
+    "translation": {
+      "en": "Capture test payment",
+      "sv": "Debitera testbetalning"
+    }
+  },
+  {
+    "id": "refund-test-payment",
+    "translation": {
+      "en": "Refund test payment",
+      "sv": "Återbetala testbetalning"
+    }
+  },
+  {
+    "id": "cancel-test-payment",
+    "translation": {
+      "en": "Cancel test payment",
+      "sv": "Makulera testbetalning"
+    }
+  },
+  {
+    "id": "result",
+    "translation": {
+      "en": "Result",
+      "sv": "Resultat"
+    }
+  },
+  {
+    "id": "trigger-purchase-test",
+    "translation": {
+      "en": "Trigger purchase test",
+      "sv": "Genomför betalningstest"
+    }
+  },
+  {
+    "id": "test-purchase",
+    "translation": {
+      "en": "Test purchase",
+      "sv": "Testbetalning"
+    }
+  },
+  {
+    "id": "log-directory-writeable",
+    "translation": {
+      "en": "",
+      "sv": ""
+    }
+  },
+  {
+    "id": "log-directory-not-writeable",
+    "translation": {
+      "en": "Log directory %s not writeable",
+      "sv": "Katalogen för loggning (%s) är ej skrivbar."
+    }
+  },
+  {
     "id": "invalid-government-id",
     "translation": {
       "en": "Invalid government ID.",
-        "sv": "Ogiltigt personnummer.",
-        "no": "Ugyldig personnummer.",
-        "da": "Ugyldigt personnummer.",
-        "fi": "Virheellinen henkilötunnus."
+      "sv": "Ogiltigt personnummer.",
+      "no": "Ugyldig personnummer.",
+      "da": "Ugyldigt personnummer.",
+      "fi": "Virheellinen henkilötunnus."
     }
   },
   {

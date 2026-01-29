@@ -107,11 +107,16 @@ trait Common
         float $threshold,
         Cost $cost,
         PaymentMethod $paymentMethod,
-        bool $showCostExample
+        bool $showCostExample,
+        ?float $amount = null
     ): bool {
         return
             ($threshold === 0.0 ||
                 $cost->monthlyCost >= $threshold) &&
+            (
+                $amount === null ||
+                $amount <= $paymentMethod->getMaxLimit()
+            ) &&
             $paymentMethod->type !== Type::RESURS_INVOICE &&
             $showCostExample;
     }

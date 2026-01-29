@@ -432,11 +432,15 @@ class Resursbank_PartPayment {
             data.hasOwnProperty('html') &&
             data.startingAt !== undefined &&
             data.readMoreHtml !== undefined &&
-            data.readMoreHtml !== "" &&
-            data.html !== undefined &&
-            data.html !== ""
+            data.readMoreHtml !== ""
         ) {
-            this.el.querySelector('.rb-pp').replaceWith(this.htmlToElement(data.html));
+            if (data.html !== undefined && data.html !== '') {
+                this.el.querySelector('.rb-pp').replaceWith(this.htmlToElement(data.html));
+            }
+
+            if (!data.shouldDisplayCostExample) {
+                document.querySelector('.rb-pp-cost-example').style.display = 'none';
+            }
 
             <?php if ($this->threshold > 0): ?>
             if (parseFloat(data.startingAt) < <?= $this->threshold ?>) {

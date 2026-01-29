@@ -26,6 +26,11 @@ class Session implements SessionHandlerInterface
      */
     public const PREFIX = 'resursbank_';
 
+    public static function getKey(string $key): string
+    {
+        return self::PREFIX . $key;
+    }
+
     /**
      * @throws SessionException
      */
@@ -38,18 +43,16 @@ class Session implements SessionHandlerInterface
 
     /**
      * @throws SessionException
+     * @throws SessionValueException
      */
-    public function get(string $key): string
+    public function get(string $key): ?string
     {
         $key = self::getKey(key: $key);
 
         $this->start();
 
         if (!isset($_SESSION[$key])) {
-            throw new SessionValueException(
-                message: "$key not defined in session.",
-                code: 404
-            );
+            return null;
         }
 
         if (!is_string(value: $_SESSION[$key])) {
@@ -72,11 +75,6 @@ class Session implements SessionHandlerInterface
         unset($_SESSION[self::getKey(key: $key)]);
     }
 
-    public static function getKey(string $key): string
-    {
-        return self::PREFIX . $key;
-    }
-
     public function isAvailable(): bool
     {
         return session_status() === PHP_SESSION_ACTIVE;
@@ -84,9 +82,11 @@ class Session implements SessionHandlerInterface
 
     public function init(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        if (session_status() !== PHP_SESSION_NONE) {
+            return;
         }
+
+        session_start();
     }
 
     /**

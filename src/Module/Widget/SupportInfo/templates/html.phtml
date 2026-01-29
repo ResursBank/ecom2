@@ -61,6 +61,12 @@ use Resursbank\Ecom\Module\Widget\SupportInfo\Html;
             <td><?= $this->getTemplateOverrideLocation() ?></td>
         </tr>
         <?php endif; ?>
+        <tr>
+            <td><?= Translator::translate(phraseId: 'log-directory-writeable') ?></td>
+            <td<?= $this->hasLogDirectoryError() ? ' class="error"' : '' ?>>
+                <?= $this->getLogDirectoryError() ?>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

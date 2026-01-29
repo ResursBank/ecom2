@@ -16,4 +16,5 @@ enum CallbackType: string
 {
     case AUTHORIZATION = 'AUTHORIZATION';
     case MANAGEMENT = 'MANAGEMENT';
+    case CREDIT_APPLICATION = 'CREDIT_APPLICATION';
 }

@@ -114,7 +114,8 @@ class Html extends Widget
             threshold: $this->threshold,
             cost: $this->cost,
             paymentMethod: $this->paymentMethod,
-            showCostExample: $this->showCostExample
+            showCostExample: $this->showCostExample,
+            amount: $this->amount
         );
 
         $this->logo = (string) file_get_contents(
@@ -134,6 +135,15 @@ class Html extends Widget
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function shouldRender(): bool
+    {
+        return $this->amount >= $this->paymentMethod->getMinLimit() &&
+            $this->amount <= $this->paymentMethod->getMaxLimit();
     }
 
     /**

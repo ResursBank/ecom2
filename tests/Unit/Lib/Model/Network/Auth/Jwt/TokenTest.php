@@ -40,8 +40,6 @@ class TokenTest extends TestCase
 
     /**
      * Assert current timestamp is automatically appended to validUntil prop.
-     *
-     * @throws EmptyValueException
      */
     public function testExpiresAtAppendsTimestamp(): void
     {

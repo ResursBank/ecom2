@@ -90,27 +90,48 @@ class FileLogger implements LoggerInterface
     }
 
     /**
+     * Fetch configured path.
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Returns absolute path to log file.
+     */
+    public function getFilename(): string
+    {
+        return $this->path . DIRECTORY_SEPARATOR . self::LOG_FILENAME;
+    }
+
+    /**
      * Write log entry to file on disk.
+     *
+     * @throws FilesystemException
+     * @throws ConfigException
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
      */
     private function log(LogLevel $level, string|Throwable $message): void
     {
         try {
             $this->validateLogFile();
 
+
             if ($message instanceof Throwable) {
                 $this->logError(error: $message);
-            } elseif (LogLevel::loggable(level: $level)) {
-                $date = (new DateTime())->format(format: 'c');
+            }
 
-                if (
-                    !file_put_contents(
-                        filename: $this->getFilename(),
-                        data: $date . ' ' . $level->name . ': ' . $message . PHP_EOL,
-                        flags: FILE_APPEND | LOCK_EX
-                    )
-                ) {
-                    throw new FilesystemException(message: self::WRITE_ERROR);
-                }
+            // Unfortunately we need to suppress errors here as they will
+            // otherwise propagate outside the if statement.
+            if (
+                !@file_put_contents(
+                    filename: $this->getFilename(),
+                    data: (new DateTime())->format(format: 'c') . ' ' . $level->name . ': ' . $message . PHP_EOL,
+                    flags: FILE_APPEND | LOCK_EX
+                )
+            ) {
+                throw new FilesystemException(message: self::WRITE_ERROR);
             }
         } catch (FilesystemException|ConfigException|UserSettingsException) {
             // There are times when logging will naturally be impossible.
@@ -132,14 +153,6 @@ class FileLogger implements LoggerInterface
             level: LogLevel::ERROR,
             message: $error->getMessage() . ', ' . $error->getTraceAsString()
         );
-    }
-
-    /**
-     * Returns absolute path to log file.
-     */
-    private function getFilename(): string
-    {
-        return $this->path . DIRECTORY_SEPARATOR . self::LOG_FILENAME;
     }
 
     /**
