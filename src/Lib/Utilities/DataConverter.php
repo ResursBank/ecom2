@@ -11,6 +11,9 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use ArgumentCountError;
 use BackedEnum;
+use function call_user_func;
+use function is_object;
+use function is_string;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
@@ -18,13 +21,10 @@ use ReflectionObject;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+
 use Resursbank\Ecom\Lib\Collection\EnumCollection;
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
-
-use function call_user_func;
-use function is_object;
-use function is_string;
 
 /**
  * Utility class for data type conversions.
@@ -117,7 +117,7 @@ class DataConverter
                 // @todo enum_exists guarantees UnitEnum, we expect BackedEnum. See ECP-339
                 $arguments[$name] = $value !== null ?
                     call_user_func(
-                    /* @phpstan-ignore-next-line */
+                        /* @phpstan-ignore-next-line */
                         $propertyType . '::from',
                         $value instanceof BackedEnum ? $value->value : $value
                     ) : null;
