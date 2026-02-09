@@ -65,23 +65,23 @@ final class Config
      * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
-        public readonly LoggerInterface $logger,
-        public readonly CacheInterface $cache,
-        public readonly ?Jwt $jwtAuth,
-        public readonly DataHandlerInterface $paymentHistoryDataHandler,
-        public readonly bool $isProduction,
-        public ?Language $language,
-        public ?Location $location,
-        public readonly string $currencySymbol,
-        public readonly CurrencyFormat $currencyFormat,
-        public readonly Network $network,
-        public readonly ?string $storeId,
-        public readonly bool $cacheWidgets,
-        public readonly ReaderInterface $settingsReader,
-        public readonly Metadata $settingsMetadata,
-        public readonly ?string $templateOverrideDirectory,
-        public readonly SessionHandlerInterface $sessionHandler,
-        public readonly ?LogLevel $logLevel = null
+        private LoggerInterface $logger,
+        private CacheInterface $cache,
+        private ?Jwt $jwtAuth,
+        private DataHandlerInterface $paymentHistoryDataHandler,
+        private bool $isProduction,
+        private ?Language $language,
+        private ?Location $location,
+        private string $currencySymbol,
+        private CurrencyFormat $currencyFormat,
+        private Network $network,
+        private ?string $storeId,
+        private bool $cacheWidgets,
+        private ReaderInterface $settingsReader,
+        private Metadata $settingsMetadata,
+        private ?string $templateOverrideDirectory,
+        private SessionHandlerInterface $sessionHandler,
+        private ?LogLevel $logLevel = null
     ) {
     }
 
