@@ -82,6 +82,8 @@ class HtmlTest extends TestCase
     }
 
     /**
+     * Verify getSsslVersion output.
+     *
      * Confirm that getSslVersion() returns whatever is stored in constant
      * OPENSSL_VERSION_TEXT
      */

@@ -51,6 +51,8 @@ class ActionLog extends Model
     }
 
     /**
+     * Validate the "created" date.
+     *
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
      * sometimes containing an up to 9 digit microsecond suffix).

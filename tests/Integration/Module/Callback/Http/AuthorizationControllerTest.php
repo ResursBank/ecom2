@@ -51,6 +51,8 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
+     * Create a mocked version of the Controller class.
+     *
      * Create a mocked version of the Controller class, setting the return value
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
@@ -76,8 +78,10 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
+     * Verify that getRequestData throws exception if input data is invalid.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
-     * supplied that does not convert to a Authorization instance.
+     * supplied that does not convert to an Authorization instance.
      *
      * @throws HttpException
      * @throws JsonException
@@ -95,6 +99,8 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
+     * Verify getRequestData throws exception if conversion is invalid.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
      * getRequestModel() returns an unexpected instance of Model.
      *
@@ -119,8 +125,7 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
-     * Assert that getRequestData() returns input data unaffected in forms of
-     * Model instance.
+     * Verify that getRequestdata correctly returns data.
      *
      * @throws HttpException
      * @throws JsonException

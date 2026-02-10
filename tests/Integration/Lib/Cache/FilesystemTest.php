@@ -102,6 +102,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Generate unique path name for tests.
+     *
      * Generate unique path name, to ensure various tests which create files and
      * directories won't interfere with each other.
      *
@@ -145,6 +147,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that write throws exception if cache directory is actually a file.
+     *
      * Asserts FilesystemException occur from write() when a file exists in the
      * place of the intended cache directory.
      *
@@ -161,6 +165,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that exception is thrown if directory isn't writable.
+     *
      * Assert FilesystemException occurs from write() if the existing cache
      * directory isn't writable.
      *
@@ -198,7 +204,9 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that method write() throws instance of ValidationException if our
+     * Verify that invalid characters in write key cause exception to be thrown.
+     *
+     * Assert that method write() throws ValidationException if our
      * key contains illegal characters.
      *
      * @throws Exception
@@ -243,6 +251,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that write creates cache file if it doesn't already exist.
+     *
      * Assert that when we call the method write() it will generate a cache file
      * if none already exist.
      *
@@ -258,6 +268,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that write works on existing files.
+     *
      * Assert that the method write() will accept an existing file (meaning it
      * will not attempt to create a file if the file already exists).
      *
@@ -276,6 +288,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that write throws exception if file isn't writable.
+     *
      * Assert that the method write() will throw an instance of
      * FilesystemException with the message "$file is not writable." if the
      * existing cache file isn't writable.
@@ -307,6 +321,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that write throws exception if file is actually a directory.
+     *
      * Assert that the method write() will throw an instance of
      * FilesystemException with the message "$file is not a file." if a
      * directory allocates the cache file location.
@@ -360,8 +376,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that method read() throws instance of ValidationException if our
-     * key contains illegal characters.
+     * Verify that illegal characters in read key results in ValidationException
      *
      * @throws Exception
      */
@@ -383,8 +398,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that method read() will return NULL if there is no cache file
-     * matching the supplied key.
+     * Verify that read returns null if there is no file matching the key.
      *
      * @throws ValidationException
      * @throws Exception
@@ -397,8 +411,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that method read() will return NULL if there is a directory in the
-     * place of the intended cache file.
+     * Verify that read returns null if cache file is actually a directory.
      *
      * @throws ValidationException
      * @throws Exception
@@ -412,8 +425,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that method read() will return NULL if the cache file isn't
-     * readable.
+     * Verify that read returns null if cache file is unreadable.
      *
      * @throws ValidationException
      * @throws Exception
@@ -458,6 +470,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that read returns null cache file is improperly formatted.
+     *
      * Assert method read() will return NULL if the cache file isn't properly
      * formatted ("ttl|data").
      *
@@ -478,6 +492,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that read returns null if TTL is "0".
+     *
      * Assert method read() will return NULL if the cache file is properly
      * formatted ("ttl|data") but the specified TTL is "0".
      *
@@ -536,6 +552,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that read method returns data from valid cache file.
+     *
      * Assert method read() will return the data if the cache file is properly
      * formatted ("ttl|data").
      *
@@ -635,6 +653,8 @@ class FilesystemTest extends TestCase
     }
 
     /**
+     * Verify that cache invalidation works as intended.
+     *
      * Assert read() returns NULL when cache is invalidated, and cached data
      * when not invalidated.
      *
@@ -692,8 +712,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that method clear() throws instance of ValidationException if our
-     * key contains illegal characters.
+     * Assert that invalid key to clear() results in ValidationException.
      *
      * @throws Exception
      */
@@ -716,8 +735,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert that clear() method will execute without error when cache file
-     * does not exist (i.e. not cache = already cleared = do nothing).
+     * Assert that no error is thrown if calling clear on nonexistent file.
      *
      * @throws ValidationException
      * @throws FilesystemException
@@ -733,8 +751,7 @@ class FilesystemTest extends TestCase
     }
 
     /**
-     * Assert FilesystemException occurs if we attempt to clear a cache file
-     * that is actually a directory.
+     * Assert FilesystemException is thrown if attempting to clear directory.
      *
      * @throws ValidationException
      * @throws FilesystemException

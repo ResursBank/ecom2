@@ -25,6 +25,8 @@ use function strlen;
 class FloatValidation
 {
     /**
+     * Get specified key from data array.
+     *
      * Validates the supplied array contains an element named $key and that
      * element contains a float. Returns the validated float.
      *
@@ -94,8 +96,7 @@ class FloatValidation
     }
 
     /**
-     * Validates that a float value has a number of decimals within the given
-     * min and max range.
+     * Verify that supplied float value has correct number of decimals.
      *
      * @throws IllegalValueException
      */
@@ -127,6 +128,8 @@ class FloatValidation
     }
 
     /**
+     * Get decimal portion of float value as an integer.
+     *
      * Returns the decimal portion of a float value as an integer.
      * Example: getFraction(1.234) => 234
      */

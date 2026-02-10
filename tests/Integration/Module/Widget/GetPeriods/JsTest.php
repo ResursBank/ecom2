@@ -123,6 +123,8 @@ class JsTest extends TestCase
     }
 
     /**
+     * Verify getJsonData behavior.
+     *
      * Verify getJsonData() returns none-empty JSON data (should be decoded to
      * an array).
      *

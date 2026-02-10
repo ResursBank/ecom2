@@ -24,6 +24,8 @@ use Resursbank\Ecom\Lib\Order\OrderLineType;
 class OrderLineCollectionTest extends TestCase
 {
     /**
+     * Verify behavior of getTotal.
+     *
      * Assert getTotal() method results in total of all totalAmountIncludingVat
      * properties on each OrderLine instance in collection.
      *

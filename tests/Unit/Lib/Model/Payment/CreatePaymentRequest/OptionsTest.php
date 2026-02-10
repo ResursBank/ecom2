@@ -52,8 +52,11 @@ class OptionsTest extends TestCase
     }
 
     /**
-     * Assert that an IllegalValueException is thrown if attempting to create an Options object with both
-     * handleFrozenPayments and automaticCapture set to true.
+     * Verify that error is thrown for incompatible settings.
+     *
+     * Assert that an IllegalValueException is thrown if attempting to create
+     * an Options object with both handleFrozenPayments and automaticCapture
+     * set to true.
      */
     public function testAutomaticCaptureValidation(): void
     {

@@ -175,8 +175,10 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * Assert that a FormatException is thrown and not caught along the way when attempting to run Config::setup with an
-     * incorrectly formatted path
+     * Verify that exception is thrown for incorrectly formatted path.
+     *
+     * Assert that a FormatException is thrown and not caught along the way
+     * when attempting to run Config::setup with an incorrectly formatted path.
      */
     public function testSetupWithFileLoggerAndTrailingSlash(): void
     {

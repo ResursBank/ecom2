@@ -44,6 +44,8 @@ class Repository
     use ExceptionLog;
 
     /**
+     * Fetch payment methods.
+     *
      * NOTE: Parameters must be validated since they are utilized for our cache
      * keys.
      *

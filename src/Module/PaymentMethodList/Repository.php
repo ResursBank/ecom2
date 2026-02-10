@@ -148,8 +148,7 @@ class Repository
     }
 
     /**
-     * Validates response from the API. Abstracted from main function due to
-     * high cognitive complexity.
+     * Validates response from the API.
      *
      * @throws ValidationException
      */

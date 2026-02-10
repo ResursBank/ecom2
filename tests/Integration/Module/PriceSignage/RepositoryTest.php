@@ -146,6 +146,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that caching works.
+     *
      * Assert getPriceSignage() retrieves payment methods, priceSignage them in
      * cache, and will later return the same priceSignage from cache.
      *

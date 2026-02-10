@@ -23,6 +23,8 @@ use ReflectionParameter;
 interface AttributeInterface
 {
     /**
+     * Retrieve array of accepted validation values.
+     *
      * Resolves dataset with randomized values that will be accepted by the
      * validate() method on the Model class implementing the interface.
      *
@@ -37,6 +39,8 @@ interface AttributeInterface
     ): array;
 
     /**
+     * Retrieve array of validation values that will be rejected.
+     *
      * Resolves dataset with randomized values that will be rejected by the
      * validate() method on the Model class implementing the interface.
      *

@@ -16,8 +16,7 @@ use Resursbank\Ecom\Exception\TestException;
 use stdClass;
 
 /**
- * Mock data for tests relating to Payment module, Create Payment
- * implementation.
+ * Mock data for tests relating to Payment module,
  *
  * @todo Add more data to this class.
  */

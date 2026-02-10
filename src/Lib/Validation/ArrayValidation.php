@@ -24,6 +24,8 @@ use function is_array;
 class ArrayValidation
 {
     /**
+     * Get specified key from data array.
+     *
      * Validates the supplied array contains an element named $key and that
      * element contains an array. Returns the validated array.
      *
@@ -142,8 +144,7 @@ class ArrayValidation
     }
 
     /**
-     * Validate that a one-dimensional array contains only data of specified
-     * type.
+     * Validate type of data in a one-dimensional array
      *
      * @throws IllegalTypeException
      */

@@ -74,8 +74,7 @@ class StoreTest extends TestCase
     }
 
     /**
-     * Assert validateId() throws IllegalValueException when id is not a valid
-     * uuid.
+     * Assert validateId() throws error when id is not a valid uuid.
      *
      * @throws ReflectionException
      * @throws TestException|IllegalTypeException
@@ -101,8 +100,7 @@ class StoreTest extends TestCase
     }
 
     /**
-     * Assert validateNationalStoreId() throws IllegalValueException when
-     * nationalStoreId is 0.
+     * Assert validateNationalStoreId() throws error on nationalStoreId = 0.
      *
      * @throws ReflectionException
      * @throws TestException|IllegalTypeException
@@ -114,6 +112,8 @@ class StoreTest extends TestCase
     }
 
     /**
+     * Verify that validateNationalStoreId throws on negative nationalStoreId.
+     *
      * Assert validateNationalStoreId() throws IllegalValueException when
      * nationalStoreId is negative.
      *

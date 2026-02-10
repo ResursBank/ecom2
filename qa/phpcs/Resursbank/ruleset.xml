@@ -2,5 +2,6 @@
 <ruleset name="ResursbankCustom">
     <description>Custom Resursbank coding standards</description>
     <rule ref="Resursbank.Commenting.CopyrightNotice" />
+    <rule ref="Resursbank.Commenting.DocBlockDescription" />
 </ruleset>
 

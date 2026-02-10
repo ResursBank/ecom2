@@ -12,8 +12,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
 
 /**
- * Contract to ensure stable integration of controller to fetch part payment
- * widget updates using AJAX.
+ * Defines part payment widget AJAX controller contract.
  */
 interface InfoControllerInterface
 {

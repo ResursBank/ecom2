@@ -349,8 +349,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Verify $logo property on widget instance is rendered and contains and SVG
-     * element.
+     * Verify $logo property on widget is rendered and contains an SVG element.
      */
     public function testWidgetLogo(): void
     {
@@ -363,8 +362,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Verify the $cost property is assigned on the widget instance when its
-     * created (make sure it's not null).
+     * Verify the $cost property is set when widget is created.
      */
     public function testWidgetCost(): void
     {

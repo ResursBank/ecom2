@@ -36,6 +36,8 @@ final class CacheTest extends TestCase
     private MockObject&None $cacheDriver;
 
     /**
+     * Set up Ecom before each test.
+     *
      * We call the actual Config::setup() method to initiate mocked objects
      * to be utilised in tests against the static methods available on our
      * subject class. The methods on our subject class (such as readCache())
@@ -104,8 +106,7 @@ final class CacheTest extends TestCase
     }
 
     /**
-     * Assert read() throws CacheException when cache is invalid JSON encoded
-     * data.
+     * Assert read() throws error when cache is invalid JSON encoded data.
      *
      * @throws CacheException
      * @throws ConfigException
@@ -187,6 +188,8 @@ final class CacheTest extends TestCase
     }
 
     /**
+     * Verify write throws error if Model doesn't match cache instance.
+     *
      * Assert write() throws CacheException when passed a Model instance not
      * matching the model class of the Cache instance (see getCache()).
      *
@@ -199,6 +202,8 @@ final class CacheTest extends TestCase
     }
 
     /**
+     * Verify write throws error for invalid collection instance.
+     *
      * Assert write() throws CacheException when passed a Collection instance
      * not matching the model class of the Cache instance (see getCache()).
      *

@@ -40,6 +40,8 @@ class JsTest extends TestCase
     }
 
     /**
+     * Test widget behavior with all possible parameters.
+     *
      * Render widget with as many parameters as possible, and check that the
      * expected JavaScript code is present in the rendered widget.
      *
@@ -93,6 +95,8 @@ class JsTest extends TestCase
     }
 
     /**
+     * Test widget behavior with minimal parameters.
+     *
      * Render widget with as few parameters as possible, and check that the
      * expected JavaScript code is present in the rendered widget.
      */

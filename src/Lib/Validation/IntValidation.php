@@ -21,6 +21,8 @@ use function is_int;
 class IntValidation
 {
     /**
+     * Get specified key from data array.
+     *
      * Validates the supplied array contains an element named $key and that
      * element contains an integer. Returns the validated integer.
      *

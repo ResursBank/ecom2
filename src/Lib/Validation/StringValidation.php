@@ -27,6 +27,8 @@ use function strlen;
 class StringValidation
 {
     /**
+     * Get specified key from data array.
+     *
      * Validates the supplied array contains an element named $key and that
      * element contains a string. Returns the validated string.
      *

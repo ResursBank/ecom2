@@ -36,6 +36,8 @@ use Resursbank\EcomTest\Data\Probe\Models\Store\Staff\Employee;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
 
 /**
+ * Integration tests Probe attribute.
+ *
  * This class ensures the Model probe class works as expected by probing mocked
  * Model classes.
  *
@@ -49,6 +51,8 @@ class ProbeTest extends TestCase
     public const VALIDATION_ITERATIONS = 5;
 
     /**
+     * Validation combo.
+     *
      * Describes which class should be utilised to assemble testing values when
      * applying more than one validation attribute to a parameter.
      *
@@ -114,6 +118,8 @@ class ProbeTest extends TestCase
     }
 
     /**
+     * Get attribute map.
+     *
      * Convert array of ReflectionAttribute objects to actual attribute
      * instances where the key is the name of the attribute class.
      */
@@ -258,11 +264,11 @@ class ProbeTest extends TestCase
         DataIntegrity::testValueIntegrity(
             accepted: $accepted,
             rejected: $rejected,
-            test: $this,
             callback: fn (mixed $v) => $this->generateModel(
                 class: $class,
                 predefined: [$parameter->name => $v]
             ),
+            test: $this,
             class: $class,
             parameter: $parameter->getName()
         );
@@ -306,6 +312,8 @@ class ProbeTest extends TestCase
     }
 
     /**
+     * Verify that auto-generation of probable classes works.
+     *
      * Assert that automatically creating instances of Probable classes work,
      * using default values where applicable, and resolving random accepted
      * values from attribute classes where not, where neither default value

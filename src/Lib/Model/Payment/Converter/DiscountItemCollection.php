@@ -78,8 +78,7 @@ class DiscountItemCollection extends Collection
     }
 
     /**
-     * Return simple array of OrderLine instances based on the data contained in
-     * this collection.
+     * Generate order line collection based on the data in this collection.
      *
      * @throws IllegalTypeException
      * @throws JsonException
