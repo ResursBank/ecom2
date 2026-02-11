@@ -93,33 +93,34 @@ class Repository
     /**
      * Fetch payment methods.
      *
+     * @param float $amount
      * @return PaymentMethodCollection
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws CacheException
      * @throws ConfigException
+     * @throws CurlException
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws CurlException
-     * @throws NotJsonEncodedException
      * @todo Set parameters correctly.
      */
-    public static function getPaymentMethods(): PaymentMethodCollection
+    public static function getPaymentMethods(float $amount): PaymentMethodCollection
     {
         $token = self::getSessionToken();
         $parameters = [
             'storeId' => Config::getStoreId(),
             "sessionToken" => $token->token,
-            "amount" => "1299",
+            "amount" => (string)$amount,
             "customerType" => "B2C"
         ];
-        // @todo Can't use collection as model...
+
         $result = (new Post(
             model: PaymentMethod::class,
             route: Rws::PAYMENT_METHODS_ROUTE,
