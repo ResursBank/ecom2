@@ -30,6 +30,7 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Rws\SessionToken;
 use Resursbank\Ecom\Lib\Model\Rws\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Model\Rws\CustomerType;
 use Resursbank\Ecom\Lib\Repository\Api\Rws\Post;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
@@ -93,7 +94,6 @@ class Repository
     /**
      * Fetch payment methods.
      *
-     * @param float $amount
      * @return PaymentMethodCollection
      * @throws ApiException
      * @throws AttributeCombinationException
@@ -109,16 +109,18 @@ class Repository
      * @throws ReflectionException
      * @throws Throwable
      * @throws ValidationException
-     * @todo Set parameters correctly.
      */
-    public static function getPaymentMethods(float $amount): PaymentMethodCollection
-    {
+    public static function getPaymentMethods(
+        float $amount,
+        CustomerType $customerType
+    )
+    : PaymentMethodCollection {
         $token = self::getSessionToken();
         $parameters = [
             'storeId' => Config::getStoreId(),
             "sessionToken" => $token->token,
             "amount" => (string)$amount,
-            "customerType" => "B2C"
+            "customerType" => $customerType->value
         ];
 
         $result = (new Post(
