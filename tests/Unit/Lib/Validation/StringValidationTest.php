@@ -37,8 +37,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws MissingKeyException when the needle does not
-     * exist.
+     * Assert getKey() throws error when the needle does not exist.
      *
      * @throws ValidationException
      */
@@ -49,8 +48,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not a string.
+     * Assert getKey() throws error when the needle exists but is not a string.
      *
      * @throws ValidationException
      */
@@ -77,8 +75,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert notEmpty() throws EmptyValueException when supplied an empty
-     * string.
+     * Assert notEmpty() throws error when supplied an empty string.
      *
      * @throws ValidationException
      */
@@ -89,8 +86,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert notEmpty() throws EmptyValueException when supplied a string
-     * containing only spaces.
+     * Assert notEmpty() throws error on string containing only spaces.
      *
      * @throws ValidationException
      */
@@ -101,8 +97,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert notEmpty() throws EmptyValueException when supplied a string
-     * containing only newline.
+     * Assert notEmpty() throws error on all-newline string.
      *
      * @throws ValidationException
      */
@@ -113,8 +108,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert notEmpty() throws EmptyValueException when supplied an empty
-     * string.
+     * Assert notEmpty() throws error when supplied an empty string.
      *
      * @throws ValidationException
      */
@@ -126,6 +120,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Verify that matchRegex throws error on invalid value.
+     *
      * Assert matchRegex() throws IllegalCharsetException when supplied a
      * value containing an illegal character against the supplied pattern.
      *
@@ -141,8 +137,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert matchRegex() throws IllegalCharsetException when supplied a
-     * value containing an illegal character against the supplied pattern.
+     * Verify that matchRegex returns true for valid value.
      *
      * @throws ValidationException
      */
@@ -183,8 +178,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isInt() throws IllegalCharsetException when supplied a value that
-     * cannot be cast as an int.
+     * Assert isInt() throws error when supplied a value that can't be cast to int.
      *
      * @throws ValidationException
      */
@@ -239,8 +233,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert length() throws IllegalValueException when the string is too
-     * short.
+     * Assert length() throws an error when the string is too short.
      *
      * @throws IllegalValueException
      */
@@ -262,8 +255,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert length() throws IllegalValueException when given a negative
-     * minimum value.
+     * Assert length() throws IllegalValueException when men < 0.
      *
      * @throws IllegalValueException
      */
@@ -274,8 +266,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert length() throws IllegalValueException when given a maximum value
-     * that is less than the minimum.
+     * Assert length() throws error when max < min.
      *
      * @throws IllegalValueException
      */
@@ -286,8 +277,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isUuid() throws IllegalValueException when the value isn't an
-     * uuid.
+     * Assert isUuid() throws error when the value isn't an uuid.
      *
      * @throws IllegalValueException
      */
@@ -376,6 +366,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Assert isTimestampDate throws error for value that can't be converted.
+     *
      * Assert isTimestampDate throws IllegalValueException when supplied a
      * string that can not be converted to a timestamp.
      *
@@ -388,8 +380,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isSwedishSsn throws IllegalValueException when supplied an invalid
-     * SSN value.
+     * Assert isSwedishSsn throws error for invalid SSN.
      *
      * @throws IllegalValueException
      */
@@ -414,8 +405,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isSwedishSsn returns TRUE when the last 4 digits are separated by
-     * a hyphen.
+     * Assert isSwedishSsn returns true with properly placed hyphen.
      *
      * @throws IllegalValueException
      */
@@ -429,8 +419,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isSwedishSsn throws IllegalValueException if the hyphen is in the
-     * wrong place.
+     * Assert isSwedishSsn throws error on misplaced hyphen.
      *
      * @throws IllegalValueException
      */
@@ -441,8 +430,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isSwedishSsn throws IllegalValueException when supplied an
-     * alphanumeric value.
+     * Assert isSwedishSsn throws if letters are present in supplied value.
      *
      * @throws IllegalValueException
      */
@@ -453,6 +441,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Assert isSwedishSsn throws on invalid prefix.
+     *
      * Assert isSwedishSsn throws IllegalValueException when not prefixed with
      * 16, 18, 19 or 20. Assert all valid prefixes return TRUE.
      *
@@ -483,8 +473,7 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isSwedishOrg throws IllegalValueException when supplied an invalid
-     * ORG value.
+     * Verify isSwedishOrg throws on invalid org number.
      *
      * @throws IllegalValueException
      */
@@ -509,6 +498,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Verify isSwedishOrg handles correctly placed hyphen.
+     *
      * Assert isSwedishOrg returns TRUE when the last 4 digits are separated by
      * a hyphen.
      *
@@ -524,6 +515,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Verify isSwedishOrg throws on misplaced hyphen.
+     *
      * Assert isSwedishOrg throws IllegalValueException if the hyphen is in the
      * wrong place.
      *
@@ -536,6 +529,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Verify isSwedishOrg throws if value contains letters.
+     *
      * Assert isSwedishOrg throws IllegalValueException when supplied an
      * alphanumeric value.
      *
@@ -548,6 +543,8 @@ final class StringValidationTest extends TestCase
     }
 
     /**
+     * Verify isSwedishOrg behavior.
+     *
      * Assert isSwedishOrg throws IllegalValueException when not prefixed with
      * 16, 18, 19 or 20. Assert all valid prefixes return TRUE.
      *
@@ -584,7 +581,9 @@ final class StringValidationTest extends TestCase
     }
 
     /**
-     * Assert isUrl throws when given an illegal value and returns TRUE when
+     * Verify isUrl behavior.
+     *
+     * Test isUrl throws when given an illegal value and returns TRUE when
      * provided a valid URL.
      *
      * @throws IllegalValueException

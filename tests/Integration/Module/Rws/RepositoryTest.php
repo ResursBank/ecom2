@@ -45,6 +45,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify getSessionToken behaves correctly.
+     *
      * Assert that we can resolve an RWS session token from the API, this token
      * is stored in our local PHP session, and is later resolved from this
      * session instead of a new one being fetched from the API.

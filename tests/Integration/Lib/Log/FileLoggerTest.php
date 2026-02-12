@@ -133,8 +133,10 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that attempting to log a message with a log level below the one configured results in no message
-     * being logged.
+     * Verify correct behavior when log level is lower than requested level.
+     *
+     * Verify that attempting to log a message with a log level below the one
+     * configured results in no message being logged.
      *
      * @throws EmptyValueException
      * @throws FilesystemException
@@ -278,8 +280,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that creating a FileLogger with an empty path throws an
-     * EmptyValueException
+     * Verify that an empty path results in an EmptyValueException.
      */
     public function testValidatePathWithEmptyPath(): void
     {
@@ -299,7 +300,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that creating a FileLogger with a path with leading whitespace throws a ValidationException
+     * Verify that a path with leading whitespace throws a ValidationException
      */
     public function testValidatePathWithLeadingWhitespace(): void
     {
@@ -315,7 +316,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that creating a FileLogger with a path with trailing whitespace throws a ValidationException
+     * Verify that a path with trailing whitespace throws a ValidationException
      */
     public function testValidatePathWithTrailingWhitespace(): void
     {
@@ -331,8 +332,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that creating a FileLogger with a path with a trailing directory separator character
-     * throws a ValidationException
+     * Verify that ValidationException is thrown for trailing separator.
      */
     public function testValidatePathWithTrailingSeparator(): void
     {
@@ -348,7 +348,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that attempting to create a FileLogger using a non-existent path causes a ValidationException
+     * Verify that using a non-existent path causes a ValidationException
      *
      * @throws Exception
      */
@@ -377,7 +377,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that creating a FileLogger using a path which is not a directory causes a ValidationException
+     * Verify that a path which is not a directory causes a ValidationException
      *
      * @throws Exception
      */
@@ -408,7 +408,7 @@ final class FileLoggerTest extends TestCase
     }
 
     /**
-     * Verify that creating a FileLogger using a path which is unwritable causes a ValidationException
+     * Verify that a path which is unwritable causes a ValidationException
      */
     public function testValidatePathWhichIsUnwritable(): void
     {

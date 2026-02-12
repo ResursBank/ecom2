@@ -33,23 +33,22 @@ class OrderTest extends TestCase
     protected function setUp(): void
     {
         self::$orderLine = new OrderLine(
-            description: 'Item',
             quantity: 1,
+            quantityUnit: 'st',
+            vatRate: 10,
+            totalAmountIncludingVat: 11,
+            description: 'Item',
             reference: 'I-200',
             type: OrderLineType::NORMAL,
-            quantityUnit: 'st',
             unitAmountIncludingVat: 10,
-            totalAmountIncludingVat: 11,
-            totalVatAmount: 1,
-            vatRate: 10
+            totalVatAmount: 1
         );
 
         parent::setUp();
     }
 
     /**
-     * Assert validateDescription() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateDescription() throws error when its length is too long.
      *
      * @throws IllegalTypeException
      * @throws IllegalCharsetException
@@ -70,8 +69,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateOrderReference() throws IllegalValueException when it's
-     * empty.
+     * Assert validateOrderReference() throws error when it's empty.
      *
      * @throws IllegalTypeException
      * @throws IllegalCharsetException
@@ -92,8 +90,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateOrderReference() throws IllegalValueException when it's
-     * too long.
+     * Assert validateOrderReference() throws error when it's too long.
      *
      * @throws IllegalTypeException
      * @throws IllegalCharsetException
@@ -114,8 +111,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateOrderReference() throws IllegalValueException when it's
-     * using illegal characters.
+     * Assert validateOrderReference() throws error on illegal characters.
      *
      * @throws IllegalTypeException
      * @throws IllegalCharsetException

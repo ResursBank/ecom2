@@ -41,8 +41,10 @@ use function dirname;
 final class Config
 {
     /**
-     * NOTE: This is a singleton class. Use Config::setup() to generate an
-     * instance, use getter methods to extract properties safely.
+     * NOTE: This is a singleton class.
+     *
+     * Use Config::setup() to generate an instance, use getter methods to
+     * extract properties safely.
      *
      * NOTE: Nullable to allow unsetting configuration.
      */

@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\PaymentHistory;
 
 /**
+ * Possible users/systems as source for events.
+ *
  * What type of user/system invoked an event, and their corresponding
  * translation strings.
  */

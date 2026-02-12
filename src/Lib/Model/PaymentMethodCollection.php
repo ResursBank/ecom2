@@ -64,8 +64,10 @@ class PaymentMethodCollection extends Collection implements CollectionInterface
     }
 
     /**
-     * Check if collection has any B2B payment methods. We can use this to
-     * determine whether company based purchase are possible or not.
+     * Check if collection has any B2B payment methods.
+     *
+     * We can use this to determine whether company based purchase are possible
+     * or not.
      */
     public function hasB2bMethod(): bool
     {

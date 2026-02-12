@@ -175,6 +175,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify action log behavior.
+     *
      * Create a new payment, sign it, capture it. Extract the ActionLog entries
      * from the capture response. Find the entry which matches the CAPTURE
      * action. Execute an API request to fetch the ActionLog object matching

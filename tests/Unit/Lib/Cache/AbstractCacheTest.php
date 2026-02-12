@@ -59,6 +59,8 @@ class AbstractCacheTest extends TestCase
     }
 
     /**
+     * Verify that well-formed key passes validation.
+     *
      * Assert that a key containing a mixture of upper-, lowercase, hyphens and
      * underscores pass validation.
      *

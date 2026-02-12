@@ -23,6 +23,8 @@ trait MockSessionTrait
     private MockObject&Session $session;
 
     /**
+     * Set up session object.
+     *
      * PHPUnit sends headers before this executes, thus we cannot manipulate
      * our session handler (starting / stopping it to check the behaviour
      * of our methods). We mock the isAvailable method to fix that.

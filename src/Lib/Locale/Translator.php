@@ -20,10 +20,11 @@ use function is_string;
 use function json_decode;
 
 /**
- * Methods to extract language-specific phrases. The intention is to maintain
- * consistent terminology between implementations.
+ * Methods to extract language-specific phrases.
  *
- * @todo Check if ConfigException require test.
+ * The intent is to maintain consistent terminology between implementations.
+ *
+ * @todo Check if ConfigException requires test.
  */
 abstract class Translator
 {
@@ -38,6 +39,8 @@ abstract class Translator
     private static string $cacheKey = 'resursbank-ecom-translations';
 
     /**
+     * Loads translations from specified file.
+     *
      * Loads translations file from disk, decodes the result into an array
      * and returns that array, and caches the resulting array.
      *

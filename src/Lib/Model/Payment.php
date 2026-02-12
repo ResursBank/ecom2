@@ -28,16 +28,16 @@ use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
  * Payment model used in the GET /payment call.
+ *
+ * Payment data container that is also used by Search. When Search is active, some
+ * returned fields are not guaranteed to be present; those fields are also nullable.
+ * Application and countryCode is currently not showing in Search, so to make
+ * Search compatible with the Payment model, we are temporary setting the missing fields
+ * with empty defaults.
  */
 class Payment extends Model
 {
     /**
-     * Payment data container that is also used by Search. When Search is active, some
-     * returned fields are not guaranteed to be present; those fields are also nullable.
-     * Application and countryCode is currently not showing in Search, so to make
-     * Search compatible with the Payment model, we are temporary setting the missing fields
-     * with empty defaults.
-     *
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)

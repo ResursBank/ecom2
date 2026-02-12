@@ -149,8 +149,7 @@ class Html extends Widget
     }
 
     /**
-     * Fetches translated and formatted "Starting at %1 per month..." string
-     * inside span element.
+     * Fetches translated and formatted "Starting at %1 per month..." string.
      *
      * @throws ConfigException
      */
@@ -259,9 +258,9 @@ class Html extends Widget
     }
 
     /**
-     * Find the longest period with zero interest. If no such period exists,
-     * return 0.
+     * Find the longest period with zero interest.
      *
+     * @return int Longest zero interest period or 0 if none exists.
      * @throws ConfigException
      */
     public function getLongestPeriodWithZeroInterest(): int

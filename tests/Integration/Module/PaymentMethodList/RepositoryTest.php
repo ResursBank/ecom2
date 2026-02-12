@@ -81,10 +81,10 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify mapping of RWS payment method types against MAPI method IDs.
+     *
      * Checks that list of collected payment methods types from RWS contains an
      * entry matching the supplied payment method ID from MAPI.
-     *
-     * This has been separated to reduce cognitive complexity.
      */
     private function hasTypeMapEntry(
         string $id,
@@ -102,6 +102,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that getPaymentMethodTypes works.
+     *
      * Assert we can get a full collection of payment methods, submit this to
      * RWS and get a response back with the same payment methods.
      *

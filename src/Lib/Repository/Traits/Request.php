@@ -114,8 +114,7 @@ class Request
     }
 
     /**
-     * Uses reflection API to validate the custom model converter has the
-     * correct return type and arguments.
+     * Confirm custom model converter return type and arguments.
      *
      * @throws ReflectionException
      */

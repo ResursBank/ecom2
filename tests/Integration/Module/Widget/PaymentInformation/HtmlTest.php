@@ -325,8 +325,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Assert that the logo is rendered correctly depending on the value of
-     * renderLogo.
+     * Assert that the logo is rendered correctly.
      */
     public function testLogoRendering(): void
     {

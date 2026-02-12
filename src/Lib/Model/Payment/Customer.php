@@ -20,20 +20,20 @@ use function is_string;
 
 /**
  * Customer data supplied to create a payment.
+ *
+ * NOTE: Regarding the $governmentId parameter definition. This data is not
+ * required by Resurs Bank to successfully create a payment, if it isn't
+ * supplied by us in the request to create the payment Resurs Bank will
+ * request the client to enter it on the gateway. However, if we submit an
+ * empty value, or NULL, this will cause the API to interpret the data which
+ * results in an error. Thus, this value must be unset from this object
+ * before we execute the request, and so it cannot be readonly. To summarize
+ * nullable because it isn't required, not readonly since an empty string or
+ * NULL causes a problem in the API request.
  */
 class Customer extends Model
 {
     /**
-     * NOTE: Regarding the $governmentId parameter definition. This data is not
-     * required by Resurs Bank to successfully create a payment, if it isn't
-     * supplied by us in the request to create the payment Resurs Bank will
-     * request the client to enter it on the gateway. However, if we submit an
-     * empty value, or NULL, this will cause the API to interpret the data which
-     * results in an error. Thus, this value must be unset from this object
-     * before we execute the request, and so it cannot be readonly. To summarize
-     * nullable because it isn't required, not readonly since an empty string or
-     * NULL causes a problem in the API request.
-     *
      * @param string|null $governmentId To understand why this is nullable, and not readonly, see the note above.
      * @throws IllegalValueException
      * @todo There are no validation rules declared for anything. Like phone, email, government id etc.
@@ -52,6 +52,7 @@ class Customer extends Model
         protected readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validate();
+        parent::__construct();
     }
 
     /**

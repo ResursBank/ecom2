@@ -135,6 +135,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that cache reads work as intended.
+     *
      * Assert read() retrieves stores, store them in cache, and will later
      * return the same stores from cache.
      *

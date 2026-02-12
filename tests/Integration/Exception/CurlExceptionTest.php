@@ -31,8 +31,7 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
- * Verifies that the CurlException class works as intended when resolving
- * dynamic error content.
+ * Integration tests for the CurlException class.
  */
 class CurlExceptionTest extends TestCase
 {

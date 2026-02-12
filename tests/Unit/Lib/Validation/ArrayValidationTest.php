@@ -36,6 +36,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Assert getKey throws when needle does not exist.
+     *
      * Assert getKey() throws MissingKeyException when the needle does not
      * exist.
      *
@@ -49,6 +51,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Assert getKey throws if needle exists but is non-integer.
+     *
      * Assert getKey() throws IllegalTypeException when the needle exists but
      * is not an integer.
      *
@@ -79,6 +83,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Assert isSequential throws if array is not sequential.
+     *
      * Assert isSequential() throws IllegalValueException if supplied array is
      * not sequential.
      */
@@ -103,6 +109,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Assert that isAssoc throws if array is not associative.
+     *
      * Assert isAssoc() throws IllegalValueException if supplied array is not
      * associative.
      */
@@ -127,6 +135,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isMultiDimensional throws on inconsistent depth.
+     *
      * Assert isMultiDimensional() throws IllegalTypeException when passed a
      * value containing an array with inconsistent depth.
      *
@@ -142,6 +152,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isMultiDimensional throws for array with too low depth.
+     *
      * Assert isMultiDimensional() throws IllegalTypeException when passed a
      * one dimensional array with a greater depth expected.
      *
@@ -157,6 +169,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isMultiDimensional throws for low depth array.
+     *
      * Assert isMultiDimensional() throws IllegalTypeException when passed an
      * accurate structure but with a consistently low depth.
      *
@@ -172,6 +186,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isMultiDimensional returns true for depth equal to one.
+     *
      * Assert isMultiDimensional() returns TRUE when passed a multidimensional
      * array with a depth of one.
      *
@@ -188,6 +204,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isMultiDimensional returns true for valid array.
+     *
      * Assert isMultiDimensional() returns TRUE when passed a multidimensional
      * array with a depth greater than one.
      *
@@ -217,6 +235,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isMultiDimensional returns true for valid array.
+     *
      * Assert isMultiDimensional() returns TRUE when passed a multidimensional
      * array with a partial depth greater than the depth check.
      *
@@ -233,6 +253,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that isStdClassCollection throws if encountering non-stdClass.
+     *
      * Assert isStdClassCollection() throws IllegalTypeException if the supplied
      * array contains an element that is not an instance of stdClass.
      */
@@ -260,6 +282,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify allowedKeys throws exception if supplied with invalid key.
+     *
      * Assert allowedKeys() throws IllegalValueException if the supplied array
      * which contains a key that is not in the supplied array of allowed keys.
      *
@@ -290,6 +314,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that length throws exception if max > min.
+     *
      * Test that length() throws IllegalValueException when given a max value
      * that is lower than the given min value.
      *
@@ -302,6 +328,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that length throws exception on negative min value.
+     *
      * Test that length() throws IllegalValueException when given a min value
      * that is negative.
      *
@@ -314,6 +342,8 @@ final class ArrayValidationTest extends TestCase
     }
 
     /**
+     * Verify that length throws exception if array has invalid length.
+     *
      * Test that length() throws IllegalValueException when the given array has
      * a length that does not fit into the specified min and max parameters.
      *

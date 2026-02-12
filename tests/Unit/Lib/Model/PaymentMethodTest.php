@@ -79,6 +79,8 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
+     * Verify that isInternal's return values are correct.
+     *
      * Assert that isInternal gives correct responses depending on the method's
      * type.
      */

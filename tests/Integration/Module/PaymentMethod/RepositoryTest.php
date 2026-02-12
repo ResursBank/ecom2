@@ -182,6 +182,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that getPaymentMethods properly caches data.
+     *
      * Assert getPaymentMethods() retrieves payment methods, paymentMethod them
      * in cache, and will later return the same paymentMethods from cache.
      *
@@ -217,6 +219,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that different amounts result in different outputs.
+     *
      * Assert different datasets from the API for different amount values. Also
      * make sure the cache is kept separated by the same value.
      *

@@ -33,8 +33,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws MissingKeyException when the needle does not
-     * exist.
+     * Assert getKey() throws MissingKeyException if needle doesn't exist.
      *
      * @throws IllegalTypeException
      * @throws MissingKeyException
@@ -46,8 +45,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not an integer.
+     * Assert getKey() throws IllegalTypeException for non-integer needle.
      *
      * @throws IllegalTypeException
      * @throws MissingKeyException
@@ -76,8 +74,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert isPositive() throws IllegalValueException when the value is
-     * negative.
+     * Assert isPositive() throws IllegalValueException if value is negative.
      *
      * @throws IllegalValueException
      */
@@ -97,8 +94,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert inRange() throws IllegalValueException when the max value is less
-     * than the min value.
+     * Assert inRange() throws IllegalValueException if max > min.
      *
      * @throws IllegalValueException
      */
@@ -110,8 +106,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert isGreateThan() throws IllegalValueException when the value is less than
-     * supplied minimum.
+     * Assert isGreaterThan() throws IllegalValueException if value < min.
      *
      * @throws IllegalValueException
      */
@@ -122,8 +117,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert isGreaterThan() returns true when the value is greater than supplied
-     * minimum.
+     * Assert isGreaterThan() returns true when value greater than min.
      *
      * @throws IllegalValueException
      */
@@ -135,8 +129,7 @@ final class IntValidationTest extends TestCase
     }
 
     /**
-     * Assert inRange() throws IllegalValueException when the tested integer is
-     * out of range.
+     * Assert inRange() throws IllegalValueException for out-of-range integer.
      */
     public function testInRangeThrowsWithIllegalValueWhenMaxIsInvalid(): void
     {

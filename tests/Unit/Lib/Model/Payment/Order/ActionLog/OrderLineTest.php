@@ -76,6 +76,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Generate price data for use in tests.
+     *
      * Get an anonymous array with price data for all price related properties
      * in the OrderLine class.
      *
@@ -162,8 +164,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateDescription() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateDescription() throws error for values that are too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -179,8 +180,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateReference() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateReference() throws error for values that are too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -196,8 +196,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateQuantityUnit() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateQuantityUnit() throws error for values that are too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -212,8 +211,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateVatRate() throws IllegalValueException when its
-     * value is negative.
+     * Assert validateVatRate() throws error for negative values.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -226,8 +224,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateVatRate() throws IllegalValueException when its
-     * value has more than 2 decimals digits.
+     * Assert validateVatRate() throws error on more than 2 decimals.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -240,8 +237,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateVatRate() throws IllegalValueException when its
-     * value has more than 2 integer digits.
+     * Assert validateVatRate() throws error for more than 2 decimals.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -254,8 +250,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateQuantity() throws IllegalValueException when its
-     * value is negative.
+     * Assert validateQuantity() throws error when its value is negative.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -268,8 +263,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateQuantity() throws IllegalValueException when its
-     * value has more than 2 decimals digits.
+     * Assert validateQuantity() throws error for more tan 2 decimals.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -282,8 +276,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
-     * its value has more than 2 decimals digits.
+     * Assert validateUnitAmountIncludingVat() throws error for more than 2 decimals.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -296,6 +289,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Verify validateTotalAmountIncludingVat throws error for 3+ decimals.
+     *
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
@@ -310,8 +305,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateTotalVatAmount() throws IllegalValueException when
-     * its value has more than 2 decimals digits.
+     * Assert validateTotalVatAmount() throws error for more than 2 decimals.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -478,6 +472,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Verify only positive values if type isn't DISCOUNT.
+     *
      * Assert that price related values on OrderLine instance only accept
      * positive values if the type _is not_ DISCOUNT, and vice versa if it is.
      *

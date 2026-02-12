@@ -42,9 +42,6 @@ class Repository
     use ExceptionLog;
 
     /**
-     * NOTE: Parameters must be validated since they are utilized for our cache
-     * keys.
-     *
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException

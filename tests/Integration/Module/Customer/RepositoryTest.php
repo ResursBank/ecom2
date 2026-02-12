@@ -193,6 +193,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify getAddress properly handles inaccurate results.
+     *
      * Assert getAddress with inaccurate SSN results in a CurlException with
      * httpCode 400, morphing to a GetAddressException.
      *
@@ -270,8 +272,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert setSsnData() won't cause an Exception if it cannot store data in
-     * PHP session.
+     * Verify setSsnData doesn't throw exception if data write fails.
      *
      * @throws ConfigException
      */

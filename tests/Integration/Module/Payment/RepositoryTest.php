@@ -406,6 +406,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that getTestStatusDetails works.
+     *
      * Assert TaskStatusDetails->completed for an associated Payment remains
      * "false" until the payment is actually completed, at which point it should
      * change to "true".
