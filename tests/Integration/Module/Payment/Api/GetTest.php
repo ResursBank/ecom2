@@ -117,7 +117,6 @@ class GetTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',

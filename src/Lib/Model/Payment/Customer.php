@@ -44,7 +44,6 @@ class Customer extends Model
     public function __construct(
         public readonly ?Address $deliveryAddress = null,
         public readonly ?CustomerType $customerType = null,
-        public readonly ?string $contactPerson = null,
         public readonly ?string $email = null,
         public ?string $governmentId = null,
         public readonly ?string $mobilePhone = null,

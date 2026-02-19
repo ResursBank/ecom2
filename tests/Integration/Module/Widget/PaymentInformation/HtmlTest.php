@@ -155,7 +155,6 @@ class HtmlTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: $governmentId,
                 mobilePhone: '0701234567',

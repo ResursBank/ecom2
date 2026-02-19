@@ -98,7 +98,6 @@ class CurlExceptionTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: $email,
                 governmentId: $governmentId,
                 mobilePhone: $mobilePhone,
