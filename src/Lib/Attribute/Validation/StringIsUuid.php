@@ -17,8 +17,6 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
-use function preg_match;
-
 /**
  * Used for UUID validation.
  */

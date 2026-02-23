@@ -16,8 +16,8 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
-
 use Resursbank\Ecom\Lib\Utilities\Strings;
+
 use function in_array;
 use function is_string;
 use function strlen;
