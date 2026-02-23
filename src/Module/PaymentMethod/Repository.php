@@ -49,6 +49,10 @@ class Repository
      * NOTE: Parameters must be validated since they are utilized for our cache
      * keys.
      *
+     * If $amount parameter is provided only methods where the value is greater
+     * than the method's minPurchaseLimit and less than its maxPurchaseLimit
+     * will be returned.
+     *
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException
