@@ -125,11 +125,13 @@ class Strings
      */
     public static function isUuid(string $value): bool
     {
-        try {
-            $validator = new StringValidation();
-            return $validator->isUuid(value: $value);
-        } catch (IllegalValueException) {
+        if (!preg_match(
+            pattern: '/^[\da-f]{8}-[\da-f]{4}-[0-5][\da-f]{3}-[\da-d][\da-f]{3}-[\da-f]{12}$/i',
+            subject: $value
+        )) {
             return false;
         }
+
+        return true;
     }
 }
