@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Payment\Enum;
+namespace Resursbank\Ecom\Lib\Model\Payment\Enum;
 
 /**
  * Customer identification types.
