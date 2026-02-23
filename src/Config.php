@@ -19,12 +19,12 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Lib\Session\Session;
 use Resursbank\Ecom\Lib\Session\SessionHandlerInterface;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
 
@@ -112,10 +112,10 @@ final class Config
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat,
             network: $network,
+            sessionHandler: $sessionHandler,
             storeId: $storeId,
             cacheWidgets: $cacheWidgets,
-            templateOverrideDirectory: $templateOverrideDirectory,
-            sessionHandler: $sessionHandler
+            templateOverrideDirectory: $templateOverrideDirectory
         );
     }
 
