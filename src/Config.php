@@ -233,6 +233,20 @@ final class Config
     }
 
     /**
+     * Check if the ECom instance is properly configured for API operations.
+     *
+     * Verifies that a Config instance exists, JWT authentication credentials
+     * are configured, and a store ID has been resolved. Does not make any
+     * network calls — only checks local configuration state.
+     */
+    public static function isReady(): bool
+    {
+        return self::$instance !== null
+            && self::$instance->jwtAuth !== null
+            && self::$instance->storeId !== null;
+    }
+
+    /**
      * Clears active configuration
      */
     public static function unsetInstance(): void
