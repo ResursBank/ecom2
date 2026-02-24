@@ -58,6 +58,11 @@ class Repository
     use ExceptionLog;
 
     /**
+     * Search payments.
+     *
+     * If no orderReference or governmentId is supplied then the API behavior
+     * is to return an unfiltered list of payments.
+     *
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException

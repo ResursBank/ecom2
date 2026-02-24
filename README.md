@@ -1045,9 +1045,12 @@ or *Magento*).**
 
 ### -#- \Resursbank\Ecom\Module\Payment\Repository::search()
 
-Let's you search for legacy payments placed with older API:s. Useful if you are 
+Lets you search for legacy payments placed with older API:s. Useful if you are 
 migrating from an older system to Ecom. If so, you can view this as your **get**
 for old payments. These can then be handled just like any other payment.
+
+Searching without specifying an order reference or a government ID will result
+in the API returning an unfiltered list of payments.
 
 **Note that this method will return a list of payments.**
 
