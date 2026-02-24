@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Order;
+namespace Resursbank\Ecom\Lib\Model;
 
 /**
  * Defines the types that a customer can be.
