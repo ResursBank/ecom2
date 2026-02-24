@@ -1663,7 +1663,7 @@ covered by its own chapter later in this document.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Css;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;
@@ -1931,7 +1931,7 @@ performed by the JavaScript component can fetch new data for the widget.
 
 ```php
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;
