@@ -121,7 +121,6 @@ class SearchTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: self::GOVERNMENT_ID,
                 mobilePhone: '0701234567',
