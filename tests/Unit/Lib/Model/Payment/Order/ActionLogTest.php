@@ -17,11 +17,11 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\OrderLineType;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 
 /**
  * Tests for the ActionLog class.

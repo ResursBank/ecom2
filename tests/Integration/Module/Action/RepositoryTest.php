@@ -34,13 +34,13 @@ use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Action\Repository as ActionRepository;
-use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**

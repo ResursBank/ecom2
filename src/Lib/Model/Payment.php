@@ -15,15 +15,15 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\RejectedReasonCategory;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
-use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
-use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
  * Payment model used in the GET /payment call.

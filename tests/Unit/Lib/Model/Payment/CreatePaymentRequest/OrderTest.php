@@ -19,10 +19,10 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\OrderLineType;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order as OrderModel;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\EcomTest\Data\Order;
 use stdClass;
 
