@@ -193,7 +193,7 @@ class HtmlTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$payment->id}<\/td>/s",
+            pattern: '/<td colspan="2">' . $payment->id . '<\/td>/s',
             string: $widget->content,
             message: 'Widget does not contain payment id cell.'
         );
@@ -214,9 +214,9 @@ class HtmlTest extends TestCase
     {
         $payment = $this->createPayment(orderReference: $this->orderReference);
         $widget = new Html(paymentId: $payment->id);
-        $tdEl = $widget->getTdElement(content: $payment->id);
+        $tdEl = $widget->getTdElement(content: $payment->id, colSpan: 2);
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$payment->id}<\/td>/s",
+            pattern: '/<td colspan="2">' . $payment->id . '<\/td>/s',
             string: $tdEl,
             message: 'getTdElement() does not return a td element with the ' .
             'given content.'
@@ -225,8 +225,11 @@ class HtmlTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$content}<\/td>/s",
-            string: $widget->getTdElement(content: $content),
+            pattern: '/<td colspan="2">' . $content . '<\/td>/s',
+            string: $widget->getTdElement(
+                content: $content,
+                colSpan: 2
+            ),
             message: 'getTdElement() does not return a td element with the ' .
             'given content.'
         );
@@ -234,7 +237,8 @@ class HtmlTest extends TestCase
         // Verify that if $isHeader is true, renders header element.
         $headerEl = $widget->getTdElement(
             content: 'captured-amount',
-            isHeader: true
+            isHeader: true,
+            colSpan: 2
         );
 
         // Assert that the content of the header element is translated.
@@ -325,6 +329,34 @@ class HtmlTest extends TestCase
     }
 
     /**
+     * Verify that the Merchant Portal link exists in the widget.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testMerchantPortalLinkRendering(): void
+    {
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
+        $this->assertMatchesRegularExpression(
+            pattern: '/<a target="_blank" href="https:\/\/web-integration-' .
+            'mock-merchant-portal\.i\.eks\.aws\.cld\.resurs\.com\/"/',
+            string: $widget->content
+        );
+    }
+
+    /**
      * Assert that the logo is rendered correctly.
      */
     public function testLogoRendering(): void
@@ -358,7 +390,7 @@ class HtmlTest extends TestCase
         $widget = new Html(paymentId: $payment->id);
 
         $this->assertMatchesRegularExpression(
-            pattern: '/<td(.*?)>Status<\/td><td>REJECTED \(Credit denied\)<\/td>/s',
+            pattern: '/<td(.*?)>Status<\/td><td colspan="2">REJECTED \(Credit denied\)<\/td>/s',
             string: $widget->content,
             message: 'Payment was not rejected with CREDIT_DENIED.'
         );

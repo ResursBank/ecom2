@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\Widget\PaymentInformation;
 
 use JsonException;
 use ReflectionException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
@@ -48,6 +49,9 @@ class Html extends Widget
     /** @var string */
     public readonly string $logo;
 
+    /** @var string */
+    public readonly string $externalLinkIcon;
+
     /**
      * @throws JsonException
      * @throws ReflectionException
@@ -72,10 +76,27 @@ class Html extends Widget
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'resurs.svg'
         );
 
+        $this->externalLinkIcon = $this->renderStatic(
+            file: $this->getWidgetName() . DIRECTORY_SEPARATOR .
+                'external_link.svg'
+        );
+
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public function getMerchantPortalUrl(): string
+    {
+        if (!Config::isProduction()) {
+            return 'https://web-integration-mock-merchant-portal.i.eks.aws.cld.resurs.com/';
+        }
+
+        return 'https://web-prod-merchant-portal.p.eks.aws.cld.resurs.com';
     }
 
     public function hasAddress(): bool
@@ -176,6 +197,8 @@ class Html extends Widget
 
     /**
      * Take supplied amount value and format with currency symbol etc.
+     *
+     * @throws ConfigException
      */
     public function getFormattedAmount(float $amount): string
     {
@@ -187,18 +210,16 @@ class Html extends Widget
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function getTdElement(
         string $content,
-        bool $isHeader = false
+        bool $isHeader = false,
+        int $colSpan = 1
     ): string {
-        return '<td' .
+        return '<td colspan="' . $colSpan . '"' .
             ($isHeader ? ' class="rb-pi-row-header"' : '') . '>' .
             ($isHeader ? Translator::translate(phraseId: $content) : $content)
             . '</td>';
@@ -214,10 +235,7 @@ class Html extends Widget
      *
      * @throws ConfigException
      * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
      * @throws JsonException
-     * @throws ReflectionException
      * @throws TranslationException
      */
     public function getTrElement(
@@ -226,7 +244,7 @@ class Html extends Widget
     ): string {
         return '<tr>' .
             $this->getTdElement(content: $title, isHeader: true) .
-            $this->getTdElement(content: $content) . '</tr>';
+            $this->getTdElement(content: $content, colSpan: 2) . '</tr>';
     }
 
     /**
