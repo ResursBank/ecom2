@@ -14,9 +14,9 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Payment\Order\ActionLog;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine as OrderLineModel;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 
 /**
  * Test data integrity of OrderLineCollection entity.

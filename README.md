@@ -904,7 +904,7 @@ Retrieve customer address from API.
 
 ```php
 use \Resursbank\Ecom\Module\Customer\Repository;
-use \Resursbank\Ecom\Lib\Order\CustomerType;
+use \Resursbank\Ecom\Lib\Model\CustomerType;
 
 $address = Repository::getAddress(
     storeId: 'store-id',
@@ -1090,7 +1090,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use \Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Validation\StringValidation;

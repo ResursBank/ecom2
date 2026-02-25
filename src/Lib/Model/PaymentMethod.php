@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 

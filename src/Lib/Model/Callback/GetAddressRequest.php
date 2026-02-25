@@ -14,8 +14,8 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**

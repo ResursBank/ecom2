@@ -24,7 +24,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionMode
 use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
-use Resursbank\Ecom\Lib\Order\CountryCode;
 
 /**
  * Payment model used in the GET /payment call.
