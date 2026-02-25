@@ -215,4 +215,29 @@ class SearchTest extends TestCase
             actual: $fetched instanceof Payment ? $fetched->id : ''
         );
     }
+
+    /**
+     * Verify that no filtering takes place if no arguments are used.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSearchWithNoArguments(): void
+    {
+        $response = Repository::search()->toArray();
+
+        $this->assertEquals(
+            expected: 20,
+            actual: count($response)
+        );
+    }
 }
