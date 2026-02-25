@@ -333,57 +333,6 @@ class Repository
     }
 
     /**
-     * Replaces current order lines on payment.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
-     */
-    public static function updateOrderLines(
-        string $paymentId,
-        OrderLineCollection $orderLines
-    ): Payment {
-        $payment = self::get(paymentId: $paymentId);
-
-        $orderLineSum = 0.0;
-
-        /** @var Payment\Order\ActionLog\OrderLine $orderLine */
-        foreach ($orderLines as $orderLine) {
-            $orderLineSum += $orderLine->totalAmountIncludingVat;
-        }
-
-        if ($payment->order === null) {
-            throw new IllegalValueException(
-                message: 'Payment does not contain Order object.'
-            );
-        }
-
-        if ($orderLineSum > $payment->order->authorizedAmount) {
-            throw new IllegalValueException(
-                message: 'Unable to update order, sum total of new order lines is ' .
-                    $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount
-            );
-        }
-
-        self::cancel(paymentId: $paymentId);
-
-        return self::addOrderLines(
-            paymentId: $paymentId,
-            orderLines: $orderLines
-        );
-    }
-
-    /**
      * Fetch TaskStatusDetails object relating to our payment from API.
      *
      * @throws ApiException
