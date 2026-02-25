@@ -30,15 +30,15 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -213,6 +213,31 @@ class SearchTest extends TestCase
         $this->assertSame(
             expected: $payment->id,
             actual: $fetched instanceof Payment ? $fetched->id : ''
+        );
+    }
+
+    /**
+     * Verify that no filtering takes place if no arguments are used.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testSearchWithNoArguments(): void
+    {
+        $response = Repository::search()->toArray();
+
+        $this->assertEquals(
+            expected: 20,
+            actual: count($response)
         );
     }
 }

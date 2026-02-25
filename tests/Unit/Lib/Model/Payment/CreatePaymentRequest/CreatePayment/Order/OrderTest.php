@@ -15,10 +15,10 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\IllegalCharsetException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 
 /**
  * Test data integrity of order entity model.

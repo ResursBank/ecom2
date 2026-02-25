@@ -19,18 +19,19 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
-use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
@@ -39,9 +40,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -132,36 +130,6 @@ class RepositoryTest extends TestCase
             ),
             metadata: MockSigner::getMetadata()
         );
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AttributeCombinationException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TimeoutException
-     * @throws ValidationException
-     * @throws NotJsonEncodedException
-     */
-    private function callMockSigner(Payment $payment): bool
-    {
-        try {
-            MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException $error) {
-            if ($_ENV['IS_PIPELINE']) {
-                return false;
-            }
-
-            throw $error;
-        }
-
-        return true;
     }
 
     /**
@@ -321,86 +289,6 @@ class RepositoryTest extends TestCase
         $this->assertEqualsCanonicalizing(
             expected: $metadata->custom->toArray(),
             actual: $createdMetadata->custom->toArray()
-        );
-    }
-
-    /**
-     * Verify that updateOrderLines actually replaces order lines.
-     *
-     * @throws Exception
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testReplaceOrderLines(): void
-    {
-        $orderReference = Strings::generateRandomString(length: 12);
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        if (!$this->callMockSigner(payment: $payment)) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
-        }
-
-        // Fetch order
-        $payment = Repository::get(paymentId: $payment->id);
-
-        $orderLines = new OrderLineCollection(data: [
-            new OrderLine(
-                quantity: 1,
-                quantityUnit: 'st',
-                vatRate: 25,
-                totalAmountIncludingVat: 100,
-                description: 'One hundred',
-                type: OrderLineType::PHYSICAL_GOODS
-            ),
-        ]);
-        $updatedPayment = Repository::updateOrderLines(
-            paymentId: $payment->id,
-            orderLines: $orderLines
-        );
-
-        if ($updatedPayment->order === null) {
-            throw new Exception(message: 'updatedPayment order object is null');
-        }
-
-        /** @var Order\ActionLog $updatedActionLog */
-        $updatedActionLog = $updatedPayment->order->actionLog[array_key_last(
-            array: $updatedPayment->order->actionLog->toArray()
-        )];
-        $updatedOrderLines = $updatedActionLog->orderLines;
-
-        $orderLineSum = 0.0;
-
-        /** @var OrderLine $orderLine */
-        foreach ($orderLines as $orderLine) {
-            $orderLineSum += $orderLine->totalAmountIncludingVat;
-        }
-
-        $updatedOrderLineSum = 0.0;
-
-        /** @var OrderLine $orderLine */
-        foreach ($updatedOrderLines as $orderLine) {
-            $updatedOrderLineSum += $orderLine->totalAmountIncludingVat;
-        }
-
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $updatedPayment->id
-        );
-        $this->assertCount(
-            expectedCount: count($orderLines),
-            haystack: $updatedOrderLines
-        );
-        $this->assertEquals(
-            expected: $orderLineSum,
-            actual: $updatedOrderLineSum
         );
     }
 

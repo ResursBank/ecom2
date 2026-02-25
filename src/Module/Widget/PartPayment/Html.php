@@ -292,14 +292,6 @@ class Html extends Widget
     }
 
     /**
-     * @return float Monthly cost or 0 if monthly cost not set.
-     */
-    public function getMonthlyCost(): float
-    {
-        return $this->cost->monthlyCost ?? 0;
-    }
-
-    /**
      * Fetches formatted starting at cost with currency symbol.
      *
      * @throws ConfigException

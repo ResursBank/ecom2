@@ -13,7 +13,6 @@ use JsonException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringLength;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
-use Resursbank\Ecom\Lib\Order\CountryCode;
 
 /**
  * Address information block about a payment.

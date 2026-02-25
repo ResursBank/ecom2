@@ -904,7 +904,7 @@ Retrieve customer address from API.
 
 ```php
 use \Resursbank\Ecom\Module\Customer\Repository;
-use \Resursbank\Ecom\Lib\Order\CustomerType;
+use \Resursbank\Ecom\Lib\Model\CustomerType;
 
 $address = Repository::getAddress(
     storeId: 'store-id',
@@ -1045,9 +1045,12 @@ or *Magento*).**
 
 ### -#- \Resursbank\Ecom\Module\Payment\Repository::search()
 
-Let's you search for legacy payments placed with older API:s. Useful if you are 
+Lets you search for legacy payments placed with older API:s. Useful if you are 
 migrating from an older system to Ecom. If so, you can view this as your **get**
 for old payments. These can then be handled just like any other payment.
+
+Searching without specifying an order reference or a government ID will result
+in the API returning an unfiltered list of payments.
 
 **Note that this method will return a list of payments.**
 
@@ -1090,7 +1093,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use \Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -1295,43 +1298,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 
 $payment = Repository::addOrderLines(
-    paymentId: 'payment-id',
-    orderLines: new OrderLineCollection(data: [
-       new OrderLine(
-           quantity: 1,
-           quantityUnit: 'pcs',
-           vatRate: 25,
-           unitAmountIncludingVat: 100,
-           description: 'Article 1'
-       ),
-       new OrderLine(
-           quantity: 1,
-           quantityUnit: 'pcs',
-           vatRate: 25,
-           unitAmountIncludingVat: 100,
-           description: 'Article 2'
-       ),
-    ]),
-);
-```
-
-### -#- \Resursbank\Ecom\Module\Payment\Repository::updateOrderLines()
-
-Replace the order lines of an existing payment. This method will:
-
-1. Execute **cancel()** to cancel the existing payment (this basically just cancels all items attached to the payment, it does not cancel the payment object itself).
-2. Execute **addOrderLines()** to add the new order lines to the payment.
-
-This method will also perform some special validation checks before performing
-these operations. To assert that the payment is in a state where it can be
-updated, and that the new order lines are valid for it. For example, you cannot
-replace order lines on a payment that has already been captured, and you cannot
-add order lines which would exceed to total authorized amount of the payment.
-
-```php
-use \Resursbank\Ecom\Module\Payment\Repository;
-
-$payment = Repository::updateOrderLines(
     paymentId: 'payment-id',
     orderLines: new OrderLineCollection(data: [
        new OrderLine(
