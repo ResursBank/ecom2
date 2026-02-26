@@ -444,12 +444,3 @@ class Resursbank_GetAddress {
         // Placeholder.
     }
 }
-
-<?php if ($this->automatic): ?>
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
-        new Resursbank_GetAddress().setupEventListeners();
-    }
-);
-<?php endif; ?>
