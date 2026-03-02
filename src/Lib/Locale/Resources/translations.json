@@ -3573,5 +3573,26 @@
       "en": "This setting can be used for specifying an absolute path to a directory where overrides for widget templates can be places. Use this feature with caution.",
       "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte."
     }
+  },
+  {
+    "id": "redis-host",
+    "translation": {
+      "en": "Redis host",
+      "sv": "Värdnamn för Redis"
+    }
+  },
+  {
+    "id": "redis-port",
+    "translation": {
+      "en": "Redis port",
+      "sv": "Port för Redis"
+    }
+  },
+  {
+    "id": "redis-password",
+    "translation": {
+      "en": "Redis password",
+      "sv": "Lösenord för Redis"
+    }
   }
 ]
