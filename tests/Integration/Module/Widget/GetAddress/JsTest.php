@@ -92,25 +92,16 @@ class JsTest extends TestCase
      * $data->content:
      *
      * - Contains "return 'https://example.com'" to confirm URL is used.
-     * - Contains "new Resursbank_GetAddress().setupEventListeners();" to ensure
-     * $this->>automatic is respected.
      */
     public function testRenderMax(): void
     {
-        $data = new Js(url: 'https://example.com/', automatic: true);
+        $data = new Js(url: 'https://example.com/');
 
         // Confirm URL is used.
         static::assertStringContainsString(
             needle: 'return \'https://example.com/\'',
             haystack: $data->content,
             message: 'Get address widget should contain URL "https://example.com".'
-        );
-
-        // Confirm automatic is respected.
-        static::assertStringContainsString(
-            needle: 'new Resursbank_GetAddress().setupEventListeners();',
-            haystack: $data->content,
-            message: 'Get address widget should contain "new Resursbank_GetAddress().setupEventListeners();".'
         );
     }
 
