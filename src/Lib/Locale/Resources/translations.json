@@ -3576,6 +3576,27 @@
     }
   },
   {
+    "id": "redis-host",
+    "translation": {
+      "en": "Redis host",
+      "sv": "Värdnamn för Redis"
+    }
+  },
+  {
+    "id": "redis-port",
+    "translation": {
+      "en": "Redis port",
+      "sv": "Port för Redis"
+    }
+  },
+  {
+    "id": "redis-password",
+    "translation": {
+      "en": "Redis password",
+      "sv": "Lösenord för Redis"
+    }
+  },
+  {
     "id": "invalid-government-id",
     "translation": {
       "en": "Invalid government ID.",
