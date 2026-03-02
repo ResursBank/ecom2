@@ -39,7 +39,6 @@ class Js extends Widget
      */
     public function __construct(
         public readonly string $url,
-        public readonly bool $automatic = false,
         StringValidation $stringValidation = new StringValidation()
     ) {
         $stringValidation->isUrl(value: $url);

@@ -971,8 +971,7 @@ use \Resursbank\Ecom\Module\Widget\GetAddress\Js;
 use \Resursbank\Ecom\Module\Widget\GetAddress\Css;
 
 // Note that you also can supply a $governmentId and $customerType to
-// pre-populate the form should you wish to. Also, you can set $automatic to
-// true if you do not want to modify the JavaScript code (js.js.phtml).
+// pre-populate the form should you wish to.
 // For example, you may wish to display errors in a certain way, or display a
 // customer loader while the request is being processed. For the purpose of this
 // example, we will leave it as false, just to give you an idea of how you could
@@ -994,8 +993,6 @@ $css = new Css();
 <script>
     <?= $js->content ?>
 
-    // If you had set automatic to true, this method would be called automatically.
-    // upon document load. Since we set it to false, we need to call it manually.
     let instance = new Resursbank_GetAddress({
         errorHandler: function (error) {
             console.error(error);
