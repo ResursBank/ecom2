@@ -1094,7 +1094,8 @@
       "en": "There was an error while creating the payment at Resurs Bank.",
       "sv": "Ett fel inträffade medan betalningen skapades hos Resurs Bank.",
       "no": "Det oppstod en feil under opprettelse av betalingen hos Resurs Bank.",
-      "da": "Der opstod en fejl under oprettelsen af betalingen hos Resurs Bank."
+      "da": "Der opstod en fejl under oprettelsen af betalingen hos Resurs Bank.",
+      "fi": "Tapahtui virhe luotaessa maksua Resurs Bankissa."
     }
   },
   {
@@ -3593,6 +3594,36 @@
     "translation": {
       "en": "Redis password",
       "sv": "Lösenord för Redis"
+    }
+  },
+  {
+    "id": "invalid-government-id",
+    "translation": {
+      "en": "Invalid government ID.",
+        "sv": "Ogiltigt personnummer.",
+        "no": "Ugyldig personnummer.",
+        "da": "Ugyldigt personnummer.",
+        "fi": "Virheellinen henkilötunnus."
+    }
+  },
+  {
+    "id": "invalid-phone-number",
+    "translation": {
+      "en": "Invalid phone number.",
+      "sv": "Ogiltigt telefonnummer.",
+      "no": "Ugyldig telefonnummer.",
+      "da": "Ugyldigt telefonnummer.",
+      "fi": "Virheellinen puhelinnumero."
+    }
+  },
+  {
+    "id": "invalid-email-address",
+    "translation": {
+      "en": "Invalid email address.",
+      "sv": "Ogiltig e-postadress.",
+      "no": "Ugyldig e-postadresse.",
+      "da": "Ugyldig e-mailadresse.",
+      "fi": "Virheellinen sähköpostiosoite."
     }
   }
 ]

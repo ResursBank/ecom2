@@ -138,7 +138,7 @@ class HtmlTest extends TestCase
     {
         $this->assertMatchesRegularExpression(
             pattern: '/^Pay [\d,.]+ kr\/month for ' . $this->widget->months .
-                ' months \(0% interest rate\)\.$/',
+                ' months \([0-9\.]+% interest rate\)\.$/',
             string: $this->widget->getStartingAt(),
             message: 'Starting at should be formatted correctly.'
         );

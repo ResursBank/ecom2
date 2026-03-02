@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="ResursbankCustom">
+    <description>Custom Resursbank coding standards</description>
+    <rule ref="Resursbank.Commenting.CopyrightNotice" />
+</ruleset>
+
