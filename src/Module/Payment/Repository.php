@@ -287,7 +287,7 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function setMetadata(
+    public static function addMetadata(
         string $paymentId,
         Metadata $metadata
     ): Metadata {

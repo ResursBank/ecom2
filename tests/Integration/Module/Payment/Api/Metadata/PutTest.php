@@ -177,7 +177,7 @@ class PutTest extends TestCase
         }
 
         // Add metadata
-        $setMetadataResponse = Repository::setMetadata(
+        $setMetadataResponse = Repository::addMetadata(
             paymentId: $payment->id,
             metadata: new Metadata(
                 custom: new Metadata\EntryCollection(data: $custom)
