@@ -19,8 +19,6 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -33,7 +31,6 @@ use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
-use Resursbank\Ecom\Module\Widget\UniqueSellingPoint\Html;
 use Throwable;
 
 /**
@@ -193,30 +190,5 @@ class Repository
             self::logException(exception: $e);
             throw $e;
         }
-    }
-
-    /**
-     * Fetches the USP for specified payment method type
-     *
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @SuppressWarnings(PHPMD.LongVariable)
-     */
-    public static function getUniqueSellingPoint(
-        PaymentMethod $paymentMethod,
-        float $amount,
-        bool $useLegacyReadMoreLink = false
-    ): Html {
-        return new Html(
-            paymentMethod: $paymentMethod,
-            amount: $amount,
-            useLegacyReadMoreLink: $useLegacyReadMoreLink
-        );
     }
 }
