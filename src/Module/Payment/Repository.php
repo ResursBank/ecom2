@@ -52,6 +52,14 @@ use Throwable;
 /**
  * Payment repository.
  *
+ * Note about order lines submitted to the API: The API will not allow actions
+ * such as capturing or canceling a greater sum than what is available for the
+ * action on the payment but action order lines do not have to perfectly
+ * match the order lines from the payment creation. As an example, it is
+ * possible to have multiple order lines on a payment at creation and to then
+ * capture the entire sum of the payment with a single order line in a capture
+ * call.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @noinspection EfferentObjectCouplingInspection
  */
