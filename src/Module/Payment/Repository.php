@@ -19,6 +19,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -154,17 +156,27 @@ class Repository
     /**
      * Capture payment
      *
+     * The transactionId parameter will, if supplied, appear in the accounting
+     * file that Resurs Bank submits to your organization.
+     *
+     * @param string $paymentId Resurs payment ID.
+     * @param OrderLineCollection|null $orderLines Order line collection.
+     * @param string|null $creator Reference to person who performed action.
+     * @param string|null $transactionId Alternative transaction identifier.
+     * @param string|null $invoiceId Reference to local invoice.
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function capture(
@@ -184,19 +196,24 @@ class Repository
     }
 
     /**
-     * Cancel payment
+     * Cancel payment.
      *
+     * @param string $paymentId Resurs payment ID
+     * @param OrderLineCollection|null $orderLines Order line collection.
+     * @param string|null $creator Reference to person who performed action.
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function cancel(
@@ -212,18 +229,30 @@ class Repository
     }
 
     /**
-     * Refund payment
+     * Refund payment.
      *
+     * The transactionId parameter will, if supplied, appear in the accounting
+     * file that Resurs Bank submits to your organization.
+     *
+     * @param string $paymentId Resurs payment ID
+     * @param OrderLineCollection|null $orderLines Order line collection.
+     * @param string|null $creator Reference to person who performed action.
+     * @param string|null $transactionId Alternative transaction identifier.
+     * @param string|null $refundNoteId Reference to local credit note.
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function refund(
