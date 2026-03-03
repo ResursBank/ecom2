@@ -24,8 +24,7 @@ function showLogTable()
  *
  * @param event
  */
-closeOnEscape = function(event)
-{
+closeOnEscape = function (event) {
     const key = event.key;
     if (key === 'Escape') {
         hideWidget();
