@@ -1257,7 +1257,7 @@ supply the following optional arguments when cancelling:
  - **orderLines** - A collection of specific **OrderLine** objects to cancel.
  - **creator** - Reference to the person who performed the cancellation.
 
-### -#- \Resursbank\Ecom\Module\Payment\Repository::setMetadata()
+### -#- \Resursbank\Ecom\Module\Payment\Repository::addMetadata()
 
 Append additional metadata to an existing payment.
 
@@ -1267,10 +1267,10 @@ use \Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use \Resursbank\Ecom\Lib\Model\Payment\Metadata\EntryCollection;
 use \Resursbank\Ecom\Lib\Model\Payment\Metadata\Entry;
 
-$payment = Repository::setMetadata(
+$payment = Repository::addMetadata(
     paymentId: 'payment-id',
     metadata: new Metadata(
-       creator: 'Seombody',
+       creator: 'Somebody',
        custom: new EntryCollection(data: [
            new Entry(
                key: 'key',
