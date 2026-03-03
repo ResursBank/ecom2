@@ -295,47 +295,6 @@ class Repository
     }
 
     /**
-     * Get client information metadata.
-     *
-     * @throws IllegalTypeException
-     * @throws Exception
-     */
-    public static function getIntegrationInfoMetadata(
-        string $platform,
-        string $platformVersion,
-        string $pluginVersion
-    ): Metadata {
-        $generic = new Generic();
-        return new Metadata(
-            custom: new Metadata\EntryCollection(data: [
-                new Metadata\Entry(
-                    key: 'resurs_platform',
-                    value: $platform
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_version',
-                    value: $platformVersion
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_plugin_version',
-                    value: $pluginVersion
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_php_version',
-                    value: PHP_VERSION
-                ),
-                new Metadata\Entry(
-                    key: 'resurs_platform_ecom2_version',
-                    value: $generic->getVersionByComposer(
-                        location: __DIR__,
-                        maxDepth: 4
-                    )
-                )
-            ])
-        );
-    }
-
-    /**
      * Add new order lines to payment.
      *
      * @throws ApiException
@@ -392,6 +351,50 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * Get client information metadata.
+     *
+     * This method is used by the various Resurs-developed platform
+     * integrations.
+     *
+     * @throws IllegalTypeException
+     * @throws Exception
+     */
+    public static function getIntegrationInfoMetadata(
+        string $platform,
+        string $platformVersion,
+        string $pluginVersion
+    ): Metadata {
+        $generic = new Generic();
+        return new Metadata(
+            custom: new Metadata\EntryCollection(data: [
+                new Metadata\Entry(
+                    key: 'resurs_platform',
+                    value: $platform
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_version',
+                    value: $platformVersion
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_plugin_version',
+                    value: $pluginVersion
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_php_version',
+                    value: PHP_VERSION
+                ),
+                new Metadata\Entry(
+                    key: 'resurs_platform_ecom2_version',
+                    value: $generic->getVersionByComposer(
+                        location: __DIR__,
+                        maxDepth: 4
+                    )
+                )
+            ])
+        );
     }
 
     /**
