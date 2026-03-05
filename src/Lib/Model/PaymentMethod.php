@@ -43,6 +43,7 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         public readonly bool $enabledForLegalCustomer,
         public readonly bool $enabledForNaturalCustomer,
         public readonly bool $priceSignagePossible,
+        public readonly ?string $description = null,
         public int $sortOrder = 0,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation()

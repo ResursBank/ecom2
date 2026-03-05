@@ -99,7 +99,7 @@ class HtmlTest extends TestCase
                 'RESURS_INVOICE_ACCOUNT'
             ],
             strict: true
-        );
+        ) && ($method->description === '' || $method->description === null);
     }
 
     /**
