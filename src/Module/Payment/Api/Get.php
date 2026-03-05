@@ -67,9 +67,7 @@ class Get
 
         $data = $curl->exec()->body;
 
-        $content = (
-            $data instanceof stdClass
-        ) ? $data : new stdClass();
+        $content = $data instanceof stdClass ? $data : new stdClass();
 
         if (
             isset($content->metadata->custom) &&

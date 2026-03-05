@@ -24,23 +24,12 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
-use Resursbank\Ecom\Lib\Network\AuthType;
-use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\Payment\Api\Traits\Shared;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
-use Resursbank\Ecom\Module\PaymentHistory\Translator;
-use stdClass;
 use Throwable;
 
 /**
@@ -48,12 +37,7 @@ use Throwable;
  */
 class Capture
 {
-    private Mapi $mapi;
-
-    public function __construct()
-    {
-        $this->mapi = new Mapi();
-    }
+    use Shared;
 
     /**
      * Makes call to the API
@@ -80,12 +64,9 @@ class Capture
         ?string $transactionId = null,
         ?string $invoiceId = null
     ): Payment {
-        PaymentHistoryRepository::write(
-            entry: new Entry(
-                paymentId: $paymentId,
-                event: Event::CAPTURE_REQUESTED,
-                user: User::ADMIN
-            )
+        $this->logRequest(
+            paymentId: $paymentId,
+            event: Event::CAPTURE_REQUESTED
         );
 
         $previouslyCaptured = $this->getCapturedAmount(paymentId: $paymentId);
@@ -97,28 +78,26 @@ class Capture
             invoiceId: $invoiceId
         );
 
-        $curl = $this->getCurlObject(paymentId: $paymentId, payload: $payload);
+        $curl = $this->getCurlObject(
+            paymentId: $paymentId,
+            method: 'capture',
+            payload: $payload
+        );
         $data = $curl->exec()->body;
 
-        $content = $data instanceof stdClass ? $data : new stdClass();
-
-        $result = DataConverter::stdClassToType(
-            object: $content,
-            type: Payment::class
+        $result = $this->processResponse(
+            paymentId: $paymentId,
+            response: $data
         );
-
-        if (!$result instanceof Payment) {
-            $this->logFailure(paymentId: $paymentId);
-            throw new IllegalTypeException(message: 'Expected Payment');
-        }
 
         $capturedAmount = $this->getCapturedAmount(paymentId: $paymentId)
             - $previouslyCaptured;
 
         $this->logSuccess(
             paymentId: $paymentId,
-            result: $result,
-            capturedAmount: $capturedAmount
+            event: $result->isCaptured() ? Event::CAPTURED
+                : Event::PARTIALLY_CAPTURED,
+            extra: Price::format(value: $capturedAmount)
         );
         return $result;
     }
@@ -138,82 +117,6 @@ class Capture
         }
 
         return 0.0;
-    }
-
-    /**
-     * Logs failure to payment history.
-     *
-     * @throws TranslationException
-     * @throws IllegalValueException
-     * @throws AttributeCombinationException
-     * @throws JsonException
-     * @throws ConfigException
-     * @throws IllegalTypeException
-     * @throws ReflectionException
-     * @throws FilesystemException
-     */
-    private function logFailure(string $paymentId): void
-    {
-        PaymentHistoryRepository::write(entry: new Entry(
-            paymentId: $paymentId,
-            event: Event::REQUEST_FAILED,
-            user: User::ADMIN,
-            result: Result::ERROR,
-            extra: Translator::translate(phraseId: 'event-request-failed')
-        ));
-    }
-
-    /**
-     * Logs success to payment history.
-     *
-     * @throws ConfigException
-     * @throws ReflectionException
-     * @throws AttributeCombinationException
-     * @throws JsonException
-     */
-    private function logSuccess(
-        string $paymentId,
-        Payment $result,
-        float $capturedAmount
-    ): void {
-        PaymentHistoryRepository::write(
-            entry: new Entry(
-                paymentId: $paymentId,
-                event: $result->isCaptured() ? Event::CAPTURED
-                    : Event::PARTIALLY_CAPTURED,
-                user: User::ADMIN,
-                result: Result::SUCCESS,
-                extra: Price::format(value: $capturedAmount)
-            )
-        );
-    }
-
-    /**
-     * Get Curl object.
-     *
-     * @throws ApiException
-     * @throws AttributeCombinationException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    private function getCurlObject(string $paymentId, array $payload): Curl
-    {
-        return new Curl(
-            url: $this->mapi->getUrl(
-                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/capture'
-            ),
-            requestMethod: RequestMethod::POST,
-            payload: $payload,
-            authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: empty($payload)
-        );
     }
 
     /**
