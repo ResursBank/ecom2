@@ -33,7 +33,6 @@ class Entry extends Model
      *
      * @param string $paymentId Payment or Checkout ID
      * @param ?string $reference Order reference.
-     *
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
