@@ -31,12 +31,12 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 use Throwable;
 
 use function count;
-use function number_format;
 
 /**
  * Integration tests for the PaymentMethods widget.
@@ -149,9 +149,8 @@ class HtmlTest extends TestCase
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    number_format(
-                        num: $method->minPurchaseLimit,
-                        decimals: 2
+                    Price::format(
+                        value: $method->minPurchaseLimit
                     ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing min purchase limit column for payment method row matching $method->id"
@@ -159,9 +158,8 @@ class HtmlTest extends TestCase
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    number_format(
-                        num: $method->maxPurchaseLimit,
-                        decimals: 2
+                    Price::format(
+                        value: $method->maxPurchaseLimit
                     ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing max purchase limit column for payment method row matching $method->id"
