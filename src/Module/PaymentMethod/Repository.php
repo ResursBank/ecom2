@@ -30,7 +30,6 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
 use Throwable;
 
 /**
@@ -145,34 +144,6 @@ class Repository
             return $paymentMethods->getById(methodId: $paymentMethodId);
         } catch (MissingValueException) {
             return null;
-        }
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
-     */
-    public static function getApplicationDataSpecification(
-        string $paymentMethodId,
-        int $amount
-    ): PaymentMethod\ApplicationFormSpecResponse {
-        try {
-            return (new ApplicationDataSpecification())->call(
-                paymentMethodId: $paymentMethodId,
-                amount: $amount
-            );
-        } catch (Throwable $e) {
-            self::logException(exception: $e);
-            throw $e;
         }
     }
 }
