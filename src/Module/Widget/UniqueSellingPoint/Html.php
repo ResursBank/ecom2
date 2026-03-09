@@ -79,7 +79,7 @@ class Html extends Widget
     /**
      * Fetches the localized USP translation for a payment method type.
      *
-     * This uses a module-specific translation file as the API does not contain
+     * This uses a module-specific translation file if the API does not contain
      * the necessary USP data.
      *
      * @throws ConfigException
@@ -89,6 +89,13 @@ class Html extends Widget
      */
     public function getText(): string
     {
+        if (
+            isset($this->paymentMethod->description) &&
+            !empty($this->paymentMethod->description)
+        ) {
+            return $this->paymentMethod->description;
+        }
+
         return Translator::translate(
             phraseId: str_replace(
                 search: '_',
