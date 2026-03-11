@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Resursbank\Ecom\Config;
@@ -33,6 +34,7 @@ use Throwable;
  *
  * @todo Improve test coverage.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ConfigTest extends TestCase
 {
     /**
@@ -157,7 +159,7 @@ class ConfigTest extends TestCase
     public function testHasJwtAuth(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
+            logger: $this->createMock(type: FileLogger::class)
         );
         self::assertEquals(
             expected: false,
@@ -165,8 +167,8 @@ class ConfigTest extends TestCase
         );
 
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            jwtAuth: $this->createMock(originalClassName: Jwt::class)
+            logger: $this->createMock(type: FileLogger::class),
+            jwtAuth: $this->createMock(type: Jwt::class)
         );
         self::assertEquals(
             expected: true,
@@ -202,8 +204,8 @@ class ConfigTest extends TestCase
         $this->assertNull(actual: $uninitializedValue);
 
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            cache: $this->createMock(originalClassName: None::class)
+            logger: $this->createMock(type: FileLogger::class),
+            cache: $this->createMock(type: None::class)
         );
 
         $initializedValue = $reflectionClass->getStaticPropertyValue(

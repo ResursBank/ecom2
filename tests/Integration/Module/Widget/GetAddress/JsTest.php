@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\GetAddress;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -22,6 +23,7 @@ use Resursbank\Ecom\Module\Widget\GetAddress\Js;
 /**
  * Integration tests for the GetAddress JS widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class JsTest extends TestCase
 {
     /**
@@ -31,7 +33,7 @@ class JsTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(
@@ -54,7 +56,7 @@ class JsTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(

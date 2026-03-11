@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
@@ -19,6 +20,7 @@ use function strlen;
 /**
  * Unit tests for the StringLength validation attribute.
  */
+#[AllowMockObjectsWithoutExpectations]
 class StringLengthTest extends TestCase
 {
     /**
@@ -55,7 +57,7 @@ class StringLengthTest extends TestCase
         $max = 200;
         $object = new StringLength(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (
@@ -87,7 +89,7 @@ class StringLengthTest extends TestCase
         $max = 200;
         $object = new StringLength(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (

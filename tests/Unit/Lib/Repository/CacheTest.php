@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Repository;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -31,6 +32,7 @@ use function is_string;
 /**
  * Verifies business logic of ModelConverter trait.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class CacheTest extends TestCase
 {
     private MockObject&None $cacheDriver;
@@ -44,11 +46,11 @@ final class CacheTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->cacheDriver = $this->createMock(originalClassName: None::class);
+        $this->cacheDriver = $this->createMock(type: None::class);
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: $this->cacheDriver
         );

@@ -34,7 +34,7 @@ trait MockSessionTrait
         unset($_SESSION);
 
         $this->session = $test->createPartialMock(
-            originalClassName: Session::class,
+            type: Session::class,
             methods: ['isAvailable']
         );
     }

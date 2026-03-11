@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Api;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -24,6 +25,7 @@ use function strlen;
 /**
  * Tests for the Resursbank\Ecom\Lib\Api\Mapi class.
  */
+#[AllowMockObjectsWithoutExpectations]
 class MapiTest extends TestCase
 {
     private Mapi $mapi;
@@ -45,9 +47,9 @@ class MapiTest extends TestCase
     ): void {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             isProduction: $prod
         );
     }

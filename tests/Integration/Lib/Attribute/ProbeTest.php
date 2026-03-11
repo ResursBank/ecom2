@@ -234,7 +234,7 @@ class ProbeTest extends TestCase
 
         if ($attribute !== null) {
             $this->assertGreaterThanOrEqual(
-                expected: self::VALIDATION_ITERATIONS,
+                minimum: self::VALIDATION_ITERATIONS,
                 actual: count($rejected),
                 message: sprintf(
                     'Seems we fail to generate random rejected values for %s',
@@ -243,7 +243,7 @@ class ProbeTest extends TestCase
             );
 
             $this->assertGreaterThanOrEqual(
-                expected: self::VALIDATION_ITERATIONS,
+                minimum: self::VALIDATION_ITERATIONS,
                 actual: count($accepted),
                 message: sprintf(
                     'Seems we fail to generate random accepted values for %s',
@@ -252,25 +252,25 @@ class ProbeTest extends TestCase
             );
         }
 
-        $assertionCount = $this->getNumAssertions();
+        $assertionCount = $this->numberOfAssertionsPerformed();
 
         // Test all accepted & rejected values one at a time.
         DataIntegrity::testValueIntegrity(
             accepted: $accepted,
             rejected: $rejected,
-            test: $this,
             callback: fn (mixed $v) => $this->generateModel(
                 class: $class,
                 predefined: [$parameter->name => $v]
             ),
+            test: $this,
             class: $class,
             parameter: $parameter->getName()
         );
 
         // Make sure that any DataIntegrity tests were conducted.
         $this->assertGreaterThan(
-            expected: $assertionCount,
-            actual: $this->getNumAssertions()
+            minimum: $assertionCount,
+            actual: $this->numberOfAssertionsPerformed()
         );
 
         // Make sure that all DataIntegrity tests were conducted.
@@ -278,7 +278,7 @@ class ProbeTest extends TestCase
             expected: $assertionCount + count($rejected) + count(
                 $accepted
             ),
-            actual: $this->getNumAssertions()
+            actual: $this->numberOfAssertionsPerformed()
         );
     }
 

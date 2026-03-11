@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\ReadMore;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -43,6 +44,7 @@ use Throwable;
 /**
  * Integration tests for the ReadMore widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private PaymentMethod $paymentMethod;
@@ -67,7 +69,7 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
             jwtAuth: new Jwt(
@@ -289,7 +291,7 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
             jwtAuth: new Jwt(

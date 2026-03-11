@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\PartPayment;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -44,6 +45,7 @@ use Throwable;
 /**
  * Integration test for the Part payment widget
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private ?PaymentMethod $paymentMethod;
@@ -73,7 +75,7 @@ class HtmlTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(
@@ -410,7 +412,7 @@ class HtmlTest extends TestCase
         // Mock return of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::getLongestPeriodWithZeroInterest
         // to return 0, and check that the message is empty.
         $this->widget = $this->createPartialMock(
-            originalClassName: Html::class,
+            type: Html::class,
             methods: ['getLongestPeriodWithZeroInterest']
         );
 

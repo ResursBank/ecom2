@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Store;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -31,6 +32,7 @@ use Throwable;
 /**
  * Integration tests for Stores repository.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepositoryTest extends TestCase
 {
     /**
@@ -52,7 +54,7 @@ class RepositoryTest extends TestCase
     ): void {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/stores/' . time()),
             jwtAuth: new Jwt(
