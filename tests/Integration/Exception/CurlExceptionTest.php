@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -40,13 +41,14 @@ use Resursbank\EcomTest\Utilities\MockSigner;
  * We will then assert that the CurlException methods behave as expected,
  * returning the appropriate detailed messages and invalid field name variants.
  */
+#[AllowMockObjectsWithoutExpectations]
 class CurlExceptionTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(

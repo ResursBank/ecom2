@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
@@ -17,6 +18,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 /**
  * Unit tests for the IntValue validation attribute.
  */
+#[AllowMockObjectsWithoutExpectations]
 class IntValueTest extends TestCase
 {
     /**
@@ -42,7 +44,7 @@ class IntValueTest extends TestCase
         $max = 200;
         $object = new IntValue(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (
@@ -71,7 +73,7 @@ class IntValueTest extends TestCase
         $max = 200;
         $object = new IntValue(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (

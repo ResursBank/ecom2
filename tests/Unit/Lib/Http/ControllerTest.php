@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Http;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -21,6 +22,7 @@ use Resursbank\EcomTest\Data\Models\Instrument;
 /**
  * Test basic controller methods.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ControllerTest extends TestCase
 {
     private Controller $controller;
@@ -42,7 +44,7 @@ class ControllerTest extends TestCase
     private function getControllerWithMockedInputData(string $data): Controller
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getInputData']
         );
 
@@ -65,7 +67,7 @@ class ControllerTest extends TestCase
     private function getControllerWithoutHeaderManipulation(): Controller
     {
         return $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['log']
         );
     }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Utilities;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -18,6 +19,7 @@ use Resursbank\Ecom\Lib\Utilities\Generic;
 /**
  * Test for Generic class.
  */
+#[AllowMockObjectsWithoutExpectations]
 class GenericTest extends TestCase
 {
     /**
@@ -42,7 +44,7 @@ class GenericTest extends TestCase
      */
     public function testGetVersionByComposer(): void
     {
-        $generic = $this->createMock(originalClassName: Generic::class);
+        $generic = $this->createMock(type: Generic::class);
         $generic->method('getVersionByComposer')->willReturn(value: '1.0.0');
         // composer.json in our package may not contain version numbers.
         $this->assertTrue(
@@ -59,7 +61,7 @@ class GenericTest extends TestCase
      */
     public function testGetVersionByAnythingFound(): void
     {
-        $generic = $this->createMock(originalClassName: Generic::class);
+        $generic = $this->createMock(type: Generic::class);
         $generic->method('getVersionByAny')->willReturn(value: '1.0.0');
         $this->assertTrue(
             condition: version_compare(
