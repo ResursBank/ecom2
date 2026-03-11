@@ -13,6 +13,7 @@ use JsonException;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\Enum\InvalidFieldName;
 
 /**
  * Test CurlException functionality.
@@ -45,7 +46,7 @@ class CurlExceptionTest extends TestCase
         $msg = 'Original message.';
         $body = json_encode(value: [
             'validationErrors' => [
-                ['fieldName' => 'customer.governmentId.whatever']
+                ['fieldName' => 'customer.governmentId']
             ]
         ]);
         $exception = new CurlException(
@@ -57,7 +58,7 @@ class CurlExceptionTest extends TestCase
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertStringStartsWith(prefix: $msg, string: $result);
         $this->assertGreaterThan(
-            expected: strlen(string: $msg),
+            minimum: strlen(string: $msg),
             actual: strlen(string: $result)
         );
     }
@@ -67,7 +68,7 @@ class CurlExceptionTest extends TestCase
         $msg = 'Original message.';
         $body = json_encode(value: [
             'validationErrors' => [
-                ['fieldName' => 'customer.mobilePhoneNumber']
+                ['fieldName' => 'customer.mobilePhone']
             ]
         ]);
         $exception = new CurlException(
@@ -79,7 +80,7 @@ class CurlExceptionTest extends TestCase
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertStringStartsWith(prefix: $msg, string: $result);
         $this->assertGreaterThan(
-            expected: strlen(string: $msg),
+            minimum: strlen(string: $msg),
             actual: strlen(string: $result)
         );
     }
@@ -116,7 +117,7 @@ class CurlExceptionTest extends TestCase
         $exception->getInvalidFieldName();
     }
 
-    public function testGetInvalidFieldNameReturnsEmptyStringOnEmptyArray(): void
+    public function testGetInvalidFieldNameReturnsUnknownOnEmptyArray(): void
     {
         $body = json_encode(value: []);
         $exception = new CurlException(
@@ -127,10 +128,10 @@ class CurlExceptionTest extends TestCase
         );
 
         $result = $exception->getInvalidFieldName();
-        $this->assertSame(expected: '', actual: $result);
+        $this->assertSame(expected: InvalidFieldName::UNKNOWN, actual: $result);
     }
 
-    public function testGetInvalidFieldNameReturnsEmptyStringOnUnexpectedStructure(): void
+    public function testGetInvalidFieldNameReturnsUnknownOnUnexpectedStructure(): void
     {
         $body = json_encode(value: [
             'test' => [
@@ -145,15 +146,14 @@ class CurlExceptionTest extends TestCase
         );
 
         $result = $exception->getInvalidFieldName();
-        $this->assertSame(expected: '', actual: $result);
+        $this->assertSame(expected: InvalidFieldName::UNKNOWN, actual: $result);
     }
 
-    public function testGetInvalidFieldNameReturnsFieldNameOnCorrectStructure(): void
+    public function testGetInvalidFieldNameReturnsGovernmentIdOnCorrectStructure(): void
     {
-        $expectedFieldName = 'customer.governmentId.whatever';
         $body = json_encode(value: [
             'validationErrors' => [
-                ['fieldName' => $expectedFieldName]
+                ['fieldName' => 'customer.governmentId']
             ]
         ]);
         $exception = new CurlException(
@@ -164,6 +164,63 @@ class CurlExceptionTest extends TestCase
         );
 
         $result = $exception->getInvalidFieldName();
-        $this->assertSame(expected: $expectedFieldName, actual: $result);
+        $this->assertSame(
+            expected: InvalidFieldName::GOVERNMENT_ID,
+            actual: $result
+        );
+    }
+
+    public function testGetInvalidFieldNameReturnsPhoneOnCorrectStructure(): void
+    {
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.mobilePhone']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::PHONE, actual: $result);
+    }
+
+    public function testGetInvalidFieldNameReturnsEmailOnCorrectStructure(): void
+    {
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.email']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::EMAIL, actual: $result);
+    }
+
+    public function testGetInvalidFieldNameReturnsUnknownOnUnrecognizedField(): void
+    {
+        $body = json_encode(value: [
+            'validationErrors' => [
+                ['fieldName' => 'customer.someUnknownField']
+            ]
+        ]);
+        $exception = new CurlException(
+            message: 'Curl error',
+            code: 0,
+            body: $body,
+            httpCode: 400
+        );
+
+        $result = $exception->getInvalidFieldName();
+        $this->assertSame(expected: InvalidFieldName::UNKNOWN, actual: $result);
     }
 }

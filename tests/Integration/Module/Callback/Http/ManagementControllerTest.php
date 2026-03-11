@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Callback\Http;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\HttpException;
@@ -27,6 +28,7 @@ use Resursbank\EcomTest\Data\Models\Instrument;
  *
  * @todo Improve test coverage.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ManagementControllerTest extends TestCase
 {
     /**
@@ -38,9 +40,9 @@ class ManagementControllerTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -63,7 +65,7 @@ class ManagementControllerTest extends TestCase
     private function getControllerWithMockedInputData(array $data): Controller
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getInputData']
         );
 
@@ -109,7 +111,7 @@ class ManagementControllerTest extends TestCase
     public function testGetRequestDataThrowsWithInvalidConversion(): void
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getRequestModel']
         );
 

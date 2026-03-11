@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Customer\Http;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -34,6 +35,7 @@ use Resursbank\EcomTest\Utilities\MockSessionTrait;
 /**
  * Tests for the API call getAddress.
  */
+#[AllowMockObjectsWithoutExpectations]
 class GetAddressControllerTest extends TestCase
 {
     use MockSessionTrait;
@@ -49,9 +51,9 @@ class GetAddressControllerTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -61,7 +63,7 @@ class GetAddressControllerTest extends TestCase
         );
 
         $this->controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['log']
         );
         $this->setupSession(test: $this);
@@ -118,7 +120,7 @@ class GetAddressControllerTest extends TestCase
     private function getControllerWithMockedInputData(array $data): Controller
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getInputData']
         );
 
@@ -281,7 +283,7 @@ class GetAddressControllerTest extends TestCase
     public function testGetRequestDataThrowsWithInvalidConversion(): void
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getRequestModel']
         );
 

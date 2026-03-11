@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Module\Widget\CallbackList;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -28,13 +29,14 @@ use Resursbank\Ecom\Module\Widget\CallbackList\Html;
 /**
  * Tests for the Callback widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(

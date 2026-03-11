@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\PartPayment;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -38,6 +39,7 @@ use Throwable;
 /**
  * Integration test for the Part payment JS widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class JsTest extends TestCase
 {
     private Js $widget;
@@ -67,7 +69,7 @@ class JsTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(

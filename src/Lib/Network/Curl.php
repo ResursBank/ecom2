@@ -245,8 +245,6 @@ class Curl
             throw new IllegalTypeException(message: 'Body is not an object.');
         }
 
-        curl_close(handle: $this->ch);
-
         return new Response(body: $body, code: $code);
     }
 
