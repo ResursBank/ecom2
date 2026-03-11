@@ -13,6 +13,7 @@ namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -46,6 +47,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
 /**
  * Test that searchPayment works.
  */
+#[AllowMockObjectsWithoutExpectations]
 class SearchTest extends TestCase
 {
     private const GOVERNMENT_ID = '198305147715';
@@ -59,9 +61,9 @@ class SearchTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],

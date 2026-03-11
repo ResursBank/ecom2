@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Lib\Repository\Api\Mapi;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -28,6 +29,7 @@ use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
 /**
 * Test for JWT token generation.
 */
+#[AllowMockObjectsWithoutExpectations]
 class GenerateTokenTest extends TestCase
 {
     /**
@@ -46,7 +48,7 @@ class GenerateTokenTest extends TestCase
     public function testJwtTokenGenerates(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
+            logger: $this->createMock(type: FileLogger::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -67,7 +69,7 @@ class GenerateTokenTest extends TestCase
         self::assertSame(expected: 'Bearer', actual: $token->token_type);
 
         self::assertGreaterThan(
-            expected: $currentTime,
+            minimum: $currentTime,
             actual: $token->expires_at
         );
     }
@@ -88,7 +90,7 @@ class GenerateTokenTest extends TestCase
     public function testInvalidClientIdThrows(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
+            logger: $this->createMock(type: FileLogger::class),
             jwtAuth: new Jwt(
                 clientId: 'foo',
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -124,7 +126,7 @@ class GenerateTokenTest extends TestCase
     public function testInvalidClientSecretThrows(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
+            logger: $this->createMock(type: FileLogger::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: 'bar',

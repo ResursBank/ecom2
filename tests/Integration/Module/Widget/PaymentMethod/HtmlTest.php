@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentMethod;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -41,6 +42,7 @@ use function count;
 /**
  * Integration tests for the PaymentMethods widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private PaymentMethodCollection $methods;
@@ -63,7 +65,7 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(
                 path: '/tmp/ecom-test/paymentMethods/' . time()

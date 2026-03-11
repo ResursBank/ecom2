@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Module\Widget\SupportInfo;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -29,6 +30,7 @@ use Resursbank\Ecom\Module\Widget\SupportInfo\Html;
 /**
  * Unit tests for the Support Info widget class.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private Html $widget;
@@ -50,7 +52,7 @@ class HtmlTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(
@@ -252,7 +254,7 @@ class HtmlTest extends TestCase
         // Run setup.
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(

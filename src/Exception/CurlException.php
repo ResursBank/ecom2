@@ -12,8 +12,10 @@ namespace Resursbank\Ecom\Exception;
 use Exception;
 use JsonException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\Enum\InvalidFieldName;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
+use ValueError;
 
 /**
  * Exceptions thrown from CURL requests.
@@ -64,25 +66,16 @@ class CurlException extends Exception
         try {
             $invalidField = $this->getInvalidFieldName();
 
-            if ($invalidField === '') {
-                return $msg;
-            }
+            // Map field variants to their corresponding error phrase IDs.
+            $phraseId = match ($invalidField) {
+                InvalidFieldName::GOVERNMENT_ID => 'invalid-government-id',
+                InvalidFieldName::PHONE => 'invalid-phone-number',
+                InvalidFieldName::EMAIL => 'invalid-email-address',
+                default => null,
+            };
 
-            // Map field name patterns to their corresponding error phrase IDs.
-            $fieldToPhraseMap = [
-                'governmentId' => 'invalid-government-id',
-                'mobile' => 'invalid-phone-number',
-                'email' => 'invalid-email-address',
-            ];
-
-            foreach ($fieldToPhraseMap as $fieldPattern => $phraseId) {
-                if (
-                    str_contains(haystack: $invalidField, needle: $fieldPattern)
-                ) {
-                    return $msg . ' ' . Translator::translate(
-                        phraseId: $phraseId
-                    );
-                }
+            if ($phraseId !== null) {
+                return $msg . ' ' . Translator::translate(phraseId: $phraseId);
             }
         } catch (Throwable $error) {
             Config::getLogger()->error(message: $error);
@@ -96,7 +89,7 @@ class CurlException extends Exception
      *
      * @throws JsonException
      */
-    public function getInvalidFieldName(): string
+    public function getInvalidFieldName(): InvalidFieldName
     {
         $body = json_decode(
             json: (string) $this->body,
@@ -105,9 +98,19 @@ class CurlException extends Exception
             flags: JSON_THROW_ON_ERROR
         );
 
-        return (
+        $fieldName = (
             is_array(value: $body) &&
             isset($body['validationErrors'][0]['fieldName'])
         ) ? (string) $body['validationErrors'][0]['fieldName'] : '';
+
+        if ($fieldName === '') {
+            return InvalidFieldName::UNKNOWN;
+        }
+
+        try {
+            return InvalidFieldName::from(value: $fieldName);
+        } catch (ValueError) {
+            return InvalidFieldName::UNKNOWN;
+        }
     }
 }

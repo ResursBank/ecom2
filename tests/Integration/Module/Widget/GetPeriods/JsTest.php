@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\GetPeriods;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\GrantType;
@@ -24,6 +25,7 @@ use Throwable;
 /**
  * Integration test for the Get Periods widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class JsTest extends TestCase
 {
     protected function setUp(): void
@@ -32,7 +34,7 @@ class JsTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(

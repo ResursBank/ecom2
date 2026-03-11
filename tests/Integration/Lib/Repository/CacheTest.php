@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Lib\Repository;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CacheException;
@@ -24,6 +25,7 @@ use Resursbank\EcomTest\Data\Models\MusicCollection;
 /**
  * Verifies that the Cache class works as intended.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class CacheTest extends TestCase
 {
     private const CACHE_PATH = '/tmp/ecom-test/repository/cache';
@@ -32,7 +34,7 @@ final class CacheTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: self::CACHE_PATH)
         );

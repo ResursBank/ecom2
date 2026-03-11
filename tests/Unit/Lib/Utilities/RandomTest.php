@@ -203,8 +203,8 @@ class RandomTest extends TestCase
             $value = Random::getInt(min: $min, max: $max);
 
             $this->assertIsInt(actual: $value);
-            $this->assertGreaterThan(expected: $min - 1, actual: $value);
-            $this->assertLessThan(expected: $max + 1, actual: $value);
+            $this->assertGreaterThan(minimum: $min - 1, actual: $value);
+            $this->assertLessThan(maximum: $max + 1, actual: $value);
         }
     }
 

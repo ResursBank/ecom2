@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Module\Payment;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -47,6 +48,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
 /**
  * Integration tests for CreatePayment repository.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepositoryTest extends TestCase
 {
     /**
@@ -56,7 +58,7 @@ class RepositoryTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(
