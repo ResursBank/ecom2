@@ -44,6 +44,9 @@ use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
+use Resursbank\Ecom\Exception\PaymentActionException;
+use Resursbank\Ecom\Lib\UserSettings\Field;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Payment\Api\Create;
 use Resursbank\Ecom\Module\Payment\Api\Get;
 use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
@@ -193,7 +196,10 @@ class Repository
     }
 
     /**
-     * Cancel payment
+     * Cancel payment. Returns null when cancellation is silently skipped
+     * (disabled in settings or already cancelled). Throws
+     * PaymentActionException if the payment exists but cannot be
+     * cancelled.
      *
      * @throws ApiException
      * @throws AttributeCombinationException
@@ -205,6 +211,7 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
+     * @throws PaymentActionException
      * @throws ReflectionException
      * @throws ValidationException
      */
@@ -212,7 +219,26 @@ class Repository
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null
-    ): Payment {
+    ): ?Payment {
+        // If cancellation is disabled in settings, skip cancellation.
+        if (!UserSettingsRepository::isEnabled(field: Field::CANCEL_ENABLED)) {
+            return null;
+        }
+
+        $payment = self::get(paymentId: $paymentId);
+
+        // If the payment is already cancelled, skip cancellation.
+        if ($payment->isCancelled()) {
+            return null;
+        }
+
+        // If the payment cannot be cancelled, throw an exception.
+        if (!$payment->canCancel()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be cancelled.'
+            );
+        }
+
         return (new Cancel())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
