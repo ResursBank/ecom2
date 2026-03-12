@@ -185,7 +185,10 @@ class CurlExceptionTest extends TestCase
         );
 
         $result = $exception->getInvalidFieldName();
-        $this->assertSame(expected: InvalidFieldName::PHONE, actual: $result);
+        $this->assertSame(
+            expected: InvalidFieldName::MOBILE_PHONE,
+            actual: $result
+        );
     }
 
     public function testGetInvalidFieldNameReturnsEmailOnCorrectStructure(): void

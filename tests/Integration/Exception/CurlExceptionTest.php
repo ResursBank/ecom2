@@ -198,7 +198,7 @@ class CurlExceptionTest extends TestCase
             // Verify that getInvalidFieldName returns the correct enum variant.
             $invalidFieldName = $e->getInvalidFieldName();
             $this->assertSame(
-                expected: InvalidFieldName::PHONE,
+                expected: InvalidFieldName::MOBILE_PHONE,
                 actual: $invalidFieldName
             );
         }

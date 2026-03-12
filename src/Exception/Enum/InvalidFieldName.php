@@ -15,7 +15,7 @@ namespace Resursbank\Ecom\Exception\Enum;
 enum InvalidFieldName: string
 {
     case GOVERNMENT_ID = 'customer.governmentId';
-    case PHONE = 'customer.mobilePhone';
+    case MOBILE_PHONE = 'customer.mobilePhone';
     case EMAIL = 'customer.email';
     case UNKNOWN = '';
 }
