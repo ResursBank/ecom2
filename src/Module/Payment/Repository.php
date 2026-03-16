@@ -156,14 +156,11 @@ class Repository
     }
 
     /**
-     * Capture payment
+     * Capture payment. Returns null when capture is silently skipped
+     * (disabled in settings or already captured). Throws
+     * PaymentActionException if the payment exists but cannot be
+     * captured.
      *
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @param string|null $invoiceId
-     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -174,6 +171,7 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
+     * @throws PaymentActionException
      * @throws ReflectionException
      * @throws ValidationException
      * @throws FilesystemException
@@ -185,7 +183,23 @@ class Repository
         ?string $creator = null,
         ?string $transactionId = null,
         ?string $invoiceId = null
-    ): Payment {
+    ): ?Payment {
+        if (!UserSettingsRepository::isEnabled(field: Field::CAPTURE_ENABLED)) {
+            return null;
+        }
+
+        $payment = self::get(paymentId: $paymentId);
+
+        if ($payment->isCaptured()) {
+            return null;
+        }
+
+        if (!$payment->canCapture()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be captured.'
+            );
+        }
+
         return (new Capture())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
