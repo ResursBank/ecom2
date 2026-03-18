@@ -2809,15 +2809,6 @@
     }
   },
   {
-    "id": "order-changed-by-unknown-source",
-    "translation": {
-      "en": "Order changed by unknown source. Please confirm that total and contents match payment before further handling of order.",
-      "sv": "Ordern ändrades av okänd källa. Vänligen bekräfta att totalsumma och innehåll överensstämmer med betalning innan vidare hantering av ordern görs.",
-      "no": "Bestillingen ble endret av en ukjent kilde. Vennligst bekreft at totalbeløpet og innholdet stemmer overens med betalingen før videre behandling av bestillingen foretas.",
-      "da": "Bestilling ændret af ukendt kilde. Bekræft venligst, at totalbeløb og indhold stemmer overens med betalingen, før videre håndtering af ordren."
-    }
-  },
-  {
     "id": "rb-pp-not-eligible",
     "translation": {
       "en": "Part pay interest-free for up to %s months with Resurs Bank AB",

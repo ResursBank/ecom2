@@ -291,7 +291,23 @@ class Repository
         ?string $creator = null,
         ?string $transactionId = null,
         ?string $refundNoteId = null
-    ): Payment {
+    ): ?Payment {
+        if (!UserSettingsRepository::isEnabled(field: Field::REFUND_ENABLED)) {
+            return null;
+        }
+
+        $payment = self::get(paymentId: $paymentId);
+
+        if ($payment->isRefunded()) {
+            return null;
+        }
+
+        if (!$payment->canRefund()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be refunded.'
+            );
+        }
+
         return (new Refund())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
