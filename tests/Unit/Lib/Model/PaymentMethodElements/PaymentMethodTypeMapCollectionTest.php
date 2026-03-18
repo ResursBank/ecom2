@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Model\Rws;
+namespace Resursbank\EcomTest\Unit\Lib\Model\PaymentMethodElements;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;
@@ -15,9 +15,9 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodType;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMap;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMapCollection;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodType;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodTypeMap;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodTypeMapCollection;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 /**

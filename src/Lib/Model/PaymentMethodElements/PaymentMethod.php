@@ -7,36 +7,38 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rws;
+namespace Resursbank\Ecom\Lib\Model\PaymentMethodElements;
 
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethod\MethodOptionCollection;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethod\Properties;
 
 /**
- * RWS payment method response.
+ * Payment Method Elements payment method response.
  */
 class PaymentMethod extends Model
 {
     /**
-     * @param PaymentMethodType $type
+     * @param string $id
      * @param array $methodIds
+     * @param PaymentMethodType $type
      * @param array $customerTypes
-     * @param Properties $properties
-     * @param MethodOptionCollection $methodOptions
+     * @param string $title
+     * @param string $subtitle
+     * @param string $internalData
+     * @throws AttributeCombinationException
      * @throws JsonException
      * @throws ReflectionException
-     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly PaymentMethodType $type,
+        public readonly string $id,
         public readonly array $methodIds,
+        public readonly PaymentMethodType $type,
         public readonly array $customerTypes,
-        public readonly Properties $properties,
-        public readonly MethodOptionCollection $methodOptions
+        public readonly string $title = '',
+        public readonly string $subtitle = '',
+        public readonly string $internalData = ''
     ) {
         parent::__construct();
     }

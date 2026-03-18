@@ -23,22 +23,22 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Rws;
+use Resursbank\Ecom\Lib\Api\PaymentMethodElements;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodType;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMap;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMapCollection;
-use Resursbank\Ecom\Lib\Repository\Api\Rws\Post;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodType;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodTypeMap;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodTypeMapCollection;
+use Resursbank\Ecom\Lib\Repository\Api\PaymentMethodElements\Post;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use stdClass;
 use Throwable;
 
 /**
- * Interaction with RWS API to collect payment method type details.
+ * Interaction with Payment Method Elements API to collect method type details.
  */
 class Repository
 {
@@ -112,7 +112,7 @@ class Repository
     ): Post {
         return new Post(
             model: PaymentMethodTypeMap::class,
-            route: Rws::PAYMENT_METHODS_ROUTE . '/types',
+            route: PaymentMethodElements::PAYMENT_METHODS_ROUTE . '/types',
             params: [
                 'storeId' => Config::getStoreId(),
                 'paymentMethodId' => array_map(
@@ -124,9 +124,9 @@ class Repository
             /** @phpstan-ignore-next-line */
             customModelConverter: static function (stdClass $data): Collection|Model {
                 // This custimzed model converter is required because the
-                // RWS API will return data strucutred inside an anonymous
-                // array, which is not compatible with the generic converter
-                // we've used for other API implementations.
+                // Payment Method Elements API will return data strucutred
+                // inside an anonymous array, which is not compatible with the
+                // generic converter we've used for other API implementations.
 
                 self::validateApiResponse(data: $data);
 

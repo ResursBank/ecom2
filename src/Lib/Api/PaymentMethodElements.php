@@ -13,12 +13,11 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * API for Resurs Widget Service (RWS).
+ * API for Resurs Payment Method Elements.
  */
-class Rws
+class PaymentMethodElements
 {
-    public const URL_TEST = 'https://web-integration-mock-payment-widget-service.wa3.int.resurs.cloud/api/';
-    public const ROUTE_SESSION = 'service/session';
+    public const URL_TEST = 'https://api.checkout.int.resurs.cloud/mock/payment/public/v1/';
     public const PAYMENT_METHODS_ROUTE = 'payment-methods';
 
     public function __construct(

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rws\PaymentMethod\Properties;
+namespace Resursbank\Ecom\Lib\Model\PaymentMethodElements\Session;
 
 use JsonException;
 use ReflectionException;
@@ -15,20 +15,18 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * RWS payment method properties description.
+ * Embed object in Payment Elements session.
  */
-class Description extends Model
+class Embed extends Model
 {
     /**
-     * @param array $descriptionText
-     * @param string $descriptionFormat
+     * @param string $src Script src for Payment Elements initialization.
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly array $descriptionText,
-        public readonly string $descriptionFormat
+        public readonly string $src
     ) {
         parent::__construct();
     }

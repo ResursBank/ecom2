@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Repository\Api\Rws;
+namespace Resursbank\Ecom\Lib\Repository\Api\PaymentMethodElements;
 
 use Closure;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
-use Resursbank\Ecom\Lib\Api\Rws;
+use Resursbank\Ecom\Lib\Api\PaymentMethodElements;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Repository\Traits\DataResolver;
@@ -22,10 +22,10 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Repository\Traits\Request;
 
 /**
- * Generic functionality to perform a POST call against the RWS and convert the
+ * Generic functionality to perform a GET call against PME API and convert the
  * response to model instance(s).
  */
-class Post extends Request
+class Get extends Request
 {
     use ExceptionLog;
     use ModelConverter;
@@ -46,8 +46,8 @@ class Post extends Request
         parent::__construct(
             model: $model,
             route: $route,
-            requestMethod: RequestMethod::POST,
-            api: new Rws(),
+            requestMethod: RequestMethod::GET,
+            api: new PaymentMethodElements(),
             params: $params,
             extractProperty: $extractProperty,
             customModelConverter: $customModelConverter

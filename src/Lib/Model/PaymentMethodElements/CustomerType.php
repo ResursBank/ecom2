@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rws;
+namespace Resursbank\Ecom\Lib\Model\PaymentMethodElements;
 
 /**
  * Defines the types that a customer can be.
@@ -17,10 +17,10 @@ enum CustomerType: string
     /**
      * Private person.
      */
-    case B2C = 'B2C';
+    case NATURAL = 'NATURAL';
 
     /**
      * Company.
      */
-    case B2B = 'B2B';
+    case LEGAL = 'LEGAL';
 }
