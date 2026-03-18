@@ -17,6 +17,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
+use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
@@ -40,7 +41,7 @@ class Repository
 {
     use ExceptionLog;
 
-    public const SESSION_CACHE_KEY_PREFIX = 'resursbank-ecom-pme-session-';
+    public const SESSION_CACHE_KEY_PREFIX = 'pme-session-';
 
     /**
      * @param string|null $identifier Unique user identifier (e.g. quote ID)
@@ -57,6 +58,7 @@ class Repository
      * @throws NotJsonEncodedException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws CacheException
      */
     public static function getSession(
         ?string $identifier = null
