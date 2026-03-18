@@ -31,12 +31,16 @@ use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethodElements\Session;
 use Resursbank\Ecom\Lib\Repository\Api\PaymentMethodElements\Get;
 use Resursbank\Ecom\Lib\Repository\Api\PaymentMethodElements\Post;
+use Resursbank\Ecom\Lib\Repository\Cache;
 
+/**
+ * Payment Method Elements repository class.
+ */
 class Repository
 {
     use ExceptionLog;
 
-    public const SESSION_CACHE_KEY_PREFIX = 'resursbank-ecom-rws-session-';
+    public const SESSION_CACHE_KEY_PREFIX = 'resursbank-ecom-pme-session-';
 
     /**
      * @param string|null $identifier Unique user identifier (e.g. quote ID)
@@ -57,27 +61,39 @@ class Repository
     public static function getSession(
         ?string $identifier = null
     ): Session {
-        $cache = Config::getCache();
-        $cacheKey = self::SESSION_CACHE_KEY_PREFIX . $identifier;
-
-        $response = (new Post(
+        $cacheKey = self::SESSION_CACHE_KEY_PREFIX . sha1($identifier);
+        $cache = new Cache(
+            key: $cacheKey,
             model: Session::class,
-            route: 'stores/' . Config::getStoreId() . '/sessions',
-            params: []
-        ))->call();
+            ttl: 3600
+        );
 
-        if (!$response instanceof Session) {
-            throw new ApiException(
-                message: 'Failed to resolve session.'
-            );
+        /** @var Session $session */
+        $session = $cache->read();
+
+        if (!$session instanceof Cache || $session->expired()) {
+            $session = (new Post(
+                model: Session::class,
+                route: 'stores/' . Config::getStoreId() . '/sessions',
+                params: []
+            ))->call();
+
+            if (!$session instanceof Session) {
+                throw new ApiException(
+                    message: 'Failed to resolve session.'
+                );
+            }
+
+            $cache->write(data: $session);
         }
 
-        return $response;
+        return $session;
     }
 
     /**
      * @param float $amount
      * @param string $locale
+     * @param string $sessionId
      * @param CustomerType $customerType
      * @return PaymentMethodCollection
      * @throws ApiException
@@ -96,10 +112,9 @@ class Repository
     public static function getPaymentMethodGroups(
         float $amount,
         string $locale,
+        string $sessionId,
         CustomerType $customerType,
     ): PaymentMethodCollection {
-        $sessionId = self::getSession()->id;
-
         $response = (new Get(
             model: PaymentMethod::class,
             route: 'sessions/' . $sessionId . '/payment-method-groups?amount=' .
