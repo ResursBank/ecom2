@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Network\Auth;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines basic API authentication.
@@ -19,31 +21,14 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Basic extends Model
 {
     /**
-     * @throws EmptyValueException
-     * @todo Add charset validation of username and password.
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly string $username,
-        public readonly string $password,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringNotEmpty] public readonly string $username,
+        #[StringNotEmpty] public readonly string $password
     ) {
-        $this->validateUsername();
-        $this->validatePassword();
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validateUsername(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->username);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validatePassword(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->password);
+        parent::__construct();
     }
 }
