@@ -96,7 +96,7 @@ class Repository
      * @param float $amount
      * @param string $locale
      * @param string $sessionId
-     * @param CustomerType $customerType
+     * @param ?CustomerType $customerType
      * @return PaymentMethodCollection
      * @throws ApiException
      * @throws AttributeCombinationException
@@ -115,13 +115,17 @@ class Repository
         float $amount,
         string $locale,
         string $sessionId,
-        CustomerType $customerType,
+        ?CustomerType $customerType = null,
     ): PaymentMethodCollection {
+        $route = 'sessions/' . $sessionId . '/payment-method-groups?amount=' .
+            $amount . '&locale=' . $locale;
+
+        if ($customerType !== null) {
+            $route .= '&customerType=' . $customerType->value;
+        }
         $response = (new Get(
             model: PaymentMethod::class,
-            route: 'sessions/' . $sessionId . '/payment-method-groups?amount=' .
-                $amount . '&locale=' . $locale . '&customerType=' .
-                $customerType->value,
+            route: $route,
             params: [],
             extractProperty: 'data'
         ))->call();

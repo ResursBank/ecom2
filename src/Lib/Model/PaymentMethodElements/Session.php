@@ -17,7 +17,7 @@ class Session extends Model
     public function __construct(
         public readonly string $id,
         public readonly string $expiresAt,
-        public readonly Embed $widgetEmbed
+        public readonly Embed $embed
     ) {
         parent::__construct();
     }
