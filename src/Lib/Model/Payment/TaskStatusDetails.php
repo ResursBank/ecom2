@@ -30,7 +30,7 @@ class TaskStatusDetails extends Model
         public bool $completed,
         public ?CustomerTaskData $customer = null,
         public ?MerchantTaskData $merchant = null,
-        public ?CustomerTaskData $coApplication = null
+        public ?CustomerTaskData $coApplicant = null
     ) {
     }
 }
