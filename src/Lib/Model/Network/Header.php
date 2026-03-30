@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Network;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines basic request header.
@@ -19,22 +21,14 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Header extends Model
 {
     /**
-     * @throws EmptyValueException
-     * @todo Could be improved by fixing $value type (could just be string, int could be separate class if needed).
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly string $key,
-        public readonly string|int $value,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringNotEmpty] public readonly string $key,
+        public readonly string|int $value
     ) {
-        $this->validateKey();
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    private function validateKey(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->key);
+        parent::__construct();
     }
 }
