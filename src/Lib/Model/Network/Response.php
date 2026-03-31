@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Network;
 
+use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
 
@@ -18,8 +19,9 @@ use stdClass;
 class Response extends Model
 {
     public function __construct(
-        public readonly stdClass|array $body,
-        public readonly int $code
+        public readonly stdClass $body,
+        #[IntValue(min:100, max:599)] public readonly int $code
     ) {
+        parent::__construct();
     }
 }

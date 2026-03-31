@@ -15,29 +15,28 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Model\Payment\ApplicationResponse;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\RejectedReasonCategory;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as PossibleActionModel;
 use Resursbank\Ecom\Lib\Model\Payment\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
 use Resursbank\Ecom\Lib\Model\Payment\TaskRedirectionUrls;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
-use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
  * Payment model used in the GET /payment call.
+ *
+ * Payment data container that is also used by Search. When Search is active, some
+ * returned fields are not guaranteed to be present; those fields are also nullable.
+ * Application and countryCode is currently not showing in Search, so to make
+ * Search compatible with the Payment model, we are temporary setting the missing fields
+ * with empty defaults.
  */
 class Payment extends Model
 {
     /**
-     * Payment data container that is also used by Search. When Search is active, some
-     * returned fields are not guaranteed to be present; those fields are also nullable.
-     * Application and countryCode is currently not showing in Search, so to make
-     * Search compatible with the Payment model, we are temporary setting the missing fields
-     * with empty defaults.
-     *
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)

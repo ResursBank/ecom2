@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\Widget\Logo;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
@@ -17,20 +18,21 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Widget\Logo\Html;
 
 /**
  * Test for the Logo Html widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(
@@ -53,7 +55,7 @@ class HtmlTest extends TestCase
             minApplicationLimit: 0.0,
             maxApplicationLimit: 42.0,
             legalLinks: $this->createMock(
-                originalClassName: PaymentMethod\LegalLinkCollection::class
+                type: PaymentMethod\LegalLinkCollection::class
             ),
             enabledForLegalCustomer: true,
             enabledForNaturalCustomer: true,

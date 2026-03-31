@@ -32,8 +32,7 @@ final class BoolValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws MissingKeyException when the needle does not
-     * exist.
+     * Assert getKey() throws MissingKeyException if the needle does not exist.
      *
      * @throws IllegalTypeException
      * @throws MissingKeyException
@@ -45,8 +44,7 @@ final class BoolValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not boolean.
+     * Assert getKey() throws IllegalTypeException the needle is not boolean.
      *
      * @throws IllegalTypeException
      * @throws MissingKeyException

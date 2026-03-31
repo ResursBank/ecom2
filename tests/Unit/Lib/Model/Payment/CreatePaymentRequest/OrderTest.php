@@ -18,11 +18,11 @@ use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order as OrderModel;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 use Resursbank\EcomTest\Data\Order;
 use stdClass;
 
@@ -73,8 +73,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateOrderLines() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateOrderLines() throws error when its length is too long.
      *
      * @throws EmptyValueException
      * @throws IllegalTypeException
@@ -112,8 +111,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateOrderLines() throws IllegalValueException when its
-     * length is too short.
+     * Assert validateOrderLines() throws error when its length is too short.
      *
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -132,8 +130,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateReference() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateReference() throws error when reference is too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -149,8 +146,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateReference() throws IllegalValueException when its
-     * length is too short.
+     * Assert validateReference() throws error when reference too short.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -165,8 +161,7 @@ class OrderTest extends TestCase
     }
 
     /**
-     * Assert validateReference() throws IllegalValueException when it uses
-     * illegal characters.
+     * Assert validateReference() throws error on illegal characters.
      *
      * @throws ReflectionException
      * @throws TestException

@@ -47,8 +47,8 @@ class ErrorHandlerTest extends TestCase
         $this->expectException(exception: IllegalTypeException::class);
 
         $handler = new ErrorHandler(
-            ch: curl_init(),
             body: true,
+            ch: curl_init(),
             contentType: ContentType::JSON
         );
 
@@ -70,8 +70,8 @@ class ErrorHandlerTest extends TestCase
         $this->expectException(exception: EmptyValueException::class);
 
         $handler = new ErrorHandler(
-            ch: curl_init(),
             body: '',
+            ch: curl_init(),
             contentType: ContentType::JSON
         );
 
@@ -93,8 +93,8 @@ class ErrorHandlerTest extends TestCase
         $this->expectException(exception: NotJsonEncodedException::class);
 
         $handler = new ErrorHandler(
-            ch: curl_init(),
             body: 'This is not JSON',
+            ch: curl_init(),
             contentType: ContentType::JSON
         );
 
@@ -102,8 +102,7 @@ class ErrorHandlerTest extends TestCase
     }
 
     /**
-     * Assert validate() throws CurlException when body includes a message
-     * property.
+     * Assert validate() throws CurlException if body has a message property.
      *
      * Assert body property on CurlException is set.
      *
@@ -120,8 +119,8 @@ class ErrorHandlerTest extends TestCase
 
         try {
             $handler = new ErrorHandler(
-                ch: curl_init(),
                 body: '{"error": "This is a message"}',
+                ch: curl_init(),
                 contentType: ContentType::JSON
             );
 
@@ -159,8 +158,8 @@ class ErrorHandlerTest extends TestCase
         curl_exec(handle: $ch);
 
         $handler = new ErrorHandler(
-            ch: $ch,
             body: '{}',
+            ch: $ch,
             contentType: ContentType::JSON
         );
 

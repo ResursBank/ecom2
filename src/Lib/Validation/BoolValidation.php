@@ -20,6 +20,8 @@ use function is_bool;
 class BoolValidation
 {
     /**
+     *  Get specified key from data array.
+     *
      * Validates the supplied array contains an element named $key and that
      * element contains a boolean value. Returns the validated boolean.
      *

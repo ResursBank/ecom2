@@ -24,9 +24,6 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 class FloatValue implements FloatInterface
 {
     /**
-     * NOTE: min and max are nullable to allow for no min / max values, because
-     * you may simply wish to confirm the count of decimals in a float value.
-     *
      * @param int $scale Maximum number of decimals allowed in float value.
      * @throws AttributeParameterException
      */

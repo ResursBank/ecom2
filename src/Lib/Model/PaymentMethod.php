@@ -13,7 +13,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Validation\FloatValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -43,6 +43,7 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         public readonly bool $enabledForLegalCustomer,
         public readonly bool $enabledForNaturalCustomer,
         public readonly bool $priceSignagePossible,
+        public readonly ?string $description = null,
         public int $sortOrder = 0,
         private readonly StringValidation $stringValidation = new StringValidation(),
         private readonly FloatValidation $floatValidation = new FloatValidation()

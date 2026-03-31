@@ -28,8 +28,8 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformationCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Throwable;
@@ -42,9 +42,6 @@ class Repository
     use ExceptionLog;
 
     /**
-     * NOTE: Parameters must be validated since they are utilized for our cache
-     * keys.
-     *
      * @throws ApiException
      * @throws AuthException
      * @throws CacheException

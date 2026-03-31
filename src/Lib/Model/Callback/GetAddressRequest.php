@@ -9,21 +9,28 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
- * Described incoming data from a get address request, see
- * Module\Customer\Widget\GetAddress for AJAX call definition.
+ * Describes incoming data from a get address request.
+ *
+ * See Module\Customer\Widget\GetAddress for AJAX call definition.
  */
 class GetAddressRequest extends Model
 {
     /**
      * @throws EmptyValueException
      * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      * @todo Add tests. See ECP-272
      */
     public function __construct(
@@ -32,6 +39,7 @@ class GetAddressRequest extends Model
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
         $this->validateGovId();
+        parent::__construct();
     }
 
     /**

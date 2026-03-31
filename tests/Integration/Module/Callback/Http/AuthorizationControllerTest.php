@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Callback\Http;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\HttpException;
@@ -27,6 +28,7 @@ use Resursbank\EcomTest\Data\Models\Instrument;
  *
  * @todo Improve test coverage.
  */
+#[AllowMockObjectsWithoutExpectations]
 class AuthorizationControllerTest extends TestCase
 {
     /**
@@ -38,9 +40,9 @@ class AuthorizationControllerTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -51,6 +53,8 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
+     * Create a mocked version of the Controller class.
+     *
      * Create a mocked version of the Controller class, setting the return value
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
@@ -61,7 +65,7 @@ class AuthorizationControllerTest extends TestCase
     private function getControllerWithMockedInputData(array $data): Controller
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getInputData']
         );
 
@@ -76,8 +80,10 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
+     * Verify that getRequestData throws exception if input data is invalid.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
-     * supplied that does not convert to a Authorization instance.
+     * supplied that does not convert to an Authorization instance.
      *
      * @throws HttpException
      * @throws JsonException
@@ -95,6 +101,8 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
+     * Verify getRequestData throws exception if conversion is invalid.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
      * getRequestModel() returns an unexpected instance of Model.
      *
@@ -103,7 +111,7 @@ class AuthorizationControllerTest extends TestCase
     public function testGetRequestDataThrowsWithInvalidConversion(): void
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getRequestModel']
         );
 
@@ -119,8 +127,7 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
-     * Assert that getRequestData() returns input data unaffected in forms of
-     * Model instance.
+     * Verify that getRequestdata correctly returns data.
      *
      * @throws HttpException
      * @throws JsonException

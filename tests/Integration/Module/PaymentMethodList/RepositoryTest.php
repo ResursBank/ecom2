@@ -59,7 +59,7 @@ class RepositoryTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(
                 path: '/tmp/ecom-test/paymentMethodList/' . time()
@@ -81,10 +81,10 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Checks that list of collected payment methods types from PME contains an
-     * entry matching the supplied payment method ID from MAPI.
+     * Verify mapping of RWS payment method types against MAPI method IDs.
      *
-     * This has been separated to reduce cognitive complexity.
+     * Checks that list of collected payment methods types from RWS contains an
+     * entry matching the supplied payment method ID from MAPI.
      */
     private function hasTypeMapEntry(
         string $id,
@@ -102,6 +102,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that getPaymentMethodTypes works.
+     *
      * Assert we can get a full collection of payment methods, submit this to
      * Payment Method Eleemnts and get a response back with the same
      * payment methods.

@@ -18,6 +18,7 @@
     font-size:1.3em;
     text-align:left;
     padding:0.2em 0.4em;
+    width:auto;
 }
 
 .rb-pi table th svg {

@@ -15,6 +15,8 @@ use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
+ * Get stores request model.
+ *
  * Request model to collect stores based on credentials. Useful for AJAX
  * requests to collect a list of available stores before credentials are
  * actually saved (enter credentials, reload list of stores, select store).

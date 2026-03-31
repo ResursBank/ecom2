@@ -19,6 +19,8 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -50,6 +52,14 @@ use Throwable;
 /**
  * Payment repository.
  *
+ * Note about order lines submitted to the API: The API will not allow actions
+ * such as capturing or canceling a greater sum than what is available for the
+ * action on the payment but action order lines do not have to perfectly
+ * match the order lines from the payment creation. As an example, it is
+ * possible to have multiple order lines on a payment at creation and to then
+ * capture the entire sum of the payment with a single order line in a capture
+ * call.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @noinspection EfferentObjectCouplingInspection
  */
@@ -58,6 +68,11 @@ class Repository
     use ExceptionLog;
 
     /**
+     * Search payments.
+     *
+     * If no orderReference or governmentId is supplied then the API behavior
+     * is to return an unfiltered list of payments.
+     *
      * @throws ApiException
      * @throws AuthException
      * @throws ConfigException
@@ -149,17 +164,27 @@ class Repository
     /**
      * Capture payment
      *
+     * The transactionId parameter will, if supplied, appear in the accounting
+     * file that Resurs Bank submits to your organization.
+     *
+     * @param string $paymentId Resurs payment ID.
+     * @param OrderLineCollection|null $orderLines Order line collection.
+     * @param string|null $creator Reference to person who performed action.
+     * @param string|null $transactionId Alternative transaction identifier.
+     * @param string|null $invoiceId Reference to local invoice.
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function capture(
@@ -179,19 +204,24 @@ class Repository
     }
 
     /**
-     * Cancel payment
+     * Cancel payment.
      *
+     * @param string $paymentId Resurs payment ID
+     * @param OrderLineCollection|null $orderLines Order line collection.
+     * @param string|null $creator Reference to person who performed action.
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function cancel(
@@ -207,18 +237,30 @@ class Repository
     }
 
     /**
-     * Refund payment
+     * Refund payment.
      *
+     * The transactionId parameter will, if supplied, appear in the accounting
+     * file that Resurs Bank submits to your organization.
+     *
+     * @param string $paymentId Resurs payment ID
+     * @param OrderLineCollection|null $orderLines Order line collection.
+     * @param string|null $creator Reference to person who performed action.
+     * @param string|null $transactionId Alternative transaction identifier.
+     * @param string|null $refundNoteId Reference to local credit note.
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
      * @throws ValidationException
      */
     public static function refund(
@@ -253,7 +295,7 @@ class Repository
      * @throws ReflectionException
      * @throws ValidationException
      */
-    public static function setMetadata(
+    public static function addMetadata(
         string $paymentId,
         Metadata $metadata
     ): Metadata {
@@ -261,7 +303,69 @@ class Repository
     }
 
     /**
+     * Add new order lines to payment.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws AttributeCombinationException
+     * @throws NotJsonEncodedException
+     */
+    public static function addOrderLines(
+        string $paymentId,
+        OrderLineCollection $orderLines
+    ): Payment {
+        return (new Add())->call(
+            paymentId: $paymentId,
+            orderLines: $orderLines
+        );
+    }
+
+    /**
+     * Fetch TaskStatusDetails object relating to our payment from API.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws AttributeCombinationException
+     */
+    public static function getTaskStatusDetails(
+        string $paymentId
+    ): TaskStatusDetails {
+        self::validatePaymentId(paymentId: $paymentId);
+
+        $result = (new MapiGet(
+            model: TaskStatusDetails::class,
+            route: Mapi::PAYMENT_ROUTE . "/$paymentId/tasks/status",
+            params: []
+        ))->call();
+
+        if (!$result instanceof TaskStatusDetails) {
+            throw new ApiException(message: 'Invalid API response.');
+        }
+
+        return $result;
+    }
+
+    /**
      * Get client information metadata.
+     *
+     * This method is used by the various Resurs-developed platform
+     * integrations.
      *
      * @throws IllegalTypeException
      * @throws Exception
@@ -299,116 +403,6 @@ class Repository
                 )
             ])
         );
-    }
-
-    /**
-     * Add new order lines to payment.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws NotJsonEncodedException
-     */
-    public static function addOrderLines(
-        string $paymentId,
-        OrderLineCollection $orderLines
-    ): Payment {
-        return (new Add())->call(
-            paymentId: $paymentId,
-            orderLines: $orderLines
-        );
-    }
-
-    /**
-     * Replaces current order lines on payment.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
-     */
-    public static function updateOrderLines(
-        string $paymentId,
-        OrderLineCollection $orderLines
-    ): Payment {
-        $payment = self::get(paymentId: $paymentId);
-
-        $orderLineSum = 0.0;
-
-        /** @var Payment\Order\ActionLog\OrderLine $orderLine */
-        foreach ($orderLines as $orderLine) {
-            $orderLineSum += $orderLine->totalAmountIncludingVat;
-        }
-
-        if ($payment->order === null) {
-            throw new IllegalValueException(
-                message: 'Payment does not contain Order object.'
-            );
-        }
-
-        if ($orderLineSum > $payment->order->authorizedAmount) {
-            throw new IllegalValueException(
-                message: 'Unable to update order, sum total of new order lines is ' .
-                    $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount
-            );
-        }
-
-        self::cancel(paymentId: $paymentId);
-
-        return self::addOrderLines(
-            paymentId: $paymentId,
-            orderLines: $orderLines
-        );
-    }
-
-    /**
-     * Fetch TaskStatusDetails object relating to our payment from API.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     */
-    public static function getTaskStatusDetails(
-        string $paymentId
-    ): TaskStatusDetails {
-        self::validatePaymentId(paymentId: $paymentId);
-
-        $result = (new MapiGet(
-            model: TaskStatusDetails::class,
-            route: Mapi::PAYMENT_ROUTE . "/$paymentId/tasks/status",
-            params: []
-        ))->call();
-
-        if (!$result instanceof TaskStatusDetails) {
-            throw new ApiException(message: 'Invalid API response.');
-        }
-
-        return $result;
     }
 
     /**

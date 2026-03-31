@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Repository\Traits;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Lib\Collection\Collection;
@@ -23,6 +24,7 @@ use stdClass;
  * @phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter
  * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
+#[AllowMockObjectsWithoutExpectations]
 final class RequestTest extends TestCase
 {
     private Request $request;
@@ -50,7 +52,7 @@ final class RequestTest extends TestCase
     {
         /* @phpstan-ignore-next-line */
         $validClosure = fn (stdClass $data): Collection|Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         // Should not throw any exception.
@@ -90,7 +92,7 @@ final class RequestTest extends TestCase
         );
 
         $invalidClosure = fn (stdClass $data): Collection => $this->createMock(
-            originalClassName: Collection::class
+            type: Collection::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -109,7 +111,7 @@ final class RequestTest extends TestCase
         );
 
         $invalidClosure = fn (stdClass $data): Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -129,7 +131,7 @@ final class RequestTest extends TestCase
 
         /* @phpstan-ignore-next-line */
         $invalidClosure = fn (): Collection|Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -149,7 +151,7 @@ final class RequestTest extends TestCase
 
         /* @phpstan-ignore-next-line */
         $invalidClosure = fn (stdClass $data, string $extra): Collection|Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -169,7 +171,7 @@ final class RequestTest extends TestCase
 
         /* @phpstan-ignore-next-line */
         $invalidClosure = fn (stdClass $wrongName): Collection|Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -189,7 +191,7 @@ final class RequestTest extends TestCase
 
         /* @phpstan-ignore-next-line */
         $invalidClosure = fn (array $data): Collection|Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -209,7 +211,7 @@ final class RequestTest extends TestCase
 
         /* @phpstan-ignore-next-line */
         $invalidClosure = fn ($data): Collection|Model => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);
@@ -228,7 +230,7 @@ final class RequestTest extends TestCase
         );
 
         $invalidClosure = fn (stdClass $data) => $this->createMock(
-            originalClassName: Model::class
+            type: Model::class
         );
 
         $this->request->validateCustomModelConverter(callable: $invalidClosure);

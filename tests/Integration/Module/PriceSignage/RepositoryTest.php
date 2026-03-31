@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\PriceSignage;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -35,6 +36,7 @@ use Throwable;
 /**
  * Integration tests for PriceSignage repository.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepositoryTest extends TestCase
 {
     private Cache $cache;
@@ -54,7 +56,7 @@ class RepositoryTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(
                 path: '/tmp/ecom-test/priceSignage/' . time()
@@ -146,6 +148,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that caching works.
+     *
      * Assert getPriceSignage() retrieves payment methods, priceSignage them in
      * cache, and will later return the same priceSignage from cache.
      *

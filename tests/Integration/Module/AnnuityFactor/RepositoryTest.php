@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\AnnuityFactor;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -33,6 +34,7 @@ use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 /**
  * Integration tests for AnnuityFactors repository.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepositoryTest extends TestCase
 {
     private Cache $cache;
@@ -50,7 +52,7 @@ class RepositoryTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(
                 path: '/tmp/ecom-test/annuityFactors/' . time()
@@ -124,6 +126,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify that caching works.
+     *
      * Assert read() retrieves payment methods, paymentMethod them in cache, and
      * will later return the same paymentMethods from cache.
      *

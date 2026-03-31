@@ -14,6 +14,7 @@ namespace Resursbank\EcomTest\Integration\Module\Payment\Api;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -32,16 +33,16 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
@@ -50,6 +51,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
 /**
  * Tests for MAPI Payment Capture class.
  */
+#[AllowMockObjectsWithoutExpectations]
 class CaptureTest extends TestCase
 {
     /**
@@ -61,9 +63,9 @@ class CaptureTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -126,7 +128,6 @@ class CaptureTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',

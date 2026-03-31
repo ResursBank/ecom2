@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Customer;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -27,14 +28,15 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Module\Customer\Repository;
 use Resursbank\EcomTest\Utilities\MockSessionTrait;
 
 /**
  * Tests for the API call getAddress.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepositoryTest extends TestCase
 {
     use MockSessionTrait;
@@ -48,9 +50,9 @@ class RepositoryTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -193,6 +195,8 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * Verify getAddress properly handles inaccurate results.
+     *
      * Assert getAddress with inaccurate SSN results in a CurlException with
      * httpCode 400, morphing to a GetAddressException.
      *
@@ -270,8 +274,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * Assert setSsnData() won't cause an Exception if it cannot store data in
-     * PHP session.
+     * Verify setSsnData doesn't throw exception if data write fails.
      *
      * @throws ConfigException
      */

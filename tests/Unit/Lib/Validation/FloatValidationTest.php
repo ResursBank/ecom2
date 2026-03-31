@@ -35,8 +35,7 @@ final class FloatValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws MissingKeyException when the needle does not
-     * exist.
+     * Assert getKey() throws MissingKeyException if the needle does not exist.
      *
      * @throws IllegalTypeException
      * @throws MissingKeyException
@@ -48,8 +47,7 @@ final class FloatValidationTest extends TestCase
     }
 
     /**
-     * Assert getKey() throws IllegalTypeException when the needle exists but
-     * is not a float.
+     * Assert getKey() throws IllegalTypeException for non-float needle.
      *
      * @throws IllegalTypeException
      * @throws MissingKeyException
@@ -89,8 +87,7 @@ final class FloatValidationTest extends TestCase
     }
 
     /**
-     * Assert inRange() throws IllegalValueException when the value is out of
-     * range.
+     * Assert inRange() throws IllegalValueException out of range values.
      *
      * @throws IllegalValueException
      */
@@ -128,8 +125,7 @@ final class FloatValidationTest extends TestCase
     }
 
     /**
-     * Assert length() throws IllegalValueException when given a min value that
-     * is negative.
+     * Assert length() throws IllegalValueException for a negative min value.
      *
      * @throws IllegalValueException
      */
@@ -140,8 +136,7 @@ final class FloatValidationTest extends TestCase
     }
 
     /**
-     * Assert length() throws IllegalValueException when the value is out of
-     * range.
+     * Assert length() throws IllegalValueException for out of range values.
      *
      * @throws IllegalValueException
      */

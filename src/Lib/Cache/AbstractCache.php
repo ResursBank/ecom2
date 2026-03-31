@@ -42,6 +42,8 @@ abstract class AbstractCache
     }
 
     /**
+     * Validate the supplied cache key.
+     *
      * To ensure our keys will function regardless of cache implementation we
      * limit what characters may be utilised as part of the key. The key cannot
      * be empty.

@@ -19,8 +19,6 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -32,8 +30,6 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Module\PaymentMethod\Api\ApplicationDataSpecification;
-use Resursbank\Ecom\Module\Widget\UniqueSellingPoint\Html;
 use Throwable;
 
 /**
@@ -44,8 +40,14 @@ class Repository
     use ExceptionLog;
 
     /**
+     * Fetch payment methods.
+     *
      * NOTE: Parameters must be validated since they are utilized for our cache
      * keys.
+     *
+     * If $amount parameter is provided only methods where the value is greater
+     * than the method's minPurchaseLimit and less than its maxPurchaseLimit
+     * will be returned.
      *
      * @throws ApiException
      * @throws AuthException
@@ -159,58 +161,5 @@ class Repository
         } catch (MissingValueException) {
             return null;
         }
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws Throwable
-     * @throws ValidationException
-     */
-    public static function getApplicationDataSpecification(
-        string $paymentMethodId,
-        int $amount
-    ): PaymentMethod\ApplicationFormSpecResponse {
-        try {
-            return (new ApplicationDataSpecification())->call(
-                paymentMethodId: $paymentMethodId,
-                amount: $amount
-            );
-        } catch (Throwable $e) {
-            self::logException(exception: $e);
-            throw $e;
-        }
-    }
-
-    /**
-     * Fetches the USP for specified payment method type
-     *
-     * @throws ConfigException
-     * @throws FilesystemException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TranslationException
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @SuppressWarnings(PHPMD.LongVariable)
-     */
-    public static function getUniqueSellingPoint(
-        PaymentMethod $paymentMethod,
-        float $amount,
-        bool $useLegacyReadMoreLink = false
-    ): Html {
-        return new Html(
-            paymentMethod: $paymentMethod,
-            amount: $amount,
-            useLegacyReadMoreLink: $useLegacyReadMoreLink
-        );
     }
 }

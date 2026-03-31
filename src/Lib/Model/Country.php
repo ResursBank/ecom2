@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Module\Store\Enum;
+namespace Resursbank\Ecom\Lib\Model;
 
 /**
  * Country codes supported by Store entity.

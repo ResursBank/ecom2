@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\CostList;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\GrantType;
@@ -21,15 +22,16 @@ use Resursbank\Ecom\Module\Widget\CostList\Js;
 /**
  * Tests for the CostList JS widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class JsTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],

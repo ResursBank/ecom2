@@ -12,10 +12,10 @@ namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Model;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Validation\ArrayValidation;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 
 /**
  * Defines an action log item.
@@ -51,6 +51,8 @@ class ActionLog extends Model
     }
 
     /**
+     * Validate the "created" date.
+     *
      * NOTE: We cannot test date format because Resurs Bank will return
      * inconsistent values for the same properties (sometimes ATOM compatible,
      * sometimes containing an up to 9 digit microsecond suffix).

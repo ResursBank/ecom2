@@ -58,8 +58,6 @@ class DataConverter
         $arguments = [];
 
         foreach ($sourceProperties as $sourceProperty) {
-            /** @noinspection PhpExpressionResultUnusedInspection */
-            $sourceProperty->setAccessible(accessible: true);
             $name = $sourceProperty->getName();
             $value = $sourceProperty->getValue(object: $object);
 

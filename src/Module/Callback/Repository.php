@@ -221,6 +221,8 @@ class Repository
     }
 
     /**
+     * Check if payment is ready for processing.
+     *
      * Callbacks are ready for processing if one of the following conditions are
      * met:
      *

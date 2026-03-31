@@ -20,11 +20,24 @@ function showLogTable()
 }
 
 /**
+ * Handle escape key presses to close/hide widget.
+ *
+ * @param event
+ */
+closeOnEscape = function (event) {
+    const key = event.key;
+    if (key === 'Escape') {
+        hideWidget();
+    }
+}
+
+/**
  * Make widget visible.
  */
 function showWidget()
 {
     document.getElementById('rb-ph-hidden').style.display = 'block';
+    document.addEventListener('keydown', closeOnEscape);
 }
 
 /**
@@ -33,6 +46,7 @@ function showWidget()
 function hideWidget()
 {
     document.getElementById('rb-ph-hidden').style.display = 'none';
+    document.removeEventListener('keydown', closeOnEscape);
 }
 
 window.onload = () => {

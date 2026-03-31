@@ -12,9 +12,9 @@ namespace Resursbank\Ecom\Module\Widget\GetAddress;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Model\Country;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Widget\Widget;
-use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use Throwable;
 

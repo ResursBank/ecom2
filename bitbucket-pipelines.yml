@@ -2,8 +2,8 @@ pipelines:
   default:
     - parallel:
         - step:
-            name: ECom2 for PHP 8.1
-            image: php:8.1
+            name: ECom2 for PHP 8.3
+            image: php:8.3
             size: 2x
             caches:
               - composer

@@ -15,7 +15,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function in_array;
@@ -79,6 +79,8 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
+     * Verify that isInternal's return values are correct.
+     *
      * Assert that isInternal gives correct responses depending on the method's
      * type.
      */

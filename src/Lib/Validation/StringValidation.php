@@ -16,6 +16,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function in_array;
 use function is_string;
@@ -27,6 +28,8 @@ use function strlen;
 class StringValidation
 {
     /**
+     * Get specified key from data array.
+     *
      * Validates the supplied array contains an element named $key and that
      * element contains a string. Returns the validated string.
      *
@@ -167,12 +170,7 @@ class StringValidation
      */
     public function isUuid(string $value): bool
     {
-        if (
-            !preg_match(
-                pattern: '/^[\da-f]{8}-[\da-f]{4}-[0-5][\da-f]{3}-[\da-d][\da-f]{3}-[\da-f]{12}$/i',
-                subject: $value
-            )
-        ) {
+        if (!Strings::isUuid(value: $value)) {
             throw new IllegalValueException(message: "$value is not a UUID.");
         }
 

@@ -18,8 +18,8 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\TestException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
@@ -109,8 +109,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateDescription() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateDescription() throws error when its length is too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -125,8 +124,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateReference() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateReference() throws error when its length is too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -144,8 +142,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateQuantityUnit() throws IllegalValueException when its
-     * length is too long.
+     * Assert validateQuantityUnit() throws error when its length is too long.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -161,8 +158,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateVatRate() throws IllegalValueException when its
-     * value is negative.
+     * Verify that validateVatRate won't accept negative rates.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -175,8 +171,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateVatRate() throws IllegalValueException when its
-     * value has more than 2 decimals digits.
+     * Verify that validateVatRate won't accept more than two decimals in rate.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -189,8 +184,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateVatRate() throws IllegalValueException when its
-     * value has more than 2 integer digits.
+     * Verify that validateVatRate won't accept rates over 100%.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -203,8 +197,7 @@ class OrderLineTest extends TestCase
     }
 
     /**
-     * Assert validateQuantity() throws IllegalValueException when its
-     * value is negative.
+     * Assert validateQuantity() throws error when its value is negative.
      *
      * @throws ReflectionException
      * @throws TestException
@@ -217,6 +210,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Verify that validateQuantity won't accept more than two decimals.
+     *
      * Assert validateQuantity() throws IllegalValueException when its
      * value has more than 2 decimals digits.
      *
@@ -230,7 +225,9 @@ class OrderLineTest extends TestCase
         $this->convert(updates: ['quantity' => 0.999]);
     }
 
-     /**
+    /**
+     * Verify that validateUnitAmountIncludingVat won't accept more than two decimals.
+     *
      * Assert validateUnitAmountIncludingVat() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *
@@ -245,6 +242,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Verify that validateTotalAmountIncludingVat won't accept more than two decimals.
+     *
      * Assert validateTotalAmountIncludingVat() throws IllegalValueException
      * when its value has more than 2 decimals digits.
      *
@@ -259,6 +258,8 @@ class OrderLineTest extends TestCase
     }
 
     /**
+     * Verify that validateTotalVatAmount won't accept more than two decimals.
+     *
      * Assert validateTotalVatAmount() throws IllegalValueException when
      * its value has more than 2 decimals digits.
      *

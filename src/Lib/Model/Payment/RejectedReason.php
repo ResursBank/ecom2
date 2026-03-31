@@ -11,7 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Payment;
 
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\RejectedReasonCategory;
 use Throwable;
 
 /**

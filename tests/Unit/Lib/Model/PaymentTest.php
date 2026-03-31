@@ -21,13 +21,13 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\RejectedReasonCategory;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
-use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Model\Payment class.
