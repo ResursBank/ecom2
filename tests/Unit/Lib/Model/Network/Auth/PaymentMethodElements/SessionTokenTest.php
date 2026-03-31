@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Auth\Rws;
+namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Auth\PaymentMethodElements;
 
 use PHPUnit\Framework\TestCase;
-use Resursbank\Ecom\Lib\Model\Network\Auth\Rws\SessionToken;
+use Resursbank\Ecom\Lib\Model\Network\Auth\PaymentMethodElements\SessionToken;
 
 /**
- * Tests for RWS session token.
+ * Tests for Payment Method Elements session token.
  */
 class SessionTokenTest extends TestCase
 {

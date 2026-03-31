@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Network\Auth\Rws;
+namespace Resursbank\Ecom\Lib\Model\Network\Auth\PaymentMethodElements;
 
 use JsonException;
 use ReflectionException;
@@ -17,7 +17,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Describes RWS session token.
+ * Describes Payment Method Elements session token.
  *
  * @SuppressWarnings(PHPMD.CamelCasePropertyName)
  * @SuppressWarnings(PHPMD.CamelCaseVariableName)

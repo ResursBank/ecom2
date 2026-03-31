@@ -27,15 +27,15 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMap;
-use Resursbank\Ecom\Lib\Model\Rws\PaymentMethodTypeMapCollection;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodTypeMap;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\PaymentMethodTypeMapCollection;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 use Resursbank\Ecom\Module\PaymentMethodList\Repository;
 use Throwable;
 
 /**
- * Integration tests for PaymentMethodsList (RWS) repository.
+ * Integration tests for PaymentMethodsList (PME) repository.
  */
 class RepositoryTest extends TestCase
 {
@@ -105,7 +105,8 @@ class RepositoryTest extends TestCase
      * Verify that getPaymentMethodTypes works.
      *
      * Assert we can get a full collection of payment methods, submit this to
-     * RWS and get a response back with the same payment methods.
+     * Payment Method Eleemnts and get a response back with the same
+     * payment methods.
      *
      * This method also confirms that reading from cache works as it should.
      *

@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Rws;
+namespace Resursbank\Ecom\Lib\Model\PaymentMethodElements;
 
 /**
- * Defines the different payment method types available in Resurs Bank RWS.
+ * Defines available method types available in Payment Method Elements.
  */
 enum PaymentMethodType: string
 {
