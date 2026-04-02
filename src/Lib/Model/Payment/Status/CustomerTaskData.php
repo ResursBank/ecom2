@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Status;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -17,13 +21,14 @@ use Resursbank\Ecom\Lib\Model\Model;
 class CustomerTaskData extends Model
 {
     /**
-     * Construct object.
-     *
-     * @todo Validation ECP-413
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public string $customerUrl,
+        #[StringIsUrl] public string $customerUrl,
         public bool $hasActiveTask
     ) {
+        parent::__construct();
     }
 }
