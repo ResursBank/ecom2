@@ -52,8 +52,8 @@ class ActionLogTest extends TestCase
         }
 
         return new ActionLog(
-            type: ActionType::CAPTURE,
             actionId: $actionId,
+            type: ActionType::CAPTURE,
             created: $created,
             orderLines: $orderLines
         );
@@ -108,7 +108,7 @@ class ActionLogTest extends TestCase
             $this->fail(
                 message: 'Could create ActionLog entry with empty actionId value.'
             );
-        } catch (EmptyValueException) {
+        } catch (IllegalValueException) {
             // Assert EmptyValueException without breaking test method.
             $this->addToAssertionCount(count :1);
         }
@@ -142,7 +142,7 @@ class ActionLogTest extends TestCase
             $this->fail(
                 message: 'Could create ActionLog entry with empty created value.'
             );
-        } catch (EmptyValueException) {
+        } catch (IllegalValueException) {
             // Assert EmptyValueException without breaking test method.
             $this->addToAssertionCount(count :1);
         }
