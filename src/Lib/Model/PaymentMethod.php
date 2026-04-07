@@ -9,13 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
-use Resursbank\Ecom\Lib\Validation\FloatValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines payment method entity.
@@ -27,33 +29,27 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class PaymentMethod extends Model implements PaymentMethodInterface
 {
     /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $name,
+        #[StringIsUuid] public readonly string $id,
+        #[StringNotEmpty] public readonly string $name,
         public readonly Type $type,
-        public readonly float $minPurchaseLimit,
-        public readonly float $maxPurchaseLimit,
-        public readonly float $minApplicationLimit,
-        public readonly float $maxApplicationLimit,
+        #[FloatValue(min: 0)] public readonly float $minPurchaseLimit,
+        #[FloatValue(min: 0)] public readonly float $maxPurchaseLimit,
+        #[FloatValue(min: 0)] public readonly float $minApplicationLimit,
+        #[FloatValue(min: 0)] public readonly float $maxApplicationLimit,
         public readonly LegalLinkCollection $legalLinks,
         public readonly bool $enabledForLegalCustomer,
         public readonly bool $enabledForNaturalCustomer,
         public readonly bool $priceSignagePossible,
         public readonly ?string $description = null,
-        public int $sortOrder = 0,
-        private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly FloatValidation $floatValidation = new FloatValidation()
+        public int $sortOrder = 0
     ) {
-        $this->validateId();
-        $this->validateName();
-        $this->validateMinPurchaseLimit();
-        $this->validateMaxPurchaseLimit();
-        $this->validateMinApplicationLimit();
-        $this->validateMaxApplicationLimit();
+        parent::__construct();
     }
 
     public function getId(): string
@@ -120,56 +116,5 @@ class PaymentMethod extends Model implements PaymentMethodInterface
     public function getTypeValue(): string
     {
         return $this->type->value;
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->id);
-        $this->stringValidation->isUuid(value: $this->id);
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @todo Add charset validation.
-     */
-    private function validateName(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->name);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMinPurchaseLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->minPurchaseLimit);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMaxPurchaseLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->maxPurchaseLimit);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMinApplicationLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->minApplicationLimit);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMaxApplicationLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->maxApplicationLimit);
     }
 }
