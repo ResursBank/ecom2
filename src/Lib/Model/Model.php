@@ -24,7 +24,9 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsIpAddress;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_array;
@@ -46,6 +48,10 @@ class Model
         [
             ArraySize::class,
             ArrayOfStrings::class
+        ],
+        [
+            StringNotEmpty::class,
+            StringIsUuid::class
         ]
     ];
 
@@ -122,21 +128,40 @@ class Model
      * @throws AttributeCombinationException
      * @throws JsonException
      */
+    // phpcs:ignore
     public static function validateAttributeCombination(
         ReflectionParameter $parameter,
         array $combo
     ): void {
-        $combo = sort($combo);
+        $comboAsStrings = [];
+
+        foreach ($combo as $comboItem) {
+            // "if (!is_string($comboItem)"?
+            if (gettype($comboItem) === 'string') {
+                $comboAsStrings[] = $comboItem;
+                continue;
+            }
+
+            $comboAsStrings[] = $comboItem::class;
+        }
+
+        sort($comboAsStrings);
+
         $validCombo = false;
 
         foreach (self::$attributeCombos as $c) {
-            $validCombo = (sort($c) === $combo);
+            sort($c);
+            $validCombo = $c === $comboAsStrings;
+
+            if ($validCombo) {
+                break;
+            }
         }
 
         if (!$validCombo) {
             throw new AttributeCombinationException(
                 message: sprintf(
-                    'Cannot combines %s attributes for parameter %s on %s',
+                    'Cannot combine %s attributes for parameter %s on %s',
                     json_encode(value: $combo, flags: JSON_THROW_ON_ERROR),
                     $parameter->name,
                     $parameter->getDeclaringClass()?->name

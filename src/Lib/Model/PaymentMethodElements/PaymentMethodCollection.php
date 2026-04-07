@@ -19,8 +19,6 @@ class PaymentMethodCollection extends Collection
 {
     /**
      * @inheritDoc
-     *
-     * @param array $data
      * @throws IllegalTypeException
      */
     public function __construct(array $data = [])

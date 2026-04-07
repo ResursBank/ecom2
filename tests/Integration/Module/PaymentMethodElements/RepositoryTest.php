@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Module\PaymentMethodElements\Repository;
 
 // We must start the session before PHPUnit runs, otherwise sessions won't work
 // and we cannot test the session storage functionality.

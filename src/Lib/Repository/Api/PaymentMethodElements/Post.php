@@ -22,8 +22,7 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Repository\Traits\Request;
 
 /**
- * Generic functionality to perform a POST call against PME API and convert the
- * response to model instance(s).
+ * Performs POST calls against PME API and convert the response to model.
  */
 class Post extends Request
 {
