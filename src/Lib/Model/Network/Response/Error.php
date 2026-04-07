@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Model\Network\Response;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 
@@ -24,40 +25,14 @@ class Error extends Model
      * @throws IllegalValueException
      */
     public function __construct(
-        public readonly string $traceId,
-        public readonly string $code,
-        public readonly string $message,
-        public readonly string $timestamp,
+        #[StringNotEmpty] public readonly string $traceId,
+        #[StringNotEmpty] public readonly string $code,
+        #[StringNotEmpty] public readonly string $message,
+        readonly string $timestamp,
         private readonly StringValidation $stringValidation = new StringValidation()
     ) {
-        $this->validateTraceId();
-        $this->validateCode();
-        $this->validateMessage();
         $this->validateTimestamp();
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validateTraceId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->traceId);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validateCode(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->code);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    public function validateMessage(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->message);
+        parent::__construct();
     }
 
     /**

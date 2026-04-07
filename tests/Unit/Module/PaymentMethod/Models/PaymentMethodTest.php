@@ -101,7 +101,7 @@ class PaymentMethodTest extends TestCase
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['id' => '']);
     }
 
