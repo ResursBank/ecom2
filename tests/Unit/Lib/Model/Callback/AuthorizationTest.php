@@ -25,7 +25,7 @@ class AuthorizationTest extends TestCase
      */
     public function testPaymentIdCannotByEmpty(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         new Authorization(
             paymentId: '',
             status: Status::AUTHORIZED,
@@ -64,7 +64,7 @@ class AuthorizationTest extends TestCase
      */
     public function testCreatedCannotByEmpty(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         new Authorization(
             paymentId: '12e3b939-2683-4b9c-a558-f4f6c7e18d99',
             status: Status::REJECTED,
