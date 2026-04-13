@@ -9,13 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment\Order;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\CollectionSize;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Validation\ArrayValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines an action log item.
@@ -23,61 +25,21 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class ActionLog extends Model
 {
     /**
-     * @throws IllegalValueException|EmptyValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly string $actionId,
+        #[StringIsUuid] public readonly string $actionId,
         public readonly ActionType $type,
-        public readonly string $created,
-        public readonly OrderLineCollection $orderLines,
-        public readonly ?string $transactionId = null,
-        public readonly ?string $creator = null,
-        private readonly StringValidation $stringValidation = new StringValidation(),
-        private readonly ArrayValidation $arrayValidation = new ArrayValidation()
-    ) {
-        $this->validateActionId();
-        $this->validateCreated();
-        $this->validateOrderLines();
-    }
-
-    /**
-     * @throws IllegalValueException
-     * @throws EmptyValueException
-     */
-    private function validateActionId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->actionId);
-        $this->stringValidation->isUuid(value: $this->actionId);
-    }
-
-    /**
-     * Validate the "created" date.
-     *
-     * NOTE: We cannot test date format because Resurs Bank will return
-     * inconsistent values for the same properties (sometimes ATOM compatible,
-     * sometimes containing an up to 9 digit microsecond suffix).
-     *
-     * @throws IllegalValueException
-     * @throws EmptyValueException
-     */
-    private function validateCreated(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->created);
-        $this->stringValidation->isTimestampDate(value: $this->created);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateOrderLines(): void
-    {
-        $this->arrayValidation->isSequential(
-            data: $this->orderLines->toArray()
-        );
-        $this->arrayValidation->length(
-            data: $this->orderLines->toArray(),
+        #[StringIsDatetime] public readonly string $created,
+        #[CollectionSize(
             min: 1,
-            max: 1000
-        );
+            max: 100
+        )] public readonly OrderLineCollection $orderLines,
+        public readonly ?string $transactionId = null,
+        public readonly ?string $creator = null
+    ) {
+        parent::__construct();
     }
 }
