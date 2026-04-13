@@ -3579,31 +3579,50 @@
     "id": "redis-host",
     "translation": {
       "en": "Redis host",
-      "sv": "Värdnamn för Redis"
+      "sv": "Värdnamn för Redis",
+      "no": "Redis-vert",
+      "da": "Redis-vært",
+      "fi": "Redis-isäntä"
     }
   },
   {
     "id": "redis-port",
     "translation": {
       "en": "Redis port",
-      "sv": "Port för Redis"
+      "sv": "Port för Redis",
+      "no": "Redis-port",
+      "da": "Redis-port",
+      "fi": "Redis-portti"
     }
   },
   {
     "id": "redis-password",
     "translation": {
       "en": "Redis password",
-      "sv": "Lösenord för Redis"
+      "sv": "Lösenord för Redis",
+      "no": "Redis-passord",
+      "da": "Redis-adgangskode",
+      "fi": "Redis-salasana"
+    }
+  },
+  {
+    "id": "threshold",
+    "translation": {
+      "en": "Threshold",
+      "sv": "Tröskelvärde",
+      "no": "Terskelverdi",
+      "da": "Tærskelværdi",
+      "fi": "Kynnysarvo"
     }
   },
   {
     "id": "invalid-government-id",
     "translation": {
       "en": "Invalid government ID.",
-        "sv": "Ogiltigt personnummer.",
-        "no": "Ugyldig personnummer.",
-        "da": "Ugyldigt personnummer.",
-        "fi": "Virheellinen henkilötunnus."
+      "sv": "Ogiltigt personnummer.",
+      "no": "Ugyldig personnummer.",
+      "da": "Ugyldigt personnummer.",
+      "fi": "Virheellinen henkilötunnus."
     }
   },
   {
