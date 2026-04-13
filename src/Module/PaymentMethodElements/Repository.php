@@ -45,7 +45,6 @@ class Repository
 
     /**
      * @param string|null $identifier Unique user identifier (e.g. quote ID)
-     * @return Session
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -64,11 +63,7 @@ class Repository
         ?string $identifier = null
     ): Session {
         $cacheKey = self::SESSION_CACHE_KEY_PREFIX . sha1($identifier);
-        $cache = new Cache(
-            key: $cacheKey,
-            model: Session::class,
-            ttl: 3600
-        );
+        $cache = new Cache(key: $cacheKey, model: Session::class, ttl: 3600);
 
         /** @var Session $session */
         $session = $cache->read();
@@ -81,9 +76,7 @@ class Repository
             ))->call();
 
             if (!$session instanceof Session) {
-                throw new ApiException(
-                    message: 'Failed to resolve session.'
-                );
+                throw new ApiException(message: 'Failed to resolve session.');
             }
 
             $cache->write(data: $session);
@@ -93,11 +86,6 @@ class Repository
     }
 
     /**
-     * @param float $amount
-     * @param string $locale
-     * @param string $sessionId
-     * @param ?CustomerType $customerType
-     * @return PaymentMethodCollection
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -115,7 +103,7 @@ class Repository
         float $amount,
         string $locale,
         string $sessionId,
-        ?CustomerType $customerType = null,
+        ?CustomerType $customerType = null
     ): PaymentMethodCollection {
         $route = 'sessions/' . $sessionId . '/payment-method-groups?amount=' .
             $amount . '&locale=' . $locale;
@@ -123,6 +111,7 @@ class Repository
         if ($customerType !== null) {
             $route .= '&customerType=' . $customerType->value;
         }
+
         $response = (new Get(
             model: PaymentMethod::class,
             route: $route,

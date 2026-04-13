@@ -20,13 +20,6 @@ use Resursbank\Ecom\Lib\Model\Model;
 class PaymentMethod extends Model
 {
     /**
-     * @param string $id
-     * @param array $methodIds
-     * @param PaymentMethodType $type
-     * @param array $customerTypes
-     * @param string $title
-     * @param string $subtitle
-     * @param string $internalData
      * @throws AttributeCombinationException
      * @throws JsonException
      * @throws ReflectionException
