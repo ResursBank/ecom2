@@ -60,19 +60,27 @@ class Repository
      * @throws CacheException
      */
     public static function getSession(
-        ?string $identifier = null
+        ?string $identifier = null,
+        ?string $campaign = null
     ): Session {
-        $cacheKey = self::SESSION_CACHE_KEY_PREFIX . sha1($identifier);
+        $cacheKey = self::SESSION_CACHE_KEY_PREFIX .
+            sha1($identifier . ($campaign ?? ''));
         $cache = new Cache(key: $cacheKey, model: Session::class, ttl: 3600);
 
         /** @var Session $session */
         $session = $cache->read();
 
         if (!$session instanceof Cache || $session->expired()) {
+            $params = [];
+
+            if ($campaign !== null) {
+                $params['campaign'] = $campaign;
+            }
+
             $session = (new Post(
                 model: Session::class,
                 route: 'stores/' . Config::getStoreId() . '/sessions',
-                params: []
+                params: $params
             ))->call();
 
             if (!$session instanceof Session) {
