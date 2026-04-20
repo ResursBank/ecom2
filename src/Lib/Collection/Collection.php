@@ -160,33 +160,12 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
-     * Get full data array from collection.
-     *
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    private function fullToArray(): array
-    {
-        $data = [];
-
-        /** @var Model $model */
-        foreach ($this->data as $model) {
-            if (method_exists(object_or_class: $model, method: 'toArray')) {
-                $data[] = $model->toArray(full: true);
-            } else {
-                $data[] = $model;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if ($this->offsetValueIsValid(value: $value)) {
+        if (!$this->offsetValueIsValid(value: $value)) {
             throw new IllegalTypeException(
                 message: sprintf(
                     self::TYPE_ERR,
@@ -301,6 +280,27 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Get full data array from collection.
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    private function fullToArray(): array
+    {
+        $data = [];
+
+        /** @var Model $model */
+        foreach ($this->data as $model) {
+            if (method_exists(object_or_class: $model, method: 'toArray')) {
+                $data[] = $model->toArray(full: true);
+            } else {
+                $data[] = $model;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Get collection from specified type or first element of data array
      *
      * @throws IllegalTypeException
@@ -327,11 +327,11 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     private function offsetValueIsValid(mixed $value): bool
     {
-        return (is_object(value: $value) && $value::class !== $this->type) ||
+        return !((is_object(value: $value) && $value::class !== $this->type) ||
             (
                 !is_object(value: $value) &&
                 gettype(value: $value) !== $this->type
-            );
+            ));
     }
 
     /**
@@ -340,7 +340,6 @@ class Collection implements ArrayAccess, Iterator, Countable
      * @throws IllegalTypeException
      * @todo Refactor, too complex, see ECP-347
      */
-    // phpcs:ignore
     private function verifyDataArrayType(array $data, string $type): void
     {
         foreach ($data as $item) {
