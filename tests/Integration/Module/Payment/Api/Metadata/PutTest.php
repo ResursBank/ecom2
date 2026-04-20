@@ -139,6 +139,25 @@ class PutTest extends TestCase
     }
 
     /**
+     * Normalize metadata entries to a deterministic key=>value array.
+     *
+     * @param array<int, Metadata\Entry> $entries
+     * @return array<string, mixed>
+     */
+    private static function normalizeMetadataEntries(array $entries): array
+    {
+        $normalized = [];
+
+        foreach ($entries as $entry) {
+            $normalized[$entry->key] = $entry->value;
+        }
+
+        ksort($normalized);
+
+        return $normalized;
+    }
+
+    /**
      * Verify that Metadata updates work
      *
      * @throws ValidationException
@@ -190,15 +209,19 @@ class PutTest extends TestCase
         // Get payment
         $fetchedPayment = Repository::get(paymentId: $payment->id);
 
-        // Assert that the metadata exists on the fetched payment
-        $this->assertEqualsCanonicalizing(
-            expected: $custom,
-            actual: $setMetadataResponse->custom?->toArray() ?? []
+        // Assert that the metadata exists on the fetched payment.
+        $expectedMetadata = self::normalizeMetadataEntries(entries: $custom);
+        $setMetadataResponseCustom = $setMetadataResponse->custom?->toArray() ?? [];
+        $fetchedPaymentCustom = $fetchedPayment->metadata?->custom?->toArray() ?? [];
+
+        $this->assertSame(
+            expected: $expectedMetadata,
+            actual: self::normalizeMetadataEntries(entries: $setMetadataResponseCustom)
         );
         $this->assertNotNull(actual: $fetchedPayment->metadata);
-        $this->assertEqualsCanonicalizing(
-            expected: $custom,
-            actual: $fetchedPayment->metadata->custom?->toArray() ?? []
+        $this->assertSame(
+            expected: $expectedMetadata,
+            actual: self::normalizeMetadataEntries(entries: $fetchedPaymentCustom)
         );
     }
 }
