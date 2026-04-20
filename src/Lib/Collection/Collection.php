@@ -184,7 +184,6 @@ class Collection implements ArrayAccess, Iterator, Countable
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    // phpcs:ignore
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($this->offsetValueIsValid(value: $value)) {
