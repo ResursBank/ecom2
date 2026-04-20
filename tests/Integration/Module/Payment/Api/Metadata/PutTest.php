@@ -76,6 +76,25 @@ class PutTest extends TestCase
     }
 
     /**
+     * Normalize metadata entries to a deterministic key=>value array.
+     *
+     * @param array<int, Metadata\Entry> $entries
+     * @return array<string, mixed>
+     */
+    private static function normalizeMetadataEntries(array $entries): array
+    {
+        $normalized = [];
+
+        foreach ($entries as $entry) {
+            $normalized[$entry->key] = $entry->value;
+        }
+
+        ksort($normalized);
+
+        return $normalized;
+    }
+
+    /**
      * Make API call to create payment
      *
      * @throws ApiException
@@ -139,25 +158,6 @@ class PutTest extends TestCase
     }
 
     /**
-     * Normalize metadata entries to a deterministic key=>value array.
-     *
-     * @param array<int, Metadata\Entry> $entries
-     * @return array<string, mixed>
-     */
-    private static function normalizeMetadataEntries(array $entries): array
-    {
-        $normalized = [];
-
-        foreach ($entries as $entry) {
-            $normalized[$entry->key] = $entry->value;
-        }
-
-        ksort($normalized);
-
-        return $normalized;
-    }
-
-    /**
      * Verify that Metadata updates work
      *
      * @throws ValidationException
@@ -216,12 +216,16 @@ class PutTest extends TestCase
 
         $this->assertSame(
             expected: $expectedMetadata,
-            actual: self::normalizeMetadataEntries(entries: $setMetadataResponseCustom)
+            actual: self::normalizeMetadataEntries(
+                entries: $setMetadataResponseCustom
+            )
         );
         $this->assertNotNull(actual: $fetchedPayment->metadata);
         $this->assertSame(
             expected: $expectedMetadata,
-            actual: self::normalizeMetadataEntries(entries: $fetchedPaymentCustom)
+            actual: self::normalizeMetadataEntries(
+                entries: $fetchedPaymentCustom
+            )
         );
     }
 }
