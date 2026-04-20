@@ -39,8 +39,8 @@ class Collection implements ArrayAccess, Iterator, Countable
     public function __construct(private array $data, ?string $type = null)
     {
         $type = $this->determineType(data: $data, type: $type);
-        $this->verifyDataArrayType(data: $data, type: $type);
         $this->type = $type;
+        $this->verifyDataArrayType(data: $data, type: $type);
         $this->position = 0;
     }
 
@@ -165,7 +165,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if (!$this->offsetValueIsValid(value: $value)) {
+        if (!$this->valueIsValid(value: $value)) {
             throw new IllegalTypeException(
                 message: sprintf(
                     self::TYPE_ERR,
@@ -325,7 +325,7 @@ class Collection implements ArrayAccess, Iterator, Countable
      *
      * @param mixed $value Value to validate
      */
-    private function offsetValueIsValid(mixed $value): bool
+    private function valueIsValid(mixed $value): bool
     {
         return !((is_object(value: $value) && $value::class !== $this->type) ||
             (
@@ -343,16 +343,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     private function verifyDataArrayType(array $data, string $type): void
     {
         foreach ($data as $item) {
-            if (
-                (
-                    is_object(value: $item) &&
-                    $item::class !== $type
-                ) ||
-                (
-                    !is_object(value: $item) &&
-                    gettype(value: $item) !== $type
-                )
-            ) {
+            if (!$this->valueIsValid(value: $item)) {
                 throw new IllegalTypeException(
                     message: sprintf(
                         self::TYPE_ERR,
