@@ -207,6 +207,16 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Alias for offsetSet which always passes null as the offset value.
+     *
+     * @throws IllegalTypeException
+     */
+    public function push(mixed $value): void
+    {
+        $this->offsetSet(offset: null, value: $value);
+    }
+
+    /**
      * @inheritDoc
      */
     public function offsetExists(mixed $offset): bool
