@@ -183,21 +183,11 @@ class Collection implements ArrayAccess, Iterator, Countable
     /**
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ElseExpression)
-     * @todo Refactor, too complex. See ECP-346
      */
     // phpcs:ignore
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if (
-            (
-                is_object(value: $value) &&
-                $value::class !== $this->type
-            ) ||
-            (
-                !is_object(value: $value) &&
-                gettype(value: $value) !== $this->type
-            )
-        ) {
+        if ($this->offsetValueIsValid(value: $value)) {
             throw new IllegalTypeException(
                 message: sprintf(
                     self::TYPE_ERR,
@@ -319,6 +309,20 @@ class Collection implements ArrayAccess, Iterator, Countable
         }
 
         throw new IllegalTypeException(message: self::TYPE_ERR_NO_DATA);
+    }
+
+    /**
+     * Validate offset value.
+     *
+     * @param mixed $value Value to validate
+     */
+    private function offsetValueIsValid(mixed $value): bool
+    {
+        return (is_object(value: $value) && $value::class !== $this->type) ||
+            (
+                !is_object(value: $value) &&
+                gettype(value: $value) !== $this->type
+            );
     }
 
     /**
