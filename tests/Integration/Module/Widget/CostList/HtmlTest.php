@@ -352,7 +352,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Verify that rendered widget contains expected data.
+     * Verify that widget renders correctly when interest is null.
      *
      * @throws ApiException
      * @throws AttributeCombinationException
@@ -370,6 +370,37 @@ class HtmlTest extends TestCase
      * @throws TranslationException
      * @throws ValidationException
      */
+    public function testRenderedContentWithoutInterest(): void
+    {
+        $cost = new Cost(
+            name: Strings::generateRandomString(length: 12),
+            interest: null,
+            durationMonths: 3,
+            setupFee: 12.0,
+            totalCost: 24.0,
+            monthlyCost: 36.0,
+            administrationFee: 48.0,
+            effectiveInterest: 72.0,
+            description: null
+        );
+        $costCollection = new CostCollection(data: [$cost]);
+        $priceSignage = new PriceSignage(
+            secciLinks: $this->createMock(type: UriLinkCollection::class),
+            generalTermsLinks: $this->createMock(
+                type: UriLinkCollection::class
+            ),
+            costList: $costCollection
+        );
+        /** @var PaymentMethod $paymentMethod */
+        $paymentMethod = Repository::getById(
+            paymentMethodId: $_ENV['ANNUITY_PAYMENT_METHOD_ID']
+        );
+        $widget = new Html(priceSignage: $priceSignage, method: $paymentMethod);
+
+        $this->assertNotEmpty(actual: $widget->content);
+        $this->assertNull(actual: $cost->interest);
+    }
+
     public function testRenderedContent(): void
     {
         $widget = $this->getWidget();

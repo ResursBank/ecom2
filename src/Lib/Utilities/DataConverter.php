@@ -130,6 +130,28 @@ class DataConverter
             }
         }
 
+        $constructor = $destReflection->getConstructor();
+
+        if ($constructor !== null) {
+            foreach ($constructor->getParameters() as $parameter) {
+                $parameterName = $parameter->getName();
+
+                if (array_key_exists($parameterName, $arguments)) {
+                    continue;
+                }
+
+                if ($parameter->isDefaultValueAvailable()) {
+                    continue;
+                }
+
+                if (!$parameter->allowsNull()) {
+                    continue;
+                }
+
+                $arguments[$parameterName] = null;
+            }
+        }
+
         return new $type(...$arguments);
     }
 

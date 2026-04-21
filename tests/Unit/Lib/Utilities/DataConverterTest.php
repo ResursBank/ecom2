@@ -13,6 +13,7 @@ use ArgumentCountError;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\EcomTest\Data\DataConverter as TestClasses;
 use stdClass;
@@ -149,5 +150,56 @@ final class DataConverterTest extends TestCase
             object: $data,
             type: TestClasses\SimpleDummy::class
         );
+    }
+
+    /**
+     * Verify that missing nullable properties are mapped to null.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     */
+    public function testConvertObjectWithMissingNullableProperty(): void
+    {
+        $data = new stdClass();
+        $data->int = 42;
+
+        $output = DataConverter::stdClassToType(
+            object: $data,
+            type: TestClasses\NullableDummy::class
+        );
+
+        $this::assertEquals(
+            expected: new TestClasses\NullableDummy(int: 42, description: null),
+            actual: $output
+        );
+    }
+
+    /**
+     * Verify real Cost model conversion when API omits nullable fields.
+     *
+     * @throws IllegalTypeException
+     * @throws ReflectionException
+     */
+    public function testConvertCostWithMissingNullableProperties(): void
+    {
+        $data = (object) [
+            'name' => 'Plan 12m',
+            'durationMonths' => 12,
+            'setupFee' => 0.0,
+            'totalCost' => 1200.0,
+            'monthlyCost' => 100.0,
+            'administrationFee' => 0.0,
+            'effectiveInterest' => 0.0,
+        ];
+
+        /** @var Cost $output */
+        $output = DataConverter::stdClassToType(
+            object: $data,
+            type: Cost::class
+        );
+
+        $this::assertInstanceOf(expected: Cost::class, actual: $output);
+        $this::assertNull(actual: $output->description);
+        $this::assertNull(actual: $output->interest);
     }
 }

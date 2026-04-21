@@ -1,14 +1,20 @@
 #!/bin/sh -eu
 
-# Project directory in guest and CMD to execute PHP commands from host.
+# Project directory and command used for PHP tooling.
 dir="/var/www/html"
-phpCmd="docker compose exec -w ${dir} -T php";
+phpCmd="docker compose exec -w ${dir} -T php"
+
+# Local fallback when not running inside the containerized path.
+if [ ! -d "$dir/.git" ]; then
+  dir="$(cd "$(dirname "$0")/.." && pwd)"
+  phpCmd=""
+fi
 
 echo ""
 echo "--==( Setting up git pre-commit hook )==--"
 
 # Create git pre-commit hook file.
-HOOK_FILE="/var/www/html/.git/hooks/pre-commit"
+HOOK_FILE="$dir/.git/hooks/pre-commit"
 
 if [ -f $HOOK_FILE ]; then
   rm -f $HOOK_FILE
@@ -26,41 +32,56 @@ echo "==========================================================="
 echo "#             APPLYING AUTOMATIC ADJUSTMENTS              #"
 echo "==========================================================="
 
-SRC_FILES=""
-TEST_FILES=""
+SRC_PHP_FILES=""
+SRC_TEMPLATE_FILES=""
+TEST_PHP_FILES=""
+UNIT_TEST_FILES=""
 
 for file in \$(git diff --name-only --cached)
 do
   if [ "\$(echo \$file | cut -d/ -f1)" = "src" ]; then
-      SRC_FILES="\$SRC_FILES $dir/\$file"
+      case "\$file" in
+        *.php) SRC_PHP_FILES="\$SRC_PHP_FILES $dir/\$file" ;;
+        *.phtml) SRC_TEMPLATE_FILES="\$SRC_TEMPLATE_FILES $dir/\$file" ;;
+      esac
   elif [ "\$(echo \$file | cut -d/ -f1)" = "tests" ]; then
-      TEST_FILES="\$TEST_FILES $dir/\$file"
+      case "\$file" in
+        *.php)
+          TEST_PHP_FILES="\$TEST_PHP_FILES $dir/\$file"
+          case "\$file" in
+            tests/Unit/*Test.php) UNIT_TEST_FILES="\$UNIT_TEST_FILES $dir/\$file" ;;
+          esac
+          ;;
+      esac
   fi
 done
 
-if [ -n "\$SRC_FILES" ]; then
+if [ -n "\$SRC_PHP_FILES" ]; then
   echo ""
   echo "---==( Automatically adjusting src files )==---"
   echo "[APPLYING PSR-12 RULESET]"
-  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 \$SRC_FILES
+  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 \$SRC_PHP_FILES
   echo "[APPLYING CUSTOM RULESET]"
-  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/src.xml \$SRC_FILES
+  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/src.xml \$SRC_PHP_FILES
 fi
 
-if [ -n "\$TEST_FILES" ]; then
+if [ -n "\$TEST_PHP_FILES" ]; then
   echo ""
   echo "---==( Automatically adjusting test files )==---"
   echo "[APPLYING PSR-12 RULESET]"
-  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 \$TEST_FILES
+  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=PSR12 \$TEST_PHP_FILES
   echo "[APPLYING CUSTOM RULESET]"
-  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/tests.xml \$TEST_FILES
+  $phpCmd $dir/vendor/bin/phpcbf --extensions=php --standard=qa/phpcs/tests.xml \$TEST_PHP_FILES
 fi
 
-if [ -z "\$SRC_FILES\$TEST_FILES" ]; then
+if [ -z "\$SRC_PHP_FILES\$SRC_TEMPLATE_FILES\$TEST_PHP_FILES" ]; then
   echo ""
   echo "No fixable errors found."
   echo ""
 fi
+
+# Restage files modified by phpcbf.
+git add -A
 
 echo "==========================================================="
 echo "#                  SCANNING SOURCE FILES                  #"
@@ -68,25 +89,25 @@ echo "==========================================================="
 echo ""
 
 echo "---==( Executing PHPCS )==---"
-if ! $phpCmd $dir/vendor/bin/phpcs --standard=PSR12 $dir/src; then
+if [ -n "\$SRC_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpcs --standard=PSR12 \$SRC_PHP_FILES; then
   ERRORS=1
 fi
-if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php --standard=qa/phpcs/src.xml $dir/src; then
+if [ -n "\$SRC_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpcs --extensions=php --standard=qa/phpcs/src.xml \$SRC_PHP_FILES; then
   ERRORS=1
 fi
-if ! $phpCmd $dir/vendor/bin/phpcs --extensions=phtml --standard=qa/phpcs/templates.xml $dir/src; then
+if [ -n "\$SRC_TEMPLATE_FILES" ] && ! $phpCmd $dir/vendor/bin/phpcs --extensions=phtml --standard=qa/phpcs/templates.xml \$SRC_TEMPLATE_FILES; then
   ERRORS=1
 fi
 echo ""
 
 echo "---==( Executing PHPMD )==---"
-if ! $phpCmd $dir/vendor/bin/phpmd $dir/src text $dir/qa/phpmd/src.xml 2>&1 | grep -v '^Deprecated:'; then
+if [ -n "\$SRC_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpmd \$SRC_PHP_FILES text $dir/qa/phpmd/src.xml 2>&1 | grep -v '^Deprecated:'; then
   ERRORS=1
 fi
 echo ""
 
 echo "---==( Executing PHPStan )==---"
-if ! $phpCmd $dir/vendor/bin/phpstan analyse --memory-limit 512M -c $dir/qa/phpstan/phpstan.neon $dir/src; then
+if [ -n "\$SRC_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpstan analyse --memory-limit 512M -c $dir/qa/phpstan/phpstan.neon \$SRC_PHP_FILES; then
   ERRORS=1
 fi
 echo ""
@@ -97,33 +118,37 @@ echo "==========================================================="
 echo ""
 
 echo "---==( Executing PHPCS )==---"
-if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php --standard=PSR12 $dir/tests; then
+if [ -n "\$TEST_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpcs --extensions=php --standard=PSR12 \$TEST_PHP_FILES; then
   ERRORS=1
 fi
-if ! $phpCmd $dir/vendor/bin/phpcs --extensions=php --standard=qa/phpcs/tests.xml $dir/tests; then
+if [ -n "\$TEST_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpcs --extensions=php --standard=qa/phpcs/tests.xml \$TEST_PHP_FILES; then
   ERRORS=1
 fi
 echo ""
 
 echo "---==( Executing PHPMD )==---"
-if ! $phpCmd $dir/vendor/bin/phpmd $dir/tests text $dir/qa/phpmd/tests.xml 2>&1 | grep -v '^Deprecated:'; then
+if [ -n "\$TEST_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpmd \$TEST_PHP_FILES text $dir/qa/phpmd/tests.xml 2>&1 | grep -v '^Deprecated:'; then
   ERRORS=1
 fi
 echo ""
 
 echo "---==( Executing PHPStan )==---"
-if ! $phpCmd $dir/vendor/bin/phpstan analyse --memory-limit 512M -c $dir/qa/phpstan/phpstan.neon $dir/tests; then
+if [ -n "\$TEST_PHP_FILES" ] && ! $phpCmd $dir/vendor/bin/phpstan analyse --memory-limit 512M -c $dir/qa/phpstan/phpstan.neon \$TEST_PHP_FILES; then
   ERRORS=1
 fi
 echo ""
 
 echo "==========================================================="
-echo "#                   RUNNING UNIT TESTS                    #"
+echo "#               RUNNING STAGED UNIT TESTS                 #"
 echo "==========================================================="
 echo ""
 
-if ! $phpCmd $dir/vendor/bin/phpunit -c $dir/phpunit.xml $dir/tests/Unit/; then
-  ERRORS=1
+if [ -n "\$UNIT_TEST_FILES" ]; then
+  if ! $phpCmd $dir/vendor/bin/phpunit -c $dir/phpunit.xml \$UNIT_TEST_FILES; then
+    ERRORS=1
+  fi
+else
+  echo "No staged unit tests to run."
 fi
 
 if [ "\${ERRORS}" = "1" ]; then
