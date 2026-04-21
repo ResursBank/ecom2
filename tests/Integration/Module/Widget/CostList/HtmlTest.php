@@ -98,7 +98,8 @@ class HtmlTest extends TestCase
                     totalCost: 24.0,
                     monthlyCost: 36.0,
                     administrationFee: 48.0,
-                    effectiveInterest: 72.0
+                    effectiveInterest: 72.0,
+                    description: null
                 )
             ]
         );
@@ -183,7 +184,8 @@ class HtmlTest extends TestCase
             totalCost: 0.0,
             monthlyCost: 0.0,
             administrationFee: 0.0,
-            effectiveInterest: 0.0
+            effectiveInterest: 0.0,
+            description: null
         );
         $costCollection = new CostCollection(
             data: [
@@ -251,7 +253,8 @@ class HtmlTest extends TestCase
             totalCost: 24.0,
             monthlyCost: 36.0,
             administrationFee: 48.0,
-            effectiveInterest: 72.0
+            effectiveInterest: 72.0,
+            description: null
         );
         $widget = $this->getWidget();
 
@@ -290,7 +293,8 @@ class HtmlTest extends TestCase
             totalCost: 24.0,
             monthlyCost: 36.0,
             administrationFee: 48.0,
-            effectiveInterest: 72.0
+            effectiveInterest: 72.0,
+            description: null
         );
         $widget = $this->getWidget();
 
@@ -330,7 +334,8 @@ class HtmlTest extends TestCase
             totalCost: 24.0,
             monthlyCost: 36.0,
             administrationFee: 48.0,
-            effectiveInterest: 72.0
+            effectiveInterest: 72.0,
+            description: null
         );
         $widget = $this->getWidget();
 
