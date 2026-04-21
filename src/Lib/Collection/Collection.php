@@ -166,15 +166,7 @@ class Collection implements ArrayAccess, Iterator, Countable
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (!$this->valueIsValid(value: $value)) {
-            throw new IllegalTypeException(
-                message: sprintf(
-                    self::TYPE_ERR,
-                    $this->type,
-                    is_object(value: $value) ? $value::class : gettype(
-                        value: $value
-                    )
-                )
-            );
+            $this->throwTypeError(type: $this->type, value: $value);
         }
 
         if ($offset === null) {
@@ -335,25 +327,40 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Throws an illegal type error using the self::TYPE_ERR format.
+     *
+     * @throws IllegalTypeException
+     */
+    private function throwTypeError(mixed $type, mixed $value): void
+    {
+        throw new IllegalTypeException(
+            message: sprintf(
+                self::TYPE_ERR,
+                is_string($type) ? $type : (is_object(
+                    $type
+                ) ? $type::class : gettype(
+                    $type
+                )),
+                (is_object(value: $value) ? $value::class : gettype(
+                    value: $value
+                ))
+            )
+        );
+    }
+
+    /**
      * Verify the type of objects in collection data
      *
      * @throws IllegalTypeException
-     * @todo Refactor, too complex, see ECP-347
      */
     private function verifyDataArrayType(array $data, string $type): void
     {
         foreach ($data as $item) {
-            if (!$this->valueIsValid(value: $item)) {
-                throw new IllegalTypeException(
-                    message: sprintf(
-                        self::TYPE_ERR,
-                        $type,
-                        (is_object(value: $item) ? $item::class : gettype(
-                            value: $item
-                        ))
-                    )
-                );
+            if ($this->valueIsValid(value: $item)) {
+                continue;
             }
+
+            $this->throwTypeError(type: $type, value: $item);
         }
     }
 }
