@@ -39,8 +39,8 @@ class Collection implements ArrayAccess, Iterator, Countable
     public function __construct(private array $data, ?string $type = null)
     {
         $type = $this->determineType(data: $data, type: $type);
-        $this->verifyDataArrayType(data: $data, type: $type);
         $this->type = $type;
+        $this->verifyDataArrayType(data: $data, type: $type);
         $this->position = 0;
     }
 
@@ -160,53 +160,13 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
-     * Get full data array from collection.
-     *
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    private function fullToArray(): array
-    {
-        $data = [];
-
-        /** @var Model $model */
-        foreach ($this->data as $model) {
-            if (method_exists(object_or_class: $model, method: 'toArray')) {
-                $data[] = $model->toArray(full: true);
-            } else {
-                $data[] = $model;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * @throws IllegalTypeException
      * @SuppressWarnings(PHPMD.ElseExpression)
-     * @todo Refactor, too complex. See ECP-346
      */
-    // phpcs:ignore
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if (
-            (
-                is_object(value: $value) &&
-                $value::class !== $this->type
-            ) ||
-            (
-                !is_object(value: $value) &&
-                gettype(value: $value) !== $this->type
-            )
-        ) {
-            throw new IllegalTypeException(
-                message: sprintf(
-                    self::TYPE_ERR,
-                    $this->type,
-                    is_object(value: $value) ? $value::class : gettype(
-                        value: $value
-                    )
-                )
-            );
+        if (!$this->valueIsValid(value: $value)) {
+            $this->throwTypeError(type: $this->type, value: $value);
         }
 
         if ($offset === null) {
@@ -214,6 +174,16 @@ class Collection implements ArrayAccess, Iterator, Countable
         } else {
             $this->data[$offset] = $value;
         }
+    }
+
+    /**
+     * Alias for offsetSet which always passes null as the offset value.
+     *
+     * @throws IllegalTypeException
+     */
+    public function push(mixed $value): void
+    {
+        $this->offsetSet(offset: null, value: $value);
     }
 
     /**
@@ -302,6 +272,27 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Get full data array from collection.
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    private function fullToArray(): array
+    {
+        $data = [];
+
+        /** @var Model $model */
+        foreach ($this->data as $model) {
+            if (method_exists(object_or_class: $model, method: 'toArray')) {
+                $data[] = $model->toArray(full: true);
+            } else {
+                $data[] = $model;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Get collection from specified type or first element of data array
      *
      * @throws IllegalTypeException
@@ -322,35 +313,54 @@ class Collection implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Validate offset value.
+     *
+     * @param mixed $value Value to validate
+     */
+    private function valueIsValid(mixed $value): bool
+    {
+        return !((is_object(value: $value) && $value::class !== $this->type) ||
+            (
+                !is_object(value: $value) &&
+                gettype(value: $value) !== $this->type
+            ));
+    }
+
+    /**
+     * Throws an illegal type error using the self::TYPE_ERR format.
+     *
+     * @throws IllegalTypeException
+     */
+    private function throwTypeError(mixed $type, mixed $value): void
+    {
+        throw new IllegalTypeException(
+            message: sprintf(
+                self::TYPE_ERR,
+                is_string($type) ? $type : (is_object(
+                    $type
+                ) ? $type::class : gettype(
+                    $type
+                )),
+                (is_object(value: $value) ? $value::class : gettype(
+                    value: $value
+                ))
+            )
+        );
+    }
+
+    /**
      * Verify the type of objects in collection data
      *
      * @throws IllegalTypeException
-     * @todo Refactor, too complex, see ECP-347
      */
-    // phpcs:ignore
     private function verifyDataArrayType(array $data, string $type): void
     {
         foreach ($data as $item) {
-            if (
-                (
-                    is_object(value: $item) &&
-                    $item::class !== $type
-                ) ||
-                (
-                    !is_object(value: $item) &&
-                    gettype(value: $item) !== $type
-                )
-            ) {
-                throw new IllegalTypeException(
-                    message: sprintf(
-                        self::TYPE_ERR,
-                        $type,
-                        (is_object(value: $item) ? $item::class : gettype(
-                            value: $item
-                        ))
-                    )
-                );
+            if ($this->valueIsValid(value: $item)) {
+                continue;
             }
+
+            $this->throwTypeError(type: $type, value: $item);
         }
     }
 }
