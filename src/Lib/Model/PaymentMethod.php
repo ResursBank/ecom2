@@ -16,6 +16,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Campaign;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 
@@ -47,6 +48,7 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         public readonly bool $enabledForNaturalCustomer,
         public readonly bool $priceSignagePossible,
         public readonly ?string $description = null,
+        public readonly ?Campaign $campaign = null,
         public int $sortOrder = 0
     ) {
         parent::__construct();

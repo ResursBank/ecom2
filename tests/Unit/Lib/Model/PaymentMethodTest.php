@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Campaign;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
@@ -28,7 +29,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Generate a dummy payment method with specified type
      *
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws Exception
@@ -47,6 +47,10 @@ class PaymentMethodTest extends TestCase
             enabledForLegalCustomer: false,
             enabledForNaturalCustomer: true,
             priceSignagePossible: true,
+            campaign: new Campaign(
+                keywords: [],
+                campaign: false
+            ),
             sortOrder: 1
         );
     }
