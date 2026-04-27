@@ -24,6 +24,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
+use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -167,6 +168,103 @@ class RepositoryTest extends TestCase
         $createdPayment = Repository::create(
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines
+        );
+
+        /** @var Order $order */
+        $order = $createdPayment->order;
+
+        /** @var ActionLogCollection $actionLog */
+        $actionLog = $order->actionLog;
+
+        if (empty($actionLog->toArray())) {
+            throw new MissingKeyException(
+                message: 'actionLog contains no entries'
+            );
+        }
+
+        /** @var Order\ActionLog $actionLogEntry */
+        $actionLogEntry = $actionLog[0];
+
+        /** @var OrderlineCollection $orderLines */
+        $orderLines = $actionLogEntry->orderLines;
+
+        if (!isset($orderLines[0])) {
+            throw new MissingKeyException(
+                message: 'orderLines contains no entries'
+            );
+        }
+
+        /** @var OrderLine $orderLine */
+        $orderLine = $orderLines[0];
+
+        /** @var OrderLine $createdOrderLine */
+        $createdOrderLine = $orderLines[0];
+
+        $this->assertEquals(
+            expected: $orderLine->description,
+            actual: $createdOrderLine->description
+        );
+        $this->assertEquals(
+            expected: $orderLine->vatRate,
+            actual: $createdOrderLine->vatRate
+        );
+        $this->assertEquals(
+            expected: $orderLine->reference,
+            actual: $createdOrderLine->reference
+        );
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws NotJsonEncodedException
+     */
+    public function testCreateB2bPayment(): void
+    {
+        $orderLines = new OrderLineCollection(
+            data: [
+                new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
+                    description: 'asdasdasd',
+                    reference: 'T-800',
+                    type: OrderLineType::PHYSICAL_GOODS,
+                    unitAmountIncludingVat: 150.75,
+                    totalVatAmount: 60.3
+                ),
+            ]
+        );
+
+        $customer = new Customer(
+            deliveryAddress: new Address(
+                addressRow1: 'Glassgatan 17',
+                postalArea: 'Helsingborg',
+                postalCode: '25024',
+                countryCode: CountryCode::SE,
+                fullName: 'Pilsnerbolaget HB'
+            ),
+            customerType: CustomerType::LEGAL,
+            email: 'vincent@hosted.resurs.com',
+            governmentId: '166997368573',
+            mobilePhone: '0701234567'
+        );
+
+        $createdPayment = Repository::create(
+            paymentMethodId: $_ENV['LEGAL_PAYMENT_METHOD_ID'],
+            orderLines: $orderLines,
+            customer: $customer
         );
 
         /** @var Order $order */
