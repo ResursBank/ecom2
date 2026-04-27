@@ -81,18 +81,18 @@ class RepositoryTest extends TestCase
     public function testGetAddressOliver(): void
     {
         $expect = [
-            'addressRow1' => 'Makadamg 1',
+            'addressRow1' => 'Makadamg 5',
             'postalArea' => 'Helsingborg',
             'postalCode' => '25024',
             'countryCode' => 'SE',
             'firstName' => 'Oliver',
-            'lastName' => 'Williamsson',
+            'lastName' => 'Alexandersson',
             'addressRow2' => '',
-            'fullName' => 'Oliver Liamsson Williamsson'
+            'fullName' => 'Oliver Williamsson Alexandersson'
         ];
 
         $address = Repository::getAddress(
-            governmentId: '195012026430',
+            governmentId: '197211072793',
             customerType: CustomerType::NATURAL
         );
 
@@ -120,7 +120,7 @@ class RepositoryTest extends TestCase
     public function testGetAddressOrganization(): void
     {
         $expect = [
-            'fullName' => 'Pilsnerbolaget Hb',
+            'fullName' => 'Pilsnerbolaget HB',
             'addressRow1' => 'Glassgatan 17',
             'postalArea' => 'Helsingborg',
             'postalCode' => '25024',
