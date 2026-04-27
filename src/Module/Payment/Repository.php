@@ -53,6 +53,11 @@ use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry as HistoryEntry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
+use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Woocommerce\Util\Translator;
 use Throwable;
 
@@ -410,7 +415,14 @@ class Repository
     }
 
     /**
-     * Replaces current order lines on payment.
+     * Replaces current order lines on payment. Returns null when
+     * modification is silently skipped (disabled in settings). Throws
+     * PaymentActionException if the payment cannot be modified or if
+     * the new total exceeds the approved credit limit.
+     *
+     * Cancels existing order lines and adds the new ones. The cancel
+     * is an implementation detail of modification, so it bypasses
+     * Repository::cancel() and its standalone-cancel settings check.
      *
      * @throws ApiException
      * @throws AuthException
@@ -420,17 +432,26 @@ class Repository
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws PaymentActionException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
      * @throws AttributeCombinationException
      */
     public static function updateOrderLines(
         string $paymentId,
         OrderLineCollection $orderLines
-    ): Payment {
+    ): ?Payment {
+        if (!UserSettingsRepository::isEnabled(field: Field::MODIFY_ENABLED)) {
+            return null;
+        }
+
         $payment = self::get(paymentId: $paymentId);
+
+        if (!$payment->canModify()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be modified.'
+            );
+        }
 
         $orderLineSum = 0.0;
 
@@ -439,25 +460,64 @@ class Repository
             $orderLineSum += $orderLine->totalAmountIncludingVat;
         }
 
-        if ($payment->order === null) {
-            throw new IllegalValueException(
-                message: 'Payment does not contain Order object.'
+        $creditLimit = $payment->application->approvedCreditLimit ?? 0;
+
+        if ($orderLineSum > $creditLimit) {
+            throw new PaymentActionException(
+                message: 'Requested amount ' . $orderLineSum .
+                    ' exceeds approved credit limit ' . $creditLimit
             );
         }
 
-        if ($orderLineSum > $payment->order->authorizedAmount) {
-            throw new IllegalValueException(
-                message: 'Unable to update order, sum total of new order lines is ' .
-                    $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount
-            );
-        }
+        $originalAmount = $payment->order->authorizedAmount;
 
-        self::cancel(paymentId: $paymentId);
-
-        return self::addOrderLines(
-            paymentId: $paymentId,
-            orderLines: $orderLines
+        PaymentHistoryRepository::write(
+            entry: new HistoryEntry(
+                paymentId: $paymentId,
+                event: Event::MODIFY_REQUESTED,
+                user: User::ADMIN,
+                extra: Price::format(value: $originalAmount)
+            )
         );
+
+        try {
+            if (!$payment->isCancelled()) {
+                (new Cancel())->call(paymentId: $paymentId);
+            }
+
+            $result = $payment;
+
+            if ($orderLines->count() > 0 && $orderLineSum > 0) {
+                $result = self::addOrderLines(
+                    paymentId: $paymentId,
+                    orderLines: $orderLines
+                );
+            }
+
+            $newAmount = $result?->order->authorizedAmount ?? 0.0;
+
+            PaymentHistoryRepository::write(
+                entry: new HistoryEntry(
+                    paymentId: $paymentId,
+                    event: Event::MODIFY_COMPLETED,
+                    user: User::ADMIN,
+                    extra: Price::format(value: $newAmount)
+                )
+            );
+
+            return $result;
+        } catch (Throwable $error) {
+            PaymentHistoryRepository::write(
+                entry: new HistoryEntry(
+                    paymentId: $paymentId,
+                    event: Event::MODIFY_FAILED,
+                    user: User::ADMIN,
+                    extra: $error->getMessage()
+                )
+            );
+
+            throw $error;
+        }
     }
 
     /**
