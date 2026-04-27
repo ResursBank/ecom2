@@ -266,14 +266,11 @@ class Repository
     }
 
     /**
-     * Refund payment
+     * Refund payment. Returns null when refund is silently skipped
+     * (disabled in settings or already refunded). Throws
+     * PaymentActionException if the payment exists but cannot be
+     * refunded.
      *
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @param string|null $refundNoteId
-     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -285,8 +282,8 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
+     * @throws PaymentActionException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws TranslationException
      * @throws ValidationException
      */
@@ -494,7 +491,7 @@ class Repository
                 );
             }
 
-            $newAmount = $result?->order->authorizedAmount ?? 0.0;
+            $newAmount = $result->order->authorizedAmount;
 
             PaymentHistoryRepository::write(
                 entry: new HistoryEntry(
