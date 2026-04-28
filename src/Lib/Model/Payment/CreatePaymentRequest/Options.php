@@ -26,6 +26,11 @@ use Resursbank\Ecom\Lib\Model\Payment\CreatePaymentRequest\Options\RedirectionUr
 class Options extends Model
 {
     /**
+     * Maximum TTL the Resurs Bank API accepts (30 days in minutes).
+     */
+    public const MAX_TTL = 43200;
+
+    /**
      * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
@@ -41,7 +46,7 @@ class Options extends Model
         public readonly ?Callbacks $callbacks = null,
         #[IntValue(
             min: 1,
-            max: 43200
+            max: self::MAX_TTL
         )] public readonly ?int $timeToLiveInMinutes = null
     ) {
         parent::__construct();

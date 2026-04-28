@@ -110,6 +110,36 @@
     }
   },
   {
+    "id": "event-modify-requested",
+    "translation": {
+      "en": "Sending request to modify payment.",
+      "sv": "Skickar anrop för att modifiera betalning.",
+      "da": "Sender anmodning om at ændre betalingen.",
+      "no": "Sender forespørsel om å endre betalingen.",
+      "fi": "Lähetetään pyyntö maksun muuttamiseksi."
+    }
+  },
+  {
+    "id": "event-modify-completed",
+    "translation": {
+      "en": "Payment successfully modified.",
+      "sv": "Betalning modifierad.",
+      "da": "Betaling ændret.",
+      "no": "Betaling endret.",
+      "fi": "Maksu muutettu."
+    }
+  },
+  {
+    "id": "event-modify-failed",
+    "translation": {
+      "en": "Failed to modify payment.",
+      "sv": "Kunde inte modifiera betalning.",
+      "da": "Kunne ikke ændre betalingen.",
+      "no": "Kunne ikke endre betalingen.",
+      "fi": "Maksun muuttaminen epäonnistui."
+    }
+  },
+  {
     "id": "event-is-ready-for-authorization",
     "translation": {
       "en": "Order ready for authorization callback.",

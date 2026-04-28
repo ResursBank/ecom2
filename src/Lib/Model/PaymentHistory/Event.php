@@ -22,6 +22,9 @@ enum Event: string
     case PARTIALLY_REFUNDED = 'event-partially-refunded';
     case CANCEL_REQUESTED = 'event-cancel-requested';
     case CANCELED = 'event-canceled';
+    case MODIFY_REQUESTED = 'event-modify-requested';
+    case MODIFY_COMPLETED = 'event-modify-completed';
+    case MODIFY_FAILED = 'event-modify-failed';
     case PARTIALLY_CANCELLED = 'event-partially-cancelled';
     case REQUEST_FAILED = 'event-request-failed';
     case CALLBACK_AUTHORIZATION = 'event-callback-authorization';

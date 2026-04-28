@@ -11,7 +11,9 @@ namespace Resursbank\Ecom\Exception;
 
 use Exception;
 use JsonException;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Enum\InvalidFieldName;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
 use ValueError;
 

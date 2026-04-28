@@ -44,12 +44,20 @@ use Resursbank\Ecom\Lib\Utilities\Generic;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
+use Resursbank\Ecom\Exception\PaymentActionException;
+use Resursbank\Ecom\Lib\UserSettings\Field;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Payment\Api\Create;
 use Resursbank\Ecom\Module\Payment\Api\Get;
 use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry as HistoryEntry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
+use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Woocommerce\Util\Translator;
 use Throwable;
 
@@ -153,14 +161,11 @@ class Repository
     }
 
     /**
-     * Capture payment
+     * Capture payment. Returns null when capture is silently skipped
+     * (disabled in settings or already captured). Throws
+     * PaymentActionException if the payment exists but cannot be
+     * captured.
      *
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @param string|null $invoiceId
-     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -171,6 +176,7 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
+     * @throws PaymentActionException
      * @throws ReflectionException
      * @throws ValidationException
      * @throws FilesystemException
@@ -182,7 +188,23 @@ class Repository
         ?string $creator = null,
         ?string $transactionId = null,
         ?string $invoiceId = null
-    ): Payment {
+    ): ?Payment {
+        if (!UserSettingsRepository::isEnabled(field: Field::CAPTURE_ENABLED)) {
+            return null;
+        }
+
+        $payment = self::get(paymentId: $paymentId);
+
+        if ($payment->isCaptured()) {
+            return null;
+        }
+
+        if (!$payment->canCapture()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be captured.'
+            );
+        }
+
         return (new Capture())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
@@ -193,7 +215,10 @@ class Repository
     }
 
     /**
-     * Cancel payment
+     * Cancel payment. Returns null when cancellation is silently skipped
+     * (disabled in settings or already cancelled). Throws
+     * PaymentActionException if the payment exists but cannot be
+     * cancelled.
      *
      * @throws ApiException
      * @throws AttributeCombinationException
@@ -205,6 +230,7 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
+     * @throws PaymentActionException
      * @throws ReflectionException
      * @throws ValidationException
      */
@@ -212,7 +238,26 @@ class Repository
         string $paymentId,
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null
-    ): Payment {
+    ): ?Payment {
+        // If cancellation is disabled in settings, skip cancellation.
+        if (!UserSettingsRepository::isEnabled(field: Field::CANCEL_ENABLED)) {
+            return null;
+        }
+
+        $payment = self::get(paymentId: $paymentId);
+
+        // If the payment is already cancelled, skip cancellation.
+        if ($payment->isCancelled()) {
+            return null;
+        }
+
+        // If the payment cannot be cancelled, throw an exception.
+        if (!$payment->canCancel()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be cancelled.'
+            );
+        }
+
         return (new Cancel())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
@@ -221,14 +266,11 @@ class Repository
     }
 
     /**
-     * Refund payment
+     * Refund payment. Returns null when refund is silently skipped
+     * (disabled in settings or already refunded). Throws
+     * PaymentActionException if the payment exists but cannot be
+     * refunded.
      *
-     * @param string $paymentId
-     * @param OrderLineCollection|null $orderLines
-     * @param string|null $creator
-     * @param string|null $transactionId
-     * @param string|null $refundNoteId
-     * @return Payment
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -240,8 +282,8 @@ class Repository
      * @throws IllegalValueException
      * @throws JsonException
      * @throws NotJsonEncodedException
+     * @throws PaymentActionException
      * @throws ReflectionException
-     * @throws Throwable
      * @throws TranslationException
      * @throws ValidationException
      */
@@ -251,7 +293,23 @@ class Repository
         ?string $creator = null,
         ?string $transactionId = null,
         ?string $refundNoteId = null
-    ): Payment {
+    ): ?Payment {
+        if (!UserSettingsRepository::isEnabled(field: Field::REFUND_ENABLED)) {
+            return null;
+        }
+
+        $payment = self::get(paymentId: $paymentId);
+
+        if ($payment->isRefunded()) {
+            return null;
+        }
+
+        if (!$payment->canRefund()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be refunded.'
+            );
+        }
+
         return (new Refund())->call(
             paymentId: $paymentId,
             orderLines: $orderLines,
@@ -354,7 +412,14 @@ class Repository
     }
 
     /**
-     * Replaces current order lines on payment.
+     * Replaces current order lines on payment. Returns null when
+     * modification is silently skipped (disabled in settings). Throws
+     * PaymentActionException if the payment cannot be modified or if
+     * the new total exceeds the approved credit limit.
+     *
+     * Cancels existing order lines and adds the new ones. The cancel
+     * is an implementation detail of modification, so it bypasses
+     * Repository::cancel() and its standalone-cancel settings check.
      *
      * @throws ApiException
      * @throws AuthException
@@ -364,17 +429,26 @@ class Repository
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws PaymentActionException
      * @throws ReflectionException
      * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws AttributeCombinationException
      * @throws AttributeCombinationException
      */
     public static function updateOrderLines(
         string $paymentId,
         OrderLineCollection $orderLines
-    ): Payment {
+    ): ?Payment {
+        if (!UserSettingsRepository::isEnabled(field: Field::MODIFY_ENABLED)) {
+            return null;
+        }
+
         $payment = self::get(paymentId: $paymentId);
+
+        if (!$payment->canModify()) {
+            throw new PaymentActionException(
+                message: 'Payment cannot be modified.'
+            );
+        }
 
         $orderLineSum = 0.0;
 
@@ -383,25 +457,64 @@ class Repository
             $orderLineSum += $orderLine->totalAmountIncludingVat;
         }
 
-        if ($payment->order === null) {
-            throw new IllegalValueException(
-                message: 'Payment does not contain Order object.'
+        $creditLimit = $payment->application->approvedCreditLimit ?? 0;
+
+        if ($orderLineSum > $creditLimit) {
+            throw new PaymentActionException(
+                message: 'Requested amount ' . $orderLineSum .
+                    ' exceeds approved credit limit ' . $creditLimit
             );
         }
 
-        if ($orderLineSum > $payment->order->authorizedAmount) {
-            throw new IllegalValueException(
-                message: 'Unable to update order, sum total of new order lines is ' .
-                    $orderLineSum . ' while authorizedAmount on order is ' . $payment->order->authorizedAmount
-            );
-        }
+        $originalAmount = $payment->order->authorizedAmount;
 
-        self::cancel(paymentId: $paymentId);
-
-        return self::addOrderLines(
-            paymentId: $paymentId,
-            orderLines: $orderLines
+        PaymentHistoryRepository::write(
+            entry: new HistoryEntry(
+                paymentId: $paymentId,
+                event: Event::MODIFY_REQUESTED,
+                user: User::ADMIN,
+                extra: Price::format(value: $originalAmount)
+            )
         );
+
+        try {
+            if (!$payment->isCancelled()) {
+                (new Cancel())->call(paymentId: $paymentId);
+            }
+
+            $result = $payment;
+
+            if ($orderLines->count() > 0 && $orderLineSum > 0) {
+                $result = self::addOrderLines(
+                    paymentId: $paymentId,
+                    orderLines: $orderLines
+                );
+            }
+
+            $newAmount = $result->order->authorizedAmount;
+
+            PaymentHistoryRepository::write(
+                entry: new HistoryEntry(
+                    paymentId: $paymentId,
+                    event: Event::MODIFY_COMPLETED,
+                    user: User::ADMIN,
+                    extra: Price::format(value: $newAmount)
+                )
+            );
+
+            return $result;
+        } catch (Throwable $error) {
+            PaymentHistoryRepository::write(
+                entry: new HistoryEntry(
+                    paymentId: $paymentId,
+                    event: Event::MODIFY_FAILED,
+                    user: User::ADMIN,
+                    extra: $error->getMessage()
+                )
+            );
+
+            throw $error;
+        }
     }
 
     /**
