@@ -14,9 +14,9 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsSwedishSsnOrOrg;
 use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Describes incoming data from a get address request.
@@ -34,27 +34,9 @@ class GetAddressRequest extends Model
      * @todo Add tests. See ECP-272
      */
     public function __construct(
-        public readonly string $govId,
-        public readonly CustomerType $customerType,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringIsSwedishSsnOrOrg] public readonly string $govId,
+        public readonly CustomerType $customerType
     ) {
-        $this->validateGovId();
         parent::__construct();
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    public function validateGovId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->govId);
-
-        if ($this->customerType === CustomerType::NATURAL) {
-            $this->stringValidation->isSwedishSsn(value: $this->govId);
-        } else {
-            $this->stringValidation->isSwedishOrg(value: $this->govId);
-        }
     }
 }

@@ -129,4 +129,30 @@ class Strings
             subject: $value
         );
     }
+
+    /**
+     * Check if supplied string is a Swedish SSN.
+     */
+    public static function isSwedishSsn(string $value): bool
+    {
+        return (bool) preg_match(
+            pattern: '/^(18\d{2}|19\d{2}|20\d{2}|\d{2})' .
+            '(0[1-9]|1[0-2])' .
+            '(0[1-9]|[1-2][0-9]|3[0-1])' .
+            '([-+])?(\d{4})$/',
+            subject: $value
+        );
+    }
+
+    /**
+     * Check if supplied string is a Swedish org number.
+     */
+    public static function isSwedishOrgNo(string $value): bool
+    {
+        return (bool) preg_match(
+            pattern: '/^(16\d{2}|18\d{2}|19\d{2}|20\d{2}|\d{2})' .
+            '(\d{2})(\d{2})([-+])?(\d{4})$/',
+            subject: $value
+        );
+    }
 }

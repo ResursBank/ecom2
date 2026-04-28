@@ -199,15 +199,7 @@ class StringValidation
     public function isSwedishSsn(
         string $value
     ): bool {
-        if (
-            !preg_match(
-                pattern: '/^(18\d{2}|19\d{2}|20\d{2}|\d{2})' .
-                '(0[1-9]|1[0-2])' .
-                '(0[1-9]|[1-2][0-9]|3[0-1])' .
-                '([-+])?(\d{4})$/',
-                subject: $value
-            )
-        ) {
+        if (!Strings::isSwedishSsn(value: $value)) {
             throw new IllegalValueException(
                 message: "$value is not a properly formatted Swedish SSN."
             );
@@ -222,13 +214,7 @@ class StringValidation
     public function isSwedishOrg(
         string $value
     ): bool {
-        if (
-            !preg_match(
-                pattern: '/^(16\d{2}|18\d{2}|19\d{2}|20\d{2}|\d{2})' .
-                '(\d{2})(\d{2})([-+])?(\d{4})$/',
-                subject: $value
-            )
-        ) {
+        if (!Strings::isSwedishOrgNo(value: $value)) {
             throw new IllegalValueException(
                 message: "$value is not a properly formatted Swedish org. nr."
             );
