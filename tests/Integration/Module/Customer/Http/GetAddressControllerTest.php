@@ -261,7 +261,7 @@ class GetAddressControllerTest extends TestCase
     {
         $controller = $this->getControllerWithMockedInputData(
             data: [
-                'govId' => '166997368573',
+                'govId' => '1669d7368573',
                 'customerType' => CustomerType::NATURAL->value,
             ]
         );

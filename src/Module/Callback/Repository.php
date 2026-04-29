@@ -36,7 +36,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository as PaymentRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Throwable;
@@ -65,12 +65,15 @@ class Repository
      * @noinspection PhpUnused
      */
     public static function triggerTest(
-        string $url,
-        StringValidation $stringValidation = new StringValidation()
+        string $url
     ): TestResponse {
         Config::getLogger()->debug(message: 'Triggering test callback.');
 
-        $stringValidation->isUrl(value: $url);
+        if (!Strings::isUrl(value: $url)) {
+            throw new IllegalValueException(
+                message: 'URL must be a valid url.'
+            );
+        }
 
         $request = new Post(
             model: TestResponse::class,

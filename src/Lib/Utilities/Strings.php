@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Utilities;
 
 use Exception;
+use JsonException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 
 use function chr;
@@ -154,5 +155,66 @@ class Strings
             '(\d{2})(\d{2})([-+])?(\d{4})$/',
             subject: $value
         );
+    }
+
+    /**
+     * Check if supplied string is a URL.
+     */
+    public static function isUrl(string $value): bool
+    {
+        if (!filter_var(value: $value, filter: FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Verify that string is not empty.
+     *
+     * This method mirrors now deleted method StringValidation::noEmpty.
+     */
+    public static function notEmpty(string $value): bool
+    {
+        return trim(string: $value) !== '';
+    }
+
+    /**
+     * Verify that string is JSON.
+     */
+    public static function isJson(string $value): bool
+    {
+        try {
+            json_decode(
+                json: $value,
+                associative: false,
+                depth: 512,
+                flags: JSON_THROW_ON_ERROR
+            );
+        } catch (JsonException) {
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Verify that string is timestamp/date.
+     *
+     * This method mirrors now deleted method StringValidation::isTimestampDate.
+     */
+    public static function isTimestampDate(string $value): bool
+    {
+        return strtotime(datetime: $value) !== false;
+    }
+
+    /**
+     * Verify that string could be an email address.
+     */
+    public static function isEmail(string $value): bool
+    {
+        return str_contains(haystack: $value, needle: '@');
     }
 }

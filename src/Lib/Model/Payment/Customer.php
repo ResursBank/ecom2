@@ -9,12 +9,15 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function is_string;
 
@@ -36,6 +39,9 @@ class Customer extends Model
     /**
      * @param string|null $governmentId To understand why this is nullable, and not readonly, see the note above.
      * @throws IllegalValueException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @throws JsonException
      * @todo There are no validation rules declared for anything. Like phone, email, government id etc.
      * @todo NOTE: This should technically be CustomerRequest, and there should be a customerResponse, see ECP-252
      * @todo Reason to avoid this is that governmentId validation will fail in CreatePayment CustomerResponse,
@@ -47,34 +53,25 @@ class Customer extends Model
         public readonly ?string $email = null,
         public ?string $governmentId = null,
         public readonly ?string $mobilePhone = null,
-        public readonly ?DeviceInfo $deviceInfo = null,
-        protected readonly StringValidation $stringValidation = new StringValidation()
+        public readonly ?DeviceInfo $deviceInfo = null
     ) {
-        $this->validate();
+        $this->validateEmail();
         parent::__construct();
     }
 
     /**
-     * Validate object properties.
-     *
-     * NOTE: protected to allow override in CustomerResponse.
-     *
      * @throws IllegalValueException
      */
-    protected function validate(): void
-    {
-        $this->validateEmail();
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateEmail(): void
+    protected function validateEmail(): void
     {
         if (!is_string(value: $this->email)) {
             return;
         }
 
-        $this->stringValidation->isEmail(value: $this->email);
+        if (!Strings::isEmail(value: $this->email)) {
+            throw new IllegalValueException(
+                message: 'Email must be a valid email address'
+            );
+        }
     }
 }

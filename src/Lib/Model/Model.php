@@ -23,7 +23,9 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\CollectionInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsIpAddress;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
@@ -52,6 +54,14 @@ class Model
         [
             StringNotEmpty::class,
             StringIsUuid::class
+        ],
+        [
+            StringNotEmpty::class,
+            StringIsUrl::class
+        ],
+        [
+            StringNotEmpty::class,
+            StringIsDatetime::class
         ]
     ];
 
