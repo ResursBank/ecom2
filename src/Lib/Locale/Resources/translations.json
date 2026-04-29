@@ -2782,15 +2782,6 @@
     }
   },
   {
-    "id": "can-not-edit-order-due-to-rejected",
-    "translation": {
-      "en": "Order can not be edited since the payment has been rejected by Resurs.",
-      "sv": "Ordern kan inte redigeras eftersom den har avvisats av resurs.",
-      "no": "Bestilling kan ikke redigeres siden betalingen er avvist av Resurs.",
-      "da": "Bestilling kan ikke redigeres, da betalingen er afvist af Resurs."
-    }
-  },
-  {
     "id": "username",
     "translation": {
       "en": "Username",
