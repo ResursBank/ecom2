@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\Ecom\Lib\Model\Callback;
+namespace Resursbank\Ecom\Lib\Model\Widget\GetAddress;
 
 use JsonException;
 use ReflectionException;
