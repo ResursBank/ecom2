@@ -186,6 +186,12 @@ class HtmlTest extends TestCase
      */
     public function testLogDirectoryIsWriteable(): void
     {
+        if ($_ENV['IS_PIPELINE']) {
+            $this->markTestSkipped(
+                message: 'Pipeline runs as root, skipping this test.'
+            );
+        }
+
         $location = '/tmp/resurs-log-test-' . microtime();
         mkdir(directory: $location);
         $logger = new FileLogger(path: $location);
