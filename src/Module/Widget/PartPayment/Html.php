@@ -25,12 +25,15 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\MissingKeyException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\Logger;
 use Resursbank\Ecom\Lib\Model\AnnuityFactor\AnnuityInformation;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
+use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Widget\ConsumerCreditWarning\Html as ConsumerCreditWarning;
 use Resursbank\Ecom\Module\Widget\PartPayment\Traits\Common;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMoreHtml;
@@ -138,12 +141,27 @@ class Html extends Widget
     }
 
     /**
-     * @inheritDoc
+     * Determine whether the widget should render.
+     *
+     * Checks that part payment is enabled in user settings, a payment
+     * method is configured, and the amount falls within the method's
+     * min/max limits.
      */
     public function shouldRender(): bool
     {
-        return $this->amount >= $this->paymentMethod->getMinLimit() &&
-            $this->amount <= $this->paymentMethod->getMaxLimit();
+        try {
+            return
+                $this->paymentMethod !== null &&
+                UserSettingsRepository::isEnabled(
+                    field: Field::PART_PAYMENT_ENABLED
+                ) &&
+                $this->amount >= $this->paymentMethod->getMinLimit() &&
+                $this->amount <= $this->paymentMethod->getMaxLimit();
+        } catch (Throwable $error) {
+            Logger::error(message: $error);
+        }
+
+        return false;
     }
 
     /**
