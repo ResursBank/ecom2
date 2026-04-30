@@ -23,19 +23,17 @@ class StringIsSwedishSsnOrOrg implements StringInterface
      */
     public function validate(string $name, string $value): void
     {
-        if (!Strings::isSwedishSsn(value: $value)) {
-            throw new IllegalValueException(
-                message: $name . ' value ' . $value . ' is not a properly ' .
-                'formatted Swedish SSN.'
-            );
+        if (
+            Strings::isSwedishSsn(value: $value) ||
+            Strings::isSwedishOrgNo(value: $value)
+        ) {
+            return;
         }
 
-        if (!Strings::isSwedishOrgNo(value: $value)) {
-            throw new IllegalValueException(
-                message: $name . ' value ' . $value . ' is not a properly ' .
-                'formatted Swedish org. number.'
-            );
-        }
+        throw new IllegalValueException(
+            message: $name . ' value ' . $value . ' is not a properly ' .
+            'formatted Swedish SSN or org number.'
+        );
     }
 
     /**
