@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Network\Response;
 
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Response from some CURL requests contains an error trace.
@@ -21,27 +22,18 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Error extends Model
 {
     /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function __construct(
         #[StringNotEmpty] public readonly string $traceId,
         #[StringNotEmpty] public readonly string $code,
         #[StringNotEmpty] public readonly string $message,
-        readonly string $timestamp,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringNotEmpty] #[StringIsDatetime] readonly string $timestamp
     ) {
-        $this->validateTimestamp();
         parent::__construct();
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    public function validateTimestamp(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->timestamp);
-        $this->stringValidation->isTimestampDate(value: $this->timestamp);
     }
 }

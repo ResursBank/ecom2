@@ -13,7 +13,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 /**
  * API credentials configuration object.
@@ -50,21 +50,17 @@ class Mapi
      */
     public const CALLBACK_ROUTE = 'v2/callbacks';
 
-    public function __construct(
-        private readonly StringValidation $stringValidation = new StringValidation()
-    ) {
-    }
-
     /**
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws ConfigException
      * @todo Check if ConfigException validation needs a test.
      */
-    public function getUrl(
-        string $route
-    ): string {
-        $this->stringValidation->notEmpty(value: $route);
+    public function getUrl(string $route): string
+    {
+        if (!Strings::notEmpty(value: $route)) {
+            throw new EmptyValueException(message: 'Route cannot be empty.');
+        }
 
         return
             (Config::isProduction() ? self::URL_PROD : self::URL_TEST) .

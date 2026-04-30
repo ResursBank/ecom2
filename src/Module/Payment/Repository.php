@@ -38,7 +38,7 @@ use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Model\PaymentCollection;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
 use Resursbank\Ecom\Lib\Utilities\Generic;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
 use Resursbank\Ecom\Module\Payment\Api\Create;
@@ -346,7 +346,11 @@ class Repository
     public static function getTaskStatusDetails(
         string $paymentId
     ): TaskStatusDetails {
-        self::validatePaymentId(paymentId: $paymentId);
+        if (!Strings::isUuid(value: $paymentId)) {
+            throw new IllegalValueException(
+                message: 'Payment id is invalid: ' . $paymentId
+            );
+        }
 
         $result = (new MapiGet(
             model: TaskStatusDetails::class,
@@ -403,14 +407,5 @@ class Repository
                 )
             ])
         );
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private static function validatePaymentId(
-        string $paymentId
-    ): void {
-        (new StringValidation())->isUuid(value: $paymentId);
     }
 }

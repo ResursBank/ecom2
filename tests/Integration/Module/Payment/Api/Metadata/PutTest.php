@@ -170,6 +170,7 @@ class PutTest extends TestCase
      * @throws ApiException
      * @throws ReflectionException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function testSimplePut(): void
     {

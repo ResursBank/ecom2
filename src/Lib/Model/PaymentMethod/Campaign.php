@@ -23,6 +23,7 @@ class Campaign extends Model
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         public readonly ?array $keywords = null,

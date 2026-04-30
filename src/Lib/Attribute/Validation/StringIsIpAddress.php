@@ -13,7 +13,7 @@ use Attribute;
 use Exception;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\Validation\IllegalIpException;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 
 use function filter_var;
 
@@ -23,7 +23,7 @@ use const FILTER_VALIDATE_IP;
  * Used for validation of IP addresses.
  */
 #[Attribute(flags: Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
-class StringIsIpAddress extends StringValidation
+class StringIsIpAddress implements StringInterface
 {
     /**
      * Validates the given IP address.
@@ -45,7 +45,6 @@ class StringIsIpAddress extends StringValidation
     /**
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @noinspection PhpUnusedParameterInspection
      */
     public function getAcceptedValues(ReflectionParameter $parameter, int $size = 5): array
     {
@@ -62,7 +61,6 @@ class StringIsIpAddress extends StringValidation
      * @throws Exception
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @noinspection PhpUnusedParameterInspection
      */
     public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array
     {

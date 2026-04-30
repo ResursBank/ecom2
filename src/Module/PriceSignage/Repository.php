@@ -32,7 +32,7 @@ use Resursbank\Ecom\Lib\Model\PriceSignage\CostCollection;
 use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
 use Resursbank\Ecom\Lib\Repository\Cache;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Throwable;
 
 /**
@@ -214,7 +214,10 @@ class Repository
     private static function validatePaymentMethodId(
         string $paymentMethodId
     ): void {
-        $stringValidation = new StringValidation();
-        $stringValidation->isUuid(value: $paymentMethodId);
+        if (!Strings::isUuid($paymentMethodId)) {
+            throw new IllegalValueException(
+                message: 'Invalid payment method id: ' . $paymentMethodId
+            );
+        }
     }
 }

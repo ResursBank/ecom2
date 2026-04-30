@@ -21,6 +21,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -29,7 +30,7 @@ use Resursbank\Ecom\Lib\Network\Curl\Auth;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 use Resursbank\Ecom\Lib\Network\Curl\Header;
 use Resursbank\Ecom\Lib\Network\Curl\Response as ResponseHandler;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use stdClass;
 
 /**
@@ -67,8 +68,7 @@ class Curl
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
         ?ContentType $responseContentType = null,
-        private readonly bool $forceObject = false,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        private readonly bool $forceObject = false
     ) {
         $this->responseContentType = $responseContentType ?? $contentType;
 
@@ -258,7 +258,9 @@ class Curl
             ? '' :
             '?' . $this->getPayloadData(payload: $payload);
 
-        $this->stringValidation->isUrl(value: $url);
+        if (!Strings::isUrl(value: $url)) {
+            throw new IllegalUrlException(message: 'Invalid url.');
+        }
 
         return $url;
     }

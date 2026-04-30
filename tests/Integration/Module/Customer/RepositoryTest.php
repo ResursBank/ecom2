@@ -387,7 +387,7 @@ class RepositoryTest extends TestCase
         );
 
         // Invalid object data.
-        $_SESSION[$key] = '{"govId":"166997368573", "customerType":"NATURAL"}';
+        $_SESSION[$key] = '{"govId":"1669d7368573", "customerType":"NATURAL"}';
         $this->assertNull(
             actual: Repository::getSsnData(sessionHandler: $this->session)
         );
