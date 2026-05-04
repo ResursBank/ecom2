@@ -615,4 +615,81 @@ class HtmlTest extends TestCase
 
         $this->assertEquals(expected: $priceFormatted, actual: $formattedCost);
     }
+
+    /**
+     * Test shouldRender behavior.
+     *
+     * Due to how the API behaves we can't accurately test the behavior of
+     * setting an amount below the payment method's minimum limit as attempting
+     * this causes an HTTP 400 error from the API.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function testShouldRender(): void
+    {
+        $widget = new Html(
+            /* @phpstan-ignore-next-line */
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            /* @phpstan-ignore-next-line */
+            amount: $this->paymentMethod->getMaxLimit() + 0.1,
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+        $this->assertEmpty(actual: $widget->content);
+
+        $widget = new Html(
+            /* @phpstan-ignore-next-line */
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            /* @phpstan-ignore-next-line */
+            amount: $this->paymentMethod->getMaxLimit(),
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+        $this->assertNotEmpty(actual: $widget->content);
+
+        $widget = new Html(
+            /* @phpstan-ignore-next-line */
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            /* @phpstan-ignore-next-line */
+            amount: $this->paymentMethod->getMinLimit(),
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+        $this->assertNotEmpty(actual: $widget->content);
+
+        try {
+            new Html(
+                /* @phpstan-ignore-next-line */
+                paymentMethod: $this->paymentMethod,
+                months: 12,
+                /* @phpstan-ignore-next-line */
+                amount: $this->paymentMethod->getMinLimit() - 0.1,
+                fetchStartingCostUrl: 'http://example.com/'
+            );
+            $this->fail(
+                message: 'No CurlException was thrown when attempting to ' .
+                'fetch PartPayment widget for amount below payment method ' .
+                'minimum limit.'
+            );
+        } catch (CurlException $error) {
+            $this->assertStringContainsString(
+                needle: 'An unexpected error has occurred',
+                haystack: $error->getMessage()
+            );
+        }
+    }
 }
