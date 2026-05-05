@@ -18,6 +18,7 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TestException;
@@ -27,6 +28,8 @@ use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\AttributeInterface;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Utilities\Random;
+use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\EcomTest\Data\Models\Music;
 use Resursbank\EcomTest\Data\Probe\Models\Store;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Section\Cleaning;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Section\Fruit;
@@ -34,6 +37,7 @@ use Resursbank\EcomTest\Data\Probe\Models\Store\Staff;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Staff\Boss;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Staff\Employee;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
+use SplFileInfo;
 
 /**
  * Integration tests Probe attribute.
@@ -341,5 +345,80 @@ class ProbeTest extends TestCase
                 $this->probeParameter(class: $class, parameter: $parameter);
             }
         }
+    }
+
+    /**
+     * Verify that validatePath throws FileSystemException for missing dir.
+     *
+     * @throws FilesystemException
+     */
+    public function testValidatePath(): void
+    {
+        $baseDir = '/tmp/resursbank/test/probetest';
+        $specificDirectory = $baseDir . '/' .
+            Strings::generateRandomString(length: 16)
+        ;
+
+        $this->expectException(exception: FilesystemException::class);
+        Probe::validatePath(path: $baseDir);
+
+        if (!file_exists($specificDirectory)) {
+            mkdir(directory: $specificDirectory, recursive: true);
+        }
+
+        Probe::validatePath(path: $specificDirectory);
+
+        rmdir(directory: $specificDirectory);
+    }
+
+    /**
+     * Verify that validateClass behaves as expected.
+     */
+    public function testValidateClass(): void
+    {
+        // Test that class_exists call is present
+        $this->assertFalse(
+            condition: Probe::validateClass(
+                class: 'Resursbank\EcomTest\Data\Probe\NoneExistent'
+            )
+        );
+
+        // Test that attribute validation code works as intended.
+        $this->assertTrue(
+            condition: Probe::validateClass(
+                class: Cleaning::class
+            )
+        );
+
+        $this->assertFalse(
+            condition: Probe::validateClass(
+                class: Music::class
+            )
+        );
+    }
+
+    /**
+     * Verify getClassname behavior.
+     *
+     * @throws Exception
+     */
+    public function testGetClassName(): void
+    {
+        $path = Config::getPath();
+
+        $testFile = new SplFileInfo(
+            filename: $path . '/tests/Data/Probe/Models/Store/Section/Cleaning.php'
+        );
+        $testClassName = Probe::getClassName(file: $testFile);
+        $this->assertEquals(
+            expected: 'Resursbank\EcomTest\Data\Probe\Models\Store\Section\Cleaning',
+            actual: $testClassName
+        );
+
+        $unprobeableFile = new SplFileInfo(
+            filename: $path . '/tests/Data/Probe/Models/Store/Car.php'
+        );
+        $unprobeableClassName = Probe::getClassName(file: $unprobeableFile);
+        $this->assertNull(actual: $unprobeableClassName);
     }
 }
