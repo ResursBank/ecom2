@@ -59,7 +59,6 @@ class GetAddress
      * @SuppressWarnings(PHPMD.Superglobals)
      * @todo Refactor, see ECP-356. Remove phpcs:ignore when done.
      */
-    // phpcs:ignore
     public function call(
         string $governmentId,
         CustomerType $customerType
@@ -85,15 +84,8 @@ class GetAddress
 
         try {
             $data = $curl->exec()->body;
-        } catch (Throwable $e) {
-            throw new GetAddressException(
-                message: sprintf(
-                    'Customer address request error: %s (%d).',
-                    $e->getMessage(),
-                    $e->getCode()
-                ),
-                previous: $e
-            );
+        } catch (Throwable $error) {
+            throw $this->getGetAddressException(error: $error);
         }
 
         $content = (
@@ -113,5 +105,21 @@ class GetAddress
         }
 
         return $result;
+    }
+
+    /**
+     * Generate a GetAddressException.
+     */
+    private function getGetAddressException(
+        Throwable $error
+    ): GetAddressException {
+        return new GetAddressException(
+            message: sprintf(
+                'Customer address request error: %s (%d).',
+                $error->getMessage(),
+                $error->getCode()
+            ),
+            previous: $error
+        );
     }
 }
