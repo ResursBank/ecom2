@@ -64,7 +64,6 @@ class Search
      * @throws NotJsonEncodedException
      * @todo Refactor ECP-357. Remove phpcs:ignore when done.
      */
-    // phpcs:ignore
     public function call(
         ?string $orderReference = null,
         ?string $governmentId = null,
