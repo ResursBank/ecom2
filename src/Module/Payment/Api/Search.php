@@ -62,7 +62,6 @@ class Search
      * @throws ValidationException
      * @throws AttributeCombinationException
      * @throws NotJsonEncodedException
-     * @todo Refactor ECP-357. Remove phpcs:ignore when done.
      */
     public function call(
         ?string $orderReference = null,
