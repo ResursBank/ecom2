@@ -687,7 +687,12 @@ class HtmlTest extends TestCase
             );
         } catch (CurlException $error) {
             $this->assertStringContainsString(
-                needle: 'An unexpected error has occurred',
+                needle: 'Amount of ' .
+                /* @phpstan-ignore-next-line */
+                ($this->paymentMethod->getMinLimit() - 0.1) .
+                ' must be equal to or greater than the minimum purchase ' .
+                /* @phpstan-ignore-next-line */
+                'limit of ' . $this->paymentMethod->getMinLimit(),
                 haystack: $error->getMessage()
             );
         }
