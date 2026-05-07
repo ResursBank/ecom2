@@ -183,11 +183,8 @@ class Model
     /**
      * Converts the object to an array suitable for use with the Curl library.
      *
-     * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo Refactor see ECP-354. Remove phpcs:ignore when done.
      */
-    // phpcs:ignore
     public function toArray(
         bool $full = false,
         ?array $raw = null
@@ -197,24 +194,54 @@ class Model
         $raw ??= get_object_vars(object: $this);
 
         foreach ($raw as $name => $value) {
-            if (is_object(value: $value)) {
-                // Skip DI.
-                if ($value instanceof Collection || $value instanceof self) {
-                    $data[$name] = $value->toArray(full: $full);
-                }
-
-                if ($value instanceof BackedEnum) {
-                    $data[$name] = $value->value;
-                }
-            } elseif (is_array(value: $value)) {
-                // Support arrays containing Model|Collection.
-                $data[$name] = $this->toArray(full: $full, raw: $value);
-            } else {
-                $data[$name] = $value;
-            }
+            $data[$name] = $this->propertyToArrayElement(
+                value: $value,
+                full: $full
+            );
         }
 
         return $data;
+    }
+
+    /**
+     * Convert property to array element.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    private function propertyToArrayElement(
+        mixed $value,
+        bool $full = false
+    ): mixed {
+        if (is_object(value: $value)) {
+            return $this->objectToArrayElement(value: $value, full: $full);
+        }
+
+        if (is_array(value: $value)) {
+            // Support arrays containing Model|Collection.
+            return $this->toArray(full: $full, raw: $value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Convert object to array element.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    private function objectToArrayElement(
+        object $value,
+        bool $full = false
+    ): mixed {
+        if ($value instanceof Collection || $value instanceof self) {
+            return $value->toArray(full: $full);
+        }
+
+        if ($value instanceof BackedEnum) {
+            return $value->value;
+        }
+
+        return null;
     }
 
     /**
