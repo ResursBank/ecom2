@@ -390,7 +390,6 @@ The list describes the current classes and their descriptions.
 | GetAddressException            | Exception for get address errors.          |
 | HttpException                  | Exception for HTTP errors.                 |
 | IOException                    | Exception for IO errors.                   |
-| MissingPaymentException        | Exception for missing payment errors.      |
 | PaymentActionException         | Exception for payment action errors.       |
 | PermissionException            | Exception for permission errors.           |
 | SessionException               | Exception for session errors.              |
