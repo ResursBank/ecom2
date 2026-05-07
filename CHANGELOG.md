@@ -1,3 +1,11 @@
+# 3.4.2
+
+* PD-4055 Add/update translation phrases for "please contact Resurs" messaging.
+
+# 3.4.1
+
+* PD-4010 Make CostList row expander initialization idempotent.
+
 # 3.4.0
 
 * PD-3982 Add Redis cache translation strings.
