@@ -71,8 +71,7 @@ class Put
             requestMethod: RequestMethod::PUT,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: empty($payload)
+            responseContentType: ContentType::JSON
         );
 
         $content = $curl->exec()->body;

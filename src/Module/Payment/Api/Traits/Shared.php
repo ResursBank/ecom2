@@ -132,8 +132,7 @@ trait Shared
             requestMethod: RequestMethod::POST,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: empty($payload)
+            responseContentType: ContentType::JSON
         );
     }
 
