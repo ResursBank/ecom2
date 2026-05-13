@@ -187,7 +187,7 @@ class Html extends Widget
 
     public function getApprovedCreditLimit(): float
     {
-        return (float) $this->payment->order?->approvedCreditLimit;
+        return (float) $this->payment->application?->approvedCreditLimit;
     }
 
     public function getRefundedAmount(): float
