@@ -49,6 +49,10 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
             content: $this->getFormattedAmount($this->getAuthorizedAmount())
         ) ?>
         <?= $this->getTrElement(
+            title: 'approved-amount',
+            content: $this->getFormattedAmount($this->getApprovedCreditLimit())
+        ) ?>
+        <?= $this->getTrElement(
             title: 'captured-amount',
             content: $this->getFormattedAmount($this->getCapturedAmount())
         ) ?>

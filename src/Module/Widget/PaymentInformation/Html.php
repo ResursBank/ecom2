@@ -185,6 +185,11 @@ class Html extends Widget
         return (float) $this->payment->order?->capturedAmount;
     }
 
+    public function getApprovedCreditLimit(): float
+    {
+        return (float) $this->payment->order?->approvedCreditLimit;
+    }
+
     public function getRefundedAmount(): float
     {
         return (float) $this->payment->order?->refundedAmount;
