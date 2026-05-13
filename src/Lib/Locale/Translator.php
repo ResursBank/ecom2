@@ -14,6 +14,8 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Lib\Log\Logger;
+use Throwable;
 
 use function file_get_contents;
 use function is_string;
@@ -107,6 +109,26 @@ abstract class Translator
         }
 
         return $result;
+    }
+
+    /**
+     * Like translate() but catches exceptions and returns the phraseId
+     * as fallback, logging the error instead of throwing.
+     */
+    public static function safeTranslate(
+        string $phraseId,
+        ?string $translationFile = null
+    ): string {
+        try {
+            return self::translate(
+                phraseId: $phraseId,
+                translationFile: $translationFile
+            );
+        } catch (Throwable $e) {
+            Logger::error(message: $e);
+        }
+
+        return $phraseId;
     }
 
     /**

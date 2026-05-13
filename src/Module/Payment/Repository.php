@@ -58,7 +58,7 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
-use Resursbank\Woocommerce\Util\Translator;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
 
 /**
