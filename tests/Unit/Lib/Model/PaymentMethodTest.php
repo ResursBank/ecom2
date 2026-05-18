@@ -67,7 +67,9 @@ class PaymentMethodTest extends TestCase
         $validCases = [
             Type::RESURS_REVOLVING_CREDIT,
             Type::RESURS_PART_PAYMENT,
-            Type::RESURS_CARD
+            Type::RESURS_CARD,
+            Type::RESURS_NEW_CARD,
+            Type::RESURS_NEW_REVOLVING_CREDIT
         ];
 
         foreach (Type::cases() as $case) {
