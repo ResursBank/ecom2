@@ -44,8 +44,9 @@ class Curl
 
     public readonly ContentType $responseContentType;
 
+    protected bool $forceObject;
+
     /**
-     * @param bool $forceObject Enforces the JSON_FORCE_OBJECT flag on json_encode of payload
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -57,7 +58,6 @@ class Curl
      * @throws ConfigException
      * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         string $url,
@@ -67,9 +67,14 @@ class Curl
         public readonly ContentType $contentType = ContentType::JSON,
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
-        ?ContentType $responseContentType = null,
-        private readonly bool $forceObject = false
+        ?ContentType $responseContentType = null
     ) {
+        $this->forceObject = false;
+
+        if (empty($payload)) {
+            $this->forceObject = true;
+        }
+
         $this->responseContentType = $responseContentType ?? $contentType;
 
         // Initialize Curl.

@@ -72,8 +72,7 @@ class Add
             requestMethod: RequestMethod::POST,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: false
+            responseContentType: ContentType::JSON
         );
 
         $content = $curl->exec()->body;

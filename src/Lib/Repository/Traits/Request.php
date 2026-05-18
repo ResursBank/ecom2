@@ -84,7 +84,7 @@ class Request
      * @throws NotJsonEncodedException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function call(bool $forceObject = false): Collection|Model
+    public function call(): Collection|Model
     {
         $curl = new Curl(
             url: $this->api->getUrl(
@@ -95,8 +95,7 @@ class Request
             payload: $this->params,
             contentType: $this->contentType,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: $forceObject
+            responseContentType: ContentType::JSON
         );
 
         $data = $this->resolveResponseData(
