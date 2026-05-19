@@ -530,6 +530,13 @@
     }
   },
   {
+    "id": "approved-amount",
+    "translation": {
+      "en": "Approved amount",
+      "sv": "Beviljat belopp"
+    }
+  },
+  {
     "id": "canceled-amount",
     "translation": {
       "en": "Canceled amount",
