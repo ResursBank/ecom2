@@ -17,8 +17,6 @@ use stdClass;
 
 /**
  * Mock data for tests relating to Payment module,
- *
- * @todo Add more data to this class.
  */
 class Order
 {
@@ -63,6 +61,17 @@ class Order
                     "vatRate": 0.00000,
                     "totalAmountIncludingVat": -25.00000,
                     "totalVatAmount": 0.00000
+                },
+                {
+                    "description": "Product two",
+                    "quantity": 3.00000,
+                    "reference": "TST-102",
+                    "type": "NORMAL",
+                    "quantityUnit": "st",
+                    "unitAmountIncludingVat": 200,
+                    "vatRate": 12.00000,
+                    "totalAmountIncludingVat": 600.00,
+                    "totalVatAmount": 64.29
                 }
             ]
         }
