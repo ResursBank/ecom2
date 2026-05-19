@@ -193,6 +193,9 @@ class Create
     {
         $result = new stdClass();
 
+        $result->externalCustomerId = $metadata->externalCustomerId;
+        $result->externalInvoiceReference = $metadata->externalInvoiceReference;
+
         if (isset($metadata->custom)) {
             $result->custom = $metadata->custom->toArray();
         }

@@ -325,6 +325,7 @@ class RepositoryTest extends TestCase
      * @throws MissingKeyException
      * @throws ReflectionException
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function testCreatePaymentWithMetadata(): void
     {
@@ -344,7 +345,11 @@ class RepositoryTest extends TestCase
             ]
         );
 
+        $externalCustomerId = Strings::generateRandomString(length: 19);
+        $externalInvoiceReference = Strings::generateRandomString(length: 46);
         $metadata = new Metadata(
+            externalCustomerId: $externalCustomerId,
+            externalInvoiceReference: $externalInvoiceReference,
             custom: new Metadata\EntryCollection(
                 data: [
                     new Metadata\Entry(
@@ -359,9 +364,12 @@ class RepositoryTest extends TestCase
             )
         );
 
+        $customer = new Customer();
+
         $createdOrder = Repository::create(
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines,
+            customer: $customer,
             metadata: $metadata
         );
 
@@ -389,6 +397,14 @@ class RepositoryTest extends TestCase
         $this->assertEqualsCanonicalizing(
             expected: $metadata->custom->toArray(),
             actual: $createdMetadata->custom->toArray()
+        );
+        $this->assertEquals(
+            expected: $externalCustomerId,
+            actual: $createdMetadata->externalCustomerId
+        );
+        $this->assertEquals(
+            expected: $externalInvoiceReference,
+            actual: $createdMetadata->externalInvoiceReference
         );
     }
 
