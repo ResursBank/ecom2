@@ -147,18 +147,16 @@ abstract class Translator
 
     /**
      * Generates a valid cache key which includes the name of the translation file.
-     *
-     * @todo preg_replace returns null|array|string, this method is required to return string ECP-372
      */
     public static function getCacheKey(?string $translationFile = null): string
     {
         $rawKey = ($translationFile ?
-            (self::$cacheKey . '-' . $translationFile) :
-            (self::$cacheKey . '-' . preg_replace(
+            (self::$cacheKey . '-' . sha1(string: $translationFile)) :
+            (self::$cacheKey . '-' . sha1(string: preg_replace(
                 pattern: '/[0-9]/',
                 replacement: '',
                 subject: sha1(string: self::$translationsFilePath)
-            ))
+            ) ?? ''))
         );
         $key = preg_replace(
             pattern: '/[^a-zA-Z\d\-_]/',
