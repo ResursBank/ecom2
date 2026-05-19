@@ -86,6 +86,8 @@ class PaymentMethod extends Model implements PaymentMethodInterface
     {
         return $this->type === Type::RESURS_PART_PAYMENT ||
             $this->type === Type::RESURS_REVOLVING_CREDIT ||
+            $this->type === Type::RESURS_NEW_REVOLVING_CREDIT ||
+            $this->type === Type::RESURS_NEW_CARD ||
             $this->type === Type::RESURS_CARD;
     }
 
