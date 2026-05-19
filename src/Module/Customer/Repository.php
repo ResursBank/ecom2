@@ -94,7 +94,10 @@ class Repository
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
             );
         } catch (Throwable $e) {
-            self::logException(exception: $e);
+            Config::getLogger()->info(
+                message: 'Unable to set SSN data in session'
+            );
+            Config::getLogger()->debug(message: $e->getMessage());
             // Failing is harmless, client can supply info on gateway.
         }
     }
