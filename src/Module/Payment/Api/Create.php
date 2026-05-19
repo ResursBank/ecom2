@@ -38,8 +38,6 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/create
- *
- * @todo Refactor ECP-358. Remove phpcs:ignore below when done.
  */
 class Create
 {
@@ -64,7 +62,6 @@ class Create
      * @throws ValidationException
      * @throws AttributeCombinationException
      * @throws NotJsonEncodedException
-     * @todo When refactored, remove phpcs:ignore below and other suppressors above.
      */
     public function call(
         string $paymentMethodId,
