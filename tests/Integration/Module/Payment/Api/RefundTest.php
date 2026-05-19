@@ -149,7 +149,6 @@ class RefundTest extends TestCase
      * @throws ValidationException
      * @throws ReflectionException
      * @throws Exception
-     * @todo This test will sometimes fail, stating received timestamp is not valid. On separate re-run worked fine.
      */
     public function testRefundEntirePayment(): void
     {
