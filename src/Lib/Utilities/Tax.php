@@ -16,8 +16,6 @@ class Tax
 {
     /**
      * Calculate tax rate based on supplied values.
-     *
-     * @todo Should return Enum since API only accepts specific values. ECP-308
      */
     public static function getRate(float $taxAmount, float $totalInclTax): float
     {
