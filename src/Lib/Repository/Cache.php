@@ -46,7 +46,6 @@ class Cache
     /**
      * @throws CacheException
      * @throws ConfigException
-     * @todo Check if ConfigException validation needs a test.
      */
     public function read(): null|Collection|Model
     {
