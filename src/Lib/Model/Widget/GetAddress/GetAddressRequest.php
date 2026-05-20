@@ -31,7 +31,6 @@ class GetAddressRequest extends Model
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
-     * @todo Add tests. See ECP-272
      */
     public function __construct(
         #[StringIsSwedishSsnOrOrg] public readonly string $govId,
