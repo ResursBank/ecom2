@@ -26,8 +26,6 @@ use function is_string;
  * @version 1.0.0
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @todo Refactor entire class. See ECP-351 (PD-2618). Remember to remove phpcs:ignore below when done.
- * @todo There is a unit test that depends on the version annotation here. These annotations are however prohibited.
  */
 // phpcs:ignore
 class Generic
