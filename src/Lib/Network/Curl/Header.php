@@ -29,7 +29,6 @@ class Header
      * @return array<array-key,HeaderModel>
      * @throws EmptyValueException
      * @throws ConfigException
-     * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function generateHeaders(
         array $headers,
@@ -65,7 +64,6 @@ class Header
 
     /**
      * @throws ConfigException
-     * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function hasHeader(
         array $headers,
@@ -78,7 +76,6 @@ class Header
      * Retrieve list of headers where $key matches.
      *
      * @throws ConfigException
-     * @todo See constructor todo. If kept we should maybe change its visibility.
      */
     public static function findHeaders(
         array $headers,
@@ -116,8 +113,6 @@ class Header
 
     /**
      * @throws ConfigException
-     * @todo Add back what module class called Curl.
-     * @todo Check if ConfigException validation needs a test.
      */
     public static function getUserAgent(): string
     {
