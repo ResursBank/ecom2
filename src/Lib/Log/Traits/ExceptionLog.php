@@ -21,7 +21,6 @@ trait ExceptionLog
 {
     /**
      * @throws ConfigException
-     * @todo Check if ConfigException validation needs a test.
      */
     public static function logException(
         Throwable $exception
