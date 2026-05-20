@@ -94,7 +94,6 @@
                 <element value="@package" />
                 <element value="@copyright" />
                 <element value="@license" />
-                <element value="@since" /> <!-- @todo This can be removed after we complete initial development. -->
             </property>
         </properties>
     </rule>
