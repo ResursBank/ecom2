@@ -54,7 +54,6 @@ class Mapi
      * @throws ValidationException
      * @throws EmptyValueException
      * @throws ConfigException
-     * @todo Check if ConfigException validation needs a test.
      */
     public function getUrl(string $route): string
     {
