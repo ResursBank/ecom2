@@ -122,7 +122,7 @@ class Repository
      * @throws IllegalValueException
      * @throws IllegalTypeException
      * @throws ConfigException
-     * @todo If $amount is less than paymentMethod minimum purchase limit we get 401 atm.
+     * @throws ReflectionException
      */
     public static function getApi(
         string $paymentMethodId,
