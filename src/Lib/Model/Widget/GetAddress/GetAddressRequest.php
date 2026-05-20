@@ -12,8 +12,6 @@ namespace Resursbank\Ecom\Lib\Model\Widget\GetAddress;
 use JsonException;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsSwedishSsnOrOrg;
 use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -26,8 +24,6 @@ use Resursbank\Ecom\Lib\Model\Model;
 class GetAddressRequest extends Model
 {
     /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
