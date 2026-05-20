@@ -272,8 +272,6 @@ class Curl
 
     /**
      * @throws JsonException
-     * @todo Consider caching this is a local variable on this instance to avoid subsequent calls. NOTE: Generating this
-     * @todo data directly in the constructor harms refactoring.
      */
     public function getPayloadData(
         array $payload
@@ -298,7 +296,6 @@ class Curl
      * @throws JsonException
      * @throws ValidationException
      * @throws Exception
-     * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
      */
     private function init(
         string $url,
