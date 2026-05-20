@@ -40,7 +40,6 @@ class Payment extends Model
      * @throws EmptyValueException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @todo Missing unit tests ECP-254
      */
     public function __construct(
         #[StringIsUuid] public readonly string $id,
