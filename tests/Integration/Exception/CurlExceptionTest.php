@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -18,35 +19,30 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
 
 /**
- * Integration tests of CurlException class.
- *
- * This class will perform API class, attempting to create payments with
- * invalid data that will trigger CurlException instances from the API client.
- *
- * We will then assert that the CurlException methods behave as expected,
- * returning the appropriate detailed messages and invalid field name variants.
+ * Integration tests for the CurlException class.
  */
+#[AllowMockObjectsWithoutExpectations]
 class CurlExceptionTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(
@@ -105,7 +101,6 @@ class CurlExceptionTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: $email,
                 governmentId: $governmentId,
                 mobilePhone: $mobilePhone,
@@ -203,7 +198,7 @@ class CurlExceptionTest extends TestCase
             // Verify that getInvalidFieldName returns the correct enum variant.
             $invalidFieldName = $e->getInvalidFieldName();
             $this->assertSame(
-                expected: InvalidFieldName::PHONE,
+                expected: InvalidFieldName::MOBILE_PHONE,
                 actual: $invalidFieldName
             );
         }

@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
+use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
@@ -17,11 +21,14 @@ use Resursbank\Ecom\Lib\Model\Model;
 class Response extends Model
 {
     /**
-     * @todo Consider validating httpCode if this can be done safely.
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly int $httpCode,
+        #[IntValue(min:100, max: 599)] public readonly int $httpCode,
         public readonly string $note
     ) {
+        parent::__construct();
     }
 }

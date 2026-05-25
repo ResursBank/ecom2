@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink\Type;
 
 /**
  * Defines a legal info link.

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Session;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\SessionException;
 use Resursbank\Ecom\Exception\SessionValueException;
@@ -18,6 +19,7 @@ use Resursbank\EcomTest\Utilities\MockSessionTrait;
 /**
  * Session testing.
  */
+#[AllowMockObjectsWithoutExpectations]
 class SessionTest extends TestCase
 {
     use MockSessionTrait;

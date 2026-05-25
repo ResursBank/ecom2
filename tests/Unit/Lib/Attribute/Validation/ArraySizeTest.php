@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
@@ -18,6 +19,7 @@ use Throwable;
 /**
  * Unit tests for the ArraySize validation attribute.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ArraySizeTest extends TestCase
 {
     /**
@@ -54,7 +56,7 @@ class ArraySizeTest extends TestCase
         $max = 50;
         $object = new ArraySize(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (
@@ -84,7 +86,7 @@ class ArraySizeTest extends TestCase
         $max = 50;
         $object = new ArraySize(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (

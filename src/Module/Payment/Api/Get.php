@@ -65,11 +65,7 @@ class Get
             responseContentType: ContentType::JSON
         );
 
-        $data = $curl->exec()->body;
-
-        $content = (
-            $data instanceof stdClass
-        ) ? $data : new stdClass();
+        $content = $curl->exec()->body;
 
         if (
             isset($content->metadata->custom) &&

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Exception\AttributeParameterException;
@@ -18,6 +19,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 /**
  * Unit tests for the FloatValue validation attribute.
  */
+#[AllowMockObjectsWithoutExpectations]
 class FloatValueTest extends TestCase
 {
     /**
@@ -43,7 +45,7 @@ class FloatValueTest extends TestCase
         $max = 200.101;
         $object = new FloatValue(min: $min, max: $max, scale: 3);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (
@@ -72,7 +74,7 @@ class FloatValueTest extends TestCase
         $max = 122.12;
         $object = new FloatValue(min: $min, max: $max);
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (

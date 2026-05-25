@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Unit\Lib\Http;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\CurlException;
@@ -21,6 +22,7 @@ use Resursbank\EcomTest\Data\Models\Instrument;
 /**
  * Test basic controller methods.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ControllerTest extends TestCase
 {
     private Controller $controller;
@@ -35,6 +37,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Create mocked controller.
+     *
      * Create a mocked version of the Controller class, setting the return value
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
@@ -42,7 +46,7 @@ class ControllerTest extends TestCase
     private function getControllerWithMockedInputData(string $data): Controller
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getInputData']
         );
 
@@ -55,6 +59,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Create a mocked controller object.
+     *
      * Create a mocked version of the Controller class where the setHeader()
      * and setResponseCode() methods are never executed, making the respond()
      * method testable (since manipulating headers will break unit testing).
@@ -65,7 +71,7 @@ class ControllerTest extends TestCase
     private function getControllerWithoutHeaderManipulation(): Controller
     {
         return $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['log']
         );
     }
@@ -90,6 +96,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify correctness of respondWithError's behavior.
+     *
      * Assert respondWithError() will echo JSON encoded data including Exception
      * message. Also asserts that the http response code matching the expected
      * error code.
@@ -165,8 +173,7 @@ class ControllerTest extends TestCase
     }
 
     /**
-     * Assert getErrorResponseCode extract HTTP response code from CurlException
-     * instance.
+     * Verify that getErrorResponseCode can extract response code from exception
      */
     public function getErrorResponseCodeFromCurlException(): void
     {
@@ -176,8 +183,8 @@ class ControllerTest extends TestCase
                 exception: new CurlException(
                     message: 'nothing',
                     code: 1,
-                    httpCode: 404,
-                    body: false
+                    body: false,
+                    httpCode: 404
                 )
             ),
             message: 'Failed to resolve HTTP response code from Curl Exception'
@@ -185,8 +192,7 @@ class ControllerTest extends TestCase
     }
 
     /**
-     * Assert getErrorResponseCode extract HTTP response code from HttpException
-     * instance.
+     * Verify that getErrorResponseCode can extract response code from exception
      */
     public function getErrorResponseCodeFromHttpException(): void
     {
@@ -220,6 +226,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify that getInputData throws error if not supplied with input data.
+     *
      * Assert getInputData() throws HttpException with code 400 when there is
      * no input data present.
      *
@@ -233,6 +241,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify that getRequestModel throws error if input is not valid JSON.
+     *
      * Assert getRequestModel() throws HttpException with code 406 when input
      * data is not correctly formatted JSON.
      *
@@ -248,6 +258,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify that getRequestModel throws error if input data not stdClass.
+     *
      * Assert getRequestModel() throws HttpException with code 406 when input
      * data is does not resolve to an stdClass instance.
      *
@@ -263,6 +275,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify that getRequestModel throws error on incompatible input data.
+     *
      * Assert getRequestModel() throws HttpException with code 415 when input
      * data is does not resolve to request model class instance.
      *
@@ -278,6 +292,8 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify that error is thrown by getRequestModel for incompatible data type
+     *
      * Assert getRequestModel() throws HttpException with code 415 when input
      * data contains a property whose datatype is incompatible with the
      * corresponding property on the supplied model class.

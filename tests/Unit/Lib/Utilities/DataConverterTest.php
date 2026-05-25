@@ -110,6 +110,8 @@ final class DataConverterTest extends TestCase
     }
 
     /**
+     * Verify that stdClassToType quietly removes extra properties.
+     *
      * Verify that the stdClass converter doesn't fail when original stdClass object has extra properties but instead
      * quietly removes them.
      *

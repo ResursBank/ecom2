@@ -24,11 +24,11 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Network\AuthType;
 use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use stdClass;
 use Throwable;
@@ -61,9 +61,7 @@ class GetAddress
      * @throws AttributeCombinationException
      * @throws IllegalValueException
      * @SuppressWarnings(PHPMD.Superglobals)
-     * @todo Refactor, see ECP-356. Remove phpcs:ignore when done.
      */
-    // phpcs:ignore
     public function call(
         string $governmentId,
         CustomerType $customerType
@@ -89,15 +87,8 @@ class GetAddress
 
         try {
             $data = $curl->exec()->body;
-        } catch (Throwable $e) {
-            throw new GetAddressException(
-                message: sprintf(
-                    'Customer address request error: %s (%d).',
-                    $e->getMessage(),
-                    $e->getCode()
-                ),
-                previous: $e
-            );
+        } catch (Throwable $error) {
+            throw $this->getGetAddressException(error: $error);
         }
 
         $content = (
@@ -117,5 +108,21 @@ class GetAddress
         }
 
         return $result;
+    }
+
+    /**
+     * Generate a GetAddressException.
+     */
+    private function getGetAddressException(
+        Throwable $error
+    ): GetAddressException {
+        return new GetAddressException(
+            message: sprintf(
+                'Customer address request error: %s (%d).',
+                $error->getMessage(),
+                $error->getCode()
+            ),
+            previous: $error
+        );
     }
 }

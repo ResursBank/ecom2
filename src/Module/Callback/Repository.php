@@ -41,7 +41,9 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
 use Resursbank\Ecom\Lib\UserSettings\Url;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Module\Payment\Repository as PaymentRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as EcomPaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
@@ -72,14 +74,21 @@ class Repository
      * @throws UserSettingsException
      * @throws NotJsonEncodedException
      */
-    public static function triggerTest(): TestResponse
-    {
+    public static function triggerTest(
+        string $url
+    ): TestResponse {
         Config::getLogger()->debug(message: 'Triggering test callback.');
+
+        if (!Strings::isUrl(value: $url)) {
+            throw new IllegalValueException(
+                message: 'URL must be a valid url.'
+            );
+        }
 
         $request = new Post(
             model: TestResponse::class,
             route: Mapi::CALLBACK_ROUTE . '/test',
-            params: ['url' => UserSettingsRepository::getUrl(url: Url::CALLBACK_TEST_URL)]
+            params: ['url' => $url]
         );
 
         $response = $request->call();
@@ -244,6 +253,8 @@ class Repository
     }
 
     /**
+     * Check if payment is ready for processing.
+     *
      * Callbacks are ready for processing if one of the following conditions are
      * met:
      *

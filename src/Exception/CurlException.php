@@ -69,7 +69,7 @@ class CurlException extends Exception
             // Map field variants to their corresponding error phrase IDs.
             $phraseId = match ($invalidField) {
                 InvalidFieldName::GOVERNMENT_ID => 'invalid-government-id',
-                InvalidFieldName::PHONE => 'invalid-phone-number',
+                InvalidFieldName::MOBILE_PHONE => 'invalid-phone-number',
                 InvalidFieldName::EMAIL => 'invalid-email-address',
                 default => null,
             };

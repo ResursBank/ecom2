@@ -35,8 +35,6 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 
 /**
  * Call to generate MAPI token and convert to Token model instance.
- *
- * @todo This class may prefer to be placed within a Module.
  */
 class GenerateToken
 {

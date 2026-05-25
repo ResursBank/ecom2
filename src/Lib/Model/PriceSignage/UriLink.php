@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\PriceSignage;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Model\Model;
 
@@ -18,7 +21,9 @@ use Resursbank\Ecom\Lib\Model\Model;
 class UriLink extends Model
 {
     /**
-     * @todo Can $language be empty? Is this an Enum value?
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
         #[StringIsUrl] public readonly string $uri,

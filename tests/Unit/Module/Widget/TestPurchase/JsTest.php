@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Order\CountryCode;
+use Resursbank\Ecom\Lib\Model\CountryCode;
 use Resursbank\Ecom\Module\Widget\TestPurchase\Js;
 
 /**

@@ -18,7 +18,8 @@ class Translator extends Original
 {
     public static function translate(
         string $phraseId,
-        ?string $translationFile = __DIR__ . '/translations.json'
+        ?string $translationFile = __DIR__ . DIRECTORY_SEPARATOR . 'Resources' .
+        DIRECTORY_SEPARATOR . 'translations.json'
     ): string {
         return parent::translate(
             phraseId: $phraseId,

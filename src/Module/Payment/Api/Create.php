@@ -38,20 +38,15 @@ use stdClass;
 
 /**
  * POST /payments/{payment_id}/create
- *
- * @todo Refactor ECP-358. Remove phpcs:ignore below when done.
  */
-// phpcs:ignore
 class Create
 {
-    private Mapi $mapi;
-
     /**
      * Assign properties.
      */
-    public function __construct()
-    {
-        $this->mapi = new Mapi();
+    public function __construct(
+        private readonly Mapi $mapi = new Mapi()
+    ) {
     }
 
     /**
@@ -67,11 +62,7 @@ class Create
      * @throws ValidationException
      * @throws AttributeCombinationException
      * @throws NotJsonEncodedException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @todo When refactored, remove phpcs:ignore below and other suppressors above.
      */
-    // phpcs:ignore
     public function call(
         string $paymentMethodId,
         OrderLineCollection $orderLines,
@@ -81,53 +72,22 @@ class Create
         ?Metadata $metadata = null,
         ?Options $options = null
     ): Payment {
-        $params = [
-            'storeId' => Config::getStoreId(),
-            'paymentMethodId' => $paymentMethodId,
-            'order' => [
-                'orderLines' => $orderLines->toArray(),
-            ],
-        ];
-
-        if ($orderReference) {
-            $params['order']['orderReference'] = $orderReference;
-        }
-
-        if ($application) {
-            $params['application'] = $application;
-        }
-
-        if ($customer) {
-            // If governmentId is empty or null, remove it from the payload.
-            // Some payment methods require this field to be removed, if empty.
-            if (empty($customer->governmentId)) {
-                unset($customer->governmentId);
-            }
-
-            $params['customer'] = $customer;
-        }
-
-        if ($metadata) {
-            //$params['metadata'] = $metadata;
-            // @todo Find a prettier solution to the issue of Metadata::custom being turned into an empty object
-            //   when passed through json_encode.
-            $params['metadata'] = new stdClass();
-
-            if (isset($metadata->custom)) {
-                $params['metadata']->custom = $metadata->custom->toArray();
-            }
-        }
-
-        if ($options) {
-            $params['options'] = $options;
-        }
+        $parameters = $this->collectParameters(
+            paymentMethodId: $paymentMethodId,
+            orderLines: $orderLines,
+            orderReference: $orderReference,
+            application: $application,
+            customer: $customer,
+            metadata: $metadata,
+            options: $options
+        );
 
         $curl = new Curl(
             url: $this->mapi->getUrl(
                 route: Mapi::PAYMENT_ROUTE
             ),
             requestMethod: RequestMethod::POST,
-            payload: $params,
+            payload: $parameters,
             contentType: ContentType::JSON,
             authType: AuthType::JWT,
             responseContentType: ContentType::JSON
@@ -151,6 +111,90 @@ class Create
             throw new IllegalValueException(
                 message: 'Response is not an instance of ' . Payment::class
             );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Collect parameters for call.
+     *
+     * @throws ConfigException
+     */
+    private function collectParameters(
+        string $paymentMethodId,
+        OrderLineCollection $orderLines,
+        ?string $orderReference = null,
+        ?Application $application = null,
+        ?Customer $customer = null,
+        ?Metadata $metadata = null,
+        ?Options $options = null
+    ): array {
+        $parameters = [
+            'storeId' => Config::getStoreId(),
+            'paymentMethodId' => $paymentMethodId,
+            'order' => [
+                'orderLines' => $orderLines->toArray(),
+            ],
+        ];
+
+        if ($orderReference) {
+            $parameters['order']['orderReference'] = $orderReference;
+        }
+
+        if ($application) {
+            $parameters['application'] = $application;
+        }
+
+        if ($customer) {
+            $parameters['customer'] = $this->collectCustomer(
+                customer: $customer
+            );
+        }
+
+        if ($metadata) {
+            $parameters['metadata'] = $this->collectMetadata(
+                metadata: $metadata
+            );
+        }
+
+        if ($options) {
+            $parameters['options'] = $options;
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Collect customer info.
+     */
+    private function collectCustomer(?Customer $customer = null): ?Customer
+    {
+        if (!$customer) {
+            return null;
+        }
+
+        // If governmentId is empty or null, remove it from the payload.
+        // Some payment methods require this field to be removed, if empty.
+        if (empty($customer->governmentId)) {
+            unset($customer->governmentId);
+        }
+
+        return $customer;
+    }
+
+    /**
+     * Collect metadata.
+     */
+    private function collectMetadata(Metadata $metadata): stdClass
+    {
+        $result = new stdClass();
+
+        $result->externalCustomerId = $metadata->externalCustomerId;
+        $result->externalInvoiceReference = $metadata->externalInvoiceReference;
+
+        if (isset($metadata->custom)) {
+            $result->custom = $metadata->custom->toArray();
         }
 
         return $result;

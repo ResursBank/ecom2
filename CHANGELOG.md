@@ -1,3 +1,8 @@
+# 3.4.0
+
+* PD-3982 Add Redis cache translation strings.
+* PD-3998 Apply PHP 8.5 compatibility fixes.
+
 # 3.3.13
 
 * PD-3930 Updated CurlException for easier integration.

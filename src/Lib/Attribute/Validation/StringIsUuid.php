@@ -17,8 +17,6 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
 use Resursbank\Ecom\Lib\Utilities\Random;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
-use function preg_match;
-
 /**
  * Used for UUID validation.
  */
@@ -30,12 +28,7 @@ class StringIsUuid implements StringInterface
      */
     public function validate(string $name, string $value): void
     {
-        if (
-            !preg_match(
-                pattern: '/^[\da-f]{8}-[\da-f]{4}-[0-5][\da-f]{3}-[\da-d][\da-f]{3}-[\da-f]{12}$/i',
-                subject: $value
-            )
-        ) {
+        if (!Strings::isUuid(value: $value)) {
             throw new IllegalValueException(
                 message: $name . ' value ' . $value . ' is not a UUID.'
             );

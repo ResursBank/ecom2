@@ -23,8 +23,12 @@ use Resursbank\Ecom\Lib\Attribute\Validation\Interface\CollectionInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\FloatInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\IntInterface;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\StringInterface;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsIpAddress;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringMatchesRegex;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Collection\Collection;
 
 use function is_array;
@@ -46,6 +50,18 @@ class Model
         [
             ArraySize::class,
             ArrayOfStrings::class
+        ],
+        [
+            StringNotEmpty::class,
+            StringIsUuid::class
+        ],
+        [
+            StringNotEmpty::class,
+            StringIsUrl::class
+        ],
+        [
+            StringNotEmpty::class,
+            StringIsDatetime::class
         ]
     ];
 
@@ -122,21 +138,40 @@ class Model
      * @throws AttributeCombinationException
      * @throws JsonException
      */
+    // phpcs:ignore
     public static function validateAttributeCombination(
         ReflectionParameter $parameter,
         array $combo
     ): void {
-        $combo = sort($combo);
+        $comboAsStrings = [];
+
+        foreach ($combo as $comboItem) {
+            // "if (!is_string($comboItem)"?
+            if (gettype($comboItem) === 'string') {
+                $comboAsStrings[] = $comboItem;
+                continue;
+            }
+
+            $comboAsStrings[] = $comboItem::class;
+        }
+
+        sort($comboAsStrings);
+
         $validCombo = false;
 
         foreach (self::$attributeCombos as $c) {
-            $validCombo = (sort($c) === $combo);
+            sort($c);
+            $validCombo = $c === $comboAsStrings;
+
+            if ($validCombo) {
+                break;
+            }
         }
 
         if (!$validCombo) {
             throw new AttributeCombinationException(
                 message: sprintf(
-                    'Cannot combines %s attributes for parameter %s on %s',
+                    'Cannot combine %s attributes for parameter %s on %s',
                     json_encode(value: $combo, flags: JSON_THROW_ON_ERROR),
                     $parameter->name,
                     $parameter->getDeclaringClass()?->name
@@ -148,11 +183,8 @@ class Model
     /**
      * Converts the object to an array suitable for use with the Curl library.
      *
-     * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo Refactor see ECP-354. Remove phpcs:ignore when done.
      */
-    // phpcs:ignore
     public function toArray(
         bool $full = false,
         ?array $raw = null
@@ -162,24 +194,54 @@ class Model
         $raw ??= get_object_vars(object: $this);
 
         foreach ($raw as $name => $value) {
-            if (is_object(value: $value)) {
-                // Skip DI.
-                if ($value instanceof Collection || $value instanceof self) {
-                    $data[$name] = $value->toArray(full: $full);
-                }
-
-                if ($value instanceof BackedEnum) {
-                    $data[$name] = $value->value;
-                }
-            } elseif (is_array(value: $value)) {
-                // Support arrays containing Model|Collection.
-                $data[$name] = $this->toArray(full: $full, raw: $value);
-            } else {
-                $data[$name] = $value;
-            }
+            $data[$name] = $this->propertyToArrayElement(
+                value: $value,
+                full: $full
+            );
         }
 
         return $data;
+    }
+
+    /**
+     * Convert property to array element.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    private function propertyToArrayElement(
+        mixed $value,
+        bool $full = false
+    ): mixed {
+        if (is_object(value: $value)) {
+            return $this->objectToArrayElement(value: $value, full: $full);
+        }
+
+        if (is_array(value: $value)) {
+            // Support arrays containing Model|Collection.
+            return $this->toArray(full: $full, raw: $value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Convert object to array element.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    private function objectToArrayElement(
+        object $value,
+        bool $full = false
+    ): mixed {
+        if ($value instanceof Collection || $value instanceof self) {
+            return $value->toArray(full: $full);
+        }
+
+        if ($value instanceof BackedEnum) {
+            return $value->value;
+        }
+
+        return null;
     }
 
     /**

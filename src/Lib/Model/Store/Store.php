@@ -16,8 +16,8 @@ use Resursbank\Ecom\Lib\Attribute\Validation\IntValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Locale\Language;
+use Resursbank\Ecom\Lib\Model\Country;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Module\Store\Enum\Country;
 
 /**
  * Defines a Store resource collected from the API.

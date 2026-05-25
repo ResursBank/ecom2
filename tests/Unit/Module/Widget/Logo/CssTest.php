@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Unit\Module\Widget\Logo;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Api\GrantType;
@@ -20,13 +21,14 @@ use Resursbank\Ecom\Module\Widget\Logo\Css;
 /**
  * Test for the Logo CSS widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class CssTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(

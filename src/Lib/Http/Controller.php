@@ -24,8 +24,9 @@ use function file_get_contents;
 use function get_class;
 
 /**
- * Base controller class for JSON implementation. Execute arbitrary code,
- * construct a response as JSON encoded data.
+ * Base controller class for JSON implementation.
+ *
+ * Executes arbitrary code, and constructs a response as JSON encoded data.
  */
 class Controller
 {
@@ -74,7 +75,9 @@ class Controller
     }
 
     /**
-     * Mask messages from exceptions other than HttpException instances, to
+     * Get message from exception.
+     *
+     * Masks messages from exceptions other than HttpException instances, to
      * ensure sensitive information is never rendered to the end client.
      *
      * @throws ConfigException

@@ -129,6 +129,8 @@ class DiscountItemCollectionTest extends TestCase
     }
 
     /**
+     * Verify that addRateData functions as intended.
+     *
      * Assert that when we call addRateData() method and specify an existing
      * rate value our amount will be appended to that DiscountItem and leave all
      * other collection entries unaffected.

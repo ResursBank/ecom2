@@ -18,6 +18,7 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TestException;
@@ -27,6 +28,8 @@ use Resursbank\Ecom\Lib\Attribute\Validation\ArraySize;
 use Resursbank\Ecom\Lib\Attribute\Validation\Interface\AttributeInterface;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Utilities\Random;
+use Resursbank\Ecom\Lib\Utilities\Strings;
+use Resursbank\EcomTest\Data\Models\Music;
 use Resursbank\EcomTest\Data\Probe\Models\Store;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Section\Cleaning;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Section\Fruit;
@@ -34,8 +37,11 @@ use Resursbank\EcomTest\Data\Probe\Models\Store\Staff;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Staff\Boss;
 use Resursbank\EcomTest\Data\Probe\Models\Store\Staff\Employee;
 use Resursbank\EcomTest\Utilities\DataIntegrity;
+use SplFileInfo;
 
 /**
+ * Integration tests Probe attribute.
+ *
  * This class ensures the Model probe class works as expected by probing mocked
  * Model classes.
  *
@@ -49,6 +55,8 @@ class ProbeTest extends TestCase
     public const VALIDATION_ITERATIONS = 5;
 
     /**
+     * Validation combo.
+     *
      * Describes which class should be utilised to assemble testing values when
      * applying more than one validation attribute to a parameter.
      *
@@ -114,6 +122,8 @@ class ProbeTest extends TestCase
     }
 
     /**
+     * Get attribute map.
+     *
      * Convert array of ReflectionAttribute objects to actual attribute
      * instances where the key is the name of the attribute class.
      */
@@ -234,7 +244,7 @@ class ProbeTest extends TestCase
 
         if ($attribute !== null) {
             $this->assertGreaterThanOrEqual(
-                expected: self::VALIDATION_ITERATIONS,
+                minimum: self::VALIDATION_ITERATIONS,
                 actual: count($rejected),
                 message: sprintf(
                     'Seems we fail to generate random rejected values for %s',
@@ -243,7 +253,7 @@ class ProbeTest extends TestCase
             );
 
             $this->assertGreaterThanOrEqual(
-                expected: self::VALIDATION_ITERATIONS,
+                minimum: self::VALIDATION_ITERATIONS,
                 actual: count($accepted),
                 message: sprintf(
                     'Seems we fail to generate random accepted values for %s',
@@ -252,25 +262,25 @@ class ProbeTest extends TestCase
             );
         }
 
-        $assertionCount = $this->getNumAssertions();
+        $assertionCount = $this->numberOfAssertionsPerformed();
 
         // Test all accepted & rejected values one at a time.
         DataIntegrity::testValueIntegrity(
             accepted: $accepted,
             rejected: $rejected,
-            test: $this,
             callback: fn (mixed $v) => $this->generateModel(
                 class: $class,
                 predefined: [$parameter->name => $v]
             ),
+            test: $this,
             class: $class,
             parameter: $parameter->getName()
         );
 
         // Make sure that any DataIntegrity tests were conducted.
         $this->assertGreaterThan(
-            expected: $assertionCount,
-            actual: $this->getNumAssertions()
+            minimum: $assertionCount,
+            actual: $this->numberOfAssertionsPerformed()
         );
 
         // Make sure that all DataIntegrity tests were conducted.
@@ -278,7 +288,7 @@ class ProbeTest extends TestCase
             expected: $assertionCount + count($rejected) + count(
                 $accepted
             ),
-            actual: $this->getNumAssertions()
+            actual: $this->numberOfAssertionsPerformed()
         );
     }
 
@@ -306,6 +316,8 @@ class ProbeTest extends TestCase
     }
 
     /**
+     * Verify that auto-generation of probable classes works.
+     *
      * Assert that automatically creating instances of Probable classes work,
      * using default values where applicable, and resolving random accepted
      * values from attribute classes where not, where neither default value
@@ -333,5 +345,80 @@ class ProbeTest extends TestCase
                 $this->probeParameter(class: $class, parameter: $parameter);
             }
         }
+    }
+
+    /**
+     * Verify that validatePath throws FileSystemException for missing dir.
+     *
+     * @throws FilesystemException
+     */
+    public function testValidatePath(): void
+    {
+        $baseDir = '/tmp/resursbank/test/probetest';
+        $specificDirectory = $baseDir . '/' .
+            Strings::generateRandomString(length: 16)
+        ;
+
+        $this->expectException(exception: FilesystemException::class);
+        Probe::validatePath(path: $baseDir);
+
+        if (!file_exists($specificDirectory)) {
+            mkdir(directory: $specificDirectory, recursive: true);
+        }
+
+        Probe::validatePath(path: $specificDirectory);
+
+        rmdir(directory: $specificDirectory);
+    }
+
+    /**
+     * Verify that validateClass behaves as expected.
+     */
+    public function testValidateClass(): void
+    {
+        // Test that class_exists call is present
+        $this->assertFalse(
+            condition: Probe::validateClass(
+                class: 'Resursbank\EcomTest\Data\Probe\NoneExistent'
+            )
+        );
+
+        // Test that attribute validation code works as intended.
+        $this->assertTrue(
+            condition: Probe::validateClass(
+                class: Cleaning::class
+            )
+        );
+
+        $this->assertFalse(
+            condition: Probe::validateClass(
+                class: Music::class
+            )
+        );
+    }
+
+    /**
+     * Verify getClassname behavior.
+     *
+     * @throws Exception
+     */
+    public function testGetClassName(): void
+    {
+        $path = Config::getPath();
+
+        $testFile = new SplFileInfo(
+            filename: $path . '/tests/Data/Probe/Models/Store/Section/Cleaning.php'
+        );
+        $testClassName = Probe::getClassName(file: $testFile);
+        $this->assertEquals(
+            expected: 'Resursbank\EcomTest\Data\Probe\Models\Store\Section\Cleaning',
+            actual: $testClassName
+        );
+
+        $unprobeableFile = new SplFileInfo(
+            filename: $path . '/tests/Data/Probe/Models/Store/Car.php'
+        );
+        $unprobeableClassName = Probe::getClassName(file: $unprobeableFile);
+        $this->assertNull(actual: $unprobeableClassName);
     }
 }

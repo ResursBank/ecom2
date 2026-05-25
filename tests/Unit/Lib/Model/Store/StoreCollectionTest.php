@@ -14,9 +14,9 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Lib\Model\Country;
 use Resursbank\Ecom\Lib\Model\Store\Store;
 use Resursbank\Ecom\Lib\Model\Store\StoreCollection;
-use Resursbank\Ecom\Module\Store\Enum\Country;
 
 /**
  * Unit tests for StoreCollection

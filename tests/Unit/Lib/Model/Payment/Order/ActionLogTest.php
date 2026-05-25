@@ -16,12 +16,12 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\ActionType;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Module\Payment\Enum\ActionType;
 
 /**
  * Tests for the ActionLog class.
@@ -52,8 +52,8 @@ class ActionLogTest extends TestCase
         }
 
         return new ActionLog(
-            type: ActionType::CAPTURE,
             actionId: $actionId,
+            type: ActionType::CAPTURE,
             created: $created,
             orderLines: $orderLines
         );
@@ -108,7 +108,7 @@ class ActionLogTest extends TestCase
             $this->fail(
                 message: 'Could create ActionLog entry with empty actionId value.'
             );
-        } catch (EmptyValueException) {
+        } catch (IllegalValueException) {
             // Assert EmptyValueException without breaking test method.
             $this->addToAssertionCount(count :1);
         }
@@ -142,7 +142,7 @@ class ActionLogTest extends TestCase
             $this->fail(
                 message: 'Could create ActionLog entry with empty created value.'
             );
-        } catch (EmptyValueException) {
+        } catch (IllegalValueException) {
             // Assert EmptyValueException without breaking test method.
             $this->addToAssertionCount(count :1);
         }

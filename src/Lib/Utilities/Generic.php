@@ -26,8 +26,6 @@ use function is_string;
  * @version 1.0.0
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @todo Refactor entire class. See ECP-351 (PD-2618). Remember to remove phpcs:ignore below when done.
- * @todo There is a unit test that depends on the version annotation here. These annotations are however prohibited.
  */
 // phpcs:ignore
 class Generic
@@ -78,19 +76,11 @@ class Generic
      * @throws Exception
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @todo Refactor, see ECP-350. Remember to remove phpcs:ignore below when done.
      */
-    // phpcs:ignore
     public function getComposerConfig(string $location, int $maxDepth = 3): string
     {
-        if ($maxDepth > 3 || $maxDepth < 1) {
-            $maxDepth = 3;
-        }
-
         // Pre-check if file exists.
-        if (!file_exists(filename: $location)) {
-            throw new FilesystemException(message: 'Invalid path', code: 1013);
-        }
+        $this->throwIfFileNonexistent(location: $location);
 
         $startAt = dirname(path: $location);
 
@@ -99,16 +89,10 @@ class Generic
             return $startAt;
         }
 
-        $composerLocation = null;
-
-        while ($maxDepth--) {
-            $startAt .= '/..';
-
-            if ($this->hasComposerFile(location: $startAt)) {
-                $composerLocation = $startAt;
-                break;
-            }
-        }
+        $composerLocation = $this->findComposerLocation(
+            maxDepth: $maxDepth,
+            startAt: $startAt
+        );
 
         if ($composerLocation === null) {
             throw new IllegalValueException(message: 'No composer.json found');
@@ -272,5 +256,36 @@ class Generic
         }
 
         $this->composerData = $data;
+    }
+
+    /**
+     * Throw FilesystemException if specified file doesn't exist.
+     *
+     * @throws FilesystemException
+     */
+    private function throwIfFileNonexistent(string $location): void
+    {
+        if (!file_exists(filename: $location)) {
+            throw new FilesystemException(message: 'Invalid path', code: 1013);
+        }
+    }
+
+    /**
+     * Find composer.json location.
+     */
+    private function findComposerLocation(int $maxDepth, string $startAt): ?string
+    {
+        $composerLocation = null;
+
+        while ($maxDepth--) {
+            $startAt .= '/..';
+
+            if ($this->hasComposerFile(location: $startAt)) {
+                $composerLocation = $startAt;
+                break;
+            }
+        }
+
+        return $composerLocation;
     }
 }

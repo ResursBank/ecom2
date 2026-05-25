@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace Resursbank\Ecom\Lib\Model\Callback;
 
 use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Action;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Implementation of Management callback data.
@@ -27,20 +28,18 @@ use Resursbank\Ecom\Lib\Validation\StringValidation;
 class Management extends Model implements CallbackInterface
 {
     /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
-        public readonly string $paymentId,
+        #[StringIsUuid] public readonly string $paymentId,
         public readonly Action $action,
-        public readonly string $actionId,
-        public readonly string $created,
-        public readonly ?string $checkoutId = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringIsUuid] public readonly string $actionId,
+        #[StringIsDatetime] public readonly string $created,
+        public readonly ?string $checkoutId = null
     ) {
-        $this->validatePaymentId();
-        $this->validateActionId();
-        $this->validateCreated();
+        parent::__construct();
     }
 
     /**
@@ -81,33 +80,5 @@ class Management extends Model implements CallbackInterface
     public function getStatus(): ?Status
     {
         return null;
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validatePaymentId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->paymentId);
-        $this->stringValidation->isUuid(value: $this->paymentId);
-    }
-
-    /**
-     * @throws EmptyValueException|IllegalValueException
-     */
-    private function validateActionId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->actionId);
-        $this->stringValidation->isUuid(value: $this->actionId);
-    }
-
-    /**
-     * @throws EmptyValueException|IllegalValueException
-     */
-    private function validateCreated(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->created);
-        $this->stringValidation->isTimestampDate(value: $this->created);
     }
 }

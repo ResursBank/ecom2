@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Customer\Http;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -22,9 +23,9 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
-use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Model\Widget\GetAddress\GetAddressRequest;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Http\GetAddressController as Controller;
 use Resursbank\Ecom\Module\Customer\Repository;
@@ -34,6 +35,7 @@ use Resursbank\EcomTest\Utilities\MockSessionTrait;
 /**
  * Tests for the API call getAddress.
  */
+#[AllowMockObjectsWithoutExpectations]
 class GetAddressControllerTest extends TestCase
 {
     use MockSessionTrait;
@@ -49,9 +51,9 @@ class GetAddressControllerTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -61,7 +63,7 @@ class GetAddressControllerTest extends TestCase
         );
 
         $this->controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['log']
         );
         $this->setupSession(test: $this);
@@ -92,8 +94,10 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
-     * Assert output from controller contains some string. This is an attempt
-     * to identify the response before proceeding with further value evaluation.
+     * Assert output from controller contains some string.
+     *
+     * This is an attempt to identify the response before proceeding with
+     * further value evaluation.
      */
     private function assertResponseContains(
         string $needle,
@@ -104,6 +108,8 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
+     * Create mocked Controller class instance.
+     *
      * Create a mocked version of the Controller class, setting the return value
      * of the getInputData method, in an effort to replicate behaviour with
      * incoming input data to PHP (faking the contents of php://input).
@@ -114,7 +120,7 @@ class GetAddressControllerTest extends TestCase
     private function getControllerWithMockedInputData(array $data): Controller
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getInputData']
         );
 
@@ -221,8 +227,10 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
+     * Verify that inconvertible input to getRequestData causes exception.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
-     * supplied that does not convert to a GetAddressRequest instance.
+     * supplied with data that does not convert to a GetAddressRequest instance.
      *
      * @throws HttpException
      * @throws JsonException
@@ -240,6 +248,8 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
+     * Verify illegal data to getRequestData causes exception to be thrown.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
      * supplied data that would cause an IllegalValueException when attempting
      * to convert to GetAddressRequest instance.
@@ -251,7 +261,7 @@ class GetAddressControllerTest extends TestCase
     {
         $controller = $this->getControllerWithMockedInputData(
             data: [
-                'govId' => '166997368573',
+                'govId' => '1669d7368573',
                 'customerType' => CustomerType::NATURAL->value,
             ]
         );
@@ -263,6 +273,8 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
+     * Verify exception is thrown if wrong Model instance returned.
+     *
      * Assert that getRequestData() throws HttpException with code 415 when
      * getRequestModel() returns an unexpected instance of Model.
      *
@@ -271,7 +283,7 @@ class GetAddressControllerTest extends TestCase
     public function testGetRequestDataThrowsWithInvalidConversion(): void
     {
         $controller = $this->createPartialMock(
-            originalClassName: Controller::class,
+            type: Controller::class,
             methods: ['getRequestModel']
         );
 
@@ -287,8 +299,7 @@ class GetAddressControllerTest extends TestCase
     }
 
     /**
-     * Assert that getRequestData() returns input data unaffected in forms of
-     * GetAddressRequest instance.
+     * Verify requestData returns unaltered data as GetAddressRequest instance.
      *
      * @throws HttpException
      * @throws JsonException

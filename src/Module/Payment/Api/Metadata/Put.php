@@ -30,7 +30,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use stdClass;
 
 /**
  * Updates Metadata on Payment objects
@@ -72,13 +71,10 @@ class Put
             requestMethod: RequestMethod::PUT,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: empty($payload)
+            responseContentType: ContentType::JSON
         );
 
-        $data = $curl->exec()->body;
-
-        $content = $data instanceof stdClass ? $data : new stdClass();
+        $content = $curl->exec()->body;
 
         $result = DataConverter::stdClassToType(
             object: $content,

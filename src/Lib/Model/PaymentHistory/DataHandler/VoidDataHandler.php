@@ -46,6 +46,6 @@ class VoidDataHandler implements DataHandlerInterface
         string $paymentId,
         Event $event
     ): bool {
-        return true;
+        return false;
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Attribute\Validation;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
@@ -17,6 +18,7 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 /**
  * Unit tests for the StringNotEmpty validation attribute.
  */
+#[AllowMockObjectsWithoutExpectations]
 class StringNotEmptyTest extends TestCase
 {
     /**
@@ -29,7 +31,7 @@ class StringNotEmptyTest extends TestCase
     {
         $obj = new StringNotEmpty();
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (
@@ -55,7 +57,7 @@ class StringNotEmptyTest extends TestCase
     {
         $obj = new StringNotEmpty();
         $reflectionParameter = $this->createMock(
-            originalClassName: ReflectionParameter::class
+            type: ReflectionParameter::class
         );
 
         foreach (

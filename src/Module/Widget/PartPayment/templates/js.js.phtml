@@ -438,8 +438,9 @@ class Resursbank_PartPayment {
                 this.el.querySelector('.rb-pp').replaceWith(this.htmlToElement(data.html));
             }
 
-            if (!data.shouldDisplayCostExample) {
-                document.querySelector('.rb-pp-cost-example').style.display = 'none';
+            let costExample = document.querySelector('.rb-pp-cost-example');
+            if (!data.shouldDisplayCostExample && costExample !== null) {
+                costExample.style.display = 'none';
             }
 
             <?php if ($this->threshold > 0): ?>

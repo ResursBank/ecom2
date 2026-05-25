@@ -26,12 +26,17 @@ class Entry extends Model
     public readonly int $time;
 
     /**
+     * Constructor.
+     *
+     * The $previousOrderStatus and $currentOrderStatus parameters are used to
+     * track status changes for the local order, not the Resurs payment.
+     *
      * @param string $paymentId Payment or Checkout ID
+     * @param ?string $reference Order reference.
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @todo Consider ensuring $extra is JSON encoded. Not sure if this is desirable but seems sensible.
      */
     public function __construct(
         #[StringIsUuid] public readonly string $paymentId,

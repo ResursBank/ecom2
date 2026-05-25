@@ -22,10 +22,9 @@ use function is_string;
 use function json_decode;
 
 /**
- * Methods to extract language-specific phrases. The intention is to maintain
- * consistent terminology between implementations.
+ * Methods to extract language-specific phrases.
  *
- * @todo Check if ConfigException require test.
+ * The intent is to maintain consistent terminology between implementations.
  */
 abstract class Translator
 {
@@ -40,6 +39,8 @@ abstract class Translator
     private static string $cacheKey = 'resursbank-ecom-translations';
 
     /**
+     * Loads translations from specified file.
+     *
      * Loads translations file from disk, decodes the result into an array
      * and returns that array, and caches the resulting array.
      *
@@ -166,18 +167,16 @@ abstract class Translator
 
     /**
      * Generates a valid cache key which includes the name of the translation file.
-     *
-     * @todo preg_replace returns null|array|string, this method is required to return string ECP-372
      */
     public static function getCacheKey(?string $translationFile = null): string
     {
         $rawKey = ($translationFile ?
-            (self::$cacheKey . '-' . $translationFile) :
-            (self::$cacheKey . '-' . preg_replace(
+            (self::$cacheKey . '-' . sha1(string: $translationFile)) :
+            (self::$cacheKey . '-' . sha1(string: preg_replace(
                 pattern: '/[0-9]/',
                 replacement: '',
                 subject: sha1(string: self::$translationsFilePath)
-            ))
+            ) ?? ''))
         );
         $key = preg_replace(
             pattern: '/[^a-zA-Z\d\-_]/',

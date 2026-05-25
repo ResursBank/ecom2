@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\ReadMore;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -32,9 +33,9 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Language as PriceSignageLanguage;
 use Resursbank\Ecom\Lib\Model\PriceSignage\UriLink;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PriceSignage\Repository as PriceSignageRepository;
 use Resursbank\Ecom\Module\Widget\ReadMore\Html;
@@ -43,6 +44,7 @@ use Throwable;
 /**
  * Integration tests for the ReadMore widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private PaymentMethod $paymentMethod;
@@ -67,7 +69,7 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
             jwtAuth: new Jwt(
@@ -289,7 +291,7 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/readMore/' . time()),
             jwtAuth: new Jwt(

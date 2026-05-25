@@ -25,7 +25,7 @@ class ManagementTest extends TestCase
      */
     public function testPaymentIdCannotByEmpty(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         new Management(
             paymentId: '',
             action: Action::CAPTURE,
@@ -67,7 +67,7 @@ class ManagementTest extends TestCase
      */
     public function testActionIdCannotByEmpty(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         new Management(
             paymentId: '',
             action: Action::CAPTURE,
@@ -109,7 +109,7 @@ class ManagementTest extends TestCase
      */
     public function testCreatedCannotByEmpty(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         new Management(
             paymentId: '12e3b939-2683-4b9c-a558-f4f6c7e18d99',
             action: Action::CANCEL,

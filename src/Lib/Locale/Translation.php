@@ -16,8 +16,10 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
- * Translated phrase. The phrase has to be translated to the languages listed
- * in the constructor, and cannot be an empty string. Base language is english.
+ * Translated phrase.
+ *
+ * The phrase has to be translated to the languages listed in the constructor
+ * and cannot be an empty string. Base language is english.
  */
 class Translation extends Model
 {

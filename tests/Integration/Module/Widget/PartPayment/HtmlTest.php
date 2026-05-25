@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\PartPayment;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -33,7 +34,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\LegalLink\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLink\Type;
 use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
@@ -44,6 +45,7 @@ use Throwable;
 /**
  * Integration test for the Part payment widget
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private ?PaymentMethod $paymentMethod;
@@ -73,7 +75,7 @@ class HtmlTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(
@@ -137,7 +139,7 @@ class HtmlTest extends TestCase
     public function testGetStartingAt(): void
     {
         $this->assertMatchesRegularExpression(
-            pattern: '/^Pay [\d,.]+ kr\/month for ' . $this->widget->months .
+            pattern: '/^Pay [\d ,.]+ kr\/month for ' . $this->widget->months .
                 ' months \([0-9\.]+% interest rate\)\.$/',
             string: $this->widget->getStartingAt(),
             message: 'Starting at should be formatted correctly.'
@@ -349,8 +351,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Verify $logo property on widget instance is rendered and contains and SVG
-     * element.
+     * Verify $logo property on widget is rendered and contains an SVG element.
      */
     public function testWidgetLogo(): void
     {
@@ -363,8 +364,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Verify the $cost property is assigned on the widget instance when its
-     * created (make sure it's not null).
+     * Verify the $cost property is set when widget is created.
      */
     public function testWidgetCost(): void
     {
@@ -410,7 +410,7 @@ class HtmlTest extends TestCase
         // Mock return of \Resursbank\Ecom\Module\PaymentMethod\Widget\PartPayment::getLongestPeriodWithZeroInterest
         // to return 0, and check that the message is empty.
         $this->widget = $this->createPartialMock(
-            originalClassName: Html::class,
+            type: Html::class,
             methods: ['getLongestPeriodWithZeroInterest']
         );
 
@@ -614,5 +614,87 @@ class HtmlTest extends TestCase
         $priceFormatted = Price::format(value: $cost->totalCost);
 
         $this->assertEquals(expected: $priceFormatted, actual: $formattedCost);
+    }
+
+    /**
+     * Test shouldRender behavior.
+     *
+     * Due to how the API behaves we can't accurately test the behavior of
+     * setting an amount below the payment method's minimum limit as attempting
+     * this causes an HTTP 400 error from the API.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
+     * @throws ValidationException
+     */
+    public function testShouldRender(): void
+    {
+        $widget = new Html(
+            /* @phpstan-ignore-next-line */
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            /* @phpstan-ignore-next-line */
+            amount: $this->paymentMethod->getMaxLimit() + 0.1,
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+        $this->assertEmpty(actual: $widget->content);
+
+        $widget = new Html(
+            /* @phpstan-ignore-next-line */
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            /* @phpstan-ignore-next-line */
+            amount: $this->paymentMethod->getMaxLimit(),
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+        $this->assertNotEmpty(actual: $widget->content);
+
+        $widget = new Html(
+            /* @phpstan-ignore-next-line */
+            paymentMethod: $this->paymentMethod,
+            months: 12,
+            /* @phpstan-ignore-next-line */
+            amount: $this->paymentMethod->getMinLimit(),
+            fetchStartingCostUrl: 'http://example.com/'
+        );
+        $this->assertNotEmpty(actual: $widget->content);
+
+        try {
+            new Html(
+                /* @phpstan-ignore-next-line */
+                paymentMethod: $this->paymentMethod,
+                months: 12,
+                /* @phpstan-ignore-next-line */
+                amount: $this->paymentMethod->getMinLimit() - 0.1,
+                fetchStartingCostUrl: 'http://example.com/'
+            );
+            $this->fail(
+                message: 'No CurlException was thrown when attempting to ' .
+                'fetch PartPayment widget for amount below payment method ' .
+                'minimum limit.'
+            );
+        } catch (CurlException $error) {
+            $this->assertStringContainsString(
+                needle: 'Amount of ' .
+                /* @phpstan-ignore-next-line */
+                ($this->paymentMethod->getMinLimit() - 0.1) .
+                ' must be equal to or greater than the minimum purchase ' .
+                /* @phpstan-ignore-next-line */
+                'limit of ' . $this->paymentMethod->getMinLimit(),
+                haystack: $error->getMessage()
+            );
+        }
     }
 }

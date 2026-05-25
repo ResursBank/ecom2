@@ -2,6 +2,7 @@
 <ruleset name="ResursbankTests">
     <config name="installed_paths" value="../../slevomat/coding-standard,../../../qa/phpcs/Resursbank" />
     <rule ref="Resursbank.Commenting.CopyrightNotice" />
+    <rule ref="Resursbank.Commenting.DocBlockDescription" />
     <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation" />
     <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement" />
     <rule ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace" />
@@ -92,7 +93,6 @@
                 <element value="@package" />
                 <element value="@copyright" />
                 <element value="@license" />
-                <element value="@since" /> <!-- @todo This can be removed after we complete initial development. -->
             </property>
         </properties>
     </rule>
