@@ -42,10 +42,6 @@ class Customer extends Model
      * @throws ReflectionException
      * @throws AttributeCombinationException
      * @throws JsonException
-     * @todo There are no validation rules declared for anything. Like phone, email, government id etc.
-     * @todo NOTE: This should technically be CustomerRequest, and there should be a customerResponse, see ECP-252
-     * @todo Reason to avoid this is that governmentId validation will fail in CreatePayment CustomerResponse,
-     * @todo Since it seems wrong in the API documentation we do not know what to do right now.
      */
     public function __construct(
         public readonly ?Address $deliveryAddress = null,

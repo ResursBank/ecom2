@@ -25,8 +25,6 @@ use Resursbank\EcomTest\Data\Models\Instrument;
 
 /**
  * Tests for authorization callbacks.
- *
- * @todo Improve test coverage.
  */
 #[AllowMockObjectsWithoutExpectations]
 class AuthorizationControllerTest extends TestCase
@@ -127,7 +125,7 @@ class AuthorizationControllerTest extends TestCase
     }
 
     /**
-     * Verify that getRequestdata correctly returns data.
+     * Verify that getRequestData correctly returns data.
      *
      * @throws HttpException
      * @throws JsonException

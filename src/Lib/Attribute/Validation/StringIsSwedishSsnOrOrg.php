@@ -41,7 +41,6 @@ class StringIsSwedishSsnOrOrg implements StringInterface
      */
     public function getAcceptedValues(ReflectionParameter $parameter, int $size = 5): array
     {
-        // @todo: Implement properly
         return array_fill(start_index: 0, count: $size, value: '198305147715');
     }
 
@@ -50,7 +49,6 @@ class StringIsSwedishSsnOrOrg implements StringInterface
      */
     public function getRejectedValues(ReflectionParameter $parameter, int $size = 5): array
     {
-        // @todo: Implement properly
         return array_fill(
             start_index: 0,
             count: $size,

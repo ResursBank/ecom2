@@ -23,8 +23,6 @@ use function json_decode;
  * Methods to extract language-specific phrases.
  *
  * The intent is to maintain consistent terminology between implementations.
- *
- * @todo Check if ConfigException requires test.
  */
 abstract class Translator
 {

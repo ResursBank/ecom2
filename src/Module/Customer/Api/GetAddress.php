@@ -57,7 +57,6 @@ class GetAddress
      * @throws ValidationException
      * @throws ApiException
      * @SuppressWarnings(PHPMD.Superglobals)
-     * @todo Refactor, see ECP-356. Remove phpcs:ignore when done.
      */
     public function call(
         string $governmentId,

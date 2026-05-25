@@ -165,7 +165,6 @@ class DataConverter
      * @param mixed $value Property value
      * @param string $propertyType Property type
      * @return mixed Converted property or null
-     * @todo enum_exists guarantees UnitEnum, we expect BackedEnum. See ECP-339
      */
     private static function processEnum(
         mixed $value,

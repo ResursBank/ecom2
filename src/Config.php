@@ -56,8 +56,6 @@ final class Config
      * @param Language|null $language | Not readonly to allow dynamic assignment
      * @param string|null $templateOverrideDirectory Directory to search for widget template overrides.
      * based on configured store after initializing the Config instance.
-     * @todo Create a null cache driver, so there always is one, returns null always
-     * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
         public readonly LoggerInterface $logger,
@@ -80,8 +78,6 @@ final class Config
 
     /**
      * @noinspection PhpTooManyParametersInspection
-     * @todo Consider making userAgent an object instead.
-     * @todo Consider moving proxy, proxyType and timeout to a separate object.
      */
     public static function setup(
         LoggerInterface $logger = new NoneLogger(),

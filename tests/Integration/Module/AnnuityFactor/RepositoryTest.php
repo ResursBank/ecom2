@@ -170,15 +170,18 @@ class RepositoryTest extends TestCase
      * @throws ReflectionException
      * @throws ValidationException
      * @throws ConfigException
-     * @todo Compares lengths of original methods collection and the filtered
-     *      one. The filtered should have a shorter length.
      */
     public function testFilterMethodsReturnsFilteredCollection(): void
     {
+        $fetchedMethods = PaymentMethodRepository::getPaymentMethods();
         $filteredMethods = Repository::filterMethods(
-            paymentMethods: PaymentMethodRepository::getPaymentMethods()
+            paymentMethods: $fetchedMethods
         );
 
         $this->assertNotEmpty(actual: $filteredMethods->toArray());
+        $this->assertLessThan(
+            maximum: $fetchedMethods->count(),
+            actual: $filteredMethods->count()
+        );
     }
 }

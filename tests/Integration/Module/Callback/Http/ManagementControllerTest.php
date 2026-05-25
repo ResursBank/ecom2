@@ -25,8 +25,6 @@ use Resursbank\EcomTest\Data\Models\Instrument;
 
 /**
  * Tests for management callbacks.
- *
- * @todo Improve test coverage.
  */
 #[AllowMockObjectsWithoutExpectations]
 class ManagementControllerTest extends TestCase
