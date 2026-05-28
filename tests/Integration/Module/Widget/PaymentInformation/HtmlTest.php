@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentInformation;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -33,15 +34,15 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -52,6 +53,7 @@ use Throwable;
 /**
  * Tests for the payment information widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private string $orderReference;
@@ -63,9 +65,9 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -87,9 +89,9 @@ class HtmlTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -155,7 +157,6 @@ class HtmlTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: $governmentId,
                 mobilePhone: '0701234567',
@@ -193,7 +194,7 @@ class HtmlTest extends TestCase
         );
 
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$payment->id}<\/td>/s",
+            pattern: '/<td colspan="2">' . $payment->id . '<\/td>/s',
             string: $widget->content,
             message: 'Widget does not contain payment id cell.'
         );
@@ -214,9 +215,9 @@ class HtmlTest extends TestCase
     {
         $payment = $this->createPayment(orderReference: $this->orderReference);
         $widget = new Html(paymentId: $payment->id);
-        $tdEl = $widget->getTdElement(content: $payment->id);
+        $tdEl = $widget->getTdElement(content: $payment->id, colSpan: 2);
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$payment->id}<\/td>/s",
+            pattern: '/<td colspan="2">' . $payment->id . '<\/td>/s',
             string: $tdEl,
             message: 'getTdElement() does not return a td element with the ' .
             'given content.'
@@ -225,8 +226,11 @@ class HtmlTest extends TestCase
         // Verify any content I supply is returned in the td element.
         $content = 'test content';
         $this->assertMatchesRegularExpression(
-            pattern: "/<td>{$content}<\/td>/s",
-            string: $widget->getTdElement(content: $content),
+            pattern: '/<td colspan="2">' . $content . '<\/td>/s',
+            string: $widget->getTdElement(
+                content: $content,
+                colSpan: 2
+            ),
             message: 'getTdElement() does not return a td element with the ' .
             'given content.'
         );
@@ -234,7 +238,8 @@ class HtmlTest extends TestCase
         // Verify that if $isHeader is true, renders header element.
         $headerEl = $widget->getTdElement(
             content: 'captured-amount',
-            isHeader: true
+            isHeader: true,
+            colSpan: 2
         );
 
         // Assert that the content of the header element is translated.
@@ -325,8 +330,35 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Assert that the logo is rendered correctly depending on the value of
-     * renderLogo.
+     * Verify that the Merchant Portal link exists in the widget.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws FilesystemException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function testMerchantPortalLinkRendering(): void
+    {
+        $payment = $this->createPayment(orderReference: $this->orderReference);
+        $widget = new Html(paymentId: $payment->id);
+        $this->assertMatchesRegularExpression(
+            pattern: '/<a target="_blank" href="https:\/\/web-integration-' .
+            'mock-merchant-portal\.i\.eks\.aws\.cld\.resurs\.com\/"/',
+            string: $widget->content
+        );
+    }
+
+    /**
+     * Assert that the logo is rendered correctly.
      */
     public function testLogoRendering(): void
     {
@@ -359,7 +391,7 @@ class HtmlTest extends TestCase
         $widget = new Html(paymentId: $payment->id);
 
         $this->assertMatchesRegularExpression(
-            pattern: '/<td(.*?)>Status<\/td><td>REJECTED \(Credit denied\)<\/td>/s',
+            pattern: '/<td(.*?)>Status<\/td><td colspan="2">REJECTED \(Credit denied\)<\/td>/s',
             string: $widget->content,
             message: 'Payment was not rejected with CREDIT_DENIED.'
         );

@@ -25,7 +25,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
-use Resursbank\Ecom\Lib\Api\Rws;
+use Resursbank\Ecom\Lib\Api\PaymentMethodElements;
 use Resursbank\Ecom\Lib\Collection\Collection;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Model;
@@ -52,7 +52,7 @@ class Request
         protected readonly string $model,
         protected readonly string $route,
         protected readonly RequestMethod $requestMethod,
-        protected Mapi|Rws $api,
+        protected Mapi|PaymentMethodElements $api,
         protected readonly array $params = [],
         protected readonly string $extractProperty = '',
         protected readonly array $headers = [],
@@ -84,7 +84,7 @@ class Request
      * @throws NotJsonEncodedException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function call(bool $forceObject = false): Collection|Model
+    public function call(): Collection|Model
     {
         $curl = new Curl(
             url: $this->api->getUrl(
@@ -95,8 +95,7 @@ class Request
             payload: $this->params,
             contentType: $this->contentType,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: $forceObject
+            responseContentType: ContentType::JSON
         );
 
         $data = $this->resolveResponseData(
@@ -114,8 +113,7 @@ class Request
     }
 
     /**
-     * Uses reflection API to validate the custom model converter has the
-     * correct return type and arguments.
+     * Confirm custom model converter return type and arguments.
      *
      * @throws ReflectionException
      */

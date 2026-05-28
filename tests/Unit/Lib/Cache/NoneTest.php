@@ -47,8 +47,7 @@ class NoneTest extends TestCase
     }
 
     /**
-     * Assert that method read() throws instance of ValidationException if our
-     * key contains illegal characters.
+     * Assert that method read() throws error if key has illegal characters.
      */
     public function testReadThrowsWithIllegalKeyCharacter(): void
     {
@@ -76,8 +75,7 @@ class NoneTest extends TestCase
     }
 
     /**
-     * Assert that method write() throws instance of ValidationException if our
-     * key contains illegal characters.
+     * Assert that method write() throws error if key has illegal characters.
      */
     public function testWriteThrowsWithIllegalKeyCharacter(): void
     {
@@ -110,8 +108,7 @@ class NoneTest extends TestCase
     }
 
     /**
-     * Assert that method clear() throws instance of ValidationException if our
-     * key contains illegal characters.
+     * Assert that method clear() throws error on illegal characters.
      */
     public function testClearThrowsWithIllegalKeyCharacter(): void
     {

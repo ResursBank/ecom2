@@ -16,9 +16,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 
 /**
  * Basic filesystem caching.
- *
- * @todo If we add a health report as discussed we should add some writ- / readable information about the cache dir /
- * @todo files since read will fail silently.
  */
 class Filesystem extends AbstractCache implements CacheInterface
 {
@@ -31,6 +28,8 @@ class Filesystem extends AbstractCache implements CacheInterface
     }
 
     /**
+     * Read value from cache. NULL means there was no valid value
+     *
      * If there should be any problem with the requested cache file, for example
      * if the file exists but isn't writable, its path is allocated by a
      * directory, its content is invalid or corrupt etc. this method will simply
@@ -38,7 +37,6 @@ class Filesystem extends AbstractCache implements CacheInterface
      *
      * @throws ValidationException
      * @throws ConfigException
-     * @todo Consider adding logs.
      */
     public function read(string $key): ?string
     {
@@ -122,6 +120,8 @@ class Filesystem extends AbstractCache implements CacheInterface
     }
 
     /**
+     * Create and prepare cache directory.
+     *
      * Prepare directory where cache is stored by creating it if it doesn't
      * already exist and making sure it's writable.
      *

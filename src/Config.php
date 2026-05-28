@@ -21,6 +21,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
@@ -31,7 +32,6 @@ use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Lib\Model\UserSettings\Metadata;
 use Resursbank\Ecom\Lib\UserSettings\NullReader;
 use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
 
@@ -48,8 +48,10 @@ use function dirname;
 final class Config
 {
     /**
-     * NOTE: This is a singleton class. Use Config::setup() to generate an
-     * instance, use getter methods to extract properties safely.
+     * NOTE: This is a singleton class.
+     *
+     * Use Config::setup() to generate an instance, use getter methods to
+     * extract properties safely.
      *
      * NOTE: Nullable to allow unsetting configuration.
      */
@@ -61,8 +63,6 @@ final class Config
      * @param Language|null $language | Not readonly to allow dynamic assignment
      * @param string|null $templateOverrideDirectory Directory to search for widget template overrides.
      * based on configured store after initializing the Config instance.
-     * @todo Create a null cache driver, so there always is one, returns null always
-     * @todo Create a null database driver, so there always is one, returns null always
      */
     public function __construct(
         private LoggerInterface $logger,
@@ -87,9 +87,6 @@ final class Config
 
     /**
      * @noinspection PhpTooManyParametersInspection
-     * @todo Consider making userAgent an object instead.
-     * @todo Consider moving proxy, proxyType and timeout to a separate object.
-     * @throws ConfigException
      */
     public static function setup(
         LoggerInterface $logger = new NoneLogger(),

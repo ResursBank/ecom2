@@ -37,7 +37,8 @@ class Order extends Model
         public readonly float $canceledAmount,
         public readonly float $authorizedAmount,
         public readonly float $capturedAmount,
-        public readonly float $refundedAmount
+        public readonly float $refundedAmount,
+        public readonly ?float $approvedCreditLimit = null
     ) {
         parent::__construct();
     }

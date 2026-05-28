@@ -390,7 +390,6 @@ The list describes the current classes and their descriptions.
 | GetAddressException            | Exception for get address errors.          |
 | HttpException                  | Exception for HTTP errors.                 |
 | IOException                    | Exception for IO errors.                   |
-| MissingPaymentException        | Exception for missing payment errors.      |
 | PaymentActionException         | Exception for payment action errors.       |
 | PermissionException            | Exception for permission errors.           |
 | SessionException               | Exception for session errors.              |
@@ -904,7 +903,7 @@ Retrieve customer address from API.
 
 ```php
 use \Resursbank\Ecom\Module\Customer\Repository;
-use \Resursbank\Ecom\Lib\Order\CustomerType;
+use \Resursbank\Ecom\Lib\Model\CustomerType;
 
 $address = Repository::getAddress(
     storeId: 'store-id',
@@ -971,8 +970,7 @@ use \Resursbank\Ecom\Module\Widget\GetAddress\Js;
 use \Resursbank\Ecom\Module\Widget\GetAddress\Css;
 
 // Note that you also can supply a $governmentId and $customerType to
-// pre-populate the form should you wish to. Also, you can set $automatic to
-// true if you do not want to modify the JavaScript code (js.js.phtml).
+// pre-populate the form should you wish to.
 // For example, you may wish to display errors in a certain way, or display a
 // customer loader while the request is being processed. For the purpose of this
 // example, we will leave it as false, just to give you an idea of how you could
@@ -994,8 +992,6 @@ $css = new Css();
 <script>
     <?= $js->content ?>
 
-    // If you had set automatic to true, this method would be called automatically.
-    // upon document load. Since we set it to false, we need to call it manually.
     let instance = new Resursbank_GetAddress({
         errorHandler: function (error) {
             console.error(error);
@@ -1045,9 +1041,12 @@ or *Magento*).**
 
 ### -#- \Resursbank\Ecom\Module\Payment\Repository::search()
 
-Let's you search for legacy payments placed with older API:s. Useful if you are 
+Lets you search for legacy payments placed with older API:s. Useful if you are 
 migrating from an older system to Ecom. If so, you can view this as your **get**
 for old payments. These can then be handled just like any other payment.
+
+Searching without specifying an order reference or a government ID will result
+in the API returning an unfiltered list of payments.
 
 **Note that this method will return a list of payments.**
 
@@ -1090,7 +1089,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use \Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Validation\StringValidation;
@@ -1257,7 +1256,7 @@ supply the following optional arguments when cancelling:
  - **orderLines** - A collection of specific **OrderLine** objects to cancel.
  - **creator** - Reference to the person who performed the cancellation.
 
-### -#- \Resursbank\Ecom\Module\Payment\Repository::setMetadata()
+### -#- \Resursbank\Ecom\Module\Payment\Repository::addMetadata()
 
 Append additional metadata to an existing payment.
 
@@ -1267,10 +1266,10 @@ use \Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use \Resursbank\Ecom\Lib\Model\Payment\Metadata\EntryCollection;
 use \Resursbank\Ecom\Lib\Model\Payment\Metadata\Entry;
 
-$payment = Repository::setMetadata(
+$payment = Repository::addMetadata(
     paymentId: 'payment-id',
     metadata: new Metadata(
-       creator: 'Seombody',
+       creator: 'Somebody',
        custom: new EntryCollection(data: [
            new Entry(
                key: 'key',
@@ -1295,43 +1294,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 
 $payment = Repository::addOrderLines(
-    paymentId: 'payment-id',
-    orderLines: new OrderLineCollection(data: [
-       new OrderLine(
-           quantity: 1,
-           quantityUnit: 'pcs',
-           vatRate: 25,
-           unitAmountIncludingVat: 100,
-           description: 'Article 1'
-       ),
-       new OrderLine(
-           quantity: 1,
-           quantityUnit: 'pcs',
-           vatRate: 25,
-           unitAmountIncludingVat: 100,
-           description: 'Article 2'
-       ),
-    ]),
-);
-```
-
-### -#- \Resursbank\Ecom\Module\Payment\Repository::updateOrderLines()
-
-Replace the order lines of an existing payment. This method will:
-
-1. Execute **cancel()** to cancel the existing payment (this basically just cancels all items attached to the payment, it does not cancel the payment object itself).
-2. Execute **addOrderLines()** to add the new order lines to the payment.
-
-This method will also perform some special validation checks before performing
-these operations. To assert that the payment is in a state where it can be
-updated, and that the new order lines are valid for it. For example, you cannot
-replace order lines on a payment that has already been captured, and you cannot
-add order lines which would exceed to total authorized amount of the payment.
-
-```php
-use \Resursbank\Ecom\Module\Payment\Repository;
-
-$payment = Repository::updateOrderLines(
     paymentId: 'payment-id',
     orderLines: new OrderLineCollection(data: [
        new OrderLine(
@@ -1663,7 +1625,7 @@ covered by its own chapter later in this document.
 
 // index.phtml
 
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Css;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;
@@ -1931,7 +1893,7 @@ performed by the JavaScript component can fetch new data for the widget.
 
 ```php
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment\InfoControllerInterface;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;

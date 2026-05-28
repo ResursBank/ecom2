@@ -58,7 +58,7 @@ class CurlExceptionTest extends TestCase
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertStringStartsWith(prefix: $msg, string: $result);
         $this->assertGreaterThan(
-            expected: strlen(string: $msg),
+            minimum: strlen(string: $msg),
             actual: strlen(string: $result)
         );
     }
@@ -80,7 +80,7 @@ class CurlExceptionTest extends TestCase
         $result = $exception->getDetailedMessage(msg: $msg);
         $this->assertStringStartsWith(prefix: $msg, string: $result);
         $this->assertGreaterThan(
-            expected: strlen(string: $msg),
+            minimum: strlen(string: $msg),
             actual: strlen(string: $result)
         );
     }
@@ -185,7 +185,10 @@ class CurlExceptionTest extends TestCase
         );
 
         $result = $exception->getInvalidFieldName();
-        $this->assertSame(expected: InvalidFieldName::PHONE, actual: $result);
+        $this->assertSame(
+            expected: InvalidFieldName::MOBILE_PHONE,
+            actual: $result
+        );
     }
 
     public function testGetInvalidFieldNameReturnsEmailOnCorrectStructure(): void

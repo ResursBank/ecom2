@@ -11,10 +11,12 @@ namespace Resursbank\Ecom\Lib\Model\Store;
 
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Api\Environment;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
+ * Get stores request model.
+ *
  * Request model to collect stores based on credentials. Useful for AJAX
  * requests to collect a list of available stores before credentials are
  * actually saved (enter credentials, reload list of stores, select store).
@@ -26,27 +28,9 @@ class GetStoresRequest extends Model
      */
     public function __construct(
         public readonly Environment $environment,
-        public readonly string $clientId,
-        public readonly string $clientSecret,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringNotEmpty] public readonly string $clientId,
+        #[StringNotEmpty] public readonly string $clientSecret
     ) {
-        $this->validateClientId();
-        $this->validateClientSecret();
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    private function validateClientId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->clientId);
-    }
-
-    /**
-     * @throws EmptyValueException
-     */
-    private function validateClientSecret(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->clientSecret);
+        parent::__construct();
     }
 }

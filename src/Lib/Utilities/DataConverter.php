@@ -18,13 +18,11 @@ use ReflectionObject;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Collection\Collection;
-use Resursbank\Ecom\Lib\Collection\EnumCollection;
 use Resursbank\Ecom\Lib\Model\Model;
 use stdClass;
 
 use function call_user_func;
 use function is_object;
-use function is_string;
 
 /**
  * Utility class for data type conversions.
@@ -41,11 +39,7 @@ class DataConverter
      * @throws ReflectionException
      * @throws ArgumentCountError
      * @throws IllegalTypeException|IllegalValueException
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @todo Refactor ECP-353
      */
-    // phpcs:ignore
     public static function stdClassToType(object $object, string $type): Model
     {
         if (!is_subclass_of(object_or_class: $type, class: Model::class)) {
@@ -58,8 +52,6 @@ class DataConverter
         $arguments = [];
 
         foreach ($sourceProperties as $sourceProperty) {
-            /** @noinspection PhpExpressionResultUnusedInspection */
-            $sourceProperty->setAccessible(accessible: true);
             $name = $sourceProperty->getName();
             $value = $sourceProperty->getValue(object: $object);
 
@@ -72,64 +64,10 @@ class DataConverter
             $destinationType = $destinationProperty->getType();
             $propertyType = $destinationType->getName();
 
-            // If our property is a collection we need to take the value array and convert all items individually
-            // before loading our new collection object
-            if (
-                is_subclass_of(
-                    object_or_class: $propertyType,
-                    class: Collection::class
-                )
-            ) {
-                $converted = [];
-                $dummyCollection = new $propertyType(data: []);
-                $dummyCollectionType = $dummyCollection->getType();
-
-                if (is_iterable(value: $value)) {
-                    foreach ($value as $item) {
-                        if (
-                            is_string(value: $item) &&
-                            is_subclass_of(
-                                object_or_class: $propertyType,
-                                class: EnumCollection::class
-                            )
-                        ) {
-                            $converted[] = $dummyCollectionType::from($item);
-                        } else {
-                            $converted[] = self::stdClassToType(
-                                object: $item,
-                                type: $dummyCollectionType
-                            );
-                        }
-                    }
-                }
-
-                $dummyCollection->setData(data: $converted);
-                $arguments[$name] = $dummyCollection;
-            } elseif (
-                $propertyType === 'array' &&
-                $value instanceof stdClass &&
-                empty((array)$value)
-            ) {
-                $arguments[$name] = [];
-            } elseif (enum_exists(enum: $propertyType)) {
-                // If our property is an enum we need to convert the value
-                // to the enum value it represents.
-                // @todo enum_exists guarantees UnitEnum, we expect BackedEnum. See ECP-339
-                $arguments[$name] = $value !== null ?
-                    call_user_func(
-                    /* @phpstan-ignore-next-line */
-                        $propertyType . '::from',
-                        $value instanceof BackedEnum ? $value->value : $value
-                    ) : null;
-            } elseif (is_object(value: $value)) {
-                $arguments[$name] = self::stdClassToType(
-                    object: $value,
-                    /* @phpstan-ignore-next-line */
-                    type: $propertyType
-                );
-            } else {
-                $arguments[$name] = $value;
-            }
+            $arguments[$name] = self::processProperty(
+                value: $value,
+                propertyType: $propertyType
+            );
         }
 
         return new $type(...$arguments);
@@ -164,5 +102,158 @@ class DataConverter
         }
 
         return new $class(data: $convertedData);
+    }
+
+    /**
+     * Process individual property.
+     *
+     * @param mixed $value Property value
+     * @param string $propertyType Property type
+     * @return mixed Converted property
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private static function processProperty(mixed $value, string $propertyType): mixed
+    {
+        // If our property is a collection we need to take the value array and convert all items individually
+        // before loading our new collection object
+        if (
+            is_subclass_of(
+                object_or_class: $propertyType,
+                class: Collection::class
+            )
+        ) {
+             return self::processCollection(
+                 value: $value,
+                 propertyType: $propertyType
+             );
+        }
+
+        if (
+            $propertyType === 'array' &&
+            $value instanceof stdClass &&
+            empty((array)$value)
+        ) {
+            return [];
+        }
+
+        if (enum_exists(enum: $propertyType)) {
+            return self::processEnum(
+                value: $value,
+                propertyType: $propertyType
+            );
+        }
+
+        if (is_object(value: $value)) {
+            return self::stdClassToType(
+                object: $value,
+                /* @phpstan-ignore-next-line */
+                type: $propertyType
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Process enum properties.
+     *
+     * If our property is an enum we need to convert the value to the enum
+     * value it represents.
+     *
+     * @param mixed $value Property value
+     * @param string $propertyType Property type
+     * @return mixed Converted property or null
+     */
+    private static function processEnum(
+        mixed $value,
+        string $propertyType
+    ): mixed {
+        return $value !== null ?
+            call_user_func(
+            /* @phpstan-ignore-next-line */
+                $propertyType . '::from',
+                $value instanceof BackedEnum ? $value->value : $value
+            ) : null;
+    }
+
+    /**
+     * Process Collection (or child class) properties.
+     *
+     * @param mixed $value Property value
+     * @param string $propertyType Property type
+     * @return Collection Converted property.
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private static function processCollection(
+        mixed $value,
+        string $propertyType
+    ): Collection {
+        $converted = [];
+        $collection = new $propertyType(data: []);
+
+        if (!$collection instanceof Collection) {
+            throw new IllegalTypeException(
+                message: $propertyType . ' is not a Collection.'
+            );
+        }
+
+        $collectionType = $collection->getType();
+
+        if (is_iterable(value: $value)) {
+            $converted = self::getCollectionItems(
+                items: $value,
+                collectionType: $collectionType
+            );
+        }
+
+        $collection->setData(data: $converted);
+        return $collection;
+    }
+
+    /**
+     * Convert individual collection items.
+     *
+     * @param iterable<object> $items Items to convert.
+     * @param class-string $collectionType Collection type.
+     * @return array Array of correctly typed items.
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private static function getCollectionItems(
+        iterable $items,
+        string $collectionType
+    ): array {
+        $converted = [];
+
+        foreach ($items as $item) {
+            $converted[] = self::processCollectionItem(
+                item: $item,
+                collectionType: $collectionType
+            );
+        }
+
+        return $converted;
+    }
+
+    /**
+     * Convert single collection item.
+     *
+     * @param object $item Item to convert
+     * @param class-string $collectionType Collection type
+     * @return object Converted item.
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private static function processCollectionItem(
+        object $item,
+        string $collectionType
+    ): object {
+        return self::stdClassToType(object: $item, type: $collectionType);
     }
 }

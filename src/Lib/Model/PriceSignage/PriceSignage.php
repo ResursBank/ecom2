@@ -23,7 +23,6 @@ class PriceSignage extends Model
      * @throws JsonException
      * @throws ReflectionException
      * @throws AttributeCombinationException
-     * @todo These are all specified as required properties, but it does not state whether they can be empty?
      */
     public function __construct(
         public readonly UriLinkCollection $secciLinks,

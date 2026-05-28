@@ -30,7 +30,6 @@ class Token extends Model
      * @throws AttributeCombinationException
      * @throws JsonException
      * @throws ReflectionException
-     * @todo $tokenType should be an enum. See ECP-227
      */
     public function __construct(
         #[StringNotEmpty] public readonly string $access_token,

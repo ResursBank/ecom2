@@ -25,10 +25,9 @@ enum LogLevel: int
     case EXCEPTION = 4;
 
     /**
-     * Checks if supplied log level should be logged according to current configured logLevel.
+     * Check if configured log level is less than or equal to supplied level.
      *
      * @throws UserSettingsException
-     * @todo Check if ConfigException validation needs a test.
      */
     public static function loggable(self $level): bool
     {

@@ -12,75 +12,15 @@ declare(strict_types=1);
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\UserSettings\Repository;
 use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 
-$paymentMethods = $this->paymentMethods;
 ?>
-
-<style>
-  .rb-payment-methods {
-    border-collapse: collapse;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    flex-direction: column;
-    row-gap: 30px;
-  }
-
-  .rb-payment-methods,
-  .rb-payment-methods * {
-    box-sizing: border-box;
-  }
-
-  .rb-payment-methods th {
-    text-align: left;
-    padding: 15px 10px;
-    font-weight: 600;
-  }
-
-  .rb-payment-methods td {
-    padding: 15px 10px !important;
-  }
-
-  .rb-payment-methods table {
-    border-collapse: collapse;
-  }
-
-  .rb-payment-methods thead {
-    background-color: #dddddd;
-    color: rgb(46, 46, 46);
-    border: 1px solid rgb(192, 192, 192);
-  }
-
-  .rb-payment-methods tbody {
-    color: black;
-    border: 1px solid #e7dcd6;
-  }
-
-  .rb-payment-methods tbody tr:last-child {
-    border-bottom: 1px solid #f1eae8;
-  }
-
-  .rb-payment-methods tbody tr:nth-child(even) {
-    background-color: #e7dcd6;
-  }
-
-  .rb-payment-methods tbody tr:nth-child(odd) {
-    background-color: #f1eae8;
-  }
-
-  .rb-payment-methods-warning {
-    font-family: Arial, Helvetica, sans-serif;
-    border: 1px solid #9c7d05;
-    background: #f5dd7f;
-    color: #242424;
-    padding: 15px;
-  }
-</style>
 
 <?php
 
-if (count($paymentMethods) !== 0) : ?>
+if (count($this->paymentMethods) !== 0) : ?>
   <div class="rb-payment-methods">
     <table>
       <thead>
@@ -91,19 +31,13 @@ if (count($paymentMethods) !== 0) : ?>
             ) ?>
         </th>
         <th>
-            <?= htmlspecialchars(
-                    string: Translator::translate(phraseId: 'min-total')
-            ) ?>
+            <?= Translator::translate(phraseId: 'min-total') ?>
         </th>
         <th>
-            <?= htmlspecialchars(
-                    string: Translator::translate(phraseId: 'max-total')
-            ) ?>
+            <?= Translator::translate(phraseId: 'max-total') ?>
         </th>
         <th>
-            <?= htmlspecialchars(
-                    string: Translator::translate(phraseId: 'sort-order')
-            ) ?>
+            <?= Translator::translate(phraseId: 'sort-order') ?>
         </th>
       </tr>
       </thead>
@@ -111,17 +45,11 @@ if (count($paymentMethods) !== 0) : ?>
       <?php /** @var PaymentMethod $method */ ?>
       <?php
 
-foreach ($paymentMethods as $method) : ?>
+foreach ($this->paymentMethods as $method) : ?>
         <tr id="rb-pm-<?= $method->getId() ?>">
           <td><?= htmlspecialchars(string: $method->getName()) ?></td>
-          <td><?= number_format(
-	num: $method->getMinLimit(),
-	decimals: 2
-) ?></td>
-          <td><?= number_format(
-	num: $method->getMaxLimit(),
-	decimals: 2
-) ?></td>
+          <td><?= Price::format(value: $method->getMinLimit())?></td>
+          <td><?= Price::format(value: $method->getMaxLimit()) ?></td>
           <td><?= $method->getSortOrder() ?></td>
         </tr>
       <?php endforeach;

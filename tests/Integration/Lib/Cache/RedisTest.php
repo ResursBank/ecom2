@@ -74,6 +74,8 @@ class RedisTest extends TestCase
     }
 
     /**
+     * Verify that write throws exception for illegal characters.
+     *
      * Assert that method write() throws instance of ValidationException if our
      * key contains illegal characters.
      *
@@ -125,8 +127,7 @@ class RedisTest extends TestCase
     }
 
     /**
-     * Assert that method read() throws instance of ValidationException if our
-     * key contains illegal characters.
+     * Assert that read() throws exception if key contains illegal characters.
      *
      * @throws RedisException
      * @throws ValidationException
@@ -207,6 +208,8 @@ class RedisTest extends TestCase
     }
 
     /**
+     * Verify that clear throws exception if key has invalid characters.
+     *
      * Assert that method clear() throws instance of ValidationException if our
      * key contains illegal characters.
      *
@@ -256,6 +259,8 @@ class RedisTest extends TestCase
     }
 
     /**
+     * Verify cache invalidation behvaior.
+     *
      * Assert read() returns NULL when cache is invalidated, and cached data
      * when not invalidated.
      *

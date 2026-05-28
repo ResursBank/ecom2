@@ -74,6 +74,8 @@ class Probe
 
     /**
      * Check that PHP class exists.
+     *
+     * Reflection code filters out non-attribute classes.
      */
     public static function validateClass(string $class): bool
     {
@@ -106,7 +108,7 @@ class Probe
                 string: $classPath,
                 replace: 'Ecom',
                 offset: 0,
-                length: 5
+                length: 4
             );
         }
 

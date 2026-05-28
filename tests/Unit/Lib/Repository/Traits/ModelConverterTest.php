@@ -45,8 +45,7 @@ final class ModelConverterTest extends TestCase
     ];
 
     /**
-     * Assert validateModel() throws InvalidArgumentException when supplied a
-     * value which is not a class.
+     * Assert validateModel() throws error if value isn't a class.
      *
      * @throws IllegalTypeException
      */
@@ -58,8 +57,7 @@ final class ModelConverterTest extends TestCase
     }
 
     /**
-     * Assert validateModel() throws IllegalTypeException when supplied a class
-     * that is not a subclass of Model.
+     * Assert validateModel() throws error if class isn't subclass of Model.
      *
      * @throws IllegalTypeException
      */
@@ -70,8 +68,7 @@ final class ModelConverterTest extends TestCase
     }
 
     /**
-     * Assert convertToModel() throws InvalidArgumentException when supplied a
-     * model class that does not exist.
+     * Assert convertToModel throws error if model class doesn't exist.
      *
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -86,8 +83,7 @@ final class ModelConverterTest extends TestCase
     }
 
     /**
-     * Assert convertToModel() throws InvalidArgumentException when supplied a
-     * model class that does not exist.
+     * Verify that convertToModel throws error if model class doesn't exist.
      *
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -167,8 +163,7 @@ final class ModelConverterTest extends TestCase
     }
 
     /**
-     * Assert convertToModel() converts array of stdClass instances to Model
-     * instances.
+     * Assert convertToModel converts array of stdClass to Model collection.
      *
      * @throws IllegalTypeException
      * @throws JsonException

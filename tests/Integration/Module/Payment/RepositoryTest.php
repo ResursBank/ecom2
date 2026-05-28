@@ -11,6 +11,7 @@ namespace Resursbank\EcomTest\Integration\Module\Payment;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -19,7 +20,6 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
-use Resursbank\Ecom\Exception\TimeoutException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
@@ -30,7 +30,10 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
@@ -39,9 +42,6 @@ use Resursbank\Ecom\Lib\Model\Payment\Order;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLogCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -49,6 +49,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
 /**
  * Integration tests for CreatePayment repository.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepositoryTest extends TestCase
 {
     /**
@@ -58,7 +59,7 @@ class RepositoryTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new None(),
             jwtAuth: new Jwt(
@@ -125,7 +126,6 @@ class RepositoryTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
@@ -133,36 +133,6 @@ class RepositoryTest extends TestCase
             ),
             metadata: MockSigner::getMetadata()
         );
-    }
-
-    /**
-     * @throws ApiException
-     * @throws AttributeCombinationException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws TimeoutException
-     * @throws ValidationException
-     * @throws NotJsonEncodedException
-     */
-    private function callMockSigner(Payment $payment): bool
-    {
-        try {
-            MockSigner::callCustomerUrl(payment: $payment);
-        } catch (TimeoutException $error) {
-            if ($_ENV['IS_PIPELINE']) {
-                return false;
-            }
-
-            throw $error;
-        }
-
-        return true;
     }
 
     /**
@@ -245,6 +215,103 @@ class RepositoryTest extends TestCase
     }
 
     /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws MissingKeyException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws NotJsonEncodedException
+     */
+    public function testCreateB2bPayment(): void
+    {
+        $orderLines = new OrderLineCollection(
+            data: [
+                new OrderLine(
+                    quantity: 2.00,
+                    quantityUnit: 'st',
+                    vatRate: 25.00,
+                    totalAmountIncludingVat: 301.5,
+                    description: 'asdasdasd',
+                    reference: 'T-800',
+                    type: OrderLineType::PHYSICAL_GOODS,
+                    unitAmountIncludingVat: 150.75,
+                    totalVatAmount: 60.3
+                ),
+            ]
+        );
+
+        $customer = new Customer(
+            deliveryAddress: new Address(
+                addressRow1: 'Glassgatan 17',
+                postalArea: 'Helsingborg',
+                postalCode: '25024',
+                countryCode: CountryCode::SE,
+                fullName: 'Pilsnerbolaget HB'
+            ),
+            customerType: CustomerType::LEGAL,
+            email: 'vincent@hosted.resurs.com',
+            governmentId: '166997368573',
+            mobilePhone: '0701234567'
+        );
+
+        $createdPayment = Repository::create(
+            paymentMethodId: $_ENV['LEGAL_PAYMENT_METHOD_ID'],
+            orderLines: $orderLines,
+            customer: $customer
+        );
+
+        /** @var Order $order */
+        $order = $createdPayment->order;
+
+        /** @var ActionLogCollection $actionLog */
+        $actionLog = $order->actionLog;
+
+        if (empty($actionLog->toArray())) {
+            throw new MissingKeyException(
+                message: 'actionLog contains no entries'
+            );
+        }
+
+        /** @var Order\ActionLog $actionLogEntry */
+        $actionLogEntry = $actionLog[0];
+
+        /** @var OrderlineCollection $orderLines */
+        $orderLines = $actionLogEntry->orderLines;
+
+        if (!isset($orderLines[0])) {
+            throw new MissingKeyException(
+                message: 'orderLines contains no entries'
+            );
+        }
+
+        /** @var OrderLine $orderLine */
+        $orderLine = $orderLines[0];
+
+        /** @var OrderLine $createdOrderLine */
+        $createdOrderLine = $orderLines[0];
+
+        $this->assertEquals(
+            expected: $orderLine->description,
+            actual: $createdOrderLine->description
+        );
+        $this->assertEquals(
+            expected: $orderLine->vatRate,
+            actual: $createdOrderLine->vatRate
+        );
+        $this->assertEquals(
+            expected: $orderLine->reference,
+            actual: $createdOrderLine->reference
+        );
+    }
+
+    /**
      * Assert that it's possible to create a new payment with metadata on it.
      *
      * @throws ApiException
@@ -258,6 +325,7 @@ class RepositoryTest extends TestCase
      * @throws MissingKeyException
      * @throws ReflectionException
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function testCreatePaymentWithMetadata(): void
     {
@@ -277,7 +345,11 @@ class RepositoryTest extends TestCase
             ]
         );
 
+        $externalCustomerId = Strings::generateRandomString(length: 19);
+        $externalInvoiceReference = Strings::generateRandomString(length: 46);
         $metadata = new Metadata(
+            externalCustomerId: $externalCustomerId,
+            externalInvoiceReference: $externalInvoiceReference,
             custom: new Metadata\EntryCollection(
                 data: [
                     new Metadata\Entry(
@@ -292,9 +364,12 @@ class RepositoryTest extends TestCase
             )
         );
 
+        $customer = new Customer();
+
         $createdOrder = Repository::create(
             paymentMethodId: $_ENV['PAYMENT_METHOD_ID'],
             orderLines: $orderLines,
+            customer: $customer,
             metadata: $metadata
         );
 
@@ -323,89 +398,19 @@ class RepositoryTest extends TestCase
             expected: $metadata->custom->toArray(),
             actual: $createdMetadata->custom->toArray()
         );
+        $this->assertEquals(
+            expected: $externalCustomerId,
+            actual: $createdMetadata->externalCustomerId
+        );
+        $this->assertEquals(
+            expected: $externalInvoiceReference,
+            actual: $createdMetadata->externalInvoiceReference
+        );
     }
 
     /**
-     * Verify that updateOrderLines actually replaces order lines.
+     * Verify that getTestStatusDetails works.
      *
-     * @throws Exception
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     */
-    public function testReplaceOrderLines(): void
-    {
-        $orderReference = Strings::generateRandomString(length: 12);
-        $payment = $this->createPayment(orderReference: $orderReference);
-
-        if (!$this->callMockSigner(payment: $payment)) {
-            $this->markTestSkipped(message: 'MockSigner failed with timeout.');
-        }
-
-        // Fetch order
-        $payment = Repository::get(paymentId: $payment->id);
-
-        $orderLines = new OrderLineCollection(data: [
-            new OrderLine(
-                quantity: 1,
-                quantityUnit: 'st',
-                vatRate: 25,
-                totalAmountIncludingVat: 100,
-                description: 'One hundred',
-                type: OrderLineType::PHYSICAL_GOODS
-            ),
-        ]);
-        $updatedPayment = Repository::updateOrderLines(
-            paymentId: $payment->id,
-            orderLines: $orderLines
-        );
-
-        if ($updatedPayment->order === null) {
-            throw new Exception(message: 'updatedPayment order object is null');
-        }
-
-        /** @var Order\ActionLog $updatedActionLog */
-        $updatedActionLog = $updatedPayment->order->actionLog[array_key_last(
-            array: $updatedPayment->order->actionLog->toArray()
-        )];
-        $updatedOrderLines = $updatedActionLog->orderLines;
-
-        $orderLineSum = 0.0;
-
-        /** @var OrderLine $orderLine */
-        foreach ($orderLines as $orderLine) {
-            $orderLineSum += $orderLine->totalAmountIncludingVat;
-        }
-
-        $updatedOrderLineSum = 0.0;
-
-        /** @var OrderLine $orderLine */
-        foreach ($updatedOrderLines as $orderLine) {
-            $updatedOrderLineSum += $orderLine->totalAmountIncludingVat;
-        }
-
-        $this->assertEquals(
-            expected: $payment->id,
-            actual: $updatedPayment->id
-        );
-        $this->assertCount(
-            expectedCount: count($orderLines),
-            haystack: $updatedOrderLines
-        );
-        $this->assertEquals(
-            expected: $orderLineSum,
-            actual: $updatedOrderLineSum
-        );
-    }
-
-    /**
      * Assert TaskStatusDetails->completed for an associated Payment remains
      * "false" until the payment is actually completed, at which point it should
      * change to "true".
@@ -430,5 +435,9 @@ class RepositoryTest extends TestCase
 
         $task = Repository::getTaskStatusDetails(paymentId: $payment->id);
         $this->assertFalse(condition: $task->completed);
+
+        MockSigner::callCustomerUrl(payment: $payment);
+        $task = Repository::getTaskStatusDetails(paymentId: $payment->id);
+        $this->assertTrue(condition: $task->completed);
     }
 }

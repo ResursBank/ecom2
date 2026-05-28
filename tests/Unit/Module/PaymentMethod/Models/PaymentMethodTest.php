@@ -16,7 +16,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 
 use function is_array;
@@ -101,7 +101,7 @@ class PaymentMethodTest extends TestCase
      */
     public function testValidateIdThrowsWithEmptyValue(): void
     {
-        $this->expectException(exception: EmptyValueException::class);
+        $this->expectException(exception: IllegalValueException::class);
         $this->convert(updates: ['id' => '']);
     }
 
@@ -132,8 +132,7 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * Assert validateName() throws EmptyValueException when name
-     * is empty.
+     * Assert validateName() throws EmptyValueException if name is empty.
      *
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -161,8 +160,7 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * Assert validateMinPurchaseLimit() throws IllegalTypeException when
-     * supplied a negative value.
+     * Assert validateMinPurchaseLimit() throws error if value is negative.
      *
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
@@ -191,8 +189,7 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * Assert validateMaxPurchaseLimit() throws IllegalTypeException when
-     * supplied a negative value.
+     * Assert validateMaxPurchaseLimit() throws if value is negative.
      *
      * @throws IllegalTypeException
      * @throws ReflectionException|TestException
@@ -221,8 +218,7 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * Assert validateMinApplicationLimit() throws IllegalTypeException when
-     * supplied a negative value.
+     * Assert validateMinApplicationLimit() throws error if value is negative.
      *
      * @throws IllegalTypeException
      * @throws ReflectionException
@@ -252,8 +248,7 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
-     * Assert validateMaxApplicationLimit() throws IllegalTypeException when
-     * supplied a negative value.
+     * Assert validateMaxApplicationLimit() throws error value is negative.
      *
      * @throws IllegalTypeException
      * @throws ReflectionException

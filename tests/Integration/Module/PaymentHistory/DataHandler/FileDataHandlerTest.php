@@ -25,8 +25,7 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\EcomTest\Utilities\PaymentHistory;
 
 /**
- * Integration test to confirm functionality of bundled payment history
- * storage class.
+ * Integration tests for FileDataHandler.
  */
 class FileDataHandlerTest extends PaymentHistory
 {

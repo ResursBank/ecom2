@@ -21,6 +21,7 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
@@ -29,7 +30,7 @@ use Resursbank\Ecom\Lib\Network\Curl\Auth;
 use Resursbank\Ecom\Lib\Network\Curl\ErrorHandler;
 use Resursbank\Ecom\Lib\Network\Curl\Header;
 use Resursbank\Ecom\Lib\Network\Curl\Response as ResponseHandler;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use stdClass;
 
 /**
@@ -43,8 +44,9 @@ class Curl
 
     public readonly ContentType $responseContentType;
 
+    protected bool $forceObject;
+
     /**
-     * @param bool $forceObject Enforces the JSON_FORCE_OBJECT flag on json_encode of payload
      * @throws ApiException
      * @throws AuthException
      * @throws CurlException
@@ -56,7 +58,6 @@ class Curl
      * @throws ConfigException
      * @throws AttributeCombinationException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
         string $url,
@@ -66,10 +67,14 @@ class Curl
         public readonly ContentType $contentType = ContentType::JSON,
         public readonly AuthType $authType = AuthType::JWT,
         public readonly ApiType $apiType = ApiType::MERCHANT,
-        ?ContentType $responseContentType = null,
-        private readonly bool $forceObject = false,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        ?ContentType $responseContentType = null
     ) {
+        $this->forceObject = false;
+
+        if (empty($payload)) {
+            $this->forceObject = true;
+        }
+
         $this->responseContentType = $responseContentType ?? $contentType;
 
         // Initialize Curl.
@@ -245,8 +250,6 @@ class Curl
             throw new IllegalTypeException(message: 'Body is not an object.');
         }
 
-        curl_close(handle: $this->ch);
-
         return new Response(body: $body, code: $code);
     }
 
@@ -260,15 +263,15 @@ class Curl
             ? '' :
             '?' . $this->getPayloadData(payload: $payload);
 
-        $this->stringValidation->isUrl(value: $url);
+        if (!Strings::isUrl(value: $url)) {
+            throw new IllegalUrlException(message: 'Invalid url.');
+        }
 
         return $url;
     }
 
     /**
      * @throws JsonException
-     * @todo Consider caching this is a local variable on this instance to avoid subsequent calls. NOTE: Generating this
-     * @todo data directly in the constructor harms refactoring.
      */
     public function getPayloadData(
         array $payload
@@ -293,7 +296,6 @@ class Curl
      * @throws JsonException
      * @throws ValidationException
      * @throws Exception
-     * @todo Check if CURLOPT_ENCODING should be included and what value it should be assigned.
      */
     private function init(
         string $url,
@@ -315,7 +317,7 @@ class Curl
             // Do not include header in output.
             CURLOPT_HEADER => false,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
+            //CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
             CURLOPT_USERAGENT => Header::getUserAgent(),
             CURLOPT_HTTPHEADER => Header::getHeadersData(

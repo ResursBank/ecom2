@@ -14,6 +14,7 @@ namespace Resursbank\EcomTest\Integration\Module\Payment\Api\Metadata;
 
 use Exception;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -31,16 +32,16 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Address;
+use Resursbank\Ecom\Lib\Model\CountryCode;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\OrderLineType;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Customer;
 use Resursbank\Ecom\Lib\Model\Payment\Customer\DeviceInfo;
 use Resursbank\Ecom\Lib\Model\Payment\Metadata;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLine;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Order\CountryCode;
-use Resursbank\Ecom\Lib\Order\CustomerType;
-use Resursbank\Ecom\Lib\Order\OrderLineType;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
@@ -50,6 +51,7 @@ use Resursbank\Ecom\Module\Payment\Repository;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
+#[AllowMockObjectsWithoutExpectations]
 class PutTest extends TestCase
 {
     /**
@@ -61,9 +63,9 @@ class PutTest extends TestCase
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -71,6 +73,25 @@ class PutTest extends TestCase
             ),
             storeId: $_ENV['STORE_ID']
         );
+    }
+
+    /**
+     * Normalize metadata entries to a deterministic key=>value array.
+     *
+     * @param array<int, Metadata\Entry> $entries
+     * @return array<string, mixed>
+     */
+    private static function normalizeMetadataEntries(array $entries): array
+    {
+        $normalized = [];
+
+        foreach ($entries as $entry) {
+            $normalized[$entry->key] = $entry->value;
+        }
+
+        ksort($normalized);
+
+        return $normalized;
     }
 
     /**
@@ -126,7 +147,6 @@ class PutTest extends TestCase
                     countryCode: CountryCode::SE
                 ),
                 customerType: CustomerType::NATURAL,
-                contactPerson: 'Vincent',
                 email: 'test@hosted.resurs.com',
                 governmentId: '198305147715',
                 mobilePhone: '0701234567',
@@ -150,6 +170,7 @@ class PutTest extends TestCase
      * @throws ApiException
      * @throws ReflectionException
      * @throws Exception
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function testSimplePut(): void
     {
@@ -178,7 +199,7 @@ class PutTest extends TestCase
         }
 
         // Add metadata
-        $setMetadataResponse = Repository::setMetadata(
+        $setMetadataResponse = Repository::addMetadata(
             paymentId: $payment->id,
             metadata: new Metadata(
                 custom: new Metadata\EntryCollection(data: $custom)
@@ -188,15 +209,23 @@ class PutTest extends TestCase
         // Get payment
         $fetchedPayment = Repository::get(paymentId: $payment->id);
 
-        // Assert that the metadata exists on the fetched payment
-        $this->assertEqualsCanonicalizing(
-            expected: $custom,
-            actual: $setMetadataResponse->custom?->toArray() ?? []
+        // Assert that the metadata exists on the fetched payment.
+        $expectedMetadata = self::normalizeMetadataEntries(entries: $custom);
+        $setMetadataResponseCustom = $setMetadataResponse->custom?->toArray() ?? [];
+        $fetchedPaymentCustom = $fetchedPayment->metadata?->custom?->toArray() ?? [];
+
+        $this->assertSame(
+            expected: $expectedMetadata,
+            actual: self::normalizeMetadataEntries(
+                entries: $setMetadataResponseCustom
+            )
         );
         $this->assertNotNull(actual: $fetchedPayment->metadata);
-        $this->assertEqualsCanonicalizing(
-            expected: $custom,
-            actual: $fetchedPayment->metadata->custom?->toArray() ?? []
+        $this->assertSame(
+            expected: $expectedMetadata,
+            actual: self::normalizeMetadataEntries(
+                entries: $fetchedPaymentCustom
+            )
         );
     }
 }

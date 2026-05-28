@@ -15,9 +15,11 @@ use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsDatetime;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Status;
 use Resursbank\Ecom\Lib\Model\Model;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 use Resursbank\Ecom\Module\PaymentHistory\Translator;
 
 /**
@@ -30,14 +32,12 @@ class CreditApplication extends Model implements CallbackInterface
      * @throws IllegalValueException
      */
     public function __construct(
-        public readonly string $applicationId,
+        #[StringNotEmpty] #[StringIsUuid] public readonly string $applicationId,
         public readonly Status $status,
-        public readonly string $created,
-        public readonly ?string $checkoutId = null,
-        private readonly StringValidation $stringValidation = new StringValidation()
+        #[StringNotEmpty] #[StringIsDatetime] public readonly string $created,
+        public readonly ?string $checkoutId = null
     ) {
-        $this->validatePaymentId();
-        $this->validateCreated();
+        parent::__construct();
     }
 
     /**
@@ -80,25 +80,5 @@ class CreditApplication extends Model implements CallbackInterface
     public function getStatus(): ?Status
     {
         return $this->status;
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validatePaymentId(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->applicationId);
-        $this->stringValidation->isUuid(value: $this->applicationId);
-    }
-
-    /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
-     */
-    private function validateCreated(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->created);
-        $this->stringValidation->isTimestampDate(value: $this->created);
     }
 }

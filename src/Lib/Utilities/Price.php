@@ -11,7 +11,7 @@ namespace Resursbank\Ecom\Lib\Utilities;
 
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 
 /**
  * Methods to relating to price operations.

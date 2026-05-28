@@ -22,8 +22,7 @@ use Resursbank\Ecom\Lib\Repository\Traits\ModelConverter;
 use Resursbank\Ecom\Lib\Repository\Traits\Request;
 
 /**
- * Generic functionality to perform a GET call against the Merchant API and
- * convert the response to model instance(s).
+ * Generic functionality to perform a GET call against the Merchant API.
  */
 class Get extends Request
 {

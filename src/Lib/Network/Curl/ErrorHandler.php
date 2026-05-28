@@ -73,6 +73,8 @@ class ErrorHandler
     }
 
     /**
+     * Extract error message from response body.
+     *
      * Resolve error information from response body (requests may succeed while
      * containing an error, for example a request resulting in a 400 may contain
      * information about what went wrong while the request itself went fine).

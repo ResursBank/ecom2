@@ -23,8 +23,9 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Address;
-use Resursbank\Ecom\Lib\Model\Callback\GetAddressRequest;
-use Resursbank\Ecom\Lib\Order\CustomerType;
+use Resursbank\Ecom\Lib\Model\CustomerType;
+use Resursbank\Ecom\Lib\Model\Widget\GetAddress\GetAddressRequest;
+use Resursbank\Ecom\Lib\Order\CustomerType as OrderCustomerType;
 use Resursbank\Ecom\Lib\Session\Session;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
@@ -88,7 +89,10 @@ class Repository
                 val: json_encode(value: $data, flags: JSON_THROW_ON_ERROR)
             );
         } catch (Throwable $e) {
-            self::logException(exception: $e);
+            Config::getLogger()->info(
+                message: 'Unable to set SSN data in session'
+            );
+            Config::getLogger()->debug(message: $e->getMessage());
             // Failing is harmless, client can supply info on gateway.
         }
     }

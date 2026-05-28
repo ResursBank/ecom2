@@ -15,7 +15,8 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
-use Resursbank\Ecom\Lib\Order\PaymentMethod\Type;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Campaign;
+use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
 use function in_array;
@@ -28,7 +29,6 @@ class PaymentMethodTest extends TestCase
     /**
      * Generate a dummy payment method with specified type
      *
-     * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws Exception
@@ -47,6 +47,10 @@ class PaymentMethodTest extends TestCase
             enabledForLegalCustomer: false,
             enabledForNaturalCustomer: true,
             priceSignagePossible: true,
+            campaign: new Campaign(
+                keywords: [],
+                campaign: false
+            ),
             sortOrder: 1
         );
     }
@@ -63,7 +67,9 @@ class PaymentMethodTest extends TestCase
         $validCases = [
             Type::RESURS_REVOLVING_CREDIT,
             Type::RESURS_PART_PAYMENT,
-            Type::RESURS_CARD
+            Type::RESURS_CARD,
+            Type::RESURS_NEW_CARD,
+            Type::RESURS_NEW_REVOLVING_CREDIT
         ];
 
         foreach (Type::cases() as $case) {
@@ -79,6 +85,40 @@ class PaymentMethodTest extends TestCase
     }
 
     /**
+     * Verify that isResursMethod's return values are correct.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsResursMethod(): void
+    {
+        $validCases = [
+            Type::RESURS_CARD,
+            Type::RESURS_INVOICE,
+            Type::RESURS_INVOICE_ACCOUNT,
+            Type::RESURS_NEW_CARD,
+            Type::RESURS_NEW_REVOLVING_CREDIT,
+            Type::RESURS_PART_PAYMENT,
+            Type::RESURS_REVOLVING_CREDIT,
+            Type::RESURS_ZERO
+        ];
+
+        foreach (Type::cases() as $case) {
+            $method = $this->generatePaymentMethodWithType(type: $case);
+
+            if (in_array(needle: $case, haystack: $validCases, strict: true)) {
+                $this->assertTrue(condition: $method->isResursMethod());
+                continue;
+            }
+
+            $this->assertFalse(condition: $method->isInternal());
+        }
+    }
+
+    /**
+     * Verify that isInternal's return values are correct.
+     *
      * Assert that isInternal gives correct responses depending on the method's
      * type.
      */

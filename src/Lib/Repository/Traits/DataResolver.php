@@ -26,9 +26,7 @@ trait DataResolver
      * Resolve data form API response.
      *
      * @throws ApiException
-     * @todo Refactor, see ECP-349 (remember to remove phpcs:ignore below after).
      */
-    // phpcs:ignore
     public function resolveResponseData(
         string|array|stdClass $data,
         string $extractProperty = ''
@@ -57,6 +55,16 @@ trait DataResolver
             $data = $data->{$extractProperty};
         }
 
+        $this->handleInvalidResponseData(data: $data);
+
+        return $data;
+    }
+
+    /**
+     * @throws ApiException
+     */
+    private function handleInvalidResponseData(mixed $data): void
+    {
         if (
             !$data instanceof stdClass &&
             !is_string(value: $data) &&
@@ -67,7 +75,5 @@ trait DataResolver
                 code: 500
             );
         }
-
-        return $data;
     }
 }

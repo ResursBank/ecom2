@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\CostList;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -45,15 +46,16 @@ use Throwable;
 /**
  * Tests for the CostList HTML widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
-            cache: $this->createMock(originalClassName: CacheInterface::class),
+            cache: $this->createMock(type: CacheInterface::class),
             jwtAuth: new Jwt(
                 clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
@@ -102,10 +104,10 @@ class HtmlTest extends TestCase
         );
         $priceSignage = new PriceSignage(
             secciLinks: $this->createMock(
-                originalClassName: UriLinkCollection::class
+                type: UriLinkCollection::class
             ),
             generalTermsLinks: $this->createMock(
-                originalClassName: UriLinkCollection::class
+                type: UriLinkCollection::class
             ),
             costList: $costCollection
         );
@@ -141,10 +143,10 @@ class HtmlTest extends TestCase
         );
         $priceSignage = new PriceSignage(
             secciLinks: $this->createMock(
-                originalClassName: UriLinkCollection::class
+                type: UriLinkCollection::class
             ),
             generalTermsLinks: $this->createMock(
-                originalClassName: UriLinkCollection::class
+                type: UriLinkCollection::class
             ),
             costList: $costCollection
         );
@@ -190,10 +192,10 @@ class HtmlTest extends TestCase
         );
         $priceSignage = new PriceSignage(
             secciLinks: $this->createMock(
-                originalClassName: UriLinkCollection::class
+                type: UriLinkCollection::class
             ),
             generalTermsLinks: $this->createMock(
-                originalClassName: UriLinkCollection::class
+                type: UriLinkCollection::class
             ),
             costList: $costCollection
         );

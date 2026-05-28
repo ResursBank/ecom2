@@ -20,12 +20,11 @@ class Docblock
 {
     /**
      * Extract docblock item.
-     *
-     * @todo Refactor, see ECP-352. Remember to remove phpcs:ignore below when done.
      */
-    // phpcs:ignore
-    public static function getExtractedDocBlockItem(string $item, string $doc): string
-    {
+    public static function getExtractedDocBlockItem(
+        string $item,
+        string $doc
+    ): string {
         $return = '';
 
         if (!empty($doc)) {
@@ -39,18 +38,7 @@ class Docblock
 
             if (isset($docBlock[1][0])) {
                 $return = $docBlock[1][0];
-
-                // Strip stuff after line breaks
-                if (preg_match(pattern: '/[\n\r]/', subject: $return)) {
-                    $multiRowData = preg_split(
-                        pattern: '/[\n\r]/',
-                        subject: $return
-                    );
-
-                    if ($multiRowData !== false) {
-                        $return = $multiRowData[0] ?? '';
-                    }
-                }
+                $return = self::handleDocBlockElement(return: $return);
             }
         }
 
@@ -80,5 +68,22 @@ class Docblock
         return $functionName === '' ?
             (string) $doc->getDocComment() :
             (string) $doc->getMethod(name: $functionName)->getDocComment();
+    }
+
+    /**
+     * Process individual docblock item.
+     */
+    private static function handleDocBlockElement(string $return): string
+    {
+        // Strip stuff after line breaks
+        if (preg_match(pattern: '/[\n\r]/', subject: $return)) {
+            $multiRowData = preg_split(pattern: '/[\n\r]/', subject: $return);
+
+            if ($multiRowData !== false) {
+                $return = $multiRowData[0] ?? '';
+            }
+        }
+
+        return $return;
     }
 }

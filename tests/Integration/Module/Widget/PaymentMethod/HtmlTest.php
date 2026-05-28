@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Module\Widget\PaymentMethod;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -31,16 +32,17 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PaymentMethod\Html;
 use Throwable;
 
 use function count;
-use function number_format;
 
 /**
  * Integration tests for the PaymentMethods widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class HtmlTest extends TestCase
 {
     private PaymentMethodCollection $methods;
@@ -63,7 +65,7 @@ class HtmlTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(
                 path: '/tmp/ecom-test/paymentMethods/' . time()
@@ -149,9 +151,8 @@ class HtmlTest extends TestCase
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    number_format(
-                        num: $method->minPurchaseLimit,
-                        decimals: 2
+                    Price::format(
+                        value: $method->minPurchaseLimit
                     ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing min purchase limit column for payment method row matching $method->id"
@@ -159,9 +160,8 @@ class HtmlTest extends TestCase
 
             $this->assertMatchesRegularExpression(
                 pattern: '/<tr[^>]*id=["\']rb-pm-' . $method->id . '["\'][^>]*>.*<td.*>[^<]*' .
-                    number_format(
-                        num: $method->maxPurchaseLimit,
-                        decimals: 2
+                    Price::format(
+                        value: $method->maxPurchaseLimit
                     ) . '.*<\/td>/s',
                 string: $data->content,
                 message: "Missing max purchase limit column for payment method row matching $method->id"

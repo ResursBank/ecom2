@@ -15,7 +15,7 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use stdClass;
 
 use function is_int;
@@ -33,12 +33,17 @@ class Response
      * @throws EmptyValueException
      * @throws JsonException
      */
-    public static function getJsonBody(
-        string $body,
-        StringValidation $stringValidation = new StringValidation()
-    ): stdClass {
-        $stringValidation->notEmpty(value: $body);
-        $stringValidation->isJson(value: $body);
+    public static function getJsonBody(string $body): stdClass
+    {
+        if (!Strings::notEmpty(value: $body)) {
+            throw new EmptyValueException(message: 'Body cannot be empty.');
+        }
+
+        if (!Strings::isJson(value: $body)) {
+            throw new NotJsonEncodedException(
+                message: 'Body is not valid JSON.'
+            );
+        }
 
         $content = json_decode(
             json: $body,
@@ -47,7 +52,7 @@ class Response
             flags: JSON_THROW_ON_ERROR
         );
 
-        // RWS API will return anonymous arrays.
+        // Payment Method Elements API will return anonymous arrays.
         if (is_array(value: $content)) {
             return (object) ['data' => $content];
         }

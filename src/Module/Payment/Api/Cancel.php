@@ -24,23 +24,12 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Api\Mapi;
 use Resursbank\Ecom\Lib\Model\Payment;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Result;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
-use Resursbank\Ecom\Lib\Network\AuthType;
-use Resursbank\Ecom\Lib\Network\ContentType;
-use Resursbank\Ecom\Lib\Network\Curl;
-use Resursbank\Ecom\Lib\Network\RequestMethod;
-use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Price;
+use Resursbank\Ecom\Module\Payment\Api\Traits\Shared;
 use Resursbank\Ecom\Module\Payment\Repository;
-use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
-use Resursbank\Ecom\Module\PaymentHistory\Translator;
-use stdClass;
 use Throwable;
 
 /**
@@ -48,12 +37,7 @@ use Throwable;
  */
 class Cancel
 {
-    private Mapi $mapi;
-
-    public function __construct()
-    {
-        $this->mapi = new Mapi();
-    }
+    use Shared;
 
     /**
      * @throws ApiException
@@ -76,13 +60,11 @@ class Cancel
         ?OrderLineCollection $orderLines = null,
         ?string $creator = null
     ): Payment {
-        PaymentHistoryRepository::write(
-            entry: new Entry(
-                paymentId: $paymentId,
-                event: Event::CANCEL_REQUESTED,
-                user: User::ADMIN
-            )
+        $this->logRequest(
+            paymentId: $paymentId,
+            event: Event::CANCEL_REQUESTED
         );
+
         $payload = [];
 
         $previouslyCancelled = $this->getCanceledAmount(paymentId: $paymentId);
@@ -100,14 +82,10 @@ class Cancel
         $cancelled = $this->getCanceledAmount(paymentId: $paymentId)
             - $previouslyCancelled;
 
-        PaymentHistoryRepository::write(
-            entry: new Entry(
-                paymentId: $paymentId,
-                event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
-                user: User::ADMIN,
-                result: Result::SUCCESS,
-                extra: Price::format(value: $cancelled)
-            )
+        $this->logSuccess(
+            paymentId: $paymentId,
+            event: $result->isCancelled() ? Event::CANCELED : Event::PARTIALLY_CANCELLED,
+            extra: Price::format(value: $cancelled)
         );
 
         return $result;
@@ -150,37 +128,13 @@ class Cancel
      */
     private function getResponse(string $paymentId, array $payload): Payment
     {
-        $curl = new Curl(
-            url: $this->mapi->getUrl(
-                route: Mapi::PAYMENT_ROUTE . '/' . $paymentId . '/cancel'
-            ),
-            requestMethod: RequestMethod::POST,
-            payload: $payload,
-            authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: empty($payload)
+        $curl = $this->getCurlObject(
+            paymentId: $paymentId,
+            method: 'cancel',
+            payload: $payload
         );
-
         $data = $curl->exec()->body;
 
-        $content = $data instanceof stdClass ? $data : new stdClass();
-
-        $result = DataConverter::stdClassToType(
-            object: $content,
-            type: Payment::class
-        );
-
-        if (!$result instanceof Payment) {
-            PaymentHistoryRepository::write(entry: new Entry(
-                paymentId: $paymentId,
-                event: Event::REQUEST_FAILED,
-                user: User::ADMIN,
-                result: Result::ERROR,
-                extra: Translator::translate(phraseId: 'event-request-failed')
-            ));
-            throw new IllegalTypeException(message: 'Expected Payment');
-        }
-
-        return $result;
+        return $this->processResponse(paymentId: $paymentId, response: $data);
     }
 }

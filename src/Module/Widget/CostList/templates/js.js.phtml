@@ -106,23 +106,45 @@ class Resursbank_CostList {
      */
     setupRowExpander() {
         try {
-            // Set first section of each payment method's block to be expanded.
-            this.el.querySelectorAll('.rb-ps-cl').forEach((el) => {
-                let paymentMethod = el.getAttribute('data-payment-method');
-                this.activateFirstSection(paymentMethod);
+            this.el.querySelectorAll('.rb-ps-cl').forEach((paymentBlock) => {
+                if (paymentBlock.dataset.rbRowExpanderInit === 'true') {
+                    return;
+                }
 
-                // Set up expansion of sections.
-                el.querySelectorAll('.rb-ps-cl-section').forEach((el) => {
-                    el.onclick = () => {
-                        this.el.querySelectorAll('.rb-ps-cl-section').forEach((el) => {
-                            el.classList.remove('expanded');
+                paymentBlock.dataset.rbRowExpanderInit = 'true';
+
+                const alreadyExpanded = paymentBlock.querySelector('.rb-ps-cl-section.expanded');
+
+                if (!alreadyExpanded) {
+                    const firstSection = paymentBlock.querySelector('.rb-ps-cl-section');
+                    const firstWrapper = firstSection?.querySelector('.rb-ps-cl-row-wrapper');
+
+                    if (firstSection) {
+                        firstSection.classList.add('expanded');
+                    }
+
+                    if (firstWrapper) {
+                        firstWrapper.classList.add('expanded');
+                    }
+                }
+
+                paymentBlock.querySelectorAll('.rb-ps-cl-section').forEach((section) => {
+                    section.addEventListener('click', () => {
+                        paymentBlock.querySelectorAll('.rb-ps-cl-section').forEach((s) => {
+                            s.classList.remove('expanded');
                         });
-                        this.el.querySelectorAll('.rb-ps-cl-row-wrapper').forEach((el) => {
-                            el.classList.remove('expanded');
+
+                        paymentBlock.querySelectorAll('.rb-ps-cl-row-wrapper').forEach((wrapper) => {
+                            wrapper.classList.remove('expanded');
                         });
-                        el.classList.add('expanded');
-                        el.querySelector('.rb-ps-cl-row-wrapper').classList.add('expanded');
-                    };
+
+                        section.classList.add('expanded');
+
+                        const wrapper = section.querySelector('.rb-ps-cl-row-wrapper');
+                        if (wrapper) {
+                            wrapper.classList.add('expanded');
+                        }
+                    });
                 });
             });
         } catch (e) {

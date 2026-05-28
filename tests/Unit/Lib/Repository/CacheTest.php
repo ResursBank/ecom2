@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit\Lib\Repository;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
@@ -31,11 +32,14 @@ use function is_string;
 /**
  * Verifies business logic of ModelConverter trait.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class CacheTest extends TestCase
 {
     private MockObject&None $cacheDriver;
 
     /**
+     * Set up Ecom before each test.
+     *
      * We call the actual Config::setup() method to initiate mocked objects
      * to be utilised in tests against the static methods available on our
      * subject class. The methods on our subject class (such as readCache())
@@ -44,11 +48,11 @@ final class CacheTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->cacheDriver = $this->createMock(originalClassName: None::class);
+        $this->cacheDriver = $this->createMock(type: None::class);
 
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: $this->cacheDriver
         );
@@ -104,8 +108,7 @@ final class CacheTest extends TestCase
     }
 
     /**
-     * Assert read() throws CacheException when cache is invalid JSON encoded
-     * data.
+     * Assert read() throws error when cache is invalid JSON encoded data.
      *
      * @throws CacheException
      * @throws ConfigException
@@ -187,6 +190,8 @@ final class CacheTest extends TestCase
     }
 
     /**
+     * Verify write throws error if Model doesn't match cache instance.
+     *
      * Assert write() throws CacheException when passed a Model instance not
      * matching the model class of the Cache instance (see getCache()).
      *
@@ -199,6 +204,8 @@ final class CacheTest extends TestCase
     }
 
     /**
+     * Verify write throws error for invalid collection instance.
+     *
      * Assert write() throws CacheException when passed a Collection instance
      * not matching the model class of the Cache instance (see getCache()).
      *

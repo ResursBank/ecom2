@@ -21,19 +21,22 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
+use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Payment;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\PossibleAction;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\RejectedReasonCategory;
+use Resursbank\Ecom\Lib\Model\Payment\Enum\Status;
+use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleAction as OrderPossibleAction;
+use Resursbank\Ecom\Lib\Model\Payment\Order\PossibleActionCollection;
 use Resursbank\Ecom\Lib\Model\Payment\RejectedReason;
-use Resursbank\Ecom\Lib\Order\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Module\Payment\Enum\PossibleAction;
-use Resursbank\Ecom\Module\Payment\Enum\RejectedReasonCategory;
-use Resursbank\Ecom\Module\Payment\Enum\Status;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Model\Payment class.
  *
- * @todo Missing unit tests ECP-254
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
+// phpcs:ignoreFile
 class PaymentTest extends TestCase
 {
     /**
@@ -49,7 +52,12 @@ class PaymentTest extends TestCase
         Status $status,
         ?RejectedReasonCategory $rejectedReasonCategory = null,
         ?Payment\Order\PossibleActionCollection $possibleActions = null,
-        ?string $created = null
+        ?string $created = null,
+        float $authorizedAmount = 100.00,
+        float $capturedAmount = 0.00,
+        float $refundedAmount = 0.00,
+        float $canceledAmount = 0.00,
+        float $totalOrderAmount = 100.00
     ): Payment {
         if ($possibleActions === null) {
             $possibleActions = new Payment\Order\PossibleActionCollection(
@@ -78,11 +86,11 @@ class PaymentTest extends TestCase
                 orderReference: Strings::getUuid(),
                 actionLog: new Payment\Order\ActionLogCollection(data: []),
                 possibleActions: $possibleActions,
-                totalOrderAmount: 100.00,
-                canceledAmount: 0.00,
-                authorizedAmount: 100.00,
-                capturedAmount: 0.00,
-                refundedAmount: 0.00
+                totalOrderAmount: $totalOrderAmount,
+                canceledAmount: $canceledAmount,
+                authorizedAmount: $authorizedAmount,
+                capturedAmount: $capturedAmount,
+                refundedAmount: $refundedAmount
             )
         );
     }
@@ -303,6 +311,36 @@ class PaymentTest extends TestCase
     }
 
     /**
+     * Verify behavior of isProcessable.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     */
+    public function testIsProcessable(): void
+    {
+        foreach (Status::cases() as $case) {
+            $dummyPayment = $this->createDummyPayment(status: $case);
+
+            if (
+                $dummyPayment->status === Status::ACCEPTED ||
+                $dummyPayment->status === Status::TASK_REDIRECTION_REQUIRED
+            ) {
+                $this->assertTrue(condition: $dummyPayment->isProcessable());
+            }
+
+            if (
+                $dummyPayment->status === Status::ACCEPTED ||
+                $dummyPayment->status === Status::TASK_REDIRECTION_REQUIRED
+            ) {
+                continue;
+            }
+
+            $this->assertFalse(condition: $dummyPayment->isProcessable());
+        }
+    }
+
+    /**
      * @throws EmptyValueException
      * @throws IllegalTypeException
      * @throws IllegalValueException
@@ -351,5 +389,154 @@ class PaymentTest extends TestCase
         $this->assertTrue(
             condition: $isAborted->isRejectionReasonTechnicalError()
         );
+    }
+
+    /**
+     * Verify behavior of isCaptured.
+     *
+     * @throws AttributeCombinationException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testIsCaptured(): void
+    {
+        foreach (Status::cases() as $case) {
+            foreach (PossibleAction::cases() as $action) {
+                foreach ([0.00, 100.00] as $authorizedAmount) {
+                    foreach ([0.00, 100.00] as $capturedAmount) {
+                        $dummyPayment = $this->createDummyPayment(
+                            status: $case,
+                            possibleActions: new PossibleActionCollection(
+                                data: [
+                                    new OrderPossibleAction(action: $action)
+                                ]
+                            ),
+                            authorizedAmount: $authorizedAmount,
+                            capturedAmount: $capturedAmount
+                        );
+
+                        if (
+                            !$dummyPayment->canCapture() &&
+                            !$dummyPayment->canPartiallyCapture() &&
+                            // @phpstan-ignore-next-line
+                            $dummyPayment->order->authorizedAmount === 0.0 &&
+                            // @phpstan-ignore-next-line
+                            $dummyPayment->order->capturedAmount > 0.0 &&
+                            // @phpstan-ignore-next-line
+                            $dummyPayment->order->capturedAmount !==
+                            // @phpstan-ignore-next-line
+                            $dummyPayment->order->refundedAmount
+                        ) {
+                            $this->assertTrue(
+                                condition: $dummyPayment->isCaptured()
+                            );
+                        } else {
+                            $this->assertFalse(
+                                condition: $dummyPayment->isCaptured()
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Verify behavior of isRefunded.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testIsRefunded(): void
+    {
+        foreach ([0.00, 100.00] as $authorizedAmount) {
+            foreach ([0.00, 100.00] as $capturedAmount) {
+                foreach ([0.00, 100.00] as $refundedAmount) {
+                    $dummyPayment = $this->createDummyPayment(
+                        status: Status::ACCEPTED,
+                        authorizedAmount: $authorizedAmount,
+                        capturedAmount: $capturedAmount,
+                        refundedAmount: $refundedAmount
+                    );
+
+                    if (
+                        // @phpstan-ignore-next-line
+                        $dummyPayment->order->authorizedAmount === 0.0 &&
+                        // @phpstan-ignore-next-line
+                        $dummyPayment->order->capturedAmount > 0.0 &&
+                        // @phpstan-ignore-next-line
+                        $dummyPayment->order->capturedAmount ===
+                        // @phpstan-ignore-next-line
+                        $dummyPayment->order->refundedAmount
+                    ) {
+                        $this->assertTrue(
+                            condition: $dummyPayment->isRefunded()
+                        );
+                    } else {
+                        $this->assertFalse(
+                            condition: $dummyPayment->isRefunded()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Verify the behavior of the isCancelled method.
+     *
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function testIsCancelled(): void
+    {
+        foreach (Status::cases() as $case) {
+            foreach (RejectedReasonCategory::cases() as $reason) {
+                foreach ([0.00, 100.00] as $authorizedAmount) {
+                    foreach ([0.00, 100.00] as $canceledAmount) {
+                        foreach ([0.00, 100.00] as $totalOrderAmount) {
+                            $dummyPayment = $this->createDummyPayment(
+                                status: $case,
+                                rejectedReasonCategory: $reason,
+                                authorizedAmount: $authorizedAmount,
+                                canceledAmount: $canceledAmount,
+                                totalOrderAmount: $totalOrderAmount
+                            );
+
+                            if (
+                                (
+                                    // @phpstan-ignore-next-line
+                                    $dummyPayment->order->authorizedAmount === 0.0 &&
+                                    // @phpstan-ignore-next-line
+                                    $dummyPayment->order->canceledAmount === $dummyPayment->order->totalOrderAmount
+                                ) ||
+                                (
+                                    $dummyPayment->status === Status::REJECTED &&
+                                    $dummyPayment->rejectedReason?->category === RejectedReasonCategory::CANCELED
+                                )
+                            ) {
+                                $this->assertTrue(
+                                    condition: $dummyPayment->isCancelled()
+                                );
+                            } else {
+                                $this->assertFalse(
+                                    condition: $dummyPayment->isCancelled()
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

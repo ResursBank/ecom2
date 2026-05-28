@@ -11,7 +11,6 @@ namespace Resursbank\EcomTest\Unit\Lib\Model\Network\Response;
 
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Model\Network\Response\Error;
 
 /**
@@ -26,8 +25,8 @@ class ErrorTest extends TestCase
     {
         $error = new Error(
             traceId: 'a123j345k345a234234f3543534',
-            message: 'something went wrong',
             code: 'SEEMS_WRONG',
+            message: 'something went wrong',
             timestamp: '2025-02-25 10:00'
         );
 
@@ -43,8 +42,8 @@ class ErrorTest extends TestCase
 
         new Error(
             traceId: '',
-            message: 'something went wrong',
             code: 'SEEMS_WRONG',
+            message: 'something went wrong',
             timestamp: '2025-02-25 10:00'
         );
     }
@@ -58,8 +57,8 @@ class ErrorTest extends TestCase
 
         new Error(
             traceId: 'a123123g345345345345345345',
-            message: '',
             code: 'SEEMS_WRONG',
+            message: '',
             timestamp: '2025-02-25 10:00'
         );
     }
@@ -73,8 +72,8 @@ class ErrorTest extends TestCase
 
         new Error(
             traceId: 'a123123g345345345345345345',
-            message: 'Something is very wrong.',
             code: '',
+            message: 'Something is very wrong.',
             timestamp: '2025-02-25 10:00'
         );
     }
@@ -84,36 +83,12 @@ class ErrorTest extends TestCase
      */
     public function testTimestamp(): void
     {
-        $this->expectNotToPerformAssertions();
-
-        try {
-            new Error(
-                traceId: 'a123123g345345345345345345',
-                message: 'Something is very wrong.',
-                code: 'SOME_CODE',
-                timestamp: ''
-            );
-
-            $this->fail(
-                message: 'Empty value accepted for property timestamp.'
-            );
-        } catch (EmptyValueException) {
-            // This is expected.
-        }
-
-        try {
-            new Error(
-                traceId: 'a123123g345345345345345345',
-                message: 'Something is very wrong.',
-                code: 'AN_ERROR',
-                timestamp: '1asd4sdf345ds'
-            );
-
-            $this->fail(
-                message: 'Illegal value accepted for property timestamp.'
-            );
-        } catch (IllegalValueException) {
-            // This is expected.
-        }
+        $this->expectException(exception: EmptyValueException::class);
+        new Error(
+            traceId: 'a123123g345345345345345345',
+            code: 'SOME_CODE',
+            message: 'Something is very wrong.',
+            timestamp: ''
+        );
     }
 }

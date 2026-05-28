@@ -19,10 +19,7 @@ use function is_array;
 use function is_int;
 
 /**
- * Mock data for tests relating to Payment module, Create Payment
- * implementation.
- *
- * @todo Add more data to this class.
+ * Mock data for tests relating to Payment module.
  */
 class OrderLine
 {
@@ -49,6 +46,17 @@ class OrderLine
         "vatRate": 25.00,
         "totalAmountIncludingVat": 199.90,
         "totalVatAmount": 79.90
+    },
+    {
+        "description": "Kamera",
+        "quantity": 7.00,
+        "reference": "KAMERA-007",
+        "type": "PHYSICAL_GOODS",
+        "quantityUnit": "st",
+        "unitAmountIncludingVat": 150.00,
+        "vatRate": 25.00,
+        "totalAmountIncludingVat": 1050.00,
+        "totalVatAmount": 210.00
     }
 ]
 EOD;

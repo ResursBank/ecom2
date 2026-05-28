@@ -12,10 +12,9 @@ namespace Resursbank\Ecom\Module\Widget\GetAddress;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
+use Resursbank\Ecom\Lib\Model\Country;
 use Resursbank\Ecom\Lib\Widget\Widget;
-use Resursbank\Ecom\Module\Store\Enum\Country;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use Resursbank\Ecom\Module\UserSettings\Repository;
 use Throwable;
@@ -34,17 +33,12 @@ class Js extends Widget
 
     /**
      * @throws FilesystemException
-     * @throws IllegalValueException
      * @throws ConfigException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function __construct(
-        public readonly string $url,
-        public readonly bool $automatic = false,
-        StringValidation $stringValidation = new StringValidation()
+        #[StringIsUrl] public readonly string $url
     ) {
-        $stringValidation->isUrl(value: $url);
-
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'js.js.phtml'

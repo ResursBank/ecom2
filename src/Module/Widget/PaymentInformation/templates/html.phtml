@@ -25,18 +25,23 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
     </div>
   </div>
 
-  <?php // Loader content overlay. ?>
+  <?php // Loader content overlay.?>
   <div class="rb-pi-overlay" style="display: none;"></div>
 
-  <?php // Error container. ?>
+  <?php // Error container.?>
   <div class="rb-pi-error" style="display: none;"></div>
 
-  <?php // Content ?>
+  <?php // Content?>
   <div class="rb-pi-content">
     <table>
         <tr>
             <th><?= Translator::translate(phraseId: 'payment') ?></th>
-            <th><?= $this->logo ?></th>
+            <th style="width:100%;">
+                <a target="_blank" href="<?= $this->getMerchantPortalUrl()?>"><?= $this->externalLinkIcon ?></a>
+            </th>
+            <th>
+                <?= $this->logo ?>
+            </th>
         </tr>
         <?= $this->getTrElement(
             title: $this::PAYMENT_ID_LABEL,
@@ -47,6 +52,10 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
         <?= $this->getTrElement(
             title: 'authorized-amount',
             content: $this->getFormattedAmount($this->getAuthorizedAmount())
+        ) ?>
+        <?= $this->getTrElement(
+            title: 'approved-amount',
+            content: $this->getFormattedAmount($this->getApprovedCreditLimit())
         ) ?>
         <?= $this->getTrElement(
             title: 'captured-amount',
@@ -64,7 +73,8 @@ use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
         <?= $this->getTrElement(title: 'payment-method', content: $this->getPaymentMethodName()) ?>
         <tr>
             <th><?= Translator::translate(phraseId: 'customer') ?></th>
-            <?php // Magento will strip colspan attribute, do not remove the empty th tag. ?>
+            <?php // Magento will strip colspan attribute, do not remove the empty th tags.?>
+            <th></th>
             <th></th>
         </tr>
         <?= $this->getTrElement(title: 'name', content: $this->getCustomerName()) ?>

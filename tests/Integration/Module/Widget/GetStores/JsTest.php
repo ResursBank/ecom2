@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\GetStores;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\FilesystemException;
@@ -21,13 +22,14 @@ use Resursbank\Ecom\Module\Widget\GetStores\Js;
 /**
  * Tests for the GetStores widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class JsTest extends TestCase
 {
     protected function setUp(): void
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/get_stores/' . time()),
             jwtAuth: new Jwt(
@@ -40,6 +42,8 @@ class JsTest extends TestCase
     }
 
     /**
+     * Test widget behavior with all possible parameters.
+     *
      * Render widget with as many parameters as possible, and check that the
      * expected JavaScript code is present in the rendered widget.
      *
@@ -93,6 +97,8 @@ class JsTest extends TestCase
     }
 
     /**
+     * Test widget behavior with minimal parameters.
+     *
      * Render widget with as few parameters as possible, and check that the
      * expected JavaScript code is present in the rendered widget.
      */

@@ -21,10 +21,10 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Repository to interact with Action object at Resurs Bank.
@@ -49,12 +49,9 @@ class Repository
      * @throws AttributeCombinationException
      */
     public static function getAction(
-        string $paymentId,
-        string $actionId
+        #[StringIsUuid] string $paymentId,
+        #[StringIsUuid] string $actionId
     ): ActionLog {
-        self::validatePaymentId(paymentId: $paymentId);
-        self::validateActionId(actionId: $actionId);
-
         $result = (new Get(
             model: ActionLog::class,
             route: Mapi::PAYMENT_ROUTE . "/$paymentId/actions/$actionId",
@@ -66,23 +63,5 @@ class Repository
         }
 
         return $result;
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private static function validatePaymentId(
-        string $paymentId
-    ): void {
-        (new StringValidation())->isUuid(value: $paymentId);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private static function validateActionId(
-        string $actionId
-    ): void {
-        (new StringValidation())->isUuid(value: $actionId);
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Integration\Lib\Locale;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
@@ -26,6 +27,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 /**
  * Test that phrases can be translated.
  */
+#[AllowMockObjectsWithoutExpectations]
 class TranslatorTest extends TestCase
 {
     private const CACHE_PATH = '/tmp/ecom-test/repository/cache';
@@ -45,7 +47,7 @@ class TranslatorTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: self::CACHE_PATH),
             language: $locale

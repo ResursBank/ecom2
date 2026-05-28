@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Resursbank\EcomTest\Unit;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Resursbank\Ecom\Config;
@@ -25,14 +26,16 @@ use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
+use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
+use Resursbank\Ecom\Lib\Session\Session;
 use Throwable;
 
 /**
  * Tests Config class functionality
- *
- * @todo Improve test coverage.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ConfigTest extends TestCase
 {
     /**
@@ -54,7 +57,27 @@ class ConfigTest extends TestCase
         );
         self::assertNull(actual: Config::getJwtAuth());
         self::assertEmpty(actual: Config::getUserAgent());
+        self::assertInstanceOf(
+            expected: VoidDataHandler::class,
+            actual: Config::getPaymentHistoryDataHandler()
+        );
         self::assertFalse(condition: Config::isProduction());
+        self::assertEquals(
+            expected: Language::EN,
+            actual: Config::getLanguage()
+        );
+        self::assertEquals(
+            expected: Location::SE,
+            actual: Config::getLocation()
+        );
+        self::assertEquals(
+            expected: 'kr',
+            actual: Config::getCurrencySymbol()
+        );
+        self::assertEquals(
+            expected: CurrencyFormat::SYMBOL_LAST,
+            actual: Config::getCurrencyFormat()
+        );
         self::assertEmpty(actual: Config::getProxy());
         self::assertEquals(
             expected: 0,
@@ -64,13 +87,27 @@ class ConfigTest extends TestCase
             expected: 30,
             actual: Config::getTimeout()
         );
+        self::assertEmpty(actual: Config::getUserAgent());
         self::assertEquals(
-            expected: Language::EN,
-            actual: Config::getLanguage()
+            expected: 0,
+            actual: Config::getProxyType()
         );
         self::assertEquals(
-            expected: Location::SE,
-            actual: Config::getLocation()
+            expected: 30,
+            actual: Config::getTimeout()
+        );
+        self::assertNull(
+            actual: Config::getStoreId()
+        );
+        self::assertFalse(
+            condition: Config::getCacheWidgets()
+        );
+        self::assertNull(
+            actual: Config::getTemplateOverrideDirectory()
+        );
+        self::assertInstanceOf(
+            expected: Session::class,
+            actual: Config::getSessionHandler()
         );
     }
 
@@ -90,20 +127,31 @@ class ConfigTest extends TestCase
      */
     public function testSetupWithParameters(): void
     {
+        $jwt = new Jwt(
+            clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+            clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+            grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+        );
+        $network = new Network(
+            proxy: 'example.com',
+            proxyType: 1,
+            timeout: 42,
+            userAgent: 'Foo'
+        );
         Config::setup(
             logger: new StdoutLogger(),
             cache: new None(),
-            jwtAuth: new Jwt(
-                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
-                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
-                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
-            ),
+            jwtAuth: $jwt,
+            paymentHistoryDataHandler: new VoidDataHandler(),
+            isProduction: true,
             language: Language::SV,
-            network: new Network(
-                timeout: 42,
-                userAgent: 'Foo'
-            ),
-            storeId: $_ENV['STORE_ID']
+            location: Location::NO,
+            currencySymbol: 'dkk',
+            currencyFormat: CurrencyFormat::SYMBOL_FIRST,
+            network: $network,
+            storeId: $_ENV['STORE_ID'],
+            cacheWidgets: true,
+            templateOverrideDirectory: '/tmp'
         );
 
         self::assertInstanceOf(
@@ -118,27 +166,41 @@ class ConfigTest extends TestCase
             expected: Jwt::class,
             actual: Config::getJwtAuth()
         );
+        self::assertSame(
+            expected: $jwt,
+            actual: Config::getJwtAuth()
+        );
         self::assertEquals(
             expected: 'Foo',
             actual: Config::getUserAgent()
         );
-        self::assertFalse(condition: Config::isProduction());
-        self::assertEmpty(actual: Config::getProxy());
-        self::assertEquals(
-            expected: 0,
-            actual: Config::getProxyType()
-        );
-        self::assertEquals(
-            expected: 42,
-            actual: Config::getTimeout()
-        );
+        self::assertTrue(condition: Config::isProduction());
         self::assertEquals(
             expected: Language::SV,
             actual: Config::getLanguage()
         );
         self::assertEquals(
+            expected: Location::NO,
+            actual: Config::getLocation()
+        );
+        self::assertEquals(
+            expected: 'dkk',
+            actual: Config::getCurrencySymbol()
+        );
+        self::assertEquals(
+            expected: CurrencyFormat::SYMBOL_FIRST,
+            actual: Config::getCurrencyFormat()
+        );
+        self::assertEquals(
             expected: $_ENV['STORE_ID'],
             actual: Config::getStoreId()
+        );
+        self::assertTrue(
+            condition: Config::getCacheWidgets()
+        );
+        self::assertEquals(
+            expected: '/tmp',
+            actual: Config::getTemplateOverrideDirectory()
         );
     }
 
@@ -148,7 +210,7 @@ class ConfigTest extends TestCase
     public function testHasJwtAuth(): void
     {
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class)
+            logger: $this->createMock(type: FileLogger::class)
         );
         self::assertEquals(
             expected: false,
@@ -156,8 +218,8 @@ class ConfigTest extends TestCase
         );
 
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            jwtAuth: $this->createMock(originalClassName: Jwt::class)
+            logger: $this->createMock(type: FileLogger::class),
+            jwtAuth: $this->createMock(type: Jwt::class)
         );
         self::assertEquals(
             expected: true,
@@ -166,8 +228,36 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * Assert that a FormatException is thrown and not caught along the way when attempting to run Config::setup with an
-     * incorrectly formatted path
+     * Verify that hasInstance works as intended.
+     */
+    public function testHasInstance(): void
+    {
+        $this->assertFalse(Config::hasInstance());
+        Config::setup();
+        self::assertTrue(Config::hasInstance());
+    }
+
+    /**
+     * Verify validateInstance behavior.
+     *
+     * @throws ConfigException
+     */
+    public function testValidateInstance(): void
+    {
+        Config::setup();
+        Config::validateInstance();
+        self::addToAssertionCount(count: 1);
+
+        Config::unsetInstance();
+        self::expectException(exception: ConfigException::class);
+        Config::validateInstance();
+    }
+
+    /**
+     * Verify that exception is thrown for incorrectly formatted path.
+     *
+     * Assert that a FormatException is thrown and not caught along the way
+     * when attempting to run Config::setup with an incorrectly formatted path.
      */
     public function testSetupWithFileLoggerAndTrailingSlash(): void
     {
@@ -193,8 +283,8 @@ class ConfigTest extends TestCase
         $this->assertNull(actual: $uninitializedValue);
 
         Config::setup(
-            logger: $this->createMock(originalClassName: FileLogger::class),
-            cache: $this->createMock(originalClassName: None::class)
+            logger: $this->createMock(type: FileLogger::class),
+            cache: $this->createMock(type: None::class)
         );
 
         $initializedValue = $reflectionClass->getStaticPropertyValue(

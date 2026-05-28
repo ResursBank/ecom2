@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Model\Payment;
 
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Model\Model;
 use Resursbank\Ecom\Lib\Model\Payment\Status\CustomerTaskData;
 use Resursbank\Ecom\Lib\Model\Payment\Status\MerchantTaskData;
@@ -22,15 +25,16 @@ use Resursbank\Ecom\Lib\Model\Payment\Status\MerchantTaskData;
 class TaskStatusDetails extends Model
 {
     /**
-     * Construct object.
-     *
-     * @todo Validation ECP-414
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
      */
     public function __construct(
         public bool $completed,
         public ?CustomerTaskData $customer = null,
         public ?MerchantTaskData $merchant = null,
-        public ?CustomerTaskData $coApplication = null
+        public ?CustomerTaskData $coApplicant = null
     ) {
+        parent::__construct();
     }
 }

@@ -29,7 +29,6 @@ use Resursbank\Ecom\Lib\Network\ContentType;
 use Resursbank\Ecom\Lib\Network\Curl;
 use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
-use stdClass;
 
 /**
  * Handles adding new order lines to an existing payment.
@@ -73,13 +72,10 @@ class Add
             requestMethod: RequestMethod::POST,
             payload: $payload,
             authType: AuthType::JWT,
-            responseContentType: ContentType::JSON,
-            forceObject: false
+            responseContentType: ContentType::JSON
         );
 
-        $data = $curl->exec()->body;
-
-        $content = $data instanceof stdClass ? $data : new stdClass();
+        $content = $curl->exec()->body;
 
         $result = DataConverter::stdClassToType(
             object: $content,

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\GetAddress;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -22,6 +23,7 @@ use Resursbank\Ecom\Module\Widget\GetAddress\Js;
 /**
  * Integration tests for the GetAddress JS widget.
  */
+#[AllowMockObjectsWithoutExpectations]
 class JsTest extends TestCase
 {
     /**
@@ -31,7 +33,7 @@ class JsTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(
@@ -54,7 +56,7 @@ class JsTest extends TestCase
     {
         Config::setup(
             logger: $this->createMock(
-                originalClassName: LoggerInterface::class
+                type: LoggerInterface::class
             ),
             cache: new Filesystem(path: '/tmp/ecom-test/customer/' . time()),
             jwtAuth: new Jwt(
@@ -92,25 +94,16 @@ class JsTest extends TestCase
      * $data->content:
      *
      * - Contains "return 'https://example.com'" to confirm URL is used.
-     * - Contains "new Resursbank_GetAddress().setupEventListeners();" to ensure
-     * $this->>automatic is respected.
      */
     public function testRenderMax(): void
     {
-        $data = new Js(url: 'https://example.com/', automatic: true);
+        $data = new Js(url: 'https://example.com/');
 
         // Confirm URL is used.
         static::assertStringContainsString(
             needle: 'return \'https://example.com/\'',
             haystack: $data->content,
             message: 'Get address widget should contain URL "https://example.com".'
-        );
-
-        // Confirm automatic is respected.
-        static::assertStringContainsString(
-            needle: 'new Resursbank_GetAddress().setupEventListeners();',
-            haystack: $data->content,
-            message: 'Get address widget should contain "new Resursbank_GetAddress().setupEventListeners();".'
         );
     }
 
