@@ -489,32 +489,6 @@ class Repository
     }
 
     /**
-     * Add new order lines to payment.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     * @throws NotJsonEncodedException
-     */
-    public static function addOrderLines(
-        string $paymentId,
-        OrderLineCollection $orderLines
-    ): Payment {
-        return (new Add())->call(
-            paymentId: $paymentId,
-            orderLines: $orderLines
-        );
-    }
-
-    /**
      * Replaces current order lines on payment. Returns null when
      * modification is silently skipped (disabled in settings). Throws
      * PaymentActionException if the payment cannot be modified or if
@@ -621,39 +595,6 @@ class Repository
     }
 
     /**
-     * Fetch TaskStatusDetails object relating to our payment from API.
-     *
-     * @throws ApiException
-     * @throws AuthException
-     * @throws ConfigException
-     * @throws CurlException
-     * @throws EmptyValueException
-     * @throws IllegalTypeException
-     * @throws IllegalValueException
-     * @throws JsonException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws AttributeCombinationException
-     */
-    public static function getTaskStatusDetails(
-        string $paymentId
-    ): TaskStatusDetails {
-        self::validatePaymentId(paymentId: $paymentId);
-
-        $result = (new MapiGet(
-            model: TaskStatusDetails::class,
-            route: Mapi::PAYMENT_ROUTE . "/$paymentId/tasks/status",
-            params: []
-        ))->call();
-
-        if (!$result instanceof TaskStatusDetails) {
-            throw new ApiException(message: 'Invalid API response.');
-        }
-
-        return $result;
-    }
-
-    /**
      * Get message explaining why a payment has failed.
      *
      * @param string $paymentId
@@ -679,14 +620,5 @@ class Repository
         }
 
         return Translator::translate(phraseId: 'payment-failed-try-again');
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private static function validatePaymentId(
-        string $paymentId
-    ): void {
-        (new StringValidation())->isUuid(value: $paymentId);
     }
 }

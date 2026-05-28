@@ -32,7 +32,6 @@ use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Lib\Model\UserSettings\Metadata;
 use Resursbank\Ecom\Lib\UserSettings\NullReader;
 use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
-use Resursbank\Ecom\Module\PaymentMethod\Enum\CurrencyFormat;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
 
@@ -118,7 +117,6 @@ final class Config
             currencySymbol: $currencySymbol,
             currencyFormat: $currencyFormat,
             network: $network,
-            sessionHandler: $sessionHandler,
             storeId: $storeId,
             cacheWidgets: $cacheWidgets,
             settingsReader: $settingsReader,
