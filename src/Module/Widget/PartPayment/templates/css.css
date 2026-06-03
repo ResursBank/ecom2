@@ -22,12 +22,9 @@
 
 /* Logo */
 .rb-pp-logo-container {
-    margin-left: 10px;
-    display: inline-flex;
-    align-items: center;
+    margin-left: 5px;
 }
 
-/* Target SVG regardless of wrapper structure */
 .rb-pp-logo-container svg {
     height: 1em;
     width: auto;
@@ -48,7 +45,6 @@
 .rb-pp-info {
     margin-bottom: 7px;
     display: flex;
-    align-items: center;
     background-color: #e4fdf7;
     padding: 15px;
 }
