@@ -75,9 +75,11 @@ class Repository
      * @throws NotJsonEncodedException
      */
     public static function triggerTest(
-        string $url
+        ?string $url = null
     ): TestResponse {
         Config::getLogger()->debug(message: 'Triggering test callback.');
+
+        $url ??= UserSettingsRepository::getUrl(url: Url::CALLBACK_TEST_URL);
 
         if (!Strings::isUrl(value: $url)) {
             throw new IllegalValueException(
