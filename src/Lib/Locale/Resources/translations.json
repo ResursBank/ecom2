@@ -578,7 +578,18 @@
       "en": "Payment failed.",
       "sv": "Betalning misslyckades.",
       "no": "Betaling mislyktes.",
-      "da": "Betaling mislykkedes."
+      "da": "Betaling mislykkedes.",
+      "fi": "Maksu epäonnistui."
+    }
+  },
+  {
+    "id": "payment-status-aborted-by-customer",
+    "translation": {
+      "en": "Order cancelled by customer.",
+      "sv": "Beställningen avbröts av kunden.",
+      "no": "Bestillingen ble avbrutt av kunden.",
+      "da": "Ordren blev annulleret af kunden.",
+      "fi": "Asiakas peruutti tilauksen."
     }
   },
   {

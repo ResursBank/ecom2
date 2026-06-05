@@ -198,6 +198,23 @@ class Payment extends Model
     }
 
     /**
+     * Returns the appropriate translation phrase ID for the rejected status.
+     *
+     * Different rejection reasons warrant different user-facing messages.
+     * For ABORTED_BY_CUSTOMER, returns a phrase indicating the customer
+     * cancelled the order. For all other rejection reasons, returns the
+     * generic payment failed phrase.
+     */
+    public function getRejectedStatusPhraseId(): string
+    {
+        if ($this->isRejectionReasonAbortedByCustomer()) {
+            return 'payment-status-aborted-by-customer';
+        }
+
+        return 'payment-status-failed';
+    }
+
+    /**
      * Whether payment is processable.
      */
     public function isProcessable(): bool
