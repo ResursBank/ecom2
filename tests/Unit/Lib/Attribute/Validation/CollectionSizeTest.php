@@ -23,6 +23,18 @@ use Throwable;
 class CollectionSizeTest extends TestCase
 {
     /**
+     * Test constructor logic.
+     *
+     * @throws AttributeParameterException
+     */
+    public function testConstructorThrowsOnInvalidMinMax(): void
+    {
+        $this->expectException(AttributeParameterException::class);
+
+        new CollectionSize(min: 10, max: 7);
+    }
+
+    /**
      * Validate the output of getAcceptedValues.
      *
      * @throws AttributeParameterException
