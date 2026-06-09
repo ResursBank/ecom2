@@ -98,4 +98,21 @@ final class WidgetTest extends TestCase
             condition: $unCachedWidget->canCacheData()
         );
     }
+
+    /**
+     * Verify correct behavior of getCacheKey.
+     *
+     * @throws ConfigException
+     */
+    public function testGetCacheKey(): void
+    {
+        Config::setup(storeId: $_ENV['STORE_ID']);
+        $widget = new Widget();
+
+        $this->assertEquals(
+            expected: $widget::CACHE_KEY_PREFIX . '-' . Config::getStoreId() .
+            '_' . sha1(string: serialize(value: $widget)),
+            actual: $widget->getCacheKey()
+        );
+    }
 }
