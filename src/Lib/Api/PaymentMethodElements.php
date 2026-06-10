@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\Ecom\Lib\Api;
 
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 
@@ -17,7 +18,16 @@ use Resursbank\Ecom\Lib\Utilities\Strings;
  */
 class PaymentMethodElements
 {
+    /**
+     * Production endpoint.
+     */
+    public const URL_PROD = 'https://api.checkout.prod.resurs.cloud/payment/public/v1/';
+
+    /**
+     * Test endpoint.
+     */
     public const URL_TEST = 'https://api.checkout.int.resurs.cloud/mock/payment/public/v1/';
+
     public const PAYMENT_METHODS_ROUTE = 'payment-methods';
 
     /**
@@ -29,6 +39,9 @@ class PaymentMethodElements
             throw new EmptyValueException(message: 'Route cannot be empty.');
         }
 
-        return self::URL_TEST . $route;
+        return
+            (Config::isProduction() ? self::URL_PROD : self::URL_TEST) .
+            $route
+        ;
     }
 }
