@@ -25,9 +25,28 @@ class RejectedReason extends Model
     }
 
     /**
-     * Fetches a more human-readable description of the rejection reason.
+     * Fetches a customer-facing description of the rejection reason.
      */
     public function getFriendlyDescription(): string
+    {
+        return $this->getTranslation(suffix: '');
+    }
+
+    /**
+     * Fetches an admin-facing description of the rejection reason.
+     *
+     * Used for order notes and backend displays where a more technical
+     * description is appropriate.
+     */
+    public function getAdminDescription(): string
+    {
+        return $this->getTranslation(suffix: '-admin');
+    }
+
+    /**
+     * Translate the rejection reason category with an optional suffix.
+     */
+    private function getTranslation(string $suffix): string
     {
         if ($this->category !== null) {
             try {
@@ -36,7 +55,7 @@ class RejectedReason extends Model
                         search: '_',
                         replace: '-',
                         subject: strtolower(string: $this->category->value)
-                    ),
+                    ) . $suffix,
                     translationFile: __DIR__ .
                     '/RejectedReason/Resources/translations.json'
                 );
