@@ -10,6 +10,16 @@
     }
   },
   {
+    "id": "unknown-admin",
+    "translation": {
+      "en": "Payment rejected for unknown reason.",
+      "sv": "Betalning nekad av okänd orsak.",
+      "da": "Betaling afvist af ukendt årsag.",
+      "no": "Betaling avvist av ukjent årsak.",
+      "fi": "Maksu hylätty tuntemattomasta syystä."
+    }
+  },
+  {
     "id": "technical-error",
     "translation": {
       "en": "Application was denied due to a technical error.",
@@ -17,6 +27,16 @@
       "da": "Ansøgningen blev afvist på grund af en teknisk fejl.",
       "no": "Søknaden ble avslått på grunn av en teknisk feil.",
       "fi": "Hakemus hylättiin teknisen virheen vuoksi."
+    }
+  },
+  {
+    "id": "technical-error-admin",
+    "translation": {
+      "en": "Payment rejected due to technical error.",
+      "sv": "Betalning nekad på grund av tekniskt fel.",
+      "da": "Betaling afvist på grund af teknisk fejl.",
+      "no": "Betaling avvist på grunn av teknisk feil.",
+      "fi": "Maksu hylätty teknisen virheen vuoksi."
     }
   },
   {
@@ -30,6 +50,16 @@
     }
   },
   {
+    "id": "credit-denied-admin",
+    "translation": {
+      "en": "Customer credit application rejected.",
+      "sv": "Kundens kreditansökan nekades.",
+      "da": "Kundens kreditansøgning afvist.",
+      "no": "Kundens kredittsøknad avslått.",
+      "fi": "Asiakkaan luottohakemus hylätty."
+    }
+  },
+  {
     "id": "payment-frozen",
     "translation": {
       "en": "The payment has been frozen.",
@@ -37,6 +67,16 @@
       "da": "Betalingen er blevet fryset.",
       "no": "Betalingen har blitt frosset.",
       "fi": "Maksu on jäädytetty."
+    }
+  },
+  {
+    "id": "payment-frozen-admin",
+    "translation": {
+      "en": "Payment frozen for manual review.",
+      "sv": "Betalning fryst för manuell granskning.",
+      "da": "Betaling frosset til manuel gennemgang.",
+      "no": "Betaling frosset for manuell gjennomgang.",
+      "fi": "Maksu jäädytetty manuaalista tarkistusta varten."
     }
   },
   {
@@ -50,6 +90,16 @@
     }
   },
   {
+    "id": "timeout-admin",
+    "translation": {
+      "en": "Payment was never completed by the customer. Cancelled due to timeout.",
+      "sv": "Betalningen avslutades aldrig av kunden. Avbröts på grund av nådd tidsgräns.",
+      "da": "Betalingen blev aldrig gennemført af kunden. Annulleret på grund af timeout.",
+      "no": "Betalingen ble aldri fullført av kunden. Avbrutt på grunn av tidsavbrudd.",
+      "fi": "Asiakas ei koskaan suorittanut maksua loppuun. Peruutettu aikakatkaisun vuoksi."
+    }
+  },
+  {
     "id": "aborted-by-customer",
     "translation": {
       "en": "Application was aborted by the customer.",
@@ -57,6 +107,16 @@
       "da": "Ansøgningen blev afbrudt af kunden.",
       "no": "Søknaden ble avbrutt av kunden.",
       "fi": "Hakemus keskeytettiin asiakkaan toimesta."
+    }
+  },
+  {
+    "id": "aborted-by-customer-admin",
+    "translation": {
+      "en": "Payment was cancelled by the customer.",
+      "sv": "Betalningen avbröts av kunden.",
+      "da": "Betalingen blev annulleret af kunden.",
+      "no": "Betalingen ble avbrutt av kunden.",
+      "fi": "Asiakas peruutti maksun."
     }
   },
   {
@@ -70,6 +130,16 @@
     }
   },
   {
+    "id": "insufficient-funds-admin",
+    "translation": {
+      "en": "Payment rejected due to insufficient funds.",
+      "sv": "Betalning nekad på grund av otillräckliga medel.",
+      "da": "Betaling afvist på grund af utilstrækkelige midler.",
+      "no": "Betaling avvist på grunn av utilstrekkelige midler.",
+      "fi": "Maksu hylätty riittämättömien varojen vuoksi."
+    }
+  },
+  {
     "id": "canceled",
     "translation": {
       "en": "Application was canceled.",
@@ -77,6 +147,16 @@
       "da": "Ansøgningen blev annulleret.",
       "no": "Søknaden ble kansellert.",
       "fi": "Hakemus peruttiin."
+    }
+  },
+  {
+    "id": "canceled-admin",
+    "translation": {
+      "en": "Payment was cancelled.",
+      "sv": "Betalning avbruten.",
+      "da": "Betaling annulleret.",
+      "no": "Betaling kansellert.",
+      "fi": "Maksu peruutettu."
     }
   }
 ]
