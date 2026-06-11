@@ -121,6 +121,33 @@ class ControllerTest extends TestCase
     }
 
     /**
+     * Verify behavior of getErrorResponseCode.
+     */
+    public function testGetErrorResponseCode(): void
+    {
+        $exception = new HttpException(message: 'Magic math', code: 418);
+        $controller = $this->getControllerWithoutHeaderManipulation();
+
+        $result = $controller->getErrorResponseCode(exception: $exception);
+
+        $this->assertEquals(
+            expected: $exception->getCode(),
+            actual: $result
+        );
+
+        $exception = new CurlException(
+            message: 'Magic math',
+            code: 418,
+            body: '',
+            httpCode: 500
+        );
+
+        $result = $controller->getErrorResponseCode(exception: $exception);
+
+        $this->assertEquals(expected: $exception->httpCode, actual: $result);
+    }
+
+    /**
      * Assert getErrorMessage() returns unmasked error message for HttpException.
      */
     public function testGetErrorMessageReturnsUnmasked(): void

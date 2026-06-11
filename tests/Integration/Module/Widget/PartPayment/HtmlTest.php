@@ -464,6 +464,32 @@ class HtmlTest extends TestCase
     }
 
     /**
+     * Verify that getCost throws EmptyValueException when list empty.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     */
+    public function testGetCostThrowsOnEmptyCostList(): void
+    {
+        $this->expectException(exception: EmptyValueException::class);
+        $this->widget->getCost(
+            paymentMethod: $this->paymentMethod,
+            amount: 90000000,
+            months: 300
+        );
+    }
+
+    /**
      * Test the getTotalCost method output.
      *
      * @throws ConfigException
