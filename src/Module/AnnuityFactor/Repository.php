@@ -230,4 +230,55 @@ class Repository
             return [];
         }
     }
+
+    /**
+     * Resolve the default part payment method ID.
+     *
+     * Returns the ID of the first available payment method that supports
+     * part payment. Useful as a fallback when no method has been explicitly
+     * configured.
+     */
+    public static function getDefaultPartPaymentMethodId(): ?string
+    {
+        try {
+            $methods = self::getAssocPaymentMethods();
+
+            if (empty($methods)) {
+                return null;
+            }
+
+            return array_key_first($methods);
+        } catch (Throwable $error) {
+            self::logException(exception: $error);
+
+            return null;
+        }
+    }
+
+    /**
+     * Resolve the default annuity period for a payment method.
+     *
+     * Returns the first available period (duration in months) for the
+     * specified payment method. Useful as a fallback when no period has
+     * been explicitly configured.
+     */
+    public static function getDefaultPeriodForMethod(string $methodId): ?int
+    {
+        try {
+            $factors = self::getAnnuityFactors(paymentMethodId: $methodId);
+
+            if ($factors->count() === 0) {
+                return null;
+            }
+
+            /** @var AnnuityInformation $first */
+            $first = $factors->getFirst();
+
+            return $first->durationMonths;
+        } catch (Throwable $error) {
+            self::logException(exception: $error);
+
+            return null;
+        }
+    }
 }
