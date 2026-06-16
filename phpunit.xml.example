@@ -8,6 +8,11 @@
             <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
     <php>
         <env name="NATIONAL_STORE_ID" value="REPLACEME" force="true" />
         <env name="SKIP_PROXY_TESTS" value="REPLACEME" force="true" />
