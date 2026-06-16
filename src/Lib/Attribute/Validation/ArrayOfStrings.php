@@ -111,7 +111,7 @@ class ArrayOfStrings implements ArrayInterface
         // Add randomized values.
         $this->addRandomRejectedValues(
             result: $result,
-            size: $size,
+            size: $size - count($result),
             min: (int) $min,
             max: $max,
             type: DataType::STRING
