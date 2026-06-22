@@ -24,12 +24,17 @@ use function strlen;
 
 /**
  * Tests for the Resursbank\Ecom\Lib\Api\PaymentMethodElements class.
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 #[AllowMockObjectsWithoutExpectations]
 class PaymentMethodElementsTest extends TestCase
 {
     private PaymentMethodElements $paymentMethodElements;
 
+    /**
+     * @inheritDoc
+     */
     protected function setUp(): void
     {
         $this->paymentMethodElements = new PaymentMethodElements();
