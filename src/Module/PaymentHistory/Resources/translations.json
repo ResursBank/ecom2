@@ -2,61 +2,61 @@
   {
     "id": "event-captured",
     "translation": {
-      "en": "Payment fully captured.",
-      "sv": "Betalning helt debiterad.",
-      "da": "Betaling debiteres fuldt ud.",
-      "no": "Betaling debitert i sin helhet.",
-      "fi": "Maksu kokonaan veloitettu."
+      "en": "Successfully captured %s of the payment at Resurs Bank.",
+      "sv": "Lyckades debitera %s av betalningen hos Resurs Bank.",
+      "da": "Debiterede %s af betalingen hos Resurs Bank.",
+      "no": "Debiterte %s av betalingen hos Resurs Bank.",
+      "fi": "Veloitettiin %s maksusta Resurs Bankissa."
     }
   },
   {
     "id": "event-partially-captured",
     "translation": {
-      "en": "Payment partially captured.",
-      "sv": "Betalning delvis debiterad.",
-      "da": "Betaling delvist debiteret.",
-      "no": "Betaling delvis debitert.",
-      "fi": "Maksu osittain veloitettu."
+      "en": "Partially captured %s of the payment at Resurs Bank.",
+      "sv": "Lyckades delvis debitera %s av betalningen hos Resurs Bank.",
+      "da": "Delvist debiterede %s af betalingen hos Resurs Bank.",
+      "no": "Delvis debiterte %s av betalingen hos Resurs Bank.",
+      "fi": "Osittain veloitettiin %s maksusta Resurs Bankissa."
     }
   },
   {
     "id": "event-refunded",
     "translation": {
-      "en": "Payment fully refunded.",
-      "sv": "Betalning helt återbetald.",
-      "da": "Betaling fuldt refunderet.",
-      "no": "Betaling fullt refundert.",
-      "fi": "Maksu täysin hyvitetty."
+      "en": "Successfully refunded %s of the payment at Resurs Bank.",
+      "sv": "Lyckades återbetala %s av betalningen hos Resurs Bank.",
+      "da": "Refunderede %s af betalingen hos Resurs Bank.",
+      "no": "Refunderte %s av betalingen hos Resurs Bank.",
+      "fi": "Hyvitettiin %s maksusta Resurs Bankissa."
     }
   },
   {
     "id": "event-partially-refunded",
     "translation": {
-      "en": "Payment partially refunded.",
-      "sv": "Betalning delvis återbetald.",
-      "da": "Betaling delvist refunderet.",
-      "no": "Betaling delvis refundert.",
-      "fi": "Maksu osittain hyvitetty."
+      "en": "Partially refunded %s of the payment at Resurs Bank.",
+      "sv": "Lyckades delvis återbetala %s av betalningen hos Resurs Bank.",
+      "da": "Delvist refunderede %s af betalingen hos Resurs Bank.",
+      "no": "Delvis refunderte %s av betalingen hos Resurs Bank.",
+      "fi": "Osittain hyvitettiin %s maksusta Resurs Bankissa."
     }
   },
   {
     "id": "event-canceled",
     "translation": {
-      "en": "Payment fully canceled.",
-      "sv": "Betalning helt annullerad.",
-      "da": "Betaling fuldt annulleret.",
-      "no": "Betaling helt kansellert.",
-      "fi": "Maksu täysin peruutettu."
+      "en": "Successfully cancelled %s of the payment at Resurs Bank.",
+      "sv": "Lyckades annullera %s av betalningen hos Resurs Bank.",
+      "da": "Annullerede %s af betalingen hos Resurs Bank.",
+      "no": "Kansellerte %s av betalingen hos Resurs Bank.",
+      "fi": "Peruutettiin %s maksusta Resurs Bankissa."
     }
   },
   {
     "id": "event-partially-cancelled",
     "translation": {
-      "en": "Payment partially cancelled.",
-      "sv": "Betalning delvis annullerad.",
-      "da": "Betaling delvist annulleret.",
-      "no": "Betaling delvis kansellert.",
-      "fi": "Maksu osittain peruutettu."
+      "en": "Partially cancelled %s of the payment at Resurs Bank.",
+      "sv": "Lyckades delvis annullera %s av betalningen hos Resurs Bank.",
+      "da": "Delvist annullerede %s af betalingen hos Resurs Bank.",
+      "no": "Delvis kansellerte %s av betalingen hos Resurs Bank.",
+      "fi": "Osittain peruutettiin %s maksusta Resurs Bankissa."
     }
   },
   {
