@@ -3868,5 +3868,15 @@
       "da": "Kunne ikke hæve betalingen hos Resurs Bank. Gennemgå venligst betalingen manuelt i Merchant Portal.",
       "fi": "Maksun veloittaminen Resurs Bankissa epäonnistui. Tarkista maksu manuaalisesti Merchant Portalissa."
     }
+  },
+  {
+    "id": "ppw-disabled-store-change",
+    "translation": {
+      "en": "The part payment widget has been disabled because the store was changed. Please re-enable it and configure the payment method and annuity period in the Part Payment settings.",
+      "sv": "Delbetalningswidgeten har inaktiverats på grund av byte av butik. Vänligen återaktivera den och konfigurera betalningsmetod och annuitetsperiod i delbetalningsinställningarna.",
+      "no": "Delbetalingswidgeten har blitt deaktivert fordi butikken ble endret. Vennligst aktiver den på nytt og konfigurer betalingsmetode og annuitetsperiode i delbetalingsinnstillingene.",
+      "da": "Delbetalingswidgeten er blevet deaktiveret, fordi butikken blev ændret. Genaktiver den venligst og konfigurer betalingsmetode og annuitetsperiode i delbetalingsindstillingerne.",
+      "fi": "Osamaksuwidget on poistettu käytöstä, koska kauppa vaihdettiin. Ota se uudelleen käyttöön ja määritä maksutapa ja annuiteettijakso osamaksuasetuksissa."
+    }
   }
 ]
