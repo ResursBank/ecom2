@@ -11,21 +11,25 @@ namespace Resursbank\EcomTest\Integration\Module\Store;
 
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Store\Repository;
 use Throwable;
 
@@ -64,6 +68,43 @@ class RepositoryTest extends TestCase
             ),
             storeId: $storeId
         );
+    }
+
+    /**
+     * Verify that getStores throws error if lookup fails.
+     *
+     * @throws ApiException
+     * @throws AuthException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     * @throws ValidationException
+     * @throws Exception
+     * @throws AttributeCombinationException
+     * @throws IllegalValueException
+     */
+    public function testGetStoresThrowsOnError(): void
+    {
+        Config::setup(
+            logger: $this->createMock(
+                type: LoggerInterface::class
+            ),
+            cache: new Filesystem(path: '/tmp/ecom-test/stores/' . time()),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: Strings::getUuid(),
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            storeId: Strings::getUuid()
+        );
+
+        $this->expectException(exception: AuthException::class);
+        Repository::getStores(size: 1, page: 1);
     }
 
     /**

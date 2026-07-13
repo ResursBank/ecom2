@@ -439,5 +439,10 @@ class RepositoryTest extends TestCase
         MockSigner::callCustomerUrl(payment: $payment);
         $task = Repository::getTaskStatusDetails(paymentId: $payment->id);
         $this->assertTrue(condition: $task->completed);
+
+        $this->expectException(IllegalValueException::class);
+        Repository::getTaskStatusDetails(
+            paymentId: Strings::generateRandomString(length: 12)
+        );
     }
 }

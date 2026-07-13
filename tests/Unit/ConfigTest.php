@@ -378,4 +378,20 @@ class ConfigTest extends TestCase
 
         Config::getPath(dir: 'some/../../directory');
     }
+
+    /**
+     * Verify that setLocation works.
+     *
+     * @throws ConfigException
+     */
+    public function testSetLocation(): void
+    {
+        Config::setup(location: Location::DK);
+        Config::setLocation(location: Location::SE);
+
+        $this->assertEquals(
+            expected: Location::SE,
+            actual: Config::getLocation()
+        );
+    }
 }

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Resursbank\EcomTest\Integration\Lib\Repository\Api\Mapi;
+namespace Resursbank\EcomTest\Integration\Lib\Repository\Api\Traits;
 
 use JsonException;
 use PHPUnit\Framework\TestCase;

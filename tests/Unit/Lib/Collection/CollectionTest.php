@@ -15,6 +15,7 @@ use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\CollectionException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Collection\Collection;
+use Resursbank\EcomTest\Data\Models\Genre;
 use Resursbank\EcomTest\Data\Models\Music;
 use Resursbank\EcomTest\Data\Models\MusicCollection;
 use Throwable;
@@ -123,6 +124,16 @@ final class CollectionTest extends TestCase
             expected: $this->data,
             actual: $collection->toArray()
         );
+
+        $data = [
+            new Genre(id: 127, name: 'rock'),
+            new Genre(id: 128, name: 'jazz'),
+        ];
+        $collection = new Collection(data: $data);
+        $this->assertSame(
+            expected: $data,
+            actual: $collection->toArray(full: true)
+        );
     }
 
     /**
@@ -139,6 +150,24 @@ final class CollectionTest extends TestCase
             expected: $type,
             actual: $collection->getType()
         );
+
+        $this->expectException(exception: IllegalTypeException::class);
+        new Collection(data: []);
+    }
+
+    /**
+     * Verify push behavior.
+     *
+     * @throws IllegalTypeException
+     */
+    public function testPush(): void
+    {
+        $data = ['foo'];
+
+        $collection = new Collection(data: $data);
+        $collection->push(value: 'bar');
+
+        $this::assertSame(expected: 'bar', actual: $collection[1]);
     }
 
     /**
@@ -244,6 +273,10 @@ final class CollectionTest extends TestCase
             expected: $this->data[1],
             actual: $collection->current()
         );
+
+        $collection = new Collection(data: [], type: 'string');
+        $this->expectException(exception: CollectionException::class);
+        $collection->current();
     }
 
     /**
@@ -314,6 +347,44 @@ final class CollectionTest extends TestCase
     }
 
     /**
+     * Verify behavior of hasObjectWithPropertyValue.
+     *
+     * @throws AttributeCombinationException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws \ReflectionException
+     */
+    public function testHasObjectWithPropertyValue(): void
+    {
+        $collection = new Collection(
+            data: [
+                new Music(
+                    id: 127,
+                    genre: 'bluegrass'
+                ),
+                new Music(
+                    id: 256,
+                    genre: 'country'
+                )
+            ]
+        );
+
+        $this->assertTrue(
+            condition: $collection->hasObjectWithPropertyValue(
+                propertyName: 'id',
+                propertyValue: 127
+            )
+        );
+
+        $this->assertFalse(
+            condition: $collection->hasObjectWithPropertyValue(
+                propertyName: 'genre',
+                propertyValue: 'trance'
+            )
+        );
+    }
+
+    /**
      * Verify that filtering a collection by property value works.
      *
      * @throws CollectionException
@@ -363,5 +434,33 @@ final class CollectionTest extends TestCase
 
             $this->addToAssertionCount(count: 1);
         }
+    }
+
+    /**
+     * Verify that filterByPropertyValue throws if property not in class.
+     *
+     * @throws AttributeCombinationException
+     * @throws CollectionException
+     * @throws IllegalTypeException
+     * @throws JsonException
+     * @throws \ReflectionException
+     */
+    public function testFilterByPropertyValueThrowsOnMissingProperty(): void
+    {
+        $collection = new Collection(
+            data: [
+                new Music(
+                    id: 127,
+                    genre: 'rock'
+                )
+            ]
+        );
+
+        $this->expectException(exception: CollectionException::class);
+
+        $collection->filterByPropertyValue(
+            property: 'band',
+            value: 'Johnny Cash'
+        );
     }
 }

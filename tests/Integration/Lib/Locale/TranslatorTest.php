@@ -23,6 +23,7 @@ use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 
 /**
  * Test that phrases can be translated.
@@ -209,5 +210,46 @@ class TranslatorTest extends TestCase
             ),
             message: 'Translated string does not match expected output'
         );
+    }
+
+    /**
+     * Verify that load throws FilesystemException if file not found.
+     *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws JsonException
+     */
+    public function testLoadThrowsOnMissingFile(): void
+    {
+        $this->expectException(exception: FilesystemException::class);
+        Translator::load(
+            translationFile: Strings::generateRandomString(length: 32)
+        );
+    }
+
+    /**
+     * Verify that load throws FilesystemException if file is empty.
+     *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws JsonException
+     */
+    public function testLoadThrowsOnEmptyFile(): void
+    {
+        $directory = '/tmp/resurs-translator-test';
+        $filename = Strings::generateRandomString(length: 16);
+
+        if (!is_dir(filename: $directory)) {
+            mkdir(directory: $directory, recursive: true);
+        }
+
+        touch(filename: $directory . DIRECTORY_SEPARATOR . $filename);
+
+        $this->expectException(exception: FilesystemException::class);
+        Translator::load(
+            translationFile: $directory . DIRECTORY_SEPARATOR . $filename
+        );
+        unlink(filename: $directory . DIRECTORY_SEPARATOR . $filename);
+        rmdir(directory: $directory);
     }
 }

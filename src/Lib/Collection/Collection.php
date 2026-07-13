@@ -90,8 +90,8 @@ class Collection implements ArrayAccess, Iterator, Countable
             !property_exists(object_or_class: $this->type, property: $property)
         ) {
             throw new CollectionException(
-                message: 'Filter value has to be of type ' .
-                getType($this->$property) . ', received ' . getType($value)
+                message: 'Property with name ' . $property . ' does not exist' .
+                ' in class ' . $this->type
             );
         }
 
