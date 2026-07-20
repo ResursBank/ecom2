@@ -26,6 +26,7 @@ use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\Model\PaymentMethodElements\CustomerType;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\PaymentMethodElements\Repository;
 
@@ -109,6 +110,15 @@ class RepositoryTest extends TestCase
             amount: 1000.00,
             locale: 'sv-SE',
             sessionId: $session->id
+        );
+
+        $this->assertNotEmpty(actual: $result);
+
+        $result = Repository::getPaymentMethodGroups(
+            amount: 1000.00,
+            locale: 'sv-SE',
+            sessionId: $session->id,
+            customerType: CustomerType::NATURAL
         );
 
         $this->assertNotEmpty(actual: $result);
