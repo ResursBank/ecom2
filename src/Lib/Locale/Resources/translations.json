@@ -533,7 +533,9 @@
     "id": "approved-amount",
     "translation": {
       "en": "Approved amount",
-      "sv": "Beviljat belopp"
+      "sv": "Beviljat belopp",
+      "da": "Tildelt beløb",
+      "no": "Innvilget beløp"
     }
   },
   {
@@ -639,7 +641,7 @@
     "id": "enable-widget-to-get-address",
     "translation": {
       "en": "Enable Get Address Widget",
-      "sv": "Aktivera hämta adress widget",
+      "sv": "Aktivera hämta adress-widget",
       "no": "Aktiver Hent Adresse-widget",
       "da": "Aktivér Hent Adresse-widget"
     }
@@ -666,7 +668,7 @@
     "id": "api-settings",
     "translation": {
       "en": "API Settings",
-      "sv": "API inställningar",
+      "sv": "API-inställningar",
       "no": "API-innstillinger",
       "da": "API-indstillinger"
     }
@@ -1516,7 +1518,8 @@
     "translation": {
       "en": "Failed to obtain button to fetch stores.",
       "sv": "Kunde inte hitta knapp för att hämta butiker.",
-      "no": "Kunne ikke finne knapp for å hente butikker."
+      "no": "Kunne ikke finne knapp for å hente butikker.",
+      "da": "Kunne ikke finde knappen til at hente butikker."
     }
   },
   {
@@ -1849,7 +1852,8 @@
     "translation": {
       "en": "Something went wrong when trying to place the order. Please try again, or select another payment method. You could also try refreshing the page.",
       "sv": "Något gick fel vid försöket att lägga beställningen. Försök igen, eller välj en annan betalningsmetod. Du kan också prova att uppdatera sidan.",
-      "da": "Noget gik galt, da vi forsøgte at placere ordren. Prøv igen, eller vælg en anden betalingsmetode. Du kan også prøve at opdatere siden."
+      "da": "Noget gik galt, da vi forsøgte at placere ordren. Prøv igen, eller vælg en anden betalingsmetode. Du kan også prøve at opdatere siden.",
+      "no": "Noe gikk galt under bestillingen. Prøv på nytt, eller velg en annen betalingsmåte. Du kan også prøve å oppdatere siden."
     }
   },
   {
@@ -3429,7 +3433,8 @@
     "translation": {
       "en": "Payment cannot be captured",
       "sv": "Betalningen kan inte fångas",
-      "no": "Betalingen kan ikke fanges"
+      "no": "Betalingen kan ikke fanges",
+      "da": "Betalingen kan ikke hæves."
     }
   },
   {
@@ -3437,7 +3442,8 @@
     "translation": {
       "en": "Payment is not ready to be captured at Resurs Bank",
       "sv": "Betalningen är inte redo att debiteras hos Resurs Bank",
-      "no": "Betalingen er ikke klar for å fanges"
+      "no": "Betalingen er ikke klar for å fanges",
+      "da": "Betalingen er ikke klar til at blive hævet hos Resurs Bank"
     }
   },
   {
@@ -3445,7 +3451,8 @@
     "translation": {
       "en": "Payment cannot be cancelled",
       "sv": "Betalningen kan inte avbrytas",
-      "no": "Betalingen kan ikke avbrytes"
+      "no": "Betalingen kan ikke avbrytes",
+      "da": "Betalingen kan ikke annulleres"
     }
   },
   {
@@ -3453,7 +3460,8 @@
     "translation": {
       "en": "Payment cannot be refunded",
       "sv": "Betalningen kan inte återbetalas",
-      "no": "Betalingen kan ikke refunderes"
+      "no": "Betalingen kan ikke refunderes",
+      "da": "Betaling kan ikke refunderes"
     }
   },
   {
@@ -3479,13 +3487,19 @@
   {
     "id": "handle-frozen-payments-comment",
     "translation": {
-      "en": "Payments may be frozen due to fraud controls. If you want as many approved payments as possible, you should handle frozen payments. When a payment is frozen the customer is informed that the purchase is ready, but the goods shall not be shipped/handed over to the customer until the payment is captured."
+      "en": "Payments may be frozen due to fraud controls. If you want as many approved payments as possible, you should handle frozen payments. When a payment is frozen the customer is informed that the purchase is ready, but the goods shall not be shipped/handed over to the customer until the payment is captured.",
+      "sv": "Betalningar kan bli frysta på grund av bedrägerikontroller. Om ni vill ha så många godkända betalningar som möjligt så bör ni hantera frysta betalningar. När en betalning är frusen så informeras kunden att köpet är redo men varorna skall inte skickas/hanteras till kunden förrän betalningen har fångats.",
+      "no": "Betalinger kan bli fryst på grunn av svindelkontroll. Hvis du ønsker å få godkjent så mange betalinger som mulig, bør du håndtere fryste betalinger. Når en betaling fryses, blir kunden informert om at kjøpet er klart, men varene skal ikke sendes/leveres til kunden før betalingen er registrert.",
+      "da": "Betalinger kan være indefrosne på grund af svindelkontrol. Hvis du ønsker at få så mange godkendte betalinger som muligt, bør du håndtere indefrosne betalinger. Når en betaling er indefrosset, informeres kunden om, at købet er klar, men varerne vil ikke blive sendt/overdraget til kunden, før betalingen er registreret."
     }
   },
   {
     "id": "handle-manual-inspection-comment",
     "translation": {
-      "en": "If handleManualInspection is enabled the flow may be stopped and the customer or salesperson needs talk to Resurs Bank customer service before the credit can be approved. This can be handled in the redirection flow by the customer and the customer will get a reminder when the credit is approved."
+      "en": "If handleManualInspection is enabled the flow may be stopped and the customer or salesperson needs talk to Resurs Bank customer service before the credit can be approved. This can be handled in the redirection flow by the customer and the customer will get a reminder when the credit is approved.",
+      "sv": "Om handleManualInspection är aktiverad så kan flödet stoppas och kunden eller en försäljare måste tala med Resurs Banks kundservice innan krediten kan godkännas. Detta kan hanteras av kunden i omdirigeringsflödet och kunden kommer att få en påminnelse när krediten godkänts.",
+      "no": "Hvis handleManualInspection er aktivert, kan flyten stoppes, og kunden eller selgeren må snakke med Resurs Banks kundeservice før kreditten kan godkjennes. Dette kan håndteres i omdirigeringsflyten av kunden, og kunden vil få en påminnelse når kreditten er godkjent.",
+      "da": "Hvis handleManualInspection er aktiveret, kan flowet blive stoppet, og kunden eller sælgeren skal tale med Resurs Banks kundeservice, før kreditten kan godkendes. Dette kan håndteres i omdirigeringsflowet af kunden, og kunden vil modtage en påmindelse, når kreditten er godkendt."
     }
   },
   {
@@ -3572,63 +3586,81 @@
     "id": "template-override-location",
     "translation": {
       "en": "Widget template override location",
-      "sv": "Sökväg till ersättningsmallar för widgets"
+      "sv": "Sökväg till ersättningsmallar för widgets",
+      "no": "Plassering av overstyringsplassering for widgetmal",
+      "da": "Placering af tilsidesættelse af widgetskabeloner"
     }
   },
   {
     "id": "template-override-location-warning",
     "translation": {
       "en": "This setting can be used for specifying an absolute path to a directory where overrides for widget templates can be places. Use this feature with caution.",
-      "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte."
+      "sv": "Denna inställning kan användas för att ange en absolut sökväg till en katalog där ersättningsmallar för widgetmallar kan placeras. Bruk av denna funktionalitet rekommenderas inte.",
+      "no": "Denne innstillingen kan brukes til å angi en absolutt sti til en katalog der overstyringer for widgetmaler kan plasseres. Bruk denne funksjonen med forsiktighet.",
+      "da": "Denne indstilling kan bruges til at angive en absolut sti til en mappe, hvor overskrivninger for widgetskabeloner kan placeres. Brug denne funktion med forsigtighed."
     }
   },
   {
     "id": "create-test-payment",
     "translation": {
       "en": "Create test payment",
-      "sv": "Skapa testbetalning"
+      "sv": "Skapa testbetalning",
+      "no": "Opprett testbetaling",
+      "da": "Opret testbetaling"
     }
   },
   {
     "id": "capture-test-payment",
     "translation": {
       "en": "Capture test payment",
-      "sv": "Debitera testbetalning"
+      "sv": "Debitera testbetalning",
+      "no": "Betaling med testgebyr",
+      "da": "Betaling med testgebyr"
     }
   },
   {
     "id": "refund-test-payment",
     "translation": {
       "en": "Refund test payment",
-      "sv": "Återbetala testbetalning"
+      "sv": "Återbetala testbetalning",
+      "no": "Refusjon av testbetaling",
+      "da": "Refunder testbetaling"
     }
   },
   {
     "id": "cancel-test-payment",
     "translation": {
       "en": "Cancel test payment",
-      "sv": "Makulera testbetalning"
+      "sv": "Makulera testbetalning",
+      "no": "Avbryt testbetaling",
+      "da": "Annuller testbetaling"
     }
   },
   {
     "id": "result",
     "translation": {
       "en": "Result",
-      "sv": "Resultat"
+      "sv": "Resultat",
+      "no": "Resultater",
+      "da": "Resultater"
     }
   },
   {
     "id": "trigger-purchase-test",
     "translation": {
       "en": "Trigger purchase test",
-      "sv": "Genomför betalningstest"
+      "sv": "Genomför betalningstest",
+      "no": "Gjennomfør betalingstest",
+      "da": "Udfør betalingstest"
     }
   },
   {
     "id": "test-purchase",
     "translation": {
       "en": "Test purchase",
-      "sv": "Testbetalning"
+      "sv": "Testbetalning",
+      "no": "Testbetaling",
+      "da": "Testbetaling"
     }
   },
   {
@@ -3642,28 +3674,36 @@
     "id": "log-directory-not-writeable",
     "translation": {
       "en": "Log directory %s not writeable",
-      "sv": "Katalogen för loggning (%s) är ej skrivbar."
+      "sv": "Katalogen för loggning (%s) är ej skrivbar.",
+      "no": "Loggkatalogen (%s) er ikke skrivbar.",
+      "da": "Logmappen (%s) er ikke skrivbar."
     }
   },
   {
     "id": "redis-host",
     "translation": {
       "en": "Redis host",
-      "sv": "Värdnamn för Redis"
+      "sv": "Värdnamn för Redis",
+      "no": "Vertsnavn for Redis",
+      "da": "Værtsnavn til Redis"
     }
   },
   {
     "id": "redis-port",
     "translation": {
       "en": "Redis port",
-      "sv": "Port för Redis"
+      "sv": "Port för Redis",
+      "no": "Port for Redis",
+      "da": "Port til Redis"
     }
   },
   {
     "id": "redis-password",
     "translation": {
       "en": "Redis password",
-      "sv": "Lösenord för Redis"
+      "sv": "Lösenord för Redis",
+      "no": "Passord for Redis",
+      "da": "Adgangskode til Redis"
     }
   },
   {
