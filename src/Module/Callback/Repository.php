@@ -287,7 +287,7 @@ class Repository
         );
 
         if ($successPageReached) {
-            Config::getLogger()->error(message: 'Order success page reached.');
+            Config::getLogger()->debug(message: 'Order success page reached.');
         }
 
         $failurePageReached = PaymentHistoryRepository::hasExecuted(
@@ -296,7 +296,7 @@ class Repository
         );
 
         if ($failurePageReached) {
-            Config::getLogger()->error(message: 'Order failure page reached.');
+            Config::getLogger()->debug(message: 'Order failure page reached.');
         }
 
         $payment = PaymentRepository::get(paymentId: $paymentId);
