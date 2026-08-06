@@ -3735,5 +3735,12 @@
       "da": "Ugyldig e-mailadresse.",
       "fi": "Virheellinen sähköpostiosoite."
     }
+  },
+  {
+    "id": "customer-type",
+    "translation": {
+      "en": "Customer type",
+      "sv": "Kundtyp"
+    }
   }
 ]

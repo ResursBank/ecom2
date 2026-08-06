@@ -25,7 +25,7 @@ if (count($this->paymentMethods) !== 0) : ?>
       <tr>
         <th>
             <?= htmlspecialchars(
-                    string: Translator::translate(phraseId: 'name')
+                string: Translator::translate(phraseId: 'name')
             ) ?>
         </th>
         <th>
@@ -33,6 +33,9 @@ if (count($this->paymentMethods) !== 0) : ?>
         </th>
         <th>
             <?= Translator::translate(phraseId: 'max-total') ?>
+        </th>
+        <th>
+            <?= Translator::translate(phraseId: 'customer-type') ?>
         </th>
         <th>
             <?= Translator::translate(phraseId: 'sort-order') ?>
