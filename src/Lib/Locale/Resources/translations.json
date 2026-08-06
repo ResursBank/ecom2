@@ -3740,7 +3740,9 @@
     "id": "customer-type",
     "translation": {
       "en": "Customer type",
-      "sv": "Kundtyp"
+      "sv": "Kundtyp",
+      "no": "Kundetype",
+      "da": "Kundetype"
     }
   }
 ]
