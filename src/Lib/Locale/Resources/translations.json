@@ -1192,7 +1192,7 @@
     "id": "configure-store",
     "translation": {
       "en": "Please configure store for API connection.",
-      "sv": "Vänligen konfigurera butik för API kontakt.",
+      "sv": "Vänligen konfigurera butik för API-anslutning.",
       "no": "Vennligst konfigurer butikk for API-tilkobling.",
       "da": "Konfigurer venligst butik til API-forbindelse."
     }
