@@ -3513,6 +3513,13 @@
     }
   },
   {
+    "id": "ttl-tooltip",
+    "translation": {
+      "sv": "Kundlänkar är giltiga under angiven tid. Externa betalningar kan i vissa fall slutföras även efter att länken har löpt ut.<br /><b>Standard:</b> 120 minuter<br /><b>Max:</b> 43 200 minuter (30 dagar)",
+      "en": "Customer links remain valid for the configured time. In some cases, external payments may still be completed after the link has expired.<br /><b>Default:</b> 120 minutes<br /><b>Max:</b> 43,200 minutes (30 days)"
+    }
+  },
+  {
     "id": "general-server-error",
     "translation": {
       "en": "Something went wrong while reloading the widget. Please reload the page and try again.",
