@@ -728,6 +728,15 @@
     }
   },
   {
+    "id": "cache-settings",
+    "translation": {
+      "en": "Cache settings",
+      "sv": "Cacheinställningar",
+      "no": "Hurtigbufferinnstillinger",
+      "da": "Cacheindstillinger"
+    }
+  },
+  {
     "id": "cache-enabled",
     "translation": {
       "en": "Enable Cache",
