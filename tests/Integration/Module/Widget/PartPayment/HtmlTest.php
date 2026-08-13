@@ -482,6 +482,11 @@ class HtmlTest extends TestCase
     public function testGetCostThrowsOnEmptyCostList(): void
     {
         $this->expectException(exception: EmptyValueException::class);
+
+        if ($this->paymentMethod === null) {
+            $this->fail(message: 'Payment method failed to load');
+        }
+
         $this->widget->getCost(
             paymentMethod: $this->paymentMethod,
             amount: 90000000,
