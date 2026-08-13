@@ -9,12 +9,16 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Integration\Module\Widget\GetPeriods;
 
+use Exception;
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
+use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Utilities\Strings;
@@ -181,6 +185,57 @@ class JsTest extends TestCase
                 message: 'Failed to parse JSON periods data: ' . $error->getMessage()
             );
         }
+    }
+
+    /**
+     * Verify that exception is handled by getJsonData.
+     *
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
+    public function testGetJsonDataException(): void
+    {
+        unlink(filename: '/tmp/ecom.log');
+        Config::setup(
+            logger: new FileLogger(path: '/tmp'),
+            cache: new None(),
+            jwtAuth: new Jwt(
+                clientId: $_ENV['JWT_AUTH_CLIENT_ID'],
+                clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
+                grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
+            ),
+            storeId: $_ENV['STORE_ID']
+        );
+
+        $mockedJs = $this
+            ->getMockBuilder(className: Js::class)
+            ->onlyMethods(methods: ['getAnnuityFactorsForMethod'])
+            ->getMock();
+        $mockedJs->method('getAnnuityFactorsForMethod')
+            ->willThrowException(
+                exception: new Exception(message: 'fake error')
+            );
+
+        $mockedJs->getJsonData();
+
+        $fileContents = file_get_contents('/tmp/ecom.log');
+
+        if ($fileContents === false) {
+            unlink(filename: '/tmp/ecom.log');
+            $this->fail();
+        }
+
+        if (
+            str_contains(haystack: $fileContents, needle: 'fake error')
+        ) {
+            $this->addToAssertionCount(count: 1);
+            unlink(filename: '/tmp/ecom.log');
+            return;
+        }
+
+        unlink(filename: '/tmp/ecom.log');
+        $this->fail();
     }
 
     /**
