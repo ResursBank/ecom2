@@ -38,7 +38,9 @@ class Resursbank_FetchStores {
         overrides = {}
     ) {
         if (!this.getSelectStoreElement()) {
-            this.errorHandler(new Error('Failed to initialize store selection widget. No store selection element found.'));
+            this.errorHandler(
+                new Error('Failed to initialize store selection widget. No store selection element found.')
+            );
             return;
         }
 
