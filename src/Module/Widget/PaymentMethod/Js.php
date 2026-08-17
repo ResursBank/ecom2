@@ -16,6 +16,8 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
+ * Payment method JS widget.
+ *
  * This widget will render a JavaScript component you can interact
  * with to get information about payment methods, like if a method
  * is available based on context (cart total, country etc.).
@@ -58,6 +60,7 @@ class Js extends Widget
                 'isInternal' => $method->isInternal()
             ];
         }
+
         return $data;
     }
 }

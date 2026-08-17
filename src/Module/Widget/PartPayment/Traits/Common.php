@@ -122,20 +122,22 @@ trait Common
     }
 
     /**
+     * Determine if widget should render.
+     *
      * In order to render, this widget requires a payment method to have been
      * either supplied directly, or configured (note that the constructor will
      * attempt to populate from settings if not supplied). Additionally, part
      * payment must be enabled in user settings.
-     *
-     * @return bool
      */
     public function shouldRender(): bool
     {
         try {
-            return (
+            return
                 $this->paymentMethod !== null &&
-                UserSettingsRepository::isEnabled(field: Field::PART_PAYMENT_ENABLED)
-            );
+                UserSettingsRepository::isEnabled(
+                    field: Field::PART_PAYMENT_ENABLED
+                )
+            ;
         } catch (Throwable $error) {
             Logger::error(message: $error);
         }

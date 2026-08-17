@@ -21,7 +21,6 @@ use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\ValidationException;
-use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
@@ -45,8 +44,11 @@ class Js extends Widget
         'resursbank-ecom-widget-part-payment-js';
 
     public readonly string $content;
+
     public readonly Cost $cost;
+
     public readonly bool $shouldDisplayCostExample;
+
     public readonly string $fetchStartingCostUrl;
 
     /**
@@ -79,7 +81,9 @@ class Js extends Widget
     ) {
         $this->populateFromSettings();
 
-        $this->fetchStartingCostUrl = Repository::getUrl(url: Url::PART_PAYMENT_AJAX_URL);
+        $this->fetchStartingCostUrl = Repository::getUrl(
+            url: Url::PART_PAYMENT_AJAX_URL
+        );
 
         $this->cost = $this->getCost(
             paymentMethod: $this->paymentMethod,

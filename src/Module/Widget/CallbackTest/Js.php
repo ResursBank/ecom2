@@ -18,7 +18,7 @@ use Resursbank\Ecom\Lib\Widget\Widget;
 use Resursbank\Ecom\Module\UserSettings\Repository;
 
 /**
- * Callback test widget Javascript.
+ * Callback test widget JavaScript.
  *
  * @SuppressWarnings(PHPMD.ShortClassName)
  */
@@ -51,7 +51,9 @@ class Js extends Widget
     public function __construct()
     {
         $this->url = Repository::getUrl(url: Url::CALLBACK_TEST_TRIGGER_URL);
-        $this->receivedAtUrl = Repository::getUrl(url: Url::CALLBACK_TEST_RECEIVED_AT_URL);
+        $this->receivedAtUrl = Repository::getUrl(
+            url: Url::CALLBACK_TEST_RECEIVED_AT_URL
+        );
 
         $this->content = $this->render(
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .

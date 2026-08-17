@@ -117,7 +117,6 @@ class FileLogger implements LoggerInterface
         try {
             $this->validateLogFile();
 
-
             if ($message instanceof Throwable) {
                 $this->logError(error: $message);
             }
@@ -127,13 +126,19 @@ class FileLogger implements LoggerInterface
             if (
                 !@file_put_contents(
                     filename: $this->getFilename(),
-                    data: (new DateTime())->format(format: 'c') . ' ' . $level->name . ': ' . $message . PHP_EOL,
+                    data: (new DateTime())->format(
+                        format: 'c'
+                    ) . ' ' . $level->name . ': ' . $message . PHP_EOL,
                     flags: FILE_APPEND | LOCK_EX
                 )
             ) {
                 throw new FilesystemException(message: self::WRITE_ERROR);
             }
-        } catch (FilesystemException|ConfigException|UserSettingsException) {
+        } catch (
+            FilesystemException |
+            ConfigException |
+            UserSettingsException
+        ) {
             // There are times when logging will naturally be impossible.
             // Since logs aren't critical, we shouldn't throw in case we fail
             // to log something as that may crash the entire website.

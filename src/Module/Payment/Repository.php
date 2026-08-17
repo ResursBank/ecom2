@@ -20,6 +20,7 @@ use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\CurlException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\PaymentActionException;
 use Resursbank\Ecom\Exception\TranslationException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
@@ -27,6 +28,7 @@ use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Exception\Validation\NotJsonEncodedException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\Mapi;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Log\Logger;
 use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Payment;
@@ -39,26 +41,24 @@ use Resursbank\Ecom\Lib\Model\Payment\Metadata\EntryCollection;
 use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Model\Payment\TaskStatusDetails;
 use Resursbank\Ecom\Lib\Model\PaymentCollection;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry as HistoryEntry;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
+use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Get as MapiGet;
+use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\Utilities\Generic;
+use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Api\Cancel;
 use Resursbank\Ecom\Module\Payment\Api\Capture;
-use Resursbank\Ecom\Exception\PaymentActionException;
-use Resursbank\Ecom\Lib\UserSettings\Field;
-use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Module\Payment\Api\Create;
 use Resursbank\Ecom\Module\Payment\Api\Get;
 use Resursbank\Ecom\Module\Payment\Api\Metadata\Put;
 use Resursbank\Ecom\Module\Payment\Api\Order\ActionLog\OrderLines\Add;
 use Resursbank\Ecom\Module\Payment\Api\Refund;
 use Resursbank\Ecom\Module\Payment\Api\Search;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Entry as HistoryEntry;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\Event;
-use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
-use Resursbank\Ecom\Lib\Utilities\Price;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
-use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Throwable;
 
 /**
@@ -489,6 +489,8 @@ class Repository
     }
 
     /**
+     * Update order lines.
+     *
      * Replaces current order lines on payment. Returns null when
      * modification is silently skipped (disabled in settings). Throws
      * PaymentActionException if the payment cannot be modified or if
@@ -499,17 +501,21 @@ class Repository
      * Repository::cancel() and its standalone-cancel settings check.
      *
      * @throws ApiException
+     * @throws AttributeCombinationException
      * @throws AuthException
      * @throws ConfigException
      * @throws CurlException
      * @throws EmptyValueException
+     * @throws FilesystemException
      * @throws IllegalTypeException
      * @throws IllegalValueException
      * @throws JsonException
+     * @throws NotJsonEncodedException
      * @throws PaymentActionException
      * @throws ReflectionException
+     * @throws Throwable
+     * @throws TranslationException
      * @throws ValidationException
-     * @throws AttributeCombinationException
      */
     public static function updateOrderLines(
         string $paymentId,
@@ -596,9 +602,6 @@ class Repository
 
     /**
      * Get message explaining why a payment has failed.
-     *
-     * @param string $paymentId
-     * @return string
      */
     public static function getFailureReason(
         string $paymentId
@@ -607,13 +610,19 @@ class Repository
             $payment = self::get(paymentId: $paymentId);
 
             if ($payment->isRejectionReasonCreditDenied()) {
-                return Translator::translate(phraseId: 'credit-denied-try-again');
+                return Translator::translate(
+                    phraseId: 'credit-denied-try-again'
+                );
             }
 
-            $taskStatusDetails = self::getTaskStatusDetails(paymentId: $paymentId);
+            $taskStatusDetails = self::getTaskStatusDetails(
+                paymentId: $paymentId
+            );
 
             if (!$taskStatusDetails->completed) {
-                return Translator::translate(phraseId: 'payment-cancelled-try-again');
+                return Translator::translate(
+                    phraseId: 'payment-cancelled-try-again'
+                );
             }
         } catch (Throwable $error) {
             Logger::error(message: $error);

@@ -19,8 +19,7 @@ use Resursbank\Ecom\Module\Widget\ReadMore\Html as ReadMore;
 use Throwable;
 
 /**
- * Basic controller function to render updated information for part payment
- * widget via AJAX.
+ * Basic controller function to render updated information for PPW via AJAX.
  */
 class GetDataController extends Controller
 {

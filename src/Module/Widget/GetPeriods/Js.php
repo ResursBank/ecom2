@@ -46,9 +46,6 @@ class Js extends Widget
      * JavaScript functions to manage elements. See template.
      * @param string|null $periodElementId Required when using standard widget
      * JavaScript functions to manage elements. See template.
-     * @param bool $automatic
-     * @param string|null $selectedPaymentMethod
-     * @param int|null $selectedPeriod
      * @throws ConfigException
      * @throws FilesystemException
      * @throws UserSettingsException

@@ -25,14 +25,14 @@ use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\DataHandlerInterface;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
-use Resursbank\Ecom\Lib\Session\SessionHandlerInterface;
-use Resursbank\Ecom\Lib\Session\Session;
-use Resursbank\Ecom\Lib\UserSettings\Field;
-use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Resursbank\Ecom\Lib\Model\UserSettings\Metadata;
+use Resursbank\Ecom\Lib\Session\Session;
+use Resursbank\Ecom\Lib\Session\SessionHandlerInterface;
+use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\UserSettings\NullReader;
 use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
 use Resursbank\Ecom\Module\Store\Repository;
+use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
 use Throwable;
 
 use function dirname;
@@ -135,9 +135,15 @@ final class Config
      * database (or wherever) the integration stores them, and configure our
      * Ecom instance using them.
      *
-     * @todo It needs considering if the getter methods should access the config directly. In some cases this makes sense, but keeping it centralized here means we do not need to access the config layer as often, and some operations like creating the file logger won't need to happen over and over. Separating it to the getters is cleaner, the operations are usually not expensive (especially if cache is enabled, and the ecom instance it also cached). Food for thought, keeping it all here at least during prototype development.
-     *
      * @throws ConfigException
+     * @todo It needs considering if the getter methods should access the
+     * @todo config directly. In some cases this makes sense, but keeping it
+     * @todo centralized here means we do not need to access the config layer
+     * @todo as often, and some operations like creating the file logger won't
+     * @todo need to happen over and over. Separating it to the getters is
+     * @todo cleaner, the operations are usually not expensive (especially if
+     * @todo cache is enabled, and the ecom instance it also cached). Food for
+     * @todo thought, keeping it all here at least during prototype development.
      */
     public static function configure(): void
     {
@@ -149,12 +155,16 @@ final class Config
 
             // Update network settings with timeout from user settings.
             self::$instance->network->setTimeout(
-                timeout: UserSettingsRepository::getValue(field: Field::API_TIMEOUT)
+                timeout: UserSettingsRepository::getValue(
+                    field: Field::API_TIMEOUT
+                )
             );
 
             // Override cache integration with None if cache is disabled in
             // user settings.
-            if (!UserSettingsRepository::isEnabled(field: Field::CACHE_ENABLED)) {
+            if (
+                !UserSettingsRepository::isEnabled(field: Field::CACHE_ENABLED)
+            ) {
                 self::$instance->cache = new None();
             }
 
@@ -165,7 +175,7 @@ final class Config
                 if (self::$instance->jwtAuth === null) {
                     self::setJwtAuth(auth: new Jwt(
                         clientId: UserSettingsRepository::getClientId(),
-                        clientSecret: UserSettingsRepository::getClientSecret(),
+                        clientSecret: UserSettingsRepository::getClientSecret()
                     ));
                 }
 
@@ -182,7 +192,9 @@ final class Config
                 self::$instance->logger instanceof NoneLogger &&
                 UserSettingsRepository::isEnabled(field: Field::LOG_ENABLED)
             ) {
-                $logDir = UserSettingsRepository::getValue(field: Field::LOG_DIR);
+                $logDir = UserSettingsRepository::getValue(
+                    field: Field::LOG_DIR
+                );
 
                 if ($logDir !== null && $logDir !== '') {
                     self::$instance->logger = new FileLogger(path: $logDir);
@@ -196,7 +208,9 @@ final class Config
                 // The only way this fails is if the store country code is not
                 // SE, FI, DK or NO which are the only supported values by the
                 // API at the moment.
-                self::$instance->location = Location::from(value: $store->countryCode->value);
+                self::$instance->location = Location::from(
+                    value: $store->countryCode->value
+                );
             }
 
             // Automatically resolve currency symbol based on location.
@@ -238,8 +252,7 @@ final class Config
      */
     public static function isReady(): bool
     {
-        return self::$instance !== null
-            && self::$instance->jwtAuth !== null
+        return self::$instance?->jwtAuth !== null
             && self::$instance->storeId !== null;
     }
 
