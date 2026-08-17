@@ -14,27 +14,22 @@ use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionParameter;
-use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Exception\TranslationException;
+use Resursbank\Ecom\Config;
+use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
 use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
-use Resursbank\Ecom\Lib\Cache\AbstractCache;
 use Resursbank\Ecom\Lib\Locale\Location;
-use Resursbank\Ecom\Lib\Locale\Translator;
+use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\UserSettings;
+use Resursbank\Ecom\Lib\Repository\Cache;
+use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\UserSettings\Url;
 use Resursbank\Ecom\Module\PaymentMethod\Repository as PaymentMethodRepository;
 use Resursbank\Ecom\Module\Store\Repository as StoreRepository;
 use Throwable;
-use JsonException;
-use Resursbank\Ecom\Config;
-use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
-use Resursbank\Ecom\Lib\UserSettings\Field;
-use Resursbank\Ecom\Lib\Model\UserSettings;
-use Resursbank\Ecom\Lib\Repository\Cache;
 use ValueError;
 
 class Repository
@@ -44,12 +39,13 @@ class Repository
     private static ?array $userSettingsParams = null;
 
     /**
+     * Get settings.
+     *
      * NOTE: Exceptions cannot be logged here, because logging will check if
      * logging is enabled, what log level is configured etc. Which means this
      * can lead to circular calls if the exception was caused by a config
      * issue.
      *
-     * @return UserSettings
      * @throws UserSettingsException
      * @todo Currently, we cannot log from this function since logging will
      * @todo collect settings in order to check log level. This needs solving
@@ -72,6 +68,7 @@ class Repository
             $fields = Field::cases();
 
             $args = [];
+
             foreach ($fields as $field) {
                 $value = self::getValue(field: $field);
 
@@ -119,7 +116,6 @@ class Repository
         // Fetch raw value using reader, this is the data read directly from
         // the integration database most likely.
         $value = $reader->read(field: $field);
-        ;
 
         // Name of the settings parameter in the constructor of UserSettings.
         $fieldName = $field->value;
@@ -175,9 +171,13 @@ class Repository
             try {
                 return $typeName::from(value: $value);
             } catch (ValueError) {
-                throw new InvalidArgumentException(message: 'Invalid enum value.');
+                throw new InvalidArgumentException(
+                    message: 'Invalid enum value.'
+                );
             } catch (Throwable) {
-                throw new InvalidArgumentException(message: 'Unexpected error while reading form enum.');
+                throw new InvalidArgumentException(
+                    message: 'Unexpected error while reading form enum.'
+                );
             }
         }
 
@@ -192,7 +192,8 @@ class Repository
             ),
             'string' => (string)$value,
             default => throw new InvalidArgumentException(
-                message: "Cannot cast value for field '$fieldName' to type '$typeName'"
+                message: 'Cannot cast value for field "' . $fieldName .
+                '"" to type "' . $typeName . '"'
             ),
         };
     }
@@ -202,7 +203,6 @@ class Repository
      *
      * NOTE: This methods avoids getSettings to prevent circular calls.
      *
-     * @return string|null
      * @throws ConfigException
      */
     public static function getClientId(): ?string
@@ -218,14 +218,17 @@ class Repository
      *
      *  NOTE: This methods avoids getSettings to prevent circular calls.
      *
-     * @return string|null
      * @throws ConfigException
      */
     public static function getClientSecret(): ?string
     {
         return match (self::getValue(field: Field::ENVIRONMENT)) {
-            Environment::PROD => self::getValue(field: Field::CLIENT_SECRET_PROD),
-            Environment::TEST => self::getValue(field: Field::CLIENT_SECRET_TEST),
+            Environment::PROD => self::getValue(
+                field: Field::CLIENT_SECRET_PROD
+            ),
+            Environment::TEST => self::getValue(
+                field: Field::CLIENT_SECRET_TEST
+            ),
         };
     }
 
@@ -286,7 +289,11 @@ class Repository
             $methodName = 'getDefault' . str_replace(
                 search: ' ',
                 replace: '',
-                subject: ucwords(string: str_replace(search: '_', replace: ' ', subject: $field->value))
+                subject: ucwords(string: str_replace(
+                    search: '_',
+                    replace: ' ',
+                    subject: $field->value
+                ))
             );
 
             $reader = Config::getSettingsReader();
@@ -296,7 +303,7 @@ class Repository
             }
 
             return self::getDefaultFromParam(field: $field);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             // @todo Logging missing, cause using logging currently required UserSettings
         }
 
@@ -311,7 +318,7 @@ class Repository
             if ($param->isDefaultValueAvailable()) {
                 return $param->getDefaultValue();
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             // @todo Logging missing, cause using logging currently required UserSettings
         }
 
@@ -333,7 +340,9 @@ class Repository
 
         // If there is no URL, raise an error.
         if ($value === null) {
-            throw new UserSettingsException(message: "No URL configured for '{$url->name}'");
+            throw new UserSettingsException(
+                message: "No URL configured for '{$url->name}'"
+            );
         }
 
         // Validate value.
@@ -361,20 +370,8 @@ class Repository
     }
 
     /**
-     * Return the configured value if any, otherwise resolve default value if
-     * there is a valid API account configured.
-     */
-    protected static function getPartPaymentThreshold(?string $configured): ?float
-    {
-        if (is_numeric(value: $configured)) {
-            return (float) $configured;
-        }
-
-        // Return default value based on the country tied to the API acc.
-        return self::getDefaultPartPaymentThreshold();
-    }
-
-    /**
+     * Get default part payment threshold.
+     *
      * Return the default part payment threshold based on the configured API
      * account country.
      */
@@ -387,6 +384,8 @@ class Repository
     }
 
     /**
+     * Get store id.
+     *
      * Resolve store id from user settings, fall back to first available if a
      * valid API account configured.
      *
@@ -408,23 +407,49 @@ class Repository
                 return null;
             }
 
-            // If no store has been configured, use the first available store from
-            // the API (if any).
+            // If no store has been configured, use the first available store
+            // from the API (if any).
             return StoreRepository::getStores()->getFirst()?->id ?? null;
         } catch (Throwable) {
-            throw new UserSettingsException(message: 'Failed to retrieve store id.');
+            throw new UserSettingsException(
+                message: 'Failed to retrieve store id.'
+            );
         }
     }
 
     /**
+     * Get configured part payment threshold.
+     *
+     * Return the configured value if any, otherwise resolve default value if
+     * there is a valid API account configured.
+     */
+    protected static function getPartPaymentThreshold(
+        ?string $configured
+    ): ?float {
+        if (is_numeric(value: $configured)) {
+            return (float) $configured;
+        }
+
+        // Return default value based on the country tied to the API acc.
+        return self::getDefaultPartPaymentThreshold();
+    }
+
+    /**
+     * Get UserSettings parameter.
+     *
      * Resolve the ReflectionParameter for a given field name in the
      * UserSettings constructor.
      */
-    protected static function getUserSettingsParam(string $search): ReflectionParameter
-    {
+    protected static function getUserSettingsParam(
+        string $search
+    ): ReflectionParameter {
         if (self::$userSettingsParams === null) {
-            $reflection = new ReflectionClass(objectOrClass: UserSettings::class);
-            self::$userSettingsParams = $reflection->getConstructor()->getParameters();
+            $reflection = new ReflectionClass(
+                objectOrClass: UserSettings::class
+            );
+            self::$userSettingsParams = $reflection
+                ->getConstructor()
+                ->getParameters();
         }
 
         foreach (self::$userSettingsParams as $param) {
@@ -432,14 +457,18 @@ class Repository
                 $type = $param->getType();
 
                 if (!$type instanceof ReflectionNamedType) {
-                    throw new InvalidArgumentException(message: "Unsupported type for field '$param'");
+                    throw new InvalidArgumentException(
+                        message: "Unsupported type for field '$param'"
+                    );
                 }
 
                 return $param;
             }
         }
 
-        throw new InvalidArgumentException(message: "Field '$search' not found in UserSettings constructor");
+        throw new InvalidArgumentException(
+            message: "Field '$search' not found in UserSettings constructor"
+        );
     }
 
     /**

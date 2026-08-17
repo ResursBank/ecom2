@@ -71,23 +71,43 @@ class Repository
         $session = $cache->read();
 
         if (!$session instanceof Cache || $session->expired()) {
-            $params = [];
-
-            if ($campaign !== null) {
-                $params['campaign'] = $campaign;
-            }
-
-            $session = (new Post(
-                model: Session::class,
-                route: 'stores/' . Config::getStoreId() . '/sessions',
-                params: $params
-            ))->call();
-
-            if (!$session instanceof Session) {
-                throw new ApiException(message: 'Failed to resolve session.');
-            }
-
+            $session = self::getSessionWithoutCache(campaign: $campaign);
             $cache->write(data: $session);
+        }
+
+        return $session;
+    }
+
+    /**
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public static function getSessionWithoutCache(?string $campaign = null): Session
+    {
+        $params = [];
+
+        if ($campaign !== null) {
+            $params['campaign'] = $campaign;
+        }
+
+        $session = (new Post(
+            model: Session::class,
+            route: 'stores/' . Config::getStoreId() . '/sessions',
+            params: $params
+        ))->call();
+
+        if (!$session instanceof Session) {
+            throw new ApiException(message: 'Failed to resolve session.');
         }
 
         return $session;

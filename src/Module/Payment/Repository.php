@@ -174,7 +174,9 @@ class Repository
     }
 
     /**
-     * Capture payment. Returns null when capture is silently skipped
+     * Capture payment.
+     *
+     * Returns null when capture is silently skipped
      * (disabled in settings or already captured). Throws
      * PaymentActionException if the payment exists but cannot be
      * captured.
@@ -238,7 +240,9 @@ class Repository
     }
 
     /**
-     * Cancel payment. Returns null when cancellation is silently skipped
+     * Cancel payment
+     *
+     * Returns null when cancellation is silently skipped
      * (disabled in settings or already cancelled). Throws
      * PaymentActionException if the payment exists but cannot be
      * cancelled.
@@ -294,7 +298,9 @@ class Repository
     }
 
     /**
-     * Refund payment. Returns null when refund is silently skipped
+     * Refund payment.
+     *
+     * Returns null when refund is silently skipped
      * (disabled in settings or already refunded). Throws
      * PaymentActionException if the payment exists but cannot be
      * refunded.
