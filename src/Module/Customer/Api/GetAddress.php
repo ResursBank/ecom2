@@ -102,9 +102,7 @@ class GetAddress
         );
 
         if (!$result instanceof Address) {
-            throw new TypeError(
-                message: 'Expected PaymentCollection.'
-            );
+            throw new TypeError(message: 'Expected PaymentCollection.');
         }
 
         return $result;

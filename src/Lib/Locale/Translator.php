@@ -113,6 +113,8 @@ abstract class Translator
     }
 
     /**
+     * Safe translate method which does not throw errors.
+     *
      * Like translate() but catches exceptions and returns the phraseId
      * as fallback, logging the error instead of throwing.
      */

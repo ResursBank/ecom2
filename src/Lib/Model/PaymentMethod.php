@@ -24,9 +24,6 @@ use Resursbank\Ecom\Lib\Model\Interface\PaymentMethod as PaymentMethodInterface;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\Campaign;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\LegalLinkCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\Type;
-use Resursbank\Ecom\Lib\Model\CustomerType;
-use Resursbank\Ecom\Lib\Validation\FloatValidation;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
 
 /**
  * Defines payment method entity.
@@ -131,6 +128,8 @@ class PaymentMethod extends Model implements PaymentMethodInterface
     }
 
     /**
+     * Check if payment method is available.
+     *
      * This function lets us check if a payment method should be available based
      * on the data provided to it.
      *
@@ -142,7 +141,7 @@ class PaymentMethod extends Model implements PaymentMethodInterface
     public function isAvailable(
         float $amount,
         CustomerType $customerType,
-        ?Location $location,
+        ?Location $location
     ): bool {
         // Amount must be within limits, if provided.
         if (
@@ -168,14 +167,10 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         }
 
         // Check location restrictions. External methods are global.
-        if (
-            $this->isInternal() &&
-            Config::getLocation() != $location
-        ) {
-            return false;
-        }
-
-        return true;
+        return 
+            !$this->isInternal() ||
+            Config::getLocation() === $location
+        ;
     }
 
     /**

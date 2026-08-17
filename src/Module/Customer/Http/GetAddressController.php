@@ -22,7 +22,6 @@ use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Model\Widget\GetAddress\GetAddressRequest;
-use Resursbank\Ecom\Lib\Utilities\Session;
 use Resursbank\Ecom\Module\Customer\Repository;
 
 /**
@@ -52,7 +51,7 @@ class GetAddressController extends Controller
     public function exec(
         ?GetAddressRequest $data = null
     ): string {
-        $data = $data ?? $this->getRequestData();
+        $data ??= $this->getRequestData();
 
         // Store supplied government id in session.
         Repository::setSsnData(data: $data);

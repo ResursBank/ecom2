@@ -164,6 +164,8 @@ class Repository
     }
 
     /**
+     * Get array of payment method IDs and names.
+     *
      * Retrieve associative array of payment method IDs and names, filtering
      * out any payment methods that do not support part payment.
      *
@@ -190,6 +192,8 @@ class Repository
     }
 
     /**
+     * Get unique list of possible annuity period values.
+     *
      * Resolve unique list of possible values for annuity periods across all
      * payment methods eligible for part payment.
      *

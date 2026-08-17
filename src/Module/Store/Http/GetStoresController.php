@@ -15,10 +15,10 @@ use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Http\Controller;
+use Resursbank\Ecom\Lib\Locale\Translator;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Store\GetStoresRequest;
 use Resursbank\Ecom\Module\Store\Repository;
-use Resursbank\Ecom\Lib\Locale\Translator;
 use Throwable;
 
 /**
