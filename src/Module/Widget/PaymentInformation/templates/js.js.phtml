@@ -140,7 +140,8 @@ class Resursbank_PaymentInformation {
         // Validate that payment ID was found
         if (!instance.paymentId || instance.paymentId === '') {
             <?php if (LogLevel::isDebugMode()): ?>
-            console.warn('No payment ID found in DOM for Resursbank Payment Information widget. Instance creation skipped.');
+            console.warn('No payment ID found in DOM for Resursbank Payment ' +
+                'Information widget. Instance creation skipped.');
             <?php endif; ?>
             return null;
         }

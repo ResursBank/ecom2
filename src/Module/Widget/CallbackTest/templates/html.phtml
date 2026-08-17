@@ -23,7 +23,9 @@ use Resursbank\Ecom\Lib\Locale\Translator;
         </button>
     </div>
 
-    <div class="rb-test-callback-last-received <?= $this->testReceivedAt !== null ? 'rb-test-callback-received' : 'rb-test-callback-not-received' ?>">
+    <div class="rb-test-callback-last-received <?= $this->testReceivedAt !== null ?
+            'rb-test-callback-received' :
+            'rb-test-callback-not-received' ?>">
         <?= Translator::translate(phraseId: 'test-last-received-at') ?>:
         <span id="resursbank-test-callback-received-at" class="rb-test-callback-timestamp">
             <?php if ($this->testReceivedAt !== null): ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -197,7 +198,8 @@ class Resursbank_CallbackTest {
      * Override this method to handle success in your implementation.
      *
      * @param {any} data
-     * @todo Consider a timeout here to allow time for Resurs Bank to send us the callback. It should be pretty instant, but on some setups maybe it might take a second or two?
+     * @todo Consider a timeout here to allow time for Resurs Bank to send us
+     * @todo the callback. It should be pretty instant, but on some setups maybe it might take a second or two?
      */
     onSuccess(data) {
         this.refreshReceivedAt();
@@ -255,7 +257,9 @@ class Resursbank_CallbackTest {
                 }
             })
             .catch(error => {
-                console.warn('<?= Translator::translate(phraseId: 'callback-test-failed-to-fetch-received-at') ?>', error);
+                console.warn('<?= Translator::translate(
+                    phraseId: 'callback-test-failed-to-fetch-received-at'
+                ) ?>', error);
             });
     }
 

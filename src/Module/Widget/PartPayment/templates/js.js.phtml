@@ -573,7 +573,8 @@ document.addEventListener(
     'DOMContentLoaded',
     function () {
         <?php  if ($this->containerElDomPath === null): ?>
-        console.warn('Resurs Bank: missing part payment widget container element. Please specify in widget configuration.');
+        console.warn('Resurs Bank: missing part payment widget container ' +
+            'element. Please specify in widget configuration.');
         <?php else: ?>
         Resursbank_PartPayment.createInstance(
             document.querySelector('<?= $this->containerElDomPath ?>'),
