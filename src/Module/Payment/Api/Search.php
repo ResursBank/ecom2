@@ -32,8 +32,8 @@ use Resursbank\Ecom\Lib\Network\RequestMethod;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use stdClass;
-
 use TypeError;
+
 use function is_array;
 
 /**
@@ -99,9 +99,7 @@ class Search
         );
 
         if (!$result instanceof PaymentCollection) {
-            throw new TypeError(
-                message: 'Expected PaymentCollection.'
-            );
+            throw new TypeError(message: 'Expected PaymentCollection.');
         }
 
         return $result;

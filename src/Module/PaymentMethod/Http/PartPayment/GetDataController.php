@@ -38,13 +38,13 @@ class GetDataController extends Controller
 
             $paymentMethod = Repository::getPartPaymentMethod();
 
-            if ($paymentMethod == null) {
-                throw new HttpException(message: 'Part payment method is not configured');
+            if ($paymentMethod === null) {
+                throw new HttpException(
+                    message: 'Part payment method is not configured'
+                );
             }
 
-            $widget = new PartPaymentWidget(
-                amount: $amount
-            );
+            $widget = new PartPaymentWidget(amount: $amount);
 
             $readMoreWidget = new ReadMore(
                 paymentMethod: $paymentMethod,
@@ -54,7 +54,7 @@ class GetDataController extends Controller
             $response = new InfoResponse(
                 startingAt: $widget->cost->monthlyCost,
                 html: $widget->content,
-                readMoreHtml: $readMoreWidget->content,
+                readMoreHtml: $readMoreWidget->content
             );
 
             return $this->respond(data: $response->toArray());
@@ -63,7 +63,9 @@ class GetDataController extends Controller
         } catch (Throwable $error) {
             $this->log(exception: $error);
             return $this->respondWithError(
-                exception: new HttpException(message: 'Failed to render part payment widget components.')
+                exception: new HttpException(
+                    message: 'Failed to render part payment widget components.'
+                )
             );
         }
     }

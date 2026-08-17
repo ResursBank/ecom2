@@ -25,8 +25,6 @@ use Resursbank\Ecom\Lib\Log\Traits\ExceptionLog;
 use Resursbank\Ecom\Lib\Model\Address;
 use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Widget\GetAddress\GetAddressRequest;
-use Resursbank\Ecom\Lib\Order\CustomerType as OrderCustomerType;
-use Resursbank\Ecom\Lib\Session\Session;
 use Resursbank\Ecom\Lib\Utilities\DataConverter;
 use Resursbank\Ecom\Module\Customer\Api\GetAddress;
 use stdClass;
@@ -107,7 +105,8 @@ class Repository
      *
      * @throws ConfigException
      */
-    public static function clearSsnData(): void {
+    public static function clearSsnData(): void
+    {
         Config::getSessionHandler()->delete(key: self::SESSION_KEY_SSN_DATA);
     }
 
@@ -118,11 +117,14 @@ class Repository
      *
      * @throws ConfigException
      */
-    public static function getSsnData(): ?GetAddressRequest {
+    public static function getSsnData(): ?GetAddressRequest
+    {
         $result = null;
 
         try {
-            $data = Config::getSessionHandler()->get(key: self::SESSION_KEY_SSN_DATA);
+            $data = Config::getSessionHandler()->get(
+                key: self::SESSION_KEY_SSN_DATA
+            );
 
             if ($data !== '') {
                 $data = json_decode(
@@ -145,7 +147,7 @@ class Repository
                     );
                 }
             }
-        } catch (Throwable $error) {
+        } catch (Throwable) {
             // Failing is harmless, client can supply info on gateway.
             $result = null;
             Config::getLogger()->debug(message:

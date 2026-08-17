@@ -51,7 +51,10 @@ class Repository
      *
      * @return UserSettings
      * @throws UserSettingsException
-     * @todo Currently, we cannot log from this function since logging will collect settings in order to check log level. This needs solving so we can log directly from the catch block in this method I think. I'm not sure how now, we should consider it.
+     * @todo Currently, we cannot log from this function since logging will
+     * @todo collect settings in order to check log level. This needs solving
+     * @todo so we can log directly from the catch block in this method I think.
+     * @todo I'm not sure how now, we should consider it.
      */
     public static function getSettings(): UserSettings
     {
@@ -115,7 +118,8 @@ class Repository
 
         // Fetch raw value using reader, this is the data read directly from
         // the integration database most likely.
-        $value = $reader->read(field: $field);;
+        $value = $reader->read(field: $field);
+        ;
 
         // Name of the settings parameter in the constructor of UserSettings.
         $fieldName = $field->value;
@@ -341,7 +345,7 @@ class Repository
     /**
      * Get payment method from the API based on the configured ID in settings.
      */
-    public static function getPartPaymentMethod() : ?PaymentMethod
+    public static function getPartPaymentMethod(): ?PaymentMethod
     {
         try {
             $id = self::getValue(field: Field::PART_PAYMENT_METHOD_ID);
@@ -431,7 +435,7 @@ class Repository
                     throw new InvalidArgumentException(message: "Unsupported type for field '$param'");
                 }
 
-               return $param;
+                return $param;
             }
         }
 

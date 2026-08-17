@@ -174,9 +174,9 @@ class Repository
         $result = [];
 
         try {
-           $methods = self::filterMethods(
-               paymentMethods: PaymentMethodRepository::getPaymentMethods()
-           );
+            $methods = self::filterMethods(
+                paymentMethods: PaymentMethodRepository::getPaymentMethods()
+            );
 
             /** @var PaymentMethod $method */
             foreach ($methods as $method) {
@@ -215,7 +215,9 @@ class Repository
 
             /** @var PaymentMethod $method */
             foreach ($methods as $method) {
-                $factors = self::getAnnuityFactors(paymentMethodId: $method->getId());
+                $factors = self::getAnnuityFactors(
+                    paymentMethodId: $method->getId()
+                );
 
                 /** @var AnnuityInformation $factor */
                 foreach ($factors as $factor) {

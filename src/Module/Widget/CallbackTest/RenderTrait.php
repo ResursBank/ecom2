@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Resurs Bank AB. All rights reserved.
  * See LICENSE for license details.
@@ -29,7 +30,9 @@ trait RenderTrait
     public function shouldRender(): bool
     {
         $triggerUrl = Repository::getUrl(url: Url::CALLBACK_TEST_TRIGGER_URL);
-        $receivedAtUrl = Repository::getUrl(url: Url::CALLBACK_TEST_RECEIVED_AT_URL);
+        $receivedAtUrl = Repository::getUrl(
+            url: Url::CALLBACK_TEST_RECEIVED_AT_URL
+        );
         return $triggerUrl !== '' && $receivedAtUrl !== '';
     }
 }

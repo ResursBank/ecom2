@@ -29,7 +29,10 @@ class FetchHtml extends Controller
         try {
             $paymentId = $this->getRequestParameter(parameter: 'payment_id');
 
-            if (!$paymentId || !(new StringValidation())->isUuid(value: $paymentId)) {
+            if (
+                !$paymentId ||
+                !(new StringValidation())->isUuid(value: $paymentId)
+            ) {
                 throw new HttpException(message: 'Invalid payment id.');
             }
 
@@ -41,7 +44,9 @@ class FetchHtml extends Controller
         } catch (Throwable $error) {
             $this->log(exception: $error);
             return $this->respondWithError(
-                exception: new HttpException(message: 'Failed to render payment information widget.')
+                exception: new HttpException(
+                    message: 'Failed to render payment information widget.'
+                )
             );
         }
     }
