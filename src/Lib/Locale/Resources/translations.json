@@ -3644,5 +3644,15 @@
       "da": "Ugyldig e-mailadresse.",
       "fi": "Virheellinen sähköpostiosoite."
     }
+  },
+  {
+    "id": "api-temporary-error",
+    "translation": {
+      "en": "There is currently a problem with the Resurs Bank payment service. Please try a different payment method, or try again in a few minutes.",
+      "sv": "Det är för tillfället ett problem med Resurs Banks betaltjänst. Vänligen prova en annan betalningsmetod, eller försök igen om några minuter.",
+      "no": "Det er for øyeblikket et problem med Resurs Banks betalingstjeneste. Vennligst prøv en annen betalingsmetode, eller prøv igjen om noen minutter.",
+      "da": "Der er i øjeblikket et problem med Resurs Banks betalingstjeneste. Prøv venligst en anden betalingsmetode, eller prøv igen om et par minutter.",
+      "fi": "Resurs Bankin maksupalvelussa on tällä hetkellä ongelma. Kokeile toista maksutapaa tai yritä uudelleen muutaman minuutin kuluttua."
+    }
   }
 ]
