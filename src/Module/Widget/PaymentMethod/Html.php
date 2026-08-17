@@ -12,6 +12,7 @@ namespace Resursbank\Ecom\Module\Widget\PaymentMethod;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection;
+use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -36,5 +37,20 @@ class Html extends Widget
             file: $this->getWidgetName() . DIRECTORY_SEPARATOR . 'templates' .
             DIRECTORY_SEPARATOR . 'html.phtml'
         );
+    }
+
+    public function getCustomerTypes(PaymentMethod $method): string
+    {
+        $valid = [];
+
+        if ($method->enabledForNaturalCustomer) {
+            $valid[] = 'NATURAL';
+        }
+
+        if ($method->enabledForLegalCustomer) {
+            $valid[] = 'LEGAL';
+        }
+
+        return implode(separator: '/', array: $valid);
     }
 }

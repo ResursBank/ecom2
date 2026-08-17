@@ -27,7 +27,7 @@ if (count($this->paymentMethods) !== 0) : ?>
       <tr>
         <th>
             <?= htmlspecialchars(
-                    string: Translator::translate(phraseId: 'name')
+                string: Translator::translate(phraseId: 'name')
             ) ?>
         </th>
         <th>
@@ -35,6 +35,9 @@ if (count($this->paymentMethods) !== 0) : ?>
         </th>
         <th>
             <?= Translator::translate(phraseId: 'max-total') ?>
+        </th>
+        <th>
+            <?= Translator::translate(phraseId: 'customer-type') ?>
         </th>
         <th>
             <?= Translator::translate(phraseId: 'sort-order') ?>
@@ -50,11 +53,10 @@ foreach ($this->paymentMethods as $method) : ?>
           <td><?= htmlspecialchars(string: $method->getName()) ?></td>
           <td><?= Price::format(value: $method->getMinLimit())?></td>
           <td><?= Price::format(value: $method->getMaxLimit()) ?></td>
+          <td><?= htmlspecialchars(string: $this->getCustomerTypes(method: $method)) ?></td>
           <td><?= $method->getSortOrder() ?></td>
         </tr>
-      <?php endforeach;
-
- ?>
+<?php endforeach; ?>
       </tbody>
     </table>
   </div>

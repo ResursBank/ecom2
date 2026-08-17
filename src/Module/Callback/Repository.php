@@ -42,8 +42,6 @@ use Resursbank\Ecom\Lib\Model\PaymentHistory\User;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\Post;
 use Resursbank\Ecom\Lib\UserSettings\Url;
 use Resursbank\Ecom\Lib\Utilities\Strings;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
-use Resursbank\Ecom\Module\Payment\Repository as PaymentRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as EcomPaymentHistoryRepository;
 use Resursbank\Ecom\Module\PaymentHistory\Repository as PaymentHistoryRepository;
 use Resursbank\Ecom\Module\UserSettings\Repository as UserSettingsRepository;
@@ -59,7 +57,6 @@ class Repository
     /**
      * Trigger test callback.
      *
-     * @return TestResponse
      * @throws ApiException
      * @throws AttributeCombinationException
      * @throws AuthException
@@ -105,9 +102,6 @@ class Repository
     }
 
     /**
-     * @param CallbackInterface $callback
-     * @param null|callable $process
-     * @return int
      * @throws AttributeCombinationException
      * @throws ConfigException
      * @throws HttpException
@@ -125,7 +119,9 @@ class Repository
         // If callback is not ready to be processed, throw error.
         if (!self::isReady(callback: $callback)) {
             throw new HttpException(
-                message: Translator::translate(phraseId: 'called-error-order-not-ready'),
+                message: Translator::translate(
+                    phraseId: 'called-error-order-not-ready'
+                ),
                 code: 503
             );
         }
@@ -306,8 +302,6 @@ class Repository
      * This should never take more than a couple of seconds at worst, so
      * accepting the second attempted Authorization callback should be fine.
      *
-     * @param CallbackInterface $callback
-     * @return bool
      * @throws AttributeCombinationException
      * @throws ConfigException
      * @throws JsonException
@@ -326,12 +320,12 @@ class Repository
             event: Event::REACHED_ORDER_FAILURE_PAGE
         );
 
-        return (
+        return
             $successPageReached ||
             $failurePageReached ||
             $callback instanceof CreditApplication ||
             self::hasReceivedFirstAuthorization(callback: $callback)
-       );
+        ;
     }
 
     /**

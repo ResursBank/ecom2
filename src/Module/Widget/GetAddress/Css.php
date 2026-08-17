@@ -52,7 +52,8 @@ class Css extends Widget
             $settings = Repository::getSettings();
             $store = StoreRepository::getConfiguredStore();
 
-            if ($settings->enableGetAddress &&
+            if (
+                $settings->enableGetAddress &&
                 $store !== null &&
                 $store->countryCode === Country::SE
             ) {
