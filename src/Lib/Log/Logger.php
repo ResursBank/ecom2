@@ -13,6 +13,8 @@ use Resursbank\Ecom\Config;
 use Throwable;
 
 /**
+ * Logging wrapper class.
+ *
  * This is a wrapper for our logger functions, to allow logging which fails
  * silently without throwing exceptions.
  *

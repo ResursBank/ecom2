@@ -18,6 +18,8 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 
 /**
+ * User-defined settings model.
+ *
  * These are settings defined by the user (integration), such as API credentials,
  * part payment method / annuity factor, swish limits etc.
  */

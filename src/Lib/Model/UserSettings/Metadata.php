@@ -16,6 +16,8 @@ use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
 use Resursbank\Ecom\Lib\Model\Model;
 
 /**
+ * User settings metadata model.
+ *
  * This model contains data such as the store identifier for the config reader.
  * E.g., the store view id to be used when reading / writing config data in
  * the M2 integration and similar.
@@ -29,7 +31,7 @@ class Metadata extends Model
      * @throws ReflectionException
      */
     public function __construct(
-        #[StringNotEmpty] public readonly ?string $storeId = null,
+        #[StringNotEmpty] public readonly ?string $storeId = null
     ) {
         parent::__construct();
     }

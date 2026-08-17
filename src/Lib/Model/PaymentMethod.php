@@ -167,7 +167,7 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         }
 
         // Check location restrictions. External methods are global.
-        return 
+        return
             !$this->isInternal() ||
             Config::getLocation() === $location
         ;

@@ -37,8 +37,10 @@ class Network extends Model
     public function setTimeout(int $timeout): void
     {
         // No sense in setting 0 or negative value.
-        if ($timeout > 0) {
-            $this->timeout = $timeout;
+        if ($timeout <= 0) {
+            return;
         }
+
+        $this->timeout = $timeout;
     }
 }

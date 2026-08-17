@@ -44,7 +44,6 @@ enum LogLevel: int
     /**
      * Check if loglevel is set to DEBUG.
      *
-     * @return bool
      * @throws UserSettingsException
      */
     public static function isDebugMode(): bool
@@ -62,7 +61,7 @@ enum LogLevel: int
     /**
      * This can be used by integrations to render a select field with log levels.
      *
-     * @return string[] Associative array of log level values and their names.
+     * @return array Associative array of log level values and their names.
      */
     public static function getAssoc(): array
     {

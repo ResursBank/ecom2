@@ -289,6 +289,8 @@ class Payment extends Model
     }
 
     /**
+     * Check if payment can be modified.
+     *
      * A payment at Resurs Bank can be modified if we can cancel it, or if it is
      * already cancelled but has an approved credit limit greater than zero.
      *
@@ -298,14 +300,14 @@ class Payment extends Model
      */
     public function canModify(): bool
     {
-        return (
+        return
             !$this->isFrozen() &&
             $this->canCancel() ||
             (
                 $this->isCancelled() &&
                 $this->application->approvedCreditLimit > 0.0
             )
-        );
+        ;
     }
 
     /**
