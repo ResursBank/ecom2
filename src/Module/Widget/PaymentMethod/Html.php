@@ -51,9 +51,6 @@ class Html extends Widget
             $valid[] = 'LEGAL';
         }
 
-        return implode(
-            separator: '/',
-            array: $valid
-        );
+        return implode(separator: '/', array: $valid);
     }
 }
