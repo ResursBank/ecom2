@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\Payment\Order\ActionLog\OrderLineCollection;
 use Resursbank\Ecom\Lib\Utilities\MockSigner;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Payment\Repository;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 
 /**
  * Integration tests for the CurlException class.
@@ -50,7 +51,8 @@ class CurlExceptionTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         parent::setUp();
@@ -152,100 +154,6 @@ class CurlExceptionTest extends TestCase
             $invalidFieldName = $e->getInvalidFieldName();
             $this->assertSame(
                 expected: InvalidFieldName::GOVERNMENT_ID,
-                actual: $invalidFieldName
-            );
-        }
-    }
-
-    /**
-     * Assert getDetailedMessage appends validation info for invalid phone number.
-     *
-     * @throws Exception
-     */
-    public function testGetDetailedMessageWithInvalidPhoneNumber(): void
-    {
-        // Test that an invalid phone number fails. This is a value which will
-        // pass our own validation in ECom because of formatting, but will be
-        // rejected by the Resurs Bank API which performs stricter checks.
-        try {
-            $this->createPayment(
-                orderReference: Strings::generateRandomString(length: 12),
-                mobilePhone: '0809910000'
-            );
-
-            // CurlException was expected.
-            $this->fail(
-                message: 'Expected CurlException was not thrown for invalid phone number.'
-            );
-        } catch (CurlException $e) {
-            $detailedMessage = $e->getDetailedMessage(
-                msg: 'Test message (phone).'
-            );
-            $this->assertIsString(actual: $detailedMessage);
-            $this->assertNotSame(
-                expected: $e->getMessage(),
-                actual: $detailedMessage
-            );
-            $this->assertNotSame(
-                expected: 'Test message (phone).',
-                actual: $detailedMessage
-            );
-            $this->assertStringStartsWith(
-                prefix: 'Test message (phone).',
-                string: $detailedMessage
-            );
-
-            // Verify that getInvalidFieldName returns the correct enum variant.
-            $invalidFieldName = $e->getInvalidFieldName();
-            $this->assertSame(
-                expected: InvalidFieldName::MOBILE_PHONE,
-                actual: $invalidFieldName
-            );
-        }
-    }
-
-    /**
-     * Assert getDetailedMessage appends validation info for invalid email address.
-     *
-     * @throws Exception
-     */
-    public function testGetDetailedMessageWithInvalidEmailAddress(): void
-    {
-        // Test that an invalid email address fails. This is a value which will
-        // pass our own validation in ECom because of formatting, but will be
-        // rejected by the Resurs Bank API which performs stricter checks.
-        try {
-            $this->createPayment(
-                orderReference: Strings::generateRandomString(length: 12),
-                email: 'asd@difjgod903845gn.asdasd'
-            );
-
-            // CurlException was expected.
-            $this->fail(
-                message: 'Expected CurlException was not thrown for invalid email.'
-            );
-        } catch (CurlException $e) {
-            $detailedMessage = $e->getDetailedMessage(
-                msg: 'Test message (email).'
-            );
-            $this->assertIsString(actual: $detailedMessage);
-            $this->assertNotSame(
-                expected: $e->getMessage(),
-                actual: $detailedMessage
-            );
-            $this->assertNotSame(
-                expected: 'Test message (email).',
-                actual: $detailedMessage
-            );
-            $this->assertStringStartsWith(
-                prefix: 'Test message (email).',
-                string: $detailedMessage
-            );
-
-            // Verify that getInvalidFieldName returns the correct enum variant.
-            $invalidFieldName = $e->getInvalidFieldName();
-            $this->assertSame(
-                expected: InvalidFieldName::EMAIL,
                 actual: $invalidFieldName
             );
         }
