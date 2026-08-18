@@ -34,6 +34,7 @@ use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Js;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Throwable;
 
 /**
@@ -78,7 +79,8 @@ class JsTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             language: Language::EN,
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         $this->paymentMethod = Repository::getById(
@@ -128,10 +130,9 @@ class JsTest extends TestCase
         }
 
         $this->widget = new Js(
+            amount: 1200,
             paymentMethod: $this->paymentMethod,
             months: 3,
-            amount: 1200,
-            fetchStartingCostUrl: 'https://example.com',
             showCostExample: false
         );
 
@@ -147,30 +148,9 @@ class JsTest extends TestCase
         }
 
         $this->widget = new Js(
-            paymentMethod: $this->paymentMethod,
-            months: 3,
             amount: 1200,
-            fetchStartingCostUrl: 'https://example.com',
-            threshold: 0
-        );
-
-        $this->assertStringNotContainsString(
-            needle: 'if (parseFloat(data.startingAt)',
-            haystack: $this->widget->content
-        );
-
-        if ($this->paymentMethod === null) {
-            throw new EmptyValueException(
-                message: 'Payment method failed to load'
-            );
-        }
-
-        $this->widget = new Js(
             paymentMethod: $this->paymentMethod,
-            months: 3,
-            amount: 1200,
-            fetchStartingCostUrl: 'https://example.com',
-            threshold: 100
+            months: 3
         );
 
         $this->assertStringContainsString(

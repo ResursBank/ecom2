@@ -21,6 +21,7 @@ use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Module\Widget\PartPayment\Css;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 
 /**
  * Integration test for the Part payment CSS widget
@@ -46,7 +47,8 @@ class CssTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             language: Language::EN,
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         parent::setUp();

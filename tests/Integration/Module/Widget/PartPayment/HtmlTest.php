@@ -40,6 +40,7 @@ use Resursbank\Ecom\Module\AnnuityFactor\Repository as AnnuityFactorRepository;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
 use Resursbank\Ecom\Module\PriceSignage\Repository as PriceSignageRepository;
 use Resursbank\Ecom\Module\Widget\PartPayment\Html;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Throwable;
 
 /**
@@ -84,7 +85,8 @@ class HtmlTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             language: Language::EN,
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         $this->paymentMethod = Repository::getById(
@@ -224,10 +226,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
-            paymentMethod: $this->paymentMethod,
-            months: 3,
             amount: $amount,
-            fetchStartingCostUrl: 'https://example.com'
+            paymentMethod: $this->paymentMethod,
+            months: 3
         );
 
         $this->assertNotEquals(
@@ -240,10 +241,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
+            amount: $amount,
             paymentMethod: $this->paymentMethod,
             months: 3,
-            amount: $amount,
-            fetchStartingCostUrl: 'https://example.com',
             useLegacyReadMoreLink: true
         );
 
@@ -286,9 +286,9 @@ class HtmlTest extends TestCase
 
         try {
             $noInfoText = $this->widget = new Html(
+                amount: 1200,
                 paymentMethod: $this->paymentMethod,
                 months: 3,
-                amount: 1200,
                 displayInfoText: false
             );
         } catch (Throwable) {
@@ -443,6 +443,10 @@ class HtmlTest extends TestCase
             );
         }
 
+        if ($this->widget->months === null) {
+            $this->fail(message: 'Missing months property on widget.');
+        }
+
         $result = $this->widget->getCost(
             paymentMethod: $this->paymentMethod,
             amount: $this->widget->amount,
@@ -478,6 +482,11 @@ class HtmlTest extends TestCase
     public function testGetCostThrowsOnEmptyCostList(): void
     {
         $this->expectException(exception: EmptyValueException::class);
+
+        if ($this->paymentMethod === null) {
+            $this->fail(message: 'Payment method failed to load');
+        }
+
         $this->widget->getCost(
             paymentMethod: $this->paymentMethod,
             amount: 90000000,
@@ -552,10 +561,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
+            amount: 1000,
             paymentMethod: $this->paymentMethod,
-            months: 12,
-            amount: 100,
-            fetchStartingCostUrl: 'http://example.com/'
+            months: 3
         );
 
         $this->assertMatchesRegularExpression(
@@ -570,10 +578,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
+            amount: 100,
             paymentMethod: $this->paymentMethod,
             months: 12,
-            amount: 100,
-            fetchStartingCostUrl: 'http://example.com/',
             showCostExample: false
         );
 
@@ -593,10 +600,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
-            paymentMethod: $paymentMethod,
-            months: 12,
             amount: 100,
-            fetchStartingCostUrl: 'http://example.com/'
+            paymentMethod: $paymentMethod,
+            months: 12
         );
 
         $this->assertDoesNotMatchRegularExpression(
@@ -611,11 +617,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
-            paymentMethod: $this->paymentMethod,
-            months: 3,
             amount: 100,
-            fetchStartingCostUrl: 'http://example.com/',
-            threshold: 1000
+            paymentMethod: $this->paymentMethod,
+            months: 3
         );
 
         $this->assertDoesNotMatchRegularExpression(
@@ -665,42 +669,34 @@ class HtmlTest extends TestCase
     {
         $widget = new Html(
             /* @phpstan-ignore-next-line */
-            paymentMethod: $this->paymentMethod,
-            months: 12,
-            /* @phpstan-ignore-next-line */
             amount: $this->paymentMethod->getMaxLimit() + 0.1,
-            fetchStartingCostUrl: 'http://example.com/'
+            paymentMethod: $this->paymentMethod,
+            months: 12
         );
         $this->assertEmpty(actual: $widget->content);
 
         $widget = new Html(
             /* @phpstan-ignore-next-line */
-            paymentMethod: $this->paymentMethod,
-            months: 12,
-            /* @phpstan-ignore-next-line */
             amount: $this->paymentMethod->getMaxLimit(),
-            fetchStartingCostUrl: 'http://example.com/'
+            paymentMethod: $this->paymentMethod,
+            months: 12
         );
         $this->assertNotEmpty(actual: $widget->content);
 
         $widget = new Html(
             /* @phpstan-ignore-next-line */
-            paymentMethod: $this->paymentMethod,
-            months: 12,
-            /* @phpstan-ignore-next-line */
             amount: $this->paymentMethod->getMinLimit(),
-            fetchStartingCostUrl: 'http://example.com/'
+            paymentMethod: $this->paymentMethod,
+            months: 12
         );
         $this->assertNotEmpty(actual: $widget->content);
 
         try {
             new Html(
                 /* @phpstan-ignore-next-line */
-                paymentMethod: $this->paymentMethod,
-                months: 12,
-                /* @phpstan-ignore-next-line */
                 amount: $this->paymentMethod->getMinLimit() - 0.1,
-                fetchStartingCostUrl: 'http://example.com/'
+                paymentMethod: $this->paymentMethod,
+                months: 12
             );
             $this->fail(
                 message: 'No CurlException was thrown when attempting to ' .
