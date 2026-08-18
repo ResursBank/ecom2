@@ -92,10 +92,9 @@ class JsTest extends TestCase
         }
 
         $this->widget = new Js(
+            amount: 1200,
             paymentMethod: $this->paymentMethod,
             months: 3,
-            amount: 1200,
-            fetchStartingCostUrl: 'https://example.com',
             showCostExample: true
         );
     }

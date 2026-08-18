@@ -254,12 +254,12 @@ class Widget
      */
     private function logErrorSilently(Throwable|string $error): void
     {
-        try {
+        //try {
             Config::getLogger()->error(message: $error);
-        } catch (ConfigException) {
+        /*} catch (ConfigException) {
             // Do nothing just to prevent ConfigExceptions breaking
             // the rendering of the widget.
-        }
+        }*/
     }
 
     /**

@@ -69,7 +69,7 @@ final class Config
         private CacheInterface $cache,
         private ?Jwt $jwtAuth,
         private DataHandlerInterface $paymentHistoryDataHandler,
-        private bool $isProduction,
+        private ?bool $isProduction,
         private ?Language $language,
         private ?Location $location,
         private string $currencySymbol,
@@ -93,7 +93,7 @@ final class Config
         CacheInterface $cache = new None(),
         ?Jwt $jwtAuth = null,
         DataHandlerInterface $paymentHistoryDataHandler = new VoidDataHandler(),
-        bool $isProduction = false,
+        ?bool $isProduction = false,
         ?Language $language = null,
         Location $location = Location::SE,
         string $currencySymbol = '',
@@ -104,7 +104,8 @@ final class Config
         ReaderInterface $settingsReader = new NullReader(),
         Metadata $settingsMetadata = new Metadata(),
         ?string $templateOverrideDirectory = null,
-        SessionHandlerInterface $sessionHandler = new Session()
+        SessionHandlerInterface $sessionHandler = new Session(),
+        ?LogLevel $logLevel = null
     ): void {
         self::$instance = new Config(
             logger: $logger,
@@ -122,7 +123,8 @@ final class Config
             settingsReader: $settingsReader,
             settingsMetadata: $settingsMetadata,
             templateOverrideDirectory: $templateOverrideDirectory,
-            sessionHandler: $sessionHandler
+            sessionHandler: $sessionHandler,
+            logLevel: $logLevel
         );
 
         self::configure();
@@ -149,9 +151,11 @@ final class Config
     {
         try {
             // Update environment based on user settings.
-            self::$instance->isProduction = UserSettingsRepository::getValue(
-                field: Field::ENVIRONMENT
-            ) === Environment::PROD;
+            if (self::$instance->isProduction === null) {
+                self::$instance->isProduction = UserSettingsRepository::getValue(
+                    field: Field::ENVIRONMENT
+                ) === Environment::PROD;
+            }
 
             // Update network settings with timeout from user settings.
             self::$instance->network->setTimeout(

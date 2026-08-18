@@ -30,7 +30,6 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Log\FileLogger;
-use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Model\Callback\Authorization;
 use Resursbank\Ecom\Lib\Model\Callback\CreditApplication;
 use Resursbank\Ecom\Lib\Model\Callback\Enum\Action;
@@ -93,7 +92,6 @@ class RepositoryTest extends TestCase
             paymentHistoryDataHandler: new FileDataHandler(
                 file: $this->dataHandlerLocation
             ),
-            logLevel: LogLevel::DEBUG,
             storeId: $_ENV['STORE_ID']
         );
     }

@@ -64,23 +64,16 @@ class JsTest extends TestCase
      */
     public function testContent(): void
     {
-        $amount = 100.00;
         $reloadUrl = 'https://example.com/';
         $widgetElement = 'sampleWidgetElement';
         $amountElement = 'sampleAmountElement';
         $observableElements = [];
         $widget = new Js(
-            amount: $amount,
-            reloadUrl: $reloadUrl,
-            widgetElement: $widgetElement,
             amountElement: $amountElement,
             observableElements: $observableElements
         );
 
         $strings = [
-            'lastAmount = ' . $amount,
-            'await fetch(\'' . $reloadUrl . '\', {',
-            'this.el = document.querySelector(\'' . $widgetElement . '\');',
             'const elDom = \'' . $amountElement . '\';'
         ];
 

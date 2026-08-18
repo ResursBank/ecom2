@@ -88,8 +88,7 @@ class GetAddressControllerTest extends TestCase
             data: new GetAddressRequest(
                 govId: $govId,
                 customerType: $customerType
-            ),
-            sessionHandler: $this->session
+            )
         );
     }
 

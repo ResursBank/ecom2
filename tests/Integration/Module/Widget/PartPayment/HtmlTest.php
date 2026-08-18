@@ -98,10 +98,9 @@ class HtmlTest extends TestCase
         }
 
         $this->widget = new Html(
-            paymentMethod: $this->paymentMethod,
-            months: 3,
             amount: 1200,
-            fetchStartingCostUrl: 'https://example.com'
+            paymentMethod: $this->paymentMethod,
+            months: 3
         );
     }
 
@@ -152,11 +151,9 @@ class HtmlTest extends TestCase
         }
 
         $widget = new Html(
-            paymentMethod: $this->paymentMethod,
-            months: 12,
             amount: 5,
-            fetchStartingCostUrl: 'https://example.com',
-            threshold: 5000
+            paymentMethod: $this->paymentMethod,
+            months: 12
         );
 
         $this->assertEquals(
@@ -292,7 +289,6 @@ class HtmlTest extends TestCase
                 paymentMethod: $this->paymentMethod,
                 months: 3,
                 amount: 1200,
-                fetchStartingCostUrl: 'https://example.com',
                 displayInfoText: false
             );
         } catch (Throwable) {

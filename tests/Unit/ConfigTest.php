@@ -22,7 +22,6 @@ use Resursbank\Ecom\Lib\Cache\None;
 use Resursbank\Ecom\Lib\Locale\Language;
 use Resursbank\Ecom\Lib\Locale\Location;
 use Resursbank\Ecom\Lib\Log\FileLogger;
-use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\Log\NoneLogger;
 use Resursbank\Ecom\Lib\Log\StdoutLogger;
 use Resursbank\Ecom\Lib\Model\Config\Network;
@@ -377,21 +376,5 @@ class ConfigTest extends TestCase
         );
 
         Config::getPath(dir: 'some/../../directory');
-    }
-
-    /**
-     * Verify that setLocation works.
-     *
-     * @throws ConfigException
-     */
-    public function testSetLocation(): void
-    {
-        Config::setup(location: Location::DK);
-        Config::setLocation(location: Location::SE);
-
-        $this->assertEquals(
-            expected: Location::SE,
-            actual: Config::getLocation()
-        );
     }
 }

@@ -256,7 +256,7 @@ class RepositoryTest extends TestCase
             customerType: CustomerType::NATURAL
         );
 
-        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+        Repository::setSsnData(data: $data);
 
         $key = $this->session->getKey(key: Repository::SESSION_KEY_SSN_DATA);
 
@@ -287,7 +287,7 @@ class RepositoryTest extends TestCase
             customerType: CustomerType::NATURAL
         );
 
-        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+        Repository::setSsnData(data: $data);
 
         $this->assertFalse(condition: isset($_SESSION));
     }
@@ -310,7 +310,7 @@ class RepositoryTest extends TestCase
 
         Config::unsetInstance();
 
-        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+        Repository::setSsnData(data: $data);
     }
 
     /**
@@ -327,11 +327,11 @@ class RepositoryTest extends TestCase
             customerType: CustomerType::LEGAL
         );
 
-        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+        Repository::setSsnData(data: $data);
 
         $this->assertEquals(
             expected: $data,
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
     }
 
@@ -345,7 +345,7 @@ class RepositoryTest extends TestCase
         $this->enableSession();
 
         $this->assertNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
     }
 
@@ -359,7 +359,7 @@ class RepositoryTest extends TestCase
         $this->disableSession();
 
         $this->assertNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
     }
 
@@ -377,19 +377,19 @@ class RepositoryTest extends TestCase
         // Invalid JSON data.
         $_SESSION[$key] = 'not-json-data';
         $this->assertNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
 
         // Invalid object structure.
         $_SESSION[$key] = '{"harmony":32}';
         $this->assertNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
 
         // Invalid object data.
         $_SESSION[$key] = '{"govId":"1669d7368573", "customerType":"NATURAL"}';
         $this->assertNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
     }
 
@@ -403,7 +403,7 @@ class RepositoryTest extends TestCase
         $this->disableSession();
         $this->expectException(exception: ConfigException::class);
         Config::unsetInstance();
-        Repository::getSsnData(sessionHandler: $this->session);
+        Repository::getSsnData();
     }
 
     /**
@@ -420,16 +420,16 @@ class RepositoryTest extends TestCase
             customerType: CustomerType::LEGAL
         );
 
-        Repository::setSsnData(data: $data, sessionHandler: $this->session);
+        Repository::setSsnData(data: $data);
 
         $this->assertNotNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
 
-        Repository::clearSsnData(sessionHandler: $this->session);
+        Repository::clearSsnData();
 
         $this->assertNull(
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
     }
 }
