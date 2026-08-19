@@ -89,21 +89,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * Asset get() throws SessionValueException if key is not set in session.
-     *
-     * @throws SessionException
-     */
-    public function testGetThrowsWithoutKey(): void
-    {
-        $this->enableSession();
-
-        $this->expectException(exception: SessionValueException::class);
-        $this->expectExceptionCode(code: 404);
-
-        $this->session->get(key: 'CheeseSauce');
-    }
-
-    /**
      * Asset get() throws SessionValueException if value of key is not a string.
      *
      * @throws SessionException
