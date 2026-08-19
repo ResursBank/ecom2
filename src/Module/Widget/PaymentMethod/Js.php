@@ -11,8 +11,8 @@ namespace Resursbank\Ecom\Module\Widget\PaymentMethod;
 
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
-use Resursbank\Ecom\Lib\Model\Interface\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Model\PaymentMethod;
+use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Widget\Widget;
 
 /**
@@ -21,6 +21,8 @@ use Resursbank\Ecom\Lib\Widget\Widget;
  * This widget will render a JavaScript component you can interact
  * with to get information about payment methods, like if a method
  * is available based on context (cart total, country etc.).
+ *
+ * @SuppressWarnings(PHPMD.ShortClassName)
  */
 class Js extends Widget
 {
