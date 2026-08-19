@@ -91,6 +91,9 @@ class DummySettingsReader implements ReaderInterface
             case 'PART_PAYMENT_AJAX_URL':
                 return 'https://example.com';
 
+            case 'FETCH_STORES':
+                return 'https://example.com';
+
             default:
                 file_put_contents(
                     filename: '/tmp/ecom-settings-urls.txt',
