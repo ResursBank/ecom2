@@ -215,6 +215,7 @@ class RepositoryTest extends TestCase
         $capture = Repository::capture(paymentId: $payment->id);
 
         // Assert captured worked.
+        $this->assertNotNull(actual: $capture);
         $this->assertNotNull(actual: $capture->order);
         $this->assertNotEmpty(actual: $capture->order->actionLog);
 
