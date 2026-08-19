@@ -10,7 +10,13 @@ declare(strict_types=1);
 namespace Resursbank\Ecom;
 
 use Exception;
+use JsonException;
+use ReflectionException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
+use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\Validation\EmptyValueException;
+use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -43,6 +49,7 @@ use function dirname;
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @noinspection PhpClassHasTooManyDeclaredMembersInspection
  */
 final class Config
@@ -158,11 +165,7 @@ final class Config
             }
 
             // Update network settings with timeout from user settings.
-            self::$instance->network->setTimeout(
-                timeout: UserSettingsRepository::getValue(
-                    field: Field::API_TIMEOUT
-                )
-            );
+            self::configureTimeout();
 
             // Override cache integration with None if cache is disabled in
             // user settings.
@@ -176,12 +179,7 @@ final class Config
             // user settings to be configured.
             if (UserSettingsRepository::hasUserCredentials()) {
                 // Setup default JWT auth using config settings.
-                if (self::$instance->jwtAuth === null) {
-                    self::setJwtAuth(auth: new Jwt(
-                        clientId: UserSettingsRepository::getClientId(),
-                        clientSecret: UserSettingsRepository::getClientSecret()
-                    ));
-                }
+                self::configureJwtAuth();
 
                 // Fetch store id from config, of fallback to default, and apply
                 // to Ecom instance.
@@ -190,19 +188,13 @@ final class Config
                 }
             }
 
-            // If no logger is defined, abut logs are enabled and we've a log
+            // If no logger is defined, but logs are enabled, and we have a log
             // dir specified in settings then configure a FileLogger instance.
             if (
                 self::$instance->logger instanceof NoneLogger &&
                 UserSettingsRepository::isEnabled(field: Field::LOG_ENABLED)
             ) {
-                $logDir = UserSettingsRepository::getValue(
-                    field: Field::LOG_DIR
-                );
-
-                if ($logDir !== null && $logDir !== '') {
-                    self::$instance->logger = new FileLogger(path: $logDir);
-                }
+                self::configureFileLogger();
             }
 
             $store = Repository::getConfiguredStore();
@@ -218,14 +210,7 @@ final class Config
             }
 
             // Automatically resolve currency symbol based on location.
-            if (self::$instance->currencySymbol === '') {
-                self::$instance->currencySymbol = match (self::$instance->location) {
-                    Location::SE, Location::NO => 'kr',
-                    Location::FI => '€',
-                    Location::DK => 'kr.',
-                    default => '',
-                };
-            }
+            self::configureCurrencySymbol();
         } catch (Throwable $e) {
             self::getLogger()->error(message: $e);
         }
@@ -341,7 +326,7 @@ final class Config
     /**
      * @throws ConfigException
      */
-    public static function isProduction(): bool
+    public static function isProduction(): ?bool
     {
         self::validateInstance();
         return self::$instance->isProduction;
@@ -512,5 +497,75 @@ final class Config
     {
         self::validateInstance();
         return self::$instance->sessionHandler;
+    }
+
+    /**
+     * Update network settings with timeout from user settings.
+     *
+     * @throws ConfigException
+     */
+    private static function configureTimeout(): void
+    {
+        self::$instance->network->setTimeout(
+            timeout: UserSettingsRepository::getValue(
+                field: Field::API_TIMEOUT
+            )
+        );
+    }
+
+    /**
+     * Setup default JWT auth using config settings.
+     *
+     * @throws ConfigException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws AttributeCombinationException
+     */
+    private static function configureJwtAuth(): void
+    {
+        if (self::$instance->jwtAuth !== null) {
+            return;
+        }
+
+        self::setJwtAuth(auth: new Jwt(
+            clientId: UserSettingsRepository::getClientId(),
+            clientSecret: UserSettingsRepository::getClientSecret()
+        ));
+    }
+
+    /**
+     * Configure FileLogger.
+     *
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws EmptyValueException
+     * @throws FormatException
+     */
+    private static function configureFileLogger(): void
+    {
+        $logDir = UserSettingsRepository::getValue(field: Field::LOG_DIR);
+
+        if ($logDir === null || $logDir === '') {
+            return;
+        }
+
+        self::$instance->logger = new FileLogger(path: $logDir);
+    }
+
+    /**
+     * Configure currency symbol.
+     */
+    private static function configureCurrencySymbol(): void
+    {
+        if (self::$instance->currencySymbol !== '') {
+            return;
+        }
+
+        self::$instance->currencySymbol = match (self::$instance->location) {
+            Location::SE, Location::NO => 'kr',
+            Location::FI => '€',
+            Location::DK => 'kr.',
+            default => '',
+        };
     }
 }

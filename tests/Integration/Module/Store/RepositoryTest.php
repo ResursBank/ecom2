@@ -29,6 +29,8 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Cache\Filesystem;
 use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
+use Resursbank\Ecom\Lib\UserSettings\NullReader;
+use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Store\Repository;
 use Resursbank\EcomTest\Utilities\DummySettingsReader;
@@ -55,7 +57,8 @@ class RepositoryTest extends TestCase
      * @throws EmptyValueException
      */
     private function connect(
-        ?string $storeId = null
+        ?string $storeId = null,
+        ?ReaderInterface $reader = null
     ): void {
         Config::setup(
             logger: $this->createMock(
@@ -68,7 +71,7 @@ class RepositoryTest extends TestCase
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
             storeId: $storeId,
-            settingsReader: new DummySettingsReader()
+            settingsReader: $reader ?? new NullReader()
         );
     }
 
@@ -131,7 +134,10 @@ class RepositoryTest extends TestCase
         $this->assertNull(actual: Repository::getConfiguredStore());
 
         // Connect with store id from $_ENV, assert store is returned.
-        self::connect(storeId: $_ENV['STORE_ID']);
+        self::connect(
+            storeId: $_ENV['STORE_ID'],
+            reader: new DummySettingsReader()
+        );
         $this->assertNotNull(actual: Repository::getConfiguredStore());
     }
 

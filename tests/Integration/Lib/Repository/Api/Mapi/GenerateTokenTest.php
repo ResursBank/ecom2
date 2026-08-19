@@ -25,6 +25,7 @@ use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Log\FileLogger;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Repository\Api\Mapi\GenerateToken;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 
 /**
 * Test for JWT token generation.
@@ -54,7 +55,8 @@ class GenerateTokenTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         $auth = Config::getJwtAuth();

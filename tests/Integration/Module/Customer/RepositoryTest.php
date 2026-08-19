@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\CustomerType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\Widget\GetAddress\GetAddressRequest;
 use Resursbank\Ecom\Module\Customer\Repository;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Resursbank\EcomTest\Utilities\MockSessionTrait;
 
 /**
@@ -58,7 +59,8 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         $this->setupSession(test: $this);
