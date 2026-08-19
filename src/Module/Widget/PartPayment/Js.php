@@ -66,13 +66,14 @@ class Js extends Widget
      * @throws IllegalValueException
      * @throws Throwable
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         public readonly float $amount,
         public ?PaymentMethod $paymentMethod = null,
         public ?int $months = null,
         public readonly bool $showCostExample = true,
-        public readonly ?string $WidgetInstanceId = null,
+        public readonly ?string $widgetInstanceId = null,
         public readonly array $observableElements = [],
         #[StringNotEmpty] public readonly ?string $qtyElDomPath = null,
         #[StringNotEmpty] public readonly ?string $amountElDomPath = null,
@@ -85,11 +86,33 @@ class Js extends Widget
             url: Url::PART_PAYMENT_AJAX_URL
         );
 
+        if (!$this->paymentMethod instanceof PaymentMethod) {
+            throw new EmptyValueException(
+                message: 'Payment method property has incorrect type'
+            );
+        }
+
+        if (!is_int(value: $this->months)) {
+            throw new EmptyValueException(
+                message: 'Month property has incorrect type, should be ' .
+                'int but is actually ' . gettype(value: $this->months) .
+                '.'
+            );
+        }
+
         $this->cost = $this->getCost(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,
             months: $this->months
         );
+
+        if (!is_float(value: $this->threshold)) {
+            throw new EmptyValueException(
+                message: 'Threshold property has incorrect type, should be ' .
+                'float but is actually ' . gettype(value: $this->threshold) .
+                '.'
+            );
+        }
 
         $this->shouldDisplayCostExample = $this->shouldDisplayCostExample(
             threshold: $this->threshold,
