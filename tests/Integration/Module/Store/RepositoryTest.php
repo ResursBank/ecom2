@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Log\LoggerInterface;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Store\Repository;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Throwable;
 
 /**
@@ -66,7 +67,8 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $storeId
+            storeId: $storeId,
+            settingsReader: new DummySettingsReader()
         );
     }
 
