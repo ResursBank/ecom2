@@ -181,7 +181,7 @@ class GetAddressControllerTest extends TestCase
 
         $this->assertEquals(
             expected: $request,
-            actual: Repository::getSsnData(sessionHandler: $this->session)
+            actual: Repository::getSsnData()
         );
     }
 
