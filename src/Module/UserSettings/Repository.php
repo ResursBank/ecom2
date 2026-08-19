@@ -447,9 +447,15 @@ class Repository
             $reflection = new ReflectionClass(
                 objectOrClass: UserSettings::class
             );
-            self::$userSettingsParams = $reflection
-                ->getConstructor()
-                ->getParameters();
+            $reflectionMethod = $reflection->getConstructor();
+
+            if ($reflectionMethod === null) {
+                throw new UserSettingsException(
+                    message: 'Unable to get constructor'
+                );
+            }
+
+            self::$userSettingsParams = $reflectionMethod->getParameters();
         }
 
         foreach (self::$userSettingsParams as $param) {
