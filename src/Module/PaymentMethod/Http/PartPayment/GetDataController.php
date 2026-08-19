@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Module\PaymentMethod\Http\PartPayment;
 
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\HttpException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Http\Controller;
 use Resursbank\Ecom\Lib\Model\PaymentMethod\PartPayment\InfoResponse;
 use Resursbank\Ecom\Module\UserSettings\Repository;
@@ -29,7 +30,15 @@ class GetDataController extends Controller
     public function exec(): string
     {
         try {
-            $amount = (float) $this->getRequestParameter(parameter: 'amount');
+            $amountParameter = $this->getRequestParameter(parameter: 'amount');
+
+            if (!is_numeric(value: $amountParameter)) {
+                throw new IllegalValueException(
+                    message: 'Amount parameter must be numeric'
+                );
+            }
+
+            $amount = (float)$amountParameter;
 
             if ($amount <= 0) {
                 throw new HttpException(message: 'Invalid amount');
