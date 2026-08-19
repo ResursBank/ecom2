@@ -98,8 +98,8 @@ class TestPurchaseController extends Controller
             );
 
             if (
-                $captureResult->order?->totalOrderAmount !==
-                $captureResult->order?->capturedAmount
+                $captureResult?->order?->totalOrderAmount !==
+                $captureResult?->order?->capturedAmount
             ) {
                 throw new TestException(
                     message: 'Captured amount does not match total order amount.'
@@ -112,8 +112,8 @@ class TestPurchaseController extends Controller
             $refundResult = PaymentRepository::refund(paymentId: $payment->id);
 
             if (
-                $refundResult->order?->totalOrderAmount !==
-                $refundResult->order?->refundedAmount
+                $refundResult?->order?->totalOrderAmount !==
+                $refundResult?->order?->refundedAmount
             ) {
                 throw new TestException(
                     message: 'Refunded amount does not match total order amount.'
@@ -154,8 +154,8 @@ class TestPurchaseController extends Controller
             $cancelResult = PaymentRepository::cancel(paymentId: $payment->id);
 
             if (
-                $cancelResult->order?->totalOrderAmount !==
-                $cancelResult->order?->canceledAmount
+                $cancelResult?->order?->totalOrderAmount !==
+                $cancelResult?->order?->canceledAmount
             ) {
                 throw new TestException(
                     message: 'Canceled amount does not match total order amount.'
