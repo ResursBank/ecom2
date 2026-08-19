@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Utilities;
 
+use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
 use Resursbank\Ecom\Lib\UserSettings\Url;
@@ -21,6 +22,11 @@ use Resursbank\Ecom\Lib\UserSettings\Url;
  */
 class DummySettingsReader implements ReaderInterface
 {
+    public function __construct(
+        private readonly ?LogLevel $logLevel = null
+    ) {
+    }
+
     public function read(Field $field): ?string
     {
         switch ($field->name) {
@@ -43,7 +49,7 @@ class DummySettingsReader implements ReaderInterface
                 return 'true';
 
             case 'LOG_LEVEL':
-                return '0';
+                return (string)$this->logLevel->value;
 
             case 'LOG_DIR':
                 return '/tmp';

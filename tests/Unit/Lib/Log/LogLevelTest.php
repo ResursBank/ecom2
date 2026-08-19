@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Lib\Log\LogLevel;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 
 /**
  * Verifies that the LogLevel enum works as intended.
@@ -26,7 +27,12 @@ class LogLevelTest extends TestCase
      */
     public function testLoggableWithConfigInstance(): void
     {
-        Config::setup(logLevel: LogLevel::WARNING);
+        Config::setup(
+            settingsReader: new DummySettingsReader(
+                logLevel: LogLevel::WARNING
+            ),
+            logLevel: LogLevel::WARNING
+        );
 
         self::assertFalse(
             condition: LogLevel::loggable(level: LogLevel::DEBUG)
