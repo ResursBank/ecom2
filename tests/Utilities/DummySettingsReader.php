@@ -27,6 +27,9 @@ class DummySettingsReader implements ReaderInterface
     ) {
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     public function read(Field $field): ?string
     {
         switch ($field->name) {
@@ -83,9 +86,12 @@ class DummySettingsReader implements ReaderInterface
         return null;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function update(Field $field, mixed $value): void
     {
-        // TODO: Implement update() method.
+        return;
     }
 
     public function getUrl(Url $url): ?string
