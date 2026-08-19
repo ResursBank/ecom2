@@ -64,8 +64,6 @@ class JsTest extends TestCase
      */
     public function testContent(): void
     {
-        $reloadUrl = 'https://example.com/';
-        $widgetElement = 'sampleWidgetElement';
         $amountElement = 'sampleAmountElement';
         $observableElements = [];
         $widget = new Js(
