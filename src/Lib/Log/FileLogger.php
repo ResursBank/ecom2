@@ -11,6 +11,7 @@ namespace Resursbank\Ecom\Lib\Log;
 
 use DateTime;
 use Error;
+use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\UserSettingsException;
@@ -117,8 +118,16 @@ class FileLogger implements LoggerInterface
         try {
             $this->validateLogFile();
 
+            if (
+                Config::getLogLevel() !== null &&
+                $level->value < Config::getLogLevel()->value
+            ) {
+                return;
+            }
+
             if ($message instanceof Throwable) {
                 $this->logError(error: $message);
+                return;
             }
 
             // Unfortunately we need to suppress errors here as they will

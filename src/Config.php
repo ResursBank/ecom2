@@ -289,6 +289,11 @@ final class Config
         return self::$instance->logger;
     }
 
+    public static function getLogLevel(): ?LogLevel
+    {
+        return self::$instance->logLevel;
+    }
+
     /**
      * @throws ConfigException
      */
