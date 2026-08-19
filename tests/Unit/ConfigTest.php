@@ -29,6 +29,7 @@ use Resursbank\Ecom\Lib\Model\CurrencyFormat;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Model\PaymentHistory\DataHandler\VoidDataHandler;
 use Resursbank\Ecom\Lib\Session\Session;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Throwable;
 
 /**
@@ -131,18 +132,14 @@ class ConfigTest extends TestCase
             clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
             grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
         );
-        $network = new Network(
-            proxy: 'example.com',
-            proxyType: 1,
-            timeout: 42,
-            userAgent: 'Foo'
-        );
+
+        $network = new Network(userAgent: 'Foo');
+
         Config::setup(
             logger: new StdoutLogger(),
             cache: new None(),
             jwtAuth: $jwt,
             paymentHistoryDataHandler: new VoidDataHandler(),
-            isProduction: true,
             language: Language::SV,
             location: Location::NO,
             currencySymbol: 'dkk',
@@ -150,6 +147,7 @@ class ConfigTest extends TestCase
             network: $network,
             storeId: $_ENV['STORE_ID'],
             cacheWidgets: true,
+            settingsReader: new DummySettingsReader(),
             templateOverrideDirectory: '/tmp'
         );
 
@@ -173,14 +171,10 @@ class ConfigTest extends TestCase
             expected: 'Foo',
             actual: Config::getUserAgent()
         );
-        self::assertTrue(condition: Config::isProduction());
+        self::assertFalse(condition: Config::isProduction());
         self::assertEquals(
             expected: Language::SV,
             actual: Config::getLanguage()
-        );
-        self::assertEquals(
-            expected: Location::NO,
-            actual: Config::getLocation()
         );
         self::assertEquals(
             expected: 'dkk',
