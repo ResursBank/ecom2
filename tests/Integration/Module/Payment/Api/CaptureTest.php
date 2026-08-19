@@ -172,6 +172,10 @@ class CaptureTest extends TestCase
         // Capture payment
         $response = Repository::capture(paymentId: $originalId);
 
+        if ($response === null) {
+            $this->fail(message: 'Empty response from capture call');
+        }
+
         // Assert that payment has been captured in full
         $this->assertNotNull(actual: $response->order);
         $this->assertEquals(expected: $originalId, actual: $response->id);
@@ -225,6 +229,10 @@ class CaptureTest extends TestCase
             orderLines: $orderLines
         );
 
+        if ($response === null) {
+            $this->fail(message: 'Empty response from capture call');
+        }
+
         // Assert that only this order line has been captured
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
@@ -273,6 +281,10 @@ class CaptureTest extends TestCase
             paymentId: $payment->id,
             transactionId: $transactionId
         );
+
+        if ($response === null) {
+            $this->fail(message: 'Empty response from capture call');
+        }
 
         // Verify that capture worked as intended
         $this->assertNotNull(actual: $response->order);
@@ -341,6 +353,10 @@ class CaptureTest extends TestCase
             invoiceId: $invoiceId
         );
 
+        if ($response === null) {
+            $this->fail(message: 'Empty response from capture call');
+        }
+
         // Verify that capture worked as intended
         $this->assertNotNull(actual: $response->order);
         $this->assertEquals(expected: $payment->id, actual: $response->id);
@@ -405,6 +421,10 @@ class CaptureTest extends TestCase
             paymentId: $payment->id,
             orderLines: $orderLines
         );
+
+        if ($response === null) {
+            $this->fail(message: 'Empty response from capture call');
+        }
 
         $capture = new Capture();
 
