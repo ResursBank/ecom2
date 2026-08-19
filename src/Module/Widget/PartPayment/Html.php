@@ -110,11 +110,23 @@ class Html extends Widget
     ) {
         $this->populateFromSettings();
 
+        if ($this->paymentMethod === null) {
+            throw new EmptyValueException(message: 'Payment method is null');
+        }
+
+        if ($this->months === null) {
+            throw new EmptyValueException(message: 'Months is null');
+        }
+
         $this->cost = $this->getCost(
             paymentMethod: $this->paymentMethod,
             amount: $this->amount,
             months: $this->months
         );
+
+        if ($this->threshold === null) {
+            throw new EmptyValueException(message: 'Threshold is null');
+        }
 
         $this->shouldDisplayCostExample = $this->shouldDisplayCostExample(
             threshold: $this->threshold,
@@ -285,6 +297,12 @@ class Html extends Widget
     public function getLongestPeriodWithZeroInterest(): int
     {
         try {
+            if ($this->paymentMethod === null) {
+                throw new EmptyValueException(
+                    message: 'Payment method is null'
+                );
+            }
+
             $annuityFactors = Repository::getAnnuityFactors(
                 paymentMethodId: $this->paymentMethod->id
             );
