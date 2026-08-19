@@ -555,6 +555,12 @@ class Repository
             );
         }
 
+        if ($payment->order === null) {
+            throw new IllegalValueException(
+                message: 'Order object is not set.'
+            );
+        }
+
         $originalAmount = $payment->order->authorizedAmount;
 
         PaymentHistoryRepository::write(
@@ -577,6 +583,12 @@ class Repository
                 $result = self::addOrderLines(
                     paymentId: $paymentId,
                     orderLines: $orderLines
+                );
+            }
+
+            if ($result->order === null) {
+                throw new IllegalValueException(
+                    message: 'Order object is not set.'
                 );
             }
 
