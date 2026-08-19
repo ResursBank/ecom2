@@ -23,11 +23,8 @@ use Resursbank\Ecom\Lib\UserSettings\Url;
 class DummySettingsReader implements ReaderInterface
 {
     public function __construct(
-        private ?LogLevel $logLevel = null
+        private readonly ?LogLevel $logLevel = null
     ) {
-        if ($this->logLevel === null) {
-            $this->logLevel = LogLevel::WARNING;
-        }
     }
 
     public function read(Field $field): ?string
@@ -52,6 +49,10 @@ class DummySettingsReader implements ReaderInterface
                 return 'true';
 
             case 'LOG_LEVEL':
+                if ($this->logLevel === null) {
+                    return (string)LogLevel::INFO->value;
+                }
+
                 return (string)$this->logLevel->value;
 
             case 'LOG_DIR':

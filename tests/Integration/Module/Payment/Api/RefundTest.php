@@ -175,6 +175,10 @@ class RefundTest extends TestCase
         // Refund entire payment
         $refundResponse = Repository::refund(paymentId: $payment->id);
 
+        if ($refundResponse === null) {
+            self::fail(message: 'Empty response from refund call');
+        }
+
         // Assert that entire payment has been refunded
         $this->assertEquals(
             expected: $payment->id,
@@ -243,6 +247,10 @@ class RefundTest extends TestCase
             orderLines: $orderLines
         );
 
+        if ($refundResponse === null) {
+            self::fail(message: 'Empty response from refund call');
+        }
+
         // Assert that only specified order line has been refunded
         $this->assertEquals(
             expected: $payment->id,
@@ -303,6 +311,10 @@ class RefundTest extends TestCase
             paymentId: $payment->id,
             transactionId: $transactionId
         );
+
+        if ($refundResponse === null) {
+            self::fail(message: 'Empty response from refund call');
+        }
 
         // Assert that transaction id is present in action log
         $this->assertEquals(
@@ -367,6 +379,10 @@ class RefundTest extends TestCase
             paymentId: $payment->id,
             creator: $creator
         );
+
+        if ($refundResponse === null) {
+            self::fail(message: 'Empty response from refund call');
+        }
 
         // Assert that transaction id is present in action log
         $this->assertEquals(
@@ -442,6 +458,10 @@ class RefundTest extends TestCase
             paymentId: $payment->id,
             orderLines: $orderLines
         );
+
+        if ($response === null) {
+            $this->fail(message: 'Empty response from refund call');
+        }
 
         $refund = new Refund();
         $this->assertEquals(
