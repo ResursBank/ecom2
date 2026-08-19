@@ -175,6 +175,7 @@ class CancelTest extends TestCase
         $response = Repository::cancel(paymentId: $payment->id);
 
         // Assert that cancel went through
+        $this->assertNotNull(actual: $response);
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
@@ -249,6 +250,7 @@ class CancelTest extends TestCase
         );
 
         // Assert that cancel went through
+        $this->assertNotNull(actual: $response);
         $this->assertEquals(expected: $payment->id, actual: $response->id);
         $this->assertNotNull(actual: $response->order);
         $this->assertNotNull(actual: $payment->order);
@@ -391,6 +393,8 @@ class CancelTest extends TestCase
             paymentId: $payment->id,
             orderLines: new OrderLineCollection(data: [$orderLine])
         );
+
+        $this->assertNotNull(actual: $response);
 
         $cancel = new Cancel();
         $canceledAmount = $cancel->getCanceledAmount(paymentId: $response->id);
