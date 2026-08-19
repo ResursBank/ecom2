@@ -45,12 +45,12 @@ class TranslatorTest extends TestCase
     public function testTranslate(): void
     {
         $this->assertSame(
-            expected: 'Payment fully captured.',
+            expected: 'Successfully captured %s of the payment at Resurs Bank.',
             actual: Translator::translate(phraseId: 'event-captured')
         );
 
         $this->assertSame(
-            expected: 'Payment fully canceled.',
+            expected: 'Successfully cancelled %s of the payment at Resurs Bank.',
             actual: Translator::translate(phraseId: 'event-canceled')
         );
     }
