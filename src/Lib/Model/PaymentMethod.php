@@ -14,8 +14,6 @@ use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
-use Resursbank\Ecom\Exception\Validation\EmptyValueException;
-use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Attribute\Validation\FloatValue;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUuid;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringNotEmpty;
@@ -152,17 +150,7 @@ class PaymentMethod extends Model implements PaymentMethodInterface
         }
 
         // Check customer type restrictions.
-        if (
-            $customerType === CustomerType::LEGAL &&
-            !$this->enabledForLegalCustomer
-        ) {
-            return false;
-        }
-
-        if (
-            $customerType === CustomerType::NATURAL &&
-            !$this->enabledForNaturalCustomer
-        ) {
+        if (!$this->validCustomerType(customerType: $customerType)) {
             return false;
         }
 
@@ -174,52 +162,20 @@ class PaymentMethod extends Model implements PaymentMethodInterface
     }
 
     /**
-     * @throws EmptyValueException
-     * @throws IllegalValueException
+     * Check customer type restrictions.
      */
-    private function validateId(): void
+    private function validCustomerType(CustomerType $customerType): bool
     {
-        $this->stringValidation->notEmpty(value: $this->id);
-        $this->stringValidation->isUuid(value: $this->id);
-    }
+        if (
+            $customerType === CustomerType::LEGAL &&
+            !$this->enabledForLegalCustomer
+        ) {
+            return false;
+        }
 
-    /**
-     * @throws EmptyValueException
-     */
-    private function validateName(): void
-    {
-        $this->stringValidation->notEmpty(value: $this->name);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMinPurchaseLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->minPurchaseLimit);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMaxPurchaseLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->maxPurchaseLimit);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMinApplicationLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->minApplicationLimit);
-    }
-
-    /**
-     * @throws IllegalValueException
-     */
-    private function validateMaxApplicationLimit(): void
-    {
-        $this->floatValidation->isPositive(value: $this->maxApplicationLimit);
+        return
+            $customerType !== CustomerType::NATURAL ||
+            $this->enabledForNaturalCustomer
+        ;
     }
 }
