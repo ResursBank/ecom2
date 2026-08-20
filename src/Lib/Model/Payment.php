@@ -305,7 +305,7 @@ class Payment extends Model
             $this->canCancel() ||
             (
                 $this->isCancelled() &&
-                $this->application->approvedCreditLimit > 0.0
+                $this->application?->approvedCreditLimit > 0.0
             )
         ;
     }
