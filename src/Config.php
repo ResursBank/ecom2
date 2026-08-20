@@ -18,6 +18,7 @@ use Resursbank\Ecom\Exception\FilesystemException;
 use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
+use Resursbank\Ecom\Exception\Validation\IllegalTypeException;
 use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Cache\None;
@@ -496,11 +497,16 @@ final class Config
      */
     private static function configureTimeout(): void
     {
-        self::$instance->network->setTimeout(
-            timeout: UserSettingsRepository::getValue(
-                field: Field::API_TIMEOUT
-            )
-        );
+        $timeout = UserSettingsRepository::getValue(field: Field::API_TIMEOUT);
+
+        if (!is_int(value: $timeout)) {
+            throw new IllegalTypeException(
+                message: 'Timeout type should be int, got ' .
+                gettype(value: $timeout) . '.'
+            );
+        }
+
+        self::$instance->network->setTimeout(timeout: $timeout);
     }
 
     /**
@@ -573,7 +579,7 @@ final class Config
 
         $logDir = UserSettingsRepository::getValue(field: Field::LOG_DIR);
 
-        if ($logDir === null || $logDir === '') {
+        if (!is_string(value: $logDir) || $logDir === '') {
             return;
         }
 
