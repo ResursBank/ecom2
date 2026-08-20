@@ -18,6 +18,7 @@ use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\IllegalUrlException;
+use Resursbank\Ecom\Exception\Validation\IllegalValueException;
 use Resursbank\Ecom\Lib\Api\Environment;
 use Resursbank\Ecom\Lib\Attribute\Validation\StringIsUrl;
 use Resursbank\Ecom\Lib\Locale\Location;
@@ -108,7 +109,7 @@ class Repository
      *
      * @throws ConfigException
      */
-    public static function getValue(Field $field)
+    public static function getValue(Field $field): mixed
     {
         // Get config reader instance.
         $reader = Config::getSettingsReader();
@@ -201,7 +202,7 @@ class Repository
     /**
      * Resolve configured Client ID based on environment.
      *
-     * NOTE: This methods avoids getSettings to prevent circular calls.
+     * NOTE: This method avoids getSettings to prevent circular calls.
      *
      * @throws ConfigException
      */
@@ -210,15 +211,19 @@ class Repository
         return match (self::getValue(field: Field::ENVIRONMENT)) {
             Environment::PROD => self::getValue(field: Field::CLIENT_ID_PROD),
             Environment::TEST => self::getValue(field: Field::CLIENT_ID_TEST),
+            default => throw new IllegalValueException(
+                message: 'Invalid environment value.'
+            )
         };
     }
 
     /**
      * Resolve configured Client Secret based on environment.
      *
-     *  NOTE: This methods avoids getSettings to prevent circular calls.
+     *  NOTE: This method avoids getSettings to prevent circular calls.
      *
      * @throws ConfigException
+     * @throws IllegalValueException
      */
     public static function getClientSecret(): ?string
     {
@@ -229,6 +234,9 @@ class Repository
             Environment::TEST => self::getValue(
                 field: Field::CLIENT_SECRET_TEST
             ),
+            default => throw new IllegalValueException(
+                message: 'Invalid environment value.'
+            )
         };
     }
 
