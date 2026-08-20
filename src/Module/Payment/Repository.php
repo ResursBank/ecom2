@@ -539,29 +539,16 @@ class Repository
             );
         }
 
-        $orderLineSum = 0.0;
-
-        /** @var Payment\Order\ActionLog\OrderLine $orderLine */
-        foreach ($orderLines as $orderLine) {
-            $orderLineSum += $orderLine->totalAmountIncludingVat;
-        }
+        $orderLineSum = self::getOrderLineSum(orderLines: $orderLines);
 
         $creditLimit = $payment->application->approvedCreditLimit ?? 0;
 
-        if ($orderLineSum > $creditLimit) {
-            throw new PaymentActionException(
-                message: 'Requested amount ' . $orderLineSum .
-                    ' exceeds approved credit limit ' . $creditLimit
-            );
-        }
+        self::validateOrderLineSum(
+            orderLineSum: $orderLineSum,
+            creditLimit: $creditLimit
+        );
 
-        if ($payment->order === null) {
-            throw new IllegalValueException(
-                message: 'Order object is not set.'
-            );
-        }
-
-        $originalAmount = $payment->order->authorizedAmount;
+        $originalAmount = self::getOriginalAmount(payment: $payment);
 
         PaymentHistoryRepository::write(
             entry: new HistoryEntry(
@@ -572,50 +559,23 @@ class Repository
             )
         );
 
+        $result = null;
+
         try {
-            if (!$payment->isCancelled()) {
-                (new Cancel())->call(paymentId: $paymentId);
-            }
-
-            $result = $payment;
-
-            if ($orderLines->count() > 0 && $orderLineSum > 0) {
-                $result = self::addOrderLines(
-                    paymentId: $paymentId,
-                    orderLines: $orderLines
-                );
-            }
-
-            if ($result->order === null) {
-                throw new IllegalValueException(
-                    message: 'Order object is not set.'
-                );
-            }
-
-            $newAmount = $result->order->authorizedAmount;
-
-            PaymentHistoryRepository::write(
-                entry: new HistoryEntry(
-                    paymentId: $paymentId,
-                    event: Event::MODIFY_COMPLETED,
-                    user: User::ADMIN,
-                    extra: Price::format(value: $newAmount)
-                )
+            $result = self::addOrderLinesToPayment(
+                payment: $payment,
+                orderLines: $orderLines,
+                orderLineSum: $orderLineSum,
+                paymentId: $paymentId
             );
-
-            return $result;
         } catch (Throwable $error) {
-            PaymentHistoryRepository::write(
-                entry: new HistoryEntry(
-                    paymentId: $paymentId,
-                    event: Event::MODIFY_FAILED,
-                    user: User::ADMIN,
-                    extra: $error->getMessage()
-                )
+            self::handleOrderLineUpdateError(
+                paymentId: $paymentId,
+                error: $error
             );
-
-            throw $error;
         }
+
+        return $result;
     }
 
     /**
@@ -647,5 +607,134 @@ class Repository
         }
 
         return Translator::translate(phraseId: 'payment-failed-try-again');
+    }
+
+    /**
+     * Get sum of order lines.
+     */
+    private static function getOrderLineSum(OrderLineCollection $orderLines): float
+    {
+        $orderLineSum = 0.0;
+
+        /** @var Payment\Order\ActionLog\OrderLine $orderLine */
+        foreach ($orderLines as $orderLine) {
+            $orderLineSum += $orderLine->totalAmountIncludingVat;
+        }
+
+        return $orderLineSum;
+    }
+
+    /**
+     * Handle error during order line update.
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Throwable
+     */
+    private static function handleOrderLineUpdateError(
+        string $paymentId,
+        Throwable $error
+    ): void {
+        PaymentHistoryRepository::write(
+            entry: new HistoryEntry(
+                paymentId: $paymentId,
+                event: Event::MODIFY_FAILED,
+                user: User::ADMIN,
+                extra: $error->getMessage()
+            )
+        );
+
+        throw $error;
+    }
+
+    /**
+     * Handle missing order.
+     *
+     * @throws IllegalValueException
+     */
+    private static function getOriginalAmount(
+        Payment $payment
+    ): float {
+        if ($payment->order === null) {
+            throw new IllegalValueException(
+                message: 'Order object is not set.'
+            );
+        }
+
+        return $payment->order->authorizedAmount;
+    }
+
+    /**
+     * Validate order line sum.
+     *
+     * @throws PaymentActionException
+     */
+    private static function validateOrderLineSum(
+        float $orderLineSum,
+        float $creditLimit
+    ): void {
+        if ($orderLineSum > $creditLimit) {
+            throw new PaymentActionException(
+                message: 'Requested amount ' . $orderLineSum .
+                ' exceeds approved credit limit ' . $creditLimit
+            );
+        }
+    }
+
+    /**
+     * Add order lines to payment object.
+     *
+     * @throws ApiException
+     * @throws AttributeCombinationException
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws CurlException
+     * @throws EmptyValueException
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws NotJsonEncodedException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    private static function addOrderLinesToPayment(
+        Payment $payment,
+        OrderLineCollection $orderLines,
+        float $orderLineSum,
+        string $paymentId
+    ): Payment {
+        if (!$payment->isCancelled()) {
+            (new Cancel())->call(paymentId: $paymentId);
+        }
+
+        $result = $payment;
+
+        if ($orderLines->count() > 0 && $orderLineSum > 0) {
+            $result = self::addOrderLines(
+                paymentId: $paymentId,
+                orderLines: $orderLines
+            );
+        }
+
+        if ($result->order === null) {
+            throw new IllegalValueException(
+                message: 'Order object is not set.'
+            );
+        }
+
+        $newAmount = $result->order->authorizedAmount;
+
+        PaymentHistoryRepository::write(
+            entry: new HistoryEntry(
+                paymentId: $paymentId,
+                event: Event::MODIFY_COMPLETED,
+                user: User::ADMIN,
+                extra: Price::format(value: $newAmount)
+            )
+        );
+
+        return $result;
     }
 }
