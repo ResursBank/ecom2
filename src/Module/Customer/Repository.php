@@ -126,7 +126,7 @@ class Repository
                 key: self::SESSION_KEY_SSN_DATA
             );
 
-            if ($data !== '') {
+            if ($data !== null && $data !== '') {
                 $data = json_decode(
                     json: $data,
                     associative: false,
@@ -136,24 +136,37 @@ class Repository
             }
 
             if ($data instanceof stdClass) {
-                $result = DataConverter::stdClassToType(
-                    object: $data,
-                    type: GetAddressRequest::class
-                );
-
-                if (!$result instanceof GetAddressRequest) {
-                    throw new IllegalValueException(
-                        message: 'Session data is not SSN data.'
-                    );
-                }
+                $result = self::convertResponse(data: $data);
             }
         } catch (Throwable) {
             // Failing is harmless, client can supply info on gateway.
-            $result = null;
             Config::getLogger()->debug(message:
                 "No SSN data available in session. Client likely did not " .
                 "fetch address data from gateway. Client will need " .
                 "to supply SSN data on gateway instead.");
+        }
+
+        return $result;
+    }
+
+    /**
+     * Convert response to GetAddressRequest object.
+     *
+     * @throws IllegalTypeException
+     * @throws IllegalValueException
+     * @throws ReflectionException
+     */
+    private static function convertResponse(stdClass $data): GetAddressRequest
+    {
+        $result = DataConverter::stdClassToType(
+            object: $data,
+            type: GetAddressRequest::class
+        );
+
+        if (!$result instanceof GetAddressRequest) {
+            throw new IllegalValueException(
+                message: 'Session data is not SSN data.'
+            );
         }
 
         return $result;
