@@ -15,6 +15,7 @@ use ReflectionException;
 use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\FilesystemException;
+use Resursbank\Ecom\Exception\UserSettingsException;
 use Resursbank\Ecom\Exception\Validation\EmptyValueException;
 use Resursbank\Ecom\Exception\Validation\FormatException;
 use Resursbank\Ecom\Lib\Api\Environment;
@@ -158,11 +159,7 @@ final class Config
     {
         try {
             // Update environment based on user settings.
-            if (self::$instance->isProduction === null) {
-                self::$instance->isProduction = UserSettingsRepository::getValue(
-                    field: Field::ENVIRONMENT
-                ) === Environment::PROD;
-            }
+            self::configureEnvironment();
 
             // Update network settings with timeout from user settings.
             self::configureTimeout();
@@ -183,19 +180,12 @@ final class Config
 
                 // Fetch store id from config, of fallback to default, and apply
                 // to Ecom instance.
-                if (self::$instance->storeId === null) {
-                    self::$instance->storeId = UserSettingsRepository::getStoreId();
-                }
+                self::configureStoreId();
             }
 
             // If no logger is defined, but logs are enabled, and we have a log
             // dir specified in settings then configure a FileLogger instance.
-            if (
-                self::$instance->logger instanceof NoneLogger &&
-                UserSettingsRepository::isEnabled(field: Field::LOG_ENABLED)
-            ) {
-                self::configureFileLogger();
-            }
+            self::configureFileLogger();
 
             $store = Repository::getConfiguredStore();
 
@@ -527,10 +517,41 @@ final class Config
             return;
         }
 
+        $clientId = UserSettingsRepository::getClientId();
+        $clientSecret = UserSettingsRepository::getClientSecret();
+
+        if ($clientId === null) {
+            throw new EmptyValueException(
+                message: 'JWT Auth requires client ID.'
+            );
+        }
+
+        if ($clientSecret === null) {
+            throw new EmptyValueException(
+                message: 'JWT Auth requires client secret.'
+            );
+        }
+
         self::setJwtAuth(auth: new Jwt(
-            clientId: UserSettingsRepository::getClientId(),
-            clientSecret: UserSettingsRepository::getClientSecret()
+            clientId: $clientId,
+            clientSecret: $clientSecret
         ));
+    }
+
+    /**
+     * Update environment based on user settings.
+     *
+     * @throws ConfigException
+     */
+    private static function configureEnvironment(): void
+    {
+        if (self::$instance->isProduction !== null) {
+            return;
+        }
+
+        self::$instance->isProduction = UserSettingsRepository::getValue(
+            field: Field::ENVIRONMENT
+        ) === Environment::PROD;
     }
 
     /**
@@ -543,6 +564,13 @@ final class Config
      */
     private static function configureFileLogger(): void
     {
+        if (
+            !(self::$instance->logger instanceof NoneLogger) ||
+            !UserSettingsRepository::isEnabled(field: Field::LOG_ENABLED)
+        ) {
+            return;
+        }
+
         $logDir = UserSettingsRepository::getValue(field: Field::LOG_DIR);
 
         if ($logDir === null || $logDir === '') {
@@ -567,5 +595,19 @@ final class Config
             Location::DK => 'kr.',
             default => '',
         };
+    }
+
+    /**
+     * Configure store ID.
+     *
+     * @throws UserSettingsException
+     */
+    private static function configureStoreId(): void
+    {
+        if (self::$instance->storeId !== null) {
+            return;
+        }
+
+        self::$instance->storeId = UserSettingsRepository::getStoreId();
     }
 }
