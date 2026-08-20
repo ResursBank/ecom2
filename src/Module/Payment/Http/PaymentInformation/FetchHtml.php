@@ -12,7 +12,7 @@ namespace Resursbank\Ecom\Module\Payment\Http\PaymentInformation;
 use Resursbank\Ecom\Exception\ConfigException;
 use Resursbank\Ecom\Exception\HttpException;
 use Resursbank\Ecom\Lib\Http\Controller;
-use Resursbank\Ecom\Lib\Validation\StringValidation;
+use Resursbank\Ecom\Lib\Utilities\Strings;
 use Resursbank\Ecom\Module\Widget\PaymentInformation\Html;
 use Throwable;
 
@@ -31,7 +31,8 @@ class FetchHtml extends Controller
 
             if (
                 !$paymentId ||
-                !(new StringValidation())->isUuid(value: $paymentId)
+                !is_string(value: $paymentId) ||
+                !Strings::isUuid(value: $paymentId)
             ) {
                 throw new HttpException(message: 'Invalid payment id.');
             }
