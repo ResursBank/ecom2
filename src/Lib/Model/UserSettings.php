@@ -71,6 +71,9 @@ class UserSettings extends Model
      * @throws AttributeCombinationException
      * @throws JsonException
      * @throws ReflectionException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.LongVariable)
      * @todo Could add attribute to validate $logDir value is a valid directory path.
      */
     public function __construct(
