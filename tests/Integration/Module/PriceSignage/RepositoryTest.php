@@ -31,6 +31,7 @@ use Resursbank\Ecom\Lib\Model\PriceSignage\Cost;
 use Resursbank\Ecom\Lib\Model\PriceSignage\PriceSignage;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PriceSignage\Repository;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Throwable;
 
 /**
@@ -43,7 +44,7 @@ class RepositoryTest extends TestCase
 
     private string $paymentMethodId;
 
-    private float $amount = 1000.00;
+    private float $amount = 2000.00;
 
     /**
      * @throws ConfigException
@@ -66,7 +67,10 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader(
+                cacheEnabled: true
+            )
         );
 
         $this->cache = $this->getCache();

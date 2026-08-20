@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Resursbank\EcomTest\Utilities;
 
+use Resursbank\Ecom\Lib\Cache\CacheInterface;
 use Resursbank\Ecom\Lib\Log\LogLevel;
 use Resursbank\Ecom\Lib\UserSettings\Field;
 use Resursbank\Ecom\Lib\UserSettings\ReaderInterface;
@@ -23,7 +24,8 @@ use Resursbank\Ecom\Lib\UserSettings\Url;
 class DummySettingsReader implements ReaderInterface
 {
     public function __construct(
-        private readonly ?LogLevel $logLevel = null
+        private readonly ?LogLevel $logLevel = null,
+        private readonly ?bool $cacheEnabled = null
     ) {
     }
 
@@ -37,6 +39,9 @@ class DummySettingsReader implements ReaderInterface
                 return '60';
 
             case 'CACHE_ENABLED':
+                if ($this->cacheEnabled !== null) {
+                    return (string)$this->cacheEnabled;
+                }
                 return 'false';
 
             case 'ENVIRONMENT':
