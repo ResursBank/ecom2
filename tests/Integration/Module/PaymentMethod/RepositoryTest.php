@@ -11,10 +11,12 @@ namespace Resursbank\EcomTest\Integration\Module\PaymentMethod;
 
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Resursbank\Ecom\Config;
 use Resursbank\Ecom\Exception\ApiException;
+use Resursbank\Ecom\Exception\AttributeCombinationException;
 use Resursbank\Ecom\Exception\AuthException;
 use Resursbank\Ecom\Exception\CacheException;
 use Resursbank\Ecom\Exception\ConfigException;
@@ -32,6 +34,7 @@ use Resursbank\Ecom\Lib\Model\PaymentMethod\Type as PaymentMethodType;
 use Resursbank\Ecom\Lib\Model\PaymentMethodCollection;
 use Resursbank\Ecom\Lib\Repository\Cache;
 use Resursbank\Ecom\Module\PaymentMethod\Repository;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 use Throwable;
 use ValueError;
 
@@ -45,8 +48,10 @@ class RepositoryTest extends TestCase
 
     /**
      * @throws ConfigException
-     * @throws EmptyValueException
-     * @throws IllegalValueException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws Exception
+     * @throws AttributeCombinationException
      */
     protected function setUp(): void
     {
@@ -62,7 +67,8 @@ class RepositoryTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader(cacheEnabled: true)
         );
 
         $this->cache = Repository::getCache();
