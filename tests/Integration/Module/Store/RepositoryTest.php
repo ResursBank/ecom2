@@ -181,6 +181,10 @@ class RepositoryTest extends TestCase
      */
     public function testReadReturnsWithoutCache(): void
     {
+        self::connect(
+            storeId: $_ENV['STORE_ID'],
+            reader: new DummySettingsReader()
+        );
         $this->assertNull(actual: Repository::getCache()->read());
         $this->assertNotEmpty(actual: Repository::getStores());
     }
