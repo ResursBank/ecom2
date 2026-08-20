@@ -117,14 +117,7 @@ class Repository
         $paymentId = $callback->getCheckoutId() ?? $callback->getPaymentId();
 
         // If callback is not ready to be processed, throw error.
-        if (!self::isReady(callback: $callback)) {
-            throw new HttpException(
-                message: Translator::translate(
-                    phraseId: 'called-error-order-not-ready'
-                ),
-                code: 503
-            );
-        }
+        self::handleNotReady(callback: $callback);
 
         self::trackInit(paymentId: $paymentId, callback: $callback);
         self::addDebugLogs(callback: $callback);
@@ -146,15 +139,11 @@ class Repository
                     ));
                 }
             }
-        } catch (Throwable $e) {
-            self::logException(exception: $e);
-            $code = 408;
-
-            if ($e instanceof HttpException) {
-                $code = $e->getCode();
-            }
-
-            self::trackError(paymentId: $paymentId, error: $e);
+        } catch (Throwable $error) {
+            $code = self::handleProcessingError(
+                error: $error,
+                paymentId: $paymentId
+            );
         }
 
         Config::getLogger()->debug(message: "Responding with code $code");
@@ -358,5 +347,50 @@ class Repository
         }
 
         return $hasExecuted;
+    }
+
+    /**
+     * Handle not ready state.
+     *
+     * @throws AttributeCombinationException
+     * @throws ConfigException
+     * @throws FilesystemException
+     * @throws HttpException
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws TranslationException
+     */
+    private static function handleNotReady(
+        CallbackInterface $callback
+    ): void {
+        if (!self::isReady(callback: $callback)) {
+            throw new HttpException(
+                message: Translator::translate(
+                    phraseId: 'called-error-order-not-ready'
+                ),
+                code: 503
+            );
+        }
+    }
+
+    /**
+     * Handle processing error.
+     *
+     * @throws ConfigException
+     */
+    private static function handleProcessingError(
+        Throwable $error,
+        string $paymentId
+    ): int {
+        self::logException(exception: $error);
+        $code = 408;
+
+        if ($error instanceof HttpException) {
+            $code = $error->getCode();
+        }
+
+        self::trackError(paymentId: $paymentId, error: $error);
+
+        return $code;
     }
 }
