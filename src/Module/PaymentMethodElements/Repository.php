@@ -67,10 +67,15 @@ class Repository
             sha1($identifier . ($campaign ?? ''));
         $cache = new Cache(key: $cacheKey, model: Session::class, ttl: 3600);
 
-        /** @var Session $session */
         $session = $cache->read();
 
-        if (!$session instanceof Cache || $session->expired()) {
+        if (
+            (
+                $session instanceof Session &&
+                $session->expired()
+            ) ||
+            !$session instanceof Session
+        ) {
             $session = self::getSessionWithoutCache(campaign: $campaign);
             $cache->write(data: $session);
         }
