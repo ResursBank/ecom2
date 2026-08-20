@@ -23,6 +23,7 @@ use Resursbank\Ecom\Exception\ValidationException;
 use Resursbank\Ecom\Lib\Api\GrantType;
 use Resursbank\Ecom\Lib\Model\Network\Auth\Jwt;
 use Resursbank\Ecom\Lib\Repository\Traits\ValidateJwtCredentials;
+use Resursbank\EcomTest\Utilities\DummySettingsReader;
 
 /**
 * Test for JWT credentials validation.
@@ -50,7 +51,8 @@ class ValidateMapiJwtCredentialsTest extends TestCase
                 clientSecret: $_ENV['JWT_AUTH_CLIENT_SECRET'],
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         $this->expectException(exception: AuthException::class);
@@ -79,7 +81,8 @@ class ValidateMapiJwtCredentialsTest extends TestCase
                 clientSecret: 'core',
                 grantType: GrantType::from(value: $_ENV['JWT_AUTH_GRANT_TYPE'])
             ),
-            storeId: $_ENV['STORE_ID']
+            storeId: $_ENV['STORE_ID'],
+            settingsReader: new DummySettingsReader()
         );
 
         $this->expectException(exception: AuthException::class);
