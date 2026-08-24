@@ -1,3 +1,7 @@
+# 3.4.3
+
+* PD-4170 Added new translations.
+
 # 3.4.2
 
 * PD-4055 Add/update translation phrases for "please contact Resurs" messaging.
